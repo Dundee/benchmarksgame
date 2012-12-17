@@ -82,7 +82,6 @@
 If you're interested in something not shown then <a href="https://alioth.debian.org/snapshots.php?group_id=30402" title="Download the nightly snapshot"><b>please</b> take the program source code</a> and the measurement scripts and <b>publish your own measurements</b>.</p> 
 
 <p>The Python script "bencher does repeated measurements of program cpu time, elapsed time, resident memory usage, cpu load while a program is running, and summarizes those measurements" - <a href="<?=DOWNLOAD_PATH;?>bencher.zip"><b>download bencher</b></a> and unzip into your ~ directory, check the requirements and <a href="http://www.andre-simon.de/doku/highlight/en/highlight.html" title="highlight, ndiff">recommendations</a>, and read the license before use.</p>
-<p>Here are some measurements made <i>just as a demo</i> of what you could do with <a href="http://shootout.alioth.debian.org/demo/compare.php?lang=csc&amp;lang2=csharp">bencher.py on <b>Windows Vista&#174;</b></a>.</p>
 <p>(As an alternative, you should take a look at these Python measurement scripts designed for statistically rigorous Java performance evaluation - <a href="http://www.elis.ugent.be/JavaStats"><b>JavaStats</b></a>.)</p>
 </dd>
 
@@ -331,7 +330,7 @@ correct result, but also <b>use the same algorithm</b> to calculate that result.
 <dd><p>Include a header comment in the program like this:</p>
 <pre>
 /* The Computer Language Benchmarks Game
-   http://shootout.alioth.debian.org/
+   http://benchmarksgame.alioth.debian.org/
 
    contributed by &#8230;
    modified by &#8230;
@@ -352,7 +351,7 @@ correct result, but also <b>use the same algorithm</b> to calculate that result.
 
 <p>The Tracker</p>
 <ul>
-<li>After login, go to the <a href="https://alioth.debian.org/tracker/?atid=413100&amp;group_id=30402&amp;func=browse"><b>"Play the Benchmarks Game" Tracker</b></a></li>
+<li>After login, go to the <a href="https://alioth.debian.org/tracker/?func=browse&group_id=100815&atid=413122"><b>"Play the Benchmarks Game" Tracker</b></a></li>
 <li>Find and click the "Play the Benchmarks Game: <b>Submit New</b>" link</li>
 <li>Now start from the bottom of the form and work your way up</li>
 </ul>
@@ -360,13 +359,13 @@ correct result, but also <b>use the same algorithm</b> to calculate that result.
 <p>Start from the bottom</p>
 <ol>
 <li><b>Attach</b> the program source-code file - do this first because it's easy to forget.</li>
-<li>Say in the <b>Description</b> how this program fixes an error or is faster or was missing or &#8230; Give us reasons to accept your program.</li>
+<li>Say in the <b>Detailed description</b> how this program fixes an error or is faster or was missing or &#8230; Give us reasons to accept your program.</li>
 <li>Each <b>Summary</b> text <em><b>must</b></em> be unique! Follow this convention:<br />
 language, benchmark, your-name, date, (version)<br />
 <em>Ruby nsieve Glenn Parker 2005-03-28</em><br />
 </li>
-<li><b>Category</b>: select the language implementation</li>
-<li><b>Group</b>: select the benchmark</li>
+<li><b>Language Implementation</b>: select the language implementation</li>
+<li><b>Task</b>: select the benchmark</li>
 <li>click the Submit button</li>
 </ol>
 
@@ -387,7 +386,7 @@ language, benchmark, your-name, date, (version)<br />
 <dt><a href="#misc" name="misc">&nbsp;What&#8230;? Where&#8230;? Why&#8230;?</a></dt>
 <dd>
 
-<p>Please <a href="http://alioth.debian.org/account/register.php"><b>create an Alioth ID</b></a>, login and ask your questions in <a href="https://alioth.debian.org/forum/forum.php?forum_id=999" title="Find Help, Share Opinions"><b>the discussion forum</b></a>.</p>
+<p>Please <a href="http://alioth.debian.org/account/register.php"><b>create an Alioth ID</b></a>, login and ask your questions in <a href="https://alioth.debian.org/forum/forum.php?forum_id=2965" title="Share Opinions, Find Help"><b>the discussion forum</b></a>.</p>
 <p>Note: <b>Debian issue their own security certificate</b> - your web browser will complain.</p>
 </dd>
 
