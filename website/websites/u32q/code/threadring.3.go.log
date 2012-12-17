@@ -1,0 +1,13 @@
+
+Fri, 15 Jun 2012 02:51:29 GMT
+
+MAKE:
+/usr/local/src/go/bin/go tool 8g -o threadring.go-3.go.8 threadring.go-3.go && \
+	/usr/local/src/go/bin/go tool 8l -o threadring.go-3.go_run threadring.go-3.go.8
+0.25s to complete and log all make actions
+
+COMMAND LINE:
+./threadring.go-3.go_run 50000000
+
+PROGRAM OUTPUT:
+292

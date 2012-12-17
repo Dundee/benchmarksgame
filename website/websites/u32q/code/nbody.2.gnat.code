@@ -1,0 +1,203 @@
+<span class="hl slc">--</span>
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://shootout.alioth.debian.org/</span>
+<span class="hl slc">-- </span>
+<span class="hl slc">-- Contributed by Pascal Obry (2005/03/21)</span>
+<span class="hl slc">-- Modified by Jonathan Parker </span>
+<span class="hl slc">--</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Command_Line<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Command_Line<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>      <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Nbody_Pck<span class="hl opt">;</span>        <span class="hl kwa">use</span> Nbody_Pck<span class="hl opt">;</span>
+
+<span class="hl kwa">procedure</span> Nbody <span class="hl kwa">is</span>
+
+   N <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> <span class="hl kwb">Integer</span><span class="hl kwd">'Value</span> <span class="hl opt">(</span>Argument <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">));</span>
+
+   Bodies <span class="hl opt">:</span> Planets <span class="hl opt">:=</span>
+     <span class="hl opt">(</span>Sun     <span class="hl opt">=&gt;</span> 
+        <span class="hl opt">(</span>X    <span class="hl opt">=&gt;</span> <span class="hl num">0.0</span><span class="hl opt">,</span>
+         Y    <span class="hl opt">=&gt;</span> <span class="hl num">0.0</span><span class="hl opt">,</span>
+         Z    <span class="hl opt">=&gt;</span> <span class="hl num">0.0</span><span class="hl opt">,</span>
+         Vx   <span class="hl opt">=&gt;</span> <span class="hl num">0.0</span><span class="hl opt">,</span>
+         Vy   <span class="hl opt">=&gt;</span> <span class="hl num">0.0</span><span class="hl opt">,</span>
+         Vz   <span class="hl opt">=&gt;</span> <span class="hl num">0.0</span><span class="hl opt">,</span>
+         Mass <span class="hl opt">=&gt;</span> Solar_Mass<span class="hl opt">),</span>
+      Jupiter <span class="hl opt">=&gt;</span> 
+        <span class="hl opt">(</span>X    <span class="hl opt">=&gt;</span>  <span class="hl num">4.84143144246472090e+00</span><span class="hl opt">,</span>
+         Y    <span class="hl opt">=&gt; -</span><span class="hl num">1.16032004402742839e+00</span><span class="hl opt">,</span>
+         Z    <span class="hl opt">=&gt; -</span><span class="hl num">1.03622044471123109e-01</span><span class="hl opt">,</span>
+         Vx   <span class="hl opt">=&gt;</span>  <span class="hl num">1.66007664274403694e-03</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+         Vy   <span class="hl opt">=&gt;</span>  <span class="hl num">7.69901118419740425e-03</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+         Vz   <span class="hl opt">=&gt; -</span><span class="hl num">6.90460016972063023e-05</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+         Mass <span class="hl opt">=&gt;</span>  <span class="hl num">9.54791938424326609e-04</span> <span class="hl opt">*</span> Solar_Mass<span class="hl opt">),</span>
+      Saturn  <span class="hl opt">=&gt;</span> 
+        <span class="hl opt">(</span>X    <span class="hl opt">=&gt;</span>  <span class="hl num">8.34336671824457987e+00</span><span class="hl opt">,</span>
+         Y    <span class="hl opt">=&gt;</span>  <span class="hl num">4.12479856412430479e+00</span><span class="hl opt">,</span>
+         Z    <span class="hl opt">=&gt; -</span><span class="hl num">4.03523417114321381e-01</span><span class="hl opt">,</span>
+         Vx   <span class="hl opt">=&gt; -</span><span class="hl num">2.76742510726862411e-03</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+         Vy   <span class="hl opt">=&gt;</span>  <span class="hl num">4.99852801234917238e-03</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+         Vz   <span class="hl opt">=&gt;</span>  <span class="hl num">2.30417297573763929e-05</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+         Mass <span class="hl opt">=&gt;</span>  <span class="hl num">2.85885980666130812e-04</span> <span class="hl opt">*</span> Solar_Mass<span class="hl opt">),</span>
+      Uranus  <span class="hl opt">=&gt;</span> 
+        <span class="hl opt">(</span>X    <span class="hl opt">=&gt;</span>  <span class="hl num">1.28943695621391310e+01</span><span class="hl opt">,</span>
+         y    <span class="hl opt">=&gt; -</span><span class="hl num">1.51111514016986312e+01</span><span class="hl opt">,</span>
+         Z    <span class="hl opt">=&gt; -</span><span class="hl num">2.23307578892655734e-01</span><span class="hl opt">,</span>
+         Vx   <span class="hl opt">=&gt;</span>  <span class="hl num">2.96460137564761618e-03</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+         Vy   <span class="hl opt">=&gt;</span>  <span class="hl num">2.37847173959480950e-03</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+         Vz   <span class="hl opt">=&gt; -</span><span class="hl num">2.96589568540237556e-05</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+         Mass <span class="hl opt">=&gt;</span>  <span class="hl num">4.36624404335156298e-05</span> <span class="hl opt">*</span> Solar_Mass<span class="hl opt">),</span>
+      Neptune <span class="hl opt">=&gt;</span> 
+        <span class="hl opt">(</span>X    <span class="hl opt">=&gt;</span>  <span class="hl num">1.53796971148509165e+01</span><span class="hl opt">,</span>
+         Y    <span class="hl opt">=&gt; -</span><span class="hl num">2.59193146099879641e+01</span><span class="hl opt">,</span>
+         Z    <span class="hl opt">=&gt;</span>  <span class="hl num">1.79258772950371181e-01</span><span class="hl opt">,</span>
+         Vx   <span class="hl opt">=&gt;</span>  <span class="hl num">2.68067772490389322e-03</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+         Vy   <span class="hl opt">=&gt;</span>  <span class="hl num">1.62824170038242295e-03</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+         Vz   <span class="hl opt">=&gt; -</span><span class="hl num">9.51592254519715870e-05</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+         Mass <span class="hl opt">=&gt;</span>  <span class="hl num">5.15138902046611451e-05</span> <span class="hl opt">*</span> Solar_Mass<span class="hl opt">));</span>
+
+   <span class="hl kwa">package</span> RIO <span class="hl kwa">is new</span> Float_IO <span class="hl opt">(</span>Real<span class="hl opt">);</span>
+
+   <span class="hl kwa">procedure</span> Put
+     <span class="hl opt">(</span>Item <span class="hl opt">:</span> <span class="hl kwa">in</span> Real<span class="hl opt">;</span> 
+      Fore <span class="hl opt">:</span> <span class="hl kwa">in</span> Field <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> 
+      Aft  <span class="hl opt">:</span> <span class="hl kwa">in</span> Field <span class="hl opt">:=</span> <span class="hl num">9</span><span class="hl opt">;</span>
+      Exp  <span class="hl opt">:</span> <span class="hl kwa">in</span> Field <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">)</span> 
+   <span class="hl kwa">renames</span> RIO<span class="hl opt">.</span>Put<span class="hl opt">;</span>
+
+   Px<span class="hl opt">,</span> Py<span class="hl opt">,</span> Pz <span class="hl opt">:</span> Real <span class="hl opt">:=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+
+<span class="hl kwa">begin</span>
+
+   <span class="hl kwa">for</span> I <span class="hl kwa">in</span> Bodies<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+      Px <span class="hl opt">:=</span> Px <span class="hl opt">+</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Vx <span class="hl opt">*</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Mass<span class="hl opt">;</span>
+      Py <span class="hl opt">:=</span> Py <span class="hl opt">+</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Vy <span class="hl opt">*</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Mass<span class="hl opt">;</span>
+      Pz <span class="hl opt">:=</span> Pz <span class="hl opt">+</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Vz <span class="hl opt">*</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Mass<span class="hl opt">;</span>
+   <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+
+   Offset_Momentum <span class="hl opt">(</span>Bodies <span class="hl opt">(</span>Sun<span class="hl opt">),</span> Px<span class="hl opt">,</span> Py<span class="hl opt">,</span> Pz<span class="hl opt">);</span>
+
+   Put <span class="hl opt">(</span>Energy <span class="hl opt">(</span>Bodies<span class="hl opt">));</span>
+   New_Line<span class="hl opt">;</span>
+
+   <span class="hl kwa">for</span> K <span class="hl kwa">in</span> <span class="hl num">1</span> <span class="hl opt">..</span> N <span class="hl kwa">loop</span>
+      Advance <span class="hl opt">(</span>Bodies<span class="hl opt">,</span> <span class="hl num">0.01</span><span class="hl opt">);</span>
+   <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+
+   Put <span class="hl opt">(</span>Energy <span class="hl opt">(</span>Bodies<span class="hl opt">));</span>
+   New_Line<span class="hl opt">;</span>
+
+ <span class="hl slc">--testing:</span>
+ <span class="hl slc">--for I in Body_id loop</span>
+ <span class="hl slc">--  put(Bodies(I).X); put(&quot; &quot;); </span>
+ <span class="hl slc">--end loop;</span>
+
+<span class="hl kwa">end</span> Nbody<span class="hl opt">;</span>
+
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Numerics<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Numerics<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Numerics<span class="hl opt">.</span>Generic_Elementary_Functions<span class="hl opt">;</span>
+
+<span class="hl kwa">package</span> Nbody_Pck <span class="hl kwa">is</span>
+
+   <span class="hl kwa">type</span> Real <span class="hl kwa">is digits</span> <span class="hl num">15</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">package</span> Math <span class="hl kwa">is new</span> Ada<span class="hl opt">.</span>Numerics<span class="hl opt">.</span>Generic_Elementary_Functions <span class="hl opt">(</span>Real<span class="hl opt">);</span>
+
+   Solar_Mass    <span class="hl opt">:</span> <span class="hl kwa">constant</span> Real <span class="hl opt">:=</span> <span class="hl num">4.0</span> <span class="hl opt">*</span> Pi <span class="hl opt">*</span> Pi<span class="hl opt">;</span>
+   Days_Per_Year <span class="hl opt">:</span> <span class="hl kwa">constant</span> Real <span class="hl opt">:=</span> <span class="hl num">365.24</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> Data <span class="hl kwa">is</span>
+      <span class="hl kwa">record</span>
+         X<span class="hl opt">,</span> Y<span class="hl opt">,</span> Z <span class="hl opt">:</span> Real<span class="hl opt">;</span>
+         Vx<span class="hl opt">,</span> Vy<span class="hl opt">,</span> Vz <span class="hl opt">:</span> Real<span class="hl opt">;</span>
+         Mass <span class="hl opt">:</span> Real<span class="hl opt">;</span>
+      <span class="hl kwa">end record</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> Uns <span class="hl kwa">is mod</span> <span class="hl num">2</span><span class="hl opt">**</span><span class="hl num">64</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">subtype</span> Body_id <span class="hl kwa">is</span> Uns <span class="hl kwa">range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">4</span><span class="hl opt">;</span>
+
+   Sun     <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> Body_id<span class="hl kwd">'First</span> <span class="hl opt">+</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   Jupiter <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> Body_id<span class="hl kwd">'First</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+   Saturn  <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> Body_id<span class="hl kwd">'First</span> <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">;</span>
+   Neptune <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> Body_id<span class="hl kwd">'First</span> <span class="hl opt">+</span> <span class="hl num">3</span><span class="hl opt">;</span>
+   Uranus  <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> Body_id<span class="hl kwd">'First</span> <span class="hl opt">+</span> <span class="hl num">4</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> Planets <span class="hl kwa">is array</span> <span class="hl opt">(</span>Body_id<span class="hl opt">)</span> <span class="hl kwa">of</span> Data<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Offset_Momentum
+     <span class="hl opt">(</span>Planet     <span class="hl opt">:</span> <span class="hl kwa">in out</span> Data<span class="hl opt">;</span>
+      Px<span class="hl opt">,</span> Py<span class="hl opt">,</span> Pz <span class="hl opt">:</span> <span class="hl kwa">in</span>     Real<span class="hl opt">);</span>
+
+   <span class="hl kwa">function</span> Energy <span class="hl opt">(</span>Bodies <span class="hl opt">:</span> <span class="hl kwa">in</span> Planets<span class="hl opt">)</span> <span class="hl kwa">return</span> Real<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Advance <span class="hl opt">(</span>Bodies <span class="hl opt">:</span> <span class="hl kwa">in out</span> Planets<span class="hl opt">;</span> Dt <span class="hl opt">:</span> <span class="hl kwa">in</span> Real<span class="hl opt">);</span>
+
+<span class="hl kwa">end</span> Nbody_Pck<span class="hl opt">;</span>
+
+<span class="hl kwa">package body</span> Nbody_Pck <span class="hl kwa">is</span>
+
+   <span class="hl kwa">procedure</span> Offset_Momentum
+     <span class="hl opt">(</span>Planet     <span class="hl opt">:</span> <span class="hl kwa">in out</span> Data<span class="hl opt">;</span>
+      Px<span class="hl opt">,</span> Py<span class="hl opt">,</span> Pz <span class="hl opt">:</span> <span class="hl kwa">in</span>     Real<span class="hl opt">)</span> <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      Planet<span class="hl opt">.</span>Vx <span class="hl opt">:= -</span>Px <span class="hl opt">/</span> Solar_Mass<span class="hl opt">;</span>
+      Planet<span class="hl opt">.</span>Vy <span class="hl opt">:= -</span>Py <span class="hl opt">/</span> Solar_Mass<span class="hl opt">;</span>
+      Planet<span class="hl opt">.</span>Vz <span class="hl opt">:= -</span>Pz <span class="hl opt">/</span> Solar_Mass<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Offset_Momentum<span class="hl opt">;</span>
+
+   <span class="hl kwa">function</span> Energy <span class="hl opt">(</span>Bodies <span class="hl opt">:</span> <span class="hl kwa">in</span> Planets<span class="hl opt">)</span> <span class="hl kwa">return</span> Real <span class="hl kwa">is</span>
+      Dx<span class="hl opt">,</span> Dy<span class="hl opt">,</span> Dz<span class="hl opt">,</span> Distance <span class="hl opt">:</span> Real<span class="hl opt">;</span>
+      E                    <span class="hl opt">:</span> Real <span class="hl opt">:=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">for</span> I <span class="hl kwa">in</span> Bodies<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+         E <span class="hl opt">:=</span> E <span class="hl opt">+</span> <span class="hl num">0.5</span> <span class="hl opt">*</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Mass
+              <span class="hl opt">* (</span>Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Vx <span class="hl opt">*</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Vx
+               <span class="hl opt">+</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Vy <span class="hl opt">*</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Vy
+               <span class="hl opt">+</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Vz <span class="hl opt">*</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Vz<span class="hl opt">);</span>
+
+         <span class="hl kwa">for</span> J <span class="hl kwa">in</span> Bodies<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+            <span class="hl kwa">if</span> J <span class="hl opt">&gt;</span> I <span class="hl kwa">then</span>
+               Dx <span class="hl opt">:=</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>X <span class="hl opt">-</span> Bodies <span class="hl opt">(</span>J<span class="hl opt">).</span>X<span class="hl opt">;</span>
+               Dy <span class="hl opt">:=</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Y <span class="hl opt">-</span> Bodies <span class="hl opt">(</span>J<span class="hl opt">).</span>Y<span class="hl opt">;</span>
+               Dz <span class="hl opt">:=</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Z <span class="hl opt">-</span> Bodies <span class="hl opt">(</span>J<span class="hl opt">).</span>Z<span class="hl opt">;</span>
+               Distance <span class="hl opt">:=</span> Math<span class="hl opt">.</span>Sqrt <span class="hl opt">(</span>Dx <span class="hl opt">*</span> Dx <span class="hl opt">+</span> Dy <span class="hl opt">*</span> Dy <span class="hl opt">+</span> Dz <span class="hl opt">*</span> Dz<span class="hl opt">);</span>
+               E <span class="hl opt">:=</span> E <span class="hl opt">- (</span>Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Mass <span class="hl opt">*</span> Bodies <span class="hl opt">(</span>J<span class="hl opt">).</span>Mass<span class="hl opt">) /</span> Distance<span class="hl opt">;</span>
+            <span class="hl kwa">end if</span><span class="hl opt">;</span>
+         <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      <span class="hl kwa">return</span> E<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Energy<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Advance <span class="hl opt">(</span>Bodies <span class="hl opt">:</span> <span class="hl kwa">in out</span> Planets<span class="hl opt">;</span> Dt <span class="hl opt">:</span> <span class="hl kwa">in</span> Real<span class="hl opt">)</span> <span class="hl kwa">is</span>
+      Dx<span class="hl opt">,</span> Dy<span class="hl opt">,</span> Dz<span class="hl opt">,</span> Mag <span class="hl opt">:</span> Real<span class="hl opt">;</span>
+      Delta_r_sqr <span class="hl opt">:</span> Real<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">for</span> I <span class="hl kwa">in</span> Bodies<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+         <span class="hl kwa">for</span> J <span class="hl kwa">in</span> Bodies<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+            <span class="hl kwa">if</span> J <span class="hl opt">&lt;</span> I <span class="hl kwa">then</span>
+               Dx <span class="hl opt">:= (</span>Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>X <span class="hl opt">-</span> Bodies <span class="hl opt">(</span>J<span class="hl opt">).</span>X<span class="hl opt">);</span>
+               Dy <span class="hl opt">:= (</span>Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Y <span class="hl opt">-</span> Bodies <span class="hl opt">(</span>J<span class="hl opt">).</span>Y<span class="hl opt">);</span>
+               Dz <span class="hl opt">:= (</span>Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Z <span class="hl opt">-</span> Bodies <span class="hl opt">(</span>J<span class="hl opt">).</span>Z<span class="hl opt">);</span>
+
+               Delta_r_sqr <span class="hl opt">:=</span> Dx<span class="hl opt">*</span>Dx <span class="hl opt">+</span> Dy<span class="hl opt">*</span>Dy <span class="hl opt">+</span> Dz<span class="hl opt">*</span>Dz<span class="hl opt">;</span>
+               Mag         <span class="hl opt">:=</span> Dt <span class="hl opt">/ (</span>Delta_r_sqr <span class="hl opt">*</span> Math<span class="hl opt">.</span>Sqrt <span class="hl opt">(</span>Delta_r_sqr<span class="hl opt">));</span>
+
+               Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Vx <span class="hl opt">:=</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Vx <span class="hl opt">-</span> Dx  <span class="hl opt">*</span> Bodies <span class="hl opt">(</span>J<span class="hl opt">).</span>Mass <span class="hl opt">*</span> Mag<span class="hl opt">;</span>
+               Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Vy <span class="hl opt">:=</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Vy <span class="hl opt">-</span> Dy  <span class="hl opt">*</span> Bodies <span class="hl opt">(</span>J<span class="hl opt">).</span>Mass <span class="hl opt">*</span> Mag<span class="hl opt">;</span>
+               Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Vz <span class="hl opt">:=</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Vz <span class="hl opt">-</span> Dz  <span class="hl opt">*</span> Bodies <span class="hl opt">(</span>J<span class="hl opt">).</span>Mass <span class="hl opt">*</span> Mag<span class="hl opt">;</span>
+               Bodies <span class="hl opt">(</span>J<span class="hl opt">).</span>Vx <span class="hl opt">:=</span> Bodies <span class="hl opt">(</span>J<span class="hl opt">).</span>Vx <span class="hl opt">+</span> Mag <span class="hl opt">*</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Mass <span class="hl opt">*</span> Dx<span class="hl opt">;</span>
+               Bodies <span class="hl opt">(</span>J<span class="hl opt">).</span>Vy <span class="hl opt">:=</span> Bodies <span class="hl opt">(</span>J<span class="hl opt">).</span>Vy <span class="hl opt">+</span> Mag <span class="hl opt">*</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Mass <span class="hl opt">*</span> Dy<span class="hl opt">;</span>
+               Bodies <span class="hl opt">(</span>J<span class="hl opt">).</span>Vz <span class="hl opt">:=</span> Bodies <span class="hl opt">(</span>J<span class="hl opt">).</span>Vz <span class="hl opt">+</span> Mag <span class="hl opt">*</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Mass <span class="hl opt">*</span> Dz<span class="hl opt">;</span>
+            <span class="hl kwa">end if</span><span class="hl opt">;</span>
+         <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+
+      <span class="hl kwa">for</span> I <span class="hl kwa">in</span> Bodies<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+         Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>X <span class="hl opt">:=</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>X <span class="hl opt">+</span> Dt <span class="hl opt">*</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Vx<span class="hl opt">;</span>
+         Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Y <span class="hl opt">:=</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Y <span class="hl opt">+</span> Dt <span class="hl opt">*</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Vy<span class="hl opt">;</span>
+         Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Z <span class="hl opt">:=</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Z <span class="hl opt">+</span> Dt <span class="hl opt">*</span> Bodies <span class="hl opt">(</span>I<span class="hl opt">).</span>Vz<span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Advance<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> Nbody_Pck<span class="hl opt">;</span>
+

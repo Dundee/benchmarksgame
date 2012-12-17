@@ -1,0 +1,51 @@
+
+Sat, 13 Oct 2012 00:57:13 GMT
+
+MAKE:
+mv meteor.fpascal-3.fpascal meteor.fpascal-3.pas
+/usr/local/src/fpc-2.6.0.i386-linux/bin/fpc -FuInclude/fpascal -XXs -Oppentiumm -Cppentiumm -O3 -Cfsse2  -oFPASCAL_RUN meteor.fpascal-3.pas
+Free Pascal Compiler version 2.6.0 [2011/12/23] for i386
+Copyright (c) 1993-2011 by Florian Klaempfl and others
+Target OS: Linux for i386
+Compiling meteor.fpascal-3.pas
+meteor.fpascal-3.pas(174,11) Warning: unreachable code
+meteor.fpascal-3.pas(363,7) Note: Local variable "y" is assigned but never used
+meteor.fpascal-3.pas(466,5) Note: Local variable "x" not used
+meteor.fpascal-3.pas(104,5) Note: Local variable "g_nIslandInfo" not used
+Linking FPASCAL_RUN
+/usr/bin/ld: warning: link.res contains output sections; did you forget -T?
+887 lines compiled, 0.5 sec 
+1 warning(s) issued
+3 note(s) issued
+mv FPASCAL_RUN meteor.fpascal-3.fpascal_run
+rm meteor.fpascal-3.pas
+0.79s to complete and log all make actions
+
+COMMAND LINE:
+./meteor.fpascal-3.fpascal_run 2098
+
+PROGRAM OUTPUT:
+2098 solutions found
+
+0 0 0 0 1 
+ 2 2 2 0 1 
+2 6 6 1 1 
+ 2 6 1 5 5 
+8 6 5 5 5 
+ 8 6 3 3 3 
+4 8 8 9 3 
+ 4 4 8 9 3 
+4 7 4 7 9 
+ 7 7 7 9 9 
+
+9 9 9 9 8 
+ 9 6 6 8 5 
+6 6 8 8 5 
+ 6 8 2 5 5 
+7 7 7 2 5 
+ 7 4 7 2 0 
+1 4 2 2 0 
+ 1 4 4 0 3 
+1 4 0 0 3 
+ 1 1 3 3 3 
+

@@ -1,0 +1,14 @@
+
+Thu, 25 Oct 2012 23:08:11 GMT
+
+MAKE:
+mv threadring.ocaml threadring.ml
+/usr/local/bin/ocamlopt -noassert -unsafe -nodynlink -inline 100 -thread unix.cmxa threads.cmxa threadring.ml -o threadring.ocaml_run
+rm threadring.ml
+0.21s to complete and log all make actions
+
+COMMAND LINE:
+./threadring.ocaml_run 50000000
+
+PROGRAM OUTPUT:
+292

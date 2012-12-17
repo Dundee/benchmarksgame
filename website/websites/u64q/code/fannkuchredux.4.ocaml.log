@@ -1,0 +1,17 @@
+
+Wed, 24 Oct 2012 20:51:56 GMT
+
+MAKE:
+mv fannkuchredux.ocaml-4.ocaml fannkuchredux.ocaml-4.ml
+/usr/local/bin/ocamlopt -noassert -unsafe -fno-PIC -nodynlink -inline 100 -fno-PIC unix.cmxa fannkuchredux.ocaml-4.ml -o fannkuchredux.ocaml-4.ocaml_run
+File "fannkuchredux.ocaml-4.ml", line 1:
+Warning 24: bad source file name: "Fannkuchredux.ocaml-4" is not a valid module name.
+rm fannkuchredux.ocaml-4.ml
+0.25s to complete and log all make actions
+
+COMMAND LINE:
+./fannkuchredux.ocaml-4.ocaml_run 12
+
+PROGRAM OUTPUT:
+3968050
+Pfannkuchen(12) = 65

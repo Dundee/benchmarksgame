@@ -1,0 +1,71 @@
+<span class="hl opt">#</span>lang racket<span class="hl opt">/</span>base
+
+<span class="hl slc">;;; The Computer Language Benchmarks Game</span>
+<span class="hl slc">;;; http://shootout.alioth.debian.org/</span>
+<span class="hl slc">;;; Derived from the Chicken variant by Sven Hartrumpf</span>
+<span class="hl slc">;;; contributed by Sam Tobin-Hochstadt</span>
+
+<span class="hl opt">(</span><span class="hl kwa">require</span> racket<span class="hl opt">/</span>cmdline racket<span class="hl opt">/</span>require <span class="hl opt">(</span><span class="hl kwa">for-syntax</span> racket<span class="hl opt">/</span>base<span class="hl opt">)</span> racket<span class="hl opt">/</span>place <span class="hl opt">(</span><span class="hl kwa">only-in</span> racket<span class="hl opt">/</span>fixnum make-shared-fxvector<span class="hl opt">)</span>
+         <span class="hl opt">(</span><span class="hl kwa">filtered-in</span> <span class="hl opt">(</span><span class="hl kwa">lambda</span> <span class="hl opt">(</span><span class="hl kwa">name</span><span class="hl opt">) (</span><span class="hl kwa">regexp-replace</span> <span class="hl opt">#</span>rx<span class="hl str">&quot;unsafe-&quot;</span> name <span class="hl str">&quot;&quot;</span><span class="hl opt">))</span>
+                      racket<span class="hl opt">/</span>unsafe<span class="hl opt">/</span>ops<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define-syntax-rule</span> <span class="hl opt">(**</span>leaf? v<span class="hl opt">) (</span><span class="hl kwa">fx</span><span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl opt">(</span><span class="hl kwa">vector-length</span> v<span class="hl opt">)))</span>
+<span class="hl opt">(</span><span class="hl kwa">define-syntax-rule</span> <span class="hl opt">(**</span>node? v<span class="hl opt">) (</span><span class="hl kwa">fx</span><span class="hl opt">=</span> <span class="hl num">3</span> <span class="hl opt">(</span><span class="hl kwa">vector-length</span> v<span class="hl opt">)))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define-syntax</span> leaf  <span class="hl opt">(</span><span class="hl kwa">make-rename-transformer</span> <span class="hl opt">#'</span>vector<span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">define-syntax</span> leaf? <span class="hl opt">(</span><span class="hl kwa">make-rename-transformer</span> <span class="hl opt">#'**</span>leaf?<span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">define-syntax</span> node  <span class="hl opt">(</span><span class="hl kwa">make-rename-transformer</span> <span class="hl opt">#'</span>vector<span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">define-syntax</span> node? <span class="hl opt">(</span><span class="hl kwa">make-rename-transformer</span> <span class="hl opt">#'**</span>node?<span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">define-syntax-rule</span> <span class="hl opt">(</span><span class="hl kwa">leaf-val</span> l<span class="hl opt">)   (</span><span class="hl kwa">vector-ref</span> l <span class="hl num">0</span><span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">define-syntax-rule</span> <span class="hl opt">(</span><span class="hl kwa">node-left</span> n<span class="hl opt">)  (</span><span class="hl kwa">vector-ref</span> n <span class="hl num">1</span><span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">define-syntax-rule</span> <span class="hl opt">(</span><span class="hl kwa">node-right</span> n<span class="hl opt">) (</span><span class="hl kwa">vector-ref</span> n <span class="hl num">2</span><span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> <span class="hl opt">(</span><span class="hl kwa">make</span> item d<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">=</span> d <span class="hl num">0</span><span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">leaf</span> item<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">([</span>item2 <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">*</span> item <span class="hl num">2</span><span class="hl opt">)] [</span>d2 <span class="hl opt">(</span><span class="hl kwa">fx-</span> d <span class="hl num">1</span><span class="hl opt">)])</span>
+      <span class="hl opt">(</span><span class="hl kwa">node</span> item <span class="hl opt">(</span><span class="hl kwa">make</span> <span class="hl opt">(</span><span class="hl kwa">fx-</span> item2 <span class="hl num">1</span><span class="hl opt">)</span> d2<span class="hl opt">) (</span><span class="hl kwa">make</span> item2 d2<span class="hl opt">)))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define-syntax-rule</span> <span class="hl opt">(</span><span class="hl kwa">check</span> s<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> loop <span class="hl opt">([</span>t s<span class="hl opt">] [</span>acc <span class="hl num">0</span><span class="hl opt">])</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">([</span>acc <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">+ (</span><span class="hl kwa">leaf-val</span> t<span class="hl opt">)</span> acc<span class="hl opt">)])</span>
+      <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">node</span>? t<span class="hl opt">)</span>
+        <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">(</span><span class="hl kwa">node-left</span> t<span class="hl opt">)</span>
+              <span class="hl opt">(</span><span class="hl kwa">fx-</span> acc <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">(</span><span class="hl kwa">node-right</span> t<span class="hl opt">)</span> <span class="hl num">0</span><span class="hl opt">)))</span>
+        acc<span class="hl opt">))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">require</span> racket<span class="hl opt">/</span>match<span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">define</span> <span class="hl opt">(</span><span class="hl kwa">work</span> c<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> args <span class="hl opt">(</span><span class="hl kwa">place-channel-get</span> c<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">match-define</span> <span class="hl opt">(</span><span class="hl kwa">vector</span> max-depth min-depth d<span class="hl opt">)</span> args<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> iterations <span class="hl opt">(</span><span class="hl kwa">fxlshift</span> <span class="hl num">1</span> <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">+ (</span><span class="hl kwa">fx-</span> max-depth d<span class="hl opt">)</span> min-depth<span class="hl opt">)))</span>
+  <span class="hl opt">(</span><span class="hl kwa">place-channel-put</span> 
+   c <span class="hl opt">(</span><span class="hl kwa">vector</span> <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">*</span> <span class="hl num">2</span> iterations<span class="hl opt">)</span> d
+             <span class="hl opt">(</span><span class="hl kwa">for</span><span class="hl opt">/</span>fold <span class="hl opt">([</span>c <span class="hl num">0</span><span class="hl opt">]) ([</span>i <span class="hl opt">(</span><span class="hl kwa">in-range</span> iterations<span class="hl opt">)])</span>
+               <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">+</span> c <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">+ (</span><span class="hl kwa">check</span> <span class="hl opt">(</span><span class="hl kwa">make</span> i d<span class="hl opt">))</span>
+                           <span class="hl opt">(</span><span class="hl kwa">check</span> <span class="hl opt">(</span><span class="hl kwa">make</span> <span class="hl opt">(</span><span class="hl kwa">fx-</span> <span class="hl num">0</span> i<span class="hl opt">)</span> d<span class="hl opt">))))))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> min-depth <span class="hl num">4</span><span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">define</span> <span class="hl opt">(</span><span class="hl kwa">main</span><span class="hl opt">*</span> n<span class="hl opt">)</span>  
+  <span class="hl opt">(</span><span class="hl kwa">define</span> max-depth <span class="hl opt">(</span><span class="hl kwa">max</span> <span class="hl opt">(+</span> min-depth <span class="hl num">2</span><span class="hl opt">)</span> n<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> stretch-depth <span class="hl opt">(+</span> max-depth <span class="hl num">1</span><span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">printf</span> <span class="hl str">&quot;stretch tree of depth ~a</span><span class="hl esc">\t</span> <span class="hl str">check: ~a</span><span class="hl esc">\n</span><span class="hl str">&quot;</span>
+          stretch-depth
+          <span class="hl opt">(</span><span class="hl kwa">check</span> <span class="hl opt">(</span><span class="hl kwa">make</span> <span class="hl num">0</span> stretch-depth<span class="hl opt">)))</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> len <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">+</span> max-depth <span class="hl num">1</span><span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> output <span class="hl opt">(</span><span class="hl kwa">make-vector</span> len <span class="hl opt">#</span>f<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> long-lived-tree <span class="hl opt">(</span><span class="hl kwa">make</span> <span class="hl num">0</span> max-depth<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> thds
+    <span class="hl opt">(</span><span class="hl kwa">for</span><span class="hl opt">/</span>list <span class="hl opt">([</span>d <span class="hl opt">(</span><span class="hl kwa">in-range</span> <span class="hl num">4</span> len <span class="hl num">2</span><span class="hl opt">)])</span>
+      <span class="hl opt">(</span><span class="hl kwa">thread</span> <span class="hl opt">(</span>λ <span class="hl opt">()</span>
+                <span class="hl opt">(</span><span class="hl kwa">define</span> c <span class="hl opt">(</span><span class="hl kwa">place</span> ch <span class="hl opt">(</span><span class="hl kwa">work</span> ch<span class="hl opt">)))</span>
+                <span class="hl opt">(</span><span class="hl kwa">place-channel-put</span> c <span class="hl opt">(</span><span class="hl kwa">vector</span> max-depth min-depth d<span class="hl opt">))</span>
+                <span class="hl opt">(</span><span class="hl kwa">vector-set</span><span class="hl opt">!</span> output d <span class="hl opt">(</span><span class="hl kwa">place-channel-get</span> c<span class="hl opt">))))))</span>
+  <span class="hl opt">(</span><span class="hl kwa">map</span> sync thds<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">for</span> <span class="hl opt">([</span>e <span class="hl opt">(</span><span class="hl kwa">in-vector</span> output<span class="hl opt">)] #:</span>when e<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">printf</span> <span class="hl str">&quot;~a</span><span class="hl esc">\t</span> <span class="hl str">trees of depth ~a</span><span class="hl esc">\t</span> <span class="hl str">check: ~a</span><span class="hl esc">\n</span><span class="hl str">&quot;</span>
+            <span class="hl opt">(</span><span class="hl kwa">vector-ref</span> e <span class="hl num">0</span><span class="hl opt">) (</span><span class="hl kwa">vector-ref</span> e <span class="hl num">1</span><span class="hl opt">) (</span><span class="hl kwa">vector-ref</span> e <span class="hl num">2</span><span class="hl opt">)))</span>
+  <span class="hl opt">(</span><span class="hl kwa">printf</span> <span class="hl str">&quot;long lived tree of depth ~a</span><span class="hl esc">\t</span> <span class="hl str">check: ~a</span><span class="hl esc">\n</span><span class="hl str">&quot;</span>
+          max-depth
+          <span class="hl opt">(</span><span class="hl kwa">check</span> long-lived-tree<span class="hl opt">)))</span>
+<span class="hl opt">(</span><span class="hl kwa">define</span> <span class="hl opt">(</span><span class="hl kwa">main</span> a<span class="hl opt">) (</span><span class="hl kwa">main</span><span class="hl opt">* (</span><span class="hl kwa">string-</span><span class="hl opt">&gt;</span>number a<span class="hl opt">))) (</span><span class="hl kwa">provide</span> main<span class="hl opt">)</span>

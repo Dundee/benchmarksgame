@@ -1,0 +1,19 @@
+
+Fri, 18 May 2012 01:04:39 GMT
+
+MAKE:
+/usr/bin/gnatchop -r -w fannkuchredux.gnat
+splitting fannkuchredux.gnat into:
+   fannkuchredux.adb
+/usr/bin/gnatmake -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp -f fannkuchredux.adb -o fannkuchredux.gnat_run 
+gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp fannkuchredux.adb
+gnatbind -x fannkuchredux.ali
+gnatlink fannkuchredux.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o fannkuchredux.gnat_run
+0.54s to complete and log all make actions
+
+COMMAND LINE:
+./fannkuchredux.gnat_run 12
+
+PROGRAM OUTPUT:
+3968050
+Pfannkuchen(12) = 65

@@ -1,0 +1,14 @@
+
+Wed, 12 Dec 2012 19:18:10 GMT
+
+MAKE:
+mv nbody.java-2.java nbody.java
+/usr/local/src/jdk1.7.0_10/bin/javac nbody.java
+0.75s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/src/jdk1.7.0_10/bin/java  -server -XX:+TieredCompilation -XX:+AggressiveOpts nbody 50000000
+
+PROGRAM OUTPUT:
+-0.169075164
+-0.169059907

@@ -1,0 +1,23 @@
+
+Wed, 24 Oct 2012 02:19:03 GMT
+
+MAKE:
+mv threadring.fsharp-2.fsharp threadring.fsharp-2.fs
+/usr/local/bin/fsharpc --target:exe --platform:x86 -O  -o threadring.fsharp-2.fsharp_run.exe threadring.fsharp-2.fs
+Microsoft (R) F# 3.0 Compiler version (Mono build)
+Copyright (c) Microsoft Corporation. All Rights Reserved.
+
+/home/dunham/benchmarksgame/threadring/tmp/threadring.fsharp-2.fs(10,1): warning FS0221: The declarations in this file will be placed in an implicit module 'Threadring.fsharp-2' based on the file name 'threadring.fsharp-2.fs'. However this is not a valid F# identifier, so the contents will not be accessible from other files. Consider renaming the file or adding a 'module' or 'namespace' declaration at the top of the file.
+rm threadring.fsharp-2.fs
+4.18s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/bin/mono --llvm --gc=sgen threadring.fsharp-2.fsharp_run.exe 50000000
+
+PROGRAM OUTPUT:
+292
+
+<premain>: CommandLine Error: Argument 'misched' defined more than once!
+<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
+-simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
+-simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

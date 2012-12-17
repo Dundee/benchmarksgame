@@ -1,0 +1,15 @@
+
+Sat, 18 Aug 2012 08:27:19 GMT
+
+MAKE:
+mv fannkuchredux.clojure-2.clojure fannkuchredux.clj
+/usr/local/src/jdk1.7.0_06/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.4.0/clojure-1.4.0-slim.jar: clojure.lang.Compile fannkuchredux
+Compiling fannkuchredux to .
+5.23s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/src/jdk1.7.0_06/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts -Xmx16m -cp .:/usr/local/src/clojure-1.4.0/clojure-1.4.0-slim.jar: fannkuchredux 12
+
+PROGRAM OUTPUT:
+3968050
+Pfannkuchen(12) = 65

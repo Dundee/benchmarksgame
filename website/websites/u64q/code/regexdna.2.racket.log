@@ -1,0 +1,24 @@
+
+Fri, 23 Nov 2012 00:31:11 GMT
+
+COMMAND LINE:
+/usr/local/src/racket-5.3.1/bin/racket  regexdna.racket-2.racket 0 < regexdna-input50000.txt
+
+UNEXPECTED OUTPUT 
+
+0a1,13
+> agggtaaa|tttaccct 3
+> [cgt]gggtaaa|tttaccc[acg] 12
+> a[act]ggtaaa|tttacc[agt]t 43
+> ag[act]gtaaa|tttac[agt]ct 27
+> agg[act]taaa|ttta[agt]cct 58
+> aggg[acg]aaa|ttt[cgt]ccct 16
+> agggt[cgt]aa|tt[acg]accct 15
+> agggta[cgt]a|t[acg]taccct 18
+> agggtaa[cgt]|[acg]ttaccct 20
+> 
+> 508411
+> 500000
+> 668262
+
+PROGRAM OUTPUT:

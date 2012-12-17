@@ -1,0 +1,52 @@
+
+Mon, 11 Jul 2011 20:08:18 GMT
+
+MAKE:
+/usr/bin/gnatchop -r -w chameneosredux.gnat-4.gnat
+splitting chameneosredux.gnat-4.gnat into:
+   chameneosredux.adb
+   chameneos.ads
+   chameneos.adb
+   chameneos-creatures.ads
+   chameneos-creatures.adb
+/usr/bin/gnatmake -gnatApn05 -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse2 -f chameneosredux.adb -o chameneosredux.gnat-4.gnat_run 
+gcc-4.4 -c -gnatApn05 -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse2 chameneosredux.adb
+gcc-4.4 -c -gnatApn05 -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse2 chameneos.adb
+gcc-4.4 -c -gnatApn05 -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse2 chameneos-creatures.adb
+gnatbind -x chameneosredux.ali
+gnatlink chameneosredux.ali -fomit-frame-pointer -march=native -mfpmath=sse -msse2 -o chameneosredux.gnat-4.gnat_run
+4.60s to complete and log all make actions
+
+COMMAND LINE:
+./chameneosredux.gnat-4.gnat_run 6000000
+
+PROGRAM OUTPUT:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
+blue red yellow 
+   4068394  zero 
+   3836158  zero 
+   4095448  zero 
+one two zero zero zero zero zero zero 
+
+blue red yellow red yellow blue red yellow red blue 
+   1197881  zero 
+   1202437  zero 
+   1210119  zero 
+   1192262  zero 
+   1200407  zero 
+   1203158  zero 
+   1202142  zero 
+   1190918  zero 
+   1203847  zero 
+   1196829  zero 
+one two zero zero zero zero zero zero 
+

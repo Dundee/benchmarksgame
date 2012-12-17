@@ -1,0 +1,136 @@
+<span class="hl slc">// The Computer Language Benchmarks Game</span>
+<span class="hl slc">// http://shootout.alioth.debian.org/</span>
+<span class="hl slc">//</span>
+<span class="hl slc">// Original C contributed by Sebastien Loisel</span>
+<span class="hl slc">// Conversion to C++ by Jon Harrop</span>
+<span class="hl slc">// OpenMP parallelize by The Anh Tran</span>
+<span class="hl slc">// Add SSE by The Anh Tran</span>
+<span class="hl slc">// Additional SSE optimization by Krzysztof Jakubowski</span>
+
+<span class="hl slc">// g++ -pipe -O3 -march=native -fopenmp -mfpmath=sse -msse2 \</span>
+<span class="hl slc">//     ./spec.c++ -o ./spec.run</span>
+
+<span class="hl ppc">#include &lt;cmath&gt;</span>
+<span class="hl ppc">#include &lt;cstdlib&gt;</span>
+<span class="hl ppc">#include &lt;cstdio&gt;</span>
+<span class="hl ppc">#include &lt;sched.h&gt;</span>
+<span class="hl ppc">#include &lt;omp.h&gt;</span>
+<span class="hl ppc">#include &lt;emmintrin.h&gt;</span>
+
+<span class="hl kwc">template</span> <span class="hl opt">&lt;</span><span class="hl kwb">bool</span> modei<span class="hl opt">&gt;</span> <span class="hl kwb">int</span> <span class="hl kwd">Index</span><span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">,</span> <span class="hl kwb">int</span> j<span class="hl opt">) {</span>
+    <span class="hl kwa">return</span> <span class="hl opt">(((</span>i <span class="hl opt">+</span> j<span class="hl opt">) * (</span>i <span class="hl opt">+</span> j <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)) &gt;&gt;</span> <span class="hl num">1</span><span class="hl opt">) + (</span>modei? i <span class="hl opt">:</span> j<span class="hl opt">) +</span> <span class="hl num">1</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwc">template</span> <span class="hl opt">&lt;</span><span class="hl kwb">bool</span> modei<span class="hl opt">&gt;</span>
+<span class="hl kwb">void</span> <span class="hl kwd">EvalPart</span><span class="hl opt">(</span><span class="hl kwb">double</span> <span class="hl opt">*</span>__restrict__ src<span class="hl opt">,</span> <span class="hl kwb">double</span> <span class="hl opt">*</span>__restrict__ dst<span class="hl opt">,</span>
+                <span class="hl kwb">int</span> begin<span class="hl opt">,</span> <span class="hl kwb">int</span> end<span class="hl opt">,</span> <span class="hl kwb">int</span> length<span class="hl opt">) {</span>
+    <span class="hl kwb">int</span> i <span class="hl opt">=</span> begin<span class="hl opt">;</span>
+
+    <span class="hl kwa">for</span><span class="hl opt">(;</span> i <span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl opt">&lt;</span> end<span class="hl opt">;</span> i <span class="hl opt">+=</span> <span class="hl num">2</span><span class="hl opt">) {</span>
+        __m128d sum <span class="hl opt">=</span> <span class="hl kwd">_mm_set_pd</span><span class="hl opt">(</span>
+			src<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] /</span> <span class="hl kwb">double</span><span class="hl opt">(</span>Index<span class="hl opt">&lt;</span>modei<span class="hl opt">&gt;(</span>i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">)),</span>
+			src<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] /</span> <span class="hl kwb">double</span><span class="hl opt">(</span>Index<span class="hl opt">&lt;</span>modei<span class="hl opt">&gt;(</span>i <span class="hl opt">+</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">)));</span>
+    
+		__m128d ti <span class="hl opt">=</span> modei?
+			<span class="hl kwd">_mm_set_pd</span><span class="hl opt">(</span>i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">,</span> i <span class="hl opt">+</span> <span class="hl num">0</span><span class="hl opt">) :</span>
+			<span class="hl kwd">_mm_set_pd</span><span class="hl opt">(</span>i <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">,</span> i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">);</span>	
+		__m128d last <span class="hl opt">=</span> <span class="hl kwd">_mm_set_pd</span><span class="hl opt">(</span>
+			Index<span class="hl opt">&lt;</span>modei<span class="hl opt">&gt;(</span>i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">),</span>
+			Index<span class="hl opt">&lt;</span>modei<span class="hl opt">&gt;(</span>i <span class="hl opt">+</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">));</span>
+
+        <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwb">int</span> j <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span> j <span class="hl opt">&lt;</span> length<span class="hl opt">;</span> j<span class="hl opt">++) {</span>
+			__m128d idx <span class="hl opt">=</span> last <span class="hl opt">+</span> ti <span class="hl opt">+</span> <span class="hl kwd">_mm_set1_pd</span><span class="hl opt">(</span>j<span class="hl opt">);</span>
+			last <span class="hl opt">=</span> idx<span class="hl opt">;</span>
+            sum <span class="hl opt">=</span> sum <span class="hl opt">+</span> <span class="hl kwd">_mm_set1_pd</span><span class="hl opt">(</span>src<span class="hl opt">[</span>j<span class="hl opt">]) /</span> idx<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwd">_mm_storeu_pd</span><span class="hl opt">(</span>dst <span class="hl opt">+</span> i <span class="hl opt">+</span> <span class="hl num">0</span><span class="hl opt">,</span> sum<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwa">for</span><span class="hl opt">(;</span> i <span class="hl opt">&lt;</span> end<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+        <span class="hl kwb">double</span> sum <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> j <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> j <span class="hl opt">&lt;</span> length<span class="hl opt">;</span> j<span class="hl opt">++)</span>
+            sum <span class="hl opt">+=</span> src<span class="hl opt">[</span>j<span class="hl opt">] /</span> <span class="hl kwb">double</span><span class="hl opt">(</span>Index<span class="hl opt">&lt;</span>modei<span class="hl opt">&gt;(</span>i<span class="hl opt">,</span> j<span class="hl opt">));</span>
+        dst<span class="hl opt">[</span>i<span class="hl opt">] =</span> sum<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">EvalATimesU</span><span class="hl opt">(</span><span class="hl kwb">double</span> <span class="hl opt">*</span>src<span class="hl opt">,</span> <span class="hl kwb">double</span> <span class="hl opt">*</span>dst<span class="hl opt">,</span> <span class="hl kwb">int</span> begin<span class="hl opt">,</span> <span class="hl kwb">int</span> end<span class="hl opt">,</span> <span class="hl kwb">int</span> N<span class="hl opt">) {</span>
+    EvalPart<span class="hl opt">&lt;</span><span class="hl num">1</span><span class="hl opt">&gt;(</span>src<span class="hl opt">,</span> dst<span class="hl opt">,</span> begin<span class="hl opt">,</span> end<span class="hl opt">,</span> N<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">EvalAtTimesU</span><span class="hl opt">(</span><span class="hl kwb">double</span> <span class="hl opt">*</span>src<span class="hl opt">,</span> <span class="hl kwb">double</span> <span class="hl opt">*</span>dst<span class="hl opt">,</span> <span class="hl kwb">int</span> begin<span class="hl opt">,</span> <span class="hl kwb">int</span> end<span class="hl opt">,</span> <span class="hl kwb">int</span> N<span class="hl opt">) {</span>
+    EvalPart<span class="hl opt">&lt;</span><span class="hl num">0</span><span class="hl opt">&gt;(</span>src<span class="hl opt">,</span> dst<span class="hl opt">,</span> begin<span class="hl opt">,</span> end<span class="hl opt">,</span> N<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">EvalAtATimesU</span><span class="hl opt">(</span><span class="hl kwb">double</span> <span class="hl opt">*</span>src<span class="hl opt">,</span> <span class="hl kwb">double</span> <span class="hl opt">*</span>dst<span class="hl opt">,</span> <span class="hl kwb">double</span> <span class="hl opt">*</span>tmp<span class="hl opt">,</span>
+                   <span class="hl kwb">int</span> begin<span class="hl opt">,</span> <span class="hl kwb">int</span> end<span class="hl opt">,</span> <span class="hl kwb">int</span> N<span class="hl opt">) {</span>
+    <span class="hl kwd">EvalATimesU</span> <span class="hl opt">(</span>src<span class="hl opt">,</span> tmp<span class="hl opt">,</span> begin<span class="hl opt">,</span> end<span class="hl opt">,</span> N<span class="hl opt">);</span>
+    <span class="hl ppc">#pragma omp barrier</span>
+    <span class="hl kwd">EvalAtTimesU</span><span class="hl opt">(</span>tmp<span class="hl opt">,</span> dst<span class="hl opt">,</span> begin<span class="hl opt">,</span> end<span class="hl opt">,</span> N<span class="hl opt">);</span>
+    <span class="hl ppc">#pragma omp barrier</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">int</span> <span class="hl kwd">GetThreadCount</span><span class="hl opt">() {</span>
+    cpu_set_t cs<span class="hl opt">;</span>
+    <span class="hl kwd">CPU_ZERO</span><span class="hl opt">(&amp;</span>cs<span class="hl opt">);</span>
+    <span class="hl kwd">sched_getaffinity</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span>cs<span class="hl opt">), &amp;</span>cs<span class="hl opt">);</span>
+
+    <span class="hl kwb">int</span> count <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> CPU_SETSIZE<span class="hl opt">; ++</span>i<span class="hl opt">)</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwd">CPU_ISSET</span><span class="hl opt">(</span>i<span class="hl opt">, &amp;</span>cs<span class="hl opt">))</span>
+            <span class="hl opt">++</span>count<span class="hl opt">;</span>
+
+    <span class="hl kwa">return</span> count<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">double</span> <span class="hl kwd">spectral_game</span><span class="hl opt">(</span><span class="hl kwb">int</span> N<span class="hl opt">) {</span>
+    <span class="hl kwd">__attribute__</span><span class="hl opt">((</span><span class="hl kwd">aligned</span><span class="hl opt">(</span><span class="hl num">16</span><span class="hl opt">)))</span> <span class="hl kwb">double</span> u<span class="hl opt">[</span>N<span class="hl opt">];</span>
+    <span class="hl kwd">__attribute__</span><span class="hl opt">((</span><span class="hl kwd">aligned</span><span class="hl opt">(</span><span class="hl num">16</span><span class="hl opt">)))</span> <span class="hl kwb">double</span> v<span class="hl opt">[</span>N<span class="hl opt">],</span> tmp<span class="hl opt">[</span>N<span class="hl opt">];</span>
+
+    <span class="hl kwb">double</span> vBv <span class="hl opt">=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+    <span class="hl kwb">double</span> vv <span class="hl opt">=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+
+    <span class="hl ppc">#pragma omp parallel default(shared) num_threads(GetThreadCount())</span>
+    <span class="hl opt">{</span>
+        <span class="hl slc">// this block will be executed by NUM_THREADS</span>
+        <span class="hl slc">// variable declared in this block is private for each thread</span>
+        <span class="hl kwb">int</span> threadid <span class="hl opt">=</span> <span class="hl kwd">omp_get_thread_num</span><span class="hl opt">();</span>
+        <span class="hl kwb">int</span> threadcount <span class="hl opt">=</span> <span class="hl kwd">omp_get_num_threads</span><span class="hl opt">();</span>
+        <span class="hl kwb">int</span> chunk <span class="hl opt">=</span> N <span class="hl opt">/</span> threadcount<span class="hl opt">;</span>
+
+        <span class="hl slc">// calculate each thread's working range [r1 .. r2) =&gt; static schedule</span>
+        <span class="hl kwb">int</span> begin <span class="hl opt">=</span> threadid <span class="hl opt">*</span> chunk<span class="hl opt">;</span>
+        <span class="hl kwb">int</span> end <span class="hl opt">= (</span>threadid <span class="hl opt">&lt; (</span>threadcount <span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">))</span> ? <span class="hl opt">(</span>begin <span class="hl opt">+</span> chunk<span class="hl opt">) :</span> N<span class="hl opt">;</span>
+
+        <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> begin<span class="hl opt">;</span> i <span class="hl opt">&lt;</span> end<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+            u<span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl num">1.0</span><span class="hl opt">;</span>
+        <span class="hl ppc">#pragma omp barrier</span>
+
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> ite <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> ite <span class="hl opt">&lt;</span> <span class="hl num">10</span><span class="hl opt">; ++</span>ite<span class="hl opt">) {</span>
+            <span class="hl kwd">EvalAtATimesU</span><span class="hl opt">(</span>u<span class="hl opt">,</span> v<span class="hl opt">,</span> tmp<span class="hl opt">,</span> begin<span class="hl opt">,</span> end<span class="hl opt">,</span> N<span class="hl opt">);</span>
+            <span class="hl kwd">EvalAtATimesU</span><span class="hl opt">(</span>v<span class="hl opt">,</span> u<span class="hl opt">,</span> tmp<span class="hl opt">,</span> begin<span class="hl opt">,</span> end<span class="hl opt">,</span> N<span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+    
+        <span class="hl kwb">double</span> sumvb <span class="hl opt">=</span> <span class="hl num">0.0</span><span class="hl opt">,</span> sumvv <span class="hl opt">=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> begin<span class="hl opt">;</span> i <span class="hl opt">&lt;</span> end<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+            sumvv <span class="hl opt">+=</span> v<span class="hl opt">[</span>i<span class="hl opt">] *</span> v<span class="hl opt">[</span>i<span class="hl opt">];</span>
+            sumvb <span class="hl opt">+=</span> u<span class="hl opt">[</span>i<span class="hl opt">] *</span> v<span class="hl opt">[</span>i<span class="hl opt">];</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl ppc">#pragma omp critical</span>
+        <span class="hl opt">{</span>
+            vBv <span class="hl opt">+=</span> sumvb<span class="hl opt">;</span>
+            vv <span class="hl opt">+=</span> sumvv<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">return</span> <span class="hl kwd">sqrt</span><span class="hl opt">(</span>vBv <span class="hl opt">/</span> vv<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">int</span> <span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">int</span> argc<span class="hl opt">,</span> <span class="hl kwb">char</span> <span class="hl opt">*</span>argv<span class="hl opt">[]) {</span>
+    <span class="hl kwb">int</span> N <span class="hl opt">= ((</span>argc <span class="hl opt">&gt;=</span> <span class="hl num">2</span><span class="hl opt">)</span> ? <span class="hl kwd">atoi</span><span class="hl opt">(</span>argv<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]) :</span> <span class="hl num">2000</span><span class="hl opt">);</span>
+    <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%.9f</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> <span class="hl kwd">spectral_game</span><span class="hl opt">(</span>N<span class="hl opt">));</span>
+    <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+

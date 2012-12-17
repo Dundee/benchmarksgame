@@ -1,0 +1,111 @@
+<span class="hl com">(*</span>
+<span class="hl com"> * The Computer Language Shootout</span>
+<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * contributed by Christophe TROESTLER</span>
+<span class="hl com"> * modified by Matías Giovannini</span>
+<span class="hl com"> * modified by Ethan Burns</span>
+<span class="hl com"> *)</span>
+
+<span class="hl kwa">open</span> <span class="hl kwd">Big_int</span>
+
+<span class="hl kwa">type</span> lft <span class="hl opt">=</span> big_int <span class="hl opt">*</span> big_int <span class="hl opt">*</span> big_int <span class="hl opt">*</span> big_int
+<span class="hl kwa">type</span> lft_ints <span class="hl opt">=</span> <span class="hl kwb">int</span> <span class="hl opt">*</span> <span class="hl kwb">int</span> <span class="hl opt">*</span> <span class="hl kwb">int</span> <span class="hl opt">*</span> <span class="hl kwb">int</span>
+
+<span class="hl kwa">let</span> <span class="hl kwb">unit</span><span class="hl opt">:</span>lft <span class="hl opt">= (</span>unit_big_int<span class="hl opt">,</span> zero_big_int<span class="hl opt">,</span> zero_big_int<span class="hl opt">,</span> unit_big_int<span class="hl opt">)</span>
+
+<span class="hl com">(* Attempt to avoid the (apparently slow) Big_int module in some</span>
+<span class="hl com">   simple cases... seems to improve performance 30%. *)</span>
+
+<span class="hl kwa">let</span> <span class="hl opt">( */ )</span> a b <span class="hl opt">=</span>
+  <span class="hl kwa">if</span> b <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl kwa">then</span>
+    zero_big_int
+  <span class="hl kwa">else if</span> b <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl kwa">then</span>
+    a
+  <span class="hl kwa">else if</span> b <span class="hl opt">=</span> <span class="hl num">2</span> <span class="hl kwa">then</span>
+    add_big_int a a
+  <span class="hl kwa">else</span>
+    mult_int_big_int b a
+
+<span class="hl kwa">let</span> <span class="hl opt">( +/ )</span> a b <span class="hl opt">=</span>
+  <span class="hl kwa">if</span> eq_big_int a zero_big_int <span class="hl kwa">then</span>
+    b
+  <span class="hl kwa">else if</span> eq_big_int b zero_big_int <span class="hl kwa">then</span>
+    a
+  <span class="hl kwa">else</span>
+    add_big_int a b
+
+<span class="hl kwa">let</span> <span class="hl opt">( // )</span> a b <span class="hl opt">=</span>
+  <span class="hl kwa">if</span> lt_big_int a b <span class="hl kwa">then</span>
+    zero_big_int
+  <span class="hl kwa">else if</span> eq_big_int a b <span class="hl kwa">then</span>
+    unit_big_int
+  <span class="hl kwa">else</span>
+    div_big_int a b
+
+<span class="hl kwa">let</span> extr <span class="hl opt">(</span>q<span class="hl opt">,</span> r<span class="hl opt">,</span> s<span class="hl opt">,</span> t<span class="hl opt">)</span> x <span class="hl opt">=</span>
+  int_of_big_int <span class="hl opt">((</span>q <span class="hl opt">*/</span> x <span class="hl opt">+/</span> r<span class="hl opt">) // (</span>s <span class="hl opt">*/</span> x <span class="hl opt">+/</span> t<span class="hl opt">))</span>
+
+<span class="hl kwa">let</span> comp <span class="hl opt">((</span>q<span class="hl opt">,</span> r<span class="hl opt">,</span> s<span class="hl opt">,</span> t<span class="hl opt">) :</span> lft<span class="hl opt">) ((</span>u<span class="hl opt">,</span> v<span class="hl opt">,</span> w<span class="hl opt">,</span> x<span class="hl opt">) :</span> lft_ints<span class="hl opt">) :</span> lft <span class="hl opt">=</span>
+  q <span class="hl opt">*/</span> u <span class="hl opt">+/</span> r <span class="hl opt">*/</span> w<span class="hl opt">,</span>
+  q <span class="hl opt">*/</span> v <span class="hl opt">+/</span> r <span class="hl opt">*/</span> x<span class="hl opt">,</span>
+  s <span class="hl opt">*/</span> u <span class="hl opt">+/</span> t <span class="hl opt">*/</span> w<span class="hl opt">,</span>
+  s <span class="hl opt">*/</span> v <span class="hl opt">+/</span> t <span class="hl opt">*/</span> x
+
+<span class="hl kwa">let</span> comp<span class="hl str">' ((q, r, s, t) : lft_ints) ((u, v, w, x) : lft) : lft =</span>
+<span class="hl str">  u */ q +/ w */ r,</span>
+<span class="hl str">  v */ q +/ x */ r,</span>
+<span class="hl str">  u */ s +/ w */ t,</span>
+<span class="hl str">  v */ s +/ x */ t</span>
+<span class="hl str"></span>
+<span class="hl str">let stream next safe prod cons ith_x z_0 i_0 num =</span>
+<span class="hl str">  let buf = Buffer.create (num * 2) in</span>
+<span class="hl str">  let col = ref 0 in</span>
+<span class="hl str">  let z_int = int_of_char '</span><span class="hl num">0</span><span class="hl str">' in</span>
+<span class="hl str">  let end_row left =</span>
+<span class="hl str">    col := 0;</span>
+<span class="hl str">    Buffer.add_string buf &quot;</span><span class="hl esc">\t</span><span class="hl str">:&quot;;</span>
+<span class="hl str">    Buffer.add_string buf (string_of_int (num - left));</span>
+<span class="hl str">    Buffer.add_char buf '</span><span class="hl esc">\n</span><span class="hl str">'; in</span>
+<span class="hl str">  let next_digit left d =</span>
+<span class="hl str">    Buffer.add_char buf (char_of_int (d + z_int));</span>
+<span class="hl str">    incr col;</span>
+<span class="hl str">    if (!col = 10) then end_row left in</span>
+<span class="hl str">  let rec do_stream z i left =</span>
+<span class="hl str">    if left &gt; 0 then</span>
+<span class="hl str">      let y = next z in</span>
+<span class="hl str">	if safe z y then begin</span>
+<span class="hl str">	  let left'</span> <span class="hl opt">=</span> left <span class="hl opt">-</span> <span class="hl num">1</span> <span class="hl kwa">in</span>
+	    next_digit left<span class="hl str">' y;</span>
+<span class="hl str">	    do_stream (prod z y) i left'</span>
+	<span class="hl kwa">end else begin</span>
+	  do_stream <span class="hl opt">(</span>cons z <span class="hl opt">(</span>ith_x i<span class="hl opt">)) (</span>i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)</span> left
+	<span class="hl kwa">end</span>
+  <span class="hl kwa">in</span>
+    do_stream z_0 i_0 num<span class="hl opt">;</span>
+    <span class="hl kwa">if</span> <span class="hl opt">!</span>col <span class="hl opt">&lt;&gt;</span> <span class="hl num">0</span> <span class="hl kwa">then begin</span>
+      <span class="hl kwc">Buffer</span><span class="hl opt">.</span>add_string buf <span class="hl opt">(</span><span class="hl kwc">String</span><span class="hl opt">.</span>make <span class="hl opt">(</span><span class="hl num">10</span> <span class="hl opt">- !</span>col<span class="hl opt">)</span> <span class="hl str">' '</span><span class="hl opt">);</span>
+      end_row <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">end</span><span class="hl opt">;</span>
+    print_string <span class="hl opt">(</span><span class="hl kwc">Buffer</span><span class="hl opt">.</span>contents buf<span class="hl opt">);</span>
+    print_newline
+
+<span class="hl kwa">let</span> pi num <span class="hl opt">=</span>
+  <span class="hl kwa">let</span> init <span class="hl opt">=</span> <span class="hl kwb">unit</span> <span class="hl kwa">in</span>
+  <span class="hl kwa">let</span> lfts k <span class="hl opt">=</span> <span class="hl kwa">let</span> x <span class="hl opt">=</span> <span class="hl num">2</span> <span class="hl opt">*</span> k <span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl kwa">in</span> k<span class="hl opt">,</span> <span class="hl num">2</span> <span class="hl opt">*</span> x<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> x <span class="hl kwa">in</span>
+  <span class="hl kwa">let</span> next z <span class="hl opt">=</span> extr z <span class="hl num">3</span> <span class="hl kwa">in</span>
+  <span class="hl kwa">let</span> safe z n <span class="hl opt">=</span> n <span class="hl opt">= (</span>extr z <span class="hl num">4</span><span class="hl opt">)</span> <span class="hl kwa">in</span>
+  <span class="hl kwa">let</span> prod z n <span class="hl opt">=</span> comp<span class="hl str">' (10, ~-10 * n, 0, 1) z in</span>
+<span class="hl str">  let cons z z'</span> <span class="hl opt">=</span> comp z z<span class="hl str">' in</span>
+<span class="hl str">    stream next safe prod cons lfts init 1 num</span>
+<span class="hl str"></span>
+<span class="hl str">let main () =</span>
+<span class="hl str">  let num =</span>
+<span class="hl str">    if Array.length Sys.argv &lt; 2 then</span>
+<span class="hl str">      27</span>
+<span class="hl str">    else</span>
+<span class="hl str">      try int_of_string Sys.argv.(1) with _ -&gt; 27</span>
+<span class="hl str">  in</span>
+<span class="hl str">    pi num</span>
+<span class="hl str"></span>
+<span class="hl str">let _ = main ()</span>

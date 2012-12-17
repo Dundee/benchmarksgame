@@ -1,0 +1,330 @@
+<span class="hl slc">--</span>
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://shootout.alioth.debian.org/</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- contributed by Stephen Blackheath (with some bits taken from Don Stewart's</span>
+<span class="hl slc">--     version), v1.2</span>
+
+<span class="hl kwd">import</span> Text<span class="hl opt">.</span>Printf
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span>ByteString<span class="hl opt">.</span>Internal
+<span class="hl kwd">import qualified</span> Data<span class="hl opt">.</span>ByteString<span class="hl opt">.</span>Char8 <span class="hl kwd">as</span> S
+<span class="hl kwd">import</span> Control<span class="hl opt">.</span>Applicative
+<span class="hl kwd">import</span> Control<span class="hl opt">.</span>Monad
+<span class="hl kwd">import</span> Control<span class="hl opt">.</span>Concurrent
+<span class="hl kwd">import</span> Foreign<span class="hl opt">.</span>Storable
+<span class="hl kwd">import</span> Foreign<span class="hl opt">.</span>Marshal<span class="hl opt">.</span>Alloc
+<span class="hl kwd">import</span> Foreign<span class="hl opt">.</span>Marshal<span class="hl opt">.</span><span class="hl kwb">Array</span>
+<span class="hl kwd">import</span> Foreign<span class="hl opt">.</span>Ptr
+<span class="hl kwd">import</span> Foreign<span class="hl opt">.</span>ForeignPtr
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span>Word
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span>Bits
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span><span class="hl kwb">Char</span>
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span>List
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span><span class="hl kwb">Maybe</span>
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span>IORef
+<span class="hl kwd">import</span> GHC<span class="hl opt">.</span>Exts
+
+
+main <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    genome <span class="hl opt">&lt;-</span> extract <span class="hl opt">(</span>S<span class="hl opt">.</span>pack <span class="hl str">&quot;&gt;TH&quot;</span><span class="hl opt">)</span>
+    <span class="hl kwd">let</span> actions <span class="hl opt">= [</span>
+                <span class="hl kwd">do</span>
+                    a <span class="hl opt">&lt;-</span> printFreqsBySize genome <span class="hl num">1</span>
+                    b <span class="hl opt">&lt;-</span> printFreqsBySize genome <span class="hl num">2</span>
+                    <span class="hl kwc">return</span> <span class="hl opt">$</span> a <span class="hl opt">++</span> b
+            <span class="hl opt">] ++</span> <span class="hl kwc">map</span> <span class="hl opt">(</span>printFreqsSpecific genome<span class="hl opt">)</span> specificSeqs
+    output <span class="hl opt">&lt;-</span> <span class="hl kwc">concat</span> <span class="hl opt">&lt;$&gt;</span> parallel actions
+    forM_ output <span class="hl kwc">putStrLn</span>
+
+<span class="hl slc">-- Drop in replacement for sequence</span>
+parallel <span class="hl opt">:: [</span><span class="hl kwb">IO</span> a<span class="hl opt">] -&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">[</span>a<span class="hl opt">]</span>
+parallel actions <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    vars <span class="hl opt">&lt;-</span> forM actions <span class="hl opt">$</span> <span class="hl esc">\a</span>ction <span class="hl opt">-&gt;</span> <span class="hl kwd">do</span>
+        var <span class="hl opt">&lt;-</span> newEmptyMVar
+        forkIO <span class="hl opt">$</span> <span class="hl kwd">do</span>
+            answer <span class="hl opt">&lt;-</span> action
+            putMVar var answer
+        <span class="hl kwc">return</span> var
+    forM vars takeMVar
+
+specificSeqs <span class="hl opt">=</span> <span class="hl kwc">map</span> S<span class="hl opt">.</span>pack <span class="hl opt">[</span>
+    <span class="hl str">&quot;GGT&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;GGTA&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;GGTATT&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;GGTATTTTAATT&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;GGTATTTTAATTTATAGT&quot;</span><span class="hl opt">]</span>
+
+extract p <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    s <span class="hl opt">&lt;-</span> S<span class="hl opt">.</span><span class="hl kwc">getContents</span>
+    <span class="hl kwd">let</span> <span class="hl opt">(</span>_<span class="hl opt">,</span> <span class="hl kwc">rem</span><span class="hl opt">)  =</span> S<span class="hl opt">.</span>breakSubstring p s
+    <span class="hl kwc">return</span> <span class="hl opt">$!</span> S<span class="hl opt">.</span><span class="hl kwc">map toUpper</span>             <span class="hl slc">-- array fusion!</span>
+            <span class="hl opt">.</span> S<span class="hl opt">.</span><span class="hl kwc">filter</span>    <span class="hl opt">((/=) '</span><span class="hl esc">\n</span><span class="hl opt">')</span>
+            <span class="hl opt">.</span> S<span class="hl opt">.</span><span class="hl kwc">dropWhile</span> <span class="hl opt">((/=) '</span><span class="hl esc">\n</span><span class="hl opt">') $</span> <span class="hl kwc">rem</span>
+
+printFreqsBySize <span class="hl opt">::</span> S<span class="hl opt">.</span>ByteString <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">[</span><span class="hl kwb">String</span><span class="hl opt">]</span>
+printFreqsBySize genome keySize <span class="hl opt">=</span> <span class="hl kwd">do</span>
+        ht0 <span class="hl opt">&lt;-</span> htNew keySize
+        ht <span class="hl opt">&lt;-</span> hashGenome genome keySize ht0
+        l <span class="hl opt">&lt;-</span> htToList ht
+        htFree ht
+        <span class="hl kwc">return</span> <span class="hl opt">$</span> <span class="hl kwc">map</span> draw <span class="hl opt">(</span><span class="hl kwc">sortBy</span> sortRule l<span class="hl opt">) ++ [</span><span class="hl str">&quot;&quot;</span><span class="hl opt">]</span>
+    <span class="hl kwd">where</span>
+        genomeLen <span class="hl opt">=</span> S<span class="hl opt">.</span><span class="hl kwa">length</span> genome
+        draw <span class="hl opt">:: (</span>S<span class="hl opt">.</span>ByteString<span class="hl opt">,</span> <span class="hl kwb">Int</span><span class="hl opt">) -&gt;</span> <span class="hl kwb">String</span>
+        draw <span class="hl opt">(</span>key<span class="hl opt">,</span> count<span class="hl opt">) =</span> printf <span class="hl str">&quot;%s %.3f&quot;</span> <span class="hl opt">(</span>S<span class="hl opt">.</span>unpack key<span class="hl opt">)</span> pct
+            <span class="hl kwd">where</span> pct   <span class="hl opt">= (</span><span class="hl num">100</span> <span class="hl opt">* (</span><span class="hl kwc">fromIntegral</span> count<span class="hl opt">) /</span> total<span class="hl opt">) ::</span> <span class="hl kwb">Double</span>
+                  total <span class="hl opt">=</span> <span class="hl kwc">fromIntegral</span> <span class="hl opt">(</span>genomeLen <span class="hl opt">-</span> keySize <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)</span>
+
+printFreqsSpecific <span class="hl opt">::</span> S<span class="hl opt">.</span>ByteString <span class="hl opt">-&gt;</span> S<span class="hl opt">.</span>ByteString <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">[</span><span class="hl kwb">String</span><span class="hl opt">]</span>
+printFreqsSpecific genome <span class="hl kwc">seq</span> <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    <span class="hl kwd">let</span> keySize <span class="hl opt">=</span> S<span class="hl opt">.</span><span class="hl kwa">length</span> <span class="hl kwc">seq</span>
+        genomeLen <span class="hl opt">=</span> S<span class="hl opt">.</span><span class="hl kwa">length</span> genome
+    ht0 <span class="hl opt">&lt;-</span> htNew keySize
+    ht <span class="hl opt">&lt;-</span> hashGenome genome keySize ht0
+    <span class="hl kwd">let</span> <span class="hl opt">(</span>fp<span class="hl opt">,</span> offset<span class="hl opt">,</span> len<span class="hl opt">) =</span> toForeignPtr <span class="hl kwc">seq</span>
+    count <span class="hl opt">&lt;-</span> withForeignPtr fp <span class="hl opt">$ \</span>p_ <span class="hl opt">-&gt;</span> <span class="hl kwd">do</span>
+        htGet ht <span class="hl opt">(</span>p_ `plusPtr` offset<span class="hl opt">)</span>
+    htFree ht
+    <span class="hl kwc">return</span> <span class="hl opt">[</span><span class="hl kwc">show</span> count <span class="hl opt">++ ('</span><span class="hl esc">\t</span><span class="hl opt">' :</span> S<span class="hl opt">.</span>unpack <span class="hl kwc">seq</span><span class="hl opt">)]</span>
+
+hashGenome <span class="hl opt">::</span> S<span class="hl opt">.</span>ByteString
+           <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span>
+           <span class="hl opt">-&gt;</span> Hashtable
+           <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> Hashtable
+<span class="hl com">{-# INLINE hashGenome #-}</span>
+hashGenome genome keySize ht <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    <span class="hl kwd">let</span> <span class="hl opt">(</span>fp<span class="hl opt">,</span> offset<span class="hl opt">,</span> len<span class="hl opt">) =</span> toForeignPtr genome
+    withForeignPtr fp <span class="hl opt">$ \</span>p_ <span class="hl opt">-&gt;</span> <span class="hl kwd">do</span>
+        <span class="hl kwd">let</span> p <span class="hl opt">=</span> p_ `plusPtr` offset
+            loop ht idx <span class="hl opt">=</span> <span class="hl kwd">do</span>
+                <span class="hl kwd">let</span> key <span class="hl opt">=</span> p `plusPtr` idx
+                htInc ht key
+            endIdx <span class="hl opt">=</span> len <span class="hl opt">-</span> keySize <span class="hl opt">+</span> <span class="hl num">1</span>
+            foldMe i ht | i <span class="hl opt">==</span> endIdx <span class="hl opt">=</span> <span class="hl kwc">return</span> ht
+            foldMe i ht <span class="hl opt">=</span> loop ht i <span class="hl opt">&gt;&gt;=</span> foldMe <span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+        foldMe <span class="hl num">0</span> ht
+
+sortRule <span class="hl opt">:: (</span>S<span class="hl opt">.</span>ByteString<span class="hl opt">,</span> <span class="hl kwb">Int</span><span class="hl opt">) -&gt; (</span>S<span class="hl opt">.</span>ByteString<span class="hl opt">,</span> <span class="hl kwb">Int</span><span class="hl opt">) -&gt;</span> <span class="hl kwb">Ordering</span>
+sortRule <span class="hl opt">(</span>a1<span class="hl opt">,</span> b1<span class="hl opt">) (</span>a2<span class="hl opt">,</span> b2<span class="hl opt">) =</span>
+    <span class="hl kwd">case</span> <span class="hl kwc">compare</span> b2 b1 <span class="hl kwd">of</span>
+        EQ <span class="hl opt">-&gt;</span> <span class="hl kwc">compare</span> a1 a2
+        x  <span class="hl opt">-&gt;</span> x
+                  
+<span class="hl slc">------ Hash table implementation ----------------------------------------------</span>
+
+<span class="hl slc">-- Note: Hash tables are not generally used in functional languages, so there</span>
+<span class="hl slc">-- are no available library implementations for Haskell.  This benchmark</span>
+<span class="hl slc">-- requires a hash table.  This is why I have implemented the hash table here.</span>
+
+htNew <span class="hl opt">::</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> Hashtable
+htNew <span class="hl opt">=</span> htNew<span class="hl opt">' (</span><span class="hl kwc">head</span> primes<span class="hl opt">)</span>
+
+htNew<span class="hl opt">' ::</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> Hashtable
+htNew<span class="hl opt">'</span> slots ksz <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    <span class="hl kwd">let</span> ssz <span class="hl opt">=</span> spineSize ksz slots
+    sp <span class="hl opt">&lt;-</span> mallocBytes ssz
+    memset sp <span class="hl num">0</span> <span class="hl opt">(</span><span class="hl kwc">fromIntegral</span> ssz<span class="hl opt">)</span>
+    <span class="hl kwc">return</span> <span class="hl opt">$</span> Hashtable <span class="hl opt">{</span>
+            keySize   <span class="hl opt">=</span> ksz<span class="hl opt">,</span>
+            noOfSlots <span class="hl opt">=</span> slots<span class="hl opt">,</span>
+            spine     <span class="hl opt">=</span> sp
+        <span class="hl opt">}</span>
+
+primes <span class="hl opt">= [</span> <span class="hl num">1543</span><span class="hl opt">,</span>     <span class="hl num">3079</span><span class="hl opt">,</span>      <span class="hl num">6151</span><span class="hl opt">,</span>      <span class="hl num">12289</span><span class="hl opt">,</span>     <span class="hl num">24593</span><span class="hl opt">,</span>
+           <span class="hl num">49157</span><span class="hl opt">,</span>    <span class="hl num">98317</span><span class="hl opt">,</span>     <span class="hl num">196613</span><span class="hl opt">,</span>    <span class="hl num">93241</span><span class="hl opt">,</span>     <span class="hl num">786433</span><span class="hl opt">,</span>
+           <span class="hl num">1572869</span><span class="hl opt">,</span>  <span class="hl num">3145739</span><span class="hl opt">,</span>   <span class="hl num">6291469</span><span class="hl opt">,</span>   <span class="hl num">12582917</span><span class="hl opt">,</span>  <span class="hl num">25165843</span><span class="hl opt">,</span>
+           <span class="hl num">50331653</span><span class="hl opt">,</span> <span class="hl num">100663319</span><span class="hl opt">,</span> <span class="hl num">201326611</span><span class="hl opt">,</span> <span class="hl num">402653189</span><span class="hl opt">,</span> <span class="hl num">805306457</span> <span class="hl opt">]</span>
+
+htFree <span class="hl opt">::</span> Hashtable <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">()</span>
+htFree ht <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    htTraverse ht <span class="hl opt">$ \</span>isSpine <span class="hl opt">(</span>Entry ePtr<span class="hl opt">) -&gt;</span> <span class="hl kwc">when</span> <span class="hl opt">(</span><span class="hl kwc">not</span> isSpine<span class="hl opt">) $</span> free ePtr
+    free <span class="hl opt">(</span>spine ht<span class="hl opt">)</span>
+
+htGet <span class="hl opt">::</span> Hashtable <span class="hl opt">-&gt;</span> Ptr Word8 <span class="hl opt">-&gt;</span> <span class="hl kwb">IO Int</span>
+htGet ht key <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    hash <span class="hl opt">&lt;-</span> calcHash ht key
+    htPayload ht hash key <span class="hl opt">&gt;&gt;=</span> peek
+
+htInc <span class="hl opt">::</span> Hashtable <span class="hl opt">-&gt;</span> Ptr Word8 <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> Hashtable
+<span class="hl com">{-# INLINE htInc #-}</span>
+htInc <span class="hl opt">!</span>ht <span class="hl opt">!</span>key <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    hash <span class="hl opt">&lt;-</span> calcHash ht key
+    pPayload <span class="hl opt">&lt;-</span> htPayload ht hash key
+    <span class="hl kwa">value</span> <span class="hl opt">&lt;-</span> peek pPayload
+    poke pPayload <span class="hl opt">(</span><span class="hl kwa">value</span><span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+    <span class="hl kwd">if</span> <span class="hl kwa">value</span> <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl opt">&amp;&amp; (</span>hash <span class="hl opt">.&amp;.</span> <span class="hl num">0x7f</span><span class="hl opt">) ==</span> <span class="hl num">0</span>
+        <span class="hl kwd">then</span> checkGrow ht
+        <span class="hl kwd">else</span> <span class="hl kwc">return</span> ht
+
+htPut_ <span class="hl opt">::</span> Hashtable <span class="hl opt">-&gt;</span> Ptr Word8 <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">()</span>
+<span class="hl com">{-# INLINE htPut_ #-}</span>
+htPut_ <span class="hl opt">!</span>ht <span class="hl opt">!</span>key <span class="hl opt">!</span><span class="hl kwa">value</span> <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    hash <span class="hl opt">&lt;-</span> calcHash ht key
+    pPayload <span class="hl opt">&lt;-</span> htPayload ht hash key
+    poke pPayload <span class="hl kwa">value</span>
+
+checkGrow <span class="hl opt">::</span> Hashtable <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> Hashtable
+checkGrow ht <span class="hl opt">=</span> <span class="hl kwd">do</span>
+        <span class="hl kwd">let</span> pTotal <span class="hl opt">=</span> totalEntriesOf ht
+            slots <span class="hl opt">=</span> noOfSlots ht
+        total <span class="hl opt">&lt;- (</span><span class="hl num">0x200</span><span class="hl opt">+) &lt;$&gt;</span> peek pTotal
+        poke pTotal total
+        <span class="hl kwd">if</span> total <span class="hl opt">&gt;=</span> slots
+            <span class="hl kwd">then do</span>
+                <span class="hl kwd">let</span> newSlots <span class="hl opt">=</span> <span class="hl kwc">head</span> <span class="hl opt">$</span> <span class="hl kwc">dropWhile</span> <span class="hl opt">(&lt;=</span> slots<span class="hl opt">*</span><span class="hl num">2</span><span class="hl opt">)</span> primes
+                ht<span class="hl opt">' &lt;-</span> htNew<span class="hl opt">'</span> newSlots <span class="hl opt">(</span>keySize ht<span class="hl opt">)</span>
+                htTraverse ht <span class="hl opt">$ \</span>_ <span class="hl opt">-&gt;</span> reinsert ht<span class="hl opt">'</span> <span class="hl slc">-- re-insert all the elts</span>
+                htFree ht
+                poke <span class="hl opt">(</span>totalEntriesOf ht<span class="hl opt">')</span> total <span class="hl slc">-- copy the total entry count</span>
+                <span class="hl kwc">return</span> ht<span class="hl opt">'</span>
+            <span class="hl kwd">else</span> <span class="hl kwc">return</span> ht
+    <span class="hl kwd">where</span>
+        reinsert <span class="hl opt">::</span> Hashtable <span class="hl opt">-&gt;</span> Entry <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">()</span>
+        reinsert ht entry <span class="hl opt">=</span> <span class="hl kwd">do</span>
+            <span class="hl kwa">value</span> <span class="hl opt">&lt;-</span> peek <span class="hl opt">(</span>payloadOf entry<span class="hl opt">)</span>
+            htPut_ ht <span class="hl opt">(</span>keyOf entry<span class="hl opt">)</span> <span class="hl kwa">value</span>
+
+htToList <span class="hl opt">::</span> Hashtable <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">[(</span>S<span class="hl opt">.</span>ByteString<span class="hl opt">,</span> <span class="hl kwb">Int</span><span class="hl opt">)]</span>
+htToList ht <span class="hl opt">=</span>
+    htMap <span class="hl opt">(\</span>entry <span class="hl opt">-&gt;</span> <span class="hl kwd">do</span>
+        keyStr <span class="hl opt">&lt;-</span> keyString ht <span class="hl opt">(</span>keyOf entry<span class="hl opt">)</span>
+        payload <span class="hl opt">&lt;-</span> peek <span class="hl opt">(</span>payloadOf entry<span class="hl opt">)</span>
+        <span class="hl kwc">return</span> <span class="hl opt">(</span>keyStr<span class="hl opt">,</span> payload<span class="hl opt">))</span> ht
+
+htMap <span class="hl opt">:: (</span>Entry <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> a<span class="hl opt">) -&gt;</span> Hashtable <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">[</span>a<span class="hl opt">]</span>
+htMap f ht <span class="hl opt">=</span> <span class="hl kwc">mapM</span> f <span class="hl opt">=&lt;&lt;</span> htEntries ht
+
+keyString <span class="hl opt">::</span> Hashtable <span class="hl opt">-&gt;</span> Ptr Word8 <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> S<span class="hl opt">.</span>ByteString
+keyString ht key <span class="hl opt">=</span> S<span class="hl opt">.</span>pack <span class="hl opt">.</span> <span class="hl kwc">map</span> w2c <span class="hl opt">&lt;$&gt;</span> peekArray <span class="hl opt">(</span>keySize ht<span class="hl opt">)</span> key
+
+isEmptySlot <span class="hl opt">::</span> Entry <span class="hl opt">-&gt;</span> <span class="hl kwb">IO Bool</span>
+<span class="hl com">{-# INLINE isEmptySlot #-}</span>
+isEmptySlot entry <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    ch <span class="hl opt">&lt;-</span> peek <span class="hl opt">$</span> keyOf entry
+    <span class="hl kwc">return</span> <span class="hl opt">$</span> ch <span class="hl opt">==</span> <span class="hl num">0</span>
+
+htEntries <span class="hl opt">::</span> Hashtable <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">[</span>Entry<span class="hl opt">]</span>
+htEntries ht <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    es <span class="hl opt">&lt;-</span> newIORef <span class="hl opt">[]</span>
+    htTraverse ht <span class="hl opt">$ \</span>_ entry <span class="hl opt">-&gt;</span> modifyIORef es <span class="hl opt">$ \</span>l <span class="hl opt">-&gt;</span> entry<span class="hl opt">:</span>l
+    readIORef es
+
+htTraverse <span class="hl opt">::</span> Hashtable <span class="hl opt">-&gt; (</span><span class="hl kwb">Bool</span> <span class="hl opt">-&gt;</span> Entry <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">()) -&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">()</span>
+htTraverse ht f <span class="hl opt">=</span> he <span class="hl num">0</span>
+    <span class="hl kwd">where</span>
+        slots <span class="hl opt">=</span> noOfSlots ht
+        he i | i <span class="hl opt">==</span> slots <span class="hl opt">=</span> <span class="hl kwc">return</span> <span class="hl opt">()</span>
+        he i <span class="hl opt">=</span> <span class="hl kwd">do</span>
+            <span class="hl kwd">let</span> entry <span class="hl opt">=</span> indexEntry ht i
+            <span class="hl kwa">empty</span> <span class="hl opt">&lt;-</span> isEmptySlot entry
+            <span class="hl kwd">if</span> <span class="hl kwa">empty</span>
+                <span class="hl kwd">then</span> he <span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+                <span class="hl kwd">else</span> links <span class="hl kwa">True</span> i entry
+        links isSpine i entry <span class="hl opt">=</span> <span class="hl kwd">do</span>
+            <span class="hl kwc">next</span> <span class="hl opt">&lt;-</span> peek <span class="hl opt">$</span> nextPtrOf entry
+            f isSpine entry
+            <span class="hl kwd">if</span> <span class="hl kwc">next</span> <span class="hl opt">==</span> nullPtr
+                <span class="hl kwd">then</span> he <span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+                <span class="hl kwd">else</span> links <span class="hl kwa">False</span> i <span class="hl opt">(</span>Entry <span class="hl kwc">next</span><span class="hl opt">)</span>
+
+<span class="hl kwd">data</span> Hashtable <span class="hl opt">=</span> Hashtable <span class="hl opt">{</span>
+        keySize   <span class="hl opt">::</span> <span class="hl kwb">Int</span><span class="hl opt">,</span>
+        noOfSlots <span class="hl opt">::</span> <span class="hl kwb">Int</span><span class="hl opt">,</span>
+        spine     <span class="hl opt">::</span> Ptr Word8
+    <span class="hl opt">}</span>
+
+wordSize <span class="hl opt">::</span> <span class="hl kwb">Int</span>
+wordSize <span class="hl opt">=</span> <span class="hl kwc">max</span> <span class="hl opt">(</span>sizeOf <span class="hl opt">(</span>nullPtr <span class="hl opt">::</span> Ptr Word8<span class="hl opt">)) (</span>sizeOf <span class="hl opt">(</span><span class="hl num">0</span> <span class="hl opt">::</span> <span class="hl kwb">Int</span><span class="hl opt">))</span>
+
+<span class="hl slc">-- Round up to word size</span>
+roundUp <span class="hl opt">::</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span>
+<span class="hl com">{-# INLINE roundUp #-}</span>
+roundUp <span class="hl opt">!</span>i <span class="hl opt">= (</span>i <span class="hl opt">+</span> wordSize <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">) .&amp;.</span> complement <span class="hl opt">(</span>wordSize <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">)</span>
+
+slotSize <span class="hl opt">::</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span>
+<span class="hl com">{-# INLINE slotSize #-}</span>
+slotSize <span class="hl opt">!</span>ksz <span class="hl opt">=</span> roundUp ksz <span class="hl opt">+</span> wordSize <span class="hl opt">*</span> <span class="hl num">2</span>
+
+spineSize <span class="hl opt">::</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span>
+spineSize ksz slots <span class="hl opt">=</span> slots <span class="hl opt">*</span> slotSize ksz <span class="hl opt">+</span> wordSize
+
+calcHash <span class="hl opt">::</span> Hashtable <span class="hl opt">-&gt;</span> Ptr Word8 <span class="hl opt">-&gt;</span> <span class="hl kwb">IO Int</span>
+<span class="hl com">{-# INLINE calcHash #-}</span>
+calcHash <span class="hl opt">!</span>ht <span class="hl opt">!</span>key <span class="hl opt">= (</span>`<span class="hl kwc">mod</span>` noOfSlots ht<span class="hl opt">) &lt;$&gt;</span> ch <span class="hl num">0 0</span>
+    <span class="hl kwd">where</span>
+        ksz <span class="hl opt">=</span> keySize ht
+        ch <span class="hl opt">::</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">IO Int</span>
+        ch <span class="hl opt">!</span>i <span class="hl opt">!</span>acc | i <span class="hl opt">==</span> ksz <span class="hl opt">=</span> <span class="hl kwc">return</span> acc
+        ch <span class="hl opt">!</span>i <span class="hl opt">!</span>acc <span class="hl opt">=</span> <span class="hl kwd">do</span>
+            c <span class="hl opt">&lt;-</span> peek <span class="hl opt">(</span>key `plusPtr` i<span class="hl opt">)</span>
+            ch <span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">) (</span>acc <span class="hl opt">*</span> <span class="hl num">131</span> <span class="hl opt">+</span> <span class="hl kwc">fromIntegral</span> <span class="hl opt">(</span>c<span class="hl opt">::</span>Word8<span class="hl opt">))</span>
+
+<span class="hl kwd">newtype</span> Entry <span class="hl opt">=</span> Entry <span class="hl opt">(</span>Ptr Word8<span class="hl opt">)</span>
+
+<span class="hl slc">-- Count of the total number of hash table entries</span>
+totalEntriesOf <span class="hl opt">::</span> Hashtable <span class="hl opt">-&gt;</span> Ptr <span class="hl kwb">Int</span>
+<span class="hl com">{-# INLINE totalEntriesOf #-}</span>
+totalEntriesOf ht <span class="hl opt">=</span> castPtr <span class="hl opt">$</span> spine ht
+
+indexEntry <span class="hl opt">::</span> Hashtable <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> Entry
+<span class="hl com">{-# INLINE indexEntry #-}</span>
+indexEntry <span class="hl opt">!</span>ht <span class="hl opt">!</span>hash <span class="hl opt">=</span>
+    <span class="hl kwd">let</span> hOffset <span class="hl opt">=</span> wordSize <span class="hl opt">+</span> hash <span class="hl opt">*</span> slotSize <span class="hl opt">(</span>keySize ht<span class="hl opt">)</span>
+    <span class="hl kwd">in</span>  Entry <span class="hl opt">$</span> spine ht `plusPtr` hOffset
+
+entryMatches <span class="hl opt">::</span> Hashtable <span class="hl opt">-&gt;</span> Entry <span class="hl opt">-&gt;</span> Ptr Word8 <span class="hl opt">-&gt;</span> <span class="hl kwb">IO Bool</span>
+<span class="hl com">{-# INLINE entryMatches #-}</span>
+entryMatches <span class="hl opt">!</span>ht <span class="hl opt">!</span>entry <span class="hl opt">!</span>key <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    <span class="hl kwd">let</span> eKey <span class="hl opt">=</span> keyOf entry
+    c <span class="hl opt">&lt;-</span> memcmp key eKey <span class="hl opt">(</span><span class="hl kwc">fromIntegral</span> <span class="hl opt">$</span> keySize ht<span class="hl opt">)</span>
+    <span class="hl kwd">if</span> c <span class="hl opt">==</span> <span class="hl num">0</span>
+        <span class="hl kwd">then</span> <span class="hl kwc">return</span> <span class="hl kwa">True</span>
+        <span class="hl kwd">else do</span>
+            <span class="hl kwa">empty</span> <span class="hl opt">&lt;-</span> isEmptySlot entry
+            <span class="hl kwd">if</span> <span class="hl kwa">empty</span>
+                <span class="hl kwd">then do</span>
+                    memcpy eKey key <span class="hl opt">(</span><span class="hl kwc">fromIntegral</span> <span class="hl opt">$</span> keySize ht<span class="hl opt">)</span>  <span class="hl slc">-- ick</span>
+                    <span class="hl kwc">return</span> <span class="hl kwa">True</span>
+                <span class="hl kwd">else</span>
+                    <span class="hl kwc">return</span> <span class="hl kwa">False</span>
+
+nextPtrOf <span class="hl opt">::</span> Entry <span class="hl opt">-&gt;</span> Ptr <span class="hl opt">(</span>Ptr Word8<span class="hl opt">)</span>
+<span class="hl com">{-# INLINE nextPtrOf #-}</span>
+nextPtrOf <span class="hl opt">!(</span>Entry ePtr<span class="hl opt">) =</span> castPtr <span class="hl opt">$</span> ePtr
+
+payloadOf <span class="hl opt">::</span> Entry <span class="hl opt">-&gt;</span> Ptr <span class="hl kwb">Int</span>
+<span class="hl com">{-# INLINE payloadOf #-}</span>
+payloadOf <span class="hl opt">!(</span>Entry ePtr<span class="hl opt">) =</span> castPtr <span class="hl opt">$</span> ePtr `plusPtr` wordSize
+
+keyOf <span class="hl opt">::</span> Entry <span class="hl opt">-&gt;</span> Ptr Word8
+<span class="hl com">{-# INLINE keyOf #-}</span>
+keyOf <span class="hl opt">!(</span>Entry ePtr<span class="hl opt">) =</span> ePtr `plusPtr` <span class="hl opt">(</span>wordSize<span class="hl opt">*</span><span class="hl num">2</span><span class="hl opt">)</span>
+
+allocEntry <span class="hl opt">::</span> Hashtable <span class="hl opt">-&gt;</span> Ptr Word8 <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> Entry
+allocEntry <span class="hl opt">!</span>ht <span class="hl opt">!</span>key <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    <span class="hl kwd">let</span> esz <span class="hl opt">=</span> slotSize <span class="hl opt">$</span> keySize ht
+    ePtr <span class="hl opt">&lt;-</span> mallocBytes esz
+    memset ePtr <span class="hl num">0</span> <span class="hl opt">(</span><span class="hl kwc">fromIntegral</span> esz<span class="hl opt">)</span>
+    <span class="hl kwd">let</span> entry <span class="hl opt">=</span> Entry ePtr
+    memcpy <span class="hl opt">(</span>keyOf entry<span class="hl opt">)</span> key <span class="hl opt">(</span><span class="hl kwc">fromIntegral</span> <span class="hl opt">$</span> keySize ht<span class="hl opt">)</span>
+    <span class="hl kwc">return</span> entry
+
+htPayload <span class="hl opt">::</span> Hashtable <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> Ptr Word8 <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">(</span>Ptr <span class="hl kwb">Int</span><span class="hl opt">)</span>
+<span class="hl com">{-# INLINE htPayload #-}</span>
+htPayload <span class="hl opt">!</span>ht <span class="hl opt">!</span>hash <span class="hl opt">!</span>key <span class="hl opt">=</span> <span class="hl kwd">do</span>
+        entry <span class="hl opt">&lt;-</span> findEntry <span class="hl opt">(</span>indexEntry ht hash<span class="hl opt">)</span>
+        <span class="hl kwc">return</span> <span class="hl opt">$</span> payloadOf entry
+    <span class="hl kwd">where</span>
+        findEntry <span class="hl opt">::</span> Entry <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> Entry
+        findEntry <span class="hl opt">!</span>entry <span class="hl opt">=</span> <span class="hl kwd">do</span>
+            match <span class="hl opt">&lt;-</span> entryMatches ht entry key
+            <span class="hl kwd">if</span> match
+                <span class="hl kwd">then</span>
+                    <span class="hl kwc">return</span> entry
+                <span class="hl kwd">else do</span>
+                    <span class="hl kwd">let</span> pNext <span class="hl opt">=</span> nextPtrOf entry
+                    <span class="hl kwc">next</span> <span class="hl opt">&lt;-</span> peek pNext
+                    <span class="hl kwd">if</span> <span class="hl kwc">next</span> <span class="hl opt">==</span> nullPtr
+                        <span class="hl kwd">then do</span>
+                            newEntry<span class="hl opt">&#64;(</span>Entry ePtr<span class="hl opt">) &lt;-</span> allocEntry ht key
+                            poke pNext ePtr
+                            <span class="hl kwc">return</span> newEntry
+                        <span class="hl kwd">else</span>
+                            findEntry <span class="hl opt">(</span>Entry <span class="hl kwc">next</span><span class="hl opt">)</span>
+

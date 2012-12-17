@@ -1,0 +1,29 @@
+
+Mon, 02 Jan 2012 21:12:44 GMT
+
+MAKE:
+mv threadring.fpascal threadring.pas
+/usr/local/src/fpc-2.6.0.x86_64-linux/bin/fpc -FuInclude/fpascal -XXs -O3 -Tlinux  -oFPASCAL_RUN threadring.pas
+Free Pascal Compiler version 2.6.0 [2011/12/23] for x86_64
+Copyright (c) 1993-2011 by Florian Klaempfl and others
+Target OS: Linux for x86-64
+Compiling threadring.pas
+threadring.pas(40,27) Error: Incompatible type for arg no. 1: Got "sem_t", expected "psem_t"
+threadring.pas(57,33) Error: Incompatible type for arg no. 1: Got "sem_t", expected "psem_t"
+threadring.pas(58,23) Error: Incompatible type for arg no. 1: Got "sem_t", expected "psem_t"
+threadring.pas(67,23) Error: Incompatible type for arg no. 1: Got "sem_t", expected "psem_t"
+threadring.pas(69) Fatal: There were 4 errors compiling module, stopping
+Fatal: Compilation aborted
+Error: /usr/local/src/fpc-2.6.0.x86_64-linux/bin/ppcx64 returned an error exitcode (normal if you did not specify a source file to be compiled)
+make: [threadring.fpascal_run] Error 1 (ignored)
+mv FPASCAL_RUN threadring.fpascal_run
+mv: cannot stat `FPASCAL_RUN': No such file or directory
+make: [threadring.fpascal_run] Error 1 (ignored)
+rm threadring.pas
+0.04s to complete and log all make actions
+
+COMMAND LINE:
+./threadring.fpascal_run 500000
+
+MAKE ERROR 
+

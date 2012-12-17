@@ -1,0 +1,153 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Robert F. Tobler</span>
+<span class="hl com">   use of Mono.Simd by Markus Uhr</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">using</span> System<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Mono<span class="hl opt">.</span>Simd<span class="hl opt">;</span>
+
+<span class="hl kwa">using</span> Pair <span class="hl opt">=</span> System<span class="hl opt">.</span>Tuple<span class="hl opt">&lt;</span>Body<span class="hl opt">,</span>Body<span class="hl opt">&gt;;</span>
+
+<span class="hl kwa">class</span> Body
+<span class="hl opt">{</span>
+   <span class="hl kwa">public</span> Vector2d xy<span class="hl opt">;</span>
+   <span class="hl kwa">public</span> Vector2d z0<span class="hl opt">;</span>
+   <span class="hl kwa">public</span> Vector2d vxvy<span class="hl opt">;</span>
+   <span class="hl kwa">public</span> Vector2d vz00<span class="hl opt">;</span>
+   <span class="hl kwa">public</span> Vector2d mass<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">class</span> NBodySystem <span class="hl opt">{</span>
+   <span class="hl kwa">private</span> Body<span class="hl opt">[]</span> bodies<span class="hl opt">;</span>
+   <span class="hl kwa">private</span> Pair<span class="hl opt">[]</span> pairs<span class="hl opt">;</span>
+
+   <span class="hl kwa">private</span> <span class="hl kwb">const double</span> pi <span class="hl opt">=</span> <span class="hl num">3.141592653589793</span><span class="hl opt">;</span>
+   <span class="hl kwa">private</span> <span class="hl kwb">const double</span> sm <span class="hl opt">=</span> <span class="hl num">4.0</span><span class="hl opt">*</span>pi<span class="hl opt">*</span>pi<span class="hl opt">;</span> <span class="hl slc">// solar mass</span>
+   <span class="hl kwa">private</span> <span class="hl kwb">const double</span> dpy <span class="hl opt">=</span> <span class="hl num">365.24</span><span class="hl opt">;</span>   <span class="hl slc">// days per year</span>
+
+   <span class="hl kwa">private</span> Vector2d v2sm <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(</span>sm<span class="hl opt">,</span> sm<span class="hl opt">);</span>
+   <span class="hl kwa">private</span> Vector2d v2dpy <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(</span>dpy<span class="hl opt">,</span> dpy<span class="hl opt">);</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwd">NBodySystem</span><span class="hl opt">() {</span>
+      bodies <span class="hl opt">=</span> <span class="hl kwa">new</span> Body<span class="hl opt">[] {</span>
+         <span class="hl slc">// Sun</span>
+         <span class="hl kwa">new</span> <span class="hl kwd">Body</span><span class="hl opt">() {</span>
+            mass <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(</span>sm<span class="hl opt">,</span> sm<span class="hl opt">),</span>
+         <span class="hl opt">},</span>
+         <span class="hl slc">// Jupiter</span>
+         <span class="hl kwa">new</span> <span class="hl kwd">Body</span><span class="hl opt">() {</span>
+            xy <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(</span> <span class="hl num">4.84143144246472090e+00</span><span class="hl opt">, -</span><span class="hl num">1.16032004402742839e+00</span><span class="hl opt">),</span>
+            z0 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(-</span><span class="hl num">1.03622044471123109e-01</span><span class="hl opt">,</span>  <span class="hl num">0.00000000000000000e+00</span><span class="hl opt">),</span>
+            vxvy <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(</span> <span class="hl num">1.66007664274403694e-03</span><span class="hl opt">,</span> <span class="hl num">7.69901118419740425e-03</span><span class="hl opt">)*</span>v2dpy<span class="hl opt">,</span>
+            vz00 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(-</span><span class="hl num">6.90460016972063023e-05</span><span class="hl opt">,</span> <span class="hl num">0.00000000000000000e+00</span><span class="hl opt">)*</span>v2dpy<span class="hl opt">,</span>
+            mass <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(</span> <span class="hl num">9.54791938424326609e-04</span><span class="hl opt">,</span> <span class="hl num">9.54791938424326609e-04</span><span class="hl opt">)*</span>v2sm
+         <span class="hl opt">},</span>
+         <span class="hl slc">// Saturn</span>
+         <span class="hl kwa">new</span> <span class="hl kwd">Body</span><span class="hl opt">() {</span>
+            xy <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(</span> <span class="hl num">8.34336671824457987e+00</span><span class="hl opt">,</span>  <span class="hl num">4.12479856412430479e+00</span><span class="hl opt">),</span>
+            z0 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(-</span><span class="hl num">4.03523417114321381e-01</span><span class="hl opt">,</span>  <span class="hl num">0.00000000000000000e+00</span><span class="hl opt">),</span>
+            vxvy <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(-</span><span class="hl num">2.76742510726862411e-03</span><span class="hl opt">,</span> <span class="hl num">4.99852801234917238e-03</span><span class="hl opt">)*</span>v2dpy<span class="hl opt">,</span>
+            vz00 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(</span> <span class="hl num">2.30417297573763929e-05</span><span class="hl opt">,</span> <span class="hl num">0.00000000000000000e+00</span><span class="hl opt">)*</span>v2dpy<span class="hl opt">,</span>
+            mass <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(</span> <span class="hl num">2.85885980666130812e-04</span><span class="hl opt">,</span> <span class="hl num">2.85885980666130812e-04</span><span class="hl opt">)*</span>v2sm
+         <span class="hl opt">},</span>
+         <span class="hl slc">// Uranus</span>
+         <span class="hl kwa">new</span> <span class="hl kwd">Body</span><span class="hl opt">() {</span>
+            xy <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(</span> <span class="hl num">1.28943695621391310e+01</span><span class="hl opt">, -</span><span class="hl num">1.51111514016986312e+01</span><span class="hl opt">),</span>
+            z0 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(-</span><span class="hl num">2.23307578892655734e-01</span><span class="hl opt">,</span>  <span class="hl num">0.00000000000000000e+00</span><span class="hl opt">),</span>
+            vxvy <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(</span> <span class="hl num">2.96460137564761618e-03</span><span class="hl opt">,</span> <span class="hl num">2.37847173959480950e-03</span><span class="hl opt">)*</span>v2dpy<span class="hl opt">,</span>
+            vz00 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(-</span><span class="hl num">2.96589568540237556e-05</span><span class="hl opt">,</span> <span class="hl num">0.00000000000000000e+00</span><span class="hl opt">)*</span>v2dpy<span class="hl opt">,</span>
+            mass <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(</span> <span class="hl num">4.36624404335156298e-05</span><span class="hl opt">,</span> <span class="hl num">4.36624404335156298e-05</span><span class="hl opt">)*</span>v2sm
+         <span class="hl opt">},</span>
+         <span class="hl slc">// Neptune</span>
+         <span class="hl kwa">new</span> <span class="hl kwd">Body</span><span class="hl opt">() {</span>
+            xy <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(</span> <span class="hl num">1.53796971148509165e+01</span><span class="hl opt">, -</span><span class="hl num">2.59193146099879641e+01</span><span class="hl opt">),</span>
+            z0 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(</span> <span class="hl num">1.79258772950371181e-01</span><span class="hl opt">,</span>  <span class="hl num">0.00000000000000000e+00</span><span class="hl opt">),</span>
+            vxvy <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(</span> <span class="hl num">2.68067772490389322e-03</span><span class="hl opt">,</span> <span class="hl num">1.62824170038242295e-03</span><span class="hl opt">)*</span>v2dpy<span class="hl opt">,</span>
+            vz00 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(-</span><span class="hl num">9.51592254519715870e-05</span><span class="hl opt">,</span> <span class="hl num">0.00000000000000000e+00</span><span class="hl opt">)*</span>v2dpy<span class="hl opt">,</span>
+            mass <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(</span> <span class="hl num">5.15138902046611451e-05</span><span class="hl opt">,</span> <span class="hl num">5.15138902046611451e-05</span><span class="hl opt">)*</span>v2sm
+         <span class="hl opt">},</span>
+      <span class="hl opt">};</span>
+      
+      pairs <span class="hl opt">=</span> <span class="hl kwa">new</span> Pair<span class="hl opt">[</span>bodies<span class="hl opt">.</span>Length<span class="hl opt">*(</span>bodies<span class="hl opt">.</span>Length<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)/</span><span class="hl num">2</span><span class="hl opt">];</span>      
+      <span class="hl kwb">int</span> pi <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> bodies<span class="hl opt">.</span>Length<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">;</span> i<span class="hl opt">++)</span>
+         <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> j <span class="hl opt">=</span> i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">;</span> j <span class="hl opt">&lt;</span> bodies<span class="hl opt">.</span>Length<span class="hl opt">;</span> j<span class="hl opt">++)</span>
+            pairs<span class="hl opt">[</span>pi<span class="hl opt">++] =</span> Tuple<span class="hl opt">.</span><span class="hl kwd">Create</span><span class="hl opt">(</span>bodies<span class="hl opt">[</span>i<span class="hl opt">],</span> bodies<span class="hl opt">[</span>j<span class="hl opt">]);</span>      
+
+      Vector2d pxpy <span class="hl opt">=</span> Vector2d<span class="hl opt">.</span>Zero<span class="hl opt">;</span>
+      Vector2d pz00 <span class="hl opt">=</span> Vector2d<span class="hl opt">.</span>Zero<span class="hl opt">;</span>
+      <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var b <span class="hl kwa">in</span> bodies<span class="hl opt">) {</span>
+         pxpy <span class="hl opt">-=</span> b<span class="hl opt">.</span>vxvy<span class="hl opt">*</span>b<span class="hl opt">.</span>mass<span class="hl opt">;</span>
+         pz00 <span class="hl opt">-=</span> b<span class="hl opt">.</span>vz00<span class="hl opt">*</span>b<span class="hl opt">.</span>mass<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+      var sol <span class="hl opt">=</span> bodies<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">];</span>
+      sol<span class="hl opt">.</span>vxvy <span class="hl opt">=</span> pxpy<span class="hl opt">/</span>v2sm<span class="hl opt">;</span>
+      sol<span class="hl opt">.</span>vz00 <span class="hl opt">=</span> pz00<span class="hl opt">/</span>v2sm<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">Advance</span><span class="hl opt">(</span><span class="hl kwb">double</span> dt<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      var dtdt <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(</span>dt<span class="hl opt">,</span> dt<span class="hl opt">);</span>
+      <span class="hl kwb">int</span> npairs <span class="hl opt">=</span> pairs<span class="hl opt">.</span>Length<span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">&lt;</span>npairs<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+      <span class="hl opt">{</span>
+         var p <span class="hl opt">=</span> pairs<span class="hl opt">[</span>i<span class="hl opt">];</span>
+         var bi <span class="hl opt">=</span> p<span class="hl opt">.</span>Item1<span class="hl opt">;</span>
+         var bj <span class="hl opt">=</span> p<span class="hl opt">.</span>Item2<span class="hl opt">;</span>
+         var dxdy <span class="hl opt">=</span> bi<span class="hl opt">.</span>xy <span class="hl opt">-</span> bj<span class="hl opt">.</span>xy<span class="hl opt">;</span>
+         var dz00 <span class="hl opt">=</span> bi<span class="hl opt">.</span>z0 <span class="hl opt">-</span> bj<span class="hl opt">.</span>z0<span class="hl opt">;</span>
+         var tmp <span class="hl opt">=</span> VectorOperations<span class="hl opt">.</span><span class="hl kwd">HorizontalAdd</span><span class="hl opt">(</span>dxdy<span class="hl opt">*</span>dxdy<span class="hl opt">,</span> dz00<span class="hl opt">*</span>dz00<span class="hl opt">);</span>
+         var d2 <span class="hl opt">=</span> VectorOperations<span class="hl opt">.</span><span class="hl kwd">HorizontalAdd</span><span class="hl opt">(</span>tmp<span class="hl opt">,</span> tmp<span class="hl opt">);</span>
+         var mag <span class="hl opt">=</span> dtdt<span class="hl opt">/(</span>d2<span class="hl opt">*</span>VectorOperations<span class="hl opt">.</span><span class="hl kwd">Sqrt</span><span class="hl opt">(</span>d2<span class="hl opt">));</span>
+         bi<span class="hl opt">.</span>vxvy <span class="hl opt">-=</span> dxdy<span class="hl opt">*</span>bj<span class="hl opt">.</span>mass<span class="hl opt">*</span>mag<span class="hl opt">;</span> bj<span class="hl opt">.</span>vxvy <span class="hl opt">+=</span> dxdy<span class="hl opt">*</span>bi<span class="hl opt">.</span>mass<span class="hl opt">*</span>mag<span class="hl opt">;</span>
+         bi<span class="hl opt">.</span>vz00 <span class="hl opt">-=</span> dz00<span class="hl opt">*</span>bj<span class="hl opt">.</span>mass<span class="hl opt">*</span>mag<span class="hl opt">;</span> bj<span class="hl opt">.</span>vz00 <span class="hl opt">+=</span> dz00<span class="hl opt">*</span>bi<span class="hl opt">.</span>mass<span class="hl opt">*</span>mag<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwb">int</span> nbodies <span class="hl opt">=</span> bodies<span class="hl opt">.</span>Length<span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">&lt;</span>nbodies<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+      <span class="hl opt">{</span>
+         var b <span class="hl opt">=</span> bodies<span class="hl opt">[</span>i<span class="hl opt">];</span>
+         b<span class="hl opt">.</span>xy <span class="hl opt">+=</span> dtdt<span class="hl opt">*</span>b<span class="hl opt">.</span>vxvy<span class="hl opt">;</span>
+         b<span class="hl opt">.</span>z0 <span class="hl opt">+=</span> dtdt<span class="hl opt">*</span>b<span class="hl opt">.</span>vz00<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwb">double</span> <span class="hl kwd">Energy</span><span class="hl opt">()</span>
+   <span class="hl opt">{</span>
+      var e <span class="hl opt">=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> bodies<span class="hl opt">.</span>Length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+      <span class="hl opt">{</span>
+         var bi <span class="hl opt">=</span> bodies<span class="hl opt">[</span>i<span class="hl opt">];</span>
+         var tmp <span class="hl opt">=</span> VectorOperations<span class="hl opt">.</span><span class="hl kwd">HorizontalAdd</span><span class="hl opt">(</span>bi<span class="hl opt">.</span>vxvy<span class="hl opt">*</span>bi<span class="hl opt">.</span>vxvy<span class="hl opt">,</span> bi<span class="hl opt">.</span>vz00<span class="hl opt">*</span>bi<span class="hl opt">.</span>vz00<span class="hl opt">);</span>
+         e <span class="hl opt">+=</span> <span class="hl num">0.5</span><span class="hl opt">*</span>bi<span class="hl opt">.</span>mass<span class="hl opt">.</span>X<span class="hl opt">*(</span>tmp<span class="hl opt">.</span>X <span class="hl opt">+</span> tmp<span class="hl opt">.</span>Y<span class="hl opt">);</span>
+         <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> j <span class="hl opt">=</span> i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">;</span> j <span class="hl opt">&lt;</span> bodies<span class="hl opt">.</span>Length<span class="hl opt">;</span> j<span class="hl opt">++)</span>
+         <span class="hl opt">{</span>
+            var bj <span class="hl opt">=</span> bodies<span class="hl opt">[</span>j<span class="hl opt">];</span>
+            var dxdy <span class="hl opt">=</span> bi<span class="hl opt">.</span>xy <span class="hl opt">-</span> bj<span class="hl opt">.</span>xy<span class="hl opt">;</span>
+            var dz00 <span class="hl opt">=</span> bi<span class="hl opt">.</span>z0 <span class="hl opt">-</span> bj<span class="hl opt">.</span>z0<span class="hl opt">;</span>
+            var tm2 <span class="hl opt">=</span> VectorOperations<span class="hl opt">.</span><span class="hl kwd">HorizontalAdd</span><span class="hl opt">(</span>dxdy<span class="hl opt">*</span>dxdy<span class="hl opt">,</span> dz00<span class="hl opt">*</span>dz00<span class="hl opt">);</span>
+            e <span class="hl opt">-= (</span>bi<span class="hl opt">.</span>mass<span class="hl opt">.</span>X<span class="hl opt">*</span>bj<span class="hl opt">.</span>mass<span class="hl opt">.</span>X<span class="hl opt">)/</span>Math<span class="hl opt">.</span><span class="hl kwd">Sqrt</span><span class="hl opt">(</span>tm2<span class="hl opt">.</span>X <span class="hl opt">+</span> tm2<span class="hl opt">.</span>Y<span class="hl opt">);</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">return</span> e<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">class</span> NBody
+<span class="hl opt">{</span>
+   <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">Main</span><span class="hl opt">(</span>String<span class="hl opt">[]</span> args<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      <span class="hl kwb">int</span> n <span class="hl opt">=</span> args<span class="hl opt">.</span>Length <span class="hl opt">&gt;</span> <span class="hl num">0</span> ? Int32<span class="hl opt">.</span><span class="hl kwd">Parse</span><span class="hl opt">(</span>args<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]) :</span> <span class="hl num">10000</span><span class="hl opt">;</span>
+
+      NBodySystem bodies <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">NBodySystem</span><span class="hl opt">();</span>
+      <span class="hl slc">// initial energy</span>
+      Console<span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(</span><span class="hl str">&quot;{0:f9}&quot;</span><span class="hl opt">,</span> bodies<span class="hl opt">.</span><span class="hl kwd">Energy</span><span class="hl opt">());</span>
+
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">&lt;</span>n<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+         bodies<span class="hl opt">.</span><span class="hl kwd">Advance</span><span class="hl opt">(</span><span class="hl num">0.01</span><span class="hl opt">);</span>
+      <span class="hl slc">// final energy</span>
+      Console<span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(</span><span class="hl str">&quot;{0:f9}&quot;</span><span class="hl opt">,</span> bodies<span class="hl opt">.</span><span class="hl kwd">Energy</span><span class="hl opt">());</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+

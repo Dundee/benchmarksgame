@@ -1,0 +1,294 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Petr Prokhorenkov</span>
+<span class="hl com">*/</span>
+<span class="hl ppc">#define _GNU_SOURCE</span>
+
+<span class="hl ppc">#include &lt;assert.h&gt;</span>
+<span class="hl ppc">#include &lt;ctype.h&gt;</span>
+<span class="hl ppc">#include &lt;pthread.h&gt;</span>
+<span class="hl ppc">#include &lt;stdint.h&gt;</span>
+<span class="hl ppc">#include &lt;stdio.h&gt;</span>
+<span class="hl ppc">#include &lt;stdlib.h&gt;</span>
+<span class="hl ppc">#include &lt;string.h&gt;</span>
+<span class="hl ppc">#include &lt;sys/types.h&gt;</span>
+<span class="hl ppc">#include &lt;unistd.h&gt;</span>
+
+<span class="hl ppc">#define LINE_LENGTH 60 </span>
+<span class="hl ppc">#define STDOUT 1</span>
+
+<span class="hl kwc">typedef</span> <span class="hl kwb">struct</span> lookup <span class="hl opt">{</span>
+    <span class="hl kwb">uint8_t</span> bytes<span class="hl opt">[</span><span class="hl num">256</span><span class="hl opt">];</span>
+    <span class="hl kwb">uint16_t</span> pairs<span class="hl opt">[</span><span class="hl num">256</span><span class="hl opt">*</span><span class="hl num">256</span><span class="hl opt">];</span>
+<span class="hl opt">}</span> lookup_t<span class="hl opt">;</span>
+
+<span class="hl kwb">void</span>
+<span class="hl kwd">init_lookup</span><span class="hl opt">(</span><span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>from<span class="hl opt">,</span> <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>to<span class="hl opt">,</span> lookup_t <span class="hl opt">*</span>lookup<span class="hl opt">) {</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> <span class="hl num">256</span><span class="hl opt">; ++</span>i<span class="hl opt">) {</span>
+        lookup<span class="hl opt">-&gt;</span>bytes<span class="hl opt">[</span>i<span class="hl opt">] =</span> i<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(; *</span>from <span class="hl opt">&amp;&amp; *</span>to<span class="hl opt">; ++</span>from<span class="hl opt">, ++</span>to<span class="hl opt">) {</span>
+        lookup<span class="hl opt">-&gt;</span>bytes<span class="hl opt">[</span><span class="hl kwd">tolower</span><span class="hl opt">(*</span>from<span class="hl opt">)] = *</span>to<span class="hl opt">;</span>
+        lookup<span class="hl opt">-&gt;</span>bytes<span class="hl opt">[</span><span class="hl kwd">toupper</span><span class="hl opt">(*</span>from<span class="hl opt">)] = *</span>to<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">!=</span> <span class="hl num">256</span><span class="hl opt">; ++</span>i<span class="hl opt">) {</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> j <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> j <span class="hl opt">!=</span> <span class="hl num">256</span><span class="hl opt">; ++</span>j<span class="hl opt">) {</span>
+            lookup<span class="hl opt">-&gt;</span>pairs<span class="hl opt">[(</span>i <span class="hl opt">&lt;&lt;</span> <span class="hl num">8</span><span class="hl opt">) +</span> j<span class="hl opt">] =</span>
+                <span class="hl opt">((</span><span class="hl kwb">uint16_t</span><span class="hl opt">)</span>lookup<span class="hl opt">-&gt;</span>bytes<span class="hl opt">[</span>j<span class="hl opt">] &lt;&lt;</span> <span class="hl num">8</span><span class="hl opt">) +</span> lookup<span class="hl opt">-&gt;</span>bytes<span class="hl opt">[</span>i<span class="hl opt">];</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwc">typedef</span> <span class="hl kwb">struct</span> job <span class="hl opt">{</span>
+    <span class="hl kwb">struct</span> job <span class="hl opt">*</span>prev_job<span class="hl opt">;</span>
+
+    pthread_mutex_t <span class="hl opt">*</span>io_mutex<span class="hl opt">;</span>
+    pthread_cond_t condition<span class="hl opt">;</span>
+    <span class="hl kwb">int</span> finished<span class="hl opt">;</span>
+
+    <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>header_begin<span class="hl opt">;</span>
+    <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>header_end<span class="hl opt">;</span>
+    <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>body_begin<span class="hl opt">;</span>
+    <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>body_end<span class="hl opt">;</span>
+    <span class="hl kwb">const</span> lookup_t <span class="hl opt">*</span>lookup<span class="hl opt">;</span>
+    pthread_t thread<span class="hl opt">;</span>
+    <span class="hl kwb">uint8_t</span> <span class="hl opt">*</span>buffer<span class="hl opt">;</span>
+    <span class="hl kwb">int</span> free_buffer<span class="hl opt">;</span>
+<span class="hl opt">}</span> job_t<span class="hl opt">;</span>
+
+off_t <span class="hl kwd">get_file_size</span><span class="hl opt">(</span><span class="hl kwb">FILE</span> <span class="hl opt">*</span>f<span class="hl opt">) {</span>
+    <span class="hl kwb">long</span> begin <span class="hl opt">=</span> <span class="hl kwd">ftell</span><span class="hl opt">(</span>f<span class="hl opt">);</span>
+    <span class="hl kwd">fseek</span><span class="hl opt">(</span>f<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> SEEK_END<span class="hl opt">);</span>
+    <span class="hl kwb">long</span> size <span class="hl opt">=</span> <span class="hl kwd">ftell</span><span class="hl opt">(</span>f<span class="hl opt">) -</span> begin<span class="hl opt">;</span>
+    <span class="hl kwd">fseek</span><span class="hl opt">(</span>f<span class="hl opt">,</span> begin<span class="hl opt">,</span> SEEK_SET<span class="hl opt">);</span>
+
+    <span class="hl kwa">return</span> size<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span>
+<span class="hl kwd">persistent_write</span><span class="hl opt">(</span><span class="hl kwb">int</span> fd<span class="hl opt">,</span> <span class="hl kwb">const void</span> <span class="hl opt">*</span>ptr<span class="hl opt">,</span> <span class="hl kwb">size_t</span> size<span class="hl opt">) {</span>
+    <span class="hl kwa">while</span> <span class="hl opt">(</span>size <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+        ssize_t result <span class="hl opt">=</span> <span class="hl kwd">write</span><span class="hl opt">(</span>fd<span class="hl opt">,</span> ptr<span class="hl opt">,</span> size<span class="hl opt">);</span>
+
+        <span class="hl kwa">assert</span><span class="hl opt">(</span>result <span class="hl opt">&gt;=</span> <span class="hl num">0</span><span class="hl opt">);</span>
+
+        size <span class="hl opt">-=</span> result<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">size_t</span>
+<span class="hl kwd">reverse_complement</span><span class="hl opt">(</span>
+        <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>begin<span class="hl opt">,</span>
+        <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>end<span class="hl opt">,</span>
+        <span class="hl kwb">const</span> lookup_t <span class="hl opt">*</span>lookup<span class="hl opt">,</span>
+        <span class="hl kwb">uint8_t</span> <span class="hl opt">*</span>buffer<span class="hl opt">) {</span>
+    <span class="hl kwb">size_t</span> size <span class="hl opt">=</span> end <span class="hl opt">-</span> begin<span class="hl opt">;</span>
+    <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>read_p <span class="hl opt">= (</span><span class="hl kwb">const uint8_t</span> <span class="hl opt">*)</span>end<span class="hl opt">;</span>
+    <span class="hl kwb">uint8_t</span> <span class="hl opt">*</span>buffer_begin <span class="hl opt">=</span> buffer<span class="hl opt">;</span>
+
+    <span class="hl kwa">while</span> <span class="hl opt">(</span>size <span class="hl opt">&gt;=</span> LINE_LENGTH<span class="hl opt">) {</span>
+        <span class="hl kwb">uint16_t</span> <span class="hl opt">*</span>pair_buffer <span class="hl opt">= (</span><span class="hl kwb">uint16_t</span> <span class="hl opt">*)</span>buffer<span class="hl opt">;</span>
+        <span class="hl kwb">const uint16_t</span> <span class="hl opt">*</span>read_pair <span class="hl opt">= (</span><span class="hl kwb">const uint16_t</span> <span class="hl opt">*)</span>read_p<span class="hl opt">;</span>
+
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">size_t</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> LINE_LENGTH<span class="hl opt">;</span> i <span class="hl opt">+=</span> <span class="hl num">2</span><span class="hl opt">) {</span>
+            <span class="hl opt">*</span>pair_buffer<span class="hl opt">++ =</span> lookup<span class="hl opt">-&gt;</span>pairs<span class="hl opt">[*--</span>read_pair<span class="hl opt">];</span>
+        <span class="hl opt">}</span>
+
+        read_p <span class="hl opt">-=</span> LINE_LENGTH<span class="hl opt">&amp;(~</span><span class="hl num">1</span><span class="hl opt">);</span>
+        buffer <span class="hl opt">+=</span> LINE_LENGTH<span class="hl opt">&amp;(~</span><span class="hl num">1</span><span class="hl opt">);</span>
+
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>LINE_LENGTH <span class="hl opt">%</span> <span class="hl num">2</span> <span class="hl opt">!=</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+            <span class="hl opt">*</span>buffer<span class="hl opt">++ = *--</span>read_p<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl opt">*</span>buffer<span class="hl opt">++ =</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">;</span>
+        size <span class="hl opt">-=</span> LINE_LENGTH<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>size <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+       <span class="hl kwa">while</span> <span class="hl opt">(</span>read_p <span class="hl opt">&gt;</span> begin<span class="hl opt">) {</span>
+           <span class="hl opt">*</span>buffer<span class="hl opt">++ =</span> lookup<span class="hl opt">-&gt;</span>bytes<span class="hl opt">[*--</span>read_p<span class="hl opt">];</span>
+       <span class="hl opt">}</span>
+       <span class="hl opt">*</span>buffer<span class="hl opt">++ =</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">return</span> buffer <span class="hl opt">-</span> buffer_begin<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">size_t</span> <span class="hl kwd">round_by</span><span class="hl opt">(</span><span class="hl kwb">size_t</span> a<span class="hl opt">,</span> <span class="hl kwb">size_t</span> b<span class="hl opt">) {</span>
+    <span class="hl kwa">return</span> a <span class="hl opt">-</span> a<span class="hl opt">%</span>b<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span>
+<span class="hl kwd">process_block</span><span class="hl opt">(</span>
+        job_t <span class="hl opt">*</span>job<span class="hl opt">) {</span>
+    <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>header_begin <span class="hl opt">=</span> job<span class="hl opt">-&gt;</span>header_begin<span class="hl opt">;</span>
+    <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>header_end <span class="hl opt">=</span> job<span class="hl opt">-&gt;</span>header_end<span class="hl opt">;</span>
+    <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>body_begin <span class="hl opt">=</span> job<span class="hl opt">-&gt;</span>body_begin<span class="hl opt">;</span>
+    <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>body_end <span class="hl opt">=</span> job<span class="hl opt">-&gt;</span>body_end<span class="hl opt">;</span>
+    <span class="hl kwb">const</span> lookup_t <span class="hl opt">*</span>lookup <span class="hl opt">=</span> job<span class="hl opt">-&gt;</span>lookup<span class="hl opt">;</span>
+    pthread_mutex_t <span class="hl opt">*</span>io_mutex <span class="hl opt">=</span> job<span class="hl opt">-&gt;</span>io_mutex<span class="hl opt">;</span>
+    pthread_cond_t <span class="hl opt">*</span>condition <span class="hl opt">= &amp;</span>job<span class="hl opt">-&gt;</span>condition<span class="hl opt">;</span>
+    <span class="hl kwb">uint8_t</span> <span class="hl opt">*</span>buffer <span class="hl opt">=</span> job<span class="hl opt">-&gt;</span>buffer<span class="hl opt">;</span>
+
+    <span class="hl kwb">size_t</span> size <span class="hl opt">=</span> <span class="hl kwd">reverse_complement</span><span class="hl opt">(</span>
+            body_begin<span class="hl opt">,</span> body_end<span class="hl opt">,</span>
+            lookup<span class="hl opt">,</span>
+            buffer<span class="hl opt">);</span>
+
+    <span class="hl kwd">pthread_mutex_lock</span><span class="hl opt">(</span>io_mutex<span class="hl opt">);</span>
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>job<span class="hl opt">-&gt;</span>prev_job<span class="hl opt">) {</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(!</span>job<span class="hl opt">-&gt;</span>prev_job<span class="hl opt">-&gt;</span>finished<span class="hl opt">) {</span>
+            <span class="hl kwd">pthread_cond_wait</span><span class="hl opt">(</span>
+                    <span class="hl opt">&amp;</span>job<span class="hl opt">-&gt;</span>prev_job<span class="hl opt">-&gt;</span>condition<span class="hl opt">,</span> io_mutex<span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+    
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>header_begin <span class="hl opt">&amp;&amp;</span> header_end<span class="hl opt">) {</span>
+        <span class="hl kwd">persistent_write</span><span class="hl opt">(</span>
+                STDOUT<span class="hl opt">,</span> header_begin<span class="hl opt">,</span> header_end <span class="hl opt">-</span> header_begin<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwd">persistent_write</span><span class="hl opt">(</span>STDOUT<span class="hl opt">,</span> buffer<span class="hl opt">,</span> size<span class="hl opt">);</span>
+    job<span class="hl opt">-&gt;</span>finished <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+    <span class="hl kwd">pthread_cond_signal</span><span class="hl opt">(</span>condition<span class="hl opt">);</span>
+    <span class="hl kwd">pthread_mutex_unlock</span><span class="hl opt">(</span>io_mutex<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+job_t <span class="hl opt">*</span><span class="hl kwd">detach_job</span><span class="hl opt">(</span>
+        <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>header_begin<span class="hl opt">,</span> <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>header_end<span class="hl opt">,</span>
+        <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>body_begin<span class="hl opt">,</span> <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>body_end<span class="hl opt">,</span>
+        <span class="hl kwb">const</span> lookup_t <span class="hl opt">*</span>lookup<span class="hl opt">,</span>
+        pthread_mutex_t <span class="hl opt">*</span>mutex<span class="hl opt">,</span>
+        job_t <span class="hl opt">*</span>prev_job<span class="hl opt">,</span>
+        <span class="hl kwb">uint8_t</span> <span class="hl opt">*</span>buffer<span class="hl opt">,</span>
+        <span class="hl kwb">int</span> free_buffer<span class="hl opt">) {</span>
+    job_t <span class="hl opt">*</span>job <span class="hl opt">=</span> <span class="hl kwd">calloc</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span> <span class="hl kwa">sizeof</span><span class="hl opt">(*</span>job<span class="hl opt">));</span>
+    <span class="hl kwa">assert</span><span class="hl opt">(</span>job<span class="hl opt">);</span>
+
+    job<span class="hl opt">-&gt;</span>io_mutex <span class="hl opt">=</span> mutex<span class="hl opt">;</span>
+    <span class="hl kwd">pthread_cond_init</span><span class="hl opt">(&amp;</span>job<span class="hl opt">-&gt;</span>condition<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+    job<span class="hl opt">-&gt;</span>header_begin <span class="hl opt">=</span> header_begin<span class="hl opt">;</span>
+    job<span class="hl opt">-&gt;</span>header_end <span class="hl opt">=</span> header_end<span class="hl opt">;</span>
+    job<span class="hl opt">-&gt;</span>body_begin <span class="hl opt">=</span> body_begin<span class="hl opt">;</span>
+    job<span class="hl opt">-&gt;</span>body_end <span class="hl opt">=</span> body_end<span class="hl opt">;</span>
+    job<span class="hl opt">-&gt;</span>lookup <span class="hl opt">=</span> lookup<span class="hl opt">;</span>
+    job<span class="hl opt">-&gt;</span>buffer <span class="hl opt">=</span> buffer<span class="hl opt">;</span>
+    job<span class="hl opt">-&gt;</span>prev_job <span class="hl opt">=</span> prev_job<span class="hl opt">;</span>
+    job<span class="hl opt">-&gt;</span>free_buffer <span class="hl opt">=</span> free_buffer<span class="hl opt">;</span>
+
+    <span class="hl kwd">pthread_create</span><span class="hl opt">(&amp;</span>job<span class="hl opt">-&gt;</span>thread<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">, (</span><span class="hl kwb">void</span> <span class="hl opt">*(*)(</span><span class="hl kwb">void</span> <span class="hl opt">*))&amp;</span>process_block<span class="hl opt">,</span> job<span class="hl opt">);</span>
+
+    <span class="hl kwa">return</span> job<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+job_t <span class="hl opt">*</span>
+<span class="hl kwd">do_process_block</span><span class="hl opt">(</span>
+        <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>header_begin<span class="hl opt">,</span> <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>header_end<span class="hl opt">,</span>
+        <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>body_begin<span class="hl opt">,</span> <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>body_end<span class="hl opt">,</span>
+        <span class="hl kwb">const</span> lookup_t <span class="hl opt">*</span>lookup<span class="hl opt">,</span>
+        pthread_mutex_t <span class="hl opt">*</span>mutex<span class="hl opt">,</span>
+        job_t <span class="hl opt">*</span>prev_job<span class="hl opt">) {</span>
+    <span class="hl kwb">uint64_t</span> body_size <span class="hl opt">=</span> body_end <span class="hl opt">-</span> body_begin<span class="hl opt">;</span>
+    <span class="hl kwb">uint64_t</span> tail_len <span class="hl opt">=</span> <span class="hl kwd">round_by</span><span class="hl opt">(</span>body_size<span class="hl opt">/</span><span class="hl num">2</span><span class="hl opt">,</span> LINE_LENGTH<span class="hl opt">);</span>
+    <span class="hl kwb">const uint8_t</span> <span class="hl opt">*</span>split_at <span class="hl opt">=</span> body_end <span class="hl opt">-</span> tail_len<span class="hl opt">;</span>
+
+    <span class="hl kwb">uint8_t</span> <span class="hl opt">*</span>buffer <span class="hl opt">=</span> <span class="hl kwd">malloc</span><span class="hl opt">(</span>
+            body_size<span class="hl opt">*(</span>LINE_LENGTH <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)/</span>LINE_LENGTH <span class="hl opt">+</span> LINE_LENGTH<span class="hl opt">);</span>
+    <span class="hl kwa">assert</span><span class="hl opt">(</span>buffer<span class="hl opt">);</span>
+
+    prev_job <span class="hl opt">=</span> <span class="hl kwd">detach_job</span><span class="hl opt">(</span>
+            header_begin<span class="hl opt">,</span> header_end<span class="hl opt">,</span>
+            split_at<span class="hl opt">,</span> body_end<span class="hl opt">,</span>
+            lookup<span class="hl opt">,</span>
+            mutex<span class="hl opt">,</span>
+            prev_job<span class="hl opt">,</span>
+            buffer<span class="hl opt">,</span>
+            <span class="hl num">1</span><span class="hl opt">);</span>
+    prev_job <span class="hl opt">=</span> <span class="hl kwd">detach_job</span><span class="hl opt">(</span>
+            <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span>
+            body_begin<span class="hl opt">,</span> split_at<span class="hl opt">,</span>
+            lookup<span class="hl opt">,</span>
+            mutex<span class="hl opt">,</span>
+            prev_job<span class="hl opt">,</span>
+            buffer <span class="hl opt">+</span> tail_len<span class="hl opt">*(</span>LINE_LENGTH <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)/</span>LINE_LENGTH<span class="hl opt">,</span>
+            <span class="hl num">0</span><span class="hl opt">);</span>
+
+    <span class="hl kwa">return</span> prev_job<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">int</span>
+<span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">void</span><span class="hl opt">) {</span>
+    <span class="hl kwd">setvbuf</span><span class="hl opt">(</span>stdin<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> _IOFBF<span class="hl opt">,</span> <span class="hl num">1024</span><span class="hl opt">*</span><span class="hl num">1024</span><span class="hl opt">);</span>
+
+    <span class="hl kwb">long</span> stdin_size <span class="hl opt">=</span> <span class="hl kwd">get_file_size</span><span class="hl opt">(</span>stdin<span class="hl opt">);</span>
+    <span class="hl kwb">uint8_t</span> <span class="hl opt">*</span>buffer <span class="hl opt">=</span> <span class="hl kwd">calloc</span><span class="hl opt">(</span>stdin_size <span class="hl opt">+</span> LINE_LENGTH<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">);</span>
+    <span class="hl kwa">assert</span><span class="hl opt">(</span>buffer<span class="hl opt">);</span>
+    lookup_t lookup<span class="hl opt">;</span>
+    pthread_mutex_t mutex<span class="hl opt">;</span>
+    job_t <span class="hl opt">*</span>job <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+    <span class="hl kwd">init_lookup</span><span class="hl opt">(</span>
+            <span class="hl opt">(</span><span class="hl kwb">const uint8_t</span> <span class="hl opt">*)</span><span class="hl str">&quot;acbdghkmnsrutwvy&quot;</span><span class="hl opt">,</span>
+            <span class="hl opt">(</span><span class="hl kwb">const uint8_t</span> <span class="hl opt">*)</span><span class="hl str">&quot;TGVHCDMKNSYAAWBR&quot;</span><span class="hl opt">,</span>
+            <span class="hl opt">&amp;</span>lookup<span class="hl opt">);</span>
+
+    <span class="hl kwd">pthread_mutex_init</span><span class="hl opt">(&amp;</span>mutex<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+
+    <span class="hl kwb">uint8_t</span> <span class="hl opt">*</span>current <span class="hl opt">=</span> buffer<span class="hl opt">;</span>
+    <span class="hl kwb">uint8_t</span> <span class="hl opt">*</span>end <span class="hl opt">=</span> buffer <span class="hl opt">+</span> stdin_size<span class="hl opt">;</span>
+    <span class="hl kwb">uint8_t</span> <span class="hl opt">*</span>header_begin <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwb">uint8_t</span> <span class="hl opt">*</span>header_end <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwb">uint8_t</span> <span class="hl opt">*</span>body_begin <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+    <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl kwd">fgets_unlocked</span><span class="hl opt">((</span><span class="hl kwb">char</span> <span class="hl opt">*)</span>current<span class="hl opt">,</span> end <span class="hl opt">-</span> current<span class="hl opt">,</span> stdin<span class="hl opt">)) {</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>current<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] ==</span> <span class="hl str">'&gt;'</span><span class="hl opt">) {</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>body_begin <span class="hl opt">!=</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+                job <span class="hl opt">=</span> <span class="hl kwd">do_process_block</span><span class="hl opt">(</span>
+                        header_begin<span class="hl opt">,</span> header_end<span class="hl opt">,</span>
+                        body_begin<span class="hl opt">,</span> current<span class="hl opt">,</span>
+                        <span class="hl opt">&amp;</span>lookup<span class="hl opt">,</span>
+                        <span class="hl opt">&amp;</span>mutex<span class="hl opt">,</span>
+                        job<span class="hl opt">);</span> 
+            <span class="hl opt">}</span>
+            <span class="hl kwb">size_t</span> len <span class="hl opt">=</span> <span class="hl kwd">strlen</span><span class="hl opt">((</span><span class="hl kwb">const char</span> <span class="hl opt">*)</span>current<span class="hl opt">);</span>
+            header_begin <span class="hl opt">=</span> current<span class="hl opt">;</span>
+            header_end <span class="hl opt">=</span> current <span class="hl opt">+</span> len<span class="hl opt">;</span>
+            current <span class="hl opt">+=</span> len<span class="hl opt">;</span>
+            body_begin <span class="hl opt">=</span> current<span class="hl opt">;</span>
+        <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>current<span class="hl opt">[</span>LINE_LENGTH<span class="hl opt">] ==</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">) {</span>
+                current <span class="hl opt">+=</span> LINE_LENGTH<span class="hl opt">;</span>
+            <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+                <span class="hl kwb">size_t</span> len <span class="hl opt">=</span> <span class="hl kwd">strlen</span><span class="hl opt">((</span><span class="hl kwb">const char</span> <span class="hl opt">*)</span>current<span class="hl opt">);</span>
+                <span class="hl kwa">if</span> <span class="hl opt">(</span>current<span class="hl opt">[</span>len <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">] ==</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">) {</span>
+                    <span class="hl opt">--</span>len<span class="hl opt">;</span>
+                <span class="hl opt">}</span>
+                current <span class="hl opt">+=</span> len<span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>body_begin <span class="hl opt">!=</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+        job <span class="hl opt">=</span> <span class="hl kwd">do_process_block</span><span class="hl opt">(</span>
+                header_begin<span class="hl opt">,</span> header_end<span class="hl opt">,</span>
+                body_begin<span class="hl opt">,</span> current<span class="hl opt">,</span>
+                <span class="hl opt">&amp;</span>lookup<span class="hl opt">,</span>
+                <span class="hl opt">&amp;</span>mutex<span class="hl opt">,</span>
+                job<span class="hl opt">);</span> 
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">while</span> <span class="hl opt">(</span>job<span class="hl opt">) {</span>
+        <span class="hl kwd">pthread_join</span><span class="hl opt">(</span>job<span class="hl opt">-&gt;</span>thread<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>job<span class="hl opt">-&gt;</span>free_buffer<span class="hl opt">) {</span>
+            <span class="hl kwd">free</span><span class="hl opt">(</span>job<span class="hl opt">-&gt;</span>buffer<span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+        job <span class="hl opt">=</span> job<span class="hl opt">-&gt;</span>prev_job<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+    
+    <span class="hl kwd">free</span><span class="hl opt">(</span>buffer<span class="hl opt">);</span>
+
+    <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>

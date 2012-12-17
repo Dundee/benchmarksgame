@@ -1,0 +1,453 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   Contributed by Andrew Moon</span>
+<span class="hl com">*/</span>
+
+
+<span class="hl ppc">#include &lt;stdio.h&gt;</span>
+<span class="hl ppc">#include &lt;stdlib.h&gt;</span>
+<span class="hl ppc">#include &lt;string.h&gt;</span>
+<span class="hl ppc">#include &lt;cstdlib&gt;</span>
+<span class="hl ppc">#include &lt;iostream&gt;</span>
+<span class="hl ppc">#include &lt;iomanip&gt;</span>
+<span class="hl ppc">#include &lt;vector&gt;</span>
+<span class="hl ppc">#include &lt;algorithm&gt;</span>
+
+<span class="hl ppc">#include &lt;sched.h&gt;</span>
+<span class="hl ppc">#include &lt;pthread.h&gt;</span>
+<span class="hl ppc">#include &lt;ext/pb_ds/assoc_container.hpp&gt;</span>
+<span class="hl ppc">#include &lt;ext/pb_ds/hash_policy.hpp&gt;</span>
+
+<span class="hl kwc">typedef</span> <span class="hl kwb">unsigned long long</span> u64<span class="hl opt">;</span>
+<span class="hl kwc">typedef</span> <span class="hl kwb">unsigned int</span> u32<span class="hl opt">;</span>
+<span class="hl kwc">typedef</span> <span class="hl kwb">signed int</span> s32<span class="hl opt">;</span>
+<span class="hl kwc">typedef</span> <span class="hl kwb">unsigned short</span> u16<span class="hl opt">;</span>
+<span class="hl kwc">typedef</span> <span class="hl kwb">unsigned char</span> u8<span class="hl opt">;</span>
+
+<span class="hl kwa">using namespace</span> std<span class="hl opt">;</span>
+
+<span class="hl kwb">struct</span> CPUs <span class="hl opt">{</span>
+  <span class="hl kwd">CPUs</span><span class="hl opt">() {</span>
+    cpu_set_t cs<span class="hl opt">;</span>
+    <span class="hl kwd">CPU_ZERO</span><span class="hl opt">( &amp;</span>cs <span class="hl opt">);</span>
+    <span class="hl kwd">sched_getaffinity</span><span class="hl opt">(</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span>cs<span class="hl opt">), &amp;</span>cs <span class="hl opt">);</span>
+    count <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span> <span class="hl kwb">size_t</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> CPU_SETSIZE<span class="hl opt">;</span> i<span class="hl opt">++ )</span>
+      count <span class="hl opt">+=</span> <span class="hl kwd">CPU_ISSET</span><span class="hl opt">(</span> i<span class="hl opt">, &amp;</span>cs <span class="hl opt">)</span> ? <span class="hl num">1</span> <span class="hl opt">:</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    count <span class="hl opt">=</span> std<span class="hl opt">::</span><span class="hl kwd">max</span><span class="hl opt">(</span> count<span class="hl opt">,</span> <span class="hl kwd">u32</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) );</span>
+  <span class="hl opt">}</span>
+
+  u32 count<span class="hl opt">;</span>
+<span class="hl opt">}</span> cpus<span class="hl opt">;</span>
+
+
+<span class="hl com">/*</span>
+<span class="hl com">  Smart selection of u32 or u64 based on storage needs</span>
+<span class="hl com"></span>
+<span class="hl com">  PreferU64 will use u32 if (size == 4 &amp;&amp; system = 32bit), otherwise u64.</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwc">template</span><span class="hl opt">&lt;</span> <span class="hl kwb">int</span> N <span class="hl opt">&gt;</span> <span class="hl kwb">struct</span> TypeSelector<span class="hl opt">;</span>
+<span class="hl kwc">template</span><span class="hl opt">&lt;&gt;</span> <span class="hl kwb">struct</span> TypeSelector<span class="hl opt">&lt;</span><span class="hl num">4</span><span class="hl opt">&gt; {</span> <span class="hl kwb">enum</span> <span class="hl opt">{</span> bits <span class="hl opt">=</span> <span class="hl num">32</span><span class="hl opt">, };</span> <span class="hl kwc">typedef</span> u32 tint<span class="hl opt">; };</span>
+<span class="hl kwc">template</span><span class="hl opt">&lt;&gt;</span> <span class="hl kwb">struct</span> TypeSelector<span class="hl opt">&lt;</span><span class="hl num">8</span><span class="hl opt">&gt; {</span> <span class="hl kwb">enum</span> <span class="hl opt">{</span> bits <span class="hl opt">=</span> <span class="hl num">64</span><span class="hl opt">, };</span> <span class="hl kwc">typedef</span> u64 tint<span class="hl opt">; };</span>
+
+<span class="hl kwc">template</span><span class="hl opt">&lt;</span> <span class="hl kwb">int</span> N <span class="hl opt">&gt;</span> <span class="hl kwb">struct</span> PreferU64 <span class="hl opt">{</span> 
+  <span class="hl kwb">enum</span> <span class="hl opt">{</span> bits <span class="hl opt">=</span> TypeSelector<span class="hl opt">&lt;</span><span class="hl num">8</span><span class="hl opt">&gt;::</span>bits <span class="hl opt">};</span> 
+  <span class="hl kwc">typedef</span> typename TypeSelector<span class="hl opt">&lt;</span><span class="hl num">8</span><span class="hl opt">&gt;::</span>tint tint<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+<span class="hl kwc">template</span><span class="hl opt">&lt;&gt;</span> <span class="hl kwb">struct</span> PreferU64<span class="hl opt">&lt;</span><span class="hl num">4</span><span class="hl opt">&gt; {</span>
+  <span class="hl kwb">enum</span> <span class="hl opt">{</span> selector <span class="hl opt">=</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span>u32 <span class="hl opt">*) };</span>
+  <span class="hl kwb">enum</span> <span class="hl opt">{</span> bits <span class="hl opt">=</span> TypeSelector<span class="hl opt">&lt;</span>selector<span class="hl opt">&gt;::</span>bits <span class="hl opt">};</span> 
+  <span class="hl kwc">typedef</span> TypeSelector<span class="hl opt">&lt;</span>selector<span class="hl opt">&gt;::</span>tint tint<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+<span class="hl kwc">typedef</span> TypeSelector<span class="hl opt">&lt;</span><span class="hl kwa">sizeof</span><span class="hl opt">(</span><span class="hl kwb">int</span> <span class="hl opt">*)&gt;::</span>tint tint<span class="hl opt">;</span>
+
+<span class="hl com">/*</span>
+<span class="hl com">  DNASource handles enum defs we're interested in and extracting</span>
+<span class="hl com">  DNA sequences from a packed DNA stream (2 bits per nucleotide)</span>
+<span class="hl com"></span>
+<span class="hl com">  Will use 64 bits for the state on 64bit machines, otherwise</span>
+<span class="hl com">  32/64 bits depending on the size of the DNA sequence</span>
+<span class="hl com"></span>
+<span class="hl com">  left0 = # of nucleotides left in state</span>
+<span class="hl com">  left1 = # of nucleotides left in the upcoming tstore, lower[1]</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwc">template</span><span class="hl opt">&lt;</span> <span class="hl kwb">int</span> N <span class="hl opt">&gt;</span>
+<span class="hl kwb">struct</span> DNASource <span class="hl opt">{</span>
+  <span class="hl kwb">enum</span> <span class="hl opt">{</span>
+    completedwords <span class="hl opt">=</span> N <span class="hl opt">/</span> <span class="hl num">4</span><span class="hl opt">,</span>
+    partialbytes <span class="hl opt">=</span> N <span class="hl opt">&amp;</span> <span class="hl num">3</span><span class="hl opt">,</span>
+    storagedwords <span class="hl opt">= (</span> N <span class="hl opt">+</span> <span class="hl num">15</span> <span class="hl opt">) /</span> <span class="hl num">16</span><span class="hl opt">,</span>
+    storagebytes <span class="hl opt">=</span> storagedwords <span class="hl opt">*</span> <span class="hl num">4</span><span class="hl opt">,</span>
+
+    bits <span class="hl opt">=</span> PreferU64<span class="hl opt">&lt;</span>storagebytes<span class="hl opt">&gt;::</span>bits<span class="hl opt">,</span>
+    maxsequences <span class="hl opt">=</span> bits <span class="hl opt">/</span> <span class="hl num">2</span><span class="hl opt">,</span>
+    sequencebits <span class="hl opt">=</span> N <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">,</span>
+  <span class="hl opt">};</span>
+  <span class="hl kwc">typedef</span> typename TypeSelector<span class="hl opt">&lt;</span>storagebytes<span class="hl opt">&gt;::</span>tint tint<span class="hl opt">;</span>
+  <span class="hl kwc">typedef</span> typename PreferU64<span class="hl opt">&lt;</span>storagebytes<span class="hl opt">&gt;::</span>tint tstore<span class="hl opt">;</span>
+
+  <span class="hl kwd">DNASource</span><span class="hl opt">(</span> <span class="hl kwb">const char</span> <span class="hl opt">*</span>data<span class="hl opt">,</span> u32 offset <span class="hl opt">) :</span> <span class="hl kwd">in</span><span class="hl opt">(</span>data<span class="hl opt">) {</span>
+    <span class="hl kwb">const</span> u32 partial <span class="hl opt">=</span> offset <span class="hl opt">&amp; (</span> maxsequences <span class="hl opt">-</span> <span class="hl num">1</span> <span class="hl opt">);</span>
+    lower <span class="hl opt">= (</span>tstore <span class="hl opt">*)</span>data <span class="hl opt">+ (</span> offset <span class="hl opt">/</span> maxsequences <span class="hl opt">);</span>
+    <span class="hl kwb">const</span> u32 rshift <span class="hl opt">=</span> partial <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">,</span> lshift <span class="hl opt">=</span> bits <span class="hl opt">-</span> rshift<span class="hl opt">;</span>    
+    state <span class="hl opt">= (</span> partial <span class="hl opt">)</span> ? <span class="hl opt">(</span> lower<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] &gt;&gt;</span> rshift <span class="hl opt">) | (</span> lower<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] &lt;&lt;</span> lshift <span class="hl opt">) :</span> lower<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">];</span>
+    left0 <span class="hl opt">=</span> maxsequences<span class="hl opt">;</span>
+    left1 <span class="hl opt">=</span> lshift <span class="hl opt">/</span> <span class="hl num">2</span><span class="hl opt">;</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwc">inline</span> <span class="hl kwb">void</span> <span class="hl kwd">extractto</span><span class="hl opt">(</span> tint <span class="hl opt">&amp;</span>out <span class="hl opt">) {</span>
+    <span class="hl slc">// reload if needed</span>
+    <span class="hl kwa">if</span> <span class="hl opt">( (</span> N <span class="hl opt">&gt;</span> maxsequences <span class="hl opt">/</span> <span class="hl num">2</span> <span class="hl opt">) || (</span> left0 <span class="hl opt">&lt;</span> N <span class="hl opt">) ) {</span>
+      s32 want <span class="hl opt">=</span> maxsequences <span class="hl opt">-</span> left0<span class="hl opt">;</span>
+      state <span class="hl opt">|= (</span> lower<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] &gt;&gt; ( (</span> maxsequences <span class="hl opt">-</span> left1 <span class="hl opt">) *</span> <span class="hl num">2</span> <span class="hl opt">) ) &lt;&lt; (</span> left0 <span class="hl opt">*</span> <span class="hl num">2</span> <span class="hl opt">);</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span> left1 <span class="hl opt">&gt;</span> want <span class="hl opt">) {</span>
+        left1 <span class="hl opt">-=</span> want<span class="hl opt">;</span>
+      <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+        lower<span class="hl opt">++;</span>
+        left1 <span class="hl opt">+=</span> left0<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span> left1 <span class="hl opt">!=</span> maxsequences <span class="hl opt">)</span>
+        state <span class="hl opt">|= (</span> lower<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] &lt;&lt; (</span> left1 <span class="hl opt">*</span> <span class="hl num">2</span> <span class="hl opt">) );</span>
+      left0 <span class="hl opt">=</span> maxsequences<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl slc">// load the nucleotides</span>
+    <span class="hl kwa">if</span> <span class="hl opt">(</span> sequencebits <span class="hl opt">!=</span> bits <span class="hl opt">) {</span>
+      tstore shift <span class="hl opt">=</span> sequencebits<span class="hl opt">,</span> mask <span class="hl opt">= (</span> <span class="hl kwd">tstore</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) &lt;&lt;</span> shift <span class="hl opt">) -</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      out <span class="hl opt">=</span> <span class="hl kwd">tint</span><span class="hl opt">(</span>state <span class="hl opt">&amp;</span> mask<span class="hl opt">);</span>
+    <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+      out <span class="hl opt">=</span> <span class="hl kwd">tint</span><span class="hl opt">(</span>state<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+    state <span class="hl opt">&gt;&gt;= (</span> N <span class="hl opt">*</span> <span class="hl num">2</span> <span class="hl opt">);</span>
+    left0 <span class="hl opt">-=</span> N<span class="hl opt">;</span>
+  <span class="hl opt">}</span>
+
+<span class="hl kwc">protected</span><span class="hl opt">:</span>
+  <span class="hl kwb">const char</span> <span class="hl opt">*</span>in<span class="hl opt">;</span>
+  s32 left0<span class="hl opt">,</span> left1<span class="hl opt">;</span>
+  tstore state<span class="hl opt">, *</span>lower<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+<span class="hl com">/*</span>
+<span class="hl com">  A packed DNA key. Each nucleotide is packed down to 2 bits (we only have</span>
+<span class="hl com">  4 to keep track of).</span>
+<span class="hl com"></span>
+<span class="hl com">  0000:0xx0 are the bits we want. A,C,G,T and a,c,g,t both map to the same</span>
+<span class="hl com">  four values with this bitmask, but not in alphabetical order. Convert</span>
+<span class="hl com">  the key to a string to sort!</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwc">template</span><span class="hl opt">&lt;</span> <span class="hl kwb">int</span> N <span class="hl opt">&gt;</span>
+<span class="hl kwb">struct</span> Key <span class="hl opt">{</span>
+  <span class="hl kwc">typedef</span> typename DNASource<span class="hl opt">&lt;</span>N<span class="hl opt">&gt;::</span>tint tint<span class="hl opt">;</span>
+
+  <span class="hl kwb">struct</span> Ops <span class="hl opt">{</span>
+    <span class="hl kwb">enum</span> <span class="hl opt">{</span> bucket_size <span class="hl opt">=</span> <span class="hl num">4</span><span class="hl opt">,</span> min_buckets <span class="hl opt">=</span> <span class="hl num">8</span> <span class="hl opt">};</span>
+    <span class="hl slc">// hash</span>
+    u32 <span class="hl kwc">operator</span><span class="hl opt">() (</span> <span class="hl kwb">const</span> Key <span class="hl opt">&amp;</span>k <span class="hl opt">)</span> <span class="hl kwb">const</span> <span class="hl opt">{</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span> N <span class="hl opt">&lt;=</span> <span class="hl num">4</span> <span class="hl opt">) {</span>
+        <span class="hl kwa">return</span> <span class="hl kwd">u32</span><span class="hl opt">(~</span>k<span class="hl opt">);</span>
+      <span class="hl opt">}</span> <span class="hl kwa">else if</span> <span class="hl opt">(</span> N <span class="hl opt">&lt;=</span> <span class="hl num">16</span> <span class="hl opt">) {</span>
+        u8 shift <span class="hl opt">=</span> N <span class="hl opt">/</span> <span class="hl num">2</span><span class="hl opt">;</span>
+        <span class="hl kwa">return</span> <span class="hl kwd">u32</span><span class="hl opt">(~</span>k <span class="hl opt">+ ( ~</span>k <span class="hl opt">&gt;&gt;</span> shift <span class="hl opt">));</span>
+      <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+        u8 shift <span class="hl opt">=</span> N <span class="hl opt">/</span> <span class="hl num">2</span><span class="hl opt">;</span>
+        <span class="hl kwa">return</span> <span class="hl kwd">u32</span><span class="hl opt">(~</span>k <span class="hl opt">+ ( ~</span>k <span class="hl opt">&gt;&gt;</span> <span class="hl num">13</span> <span class="hl opt">) + ( ~</span>k <span class="hl opt">&gt;&gt;</span> shift <span class="hl opt">));</span>
+      <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl slc">// equals</span>
+    <span class="hl kwb">bool</span> <span class="hl kwc">operator</span><span class="hl opt">() (</span> <span class="hl kwb">const</span> Key <span class="hl opt">&amp;</span>a<span class="hl opt">,</span> <span class="hl kwb">const</span> Key <span class="hl opt">&amp;</span>b <span class="hl opt">)</span> <span class="hl kwb">const</span> <span class="hl opt">{</span> <span class="hl kwa">return</span> <span class="hl opt">~</span>a <span class="hl opt">== ~</span>b<span class="hl opt">; }</span>
+  <span class="hl opt">};</span>
+
+  <span class="hl kwd">Key</span><span class="hl opt">() {}</span>
+
+  <span class="hl slc">// packing this way isn't efficient, but called rarely</span>
+  <span class="hl kwd">Key</span><span class="hl opt">(</span> <span class="hl kwb">const char</span> <span class="hl opt">*</span>in <span class="hl opt">) :</span> <span class="hl kwd">packed</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">) {</span>
+    u8 <span class="hl opt">*</span>bytes <span class="hl opt">= (</span>u8 <span class="hl opt">*)&amp;</span>packed<span class="hl opt">;</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span> <span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> N<span class="hl opt">;</span> i<span class="hl opt">++ )</span>
+      bytes<span class="hl opt">[</span>i<span class="hl opt">/</span><span class="hl num">4</span><span class="hl opt">] |= ( ( *</span>in<span class="hl opt">++ &gt;&gt;</span> <span class="hl num">1</span> <span class="hl opt">) &amp;</span> <span class="hl num">0x3</span> <span class="hl opt">) &lt;&lt; ( (</span> i <span class="hl opt">%</span> <span class="hl num">4</span> <span class="hl opt">) *</span> <span class="hl num">2</span> <span class="hl opt">);</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl slc">// up to 2 instances active at once</span>
+  <span class="hl kwb">const char</span> <span class="hl opt">*</span><span class="hl kwd">tostring</span><span class="hl opt">()</span> <span class="hl kwb">const</span> <span class="hl opt">{</span>
+    <span class="hl kwb">static char</span> names<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">][</span>N<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">],</span> table<span class="hl opt">[</span><span class="hl num">4</span><span class="hl opt">] = {</span> <span class="hl str">'A'</span><span class="hl opt">,</span> <span class="hl str">'C'</span><span class="hl opt">,</span> <span class="hl str">'T'</span><span class="hl opt">,</span> <span class="hl str">'G'</span> <span class="hl opt">};</span>
+    <span class="hl kwb">static</span> u32 on <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    u64 bits <span class="hl opt">=</span> packed<span class="hl opt">;</span>
+    on <span class="hl opt">^=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span> <span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> N<span class="hl opt">;</span> i<span class="hl opt">++,</span> bits <span class="hl opt">&gt;&gt;=</span> <span class="hl num">2</span> <span class="hl opt">)</span>
+      names<span class="hl opt">[</span>on<span class="hl opt">][</span>i<span class="hl opt">] =</span> table<span class="hl opt">[</span>bits <span class="hl opt">&amp;</span> <span class="hl num">3</span><span class="hl opt">];</span>
+    names<span class="hl opt">[</span>on<span class="hl opt">][</span>N<span class="hl opt">] =</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">return</span> names<span class="hl opt">[</span>on<span class="hl opt">];</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl slc">// for sorting</span>
+  <span class="hl kwb">bool</span> <span class="hl kwc">operator</span><span class="hl opt">&lt; (</span> <span class="hl kwb">const</span> Key <span class="hl opt">&amp;</span>b <span class="hl opt">)</span> <span class="hl kwb">const</span> <span class="hl opt">{</span>
+    <span class="hl kwa">return</span> <span class="hl kwd">strcmp</span><span class="hl opt">(</span> <span class="hl kwd">tostring</span><span class="hl opt">(),</span> b<span class="hl opt">.</span><span class="hl kwd">tostring</span><span class="hl opt">() ) &lt;</span> <span class="hl num">0</span><span class="hl opt">;</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl slc">// direct access</span>
+  tint <span class="hl opt">&amp;</span><span class="hl kwc">operator</span><span class="hl opt">~ () {</span> <span class="hl kwa">return</span> packed<span class="hl opt">; }</span>
+  <span class="hl kwb">const</span> tint <span class="hl opt">&amp;</span><span class="hl kwc">operator</span><span class="hl opt">~ ()</span> <span class="hl kwb">const</span> <span class="hl opt">{</span> <span class="hl kwa">return</span> packed<span class="hl opt">; }</span>
+
+<span class="hl kwc">protected</span><span class="hl opt">:</span>
+  tint packed<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+<span class="hl slc">// hash table wrapper</span>
+<span class="hl kwc">template</span><span class="hl opt">&lt;</span> <span class="hl kwb">int</span> N <span class="hl opt">&gt;</span>
+  <span class="hl kwc">class</span> KeyHash <span class="hl opt">:</span>
+    <span class="hl kwc">public</span> __gnu_pbds<span class="hl opt">::</span>cc_hash_table <span class="hl opt">&lt;</span>
+      Key<span class="hl opt">&lt;</span>N<span class="hl opt">&gt;,</span> <span class="hl slc">// key</span>
+      u32<span class="hl opt">,</span> <span class="hl slc">// value</span>
+      typename Key<span class="hl opt">&lt;</span>N<span class="hl opt">&gt;::</span>Ops<span class="hl opt">,</span> <span class="hl slc">// hash</span>
+      typename Key<span class="hl opt">&lt;</span>N<span class="hl opt">&gt;::</span>Ops <span class="hl slc">// equality</span>
+    <span class="hl opt">&gt; {};</span>
+
+<span class="hl kwb">static const</span> u32 lengths<span class="hl opt">[] = {</span> <span class="hl num">18</span><span class="hl opt">,</span> <span class="hl num">12</span><span class="hl opt">,</span> <span class="hl num">6</span><span class="hl opt">,</span> <span class="hl num">4</span><span class="hl opt">,</span> <span class="hl num">3</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl num">1</span> <span class="hl opt">},</span> numLengths <span class="hl opt">=</span> <span class="hl num">7</span><span class="hl opt">;</span>
+<span class="hl kwb">static const</span> u32 lineLength <span class="hl opt">=</span> <span class="hl num">60</span><span class="hl opt">;</span>
+
+<span class="hl com">/*</span>
+<span class="hl com">  A DNA block to analyze. Requires a single block of memory to</span>
+<span class="hl com">  hold the block for efficiency. Block starts at 32mb and grows</span>
+<span class="hl com">  exponentially</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwb">struct</span> Block <span class="hl opt">{</span>
+  <span class="hl kwd">Block</span><span class="hl opt">() :</span> <span class="hl kwd">data</span><span class="hl opt">(</span>NULL<span class="hl opt">),</span> <span class="hl kwd">count</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">),</span> <span class="hl kwd">alloc</span><span class="hl opt">(</span><span class="hl num">32</span> <span class="hl opt">*</span> <span class="hl num">1048576</span><span class="hl opt">) {</span>
+    data <span class="hl opt">= (</span><span class="hl kwb">char</span> <span class="hl opt">*)</span><span class="hl kwd">realloc</span><span class="hl opt">(</span> data<span class="hl opt">,</span> alloc <span class="hl opt">);</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl opt">~</span><span class="hl kwd">Block</span><span class="hl opt">() {</span> <span class="hl kwd">free</span><span class="hl opt">(</span> data <span class="hl opt">); }</span>
+
+  <span class="hl slc">// read the block in until the end of the sequence or a new sequence starts</span>
+  <span class="hl kwb">void</span> <span class="hl kwd">read</span><span class="hl opt">() {</span>
+    <span class="hl kwb">char</span> buffer<span class="hl opt">[</span>lineLength <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">];</span>
+    buffer<span class="hl opt">[</span>lineLength<span class="hl opt">] = -</span><span class="hl num">1</span><span class="hl opt">;</span>
+    <span class="hl kwa">while</span> <span class="hl opt">(</span> <span class="hl kwd">fgets_unlocked</span><span class="hl opt">(</span> buffer<span class="hl opt">,</span> lineLength <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">,</span> stdin <span class="hl opt">) ) {</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span> buffer<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] ==</span> <span class="hl str">'&gt;'</span> <span class="hl opt">)</span>
+        <span class="hl kwa">return</span><span class="hl opt">;</span>
+      <span class="hl slc">// -1 trick should keep us from calling strlen</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span> buffer<span class="hl opt">[</span>lineLength<span class="hl opt">] !=</span> <span class="hl num">0xa</span> <span class="hl opt">)</span>
+        <span class="hl kwa">return</span> <span class="hl kwd">addline</span><span class="hl opt">(</span> buffer<span class="hl opt">,</span> <span class="hl kwb">int</span><span class="hl opt">(</span><span class="hl kwd">strlen</span><span class="hl opt">(</span> buffer <span class="hl opt">)) -</span> <span class="hl num">1</span> <span class="hl opt">);</span>
+      <span class="hl kwd">addline</span><span class="hl opt">(</span> buffer<span class="hl opt">,</span> lineLength <span class="hl opt">);</span>
+      buffer<span class="hl opt">[</span>lineLength<span class="hl opt">] = -</span><span class="hl num">1</span><span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl slc">// read lines until we get a match</span>
+  <span class="hl kwb">bool</span> <span class="hl kwd">untilheader</span><span class="hl opt">(</span> <span class="hl kwb">const char</span> <span class="hl opt">*</span>match <span class="hl opt">) {</span>
+    <span class="hl kwb">size_t</span> len <span class="hl opt">=</span> <span class="hl kwd">strlen</span><span class="hl opt">(</span> match <span class="hl opt">);</span>
+    <span class="hl kwb">const</span> u32 <span class="hl opt">*</span>in <span class="hl opt">= (</span><span class="hl kwb">const</span> u32 <span class="hl opt">*)</span>data<span class="hl opt">, *</span>want <span class="hl opt">= (</span><span class="hl kwb">const</span> u32 <span class="hl opt">*)</span>match<span class="hl opt">;</span>
+    <span class="hl kwa">while</span> <span class="hl opt">(</span> <span class="hl kwd">fgets_unlocked</span><span class="hl opt">(</span> data<span class="hl opt">,</span> alloc<span class="hl opt">,</span> stdin <span class="hl opt">) )</span>
+      <span class="hl kwa">if</span> <span class="hl opt">( ( *</span>in <span class="hl opt">== *</span>want <span class="hl opt">) &amp;&amp; (</span> <span class="hl kwd">memcmp</span><span class="hl opt">(</span> data<span class="hl opt">,</span> match<span class="hl opt">,</span> len <span class="hl opt">) ==</span> <span class="hl num">0</span> <span class="hl opt">) )</span>
+        <span class="hl kwa">return true</span><span class="hl opt">;</span>
+    <span class="hl kwa">return false</span><span class="hl opt">;</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwb">int</span> <span class="hl kwd">getcount</span><span class="hl opt">()</span> <span class="hl kwb">const</span> <span class="hl opt">{</span> <span class="hl kwa">return</span> count<span class="hl opt">; }</span>
+  <span class="hl kwb">char</span> <span class="hl opt">*</span><span class="hl kwd">getdata</span><span class="hl opt">() {</span> <span class="hl kwa">return</span> data<span class="hl opt">; }</span>
+
+<span class="hl kwc">protected</span><span class="hl opt">:</span>
+  <span class="hl slc">// convert a string of input to packed DNA</span>
+  <span class="hl kwb">void</span> <span class="hl kwd">addline</span><span class="hl opt">(</span> <span class="hl kwb">const char</span> <span class="hl opt">*</span>buffer<span class="hl opt">,</span> <span class="hl kwb">int</span> bytes <span class="hl opt">) {</span>
+    <span class="hl kwa">if</span> <span class="hl opt">( ( (</span> count <span class="hl opt">+</span> bytes <span class="hl opt">) /</span> <span class="hl num">4</span> <span class="hl opt">) &gt;</span> alloc <span class="hl opt">) {</span>
+      alloc <span class="hl opt">*=</span> <span class="hl num">2</span><span class="hl opt">;</span>
+      data <span class="hl opt">= (</span><span class="hl kwb">char</span> <span class="hl opt">*)</span><span class="hl kwd">realloc</span><span class="hl opt">(</span> data<span class="hl opt">,</span> alloc <span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwb">const</span> u32 <span class="hl opt">*</span>in <span class="hl opt">= (</span><span class="hl kwb">const</span> u32 <span class="hl opt">*)</span>buffer<span class="hl opt">;</span>
+    u8 <span class="hl opt">*</span>out <span class="hl opt">= (</span>u8 <span class="hl opt">*)(</span> data <span class="hl opt">+</span> count <span class="hl opt">/</span> <span class="hl num">4</span> <span class="hl opt">);</span>
+    <span class="hl slc">// 00000dd0:00000cc0-00000bb0:00000aa0 -&gt; ddccbbaa</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span> <span class="hl kwb">int</span> i <span class="hl opt">=</span> bytes <span class="hl opt">/</span> <span class="hl num">4</span><span class="hl opt">;</span> i<span class="hl opt">;</span> i<span class="hl opt">-- ) {</span>
+      u32 conv <span class="hl opt">= ( *</span>in<span class="hl opt">++ &gt;&gt;</span> <span class="hl num">1</span> <span class="hl opt">) &amp;</span> <span class="hl num">0x03030303</span><span class="hl opt">;</span>
+      <span class="hl opt">*</span>out<span class="hl opt">++ =</span> conv <span class="hl opt">| (</span> conv <span class="hl opt">&gt;&gt;</span> <span class="hl num">6</span> <span class="hl opt">) | (</span> conv <span class="hl opt">&gt;&gt;</span> <span class="hl num">12</span> <span class="hl opt">) | (</span> conv <span class="hl opt">&gt;&gt;</span> <span class="hl num">18</span> <span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+    buffer <span class="hl opt">= (</span><span class="hl kwb">const char</span> <span class="hl opt">*)</span>in<span class="hl opt">;</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span> <span class="hl kwb">int</span> i <span class="hl opt">=</span> bytes <span class="hl opt">&amp;</span> <span class="hl num">3</span><span class="hl opt">,</span> shift <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">;</span> i<span class="hl opt">--,</span> shift <span class="hl opt">+=</span> <span class="hl num">2</span> <span class="hl opt">)</span>
+      <span class="hl opt">*</span>out <span class="hl opt">|= ( (</span><span class="hl kwb">unsigned</span> <span class="hl opt">)( *</span>buffer<span class="hl opt">++ &amp;</span> <span class="hl num">6</span> <span class="hl opt">) &gt;&gt;</span> <span class="hl num">1</span> <span class="hl opt">) &lt;&lt; (</span>shift <span class="hl opt">&amp;</span> <span class="hl num">7</span><span class="hl opt">);</span>
+    count <span class="hl opt">+=</span> bytes<span class="hl opt">;</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwb">char</span> <span class="hl opt">*</span>data<span class="hl opt">;</span>
+  <span class="hl kwb">int</span> count<span class="hl opt">,</span> alloc<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+<span class="hl com">/*</span>
+<span class="hl com">  Queue hands out work states to process</span>
+<span class="hl com">  </span>
+<span class="hl com">  st holds two u16 values, the current offset in the sequence, and the</span>
+<span class="hl com">  current length of the sequence</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwb">struct</span> Queue <span class="hl opt">{</span>
+  <span class="hl kwd">Queue</span><span class="hl opt">() :</span> <span class="hl kwd">st</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">) {}</span>
+
+  <span class="hl kwb">bool</span> <span class="hl kwd">get</span><span class="hl opt">(</span> u32 <span class="hl opt">&amp;</span>sequence<span class="hl opt">,</span> u32 <span class="hl opt">&amp;</span>offset <span class="hl opt">) {</span>
+    <span class="hl kwa">while</span> <span class="hl opt">(</span> <span class="hl kwa">true</span> <span class="hl opt">) {</span>
+      u32 cur <span class="hl opt">=</span> st<span class="hl opt">;</span>
+      <span class="hl kwa">if</span> <span class="hl opt">( (</span> cur <span class="hl opt">&gt;&gt;</span> <span class="hl num">16</span> <span class="hl opt">) ==</span> numLengths <span class="hl opt">)</span>
+        <span class="hl kwa">return false</span><span class="hl opt">;</span>
+
+      <span class="hl slc">// try to claim the next set</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span> <span class="hl kwd">__sync_val_compare_and_swap</span><span class="hl opt">( &amp;</span>st<span class="hl opt">,</span> cur<span class="hl opt">,</span> <span class="hl kwd">nextstate</span><span class="hl opt">(</span> cur <span class="hl opt">) ) !=</span> cur <span class="hl opt">)</span>
+        <span class="hl kwa">continue</span><span class="hl opt">;</span>
+
+      <span class="hl slc">// it's ours</span>
+      sequence <span class="hl opt">=</span> lengths<span class="hl opt">[</span>cur <span class="hl opt">&gt;&gt;</span> <span class="hl num">16</span><span class="hl opt">];</span>
+      offset <span class="hl opt">=</span> cur <span class="hl opt">&amp;</span> <span class="hl num">0xffff</span><span class="hl opt">;</span>
+      <span class="hl kwa">return true</span><span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+  <span class="hl opt">}</span>
+
+  u32 <span class="hl kwd">nextstate</span><span class="hl opt">(</span> u32 cur <span class="hl opt">) {</span>
+    u16 offset <span class="hl opt">= (</span> cur <span class="hl opt">&amp;</span> <span class="hl num">0xffff</span> <span class="hl opt">),</span> length <span class="hl opt">= (</span> cur <span class="hl opt">&gt;&gt;</span> <span class="hl num">16</span> <span class="hl opt">);</span>
+    <span class="hl kwa">if</span> <span class="hl opt">( ++</span>offset <span class="hl opt">==</span> lengths<span class="hl opt">[</span>length<span class="hl opt">] ) {</span>
+      offset <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      length<span class="hl opt">++;</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwa">return</span> <span class="hl opt">(</span> length <span class="hl opt">&lt;&lt;</span> <span class="hl num">16</span> <span class="hl opt">) |</span> offset<span class="hl opt">;</span>
+  <span class="hl opt">}</span>
+
+<span class="hl kwc">protected</span><span class="hl opt">:</span>
+  <span class="hl kwc">volatile</span> u32 st<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+
+<span class="hl kwb">struct</span> Worker <span class="hl opt">{</span>
+  <span class="hl kwd">Worker</span><span class="hl opt">() {}</span>
+
+  <span class="hl kwc">template</span><span class="hl opt">&lt;</span> <span class="hl kwb">int</span> N<span class="hl opt">,</span> <span class="hl kwc">class</span> Hash <span class="hl opt">&gt;</span>
+  <span class="hl kwb">void</span> <span class="hl kwd">process</span><span class="hl opt">(</span> Hash <span class="hl opt">&amp;</span>hash <span class="hl opt">) {</span>
+    Key<span class="hl opt">&lt;</span>N<span class="hl opt">&gt;</span> key<span class="hl opt">;</span>
+    DNASource<span class="hl opt">&lt;</span>N<span class="hl opt">&gt;</span> <span class="hl kwd">source</span><span class="hl opt">(</span> block<span class="hl opt">-&gt;</span><span class="hl kwd">getdata</span><span class="hl opt">(),</span> offset <span class="hl opt">);</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span> <span class="hl kwb">int</span> i <span class="hl opt">=</span> block<span class="hl opt">-&gt;</span><span class="hl kwd">getcount</span><span class="hl opt">() -</span> offset<span class="hl opt">;</span> i <span class="hl opt">&gt;=</span> N<span class="hl opt">;</span> i <span class="hl opt">-=</span> N <span class="hl opt">) {</span>
+      source<span class="hl opt">.</span><span class="hl kwd">extractto</span><span class="hl opt">( ~</span>key <span class="hl opt">);</span>
+      hash<span class="hl opt">[</span>key<span class="hl opt">]++;</span>
+    <span class="hl opt">}</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwb">void</span> <span class="hl kwd">run</span><span class="hl opt">() {</span>
+    <span class="hl kwa">while</span> <span class="hl opt">(</span> workQueue<span class="hl opt">-&gt;</span><span class="hl kwd">get</span><span class="hl opt">(</span> length<span class="hl opt">,</span> offset <span class="hl opt">) ) {</span>
+      <span class="hl kwa">switch</span> <span class="hl opt">(</span> length <span class="hl opt">) {</span>
+        <span class="hl kwa">case</span> <span class="hl num">1</span><span class="hl opt">:</span> process<span class="hl opt">&lt;</span><span class="hl num">1</span><span class="hl opt">&gt;(</span> hash1 <span class="hl opt">);</span> <span class="hl kwa">break</span><span class="hl opt">;</span>
+        <span class="hl kwa">case</span> <span class="hl num">2</span><span class="hl opt">:</span> process<span class="hl opt">&lt;</span><span class="hl num">2</span><span class="hl opt">&gt;(</span> hash2 <span class="hl opt">);</span> <span class="hl kwa">break</span><span class="hl opt">;</span>
+        <span class="hl kwa">case</span> <span class="hl num">3</span><span class="hl opt">:</span> process<span class="hl opt">&lt;</span><span class="hl num">3</span><span class="hl opt">&gt;(</span> hash3 <span class="hl opt">);</span> <span class="hl kwa">break</span><span class="hl opt">;</span>
+        <span class="hl kwa">case</span> <span class="hl num">4</span><span class="hl opt">:</span> process<span class="hl opt">&lt;</span><span class="hl num">4</span><span class="hl opt">&gt;(</span> hash4 <span class="hl opt">);</span> <span class="hl kwa">break</span><span class="hl opt">;</span>
+        <span class="hl kwa">case</span> <span class="hl num">6</span><span class="hl opt">:</span> process<span class="hl opt">&lt;</span><span class="hl num">6</span><span class="hl opt">&gt;(</span> hash6 <span class="hl opt">);</span> <span class="hl kwa">break</span><span class="hl opt">;</span>
+        <span class="hl kwa">case</span> <span class="hl num">12</span><span class="hl opt">:</span> process<span class="hl opt">&lt;</span><span class="hl num">12</span><span class="hl opt">&gt;(</span> hash12 <span class="hl opt">);</span> <span class="hl kwa">break</span><span class="hl opt">;</span>
+        <span class="hl kwa">case</span> <span class="hl num">18</span><span class="hl opt">:</span> process<span class="hl opt">&lt;</span><span class="hl num">18</span><span class="hl opt">&gt;(</span> hash18 <span class="hl opt">);</span> <span class="hl kwa">break</span><span class="hl opt">;</span>
+        <span class="hl kwa">default</span><span class="hl opt">:</span> <span class="hl kwa">break</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwb">void</span> <span class="hl kwd">join</span><span class="hl opt">() {</span> <span class="hl kwd">pthread_join</span><span class="hl opt">(</span> handle<span class="hl opt">,</span> <span class="hl num">0</span> <span class="hl opt">); }</span>
+  <span class="hl kwb">void</span> <span class="hl kwd">start</span><span class="hl opt">(</span> Queue <span class="hl opt">*</span>queue<span class="hl opt">,</span> Block <span class="hl opt">*</span>in <span class="hl opt">) {</span>
+    workQueue <span class="hl opt">=</span> queue<span class="hl opt">;</span>
+    block <span class="hl opt">=</span> in<span class="hl opt">;</span>
+    <span class="hl kwd">pthread_create</span><span class="hl opt">( &amp;</span>handle<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> Worker<span class="hl opt">::</span>thread<span class="hl opt">,</span> <span class="hl kwa">this</span> <span class="hl opt">);</span>
+  <span class="hl opt">}</span>
+  <span class="hl kwb">static void</span> <span class="hl opt">*</span><span class="hl kwd">thread</span><span class="hl opt">(</span> <span class="hl kwb">void</span> <span class="hl opt">*</span>arg <span class="hl opt">) { ((</span>Worker <span class="hl opt">*)</span>arg<span class="hl opt">)-&gt;</span><span class="hl kwd">run</span><span class="hl opt">();</span> <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">; }</span>
+
+  pthread_t handle<span class="hl opt">;</span>
+  Block <span class="hl opt">*</span>block<span class="hl opt">;</span>
+  Queue <span class="hl opt">*</span>workQueue<span class="hl opt">;</span>
+  u32 length<span class="hl opt">,</span> offset<span class="hl opt">;</span>
+
+  KeyHash<span class="hl opt">&lt;</span><span class="hl num">18</span><span class="hl opt">&gt;</span> hash18<span class="hl opt">;</span>
+  KeyHash<span class="hl opt">&lt;</span><span class="hl num">12</span><span class="hl opt">&gt;</span> hash12<span class="hl opt">;</span>
+  KeyHash<span class="hl opt">&lt;</span><span class="hl num">6</span><span class="hl opt">&gt;</span> hash6<span class="hl opt">;</span>
+  KeyHash<span class="hl opt">&lt;</span><span class="hl num">4</span><span class="hl opt">&gt;</span> hash4<span class="hl opt">;</span>
+  KeyHash<span class="hl opt">&lt;</span><span class="hl num">3</span><span class="hl opt">&gt;</span> hash3<span class="hl opt">;</span>
+  KeyHash<span class="hl opt">&lt;</span><span class="hl num">2</span><span class="hl opt">&gt;</span> hash2<span class="hl opt">;</span>
+  KeyHash<span class="hl opt">&lt;</span><span class="hl num">1</span><span class="hl opt">&gt;</span> hash1<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+<span class="hl kwc">template</span><span class="hl opt">&lt;</span> <span class="hl kwb">int</span> N<span class="hl opt">,</span> <span class="hl kwc">class</span> W <span class="hl opt">&gt;</span> KeyHash<span class="hl opt">&lt;</span>N<span class="hl opt">&gt; &amp;</span><span class="hl kwd">Get</span><span class="hl opt">(</span> W <span class="hl opt">&amp;</span>w <span class="hl opt">);</span>
+
+<span class="hl kwc">template</span><span class="hl opt">&lt;&gt;</span> KeyHash<span class="hl opt">&lt;</span><span class="hl num">1</span><span class="hl opt">&gt; &amp;</span><span class="hl kwd">Get</span><span class="hl opt">(</span> Worker <span class="hl opt">&amp;</span>w <span class="hl opt">) {</span> <span class="hl kwa">return</span> w<span class="hl opt">.</span>hash1<span class="hl opt">; }</span>
+<span class="hl kwc">template</span><span class="hl opt">&lt;&gt;</span> KeyHash<span class="hl opt">&lt;</span><span class="hl num">2</span><span class="hl opt">&gt; &amp;</span><span class="hl kwd">Get</span><span class="hl opt">(</span> Worker <span class="hl opt">&amp;</span>w <span class="hl opt">) {</span> <span class="hl kwa">return</span> w<span class="hl opt">.</span>hash2<span class="hl opt">; }</span>
+<span class="hl kwc">template</span><span class="hl opt">&lt;&gt;</span> KeyHash<span class="hl opt">&lt;</span><span class="hl num">3</span><span class="hl opt">&gt; &amp;</span><span class="hl kwd">Get</span><span class="hl opt">(</span> Worker <span class="hl opt">&amp;</span>w <span class="hl opt">) {</span> <span class="hl kwa">return</span> w<span class="hl opt">.</span>hash3<span class="hl opt">; }</span>
+<span class="hl kwc">template</span><span class="hl opt">&lt;&gt;</span> KeyHash<span class="hl opt">&lt;</span><span class="hl num">4</span><span class="hl opt">&gt; &amp;</span><span class="hl kwd">Get</span><span class="hl opt">(</span> Worker <span class="hl opt">&amp;</span>w <span class="hl opt">) {</span> <span class="hl kwa">return</span> w<span class="hl opt">.</span>hash4<span class="hl opt">; }</span>
+<span class="hl kwc">template</span><span class="hl opt">&lt;&gt;</span> KeyHash<span class="hl opt">&lt;</span><span class="hl num">6</span><span class="hl opt">&gt; &amp;</span><span class="hl kwd">Get</span><span class="hl opt">(</span> Worker <span class="hl opt">&amp;</span>w <span class="hl opt">) {</span> <span class="hl kwa">return</span> w<span class="hl opt">.</span>hash6<span class="hl opt">; }</span>
+<span class="hl kwc">template</span><span class="hl opt">&lt;&gt;</span> KeyHash<span class="hl opt">&lt;</span><span class="hl num">12</span><span class="hl opt">&gt; &amp;</span><span class="hl kwd">Get</span><span class="hl opt">(</span> Worker <span class="hl opt">&amp;</span>w <span class="hl opt">) {</span> <span class="hl kwa">return</span> w<span class="hl opt">.</span>hash12<span class="hl opt">; }</span>
+<span class="hl kwc">template</span><span class="hl opt">&lt;&gt;</span> KeyHash<span class="hl opt">&lt;</span><span class="hl num">18</span><span class="hl opt">&gt; &amp;</span><span class="hl kwd">Get</span><span class="hl opt">(</span> Worker <span class="hl opt">&amp;</span>w <span class="hl opt">) {</span> <span class="hl kwa">return</span> w<span class="hl opt">.</span>hash18<span class="hl opt">; }</span>
+
+<span class="hl kwc">template</span><span class="hl opt">&lt;</span> <span class="hl kwb">int</span> N <span class="hl opt">&gt;</span>
+<span class="hl kwb">void</span> <span class="hl kwd">printcount</span><span class="hl opt">(</span> Worker <span class="hl opt">*</span>workers<span class="hl opt">,</span> <span class="hl kwb">const char</span> <span class="hl opt">*</span>key <span class="hl opt">) {</span>
+  Key<span class="hl opt">&lt;</span>N<span class="hl opt">&gt;</span> <span class="hl kwd">find</span><span class="hl opt">(</span> key <span class="hl opt">);</span>
+  u32 count <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+  <span class="hl kwa">for</span> <span class="hl opt">(</span> u32 i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> cpus<span class="hl opt">.</span>count<span class="hl opt">;</span> i<span class="hl opt">++ )</span>
+    count <span class="hl opt">+=</span> Get<span class="hl opt">&lt;</span>N<span class="hl opt">&gt;(</span> workers<span class="hl opt">[</span>i<span class="hl opt">] )[</span>find<span class="hl opt">];</span>
+  cout <span class="hl opt">&lt;&lt;</span> count <span class="hl opt">&lt;&lt;</span> <span class="hl str">'</span><span class="hl esc">\t</span><span class="hl str">'</span> <span class="hl opt">&lt;&lt;</span> find<span class="hl opt">.</span><span class="hl kwd">tostring</span><span class="hl opt">() &lt;&lt;</span> endl<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwc">template</span><span class="hl opt">&lt;</span><span class="hl kwc">class</span> T<span class="hl opt">&gt;</span>
+<span class="hl kwb">struct</span> CompareFirst <span class="hl opt">{</span>
+  <span class="hl kwb">bool</span> <span class="hl kwc">operator</span><span class="hl opt">() (</span> <span class="hl kwb">const</span> T <span class="hl opt">&amp;</span>a<span class="hl opt">,</span> <span class="hl kwb">const</span> T <span class="hl opt">&amp;</span>b <span class="hl opt">) {</span> <span class="hl kwa">return</span> a<span class="hl opt">.</span>first <span class="hl opt">&lt;</span> b<span class="hl opt">.</span>first<span class="hl opt">; }</span>
+<span class="hl opt">};</span>
+
+<span class="hl kwc">template</span><span class="hl opt">&lt;</span><span class="hl kwc">class</span> T<span class="hl opt">&gt;</span>
+<span class="hl kwb">struct</span> CompareSecond <span class="hl opt">{</span>
+  <span class="hl kwb">bool</span> <span class="hl kwc">operator</span><span class="hl opt">() (</span> <span class="hl kwb">const</span> T <span class="hl opt">&amp;</span>a<span class="hl opt">,</span> <span class="hl kwb">const</span> T <span class="hl opt">&amp;</span>b <span class="hl opt">) {</span> <span class="hl kwa">return</span> a<span class="hl opt">.</span>second <span class="hl opt">&gt;</span> b<span class="hl opt">.</span>second<span class="hl opt">; }</span>
+<span class="hl opt">};</span>
+
+
+<span class="hl kwc">template</span><span class="hl opt">&lt;</span> <span class="hl kwb">int</span> N <span class="hl opt">&gt;</span>
+<span class="hl kwb">void</span> <span class="hl kwd">printfreq</span><span class="hl opt">(</span> Worker <span class="hl opt">*</span>workers <span class="hl opt">) {</span>
+  cout<span class="hl opt">.</span><span class="hl kwd">setf</span><span class="hl opt">(</span> ios<span class="hl opt">::</span>fixed<span class="hl opt">,</span> ios<span class="hl opt">::</span>floatfield <span class="hl opt">);</span>
+  cout<span class="hl opt">.</span><span class="hl kwd">precision</span><span class="hl opt">(</span> <span class="hl num">3</span> <span class="hl opt">);</span>
+
+  u32 count <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+  KeyHash<span class="hl opt">&lt;</span>N<span class="hl opt">&gt;</span> sum<span class="hl opt">;</span>
+  <span class="hl kwa">for</span> <span class="hl opt">(</span> u32 i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> cpus<span class="hl opt">.</span>count<span class="hl opt">;</span> i<span class="hl opt">++ ) {</span>
+    KeyHash<span class="hl opt">&lt;</span>N<span class="hl opt">&gt; &amp;</span>hash <span class="hl opt">=</span> Get<span class="hl opt">&lt;</span>N<span class="hl opt">&gt;(</span> workers<span class="hl opt">[</span>i<span class="hl opt">] );</span>
+    typename KeyHash<span class="hl opt">&lt;</span>N<span class="hl opt">&gt;::</span>iterator iter <span class="hl opt">=</span> hash<span class="hl opt">.</span><span class="hl kwd">begin</span><span class="hl opt">(),</span> end <span class="hl opt">=</span> hash<span class="hl opt">.</span><span class="hl kwd">end</span><span class="hl opt">();</span>
+    <span class="hl kwa">for</span> <span class="hl opt">( ;</span> iter <span class="hl opt">!=</span> end<span class="hl opt">; ++</span>iter <span class="hl opt">) {</span>
+      count <span class="hl opt">+=</span> iter<span class="hl opt">-&gt;</span>second<span class="hl opt">;</span>
+      sum<span class="hl opt">[</span>iter<span class="hl opt">-&gt;</span>first<span class="hl opt">] +=</span> iter<span class="hl opt">-&gt;</span>second<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwc">typedef</span> pair<span class="hl opt">&lt;</span> Key<span class="hl opt">&lt;</span>N<span class="hl opt">&gt;,</span> u32 <span class="hl opt">&gt;</span> sequence<span class="hl opt">;</span>
+  vector<span class="hl opt">&lt;</span>sequence<span class="hl opt">&gt;</span> <span class="hl kwd">seqs</span><span class="hl opt">(</span> sum<span class="hl opt">.</span><span class="hl kwd">begin</span><span class="hl opt">(),</span> sum<span class="hl opt">.</span><span class="hl kwd">end</span><span class="hl opt">() );</span>
+  <span class="hl kwd">stable_sort</span><span class="hl opt">(</span> seqs<span class="hl opt">.</span><span class="hl kwd">begin</span><span class="hl opt">(),</span> seqs<span class="hl opt">.</span><span class="hl kwd">end</span><span class="hl opt">(),</span> CompareFirst<span class="hl opt">&lt;</span>sequence<span class="hl opt">&gt;() );</span> <span class="hl slc">// by name</span>
+  <span class="hl kwd">stable_sort</span><span class="hl opt">(</span> seqs<span class="hl opt">.</span><span class="hl kwd">begin</span><span class="hl opt">(),</span> seqs<span class="hl opt">.</span><span class="hl kwd">end</span><span class="hl opt">(),</span> CompareSecond<span class="hl opt">&lt;</span>sequence<span class="hl opt">&gt;() );</span> <span class="hl slc">// by count</span>
+
+  typename vector<span class="hl opt">&lt;</span>sequence<span class="hl opt">&gt;::</span>iterator iter <span class="hl opt">=</span> seqs<span class="hl opt">.</span><span class="hl kwd">begin</span><span class="hl opt">(),</span> end <span class="hl opt">=</span> seqs<span class="hl opt">.</span><span class="hl kwd">end</span><span class="hl opt">();</span>
+  <span class="hl kwa">for</span> <span class="hl opt">( ;</span> iter <span class="hl opt">!=</span> end<span class="hl opt">; ++</span>iter <span class="hl opt">)</span>
+    cout <span class="hl opt">&lt;&lt;</span>  iter<span class="hl opt">-&gt;</span>first<span class="hl opt">.</span><span class="hl kwd">tostring</span><span class="hl opt">() &lt;&lt;</span> <span class="hl str">&quot; &quot;</span> <span class="hl opt">&lt;&lt; (</span><span class="hl num">100.0</span>f <span class="hl opt">*</span> iter<span class="hl opt">-&gt;</span>second <span class="hl opt">/</span> count<span class="hl opt">) &lt;&lt;</span> endl<span class="hl opt">;</span>
+  cout <span class="hl opt">&lt;&lt;</span> endl<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+
+<span class="hl kwb">int</span> <span class="hl kwd">main</span><span class="hl opt">(</span> <span class="hl kwb">int</span> argc<span class="hl opt">,</span> <span class="hl kwb">const char</span> <span class="hl opt">*</span>argv<span class="hl opt">[] ) {</span>
+  Block <span class="hl opt">*</span>block <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Block</span><span class="hl opt">();</span>
+  <span class="hl kwa">if</span> <span class="hl opt">( !</span>block<span class="hl opt">-&gt;</span><span class="hl kwd">untilheader</span><span class="hl opt">(</span> <span class="hl str">&quot;&gt;THREE&quot;</span> <span class="hl opt">) )</span>
+    <span class="hl kwa">return</span> <span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">;</span>
+  block<span class="hl opt">-&gt;</span><span class="hl kwd">read</span><span class="hl opt">();</span>
+
+  Queue workQueue<span class="hl opt">;</span>
+  Worker <span class="hl opt">*</span>workers <span class="hl opt">=</span> <span class="hl kwa">new</span> Worker<span class="hl opt">[</span>cpus<span class="hl opt">.</span>count<span class="hl opt">];</span>
+  <span class="hl kwa">for</span> <span class="hl opt">(</span> u32 i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> cpus<span class="hl opt">.</span>count<span class="hl opt">;</span> i<span class="hl opt">++ )</span>
+    workers<span class="hl opt">[</span>i<span class="hl opt">].</span><span class="hl kwd">start</span><span class="hl opt">( &amp;</span>workQueue<span class="hl opt">,</span> block <span class="hl opt">);</span>
+  <span class="hl kwa">for</span> <span class="hl opt">(</span> u32 i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> cpus<span class="hl opt">.</span>count<span class="hl opt">;</span> i<span class="hl opt">++ )</span>
+    workers<span class="hl opt">[</span>i<span class="hl opt">].</span><span class="hl kwd">join</span><span class="hl opt">();</span>
+
+  printfreq<span class="hl opt">&lt;</span><span class="hl num">1</span><span class="hl opt">&gt;(</span> workers <span class="hl opt">);</span>
+  printfreq<span class="hl opt">&lt;</span><span class="hl num">2</span><span class="hl opt">&gt;(</span> workers <span class="hl opt">);</span>
+
+  printcount<span class="hl opt">&lt;</span><span class="hl num">3</span><span class="hl opt">&gt;(</span> workers<span class="hl opt">,</span> <span class="hl str">&quot;ggt&quot;</span> <span class="hl opt">);</span>
+  printcount<span class="hl opt">&lt;</span><span class="hl num">4</span><span class="hl opt">&gt;(</span> workers<span class="hl opt">,</span> <span class="hl str">&quot;ggta&quot;</span> <span class="hl opt">);</span>
+  printcount<span class="hl opt">&lt;</span><span class="hl num">6</span><span class="hl opt">&gt;(</span> workers<span class="hl opt">,</span> <span class="hl str">&quot;ggtatt&quot;</span> <span class="hl opt">);</span>
+  printcount<span class="hl opt">&lt;</span><span class="hl num">12</span><span class="hl opt">&gt;(</span> workers<span class="hl opt">,</span> <span class="hl str">&quot;ggtattttaatt&quot;</span> <span class="hl opt">);</span>
+  printcount<span class="hl opt">&lt;</span><span class="hl num">18</span><span class="hl opt">&gt;(</span> workers<span class="hl opt">,</span> <span class="hl str">&quot;ggtattttaatttatagt&quot;</span> <span class="hl opt">);</span>
+
+  <span class="hl kwa">delete</span><span class="hl opt">[]</span> workers<span class="hl opt">;</span>
+  <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>

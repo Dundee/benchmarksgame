@@ -1,0 +1,44 @@
+
+Wed, 24 Oct 2012 22:06:02 GMT
+
+MAKE:
+mv chameneosredux.ocaml-3.ocaml chameneosredux.ocaml-3.ml
+/usr/local/bin/ocamlopt -noassert -unsafe -fno-PIC -nodynlink -inline 100 -thread unix.cmxa threads.cmxa chameneosredux.ocaml-3.ml -o chameneosredux.ocaml-3.ocaml_run
+File "chameneosredux.ocaml-3.ml", line 1:
+Warning 24: bad source file name: "Chameneosredux.ocaml-3" is not a valid module name.
+rm chameneosredux.ocaml-3.ml
+0.24s to complete and log all make actions
+
+COMMAND LINE:
+./chameneosredux.ocaml-3.ocaml_run 6000000
+
+PROGRAM OUTPUT:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
+ blue red yellow
+4000000 zero
+4000000 zero
+4000000 zero
+ one two zero zero zero zero zero zero
+
+ blue red yellow red yellow blue red yellow red blue
+1200000 zero
+1200000 zero
+1200000 zero
+1200000 zero
+1200000 zero
+1200000 zero
+1200000 zero
+1200000 zero
+1200000 zero
+1200000 zero
+ one two zero zero zero zero zero zero
+

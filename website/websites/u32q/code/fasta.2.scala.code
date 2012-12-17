@@ -1,0 +1,135 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">  http://shootout.alioth.debian.org/</span>
+<span class="hl com">  contributed by Rex Kerr</span>
+<span class="hl com">  based on Scala version by Isaac Gouy</span>
+<span class="hl com">  with optimization tricks from C version by Petr Prokhorenkov</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>io<span class="hl opt">.</span>_
+
+<span class="hl kwa">object</span> fasta <span class="hl opt">{</span>
+  <span class="hl kwa">val</span> ALU <span class="hl opt">=</span>
+    <span class="hl str">&quot;GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG&quot;</span> <span class="hl opt">+</span>
+    <span class="hl str">&quot;GAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGAGA&quot;</span> <span class="hl opt">+</span>
+    <span class="hl str">&quot;CCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAAT&quot;</span> <span class="hl opt">+</span>
+    <span class="hl str">&quot;ACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAATCCCA&quot;</span> <span class="hl opt">+</span>
+    <span class="hl str">&quot;GCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTGAACCCGGG&quot;</span> <span class="hl opt">+</span>
+    <span class="hl str">&quot;AGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCC&quot;</span> <span class="hl opt">+</span>
+    <span class="hl str">&quot;AGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAA&quot;</span>
+
+  <span class="hl kwa">val</span> IUBs <span class="hl opt">=</span> <span class="hl str">&quot;acgtBDHKMNRSVWY&quot;</span>
+  <span class="hl kwa">val</span> IUBp <span class="hl opt">= (</span>
+    <span class="hl kwd">Array</span><span class="hl opt">(</span><span class="hl num">0.27</span><span class="hl opt">,</span><span class="hl num">0.12</span><span class="hl opt">,</span><span class="hl num">0.12</span><span class="hl opt">,</span><span class="hl num">0.27</span><span class="hl opt">) ++</span> Array<span class="hl opt">.</span><span class="hl kwd">fill</span><span class="hl opt">(</span><span class="hl num">11</span><span class="hl opt">)(</span><span class="hl num">0.02</span><span class="hl opt">)</span>
+  <span class="hl opt">).</span><span class="hl kwd">scanLeft</span><span class="hl opt">(</span><span class="hl num">0.0</span><span class="hl opt">)(</span>_ <span class="hl opt">+</span> _<span class="hl opt">).</span>tail
+
+  <span class="hl kwa">val</span> HSs <span class="hl opt">=</span> <span class="hl str">&quot;acgt&quot;</span>
+  <span class="hl kwa">val</span> HSp <span class="hl opt">=</span> <span class="hl kwd">Array</span><span class="hl opt">(</span>
+    <span class="hl num">0.3029549426680</span><span class="hl opt">,</span> <span class="hl num">0.1979883004921</span><span class="hl opt">,</span> <span class="hl num">0.1975473066391</span><span class="hl opt">,</span> <span class="hl num">0.3015094502008</span>
+  <span class="hl opt">).</span><span class="hl kwd">scanLeft</span><span class="hl opt">(</span><span class="hl num">0.0</span><span class="hl opt">)(</span>_ <span class="hl opt">+</span> _<span class="hl opt">).</span>tail
+
+  <span class="hl kwa">def</span> <span class="hl kwd">main</span><span class="hl opt">(</span>args<span class="hl opt">:</span> Array<span class="hl opt">[</span>String<span class="hl opt">]) = {</span>
+    <span class="hl kwa">val</span> n <span class="hl opt">=</span> <span class="hl kwd">args</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">).</span>toInt
+    <span class="hl kwa">val</span> s <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">FastaOutputStream</span><span class="hl opt">(</span>System<span class="hl opt">.</span>out<span class="hl opt">)</span>
+
+    s<span class="hl opt">.</span><span class="hl kwd">writeRepeating</span><span class="hl opt">(</span>ALU<span class="hl opt">,</span> n<span class="hl opt">*</span><span class="hl num">2</span><span class="hl opt">,</span> <span class="hl str">&quot;ONE Homo sapiens alu&quot;</span><span class="hl opt">)</span>
+    s<span class="hl opt">.</span><span class="hl kwd">writeRandom</span><span class="hl opt">(</span>IUBs<span class="hl opt">,</span> IUBp<span class="hl opt">,</span> n<span class="hl opt">*</span><span class="hl num">3</span><span class="hl opt">,</span> <span class="hl str">&quot;TWO IUB ambiguity codes&quot;</span><span class="hl opt">)</span>
+    s<span class="hl opt">.</span><span class="hl kwd">writeRandom</span><span class="hl opt">(</span>HSs<span class="hl opt">,</span> HSp<span class="hl opt">,</span> n<span class="hl opt">*</span><span class="hl num">5</span><span class="hl opt">,</span> <span class="hl str">&quot;THREE Homo sapiens frequency&quot;</span><span class="hl opt">)</span>
+
+    s<span class="hl opt">.</span>close
+  <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+
+<span class="hl slc">// extend the Java BufferedOutputStream class</span>
+<span class="hl kwa">class</span> <span class="hl kwd">FastaOutputStream</span><span class="hl opt">(</span>out<span class="hl opt">:</span> OutputStream<span class="hl opt">)</span> <span class="hl kwa">extends</span> <span class="hl kwd">BufferedOutputStream</span><span class="hl opt">(</span>out<span class="hl opt">) {</span>
+  <span class="hl kwa">private val</span> TableSize <span class="hl opt">=</span> <span class="hl num">4096</span>
+  <span class="hl kwa">private val</span> N <span class="hl opt">=</span> <span class="hl num">60</span>
+  <span class="hl kwa">private val</span> chunk <span class="hl opt">=</span> <span class="hl kwa">new</span> Array<span class="hl opt">[</span>Byte<span class="hl opt">](</span>N<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+  <span class="hl kwa">private val</span> nl <span class="hl opt">=</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">.</span>toByte
+
+  <span class="hl slc">// Tail-recursive; can check by prepending &#64;annotation.tailrec</span>
+  <span class="hl kwa">private def</span> <span class="hl kwd">writeRep</span><span class="hl opt">(</span>seq<span class="hl opt">:</span> Array<span class="hl opt">[</span>Byte<span class="hl opt">],</span> n<span class="hl opt">:</span> Int<span class="hl opt">,</span> off<span class="hl opt">:</span> Int <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>n <span class="hl opt">&gt;</span> N<span class="hl opt">) {</span>
+      <span class="hl kwa">val</span> remains <span class="hl opt">=</span> seq<span class="hl opt">.</span>length <span class="hl opt">-</span> off
+      <span class="hl slc">// Assume seq.length &gt;= N!</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>remains<span class="hl opt">&gt;=</span>N<span class="hl opt">) {</span>
+        <span class="hl kwd">write</span><span class="hl opt">(</span>seq<span class="hl opt">,</span>off<span class="hl opt">,</span>N<span class="hl opt">);</span> <span class="hl kwd">write</span><span class="hl opt">(</span>nl<span class="hl opt">)</span>
+        <span class="hl kwd">writeRep</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> n<span class="hl opt">-</span>N<span class="hl opt">,</span> <span class="hl kwa">if</span> <span class="hl opt">(</span>remains<span class="hl opt">==</span>N<span class="hl opt">)</span> <span class="hl num">0</span> <span class="hl kwa">else</span> off<span class="hl opt">+</span>N<span class="hl opt">)</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">else</span> <span class="hl opt">{</span>
+        <span class="hl kwd">write</span><span class="hl opt">(</span>seq<span class="hl opt">,</span>off<span class="hl opt">,</span>remains<span class="hl opt">);</span> <span class="hl kwd">write</span><span class="hl opt">(</span>seq<span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">,</span>N<span class="hl opt">-</span>remains<span class="hl opt">);</span> <span class="hl kwd">write</span><span class="hl opt">(</span>nl<span class="hl opt">)</span>
+        <span class="hl kwd">writeRep</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> n<span class="hl opt">-</span>N<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">+</span>N<span class="hl opt">-</span>remains<span class="hl opt">)</span>
+      <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwa">else</span> <span class="hl opt">{</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">&lt;-</span> <span class="hl num">0</span> until n<span class="hl opt">)</span> <span class="hl kwd">write</span><span class="hl opt">(</span><span class="hl kwd">seq</span><span class="hl opt">((</span>i<span class="hl opt">+</span>off<span class="hl opt">)%</span>seq<span class="hl opt">.</span>length<span class="hl opt">))</span>
+      <span class="hl kwd">write</span><span class="hl opt">(</span>nl<span class="hl opt">)</span>
+    <span class="hl opt">}</span>
+  <span class="hl opt">}</span>
+  <span class="hl kwa">def</span> <span class="hl kwd">writeRepeating</span><span class="hl opt">(</span>seq<span class="hl opt">:</span> String<span class="hl opt">,</span> n<span class="hl opt">:</span> Int<span class="hl opt">,</span> desc<span class="hl opt">:</span> String<span class="hl opt">) {</span>
+    <span class="hl kwd">write</span><span class="hl opt">( (</span><span class="hl str">&quot;&gt;&quot;</span><span class="hl opt">+</span>desc<span class="hl opt">+</span><span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">).</span>getBytes <span class="hl opt">)</span>
+    <span class="hl kwd">writeRep</span><span class="hl opt">(</span>seq<span class="hl opt">.</span>getBytes<span class="hl opt">,</span>n<span class="hl opt">)</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl slc">// Tail-recursive (check with &#64;annotation.tailrec)</span>
+  <span class="hl kwa">private def</span> <span class="hl kwd">writeRand</span><span class="hl opt">(</span>tab<span class="hl opt">:</span> Table<span class="hl opt">,</span> n<span class="hl opt">:</span> Int<span class="hl opt">) {</span>
+    <span class="hl kwa">val</span> m <span class="hl opt">=</span> <span class="hl kwa">if</span> <span class="hl opt">(</span>n <span class="hl opt">&lt;</span> N<span class="hl opt">) {</span> <span class="hl kwd">chunk</span><span class="hl opt">(</span>n<span class="hl opt">) =</span> nl<span class="hl opt">;</span> n <span class="hl opt">}</span> <span class="hl kwa">else</span> N
+    <span class="hl kwa">var</span> i <span class="hl opt">=</span> <span class="hl num">0</span>
+    <span class="hl kwa">while</span> <span class="hl opt">(</span>i<span class="hl opt">&lt;</span>m<span class="hl opt">) {</span>
+      <span class="hl kwd">chunk</span><span class="hl opt">(</span>i<span class="hl opt">) =</span> tab<span class="hl opt">.</span>next
+      i <span class="hl opt">+=</span> <span class="hl num">1</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwd">write</span><span class="hl opt">(</span>chunk<span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">,</span>m<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>n <span class="hl opt">&gt;</span> N<span class="hl opt">)</span> <span class="hl kwd">writeRand</span><span class="hl opt">(</span>tab<span class="hl opt">,</span> n<span class="hl opt">-</span>N<span class="hl opt">)</span>
+  <span class="hl opt">}</span>
+  <span class="hl kwa">def</span> <span class="hl kwd">writeRandom</span><span class="hl opt">(</span>seq<span class="hl opt">:</span> String<span class="hl opt">,</span> dist<span class="hl opt">:</span> Array<span class="hl opt">[</span>Double<span class="hl opt">],</span> n<span class="hl opt">:</span> Int<span class="hl opt">,</span> desc<span class="hl opt">:</span> String<span class="hl opt">) {</span>
+    <span class="hl kwd">write</span><span class="hl opt">( (</span><span class="hl str">&quot;&gt;&quot;</span><span class="hl opt">+</span>desc<span class="hl opt">+</span><span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">).</span>getBytes <span class="hl opt">)</span>
+    <span class="hl kwd">chunk</span><span class="hl opt">(</span>N<span class="hl opt">) =</span> nl
+    <span class="hl kwa">val</span> tab <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Table</span><span class="hl opt">(</span>seq<span class="hl opt">.</span>getBytes<span class="hl opt">,</span> dist<span class="hl opt">,</span> TableSize<span class="hl opt">)</span>
+    <span class="hl kwd">writeRand</span><span class="hl opt">(</span>tab<span class="hl opt">,</span>n<span class="hl opt">)</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl slc">// Constant time lookup table, assumes (1/size) &lt; p(rarest entry)</span>
+  <span class="hl kwa">private class</span> <span class="hl kwd">Table</span><span class="hl opt">(</span>bytes<span class="hl opt">:</span> Array<span class="hl opt">[</span>Byte<span class="hl opt">],</span> dist<span class="hl opt">:</span> Array<span class="hl opt">[</span>Double<span class="hl opt">],</span> size<span class="hl opt">:</span> Int<span class="hl opt">) {</span>
+    <span class="hl kwa">abstract class</span> X <span class="hl opt">{</span> <span class="hl kwa">def</span> <span class="hl kwd">pick</span><span class="hl opt">(</span>d<span class="hl opt">:</span> Double<span class="hl opt">):</span> Byte <span class="hl opt">}</span>
+    <span class="hl kwa">class</span> <span class="hl kwd">B</span><span class="hl opt">(</span>b<span class="hl opt">:</span> Byte<span class="hl opt">)</span> <span class="hl kwa">extends</span> X <span class="hl opt">{</span> <span class="hl kwa">def</span> <span class="hl kwd">pick</span><span class="hl opt">(</span>d<span class="hl opt">:</span> Double<span class="hl opt">) =</span> b <span class="hl opt">}</span>
+    <span class="hl kwa">class</span> <span class="hl kwd">P</span><span class="hl opt">(</span>b0 <span class="hl opt">:</span> Byte<span class="hl opt">,</span> p<span class="hl opt">:</span> Double<span class="hl opt">,</span> b1<span class="hl opt">:</span> Byte<span class="hl opt">)</span> <span class="hl kwa">extends</span> X <span class="hl opt">{</span>
+      <span class="hl kwa">def</span> <span class="hl kwd">pick</span><span class="hl opt">(</span>d<span class="hl opt">:</span> Double<span class="hl opt">) =</span> <span class="hl kwa">if</span> <span class="hl opt">(</span>d <span class="hl opt">&lt;</span> p<span class="hl opt">)</span> b0 <span class="hl kwa">else</span> b1
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">def</span> <span class="hl kwd">seek</span><span class="hl opt">(</span>p<span class="hl opt">:</span> Double<span class="hl opt">):</span> Int <span class="hl opt">= {</span>
+      <span class="hl kwa">var</span> i <span class="hl opt">=</span> <span class="hl num">0</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">&lt;</span>dist<span class="hl opt">.</span>length <span class="hl opt">&amp;&amp;</span> p <span class="hl opt">&gt;=</span> <span class="hl kwd">dist</span><span class="hl opt">(</span>i<span class="hl opt">))</span> i <span class="hl opt">+=</span> <span class="hl num">1</span>
+      i
+    <span class="hl opt">}</span>
+    <span class="hl kwa">var</span> lastj <span class="hl opt">= -</span><span class="hl num">1</span>
+    <span class="hl kwa">var</span> lastX <span class="hl opt">=</span> null<span class="hl opt">:</span>X
+    <span class="hl kwa">val</span> lookup<span class="hl opt">:</span> Array<span class="hl opt">[</span>X<span class="hl opt">] = (</span><span class="hl num">0</span> until size<span class="hl opt">).</span><span class="hl kwd">map</span><span class="hl opt">(</span>i <span class="hl opt">=&gt; {</span>
+      <span class="hl kwa">val</span> <span class="hl opt">(</span>j0<span class="hl opt">,</span>j1<span class="hl opt">) = (</span><span class="hl kwd">seek</span><span class="hl opt">(</span>i<span class="hl opt">.</span>toDouble<span class="hl opt">/</span>size<span class="hl opt">),</span> <span class="hl kwd">seek</span><span class="hl opt">((</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">).</span>toDouble<span class="hl opt">/</span>size<span class="hl opt">))</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>j0<span class="hl opt">==</span>j1<span class="hl opt">) {</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>lastj<span class="hl opt">==</span>j0<span class="hl opt">)</span> lastX
+        <span class="hl kwa">else</span> <span class="hl opt">{</span>
+          lastX <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">B</span><span class="hl opt">(</span><span class="hl kwd">bytes</span><span class="hl opt">(</span>j0<span class="hl opt">))</span>
+          lastj <span class="hl opt">=</span> j0
+          lastX
+        <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">else</span> <span class="hl opt">{</span>
+        lastj <span class="hl opt">= -</span><span class="hl num">1</span>
+        <span class="hl kwa">new</span> <span class="hl kwd">P</span><span class="hl opt">(</span><span class="hl kwd">bytes</span><span class="hl opt">(</span>j0<span class="hl opt">),</span><span class="hl kwd">dist</span><span class="hl opt">(</span>j0<span class="hl opt">),</span><span class="hl kwd">bytes</span><span class="hl opt">(</span>j1<span class="hl opt">))</span>
+      <span class="hl opt">}</span>
+    <span class="hl opt">}).</span>toArray
+    
+    <span class="hl kwa">def</span> next <span class="hl opt">= {</span>
+      <span class="hl kwa">val</span> p <span class="hl opt">=</span> RandomNumber<span class="hl opt">.</span>next
+      <span class="hl kwd">lookup</span><span class="hl opt">((</span>p<span class="hl opt">*</span>size<span class="hl opt">).</span>toInt<span class="hl opt">).</span><span class="hl kwd">pick</span><span class="hl opt">(</span>p<span class="hl opt">)</span>
+    <span class="hl opt">}</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwa">private object</span> RandomNumber <span class="hl opt">{</span>
+    <span class="hl kwa">val</span> <span class="hl opt">(</span>im<span class="hl opt">,</span>ia<span class="hl opt">,</span>ic<span class="hl opt">) = (</span><span class="hl num">139968</span><span class="hl opt">,</span><span class="hl num">3877</span><span class="hl opt">,</span><span class="hl num">29573</span><span class="hl opt">)</span>
+    <span class="hl kwa">val</span> scale <span class="hl opt">=</span> <span class="hl num">1.0</span><span class="hl opt">/</span>im
+    <span class="hl kwa">var</span> seed <span class="hl opt">=</span> <span class="hl num">42</span>
+    <span class="hl kwa">def</span> next <span class="hl opt">= {</span> seed <span class="hl opt">= (</span>seed <span class="hl opt">*</span> ia <span class="hl opt">+</span> ic<span class="hl opt">) %</span> im<span class="hl opt">;</span> seed<span class="hl opt">*</span>scale <span class="hl opt">}</span>
+  <span class="hl opt">}</span>
+<span class="hl opt">}</span>

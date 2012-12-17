@@ -1,0 +1,36 @@
+
+Fri, 23 Nov 2012 05:35:10 GMT
+
+COMMAND LINE:
+/usr/local/src/racket-5.3.1/bin/racket  chameneosredux.racket 6000000
+
+PROGRAM OUTPUT:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
+ blue red yellow
+4000020 zero
+3999964 zero
+4000016 zero
+ one two zero zero zero zero zero zero
+
+ blue red yellow red yellow blue red yellow red blue
+1199998 zero
+1199999 zero
+1199999 zero
+1199996 zero
+1200001 zero
+1200001 zero
+1199999 zero
+1200001 zero
+1200002 zero
+1200004 zero
+ one two zero zero zero zero zero zero
+

@@ -1,0 +1,47 @@
+<span class="hl com">/*</span>
+<span class="hl com">	The Great Computer Language Shootout</span>
+<span class="hl com">	http://shootout.alioth.debian.org/</span>
+<span class="hl com">	Based on the SML version, written by Matthias Blume,</span>
+<span class="hl com">	and the Clean program, written by Diederik van Arkel.</span>
+<span class="hl com">	Contributed by John van Groningen</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">module</span> mandelbrot
+
+<span class="hl kwa">import</span> StdEnv<span class="hl opt">,</span>LanguageShootout
+
+Start world
+	<span class="hl opt"># (</span>console<span class="hl opt">,</span> world<span class="hl opt">)	=</span> stdio world
+	  width				<span class="hl opt">=</span> argi
+	  console			<span class="hl opt">=</span> console <span class="hl opt">&lt;&lt;&lt;</span> <span class="hl str">&quot;P4</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> <span class="hl opt">&lt;&lt;&lt;</span> width <span class="hl opt">&lt;&lt;&lt;</span> <span class="hl str">&quot; &quot;</span> <span class="hl opt">&lt;&lt;&lt;</span> width <span class="hl opt">&lt;&lt;&lt;</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span>
+	  console			<span class="hl opt">=</span> loop_y <span class="hl num">0</span> console width width
+	<span class="hl opt">=</span> snd <span class="hl opt">(</span>fclose console world<span class="hl opt">)</span>
+
+max_iter <span class="hl opt">:==</span> <span class="hl num">50</span>
+
+loop_y <span class="hl opt">:: !</span><span class="hl kwb">Int</span> <span class="hl opt">!*</span><span class="hl kwb">File</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">-&gt; *</span><span class="hl kwb">File</span>
+loop_y y file width height
+	| y<span class="hl opt">&lt;</span>width
+		<span class="hl opt">=</span> loop_y <span class="hl opt">(</span>y<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">) (</span>loop_x <span class="hl num">0</span> y <span class="hl num">0 8</span> file width height<span class="hl opt">)</span> width height
+		<span class="hl opt">=</span> file
+
+loop_x <span class="hl opt">:: !</span><span class="hl kwb">Int</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">!*</span><span class="hl kwb">File</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">-&gt; *</span><span class="hl kwb">File</span>
+loop_x x y bits bit_shift file width height
+	| x<span class="hl opt">&lt;</span>height
+		| bit_shift<span class="hl opt">==</span><span class="hl num">0</span>
+			<span class="hl opt">=</span> loop_x x y <span class="hl num">0 8</span> <span class="hl opt">(</span>fwritec <span class="hl opt">(</span>toChar bits<span class="hl opt">)</span> file<span class="hl opt">)</span> width height
+			<span class="hl opt"># (</span>w<span class="hl opt">,</span>h<span class="hl opt">) = (</span>toReal width<span class="hl opt">,</span>toReal height<span class="hl opt">)</span>
+			  c <span class="hl opt">= (</span><span class="hl num">2.0</span><span class="hl opt">*</span>toReal x<span class="hl opt">/</span>w <span class="hl opt">-</span> <span class="hl num">1.5</span><span class="hl opt">,</span> <span class="hl num">2.0</span><span class="hl opt">*</span>toReal y<span class="hl opt">/</span>h <span class="hl opt">-</span> <span class="hl num">1.0</span><span class="hl opt">)</span>
+			  point <span class="hl opt">=</span> fractal <span class="hl opt">(</span><span class="hl num">0.0</span><span class="hl opt">,</span><span class="hl num">0.0</span><span class="hl opt">)</span> max_iter c
+			<span class="hl opt">=</span> loop_x <span class="hl opt">(</span>x<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span> y <span class="hl opt">(</span>bits<span class="hl opt">+</span>bits<span class="hl opt">+</span>point<span class="hl opt">) (</span>bit_shift<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span> file width height
+		| bit_shift<span class="hl opt">&lt;</span><span class="hl num">8</span>
+			<span class="hl opt">=</span> fwritec <span class="hl opt">(</span>toChar <span class="hl opt">(</span>bits<span class="hl opt">&lt;&lt;</span>bit_shift<span class="hl opt">))</span> file
+			<span class="hl opt">=</span> file
+
+fractal <span class="hl opt">:: !(!</span><span class="hl kwb">Real</span><span class="hl opt">,!</span><span class="hl kwb">Real</span><span class="hl opt">) !</span><span class="hl kwb">Int</span> <span class="hl opt">!(!</span><span class="hl kwb">Real</span><span class="hl opt">,!</span><span class="hl kwb">Real</span><span class="hl opt">) -&gt;</span> <span class="hl kwb">Int</span>
+fractal <span class="hl opt">(</span>r<span class="hl opt">,</span>i<span class="hl opt">)</span> iter c<span class="hl opt">=:(</span>cr<span class="hl opt">,</span>ci<span class="hl opt">)</span>
+	<span class="hl opt"># (</span>r2<span class="hl opt">,</span>i2<span class="hl opt">) = (</span>r<span class="hl opt">*</span>r<span class="hl opt">,</span>i<span class="hl opt">*</span>i<span class="hl opt">)</span>
+	| r2 <span class="hl opt">+</span> i2 <span class="hl opt">&lt;=</span> <span class="hl num">4.0</span>
+		| iter <span class="hl opt">&gt;</span> <span class="hl num">0</span>	<span class="hl opt">=</span> <span class="hl kwa">let</span> pri<span class="hl opt">=</span>r<span class="hl opt">*</span>i <span class="hl kwa">in</span> fractal <span class="hl opt">(</span>r2<span class="hl opt">-</span>i2<span class="hl opt">+</span>cr<span class="hl opt">,</span>pri<span class="hl opt">+</span>pri<span class="hl opt">+</span>ci<span class="hl opt">) (</span>iter<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span> c
+					<span class="hl opt">=</span> <span class="hl num">1</span>
+		<span class="hl opt">=</span> <span class="hl num">0</span>

@@ -1,0 +1,415 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com"> </span>
+<span class="hl com">   contributed by Peter Lawrey</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>io<span class="hl opt">.</span>IOException<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>ArrayList<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>HashMap<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>Iterator<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>List<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>Map<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>SortedSet<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>TreeSet<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>concurrent<span class="hl opt">.</span>ExecutionException<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>concurrent<span class="hl opt">.</span>ExecutorService<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>concurrent<span class="hl opt">.</span>Executors<span class="hl opt">;</span>
+
+<span class="hl kwa">public class</span> knucleotide
+<span class="hl opt">{</span>
+   <span class="hl kwa">private static final</span> <span class="hl kwb">byte</span> A <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwa">private static final</span> <span class="hl kwb">byte</span> T <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+   <span class="hl kwa">private static final</span> <span class="hl kwb">byte</span> C <span class="hl opt">=</span> <span class="hl num">2</span><span class="hl opt">;</span>
+   <span class="hl kwa">private static final</span> <span class="hl kwb">byte</span> G <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+   <span class="hl kwa">private static final</span> <span class="hl kwb">byte</span> BITS_PER_CHAR <span class="hl opt">=</span> <span class="hl num">2</span><span class="hl opt">;</span>
+   <span class="hl kwa">private static final</span> <span class="hl kwb">byte</span> CHAR_BIT_MASK <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+   
+   <span class="hl kwa">private static final</span> <span class="hl kwb">int</span> CHUNK_SIZE <span class="hl opt">=</span> <span class="hl num">1024</span> <span class="hl opt">*</span> <span class="hl num">1024</span> <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">;</span>
+   <span class="hl kwa">private static final</span> <span class="hl kwb">int</span> NUMBER_OF_CORES <span class="hl opt">=</span> Runtime<span class="hl opt">.</span><span class="hl kwd">getRuntime</span><span class="hl opt">().</span><span class="hl kwd">availableProcessors</span><span class="hl opt">();</span>
+   
+   <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">writeFrequencies</span><span class="hl opt">(</span>SortedSet<span class="hl opt">&lt;</span>Fragment<span class="hl opt">&gt;</span> set<span class="hl opt">,</span> StringBuilder sb<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      <span class="hl kwb">int</span> n <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      Iterator<span class="hl opt">&lt;</span>Fragment<span class="hl opt">&gt;</span> i<span class="hl opt">;</span>
+      
+      i <span class="hl opt">=</span> set<span class="hl opt">.</span><span class="hl kwd">iterator</span><span class="hl opt">();</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(</span>i<span class="hl opt">.</span><span class="hl kwd">hasNext</span><span class="hl opt">()) {</span>
+         n <span class="hl opt">+=</span> i<span class="hl opt">.</span><span class="hl kwd">next</span><span class="hl opt">().</span>count<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+      
+      i <span class="hl opt">=</span> set<span class="hl opt">.</span><span class="hl kwd">iterator</span><span class="hl opt">();</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(</span>i<span class="hl opt">.</span><span class="hl kwd">hasNext</span><span class="hl opt">()) {</span>
+         Fragment fragment <span class="hl opt">=</span> i<span class="hl opt">.</span><span class="hl kwd">next</span><span class="hl opt">();</span>
+         sb<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span>fragment<span class="hl opt">.</span><span class="hl kwd">toString</span><span class="hl opt">()).</span><span class="hl kwd">append</span><span class="hl opt">(</span>String<span class="hl opt">.</span><span class="hl kwd">format</span><span class="hl opt">(</span><span class="hl str">&quot; %.3f&quot;</span><span class="hl opt">,</span> fragment<span class="hl opt">.</span>count <span class="hl opt">*</span> <span class="hl num">100.0</span>f <span class="hl opt">/</span> n<span class="hl opt">)).</span><span class="hl kwd">append</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+   
+      sb<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">main</span><span class="hl opt">(</span>String<span class="hl opt">[]</span> args<span class="hl opt">)</span> <span class="hl kwa">throws</span> IOException<span class="hl opt">,</span> InterruptedException<span class="hl opt">,</span> ExecutionException
+   <span class="hl opt">{</span>
+      <span class="hl kwb">boolean</span> inGenom <span class="hl opt">=</span> false<span class="hl opt">;</span>
+      List<span class="hl opt">&lt;</span>Encoder<span class="hl opt">&gt;</span> encoders <span class="hl opt">=</span> <span class="hl kwa">new</span> ArrayList<span class="hl opt">&lt;</span>Encoder<span class="hl opt">&gt;();</span>
+      ExecutorService service <span class="hl opt">=</span> Executors<span class="hl opt">.</span><span class="hl kwd">newFixedThreadPool</span><span class="hl opt">(</span>NUMBER_OF_CORES<span class="hl opt">);</span>
+      
+      <span class="hl kwb">int</span> read <span class="hl opt">=</span> CHUNK_SIZE<span class="hl opt">,</span> i<span class="hl opt">;</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(</span>read <span class="hl opt">==</span> CHUNK_SIZE<span class="hl opt">) {</span>
+         i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+         <span class="hl kwb">byte</span><span class="hl opt">[]</span> buffer <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>CHUNK_SIZE<span class="hl opt">];</span>
+         read <span class="hl opt">=</span> System<span class="hl opt">.</span><span class="hl kwa">in</span><span class="hl opt">.</span><span class="hl kwd">read</span><span class="hl opt">(</span>buffer<span class="hl opt">);</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(!</span>inGenom<span class="hl opt">) {</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(;</span> i <span class="hl opt">&lt;</span> read<span class="hl opt">;</span> i<span class="hl opt">++)</span> <span class="hl kwa">if</span> <span class="hl opt">(</span>buffer<span class="hl opt">[</span>i<span class="hl opt">] ==</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span> <span class="hl opt">&amp;&amp;</span> i <span class="hl opt">+</span> <span class="hl num">6</span> <span class="hl opt">&lt;</span> buffer<span class="hl opt">.</span>length<span class="hl opt">) {</span>
+               <span class="hl kwa">if</span> <span class="hl opt">(</span>buffer<span class="hl opt">[++</span>i<span class="hl opt">] ==</span> <span class="hl str">'&gt;'</span> <span class="hl opt">&amp;&amp;</span> buffer<span class="hl opt">[++</span>i<span class="hl opt">] ==</span> <span class="hl str">'T'</span> <span class="hl opt">&amp;&amp;</span> buffer<span class="hl opt">[++</span>i<span class="hl opt">] ==</span> <span class="hl str">'H'</span> <span class="hl opt">&amp;&amp;</span> buffer<span class="hl opt">[++</span>i<span class="hl opt">] ==</span> <span class="hl str">'R'</span> <span class="hl opt">&amp;&amp;</span> buffer<span class="hl opt">[++</span>i<span class="hl opt">] ==</span> <span class="hl str">'E'</span> <span class="hl opt">&amp;&amp;</span> buffer<span class="hl opt">[++</span>i<span class="hl opt">] ==</span> <span class="hl str">'E'</span><span class="hl opt">) {</span>
+                  <span class="hl kwa">while</span> <span class="hl opt">(</span>buffer<span class="hl opt">[</span>i<span class="hl opt">++] !=</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">);</span>
+                  inGenom <span class="hl opt">=</span> true<span class="hl opt">;</span>
+                  <span class="hl kwa">break</span><span class="hl opt">;</span>
+               <span class="hl opt">}</span>
+            <span class="hl opt">}</span>
+         <span class="hl opt">}</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>inGenom<span class="hl opt">) {</span>
+            Encoder encoder <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Encoder</span><span class="hl opt">(</span>buffer<span class="hl opt">,</span> i<span class="hl opt">,</span> read<span class="hl opt">);</span>
+            encoders<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>encoder<span class="hl opt">);</span>
+            service<span class="hl opt">.</span><span class="hl kwd">execute</span><span class="hl opt">(</span>encoder<span class="hl opt">);</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+
+      Counter size1 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Counter</span><span class="hl opt">(</span>encoders<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">);</span>
+      service<span class="hl opt">.</span><span class="hl kwd">execute</span><span class="hl opt">(</span>size1<span class="hl opt">);</span>
+      Counter size2 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Counter</span><span class="hl opt">(</span>encoders<span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">);</span>
+      service<span class="hl opt">.</span><span class="hl kwd">execute</span><span class="hl opt">(</span>size2<span class="hl opt">);</span>
+
+      String<span class="hl opt">[]</span> fragments <span class="hl opt">= {</span> <span class="hl str">&quot;GGT&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTA&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATT&quot;</span> <span class="hl opt">};</span>
+      Counter<span class="hl opt">[]</span> counters <span class="hl opt">=</span> <span class="hl kwa">new</span> Counter<span class="hl opt">[</span>fragments<span class="hl opt">.</span>length<span class="hl opt">];</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> fragments<span class="hl opt">.</span>length<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+         counters<span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl kwa">new</span> <span class="hl kwd">Counter</span><span class="hl opt">(</span>encoders<span class="hl opt">,</span> fragments<span class="hl opt">[</span>i<span class="hl opt">].</span><span class="hl kwd">length</span><span class="hl opt">());</span>
+         service<span class="hl opt">.</span><span class="hl kwd">execute</span><span class="hl opt">(</span>counters<span class="hl opt">[</span>i<span class="hl opt">]);</span>
+      <span class="hl opt">}</span>
+      
+      String<span class="hl opt">[]</span> largeFragments <span class="hl opt">= {</span> <span class="hl str">&quot;GGTATTTTAATT&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATTTTAATTTATAGT&quot;</span> <span class="hl opt">};</span>
+      List<span class="hl opt">&lt;</span>OffsetCounter<span class="hl opt">&gt;[]</span> counterMap <span class="hl opt">=</span> <span class="hl kwa">new</span> ArrayList<span class="hl opt">[</span>largeFragments<span class="hl opt">.</span>length<span class="hl opt">];</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> largeFragments<span class="hl opt">.</span>length<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+         counterMap<span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl kwa">new</span> ArrayList<span class="hl opt">&lt;</span>OffsetCounter<span class="hl opt">&gt;();</span>
+         <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> j <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> j <span class="hl opt">&lt;</span> largeFragments<span class="hl opt">[</span>i<span class="hl opt">].</span><span class="hl kwd">length</span><span class="hl opt">();</span> j<span class="hl opt">++) {</span>
+            OffsetCounter counter <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">OffsetCounter</span><span class="hl opt">(</span>encoders<span class="hl opt">,</span> j<span class="hl opt">,</span> largeFragments<span class="hl opt">[</span>i<span class="hl opt">].</span><span class="hl kwd">length</span><span class="hl opt">());</span>
+            counterMap<span class="hl opt">[</span>i<span class="hl opt">].</span><span class="hl kwd">add</span><span class="hl opt">(</span>counter<span class="hl opt">);</span> 
+            service<span class="hl opt">.</span><span class="hl kwd">execute</span><span class="hl opt">(</span>counter<span class="hl opt">);</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+
+      service<span class="hl opt">.</span><span class="hl kwd">shutdown</span><span class="hl opt">();</span>
+      
+      StringBuilder out <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">StringBuilder</span><span class="hl opt">(</span><span class="hl num">1024</span><span class="hl opt">);</span>
+      <span class="hl kwd">writeFrequencies</span><span class="hl opt">(</span><span class="hl kwa">new</span> TreeSet<span class="hl opt">&lt;</span>Fragment<span class="hl opt">&gt;(</span>size1<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">().</span><span class="hl kwd">values</span><span class="hl opt">()),</span> out<span class="hl opt">);</span>
+      <span class="hl kwd">writeFrequencies</span><span class="hl opt">(</span><span class="hl kwa">new</span> TreeSet<span class="hl opt">&lt;</span>Fragment<span class="hl opt">&gt;(</span>size2<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">().</span><span class="hl kwd">values</span><span class="hl opt">()),</span> out<span class="hl opt">);</span>
+
+      <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> fragments<span class="hl opt">.</span>length<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+         Fragment fragment <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Fragment</span><span class="hl opt">(</span>fragments<span class="hl opt">[</span>i<span class="hl opt">]);</span>
+         out<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span>counters<span class="hl opt">[</span>i<span class="hl opt">].</span><span class="hl kwd">get</span><span class="hl opt">().</span><span class="hl kwd">get</span><span class="hl opt">(</span>fragment<span class="hl opt">).</span>count<span class="hl opt">).</span><span class="hl kwd">append</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">&quot;</span><span class="hl opt">).</span><span class="hl kwd">append</span><span class="hl opt">(</span>fragments<span class="hl opt">[</span>i<span class="hl opt">]).</span><span class="hl kwd">append</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+      
+      <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> largeFragments<span class="hl opt">.</span>length<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+         <span class="hl kwb">int</span> count <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+         Fragment fragment <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Fragment</span><span class="hl opt">(</span>largeFragments<span class="hl opt">[</span>i<span class="hl opt">]);</span>
+         <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> j <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> j <span class="hl opt">&lt;</span> largeFragments<span class="hl opt">[</span>i<span class="hl opt">].</span><span class="hl kwd">length</span><span class="hl opt">();</span> j<span class="hl opt">++) {</span>
+            Fragment counter <span class="hl opt">=</span> counterMap<span class="hl opt">[</span>i<span class="hl opt">].</span><span class="hl kwd">get</span><span class="hl opt">(</span>j<span class="hl opt">).</span><span class="hl kwd">get</span><span class="hl opt">().</span><span class="hl kwd">get</span><span class="hl opt">(</span>fragment<span class="hl opt">);</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>counter <span class="hl opt">!=</span> null<span class="hl opt">) {</span>
+               count <span class="hl opt">+=</span> counter<span class="hl opt">.</span>count<span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+         <span class="hl opt">}</span>
+         out<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span>count<span class="hl opt">).</span><span class="hl kwd">append</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">&quot;</span><span class="hl opt">).</span><span class="hl kwd">append</span><span class="hl opt">(</span>largeFragments<span class="hl opt">[</span>i<span class="hl opt">]).</span><span class="hl kwd">append</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+   
+      System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">print</span><span class="hl opt">(</span>out<span class="hl opt">.</span><span class="hl kwd">toString</span><span class="hl opt">());</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private static class</span> Encoder <span class="hl kwa">implements</span> Runnable
+   <span class="hl opt">{</span>
+      <span class="hl kwa">private</span> <span class="hl kwb">byte</span><span class="hl opt">[]</span> src<span class="hl opt">;</span>
+      <span class="hl kwa">private</span> <span class="hl kwb">int</span> start<span class="hl opt">,</span> end<span class="hl opt">;</span>
+      <span class="hl kwa">private</span> <span class="hl kwb">boolean</span> done <span class="hl opt">=</span> false<span class="hl opt">;</span>
+      <span class="hl kwa">private</span> List<span class="hl opt">&lt;</span><span class="hl kwb">byte</span><span class="hl opt">[]&gt;</span> result <span class="hl opt">=</span> <span class="hl kwa">new</span> ArrayList<span class="hl opt">&lt;</span><span class="hl kwb">byte</span><span class="hl opt">[]&gt;();</span>
+      
+      <span class="hl kwa">private static final</span> <span class="hl kwb">int</span> CHUNK_SIZE <span class="hl opt">=</span> <span class="hl num">1024</span> <span class="hl opt">*</span> <span class="hl num">250</span><span class="hl opt">;</span>
+      
+      <span class="hl kwa">private</span> <span class="hl kwd">Encoder</span><span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">[]</span> src<span class="hl opt">,</span> <span class="hl kwb">int</span> start<span class="hl opt">,</span> <span class="hl kwb">int</span> end<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+         <span class="hl kwa">this</span><span class="hl opt">.</span>src <span class="hl opt">=</span> src<span class="hl opt">;</span>
+         <span class="hl kwa">this</span><span class="hl opt">.</span>start <span class="hl opt">=</span> start<span class="hl opt">;</span>
+         <span class="hl kwa">this</span><span class="hl opt">.</span>end <span class="hl opt">=</span> end<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">public</span> List<span class="hl opt">&lt;</span><span class="hl kwb">byte</span><span class="hl opt">[]&gt;</span> <span class="hl kwd">get</span><span class="hl opt">()</span> <span class="hl kwa">throws</span> InterruptedException<span class="hl opt">,</span> ExecutionException
+      <span class="hl opt">{</span>
+         <span class="hl kwa">while</span> <span class="hl opt">(!</span>done<span class="hl opt">)</span> <span class="hl kwa">try</span> <span class="hl opt">{</span>
+            Thread<span class="hl opt">.</span><span class="hl kwd">sleep</span><span class="hl opt">(</span><span class="hl num">100</span><span class="hl opt">);</span>
+         <span class="hl opt">}</span> <span class="hl kwa">catch</span> <span class="hl opt">(</span>InterruptedException e<span class="hl opt">) {</span>
+            <span class="hl slc">// ignored</span>
+         <span class="hl opt">}</span>
+         <span class="hl kwa">return</span> result<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">run</span><span class="hl opt">()</span>
+      <span class="hl opt">{</span>
+         <span class="hl kwb">int</span> p <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+         <span class="hl kwb">byte</span><span class="hl opt">[]</span> encoded <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>CHUNK_SIZE<span class="hl opt">];</span>
+         
+         <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> start<span class="hl opt">;</span> i <span class="hl opt">&lt;</span> end<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+            <span class="hl kwb">byte</span> c <span class="hl opt">=</span> src<span class="hl opt">[</span>i<span class="hl opt">];</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>c <span class="hl opt">==</span> <span class="hl str">'a'</span> <span class="hl opt">||</span> c <span class="hl opt">==</span> <span class="hl str">'A'</span><span class="hl opt">) {</span>
+               encoded<span class="hl opt">[</span>p<span class="hl opt">++] =</span> A<span class="hl opt">;</span>
+               <span class="hl kwa">if</span> <span class="hl opt">(</span>p <span class="hl opt">==</span> encoded<span class="hl opt">.</span>length<span class="hl opt">) {</span>
+                  result<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>encoded<span class="hl opt">);</span>
+                  encoded <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>CHUNK_SIZE<span class="hl opt">];</span>
+                  p <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+               <span class="hl opt">}</span>
+            <span class="hl opt">}</span> <span class="hl kwa">else if</span> <span class="hl opt">(</span>c <span class="hl opt">==</span> <span class="hl str">'t'</span> <span class="hl opt">||</span> c <span class="hl opt">==</span> <span class="hl str">'T'</span><span class="hl opt">) {</span>
+               encoded<span class="hl opt">[</span>p<span class="hl opt">++] =</span> T<span class="hl opt">;</span>
+               <span class="hl kwa">if</span> <span class="hl opt">(</span>p <span class="hl opt">==</span> encoded<span class="hl opt">.</span>length<span class="hl opt">) {</span>
+                  result<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>encoded<span class="hl opt">);</span>
+                  encoded <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>CHUNK_SIZE<span class="hl opt">];</span>
+                  p <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+               <span class="hl opt">}</span>
+            <span class="hl opt">}</span> <span class="hl kwa">else if</span> <span class="hl opt">(</span>c <span class="hl opt">==</span> <span class="hl str">'c'</span> <span class="hl opt">||</span> c <span class="hl opt">==</span> <span class="hl str">'C'</span><span class="hl opt">) {</span>
+               encoded<span class="hl opt">[</span>p<span class="hl opt">++] =</span> C<span class="hl opt">;</span>
+               <span class="hl kwa">if</span> <span class="hl opt">(</span>p <span class="hl opt">==</span> encoded<span class="hl opt">.</span>length<span class="hl opt">) {</span>
+                  result<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>encoded<span class="hl opt">);</span>
+                  encoded <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>CHUNK_SIZE<span class="hl opt">];</span>
+                  p <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+               <span class="hl opt">}</span>
+            <span class="hl opt">}</span> <span class="hl kwa">else if</span> <span class="hl opt">(</span>c <span class="hl opt">==</span> <span class="hl str">'g'</span> <span class="hl opt">||</span> c <span class="hl opt">==</span> <span class="hl str">'G'</span><span class="hl opt">) {</span>
+               encoded<span class="hl opt">[</span>p<span class="hl opt">++] =</span> G<span class="hl opt">;</span>
+               <span class="hl kwa">if</span> <span class="hl opt">(</span>p <span class="hl opt">==</span> encoded<span class="hl opt">.</span>length<span class="hl opt">) {</span>
+                  result<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>encoded<span class="hl opt">);</span>
+                  encoded <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>CHUNK_SIZE<span class="hl opt">];</span>
+                  p <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+               <span class="hl opt">}</span>
+            <span class="hl opt">}</span>
+         <span class="hl opt">}</span>
+      
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>p <span class="hl opt">!=</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+            <span class="hl kwb">byte</span><span class="hl opt">[]</span> last <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>p<span class="hl opt">];</span>
+            System<span class="hl opt">.</span><span class="hl kwd">arraycopy</span><span class="hl opt">(</span>encoded<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> last<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> p<span class="hl opt">);</span>
+            result<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>last<span class="hl opt">);</span>
+         <span class="hl opt">}</span>
+      
+         done <span class="hl opt">=</span> true<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+   
+   <span class="hl kwa">private static class</span> Fragment <span class="hl kwa">implements</span> Comparable<span class="hl opt">&lt;</span>Fragment<span class="hl opt">&gt;</span>
+   <span class="hl opt">{</span>
+      <span class="hl kwa">private</span> <span class="hl kwb">int</span> count <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl kwa">private</span> <span class="hl kwb">int</span> charsInValue<span class="hl opt">;</span>
+      <span class="hl kwa">private</span> <span class="hl kwb">long</span> value<span class="hl opt">;</span>
+
+      <span class="hl kwa">public</span> <span class="hl kwd">Fragment</span><span class="hl opt">(</span><span class="hl kwb">int</span> size<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+         <span class="hl kwa">this</span><span class="hl opt">.</span>charsInValue <span class="hl opt">=</span> size<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+      
+      <span class="hl kwa">public</span> <span class="hl kwd">Fragment</span><span class="hl opt">(</span>String s<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+         <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> s<span class="hl opt">.</span><span class="hl kwd">length</span><span class="hl opt">();</span> i<span class="hl opt">++) {</span>
+            <span class="hl kwb">char</span> c <span class="hl opt">=</span> s<span class="hl opt">.</span><span class="hl kwd">charAt</span><span class="hl opt">(</span>i<span class="hl opt">);</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>c <span class="hl opt">==</span> <span class="hl str">'A'</span><span class="hl opt">) {</span>
+               value <span class="hl opt">=</span> value <span class="hl opt">&lt;&lt;</span> BITS_PER_CHAR <span class="hl opt">|</span> A<span class="hl opt">;</span>
+               charsInValue<span class="hl opt">++;</span>
+            <span class="hl opt">}</span> <span class="hl kwa">else if</span> <span class="hl opt">(</span>c <span class="hl opt">==</span> <span class="hl str">'T'</span><span class="hl opt">) {</span>
+               value <span class="hl opt">=</span> value <span class="hl opt">&lt;&lt;</span> BITS_PER_CHAR <span class="hl opt">|</span> T<span class="hl opt">;</span>
+               charsInValue<span class="hl opt">++;</span>
+            <span class="hl opt">}</span> <span class="hl kwa">else if</span> <span class="hl opt">(</span>c <span class="hl opt">==</span> <span class="hl str">'G'</span><span class="hl opt">) {</span>
+               value <span class="hl opt">=</span> value <span class="hl opt">&lt;&lt;</span> BITS_PER_CHAR <span class="hl opt">|</span> G<span class="hl opt">;</span>
+               charsInValue<span class="hl opt">++;</span>
+            <span class="hl opt">}</span> <span class="hl kwa">else if</span> <span class="hl opt">(</span>c <span class="hl opt">==</span> <span class="hl str">'C'</span><span class="hl opt">) {</span>
+               value <span class="hl opt">=</span> value <span class="hl opt">&lt;&lt;</span> BITS_PER_CHAR <span class="hl opt">|</span> C<span class="hl opt">;</span>
+               charsInValue<span class="hl opt">++;</span>
+            <span class="hl opt">}</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+      
+      <span class="hl kwc">&#64;Override</span>
+      <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">hashCode</span><span class="hl opt">()</span>
+        <span class="hl opt">{</span>
+           <span class="hl kwa">return</span> <span class="hl opt">(</span><span class="hl kwb">int</span><span class="hl opt">)</span> value<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+
+      <span class="hl kwc">&#64;Override</span>
+        <span class="hl kwa">public</span> <span class="hl kwb">boolean</span> <span class="hl kwd">equals</span><span class="hl opt">(</span>Object o<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+           Fragment f <span class="hl opt">= (</span>Fragment<span class="hl opt">)</span> o<span class="hl opt">;</span>
+           <span class="hl kwa">return</span> f<span class="hl opt">.</span>value <span class="hl opt">==</span> value<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+       
+        <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">compareTo</span><span class="hl opt">(</span>Fragment o<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+           <span class="hl kwa">return</span> o<span class="hl opt">.</span>count <span class="hl opt">-</span> count<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+   
+        <span class="hl kwa">public</span> String <span class="hl kwd">toString</span><span class="hl opt">()</span>
+        <span class="hl opt">{</span>
+           <span class="hl kwb">long</span> chars <span class="hl opt">=</span> value<span class="hl opt">;</span>
+           StringBuilder s <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">StringBuilder</span><span class="hl opt">();</span>
+           <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> charsInValue<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+              <span class="hl kwb">int</span> c <span class="hl opt">= (</span><span class="hl kwb">int</span><span class="hl opt">) (</span>chars <span class="hl opt">&amp;</span> CHAR_BIT_MASK<span class="hl opt">);</span>
+              <span class="hl kwa">if</span> <span class="hl opt">(</span>c <span class="hl opt">==</span> A<span class="hl opt">) {</span>
+                 s<span class="hl opt">.</span><span class="hl kwd">insert</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl str">'A'</span><span class="hl opt">);</span>
+              <span class="hl opt">}</span> <span class="hl kwa">else if</span> <span class="hl opt">(</span>c <span class="hl opt">==</span> T<span class="hl opt">) {</span>
+                 s<span class="hl opt">.</span><span class="hl kwd">insert</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl str">'T'</span><span class="hl opt">);</span>
+              <span class="hl opt">}</span> <span class="hl kwa">else if</span> <span class="hl opt">(</span>c <span class="hl opt">==</span> G<span class="hl opt">) {</span>
+                 s<span class="hl opt">.</span><span class="hl kwd">insert</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl str">'G'</span><span class="hl opt">);</span>
+              <span class="hl opt">}</span> <span class="hl kwa">else if</span> <span class="hl opt">(</span>c <span class="hl opt">==</span> C<span class="hl opt">) {</span>
+                 s<span class="hl opt">.</span><span class="hl kwd">insert</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl str">'C'</span><span class="hl opt">);</span>
+              <span class="hl opt">}</span>
+              chars <span class="hl opt">&gt;&gt;=</span> BITS_PER_CHAR<span class="hl opt">;</span>
+           <span class="hl opt">}</span>
+           <span class="hl kwa">return</span> s<span class="hl opt">.</span><span class="hl kwd">toString</span><span class="hl opt">();</span>
+        <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private static class</span> Counter <span class="hl kwa">implements</span> Runnable
+   <span class="hl opt">{</span>
+      <span class="hl kwa">private</span> <span class="hl kwb">int</span> fragmentSize<span class="hl opt">;</span>
+      <span class="hl kwa">private</span> <span class="hl kwb">boolean</span> done <span class="hl opt">=</span> false<span class="hl opt">;</span>
+      <span class="hl kwa">private</span> List<span class="hl opt">&lt;</span>Encoder<span class="hl opt">&gt;</span> nucleotides<span class="hl opt">;</span>
+      <span class="hl kwa">private</span> Map<span class="hl opt">&lt;</span>Fragment<span class="hl opt">,</span> Fragment<span class="hl opt">&gt;</span> fragments <span class="hl opt">=</span> <span class="hl kwa">new</span> HashMap<span class="hl opt">&lt;</span>Fragment<span class="hl opt">,</span> Fragment<span class="hl opt">&gt;();</span>
+      
+      <span class="hl kwa">private</span> <span class="hl kwd">Counter</span><span class="hl opt">(</span>List<span class="hl opt">&lt;</span>Encoder<span class="hl opt">&gt;</span> nucleotides<span class="hl opt">,</span> <span class="hl kwb">int</span> fragmentSize<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+         <span class="hl kwa">this</span><span class="hl opt">.</span>nucleotides <span class="hl opt">=</span> nucleotides<span class="hl opt">;</span>
+         <span class="hl kwa">this</span><span class="hl opt">.</span>fragmentSize <span class="hl opt">=</span> fragmentSize<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+      
+      <span class="hl kwa">public</span> Map<span class="hl opt">&lt;</span>Fragment<span class="hl opt">,</span> Fragment<span class="hl opt">&gt;</span> <span class="hl kwd">get</span><span class="hl opt">()</span> <span class="hl kwa">throws</span> InterruptedException<span class="hl opt">,</span> ExecutionException
+      <span class="hl opt">{</span>
+         <span class="hl kwa">while</span> <span class="hl opt">(!</span>done<span class="hl opt">)</span> <span class="hl kwa">try</span> <span class="hl opt">{</span>
+            Thread<span class="hl opt">.</span><span class="hl kwd">sleep</span><span class="hl opt">(</span><span class="hl num">100</span><span class="hl opt">);</span>
+         <span class="hl opt">}</span> <span class="hl kwa">catch</span> <span class="hl opt">(</span>InterruptedException e<span class="hl opt">) {</span>
+            <span class="hl slc">// ignored</span>
+         <span class="hl opt">}</span>
+         <span class="hl kwa">return</span> fragments<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">run</span><span class="hl opt">()</span>
+      <span class="hl opt">{</span>
+         <span class="hl kwb">long</span> dna <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> bitmask <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+         <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> fragmentSize<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+            bitmask <span class="hl opt">=</span> bitmask <span class="hl opt">&lt;&lt;</span> BITS_PER_CHAR <span class="hl opt">|</span> CHAR_BIT_MASK<span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+
+         <span class="hl kwa">try</span> <span class="hl opt">{</span>
+         
+            <span class="hl kwb">int</span> j <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+            <span class="hl kwb">byte</span><span class="hl opt">[]</span> buffer <span class="hl opt">=</span> nucleotides<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">).</span><span class="hl kwd">get</span><span class="hl opt">().</span><span class="hl kwd">get</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
+
+            <span class="hl kwa">for</span> <span class="hl opt">(;</span> j <span class="hl opt">&lt;</span> fragmentSize <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span> j<span class="hl opt">++) {</span>
+               dna <span class="hl opt">=</span> dna <span class="hl opt">&lt;&lt;</span> BITS_PER_CHAR <span class="hl opt">|</span> buffer<span class="hl opt">[</span>j<span class="hl opt">];</span>
+            <span class="hl opt">}</span>
+
+            Fragment fragment <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Fragment</span><span class="hl opt">(</span>fragmentSize<span class="hl opt">);</span>
+            Iterator<span class="hl opt">&lt;</span>Encoder<span class="hl opt">&gt;</span> fit <span class="hl opt">=</span> nucleotides<span class="hl opt">.</span><span class="hl kwd">iterator</span><span class="hl opt">();</span>
+
+            <span class="hl kwa">while</span> <span class="hl opt">(</span>fit<span class="hl opt">.</span><span class="hl kwd">hasNext</span><span class="hl opt">()) {</span>
+               Encoder encoder <span class="hl opt">=</span> fit<span class="hl opt">.</span><span class="hl kwd">next</span><span class="hl opt">();</span>
+               Iterator<span class="hl opt">&lt;</span><span class="hl kwb">byte</span><span class="hl opt">[]&gt;</span> bit <span class="hl opt">=</span> encoder<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">().</span><span class="hl kwd">iterator</span><span class="hl opt">();</span>
+            
+               <span class="hl kwa">while</span> <span class="hl opt">(</span>bit<span class="hl opt">.</span><span class="hl kwd">hasNext</span><span class="hl opt">()) {</span>
+                  buffer <span class="hl opt">=</span> bit<span class="hl opt">.</span><span class="hl kwd">next</span><span class="hl opt">();</span>
+               
+                  <span class="hl kwa">for</span> <span class="hl opt">(;</span> j <span class="hl opt">&lt;</span> buffer<span class="hl opt">.</span>length<span class="hl opt">;</span> j<span class="hl opt">++) {</span>
+                     dna <span class="hl opt">=</span> dna <span class="hl opt">&lt;&lt;</span> BITS_PER_CHAR <span class="hl opt">|</span> buffer<span class="hl opt">[</span>j<span class="hl opt">];</span>
+                     fragment<span class="hl opt">.</span>value <span class="hl opt">=</span> dna <span class="hl opt">&amp;</span> bitmask<span class="hl opt">;</span>
+                     Fragment counter <span class="hl opt">=</span> fragments<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">(</span>fragment<span class="hl opt">);</span>
+                  
+                     <span class="hl kwa">if</span> <span class="hl opt">(</span>counter <span class="hl opt">!=</span> null<span class="hl opt">) {</span>
+                        counter<span class="hl opt">.</span>count<span class="hl opt">++;</span>
+                     <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+                        fragments<span class="hl opt">.</span><span class="hl kwd">put</span><span class="hl opt">(</span>fragment<span class="hl opt">,</span> fragment<span class="hl opt">);</span>
+                        fragment <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Fragment</span><span class="hl opt">(</span>fragmentSize<span class="hl opt">);</span>
+                     <span class="hl opt">}</span>
+                  <span class="hl opt">}</span>
+                  j <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+               <span class="hl opt">}</span>
+            <span class="hl opt">}</span>
+         <span class="hl opt">}</span> <span class="hl kwa">catch</span> <span class="hl opt">(</span>Exception e<span class="hl opt">) {</span>
+            e<span class="hl opt">.</span><span class="hl kwd">printStackTrace</span><span class="hl opt">();</span>
+         <span class="hl opt">}</span>
+         
+         done <span class="hl opt">=</span> true<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private static class</span> OffsetCounter <span class="hl kwa">implements</span> Runnable
+   <span class="hl opt">{</span>
+      <span class="hl kwa">private</span> <span class="hl kwb">int</span> offset<span class="hl opt">;</span>
+      <span class="hl kwa">private</span> <span class="hl kwb">int</span> fragmentSize<span class="hl opt">;</span>
+      <span class="hl kwa">private</span> <span class="hl kwb">boolean</span> done <span class="hl opt">=</span> false<span class="hl opt">;</span>
+      <span class="hl kwa">private</span> List<span class="hl opt">&lt;</span>Encoder<span class="hl opt">&gt;</span> nucleotides<span class="hl opt">;</span>
+      <span class="hl kwa">private</span> Map<span class="hl opt">&lt;</span>Fragment<span class="hl opt">,</span> Fragment<span class="hl opt">&gt;</span> fragments <span class="hl opt">=</span> <span class="hl kwa">new</span> HashMap<span class="hl opt">&lt;</span>Fragment<span class="hl opt">,</span> Fragment<span class="hl opt">&gt;();</span>
+      
+      <span class="hl kwa">private</span> <span class="hl kwd">OffsetCounter</span><span class="hl opt">(</span>List<span class="hl opt">&lt;</span>Encoder<span class="hl opt">&gt;</span> nucleotides<span class="hl opt">,</span> <span class="hl kwb">int</span> offset<span class="hl opt">,</span> <span class="hl kwb">int</span> fragmentSize<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+         <span class="hl kwa">this</span><span class="hl opt">.</span>offset <span class="hl opt">=</span> offset<span class="hl opt">;</span>
+         <span class="hl kwa">this</span><span class="hl opt">.</span>nucleotides <span class="hl opt">=</span> nucleotides<span class="hl opt">;</span>
+         <span class="hl kwa">this</span><span class="hl opt">.</span>fragmentSize <span class="hl opt">=</span> fragmentSize<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+      
+      <span class="hl kwa">public</span> Map<span class="hl opt">&lt;</span>Fragment<span class="hl opt">,</span> Fragment<span class="hl opt">&gt;</span> <span class="hl kwd">get</span><span class="hl opt">()</span> <span class="hl kwa">throws</span> InterruptedException<span class="hl opt">,</span> ExecutionException
+      <span class="hl opt">{</span>
+         <span class="hl kwa">while</span> <span class="hl opt">(!</span>done<span class="hl opt">)</span> <span class="hl kwa">try</span> <span class="hl opt">{</span>
+            Thread<span class="hl opt">.</span><span class="hl kwd">sleep</span><span class="hl opt">(</span><span class="hl num">100</span><span class="hl opt">);</span>
+         <span class="hl opt">}</span> <span class="hl kwa">catch</span> <span class="hl opt">(</span>InterruptedException e<span class="hl opt">) {</span>
+            <span class="hl slc">// ignored</span>
+         <span class="hl opt">}</span>
+         <span class="hl kwa">return</span> fragments<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">run</span><span class="hl opt">()</span>
+      <span class="hl opt">{</span>
+         <span class="hl kwb">long</span> bitmask <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+         <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> fragmentSize<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+            bitmask <span class="hl opt">=</span> bitmask <span class="hl opt">&lt;&lt;</span> BITS_PER_CHAR <span class="hl opt">|</span> CHAR_BIT_MASK<span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+
+         <span class="hl kwa">try</span> <span class="hl opt">{</span>
+         
+            <span class="hl kwb">byte</span><span class="hl opt">[]</span> buffer<span class="hl opt">;</span>
+            <span class="hl kwb">int</span> j <span class="hl opt">=</span> offset<span class="hl opt">;</span>
+            Fragment fragment <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Fragment</span><span class="hl opt">(</span>fragmentSize<span class="hl opt">);</span>
+            Iterator<span class="hl opt">&lt;</span>Encoder<span class="hl opt">&gt;</span> fit <span class="hl opt">=</span> nucleotides<span class="hl opt">.</span><span class="hl kwd">iterator</span><span class="hl opt">();</span>
+
+            <span class="hl kwa">while</span> <span class="hl opt">(</span>fit<span class="hl opt">.</span><span class="hl kwd">hasNext</span><span class="hl opt">()) {</span>
+               Encoder encoder <span class="hl opt">=</span> fit<span class="hl opt">.</span><span class="hl kwd">next</span><span class="hl opt">();</span>
+               Iterator<span class="hl opt">&lt;</span><span class="hl kwb">byte</span><span class="hl opt">[]&gt;</span> bit <span class="hl opt">=</span> encoder<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">().</span><span class="hl kwd">iterator</span><span class="hl opt">();</span>
+            
+               <span class="hl kwa">while</span> <span class="hl opt">(</span>bit<span class="hl opt">.</span><span class="hl kwd">hasNext</span><span class="hl opt">()) {</span>
+                  buffer <span class="hl opt">=</span> bit<span class="hl opt">.</span><span class="hl kwd">next</span><span class="hl opt">();</span>
+               
+                  <span class="hl kwa">for</span> <span class="hl opt">(;</span> j <span class="hl opt">&lt;</span> buffer<span class="hl opt">.</span>length <span class="hl opt">-</span> fragmentSize<span class="hl opt">;</span> j<span class="hl opt">+=</span> fragmentSize<span class="hl opt">) {</span>
+                     <span class="hl kwb">long</span> dna <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+                     <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> fragmentSize<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+                        dna <span class="hl opt">=</span> dna <span class="hl opt">&lt;&lt;</span> BITS_PER_CHAR <span class="hl opt">|</span> buffer<span class="hl opt">[</span>j <span class="hl opt">+</span> i<span class="hl opt">];</span>
+                     <span class="hl opt">}</span>
+                     fragment<span class="hl opt">.</span>value <span class="hl opt">=</span> dna <span class="hl opt">&amp;</span> bitmask<span class="hl opt">;</span>
+                     Fragment counter <span class="hl opt">=</span> fragments<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">(</span>fragment<span class="hl opt">);</span>
+                  
+                     <span class="hl kwa">if</span> <span class="hl opt">(</span>counter <span class="hl opt">!=</span> null<span class="hl opt">) {</span>
+                        counter<span class="hl opt">.</span>count<span class="hl opt">++;</span>
+                     <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+                        fragments<span class="hl opt">.</span><span class="hl kwd">put</span><span class="hl opt">(</span>fragment<span class="hl opt">,</span> fragment<span class="hl opt">);</span>
+                        fragment <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Fragment</span><span class="hl opt">(</span>fragmentSize<span class="hl opt">);</span>
+                     <span class="hl opt">}</span>
+                  <span class="hl opt">}</span>
+                  j <span class="hl opt">-=</span> buffer<span class="hl opt">.</span>length <span class="hl opt">-</span> fragmentSize<span class="hl opt">;</span>
+               <span class="hl opt">}</span>
+            <span class="hl opt">}</span>
+         <span class="hl opt">}</span> <span class="hl kwa">catch</span> <span class="hl opt">(</span>Exception e<span class="hl opt">) {</span>
+            e<span class="hl opt">.</span><span class="hl kwd">printStackTrace</span><span class="hl opt">();</span>
+         <span class="hl opt">}</span>
+         
+         done <span class="hl opt">=</span> true<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>

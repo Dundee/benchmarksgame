@@ -1,0 +1,33 @@
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://shootout.alioth.debian.org/</span>
+<span class="hl slc">-- Contributed by Jed Brown with improvements by Spencer Janssen, Don Stewart and Alex Mason</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- Compile with: &lt;ghc&gt; --make -O2 -fglasgow-exts -threaded threadring.ghc-4.hs -o threadring.ghc-4.ghc_run</span>
+
+<span class="hl kwd">import</span> Control<span class="hl opt">.</span>Monad
+<span class="hl kwd">import</span> Control<span class="hl opt">.</span>Concurrent
+<span class="hl kwd">import</span> System<span class="hl opt">.</span>Environment
+<span class="hl kwd">import</span> GHC<span class="hl opt">.</span>Conc
+
+ring <span class="hl opt">=</span> <span class="hl num">503</span>
+
+new ret l i <span class="hl opt">=</span> <span class="hl kwd">do</span>
+  r <span class="hl opt">&lt;-</span> newEmptyMVar
+  forkOnIO numCapabilities <span class="hl opt">(</span>thread ret i l r<span class="hl opt">)</span>
+  <span class="hl kwc">return</span> r
+
+
+thread <span class="hl opt">::</span> MVar <span class="hl opt">() -&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> MVar <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> MVar <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">()</span>
+thread ret i l r <span class="hl opt">=</span> go
+  <span class="hl kwd">where</span> go <span class="hl opt">=</span> <span class="hl kwd">do</span>
+          m <span class="hl opt">&lt;-</span> takeMVar l
+          <span class="hl kwd">if</span> m <span class="hl opt">&gt;</span> <span class="hl num">1</span>
+              <span class="hl kwd">then</span> <span class="hl opt">(</span>putMVar r <span class="hl opt">$!</span> m <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">) &gt;&gt;</span> go
+              <span class="hl kwd">else</span> <span class="hl kwc">print</span> i <span class="hl opt">&gt;&gt;</span> putMVar ret <span class="hl opt">()</span>
+
+main <span class="hl opt">=</span> <span class="hl kwd">do</span>
+  a <span class="hl opt">&lt;-</span> newMVar <span class="hl opt">.</span> <span class="hl kwc">read</span> <span class="hl opt">.</span> <span class="hl kwc">head</span> <span class="hl opt">=&lt;&lt;</span> <span class="hl kwc">getArgs</span>
+  ret <span class="hl opt">&lt;-</span> newEmptyMVar
+  z <span class="hl opt">&lt;-</span> <span class="hl kwc">foldM</span> <span class="hl opt">(</span>new ret<span class="hl opt">)</span> a <span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">..</span>ring<span class="hl opt">]</span>
+  forkOnIO numCapabilities <span class="hl opt">(</span>thread ret <span class="hl num">1</span> z a<span class="hl opt">)</span>
+  takeMVar ret

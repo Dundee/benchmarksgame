@@ -1,0 +1,105 @@
+
+Sat, 12 May 2012 06:09:14 GMT
+
+MAKE:
+/usr/bin/gnatchop -r -w regexdna.gnat-2.gnat
+splitting regexdna.gnat-2.gnat into:
+   regexdna.adb
+   dna.ads
+   pcre.ads
+   pcre.adb
+   block_input.ads
+   block_input.adb
+/usr/bin/gnatmake -a -gnatnp -O3 -fomit-frame-pointer -march=native -f regexdna.adb -o regexdna.gnat-2.gnat_run 
+gcc-4.6 -c -gnatnp -O3 -fomit-frame-pointer -march=native regexdna.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-stalib.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/ada.ads
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/a-except.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/a-string.ads
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/a-strfix.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/a-tags.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/a-textio.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/a-tiinau.adb
+gcc-4.6 -c -gnatnp -O3 -fomit-frame-pointer -march=native block_input.adb
+gcc-4.6 -c -gnatnp -O3 -fomit-frame-pointer -march=native dna.ads
+gcc-4.6 -c -gnatnp -O3 -fomit-frame-pointer -march=native pcre.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/system.ads
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-imgint.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-soflin.adb
+gcc-4.6 -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/text_io.ads
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-memory.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/a-elchha.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-exctab.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-except.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-secsta.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-stalib.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-stoele.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-traceb.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-unstyp.ads
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-wchcon.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-wchstw.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-parame.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-traent.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/a-strmap.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/a-strsea.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-htable.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-valllu.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/a-stream.ads
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/interfac.ads
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/i-cstrea.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-crtl.ads
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-fileio.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-wchcnv.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/a-ioexce.ads
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-ficobl.ads
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/a-tigeau.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-imgbiu.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-imgllb.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-imglli.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-imgllw.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-imgwiu.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-valint.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-vallli.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/a-ststio.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/i-c.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/i-cstrin.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-stache.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-bitops.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/a-charac.ads
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/a-chlat1.ads
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-strhas.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-valuti.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/a-finali.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-casuti.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-crtrun.ads
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-finimp.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-finroo.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-os_lib.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-wchjis.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/a-filico.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-valuns.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-commun.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-restri.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-stratt.adb
+gcc-4.6 -gnatpg -c -I./ -gnatnp -O3 -fomit-frame-pointer -march=native -I- /usr/lib/gcc/x86_64-linux-gnu/4.6/adainclude/s-string.adb
+gnatbind -x regexdna.ali
+gnatlink regexdna.ali -O3 -fomit-frame-pointer -march=native -o regexdna.gnat-2.gnat_run
+10.88s to complete and log all make actions
+
+COMMAND LINE:
+./regexdna.gnat-2.gnat_run 0 < regexdna-input5000000.txt
+
+PROGRAM OUTPUT:
+agggtaaa|tttaccct 356
+[cgt]gggtaaa|tttaccc[acg] 1250
+a[act]ggtaaa|tttacc[agt]t 4252
+ag[act]gtaaa|tttac[agt]ct 2894
+agg[act]taaa|ttta[agt]cct 5435
+aggg[acg]aaa|ttt[cgt]ccct 1537
+agggt[cgt]aa|tt[acg]accct 1431
+agggta[cgt]a|t[acg]taccct 1608
+agggtaa[cgt]|[acg]ttaccct 2178
+
+50833411
+50000000
+66800214

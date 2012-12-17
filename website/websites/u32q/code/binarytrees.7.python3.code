@@ -1,0 +1,74 @@
+<span class="hl slc"># The Computer Language Benchmarks Game</span>
+<span class="hl slc"># http://shootout.alioth.debian.org/</span>
+<span class="hl slc">#</span>
+<span class="hl slc"># contributed by Antoine Pitrou</span>
+<span class="hl slc"># modified by Dominique Wahli and Daniel Nanz </span>
+<span class="hl slc"># modified by Liam Byrne</span>
+
+<span class="hl kwa">import</span> sys
+<span class="hl kwa">import</span> multiprocessing <span class="hl kwa">as</span> mp
+
+
+<span class="hl kwa">def</span> <span class="hl kwd">make_tree</span><span class="hl opt">(</span>i<span class="hl opt">,</span> d<span class="hl opt">):</span>
+
+    <span class="hl kwa">if</span> d<span class="hl opt">:</span>
+        d <span class="hl opt">-=</span> <span class="hl num">1</span>
+        <span class="hl kwa">return</span> <span class="hl opt">(</span>i<span class="hl opt">,</span> <span class="hl kwd">make_tree</span><span class="hl opt">(</span>i<span class="hl opt">,</span> d<span class="hl opt">),</span> <span class="hl kwd">make_tree</span><span class="hl opt">(</span>i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">,</span> d<span class="hl opt">))</span>
+    <span class="hl kwa">return</span> <span class="hl opt">(</span>i<span class="hl opt">,</span> <span class="hl kwa">None</span><span class="hl opt">,</span> <span class="hl kwa">None</span><span class="hl opt">)</span>
+
+
+<span class="hl kwa">def</span> <span class="hl kwd">check_tree</span><span class="hl opt">(</span>node<span class="hl opt">):</span>
+
+    i<span class="hl opt">,</span> l<span class="hl opt">,</span> r <span class="hl opt">=</span> node
+    <span class="hl kwa">if</span> l <span class="hl kwa">is None</span><span class="hl opt">:</span>
+        <span class="hl kwa">return</span> i
+    <span class="hl kwa">else</span><span class="hl opt">:</span>
+        <span class="hl kwa">return</span> i <span class="hl opt">+</span> <span class="hl kwd">check_tree</span><span class="hl opt">(</span>l<span class="hl opt">) -</span> <span class="hl kwd">check_tree</span><span class="hl opt">(</span>r<span class="hl opt">)</span>
+
+
+<span class="hl kwa">def</span> <span class="hl kwd">make_check</span><span class="hl opt">(</span>itde<span class="hl opt">,</span> make<span class="hl opt">=</span>make_tree<span class="hl opt">,</span> check<span class="hl opt">=</span>check_tree<span class="hl opt">):</span>
+
+    i<span class="hl opt">,</span> d <span class="hl opt">=</span> itde
+    <span class="hl kwa">return</span> <span class="hl kwd">check</span><span class="hl opt">(</span><span class="hl kwd">make</span><span class="hl opt">(</span>i<span class="hl opt">,</span> d<span class="hl opt">))</span>
+
+
+<span class="hl kwa">def</span> <span class="hl kwd">get_argchunks</span><span class="hl opt">(</span>i<span class="hl opt">,</span> d<span class="hl opt">,</span> chunksize<span class="hl opt">=</span><span class="hl num">5000</span><span class="hl opt">):</span>
+
+    <span class="hl kwa">assert</span> chunksize <span class="hl opt">%</span> <span class="hl num">2</span> <span class="hl opt">==</span> <span class="hl num">0</span>
+    chunk <span class="hl opt">= []</span>
+    <span class="hl kwa">for</span> k <span class="hl kwa">in</span> <span class="hl kwb">range</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span> i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">):</span>
+        chunk<span class="hl opt">.</span><span class="hl kwd">extend</span><span class="hl opt">([(</span>k<span class="hl opt">,</span> d<span class="hl opt">), (-</span>k<span class="hl opt">,</span> d<span class="hl opt">)])</span>
+        <span class="hl kwa">if</span> <span class="hl kwb">len</span><span class="hl opt">(</span>chunk<span class="hl opt">) ==</span> chunksize<span class="hl opt">:</span>
+            <span class="hl kwa">yield</span> chunk
+            chunk <span class="hl opt">= []</span>
+    <span class="hl kwa">if</span> <span class="hl kwb">len</span><span class="hl opt">(</span>chunk<span class="hl opt">) &gt;</span> <span class="hl num">0</span><span class="hl opt">:</span>
+        <span class="hl kwa">yield</span> chunk
+
+
+<span class="hl kwa">def</span> <span class="hl kwd">main</span><span class="hl opt">(</span>n<span class="hl opt">,</span> min_depth<span class="hl opt">=</span><span class="hl num">4</span><span class="hl opt">):</span>
+
+    max_depth <span class="hl opt">=</span> <span class="hl kwb">max</span><span class="hl opt">(</span>min_depth <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">,</span> n<span class="hl opt">)</span>
+    stretch_depth <span class="hl opt">=</span> max_depth <span class="hl opt">+</span> <span class="hl num">1</span>
+    <span class="hl kwa">if</span> mp<span class="hl opt">.</span><span class="hl kwd">cpu_count</span><span class="hl opt">() &gt;</span> <span class="hl num">1</span><span class="hl opt">:</span>
+        pool <span class="hl opt">=</span> mp<span class="hl opt">.</span><span class="hl kwd">Pool</span><span class="hl opt">()</span>
+        chunkmap <span class="hl opt">=</span> pool<span class="hl opt">.</span><span class="hl kwb">map</span>
+    <span class="hl kwa">else</span><span class="hl opt">:</span>
+        chunkmap <span class="hl opt">=</span> <span class="hl kwb">map</span>
+
+    <span class="hl kwa">print</span><span class="hl opt">(</span><span class="hl str">'stretch tree of depth {}</span><span class="hl esc">\t</span> <span class="hl str">check: {}'</span><span class="hl opt">.</span><span class="hl kwd">format</span><span class="hl opt">(</span>
+          stretch_depth<span class="hl opt">,</span> <span class="hl kwd">make_check</span><span class="hl opt">((</span><span class="hl num">0</span><span class="hl opt">,</span> stretch_depth<span class="hl opt">))))</span>
+
+    mmd <span class="hl opt">=</span> max_depth <span class="hl opt">+</span> min_depth
+    <span class="hl kwa">for</span> d <span class="hl kwa">in</span> <span class="hl kwb">range</span><span class="hl opt">(</span>min_depth<span class="hl opt">,</span> stretch_depth<span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">):</span>
+        i <span class="hl opt">=</span> <span class="hl num">2</span> <span class="hl opt">** (</span>mmd <span class="hl opt">-</span> d<span class="hl opt">)</span>
+        cs <span class="hl opt">=</span> <span class="hl kwb">sum</span><span class="hl opt">((</span><span class="hl kwb">sum</span><span class="hl opt">(</span><span class="hl kwd">chunkmap</span><span class="hl opt">(</span>make_check<span class="hl opt">,</span> argchunk<span class="hl opt">))</span>
+                  <span class="hl kwa">for</span> argchunk <span class="hl kwa">in</span> <span class="hl kwd">get_argchunks</span><span class="hl opt">(</span>i<span class="hl opt">,</span> d<span class="hl opt">)))</span>
+        <span class="hl kwa">print</span><span class="hl opt">(</span><span class="hl str">'{}</span><span class="hl esc">\t</span> <span class="hl str">trees of depth {}</span><span class="hl esc">\t</span> <span class="hl str">check: {}'</span><span class="hl opt">.</span><span class="hl kwd">format</span><span class="hl opt">(</span>i <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">,</span> d<span class="hl opt">,</span> cs<span class="hl opt">))</span>
+
+    <span class="hl kwa">print</span><span class="hl opt">(</span><span class="hl str">'long lived tree of depth {}</span><span class="hl esc">\t</span> <span class="hl str">check: {}'</span><span class="hl opt">.</span><span class="hl kwd">format</span><span class="hl opt">(</span>
+          max_depth<span class="hl opt">,</span> <span class="hl kwd">make_check</span><span class="hl opt">((</span><span class="hl num">0</span><span class="hl opt">,</span> max_depth<span class="hl opt">))))</span>
+
+
+<span class="hl kwa">if</span> __name__ <span class="hl opt">==</span> <span class="hl str">'__main__'</span><span class="hl opt">:</span>
+    <span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">int</span><span class="hl opt">(</span>sys<span class="hl opt">.</span>argv<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]))</span>
+

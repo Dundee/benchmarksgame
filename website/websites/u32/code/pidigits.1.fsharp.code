@@ -1,0 +1,53 @@
+﻿<span class="hl slc">// The Computer Language Benchmarks Game</span>
+<span class="hl slc">// http://shootout.alioth.debian.org/</span>
+<span class="hl slc">//</span>
+<span class="hl slc">// contributed by Valentin Kraevskiy</span>
+<span class="hl slc">// fixed by Joel Mueller</span>
+
+<span class="hl ppc">#light</span>
+    
+<span class="hl kwa">let</span> id <span class="hl opt">=</span> <span class="hl num">1I</span><span class="hl opt">,</span> <span class="hl num">0I</span><span class="hl opt">,</span> <span class="hl num">0I</span><span class="hl opt">,</span> <span class="hl num">1I</span>
+
+<span class="hl kwa">let</span> comp <span class="hl opt">(</span>q<span class="hl opt">,</span> r<span class="hl opt">,</span> s<span class="hl opt">,</span> t<span class="hl opt">) (</span>u<span class="hl opt">,</span> v<span class="hl opt">,</span> x<span class="hl opt">) =</span>
+    <span class="hl opt">(</span>q <span class="hl opt">*</span> u<span class="hl opt">,</span> q <span class="hl opt">*</span> v <span class="hl opt">+</span> r <span class="hl opt">*</span> x<span class="hl opt">,</span> s <span class="hl opt">*</span> u<span class="hl opt">,</span> s <span class="hl opt">*</span> v <span class="hl opt">+</span> t <span class="hl opt">*</span> x<span class="hl opt">)</span>
+
+<span class="hl kwa">let</span> div x y <span class="hl opt">=</span> 
+    <span class="hl kwa">let rec</span> next w n <span class="hl opt">=</span>        
+        <span class="hl kwa">if</span> w <span class="hl opt">&gt;</span> x <span class="hl kwa">then</span> n <span class="hl kwa">else</span> next <span class="hl opt">(</span>w <span class="hl opt">+</span> y<span class="hl opt">) (</span>n <span class="hl opt">+</span> <span class="hl num">1I</span><span class="hl opt">)</span>
+    next y <span class="hl num">0I</span>
+<span class="hl kwa">let</span> extr <span class="hl opt">(</span>q<span class="hl opt">,</span> r<span class="hl opt">,</span> s<span class="hl opt">,</span> t<span class="hl opt">)</span> x <span class="hl opt">=</span> div <span class="hl opt">(</span>q <span class="hl opt">*</span> x <span class="hl opt">+</span> r<span class="hl opt">) (</span>s <span class="hl opt">*</span> x <span class="hl opt">+</span> t<span class="hl opt">)</span>   
+    
+<span class="hl kwa">let</span> next z <span class="hl opt">=</span> extr z <span class="hl num">3I</span>
+<span class="hl kwa">let</span> safe z <span class="hl opt">= (=) (</span>extr z <span class="hl num">4I</span><span class="hl opt">)</span>
+<span class="hl kwa">let</span> prod <span class="hl opt">(</span>u<span class="hl opt">,</span> v<span class="hl opt">,</span> w<span class="hl opt">,</span> x<span class="hl opt">)</span> n <span class="hl opt">=</span>
+    <span class="hl kwa">let</span> neg <span class="hl opt">= -</span><span class="hl num">10I</span> <span class="hl opt">*</span> n
+    <span class="hl opt">(</span><span class="hl num">10I</span> <span class="hl opt">*</span> u <span class="hl opt">+</span> neg <span class="hl opt">*</span> w<span class="hl opt">,</span> <span class="hl num">10I</span> <span class="hl opt">*</span> v <span class="hl opt">+</span> neg <span class="hl opt">*</span> x<span class="hl opt">,</span> w<span class="hl opt">,</span> x<span class="hl opt">)</span>
+
+<span class="hl kwa">let</span> digits <span class="hl opt">=</span> 
+    <span class="hl kwa">let</span> z <span class="hl opt">=</span> <span class="hl kwb">ref</span> id    
+    <span class="hl kwa">let</span> lfts <span class="hl opt">=</span> 
+        <span class="hl kwa">let</span> n <span class="hl opt">=</span> <span class="hl kwb">ref</span> <span class="hl num">0I</span>
+        <span class="hl kwa">fun</span> <span class="hl opt">() -&gt;</span> n <span class="hl opt">:= !</span>n <span class="hl opt">+</span> <span class="hl num">1I</span>
+                  <span class="hl opt">!</span>n<span class="hl opt">,</span> <span class="hl num">4I</span> <span class="hl opt">* !</span>n <span class="hl opt">+</span> <span class="hl num">2I</span><span class="hl opt">,</span> <span class="hl num">2I</span> <span class="hl opt">* !</span>n <span class="hl opt">+</span> <span class="hl num">1I</span>
+    <span class="hl kwa">let rec</span> digits <span class="hl opt">() =</span>
+            <span class="hl kwa">let</span> y <span class="hl opt">=</span> next <span class="hl opt">!</span>z 
+            <span class="hl kwa">if</span> safe <span class="hl opt">!</span>z y 
+                <span class="hl kwa">then</span> z <span class="hl opt">:= (</span>prod <span class="hl opt">!</span>z y<span class="hl opt">)</span>
+                     y
+                <span class="hl kwa">else</span> z <span class="hl opt">:= (</span>comp <span class="hl opt">!</span>z <span class="hl opt">&lt;</span>| lfts <span class="hl opt">())</span>
+                     digits <span class="hl opt">()</span>
+    digits
+
+<span class="hl kwa">let rec</span> loop n s total <span class="hl opt">=</span> 
+    <span class="hl kwa">if</span> total <span class="hl opt">=</span> <span class="hl num">0</span> 
+        <span class="hl kwa">then for</span> _ <span class="hl kwa">in</span> <span class="hl num">1</span> <span class="hl opt">..</span> n <span class="hl kwa">do</span> printf <span class="hl str">&quot; &quot;</span>
+             printf <span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">:%i</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">) (</span>s <span class="hl opt">+</span> <span class="hl num">10</span> <span class="hl opt">-</span> n<span class="hl opt">)</span>
+        <span class="hl kwa">else if</span> n <span class="hl opt">=</span> <span class="hl num">0</span> 
+            <span class="hl kwa">then</span> printf <span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">:%i</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> <span class="hl opt">&lt;</span>| s <span class="hl opt">+</span> <span class="hl num">10</span>
+                 loop <span class="hl num">10</span> <span class="hl opt">(</span>s <span class="hl opt">+</span> <span class="hl num">10</span><span class="hl opt">)</span> total
+            <span class="hl kwa">else</span> printf <span class="hl str">&quot;%i&quot;</span> <span class="hl opt">&lt;</span>| <span class="hl kwb">int</span> <span class="hl opt">(</span>digits <span class="hl opt">())</span> 
+                 loop <span class="hl opt">(</span>n <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">)</span> s <span class="hl opt">(</span>total <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">)</span>
+
+loop <span class="hl num">10 0</span> <span class="hl opt">&lt;</span>| <span class="hl kwa">try</span> <span class="hl kwb">int</span> <span class="hl opt">(</span><span class="hl kwd">System</span><span class="hl opt">.</span><span class="hl kwd">Environment</span><span class="hl opt">.</span><span class="hl kwd">GetCommandLineArgs</span><span class="hl opt">().[</span><span class="hl num">1</span><span class="hl opt">])</span> <span class="hl kwa">with</span> _ <span class="hl opt">-&gt;</span> <span class="hl num">27</span>
+
+ 

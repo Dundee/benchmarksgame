@@ -1,0 +1,21 @@
+
+Sat, 14 Jul 2012 01:30:01 GMT
+
+MAKE:
+/usr/local/src/rust-0.3/bin/rustc --opt-level=3 threadring.rs -o threadring.rust_run
+threadring.rs:29:4: 43:5 [1;33mwarning:[0m denote infinite loops with loop { ... }
+threadring.rs:29     while (true) {
+threadring.rs:30         alt comm::recv(p) {
+threadring.rs:31           1 {
+threadring.rs:32             io::println(#fmt("%d", id));
+threadring.rs:33             ret;
+threadring.rs:34           }
+                 ...
+rm threadring.rs
+0.43s to complete and log all make actions
+
+COMMAND LINE:
+./threadring.rust_run 50000000
+
+PROGRAM OUTPUT:
+292

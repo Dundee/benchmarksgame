@@ -1,0 +1,101 @@
+<span class="hl slc">! The Computer Language Benchmarks Game</span>
+<span class="hl slc">! http://shootout.alioth.debian.org/</span>
+<span class="hl slc">!</span>
+<span class="hl slc">! Original submission by Andrei Jirnyi</span>
+<span class="hl slc">!  thanks to Gilbert Brietzke for the previous Fortran code</span>
+<span class="hl slc">!  and to other submitters for their work</span>
+
+<span class="hl kwa">program</span> fannkuchredux
+  <span class="hl kwa">use</span> iso_fortran_env
+  <span class="hl kwa">implicit none</span>
+
+  <span class="hl kwa">integer</span> <span class="hl opt">::</span> NP<span class="hl opt">,</span> maxfk<span class="hl opt">,</span> cksum <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> current <span class="hl opt">=</span> <span class="hl num">0</span>
+  <span class="hl kwa">integer</span><span class="hl opt">(</span><span class="hl num">8</span><span class="hl opt">) ::</span>NQ
+  <span class="hl kwa">integer</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">),</span> allocatable <span class="hl opt">::</span> <span class="hl kwd">blk</span><span class="hl opt">(:,:)</span>
+  <span class="hl kwa">logical</span> <span class="hl opt">::</span>saveblk <span class="hl opt">= .</span>true<span class="hl opt">.</span>
+  <span class="hl kwa">character</span><span class="hl opt">(</span>len<span class="hl opt">=</span><span class="hl num">2</span><span class="hl opt">) ::</span> arg
+  <span class="hl kwa">character</span><span class="hl opt">(</span>len<span class="hl opt">=</span><span class="hl num">20</span><span class="hl opt">) ::</span> out
+  
+  <span class="hl kwa">call</span> <span class="hl kwd">get_command_argument</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span>arg<span class="hl opt">)</span>
+  <span class="hl kwa">read</span><span class="hl opt">(</span>arg<span class="hl opt">,</span><span class="hl str">'(I2)'</span><span class="hl opt">)</span> NP
+  
+  NQ <span class="hl opt">=</span> <span class="hl kwd">factorial</span><span class="hl opt">(</span>NP<span class="hl opt">)/</span>NP<span class="hl opt">+</span>NP
+  <span class="hl kwd">allocate</span><span class="hl opt">(</span><span class="hl kwd">blk</span><span class="hl opt">(</span>NP<span class="hl opt">,</span>NQ<span class="hl opt">))</span>
+  
+  <span class="hl kwa">call</span> <span class="hl kwd">fillblock</span><span class="hl opt">(</span>NP<span class="hl opt">)</span>
+  
+  <span class="hl kwa">write</span><span class="hl opt">(</span>out<span class="hl opt">,</span><span class="hl str">'(i15)'</span><span class="hl opt">)</span> cksum<span class="hl opt">-</span><span class="hl num">2</span>
+  <span class="hl kwa">write</span><span class="hl opt">(*,</span><span class="hl str">'(a)'</span><span class="hl opt">)</span> <span class="hl kwd">trim</span><span class="hl opt">(</span><span class="hl kwd">adjustl</span><span class="hl opt">(</span>out<span class="hl opt">))</span>
+  <span class="hl kwa">write</span><span class="hl opt">(*,</span><span class="hl str">'(3a,i3)'</span><span class="hl opt">)</span> <span class="hl str">'Pfannkuchen('</span><span class="hl opt">,</span><span class="hl kwd">trim</span><span class="hl opt">(</span><span class="hl kwd">adjustl</span><span class="hl opt">(</span>arg<span class="hl opt">)),</span><span class="hl str">') ='</span><span class="hl opt">,</span>maxfk
+
+<span class="hl kwa">contains</span>
+
+  <span class="hl kwa">function</span> <span class="hl kwd">factorial</span><span class="hl opt">(</span>n<span class="hl opt">)</span>
+    <span class="hl kwa">integer</span> n<span class="hl opt">,</span> factorial<span class="hl opt">,</span> i
+    factorial <span class="hl opt">=</span> <span class="hl num">1</span>
+    <span class="hl kwa">do</span> i<span class="hl opt">=</span><span class="hl num">1</span><span class="hl opt">,</span>n
+       factorial <span class="hl opt">=</span> factorial<span class="hl opt">*</span>i
+    <span class="hl kwa">end do</span>
+  <span class="hl kwa">end function</span> factorial
+  
+  <span class="hl kwa">subroutine</span> <span class="hl kwd">fillblock</span><span class="hl opt">(</span>NP<span class="hl opt">)</span>
+    <span class="hl kwa">integer</span> <span class="hl opt">::</span> NP
+    <span class="hl kwa">integer</span><span class="hl opt">(</span><span class="hl num">8</span><span class="hl opt">) ::</span> bsize
+    <span class="hl kwa">integer</span> <span class="hl opt">::</span> i<span class="hl opt">,</span>j<span class="hl opt">,</span>k
+    <span class="hl kwa">integer</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">),</span> <span class="hl kwa">dimension</span><span class="hl opt">(</span>NP<span class="hl opt">) ::</span> base
+
+    base <span class="hl opt">= [(</span>i<span class="hl opt">,</span>i<span class="hl opt">=</span><span class="hl num">1</span><span class="hl opt">,</span>NP<span class="hl opt">)]</span>
+    <span class="hl kwd">blk</span><span class="hl opt">(:,</span><span class="hl num">1</span><span class="hl opt">) =</span> base<span class="hl opt">;</span>
+
+    k <span class="hl opt">=</span> <span class="hl num">2</span><span class="hl opt">;</span>
+    bsize <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+    maxfk <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">do</span> i<span class="hl opt">=</span><span class="hl num">2</span><span class="hl opt">,</span>NP       <span class="hl slc">! rot count</span>
+       current <span class="hl opt">=</span> i
+       <span class="hl kwa">if</span><span class="hl opt">(</span>i<span class="hl opt">==</span>NP<span class="hl opt">)</span> saveblk <span class="hl opt">= .</span>false<span class="hl opt">.</span>
+       bsize <span class="hl opt">=</span> bsize<span class="hl opt">*(</span>i<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span>
+       <span class="hl kwa">do</span> j<span class="hl opt">=</span><span class="hl num">1</span><span class="hl opt">,</span>i<span class="hl opt">-</span><span class="hl num">1</span>   <span class="hl slc">! blk count</span>
+          <span class="hl kwd">base</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">:</span>i<span class="hl opt">) =</span> <span class="hl kwd">cshift</span><span class="hl opt">(</span><span class="hl kwd">base</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">:</span>i<span class="hl opt">),</span><span class="hl num">1</span><span class="hl opt">)</span>
+          <span class="hl slc">! k is out of bounds for i==NP, it's OK since saveblk=.f.</span>
+          <span class="hl kwa">call</span> <span class="hl kwd">procblk</span><span class="hl opt">(</span><span class="hl kwd">blk</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span>k<span class="hl opt">),</span><span class="hl kwd">blk</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span><span class="hl num">1</span><span class="hl opt">),</span>base<span class="hl opt">,</span>bsize<span class="hl opt">)</span>
+          k <span class="hl opt">=</span> k<span class="hl opt">+</span>bsize
+       <span class="hl kwa">end do</span>
+       <span class="hl kwd">base</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">:</span>i<span class="hl opt">) =</span> <span class="hl kwd">cshift</span><span class="hl opt">(</span><span class="hl kwd">base</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">:</span>i<span class="hl opt">),</span><span class="hl num">1</span><span class="hl opt">)</span>
+    <span class="hl kwa">end do</span>
+  <span class="hl kwa">end subroutine</span> fillblock
+
+  <span class="hl kwa">subroutine</span> <span class="hl kwd">procblk</span><span class="hl opt">(</span>blk<span class="hl opt">,</span>mult<span class="hl opt">,</span>base<span class="hl opt">,</span>bsize<span class="hl opt">)</span>
+    <span class="hl kwa">integer</span><span class="hl opt">(</span><span class="hl num">8</span><span class="hl opt">) ::</span> bsize<span class="hl opt">,</span>i
+    <span class="hl kwa">integer</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) ::</span> <span class="hl kwd">blk</span><span class="hl opt">(</span>NP<span class="hl opt">*</span>bsize<span class="hl opt">),</span><span class="hl kwd">mult</span><span class="hl opt">(</span>NP<span class="hl opt">*</span>bsize<span class="hl opt">),</span><span class="hl kwd">base</span><span class="hl opt">(</span>NP<span class="hl opt">)</span>
+    <span class="hl kwa">integer</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) ::</span> <span class="hl kwd">line</span><span class="hl opt">(</span>NP<span class="hl opt">),</span> t<span class="hl opt">,</span> t1
+    <span class="hl kwa">integer</span> <span class="hl opt">::</span> j<span class="hl opt">,</span> ii<span class="hl opt">,</span> iii
+
+    <span class="hl kwa">if</span><span class="hl opt">(</span>saveblk<span class="hl opt">)</span> blk<span class="hl opt">=</span><span class="hl kwd">base</span><span class="hl opt">(</span>mult<span class="hl opt">)</span>
+    
+    <span class="hl slc">!$omp  parallel do default(shared) &amp;</span>
+    <span class="hl slc">!$omp&amp; private(i,j,t,line,t1,ii,iii) &amp;</span>
+    <span class="hl slc">!$omp&amp; reduction(max: maxfk) reduction(+: cksum) &amp;</span>
+    <span class="hl slc">!$omp&amp; schedule(guided) if(current&gt;9)</span>
+    <span class="hl kwa">do</span> iii<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">,</span>bsize<span class="hl opt">-</span><span class="hl num">1</span>
+       i <span class="hl opt">=</span> iii<span class="hl opt">*</span>NP
+       line <span class="hl opt">=</span> <span class="hl kwd">base</span><span class="hl opt">(</span><span class="hl kwd">mult</span><span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">:</span>i<span class="hl opt">+</span>NP<span class="hl opt">))</span>
+       j <span class="hl opt">=</span> <span class="hl num">0</span>
+       t <span class="hl opt">=</span> <span class="hl kwd">line</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)</span>
+       <span class="hl kwa">do while</span><span class="hl opt">(</span>t <span class="hl opt">/=</span> <span class="hl num">1</span><span class="hl opt">)</span>  <span class="hl slc">! flip till line(1)==1</span>
+          <span class="hl kwa">do</span> ii<span class="hl opt">=</span><span class="hl num">1</span><span class="hl opt">,</span><span class="hl kwd">ishft</span><span class="hl opt">(</span>t<span class="hl opt">,-</span><span class="hl num">1</span><span class="hl opt">)</span>
+             t1 <span class="hl opt">=</span> <span class="hl kwd">line</span><span class="hl opt">(</span>ii<span class="hl opt">)</span>
+             <span class="hl kwd">line</span><span class="hl opt">(</span>ii<span class="hl opt">) =</span> <span class="hl kwd">line</span><span class="hl opt">(</span>t<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">-</span>ii<span class="hl opt">)</span>
+             <span class="hl kwd">line</span><span class="hl opt">(</span>t<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">-</span>ii<span class="hl opt">) =</span> t1
+          <span class="hl kwa">end do</span>
+          t <span class="hl opt">=</span> <span class="hl kwd">line</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)</span>
+          j <span class="hl opt">=</span> j<span class="hl opt">+</span><span class="hl num">1</span>
+       <span class="hl kwa">end do</span>
+       maxfk <span class="hl opt">=</span> <span class="hl kwd">max</span><span class="hl opt">(</span>maxfk<span class="hl opt">,</span> j<span class="hl opt">)</span>
+       cksum <span class="hl opt">=</span> cksum<span class="hl opt">+</span>j<span class="hl opt">*(</span><span class="hl num">1</span><span class="hl opt">-</span><span class="hl kwd">ishft</span><span class="hl opt">(</span><span class="hl kwd">mod</span><span class="hl opt">(</span>iii<span class="hl opt">,</span><span class="hl num">2</span><span class="hl opt">),</span><span class="hl num">1</span><span class="hl opt">))</span>
+    <span class="hl kwa">end do</span>
+    <span class="hl slc">!$omp end parallel do</span>
+
+  <span class="hl kwa">end subroutine</span> procblk
+  
+<span class="hl kwa">end program</span> fannkuchredux
+

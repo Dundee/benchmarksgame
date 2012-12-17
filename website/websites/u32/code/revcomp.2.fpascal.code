@@ -1,0 +1,114 @@
+<span class="hl com">{  The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Marco van de Voort</span>
+<span class="hl com">}</span>
+
+<span class="hl kwa">program</span> reverse_complement<span class="hl opt">;</span>
+
+<span class="hl kwa">var</span> lookupComplement <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">[</span>#<span class="hl num">0</span><span class="hl opt">..</span>#<span class="hl num">255</span><span class="hl opt">]</span> <span class="hl kwa">of</span> <span class="hl kwb">char</span><span class="hl opt">;</span>
+
+<span class="hl kwa">Const</span> FASTAXLAT <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">.</span><span class="hl num">.11</span><span class="hl opt">]</span> <span class="hl kwa">of array</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">.</span><span class="hl num">.1</span><span class="hl opt">]</span> <span class="hl kwa">of</span> <span class="hl kwb">char</span> <span class="hl opt">= (</span>
+		  <span class="hl opt">(</span> <span class="hl str">'A'</span><span class="hl opt">,</span> <span class="hl str">'T'</span> <span class="hl opt">), (</span> <span class="hl str">'C'</span><span class="hl opt">,</span> <span class="hl str">'G'</span> <span class="hl opt">),</span>
+		  <span class="hl opt">(</span> <span class="hl str">'B'</span><span class="hl opt">,</span> <span class="hl str">'V'</span> <span class="hl opt">), (</span> <span class="hl str">'D'</span><span class="hl opt">,</span> <span class="hl str">'H'</span> <span class="hl opt">),</span>
+	          <span class="hl opt">(</span> <span class="hl str">'K'</span><span class="hl opt">,</span> <span class="hl str">'M'</span> <span class="hl opt">), (</span> <span class="hl str">'R'</span><span class="hl opt">,</span> <span class="hl str">'Y'</span> <span class="hl opt">),</span>
+		  <span class="hl opt">(</span> <span class="hl str">'a'</span><span class="hl opt">,</span> <span class="hl str">'t'</span> <span class="hl opt">), (</span> <span class="hl str">'c'</span><span class="hl opt">,</span> <span class="hl str">'g'</span> <span class="hl opt">),</span>
+		  <span class="hl opt">(</span> <span class="hl str">'b'</span><span class="hl opt">,</span> <span class="hl str">'v'</span> <span class="hl opt">), (</span> <span class="hl str">'d'</span><span class="hl opt">,</span> <span class="hl str">'h'</span> <span class="hl opt">),</span>
+	          <span class="hl opt">(</span> <span class="hl str">'k'</span><span class="hl opt">,</span> <span class="hl str">'m'</span> <span class="hl opt">), (</span> <span class="hl str">'r'</span><span class="hl opt">,</span> <span class="hl str">'y'</span> <span class="hl opt">));</span>
+
+      BufferIncrement <span class="hl opt">=</span> <span class="hl num">1024</span><span class="hl opt">;</span>
+
+<span class="hl kwa">procedure</span> <span class="hl kwd">flushbuffer</span><span class="hl opt">(</span>buffer<span class="hl opt">:</span>pchar<span class="hl opt">;</span>inbuf<span class="hl opt">:</span><span class="hl kwb">longint</span><span class="hl opt">);</span>
+
+<span class="hl kwa">var</span> p<span class="hl opt">,</span>p2 <span class="hl opt">:</span> pchar<span class="hl opt">;</span>
+    c  <span class="hl opt">:</span> <span class="hl kwb">char</span><span class="hl opt">;</span>
+
+<span class="hl kwa">begin</span>
+  <span class="hl kwc">if</span> inbuf<span class="hl opt">&gt;</span><span class="hl num">0</span> <span class="hl kwc">then</span>
+   <span class="hl kwa">begin</span>
+     p<span class="hl opt">:=</span>buffer<span class="hl opt">;</span>
+     p2<span class="hl opt">:=&#64;</span>buffer<span class="hl opt">[</span>inbuf<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">];</span>
+     <span class="hl kwc">while</span> p<span class="hl opt">&lt;</span>p2 <span class="hl kwc">do</span>
+      <span class="hl kwa">begin</span>
+       c<span class="hl opt">:=</span>lookupcomplement<span class="hl opt">[</span>p<span class="hl opt">^];</span>
+       p<span class="hl opt">^:=</span>lookupcomplement<span class="hl opt">[</span>p2<span class="hl opt">^];</span>
+       p2<span class="hl opt">^:=</span>c<span class="hl opt">;</span>
+       <span class="hl kwd">inc</span><span class="hl opt">(</span>p<span class="hl opt">);</span>
+       <span class="hl kwd">dec</span><span class="hl opt">(</span>p2<span class="hl opt">);</span>
+     <span class="hl kwa">end</span><span class="hl opt">;</span>
+    <span class="hl kwc">if</span> p2<span class="hl opt">=</span>p <span class="hl kwc">then</span>
+      p<span class="hl opt">^:=</span>lookupcomplement<span class="hl opt">[</span>p<span class="hl opt">^];</span>
+
+    p<span class="hl opt">:=</span>buffer<span class="hl opt">;</span>
+    p<span class="hl opt">[</span>inbuf<span class="hl opt">]:=</span>#<span class="hl num">0</span><span class="hl opt">;</span>
+
+   <span class="hl kwc">while</span> <span class="hl opt">(</span>inbuf <span class="hl opt">&gt;</span> <span class="hl num">60</span><span class="hl opt">)</span> <span class="hl kwc">do</span>
+     <span class="hl kwa">begin</span>
+    	c <span class="hl opt">:=</span> p<span class="hl opt">[</span><span class="hl num">60</span><span class="hl opt">];</span>
+	p<span class="hl opt">[</span><span class="hl num">60</span><span class="hl opt">]:=</span>#<span class="hl num">0</span><span class="hl opt">;</span>
+        <span class="hl kwd">writeln</span><span class="hl opt">(</span>p<span class="hl opt">);</span>
+        p<span class="hl opt">[</span><span class="hl num">60</span><span class="hl opt">]:=</span>c<span class="hl opt">;</span>
+	<span class="hl kwd">inc</span><span class="hl opt">(</span>p<span class="hl opt">,</span><span class="hl num">60</span><span class="hl opt">);</span>
+	<span class="hl kwd">dec</span><span class="hl opt">(</span>inbuf<span class="hl opt">,</span><span class="hl num">60</span><span class="hl opt">);</span>
+     <span class="hl kwa">end</span><span class="hl opt">;</span>
+     p<span class="hl opt">[</span>inbuf<span class="hl opt">]:=</span>#<span class="hl num">0</span><span class="hl opt">;</span>
+     <span class="hl kwd">writeln</span><span class="hl opt">(</span>p<span class="hl opt">);</span>
+  <span class="hl kwa">end</span><span class="hl opt">;</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span>
+
+<span class="hl kwa">const</span> initialincrement<span class="hl opt">=</span><span class="hl num">1024</span><span class="hl opt">;</span>
+
+<span class="hl kwa">procedure</span> run<span class="hl opt">;</span>
+
+<span class="hl kwa">var</span> s  <span class="hl opt">:</span> <span class="hl kwa">string</span><span class="hl opt">;</span>
+    c  <span class="hl opt">:</span> <span class="hl kwb">char</span><span class="hl opt">;</span>
+    buffersize<span class="hl opt">,</span>
+    bufferptr<span class="hl opt">,</span>
+    len		<span class="hl opt">:</span> <span class="hl kwb">longint</span><span class="hl opt">;</span>
+    p  <span class="hl opt">:</span>pchar<span class="hl opt">;</span>
+    line <span class="hl opt">:</span> <span class="hl kwb">integer</span><span class="hl opt">;</span>
+    bufin<span class="hl opt">,</span>bufout <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">.</span><span class="hl num">.8191</span><span class="hl opt">]</span> <span class="hl kwa">of</span> <span class="hl kwb">char</span><span class="hl opt">;</span>
+
+<span class="hl kwa">begin</span>
+  <span class="hl kwd">settextbuf</span><span class="hl opt">(</span>input<span class="hl opt">,</span>bufin<span class="hl opt">);</span>
+  <span class="hl kwd">settextbuf</span><span class="hl opt">(</span>output<span class="hl opt">,</span>bufout<span class="hl opt">);</span>
+  <span class="hl kwc">for</span> c<span class="hl opt">:=</span>#<span class="hl num">0</span>  <span class="hl kwc">to</span> #<span class="hl num">255</span>  <span class="hl kwc">do</span>
+    lookupcomplement<span class="hl opt">[</span>c<span class="hl opt">]:=</span>c<span class="hl opt">;</span>
+  <span class="hl kwc">for</span> len<span class="hl opt">:=</span><span class="hl num">0</span> <span class="hl kwc">to</span> <span class="hl kwd">high</span><span class="hl opt">(</span>FASTAXLAT<span class="hl opt">)</span> <span class="hl kwc">do</span>
+    <span class="hl kwa">begin</span>
+      lookupcomplement<span class="hl opt">[</span>FASTAXLAT<span class="hl opt">[</span>len<span class="hl opt">][</span><span class="hl num">0</span><span class="hl opt">]]:=</span><span class="hl kwd">upcase</span><span class="hl opt">(</span>FASTAXLAT<span class="hl opt">[</span>len<span class="hl opt">][</span><span class="hl num">1</span><span class="hl opt">]);</span>
+      lookupcomplement<span class="hl opt">[</span>FASTAXLAT<span class="hl opt">[</span>len<span class="hl opt">][</span><span class="hl num">1</span><span class="hl opt">]]:=</span><span class="hl kwd">upcase</span><span class="hl opt">(</span>FASTAXLAT<span class="hl opt">[</span>len<span class="hl opt">][</span><span class="hl num">0</span><span class="hl opt">]);</span>
+    <span class="hl kwa">end</span><span class="hl opt">;</span>
+  buffersize<span class="hl opt">:=</span>initialincrement<span class="hl opt">;</span>
+  bufferptr <span class="hl opt">:=</span><span class="hl num">0</span><span class="hl opt">;</span>
+  <span class="hl kwd">getmem</span><span class="hl opt">(</span>p<span class="hl opt">,</span>buffersize<span class="hl opt">);</span>
+  line<span class="hl opt">:=</span><span class="hl num">0</span><span class="hl opt">;</span>
+  <span class="hl kwc">while</span> <span class="hl kwa">not</span> eof <span class="hl kwc">do</span>
+    <span class="hl kwa">begin</span>
+      <span class="hl kwd">readln</span><span class="hl opt">(</span>s<span class="hl opt">);</span>
+      <span class="hl kwd">inc</span><span class="hl opt">(</span>line<span class="hl opt">);</span>
+      len<span class="hl opt">:=</span><span class="hl kwd">length</span><span class="hl opt">(</span>s<span class="hl opt">);</span>
+      <span class="hl kwc">if</span> <span class="hl opt">(</span>len<span class="hl opt">&gt;</span><span class="hl num">0</span><span class="hl opt">)</span> <span class="hl kwa">and</span> <span class="hl opt">(</span>s<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]=</span><span class="hl str">'&gt;'</span><span class="hl opt">)</span> <span class="hl kwc">then</span>
+          <span class="hl kwa">begin</span>
+	    <span class="hl kwd">flushbuffer</span><span class="hl opt">(</span>p<span class="hl opt">,</span>bufferptr<span class="hl opt">);</span>
+ 	    <span class="hl kwd">writeln</span><span class="hl opt">(</span>s<span class="hl opt">);</span>
+	    bufferptr<span class="hl opt">:=</span><span class="hl num">0</span><span class="hl opt">;</span>
+	  <span class="hl kwa">end</span>
+       <span class="hl kwc">else</span>
+         <span class="hl kwa">begin</span>
+           <span class="hl kwc">if</span> <span class="hl opt">(</span>bufferptr<span class="hl opt">+</span>len<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)&gt;</span>buffersize <span class="hl kwc">then</span>
+	     <span class="hl kwa">begin</span>
+	        <span class="hl kwd">inc</span><span class="hl opt">(</span>buffersize<span class="hl opt">,</span>buffersize<span class="hl opt">);</span>
+<span class="hl slc">//	        inc(buffersize,initialincrement);</span>
+                <span class="hl kwd">reallocmem</span><span class="hl opt">(</span>p<span class="hl opt">,</span>buffersize<span class="hl opt">);</span>
+	     <span class="hl kwa">end</span><span class="hl opt">;</span>
+	   <span class="hl kwd">move</span> <span class="hl opt">(</span>s<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">],</span>p<span class="hl opt">[</span>bufferptr<span class="hl opt">],</span>len<span class="hl opt">);</span>
+	   <span class="hl kwd">inc</span><span class="hl opt">(</span>bufferptr<span class="hl opt">,</span>len<span class="hl opt">);</span>
+	 <span class="hl kwa">end</span><span class="hl opt">;</span>
+    <span class="hl kwa">end</span><span class="hl opt">;</span>
+    <span class="hl kwd">flushbuffer</span><span class="hl opt">(</span>p<span class="hl opt">,</span>bufferptr<span class="hl opt">);</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span>
+
+<span class="hl kwa">begin</span>
+  run<span class="hl opt">;</span>
+<span class="hl kwa">end</span><span class="hl opt">.</span>

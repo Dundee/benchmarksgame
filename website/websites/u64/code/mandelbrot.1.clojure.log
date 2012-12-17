@@ -1,0 +1,13 @@
+
+Fri, 17 Aug 2012 23:36:47 GMT
+
+MAKE:
+mv mandelbrot.clojure mandelbrot.clj
+/usr/local/src/jdk1.7.0_06/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.4.0/clojure-1.4.0.jar clojure.lang.Compile mandelbrot
+Compiling mandelbrot to .
+1.91s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/src/jdk1.7.0_06/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts -XX:+UseBiasedLocking -Xmx128m -cp .:/usr/local/src/clojure-1.4.0/clojure-1.4.0.jar mandelbrot 16000
+
+(BINARY) PROGRAM OUTPUT NOT SHOWN

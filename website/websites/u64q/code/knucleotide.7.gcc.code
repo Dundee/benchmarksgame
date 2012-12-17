@@ -1,0 +1,403 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com"> </span>
+<span class="hl com">   Based on bit encoding idea of C++ contribution of Andrew Moon</span>
+<span class="hl com">   Copy task division idea from Java entry, contributed by James McIlree</span>
+<span class="hl com">   Contributed by Petr Prokhorenkov</span>
+<span class="hl com">   Modified by Stefano Guidoni</span>
+<span class="hl com">*/</span>
+
+<span class="hl slc">//#include &quot;simple_hash3.h&quot;</span>
+
+<span class="hl ppc">#include &lt;ctype.h&gt;</span>
+<span class="hl ppc">#include &lt;malloc.h&gt;</span>
+<span class="hl ppc">#include &lt;pthread.h&gt;</span>
+<span class="hl ppc">#include &lt;sched.h&gt;</span>
+<span class="hl ppc">#include &lt;stdio.h&gt;</span>
+<span class="hl ppc">#include &lt;stdlib.h&gt;</span>
+<span class="hl ppc">#include &lt;string.h&gt;</span>
+<span class="hl ppc">#include &lt;sys/mman.h&gt;</span>
+<span class="hl ppc">#include &lt;sys/stat.h&gt;</span>
+<span class="hl ppc">#include &lt;unistd.h&gt;</span>
+
+<span class="hl ppc">#define HT_SIZE 2000000</span>
+
+<span class="hl kwc">typedef</span> <span class="hl kwb">unsigned char uint8_t</span><span class="hl opt">;</span>
+<span class="hl kwb">const uint8_t</span> selector<span class="hl opt">[] = { -</span><span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,-</span><span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">3</span><span class="hl opt">,-</span><span class="hl num">1</span><span class="hl opt">,-</span><span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">2</span> <span class="hl opt">};</span>
+<span class="hl kwb">const char</span> table<span class="hl opt">[] = {</span><span class="hl str">'A'</span><span class="hl opt">,</span> <span class="hl str">'C'</span><span class="hl opt">,</span> <span class="hl str">'G'</span><span class="hl opt">,</span> <span class="hl str">'T'</span><span class="hl opt">};</span>
+
+<span class="hl com">/* this is sligthly faster</span>
+<span class="hl com">struct ht_node *</span>
+<span class="hl com">ht_find_new(struct ht_ht *ht, ui64 key) </span>
+<span class="hl com">{</span>
+<span class="hl com">    int hash_code = ht_hashcode(ht, key);</span>
+<span class="hl com">    struct ht_node *node = ht-&gt;tbl[hash_code];</span>
+<span class="hl com">    </span>
+<span class="hl com">    if (node) </span>
+<span class="hl com">    {</span>
+<span class="hl com">      if (key == node-&gt;key)</span>
+<span class="hl com">          return(node);</span>
+<span class="hl com">    } else {</span>
+<span class="hl com">      ht-&gt;items++;</span>
+<span class="hl com">      return(ht-&gt;tbl[hash_code] = ht_node_create(key));</span>
+<span class="hl com">    }</span>
+<span class="hl com">    </span>
+<span class="hl com">    while (node-&gt;next) </span>
+<span class="hl com">    {</span>
+<span class="hl com">        if (key == node-&gt;next-&gt;key)</span>
+<span class="hl com">            return(node-&gt;next);</span>
+<span class="hl com">        node = node-&gt;next;</span>
+<span class="hl com">    }</span>
+<span class="hl com"></span>
+<span class="hl com">    ht-&gt;items++;</span>
+<span class="hl com">    return (node-&gt;next = ht_node_create(key));</span>
+<span class="hl com">}*/</span>
+
+<span class="hl com">/* Thread pool implementation */</span>
+
+<span class="hl kwb">struct</span> tp_entry <span class="hl opt">{</span>
+    <span class="hl kwb">void</span> <span class="hl opt">*</span>job<span class="hl opt">;</span>
+    <span class="hl kwb">void</span> <span class="hl opt">*</span>param<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+<span class="hl kwb">struct</span> tp <span class="hl opt">{</span>
+    <span class="hl kwb">struct</span> tp_entry <span class="hl opt">*</span>jobs<span class="hl opt">;</span>
+    <span class="hl kwb">int</span> capacity<span class="hl opt">;</span>
+    <span class="hl kwb">int</span> size<span class="hl opt">;</span>
+    pthread_mutex_t mutex<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+<span class="hl kwb">struct</span> tp <span class="hl opt">*</span>
+<span class="hl kwd">tp_create</span><span class="hl opt">(</span><span class="hl kwb">int</span> max_jobs<span class="hl opt">) {</span>
+    <span class="hl kwb">struct</span> tp <span class="hl opt">*</span>pool <span class="hl opt">=</span> <span class="hl kwd">malloc</span><span class="hl opt">(</span><span class="hl kwa">sizeof</span><span class="hl opt">(*</span>pool<span class="hl opt">));</span>
+
+    pool<span class="hl opt">-&gt;</span>jobs <span class="hl opt">=</span> <span class="hl kwd">malloc</span><span class="hl opt">(</span><span class="hl kwa">sizeof</span><span class="hl opt">(</span><span class="hl kwb">struct</span> tp_entry<span class="hl opt">)*</span>max_jobs<span class="hl opt">);</span>
+    pool<span class="hl opt">-&gt;</span>capacity <span class="hl opt">=</span> max_jobs<span class="hl opt">;</span>
+    pool<span class="hl opt">-&gt;</span>size <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwd">pthread_mutex_init</span><span class="hl opt">(&amp;</span>pool<span class="hl opt">-&gt;</span>mutex<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+
+    <span class="hl kwa">return</span> pool<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span>
+<span class="hl kwd">tp_destroy</span><span class="hl opt">(</span><span class="hl kwb">struct</span> tp <span class="hl opt">*</span>pool<span class="hl opt">) {</span>
+    <span class="hl kwd">free</span><span class="hl opt">(</span>pool<span class="hl opt">-&gt;</span>jobs<span class="hl opt">);</span>
+    <span class="hl kwd">pthread_mutex_destroy</span><span class="hl opt">(&amp;</span>pool<span class="hl opt">-&gt;</span>mutex<span class="hl opt">);</span>
+    <span class="hl kwd">free</span><span class="hl opt">(</span>pool<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span>
+<span class="hl kwd">tp_add_job</span><span class="hl opt">(</span><span class="hl kwb">struct</span> tp <span class="hl opt">*</span>pool<span class="hl opt">,</span> <span class="hl kwb">void</span> <span class="hl opt">*</span>job<span class="hl opt">,</span> <span class="hl kwb">void</span> <span class="hl opt">*</span>param<span class="hl opt">) {</span>
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>pool<span class="hl opt">-&gt;</span>size <span class="hl opt">&lt;</span> pool<span class="hl opt">-&gt;</span>capacity<span class="hl opt">) {</span>
+        pool<span class="hl opt">-&gt;</span>jobs<span class="hl opt">[</span>pool<span class="hl opt">-&gt;</span>size<span class="hl opt">].</span>job <span class="hl opt">=</span> job<span class="hl opt">;</span>
+        pool<span class="hl opt">-&gt;</span>jobs<span class="hl opt">[</span>pool<span class="hl opt">-&gt;</span>size<span class="hl opt">].</span>param <span class="hl opt">=</span> param<span class="hl opt">;</span>
+        <span class="hl opt">++</span>pool<span class="hl opt">-&gt;</span>size<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span> <span class="hl opt">*</span>
+<span class="hl kwd">_tp_run</span><span class="hl opt">(</span><span class="hl kwb">void</span> <span class="hl opt">*</span>param<span class="hl opt">) {</span>
+    <span class="hl kwb">struct</span> tp <span class="hl opt">*</span>pool <span class="hl opt">=</span> param<span class="hl opt">;</span>
+
+    <span class="hl kwa">for</span> <span class="hl opt">(;;) {</span>
+        <span class="hl kwb">void</span> <span class="hl opt">(*</span>job<span class="hl opt">)(</span><span class="hl kwb">void</span> <span class="hl opt">*) =</span> <span class="hl num">0</span><span class="hl opt">;</span>
+        <span class="hl kwb">void</span> <span class="hl opt">*</span>param <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+        <span class="hl kwd">pthread_mutex_lock</span><span class="hl opt">(&amp;</span>pool<span class="hl opt">-&gt;</span>mutex<span class="hl opt">);</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>pool<span class="hl opt">-&gt;</span>size <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+            job <span class="hl opt">=</span> pool<span class="hl opt">-&gt;</span>jobs<span class="hl opt">[</span>pool<span class="hl opt">-&gt;</span>size <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">].</span>job<span class="hl opt">;</span>
+            param <span class="hl opt">=</span> pool<span class="hl opt">-&gt;</span>jobs<span class="hl opt">[</span>pool<span class="hl opt">-&gt;</span>size <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">].</span>param<span class="hl opt">;</span>
+            <span class="hl opt">--</span>pool<span class="hl opt">-&gt;</span>size<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+        <span class="hl kwd">pthread_mutex_unlock</span><span class="hl opt">(&amp;</span>pool<span class="hl opt">-&gt;</span>mutex<span class="hl opt">);</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>job <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+            <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+        <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+            <span class="hl kwd">job</span><span class="hl opt">(</span>param<span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span>
+<span class="hl kwd">tp_run</span><span class="hl opt">(</span><span class="hl kwb">struct</span> tp <span class="hl opt">*</span>pool<span class="hl opt">,</span> <span class="hl kwb">int</span> max_threads<span class="hl opt">) {</span>
+    pthread_t threads<span class="hl opt">[</span>max_threads<span class="hl opt">];</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> max_threads<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+        <span class="hl kwd">pthread_create</span><span class="hl opt">(&amp;</span>threads<span class="hl opt">[</span>i<span class="hl opt">],</span> <span class="hl num">0</span><span class="hl opt">, &amp;</span>_tp_run<span class="hl opt">,</span> pool<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> max_threads<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+        <span class="hl kwd">pthread_join</span><span class="hl opt">(</span>threads<span class="hl opt">[</span>i<span class="hl opt">],</span> <span class="hl num">0</span><span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">char</span> <span class="hl opt">*</span>
+<span class="hl kwd">read_stdin</span><span class="hl opt">(</span><span class="hl kwb">int</span> <span class="hl opt">*</span>stdin_size<span class="hl opt">) {</span>
+    <span class="hl kwb">struct</span> stat stat<span class="hl opt">;</span>
+    <span class="hl kwd">fstat</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">, &amp;</span>stat<span class="hl opt">);</span>
+
+    <span class="hl kwb">char</span> <span class="hl opt">*</span>result <span class="hl opt">=</span> <span class="hl kwd">malloc</span><span class="hl opt">(</span>stat<span class="hl opt">.</span>st_size<span class="hl opt">);</span>
+
+    <span class="hl kwa">do</span> <span class="hl opt">{</span>
+        <span class="hl kwd">fgets_unlocked</span><span class="hl opt">(</span>result<span class="hl opt">,</span> stat<span class="hl opt">.</span>st_size<span class="hl opt">,</span> stdin<span class="hl opt">);</span>
+    <span class="hl opt">}</span> <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl kwd">strncmp</span><span class="hl opt">(</span>result<span class="hl opt">,</span> <span class="hl str">&quot;&gt;THREE&quot;</span><span class="hl opt">,</span> <span class="hl num">6</span><span class="hl opt">));</span>
+
+    <span class="hl kwb">int</span> read <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl kwd">fgets_unlocked</span><span class="hl opt">(</span>result <span class="hl opt">+</span> read<span class="hl opt">,</span> stat<span class="hl opt">.</span>st_size <span class="hl opt">-</span> read<span class="hl opt">,</span> stdin<span class="hl opt">)) {</span>
+        <span class="hl kwb">int</span> len <span class="hl opt">=</span> <span class="hl kwd">strlen</span><span class="hl opt">(</span>result <span class="hl opt">+</span> read<span class="hl opt">);</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>len <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl opt">||</span> result<span class="hl opt">[</span>read<span class="hl opt">] ==</span> <span class="hl str">'&gt;'</span><span class="hl opt">) {</span>
+            <span class="hl kwa">break</span><span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+        read <span class="hl opt">+=</span> len<span class="hl opt">;</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>result<span class="hl opt">[</span>read <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">] ==</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">) {</span>
+            read<span class="hl opt">--;</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+
+    result<span class="hl opt">[</span>read<span class="hl opt">++] =</span> <span class="hl str">'&gt;'</span><span class="hl opt">;</span>
+    result <span class="hl opt">=</span> <span class="hl kwd">realloc</span><span class="hl opt">(</span>result<span class="hl opt">,</span> read<span class="hl opt">);</span>
+    <span class="hl opt">*</span>stdin_size <span class="hl opt">=</span> read<span class="hl opt">;</span>
+
+    <span class="hl kwa">return</span> result<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">static</span>
+<span class="hl kwc">inline</span> <span class="hl kwb">char</span> <span class="hl opt">*</span>
+<span class="hl kwd">next_char</span><span class="hl opt">(</span><span class="hl kwb">char</span> <span class="hl opt">*</span>p<span class="hl opt">) {</span>
+    <span class="hl kwa">do</span> <span class="hl opt">{</span>
+        <span class="hl opt">++</span>p<span class="hl opt">;</span>
+    <span class="hl opt">}</span> <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl kwd">isspace</span><span class="hl opt">(*</span>p<span class="hl opt">));</span>
+
+    <span class="hl kwa">return</span> p<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwc">inline</span> <span class="hl kwb">uint64_t</span>
+<span class="hl kwd">push_char</span><span class="hl opt">(</span><span class="hl kwb">uint64_t</span> cur<span class="hl opt">,</span> <span class="hl kwb">uint8_t</span> c<span class="hl opt">) {</span>
+    <span class="hl kwa">return</span> <span class="hl opt">(</span>cur <span class="hl opt">&lt;&lt;</span> <span class="hl num">2</span><span class="hl opt">) +</span> selector<span class="hl opt">[(</span>c <span class="hl opt">&amp;</span> <span class="hl num">7</span><span class="hl opt">)];</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">uint64_t</span>
+<span class="hl kwd">pack_key</span><span class="hl opt">(</span><span class="hl kwb">char</span> <span class="hl opt">*</span>key<span class="hl opt">,</span> <span class="hl kwb">int</span> len<span class="hl opt">) {</span>
+    <span class="hl kwb">uint64_t</span> code <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> len<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+        code <span class="hl opt">=</span> <span class="hl kwd">push_char</span><span class="hl opt">(</span>code<span class="hl opt">, *</span>key<span class="hl opt">);</span>
+        key <span class="hl opt">=</span> <span class="hl kwd">next_char</span><span class="hl opt">(</span>key<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">return</span> code<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span>
+<span class="hl kwd">unpack_key</span><span class="hl opt">(</span><span class="hl kwb">uint64_t</span> key<span class="hl opt">,</span> <span class="hl kwb">int</span> length<span class="hl opt">,</span> <span class="hl kwb">char</span> <span class="hl opt">*</span>buffer<span class="hl opt">) {</span>
+    <span class="hl kwb">int</span> i<span class="hl opt">;</span>
+
+    <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> length <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span> i <span class="hl opt">&gt; -</span><span class="hl num">1</span><span class="hl opt">;</span> i<span class="hl opt">--) {</span>
+        buffer<span class="hl opt">[</span>i<span class="hl opt">] =</span> table<span class="hl opt">[</span>key <span class="hl opt">&amp;</span> <span class="hl num">3</span><span class="hl opt">];</span>
+        key <span class="hl opt">&gt;&gt;=</span> <span class="hl num">2</span><span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+    buffer<span class="hl opt">[</span>length<span class="hl opt">] =</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span>
+<span class="hl kwd">generate_seqences</span><span class="hl opt">(</span><span class="hl kwb">char</span> <span class="hl opt">*</span>start<span class="hl opt">,</span> <span class="hl kwb">int</span> length<span class="hl opt">,</span> <span class="hl kwb">int</span> frame<span class="hl opt">,</span> <span class="hl kwb">struct</span> ht_ht <span class="hl opt">*</span>ht<span class="hl opt">) {</span>
+    <span class="hl kwb">uint64_t</span> code <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwb">uint64_t</span> mask <span class="hl opt">= (</span><span class="hl num">1ull</span> <span class="hl opt">&lt;&lt;</span> <span class="hl num">2</span><span class="hl opt">*</span>frame<span class="hl opt">) -</span> <span class="hl num">1</span><span class="hl opt">;</span>
+    <span class="hl kwb">char</span> <span class="hl opt">*</span>p <span class="hl opt">=</span> start<span class="hl opt">;</span>
+    <span class="hl kwb">char</span> <span class="hl opt">*</span>end <span class="hl opt">=</span> start <span class="hl opt">+</span> length<span class="hl opt">;</span>
+
+    <span class="hl slc">// Pull first frame.</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> frame<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+        code <span class="hl opt">=</span> <span class="hl kwd">push_char</span><span class="hl opt">(</span>code<span class="hl opt">, *</span>p<span class="hl opt">);</span>
+        <span class="hl opt">++</span>p<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwd">ht_find_new</span><span class="hl opt">(</span>ht<span class="hl opt">,</span> code<span class="hl opt">)-&gt;</span>val<span class="hl opt">++;</span>
+
+    <span class="hl kwa">while</span> <span class="hl opt">(</span>p <span class="hl opt">&lt;</span> end<span class="hl opt">) {</span>
+        code <span class="hl opt">=</span> <span class="hl kwd">push_char</span><span class="hl opt">(</span>code<span class="hl opt">, *</span>p<span class="hl opt">) &amp;</span> mask<span class="hl opt">;</span>
+        <span class="hl kwd">ht_find_new</span><span class="hl opt">(</span>ht<span class="hl opt">,</span> code<span class="hl opt">)-&gt;</span>val<span class="hl opt">++;</span>
+        <span class="hl opt">++</span>p<span class="hl opt">;</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(*</span>p <span class="hl opt">&amp;</span> <span class="hl num">8</span><span class="hl opt">) {</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(*</span>p <span class="hl opt">&amp;</span> <span class="hl num">1</span><span class="hl opt">) {</span>
+                <span class="hl opt">++</span>p<span class="hl opt">;</span>
+            <span class="hl opt">}</span> <span class="hl kwa">else</span>
+                <span class="hl kwa">break</span><span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">int</span>
+<span class="hl kwd">key_count_cmp</span><span class="hl opt">(</span><span class="hl kwb">const void</span> <span class="hl opt">*</span>l<span class="hl opt">,</span> <span class="hl kwb">const void</span> <span class="hl opt">*</span>r<span class="hl opt">) {</span>
+    <span class="hl kwb">const struct</span> ht_node <span class="hl opt">*</span>lhs <span class="hl opt">=</span> l<span class="hl opt">, *</span>rhs <span class="hl opt">=</span> r<span class="hl opt">;</span>
+
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>lhs<span class="hl opt">-&gt;</span>val <span class="hl opt">!=</span> rhs<span class="hl opt">-&gt;</span>val<span class="hl opt">) {</span>
+        <span class="hl kwa">return</span> rhs<span class="hl opt">-&gt;</span>val <span class="hl opt">-</span> lhs<span class="hl opt">-&gt;</span>val<span class="hl opt">;</span>
+    <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+        <span class="hl slc">// Overflow is possible here,</span>
+        <span class="hl slc">// so use comparisons instead of subtraction.</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>lhs<span class="hl opt">-&gt;</span>key <span class="hl opt">&lt;</span> rhs<span class="hl opt">-&gt;</span>key<span class="hl opt">) {</span>
+            <span class="hl kwa">return</span> <span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">;</span>
+        <span class="hl opt">}</span> <span class="hl kwa">else if</span> <span class="hl opt">(</span>lhs<span class="hl opt">-&gt;</span>key <span class="hl opt">&gt;</span> rhs<span class="hl opt">-&gt;</span>key<span class="hl opt">) {</span>
+            <span class="hl kwa">return</span> <span class="hl num">1</span><span class="hl opt">;</span>
+        <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+            <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">struct</span> print_freqs_param <span class="hl opt">{</span>
+    <span class="hl kwb">char</span> <span class="hl opt">*</span>start<span class="hl opt">;</span>
+    <span class="hl kwb">int</span> length<span class="hl opt">;</span>
+    <span class="hl kwb">int</span> frame<span class="hl opt">;</span>
+    <span class="hl kwb">char</span> <span class="hl opt">*</span>output<span class="hl opt">;</span>
+    <span class="hl kwb">int</span> output_size<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+<span class="hl kwb">struct</span> ht_node <span class="hl opt">*</span>
+<span class="hl kwd">ht_values_as_vector</span><span class="hl opt">(</span><span class="hl kwb">struct</span> ht_ht <span class="hl opt">*</span>ht<span class="hl opt">) {</span>
+    <span class="hl kwb">struct</span> ht_node <span class="hl opt">*</span>v <span class="hl opt">=</span> <span class="hl kwd">malloc</span><span class="hl opt">(</span>ht<span class="hl opt">-&gt;</span>items<span class="hl opt">*</span><span class="hl kwa">sizeof</span><span class="hl opt">(</span><span class="hl kwb">struct</span> ht_node<span class="hl opt">));</span>
+    <span class="hl kwb">struct</span> ht_node <span class="hl opt">*</span>n <span class="hl opt">=</span> <span class="hl kwd">ht_first</span><span class="hl opt">(</span>ht<span class="hl opt">);</span>
+
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> ht<span class="hl opt">-&gt;</span>items<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+        v<span class="hl opt">[</span>i<span class="hl opt">] = *</span>n<span class="hl opt">;</span>
+        n <span class="hl opt">=</span> <span class="hl kwd">ht_next</span><span class="hl opt">(</span>ht<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">return</span> v<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span>
+<span class="hl kwd">print_freqs</span><span class="hl opt">(</span><span class="hl kwb">struct</span> print_freqs_param <span class="hl opt">*</span>param<span class="hl opt">) {</span>
+    <span class="hl kwb">char</span> <span class="hl opt">*</span>start <span class="hl opt">=</span> param<span class="hl opt">-&gt;</span>start<span class="hl opt">;</span>
+    <span class="hl kwb">int</span> length <span class="hl opt">=</span> param<span class="hl opt">-&gt;</span>length<span class="hl opt">;</span>
+    <span class="hl kwb">int</span> frame <span class="hl opt">=</span> param<span class="hl opt">-&gt;</span>frame<span class="hl opt">;</span>
+    <span class="hl kwb">char</span> <span class="hl opt">*</span>output <span class="hl opt">=</span> param<span class="hl opt">-&gt;</span>output<span class="hl opt">;</span>
+    <span class="hl kwb">int</span> output_size <span class="hl opt">=</span> param<span class="hl opt">-&gt;</span>output_size<span class="hl opt">;</span>
+
+    <span class="hl kwb">struct</span> ht_ht <span class="hl opt">*</span>ht <span class="hl opt">=</span> <span class="hl kwd">ht_create</span><span class="hl opt">(</span><span class="hl num">32</span><span class="hl opt">);</span>
+    <span class="hl kwb">char</span> buffer<span class="hl opt">[</span>frame <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">];</span>
+    <span class="hl kwb">int</span> output_pos <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+    <span class="hl kwd">generate_seqences</span><span class="hl opt">(</span>start<span class="hl opt">,</span> length<span class="hl opt">,</span> frame<span class="hl opt">,</span> ht<span class="hl opt">);</span>
+    
+    <span class="hl kwb">struct</span> ht_node <span class="hl opt">*</span>counts <span class="hl opt">=</span> <span class="hl kwd">ht_values_as_vector</span><span class="hl opt">(</span>ht<span class="hl opt">);</span>
+    <span class="hl kwb">int</span> size <span class="hl opt">=</span> ht<span class="hl opt">-&gt;</span>items<span class="hl opt">;</span>
+
+    <span class="hl kwd">qsort</span><span class="hl opt">(</span>counts<span class="hl opt">,</span> size<span class="hl opt">,</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span><span class="hl kwb">struct</span> ht_node<span class="hl opt">), &amp;</span>key_count_cmp<span class="hl opt">);</span>
+
+    <span class="hl kwb">int</span> total_count <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> size<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+        total_count <span class="hl opt">+=</span> counts<span class="hl opt">[</span>i<span class="hl opt">].</span>val<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> size<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+        <span class="hl kwd">unpack_key</span><span class="hl opt">(</span>counts<span class="hl opt">[</span>i<span class="hl opt">].</span>key<span class="hl opt">,</span> frame<span class="hl opt">,</span> buffer<span class="hl opt">);</span>
+        output_pos <span class="hl opt">+=</span> <span class="hl kwd">snprintf</span><span class="hl opt">(</span>output <span class="hl opt">+</span> output_pos<span class="hl opt">,</span> output_size <span class="hl opt">-</span> output_pos<span class="hl opt">,</span>
+                <span class="hl str">&quot;%s %.3f</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> buffer<span class="hl opt">,</span> counts<span class="hl opt">[</span>i<span class="hl opt">].</span>val<span class="hl opt">*</span><span class="hl num">100.0</span>f<span class="hl opt">/</span>total_count<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwd">free</span><span class="hl opt">(</span>counts<span class="hl opt">);</span>
+    <span class="hl kwd">ht_destroy</span><span class="hl opt">(</span>ht<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">struct</span> print_occurences_param <span class="hl opt">{</span>
+    <span class="hl kwb">char</span> <span class="hl opt">*</span>start<span class="hl opt">;</span>
+    <span class="hl kwb">int</span> length<span class="hl opt">;</span>
+    <span class="hl kwb">char</span> <span class="hl opt">*</span>nuc_seq<span class="hl opt">;</span>
+    <span class="hl kwb">char</span> <span class="hl opt">*</span>output<span class="hl opt">;</span>
+    <span class="hl kwb">int</span> output_size<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+<span class="hl kwb">void</span>
+<span class="hl kwd">print_occurences</span><span class="hl opt">(</span><span class="hl kwb">struct</span> print_occurences_param <span class="hl opt">*</span>param<span class="hl opt">) {</span>
+    <span class="hl kwb">char</span> <span class="hl opt">*</span>start <span class="hl opt">=</span> param<span class="hl opt">-&gt;</span>start<span class="hl opt">;</span>
+    <span class="hl kwb">int</span> length <span class="hl opt">=</span> param<span class="hl opt">-&gt;</span>length<span class="hl opt">;</span>
+    <span class="hl kwb">char</span> <span class="hl opt">*</span>nuc_seq <span class="hl opt">=</span> param<span class="hl opt">-&gt;</span>nuc_seq<span class="hl opt">;</span>
+    <span class="hl kwb">char</span> <span class="hl opt">*</span>output <span class="hl opt">=</span> param<span class="hl opt">-&gt;</span>output<span class="hl opt">;</span>
+    <span class="hl kwb">int</span> output_size <span class="hl opt">=</span> param<span class="hl opt">-&gt;</span>output_size<span class="hl opt">;</span>
+    <span class="hl kwb">int</span> nuc_seq_len <span class="hl opt">=</span> <span class="hl kwd">strlen</span><span class="hl opt">(</span>nuc_seq<span class="hl opt">);</span>
+    <span class="hl kwb">struct</span> ht_ht <span class="hl opt">*</span>ht <span class="hl opt">=</span> <span class="hl kwd">ht_create</span><span class="hl opt">(</span>HT_SIZE<span class="hl opt">);</span>
+
+    <span class="hl kwd">generate_seqences</span><span class="hl opt">(</span>start<span class="hl opt">,</span> length<span class="hl opt">,</span> nuc_seq_len<span class="hl opt">,</span> ht<span class="hl opt">);</span>
+
+    <span class="hl kwb">uint64_t</span> key <span class="hl opt">=</span> <span class="hl kwd">pack_key</span><span class="hl opt">(</span>nuc_seq<span class="hl opt">,</span> nuc_seq_len<span class="hl opt">);</span>
+    <span class="hl kwb">int</span> count <span class="hl opt">=</span> <span class="hl kwd">ht_find_new</span><span class="hl opt">(</span>ht<span class="hl opt">,</span> key<span class="hl opt">)-&gt;</span>val<span class="hl opt">;</span>
+    <span class="hl kwd">snprintf</span><span class="hl opt">(</span>output<span class="hl opt">,</span> output_size<span class="hl opt">,</span> <span class="hl str">&quot;%d</span><span class="hl esc">\t</span><span class="hl str">%s</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> count<span class="hl opt">,</span> nuc_seq<span class="hl opt">);</span>
+    
+    <span class="hl kwd">ht_destroy</span><span class="hl opt">(</span>ht<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">int</span>
+<span class="hl kwd">get_cpu_count</span><span class="hl opt">(</span><span class="hl kwb">void</span><span class="hl opt">) {</span>
+    cpu_set_t cpu_set<span class="hl opt">;</span>
+
+    <span class="hl kwd">CPU_ZERO</span><span class="hl opt">(&amp;</span>cpu_set<span class="hl opt">);</span>
+    <span class="hl kwd">sched_getaffinity</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span>cpu_set<span class="hl opt">), &amp;</span>cpu_set<span class="hl opt">);</span>
+
+    <span class="hl kwa">return</span> <span class="hl kwd">CPU_COUNT</span><span class="hl opt">(&amp;</span>cpu_set<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl ppc">#define MAX_OUTPUT 1024</span>
+
+<span class="hl kwb">int</span>
+<span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">void</span><span class="hl opt">) {</span>
+    <span class="hl kwb">int</span> stdin_size<span class="hl opt">;</span>
+    <span class="hl kwb">char</span> <span class="hl opt">*</span>stdin_mem <span class="hl opt">=</span> <span class="hl kwd">read_stdin</span><span class="hl opt">(&amp;</span>stdin_size<span class="hl opt">);</span>
+    <span class="hl kwb">int</span> cpu_count <span class="hl opt">=</span> <span class="hl kwd">get_cpu_count</span><span class="hl opt">();</span>
+
+    <span class="hl kwb">char</span> output_buffer<span class="hl opt">[</span><span class="hl num">7</span><span class="hl opt">][</span>MAX_OUTPUT<span class="hl opt">];</span>
+
+<span class="hl ppc">#   define DECLARE_PARAM(o, n) {\</span>
+    <span class="hl opt">.</span>start <span class="hl opt">=</span> stdin_mem<span class="hl opt">,</span> \
+    <span class="hl opt">.</span>length <span class="hl opt">=</span> stdin_size<span class="hl opt">,</span> \
+    <span class="hl opt">.</span>frame <span class="hl opt">=</span> n<span class="hl opt">,</span>\
+    <span class="hl opt">.</span>output <span class="hl opt">=</span> output_buffer<span class="hl opt">[</span>o<span class="hl opt">],</span>\
+    <span class="hl opt">.</span>output_size <span class="hl opt">=</span> MAX_OUTPUT <span class="hl opt">}</span>
+
+    <span class="hl kwb">struct</span> print_freqs_param freq_params<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">] = {</span>
+        <span class="hl kwd">DECLARE_PARAM</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">),</span>
+        <span class="hl kwd">DECLARE_PARAM</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">)</span>
+    <span class="hl opt">};</span> 
+
+<span class="hl ppc">#   undef DECLARE_PARAM</span>
+
+<span class="hl ppc">#   define DECLARE_PARAM(o, s) {\</span>
+    <span class="hl opt">.</span>start <span class="hl opt">=</span> stdin_mem<span class="hl opt">,</span> \
+    <span class="hl opt">.</span>length <span class="hl opt">=</span> stdin_size<span class="hl opt">,</span> \
+    <span class="hl opt">.</span>nuc_seq <span class="hl opt">=</span> s<span class="hl opt">,</span>\
+    <span class="hl opt">.</span>output <span class="hl opt">=</span> output_buffer<span class="hl opt">[</span>o<span class="hl opt">],</span>\
+    <span class="hl opt">.</span>output_size <span class="hl opt">=</span> MAX_OUTPUT <span class="hl opt">}</span>
+
+    <span class="hl kwb">struct</span> print_occurences_param occurences_params<span class="hl opt">[</span><span class="hl num">5</span><span class="hl opt">] = {</span>
+        <span class="hl kwd">DECLARE_PARAM</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">,</span> <span class="hl str">&quot;GGT&quot;</span><span class="hl opt">),</span>
+        <span class="hl kwd">DECLARE_PARAM</span><span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTA&quot;</span><span class="hl opt">),</span>
+        <span class="hl kwd">DECLARE_PARAM</span><span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATT&quot;</span><span class="hl opt">),</span>
+        <span class="hl kwd">DECLARE_PARAM</span><span class="hl opt">(</span><span class="hl num">5</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATTTTAATT&quot;</span><span class="hl opt">),</span>
+        <span class="hl kwd">DECLARE_PARAM</span><span class="hl opt">(</span><span class="hl num">6</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATTTTAATTTATAGT&quot;</span><span class="hl opt">)</span>
+    <span class="hl opt">};</span>
+
+<span class="hl ppc">#   undef DECLARE_PARAM</span>
+
+    <span class="hl kwb">struct</span> tp <span class="hl opt">*</span>tp <span class="hl opt">=</span> <span class="hl kwd">tp_create</span><span class="hl opt">(</span><span class="hl num">7</span><span class="hl opt">);</span>
+
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl opt">;</span> i <span class="hl opt">&lt;</span> <span class="hl num">2</span><span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+        <span class="hl kwd">tp_add_job</span><span class="hl opt">(</span>tp<span class="hl opt">, &amp;</span>print_freqs<span class="hl opt">, &amp;</span>freq_params<span class="hl opt">[</span>i<span class="hl opt">]);</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl opt">;</span>i <span class="hl opt">&lt;</span>  <span class="hl num">5</span><span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+        <span class="hl kwd">tp_add_job</span><span class="hl opt">(</span>tp<span class="hl opt">, &amp;</span>print_occurences<span class="hl opt">, &amp;</span>occurences_params<span class="hl opt">[</span>i<span class="hl opt">]);</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwd">tp_run</span><span class="hl opt">(</span>tp<span class="hl opt">,</span> cpu_count <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">);</span>
+
+    <span class="hl kwd">tp_destroy</span><span class="hl opt">(</span>tp<span class="hl opt">);</span>
+
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> <span class="hl num">2</span><span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+        <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%s</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> output_buffer<span class="hl opt">[</span>i<span class="hl opt">]);</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">2</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> <span class="hl num">7</span><span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+        <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%s&quot;</span><span class="hl opt">,</span> output_buffer<span class="hl opt">[</span>i<span class="hl opt">]);</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwd">free</span><span class="hl opt">(</span>stdin_mem<span class="hl opt">);</span>
+
+    <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+ 

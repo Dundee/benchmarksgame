@@ -1,0 +1,41 @@
+
+Wed, 12 Dec 2012 18:25:51 GMT
+
+MAKE:
+mv chameneosredux.scala-2.scala chameneosredux.scala
+/usr/local/src/scala-2.10.0-RC5/bin/scalac -optimise chameneosredux.scala
+9.38s to complete and log all make actions
+
+COMMAND LINE:
+ /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0-RC5/lib/scala-library.jar chameneosredux 6000000
+
+PROGRAM OUTPUT:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
+ blue red yellow
+3893006 zero
+4071596 zero
+4035398 zero
+one two zero zero zero zero zero zero
+
+ blue red yellow red yellow blue red yellow red blue
+1210039 zero
+1204229 zero
+1226557 zero
+1250326 zero
+1222586 zero
+1186053 zero
+1189145 zero
+1177923 zero
+1125089 zero
+1208053 zero
+one two zero zero zero zero zero zero
+

@@ -1,0 +1,440 @@
+<span class="hl slc">--</span>
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://shootout.alioth.debian.org/</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- contributed by Francois Fabien (mai 2012)</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- regex-dna benchmark using PCRE</span>
+<span class="hl slc">-- without concurrent processing (single-core).</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- compile with:</span>
+<span class="hl slc">--   gnatmake -O3 -gnatn -gnatp regexdna.adb</span>
+<span class="hl slc">--</span>
+<span class="hl kwa">with</span> Text_IO<span class="hl opt">;</span>                <span class="hl kwa">use</span> Text_IO<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Block_Input<span class="hl opt">;</span>            <span class="hl kwa">use</span> Block_Input<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Pcre<span class="hl opt">;</span>                   <span class="hl kwa">use</span> Pcre<span class="hl opt">;</span>
+<span class="hl kwa">with</span> DNA<span class="hl opt">;</span>                    <span class="hl kwa">use</span> DNA<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Strings<span class="hl opt">.</span>Fixed<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Unchecked_Deallocation<span class="hl opt">;</span>
+
+<span class="hl kwa">procedure</span> Regexdna <span class="hl kwa">is</span>
+
+   Max_Size <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">67</span>_000_000<span class="hl opt">;</span>
+
+   <span class="hl kwa">package</span> Int_IO <span class="hl kwa">is new</span> Integer_IO <span class="hl opt">(</span><span class="hl kwb">Integer</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">subtype</span> Big_String <span class="hl kwa">is</span> <span class="hl kwb">String</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Max_Size<span class="hl opt">);</span>
+   <span class="hl kwa">type</span> Big_String_Ptr <span class="hl kwa">is access all</span> Big_String<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> Free <span class="hl kwa">is new</span> Unchecked_Deallocation <span class="hl opt">(</span>Big_String<span class="hl opt">,</span> Big_String_Ptr<span class="hl opt">);</span>
+
+   <span class="hl slc">-- Allocate for maximum size</span>
+   DNA_Code <span class="hl opt">:</span> Big_String_Ptr <span class="hl opt">:=</span> <span class="hl kwa">new</span> Big_String<span class="hl opt">;</span>
+   Aux_Str  <span class="hl opt">:</span> Big_String_Ptr <span class="hl opt">:=</span> <span class="hl kwa">new</span> Big_String<span class="hl opt">;</span>
+
+   Initial_Length<span class="hl opt">,</span> Code_Length<span class="hl opt">,</span> Seq_Length <span class="hl opt">:</span> <span class="hl kwb">Natural</span> <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+   <span class="hl slc">-- remove headers and ends of line from input file.</span>
+   <span class="hl kwa">procedure</span> Strip_Input
+     <span class="hl opt">(</span>Source<span class="hl opt">,</span> Dest <span class="hl opt">:</span> <span class="hl kwa">in</span> Big_String_Ptr<span class="hl opt">;</span>
+      Last_Src     <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+      Last_Dest    <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Natural</span><span class="hl opt">)</span>
+   <span class="hl kwa">is</span>
+      <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Strings<span class="hl opt">.</span>Fixed<span class="hl opt">;</span>
+
+      EOL        <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">String</span> <span class="hl opt">:= (</span><span class="hl num">1</span> <span class="hl opt">=&gt;</span> ASCII<span class="hl opt">.</span>LF<span class="hl opt">);</span>
+      Next<span class="hl opt">,</span> Pos  <span class="hl opt">:</span> <span class="hl kwb">Positive</span>        <span class="hl opt">:=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      End_Of_Cmt <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+      Test_Char  <span class="hl opt">:</span> <span class="hl kwb">Character</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">while</span> Next <span class="hl opt">&lt;=</span> Last_Src <span class="hl kwa">loop</span>
+         Test_Char <span class="hl opt">:=</span> Source<span class="hl opt">.</span><span class="hl kwa">all</span> <span class="hl opt">(</span>Next<span class="hl opt">);</span>
+         <span class="hl kwa">case</span> Test_Char <span class="hl kwa">is</span>
+            <span class="hl kwa">when</span> ASCII<span class="hl opt">.</span>LF <span class="hl opt">=&gt;</span>
+               Next <span class="hl opt">:=</span> Next <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+            <span class="hl kwa">when</span> <span class="hl str">'&gt;'</span> <span class="hl opt">=&gt;</span>
+               End_Of_Cmt <span class="hl opt">:=</span> Index <span class="hl opt">(</span>Source<span class="hl opt">.</span><span class="hl kwa">all</span> <span class="hl opt">(</span>Next <span class="hl opt">..</span> Next <span class="hl opt">+</span> <span class="hl num">100</span><span class="hl opt">),</span> EOL<span class="hl opt">);</span>
+               Next       <span class="hl opt">:=</span> End_Of_Cmt <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+            <span class="hl kwa">when others</span> <span class="hl opt">=&gt;</span>
+               Dest<span class="hl opt">.</span><span class="hl kwa">all</span> <span class="hl opt">(</span>Pos<span class="hl opt">) :=</span> Test_Char<span class="hl opt">;</span>
+               Pos            <span class="hl opt">:=</span> Pos <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+               Next           <span class="hl opt">:=</span> Next <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+         <span class="hl kwa">end case</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      Last_Dest <span class="hl opt">:=</span> Pos <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Strip_Input<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Count_Variants <span class="hl opt">(</span>Source <span class="hl opt">:</span> <span class="hl kwa">in</span> Big_String_Ptr<span class="hl opt">;</span> Last <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Natural</span><span class="hl opt">)</span> <span class="hl kwa">is</span>
+      Regexp          <span class="hl opt">:</span> Pcre_Type<span class="hl opt">;</span>
+      Regexp_Extra    <span class="hl opt">:</span> Pcre_Extra_type<span class="hl opt">;</span>
+      Retcode         <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      Position<span class="hl opt">,</span> Count <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      m0<span class="hl opt">,</span> m1          <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">for</span> Var <span class="hl kwa">in</span> Variant_Index<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+         Compile
+           <span class="hl opt">(</span>Pattern       <span class="hl opt">=&gt;</span> Variant_Labels <span class="hl opt">(</span>Var<span class="hl opt">).</span><span class="hl kwa">all</span><span class="hl opt">,</span>
+            Options       <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+            Matcher       <span class="hl opt">=&gt;</span> Regexp<span class="hl opt">,</span>
+            Matcher_Extra <span class="hl opt">=&gt;</span> Regexp_Extra<span class="hl opt">);</span>
+
+         Count    <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+         Position <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+         <span class="hl kwa">loop</span>
+            Match
+              <span class="hl opt">(</span>Regexp<span class="hl opt">,</span>
+               Regexp_Extra<span class="hl opt">,</span>
+               Source<span class="hl opt">.</span><span class="hl kwa">all</span> <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)</span><span class="hl kwd">'Address</span><span class="hl opt">,</span> <span class="hl slc">-- point to first character of subject</span>
+               Last<span class="hl opt">,</span>
+               Position<span class="hl opt">,</span>
+               <span class="hl num">0</span><span class="hl opt">,</span>
+               m0<span class="hl opt">,</span>
+               m1<span class="hl opt">,</span>
+               Retcode<span class="hl opt">);</span>
+            <span class="hl kwa">exit when</span> Retcode <span class="hl opt">&lt;</span> <span class="hl num">0</span><span class="hl opt">;</span>
+            Count    <span class="hl opt">:=</span> Count <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+            Position <span class="hl opt">:=</span> m1<span class="hl opt">;</span>
+         <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+         Put_Line <span class="hl opt">(</span>Variant_Labels <span class="hl opt">(</span>Var<span class="hl opt">).</span><span class="hl kwa">all</span> <span class="hl opt">&amp;</span> <span class="hl kwb">Integer</span><span class="hl kwd">'Image</span> <span class="hl opt">(</span>Count<span class="hl opt">));</span>
+
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Count_Variants<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Replace_Variants
+     <span class="hl opt">(</span>Source<span class="hl opt">,</span> Dest <span class="hl opt">:</span> <span class="hl kwa">in</span> Big_String_Ptr<span class="hl opt">;</span>
+      Last_Src     <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+      Last_Dest    <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Natural</span><span class="hl opt">)</span>
+   <span class="hl kwa">is</span>
+
+      Regexp       <span class="hl opt">:</span> Pcre_Type<span class="hl opt">;</span>
+      Regexp_Extra <span class="hl opt">:</span> Pcre_Extra_type<span class="hl opt">;</span>
+      Retcode      <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      Position     <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      Char_To_Copy <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      Start<span class="hl opt">,</span> Stop  <span class="hl opt">:</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      m0<span class="hl opt">,</span> m1       <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      IUB          <span class="hl opt">:</span> Mut<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      Compile
+        <span class="hl opt">(</span>Pattern       <span class="hl opt">=&gt;</span> <span class="hl str">&quot;[BDHKMNRSVWY]&quot;</span><span class="hl opt">,</span>
+         Options       <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+         Matcher       <span class="hl opt">=&gt;</span> Regexp<span class="hl opt">,</span>
+         Matcher_Extra <span class="hl opt">=&gt;</span> Regexp_Extra<span class="hl opt">);</span>
+
+      Position <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">loop</span>
+         Match
+           <span class="hl opt">(</span>Regexp<span class="hl opt">,</span>
+            Regexp_Extra<span class="hl opt">,</span>
+            Source<span class="hl opt">.</span><span class="hl kwa">all</span> <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)</span><span class="hl kwd">'Address</span><span class="hl opt">,</span>
+            Last_Src<span class="hl opt">,</span>
+            Position<span class="hl opt">,</span>
+            <span class="hl num">0</span><span class="hl opt">,</span>
+            m0<span class="hl opt">,</span>
+            m1<span class="hl opt">,</span>
+            Retcode<span class="hl opt">);</span>
+         <span class="hl kwa">exit when</span> Retcode <span class="hl opt">&lt;</span> <span class="hl num">0</span><span class="hl opt">;</span>
+         Char_To_Copy         <span class="hl opt">:=</span> m0 <span class="hl opt">-</span> Position<span class="hl opt">;</span>
+         Stop                 <span class="hl opt">:=</span> Start <span class="hl opt">+</span> Char_To_Copy <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+         Dest <span class="hl opt">(</span>Start <span class="hl opt">..</span> Stop<span class="hl opt">) :=</span> Source <span class="hl opt">(</span>Position <span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl opt">..</span> m0<span class="hl opt">);</span>
+         <span class="hl slc">-- insert IUB into destination string</span>
+         IUB                          <span class="hl opt">:=</span> to_Mut <span class="hl opt">(</span>Source<span class="hl opt">.</span><span class="hl kwa">all</span> <span class="hl opt">(</span>m1<span class="hl opt">));</span>
+         Start                        <span class="hl opt">:=</span> Stop <span class="hl opt">+</span> Iub_Table <span class="hl opt">(</span>IUB<span class="hl opt">).</span>Len <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+         Dest <span class="hl opt">(</span>Stop <span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl opt">..</span> Start <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">) :=</span> Iub_Table <span class="hl opt">(</span>IUB<span class="hl opt">).</span>Alt<span class="hl opt">.</span><span class="hl kwa">all</span><span class="hl opt">;</span>
+         Position                     <span class="hl opt">:=</span> m1<span class="hl opt">;</span>
+
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      <span class="hl slc">-- copy remaining part of the source</span>
+      Char_To_Copy         <span class="hl opt">:=</span> Last_Src <span class="hl opt">-</span> Position<span class="hl opt">;</span>
+      Stop                 <span class="hl opt">:=</span> Start <span class="hl opt">+</span> Char_To_Copy <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      Dest <span class="hl opt">(</span>Start <span class="hl opt">..</span> Stop<span class="hl opt">) :=</span> Source <span class="hl opt">(</span>Position <span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl opt">..</span> Last_Src<span class="hl opt">);</span>
+
+      Last_Dest <span class="hl opt">:=</span> Stop<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Replace_Variants<span class="hl opt">;</span>
+
+<span class="hl kwa">begin</span>
+   Open_Stdin<span class="hl opt">;</span>
+   Read <span class="hl opt">(</span>Aux_Str<span class="hl opt">.</span><span class="hl kwa">all</span><span class="hl opt">,</span> Initial_Length<span class="hl opt">);</span>
+   Close_Stdin<span class="hl opt">;</span>
+
+   Strip_Input <span class="hl opt">(</span>Aux_Str<span class="hl opt">,</span> DNA_Code<span class="hl opt">,</span> Initial_Length<span class="hl opt">,</span> Code_Length<span class="hl opt">);</span>
+   Count_Variants <span class="hl opt">(</span>DNA_Code<span class="hl opt">,</span> Code_Length<span class="hl opt">);</span>
+   Replace_Variants <span class="hl opt">(</span>DNA_Code<span class="hl opt">,</span> Aux_Str<span class="hl opt">,</span> Code_Length<span class="hl opt">,</span> Seq_Length<span class="hl opt">);</span>
+
+   New_Line<span class="hl opt">;</span>
+   Int_IO<span class="hl opt">.</span>Put <span class="hl opt">(</span>Initial_Length<span class="hl opt">,</span> Width <span class="hl opt">=&gt;</span> <span class="hl num">6</span><span class="hl opt">);</span>
+   New_Line<span class="hl opt">;</span>
+   Int_IO<span class="hl opt">.</span>Put <span class="hl opt">(</span>Code_Length<span class="hl opt">,</span> Width <span class="hl opt">=&gt;</span> <span class="hl num">6</span><span class="hl opt">);</span>
+   New_Line<span class="hl opt">;</span>
+   Int_IO<span class="hl opt">.</span>Put <span class="hl opt">(</span>Seq_Length<span class="hl opt">,</span> Width <span class="hl opt">=&gt;</span> <span class="hl num">6</span><span class="hl opt">);</span>
+   New_Line<span class="hl opt">;</span>
+
+   Free <span class="hl opt">(</span>DNA_Code<span class="hl opt">);</span>
+   Free <span class="hl opt">(</span>Aux_Str<span class="hl opt">);</span>
+<span class="hl kwa">end</span> Regexdna<span class="hl opt">;</span>
+<span class="hl slc">------------------------------------------------------------------------------</span>
+<span class="hl slc">-- Constants</span>
+<span class="hl slc">------------------------------------------------------------------------------</span>
+<span class="hl kwa">with</span> Unchecked_Conversion<span class="hl opt">;</span>
+
+<span class="hl kwa">package</span> DNA <span class="hl kwa">is</span>
+
+   <span class="hl kwa">type</span> String_Access <span class="hl kwa">is access all</span> <span class="hl kwb">String</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">subtype</span> Variant_Index <span class="hl kwa">is</span> <span class="hl kwb">Positive</span> <span class="hl kwa">range</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">9</span><span class="hl opt">;</span>
+   Variant_Labels <span class="hl opt">:</span> <span class="hl kwa">constant array</span> <span class="hl opt">(</span>Variant_Index<span class="hl opt">)</span> <span class="hl kwa">of</span> String_Access <span class="hl opt">:=</span>
+     <span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwb">String</span><span class="hl str">'(&quot;agggtaaa|tttaccct&quot;),</span>
+<span class="hl str">      new String'</span><span class="hl opt">(</span><span class="hl str">&quot;[cgt]gggtaaa|tttaccc[acg]&quot;</span><span class="hl opt">),</span>
+      <span class="hl kwa">new</span> <span class="hl kwb">String</span><span class="hl str">'(&quot;a[act]ggtaaa|tttacc[agt]t&quot;),</span>
+<span class="hl str">      new String'</span><span class="hl opt">(</span><span class="hl str">&quot;ag[act]gtaaa|tttac[agt]ct&quot;</span><span class="hl opt">),</span>
+      <span class="hl kwa">new</span> <span class="hl kwb">String</span><span class="hl str">'(&quot;agg[act]taaa|ttta[agt]cct&quot;),</span>
+<span class="hl str">      new String'</span><span class="hl opt">(</span><span class="hl str">&quot;aggg[acg]aaa|ttt[cgt]ccct&quot;</span><span class="hl opt">),</span>
+      <span class="hl kwa">new</span> <span class="hl kwb">String</span><span class="hl str">'(&quot;agggt[cgt]aa|tt[acg]accct&quot;),</span>
+<span class="hl str">      new String'</span><span class="hl opt">(</span><span class="hl str">&quot;agggta[cgt]a|t[acg]taccct&quot;</span><span class="hl opt">),</span>
+      <span class="hl kwa">new</span> <span class="hl kwb">String</span><span class="hl str">'(&quot;agggtaa[cgt]|[acg]ttaccct&quot;));</span>
+<span class="hl str"></span>
+<span class="hl str">   type Mut is ('</span>B<span class="hl str">','</span>D<span class="hl str">','</span>H<span class="hl str">','</span>K<span class="hl str">','</span>M<span class="hl str">','</span>N<span class="hl str">','</span>R<span class="hl str">','</span>S<span class="hl str">','</span>V<span class="hl str">','</span>W<span class="hl str">','</span>Y<span class="hl str">');</span>
+<span class="hl str">   for Mut'Size use Character'Size;</span>
+<span class="hl str"></span>
+<span class="hl str">   for Mut use -- map to character values</span>
+<span class="hl str">     ('</span>B<span class="hl str">' =&gt; 66,</span>
+<span class="hl str">      '</span>D<span class="hl str">' =&gt; 68,</span>
+<span class="hl str">      '</span>H<span class="hl str">' =&gt; 72,</span>
+<span class="hl str">      '</span>K<span class="hl str">' =&gt; 75,</span>
+<span class="hl str">      '</span>M<span class="hl str">' =&gt; 77,</span>
+<span class="hl str">      '</span>N<span class="hl str">' =&gt; 78,</span>
+<span class="hl str">      '</span>R<span class="hl str">' =&gt; 82,</span>
+<span class="hl str">      '</span>S<span class="hl str">' =&gt; 83,</span>
+<span class="hl str">      '</span>V<span class="hl str">' =&gt; 86,</span>
+<span class="hl str">      '</span>W<span class="hl str">' =&gt; 87,</span>
+<span class="hl str">      '</span>Y<span class="hl str">' =&gt; 89);</span>
+<span class="hl str"></span>
+<span class="hl str">   function to_Mut is new Unchecked_Conversion (</span>
+<span class="hl str">      Source =&gt; Character,</span>
+<span class="hl str">      Target =&gt; Mut);</span>
+<span class="hl str"></span>
+<span class="hl str">   type Iub is record</span>
+<span class="hl str">      Alt : String_Access;</span>
+<span class="hl str">      Len : Positive;</span>
+<span class="hl str">   end record;</span>
+<span class="hl str"></span>
+<span class="hl str">   Iub_Table : constant array (Mut) of Iub :=</span>
+<span class="hl str">     ((new String'</span><span class="hl opt">(</span><span class="hl str">&quot;(c|g|t)&quot;</span><span class="hl opt">),</span> <span class="hl num">7</span><span class="hl opt">),</span>
+      <span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwb">String</span><span class="hl str">'(&quot;(a|g|t)&quot;), 7),</span>
+<span class="hl str">      (new String'</span><span class="hl opt">(</span><span class="hl str">&quot;(a|c|t)&quot;</span><span class="hl opt">),</span> <span class="hl num">7</span><span class="hl opt">),</span>
+      <span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwb">String</span><span class="hl str">'(&quot;(g|t)&quot;), 5),</span>
+<span class="hl str">      (new String'</span><span class="hl opt">(</span><span class="hl str">&quot;(a|c)&quot;</span><span class="hl opt">),</span> <span class="hl num">5</span><span class="hl opt">),</span>
+      <span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwb">String</span><span class="hl str">'(&quot;(a|c|g|t)&quot;), 9),</span>
+<span class="hl str">      (new String'</span><span class="hl opt">(</span><span class="hl str">&quot;(a|g)&quot;</span><span class="hl opt">),</span> <span class="hl num">5</span><span class="hl opt">),</span>
+      <span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwb">String</span><span class="hl str">'(&quot;(c|g)&quot;), 5),</span>
+<span class="hl str">      (new String'</span><span class="hl opt">(</span><span class="hl str">&quot;(a|c|g)&quot;</span><span class="hl opt">),</span> <span class="hl num">7</span><span class="hl opt">),</span>
+      <span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwb">String</span><span class="hl str">'(&quot;(a|t)&quot;), 5),</span>
+<span class="hl str">      (new String'</span><span class="hl opt">(</span><span class="hl str">&quot;(c|t)&quot;</span><span class="hl opt">),</span> <span class="hl num">5</span><span class="hl opt">));</span>
+<span class="hl kwa">end</span> DNA<span class="hl opt">;</span>
+<span class="hl slc">-----------------------------------------------------------------------</span>
+<span class="hl slc">--  interface to library PCRE</span>
+<span class="hl slc">--</span>
+<span class="hl slc">--  note : pcre_free causes a problem and is not interfaced</span>
+<span class="hl slc">-----------------------------------------------------------------------</span>
+<span class="hl kwa">with</span> System<span class="hl opt">;</span> <span class="hl kwa">use</span> System<span class="hl opt">;</span>
+
+<span class="hl kwa">package</span> Pcre <span class="hl kwa">is</span>
+
+   Pcre_Error <span class="hl opt">:</span> <span class="hl kwa">exception</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">subtype</span> Pcre_Type <span class="hl kwa">is</span> System<span class="hl opt">.</span>Address<span class="hl opt">;</span>
+   <span class="hl kwa">subtype</span> Pcre_Extra_type <span class="hl kwa">is</span> System<span class="hl opt">.</span>Address<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Compile
+     <span class="hl opt">(</span>Pattern       <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">;</span>
+      Options       <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      Matcher       <span class="hl opt">:</span> <span class="hl kwa">out</span> Pcre_Type<span class="hl opt">;</span>
+      Matcher_Extra <span class="hl opt">:</span> <span class="hl kwa">out</span> Pcre_Extra_type<span class="hl opt">);</span>
+
+   <span class="hl kwa">procedure</span> Match
+     <span class="hl opt">(</span>Matcher             <span class="hl opt">:</span> <span class="hl kwa">in</span> Pcre_Type<span class="hl opt">;</span>
+      Matcher_Extra       <span class="hl opt">:</span> <span class="hl kwa">in</span> Pcre_Extra_type<span class="hl opt">;</span>
+      Subject             <span class="hl opt">:</span> System<span class="hl opt">.</span>Address<span class="hl opt">;</span>
+      <span class="hl slc">-- Address of the first element of a string;</span>
+      Length<span class="hl opt">,</span> Startoffset <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      Options             <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      Match_0<span class="hl opt">,</span> Match_1    <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      Result              <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Integer</span><span class="hl opt">);</span>
+
+<span class="hl kwa">end</span> Pcre<span class="hl opt">;</span>
+<span class="hl slc">------------------------------------------------------------------------------</span>
+
+<span class="hl kwa">with</span> Interfaces<span class="hl opt">.</span>C<span class="hl opt">.</span>Strings<span class="hl opt">;</span>     <span class="hl kwa">use</span> Interfaces<span class="hl opt">.</span>C<span class="hl opt">.</span>Strings<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Interfaces<span class="hl opt">.</span>C<span class="hl opt">;</span>             <span class="hl kwa">use</span> Interfaces<span class="hl opt">.</span>C<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Unchecked_Conversion<span class="hl opt">;</span>
+
+<span class="hl kwa">package body</span> Pcre <span class="hl kwa">is</span>
+
+   <span class="hl kwa">pragma</span> Linker_Options <span class="hl opt">(</span><span class="hl str">&quot;-lpcre&quot;</span><span class="hl opt">);</span>
+   <span class="hl kwa">pragma</span> Assert <span class="hl opt">(</span>int<span class="hl kwd">'Size</span> <span class="hl opt">=</span> <span class="hl kwb">Integer</span><span class="hl kwd">'Size</span><span class="hl opt">);</span> <span class="hl slc">-- sanitize portability</span>
+
+   <span class="hl kwa">use</span> Interfaces<span class="hl opt">;</span>
+
+   <span class="hl kwa">function</span> To_chars_ptr <span class="hl kwa">is new</span> Ada<span class="hl opt">.</span>Unchecked_Conversion <span class="hl opt">(</span>
+      Address<span class="hl opt">,</span>
+      chars_ptr<span class="hl opt">);</span>
+
+   <span class="hl kwa">function</span> Pcre_Compile
+     <span class="hl opt">(</span>pattern   <span class="hl opt">:</span> chars_ptr<span class="hl opt">;</span>
+      options   <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      errptr    <span class="hl opt">:</span> <span class="hl kwa">access</span> chars_ptr<span class="hl opt">;</span>
+      erroffset <span class="hl opt">:</span> <span class="hl kwa">access</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      tableptr  <span class="hl opt">:</span> chars_ptr<span class="hl opt">)</span>
+      <span class="hl kwa">return</span>      Pcre_Type<span class="hl opt">;</span>
+   <span class="hl kwa">pragma</span> Import <span class="hl opt">(</span>C<span class="hl opt">,</span> Pcre_Compile<span class="hl opt">,</span> <span class="hl str">&quot;pcre_compile&quot;</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">function</span> Pcre_Study
+     <span class="hl opt">(</span>code    <span class="hl opt">:</span> Pcre_Type<span class="hl opt">;</span>
+      options <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      errptr  <span class="hl opt">:</span> <span class="hl kwa">access</span> chars_ptr<span class="hl opt">)</span>
+      <span class="hl kwa">return</span>    Pcre_Extra_type<span class="hl opt">;</span>
+   <span class="hl kwa">pragma</span> Import <span class="hl opt">(</span>C<span class="hl opt">,</span> Pcre_Study<span class="hl opt">,</span> <span class="hl str">&quot;pcre_study&quot;</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">function</span> Pcre_Exec
+     <span class="hl opt">(</span>code        <span class="hl opt">:</span> Pcre_Type<span class="hl opt">;</span>
+      extra       <span class="hl opt">:</span> Pcre_Extra_type<span class="hl opt">;</span>
+      subject     <span class="hl opt">:</span> chars_ptr<span class="hl opt">;</span>
+      length      <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      startoffset <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      options     <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      ovector     <span class="hl opt">:</span> System<span class="hl opt">.</span>Address<span class="hl opt">;</span>
+      ovecsize    <span class="hl opt">:</span> C<span class="hl opt">.</span>int<span class="hl opt">)</span>
+      <span class="hl kwa">return</span>        <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl kwa">pragma</span> Import <span class="hl opt">(</span>C<span class="hl opt">,</span> Pcre_Exec<span class="hl opt">,</span> <span class="hl str">&quot;pcre_exec&quot;</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">procedure</span> Pcre_Free <span class="hl opt">(</span>Addr <span class="hl opt">:</span> System<span class="hl opt">.</span>Address<span class="hl opt">);</span>
+   <span class="hl kwa">pragma</span> Import <span class="hl opt">(</span>C<span class="hl opt">,</span> Pcre_Free<span class="hl opt">,</span> <span class="hl str">&quot;pcre_free&quot;</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">procedure</span> Compile
+     <span class="hl opt">(</span>Pattern       <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">;</span>
+      Options       <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      Matcher       <span class="hl opt">:</span> <span class="hl kwa">out</span> Pcre_Type<span class="hl opt">;</span>
+      Matcher_Extra <span class="hl opt">:</span> <span class="hl kwa">out</span> Pcre_Extra_type<span class="hl opt">)</span>
+   <span class="hl kwa">is</span>
+      Regexp       <span class="hl opt">:</span> Pcre_Type<span class="hl opt">;</span>
+      Regexp_Extra <span class="hl opt">:</span> Pcre_Extra_type<span class="hl opt">;</span>
+      Error_Ptr    <span class="hl opt">:</span> <span class="hl kwa">aliased</span> chars_ptr<span class="hl opt">;</span>
+      Error_Offset <span class="hl opt">:</span> <span class="hl kwa">aliased</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      Regexp <span class="hl opt">:=</span>
+         Pcre_Compile
+           <span class="hl opt">(</span>New_String <span class="hl opt">(</span>Pattern<span class="hl opt">),</span>
+            Options<span class="hl opt">,</span>
+            Error_Ptr<span class="hl kwd">'Access</span><span class="hl opt">,</span>
+            Error_Offset<span class="hl kwd">'Access</span><span class="hl opt">,</span>
+            Null_Ptr<span class="hl opt">);</span>
+
+      <span class="hl kwa">if</span> Regexp <span class="hl opt">=</span> Null_Address <span class="hl kwa">then</span>
+         <span class="hl kwa">raise</span> Pcre_Error<span class="hl opt">;</span>
+      <span class="hl kwa">end if</span><span class="hl opt">;</span>
+      Matcher      <span class="hl opt">:=</span> Regexp<span class="hl opt">;</span>
+      Regexp_Extra <span class="hl opt">:=</span> Pcre_Study <span class="hl opt">(</span>Regexp<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> Error_Ptr<span class="hl kwd">'Access</span><span class="hl opt">);</span>
+      <span class="hl kwa">if</span> Regexp_Extra <span class="hl opt">=</span> Null_Address <span class="hl kwa">then</span>
+         <span class="hl kwa">raise</span> Pcre_Error<span class="hl opt">;</span>
+      <span class="hl kwa">end if</span><span class="hl opt">;</span>
+      Matcher_Extra <span class="hl opt">:=</span> Regexp_Extra<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Compile<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Match
+     <span class="hl opt">(</span>Matcher             <span class="hl opt">:</span> <span class="hl kwa">in</span> Pcre_Type<span class="hl opt">;</span>
+      Matcher_Extra       <span class="hl opt">:</span> <span class="hl kwa">in</span> Pcre_Extra_type<span class="hl opt">;</span>
+      Subject             <span class="hl opt">:</span> System<span class="hl opt">.</span>Address<span class="hl opt">;</span>
+      Length<span class="hl opt">,</span> Startoffset <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      Options             <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      Match_0<span class="hl opt">,</span> Match_1    <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      Result              <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span>
+   <span class="hl kwa">is</span>
+      Vecsize <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">3</span><span class="hl opt">;</span> <span class="hl slc">-- top-level matching</span>
+
+      m <span class="hl opt">:</span> <span class="hl kwa">array</span> <span class="hl opt">(</span><span class="hl num">0</span> <span class="hl opt">..</span> Vecsize <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">)</span> <span class="hl kwa">of</span> C<span class="hl opt">.</span>int<span class="hl opt">;</span>
+      <span class="hl kwa">pragma</span> Convention <span class="hl opt">(</span>C<span class="hl opt">,</span> m<span class="hl opt">);</span>
+      <span class="hl kwa">pragma</span> Volatile <span class="hl opt">(</span>m<span class="hl opt">);</span> <span class="hl slc">-- used by the C library</span>
+
+      Start <span class="hl opt">:</span> <span class="hl kwa">constant</span> chars_ptr <span class="hl opt">:=</span> To_chars_ptr <span class="hl opt">(</span>Subject<span class="hl opt">);</span>
+
+   <span class="hl kwa">begin</span>
+
+      Result  <span class="hl opt">:=</span>
+         Pcre_Exec
+           <span class="hl opt">(</span>Matcher<span class="hl opt">,</span>
+            Matcher_Extra<span class="hl opt">,</span>
+            Start<span class="hl opt">,</span>
+            Length<span class="hl opt">,</span>
+            Startoffset<span class="hl opt">,</span>
+            Options<span class="hl opt">,</span>
+            m <span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">)</span><span class="hl kwd">'Address</span><span class="hl opt">,</span>
+            C<span class="hl opt">.</span>int <span class="hl opt">(</span>Vecsize<span class="hl opt">));</span>
+      Match_0 <span class="hl opt">:=</span> <span class="hl kwb">Integer</span> <span class="hl opt">(</span>m <span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">));</span>
+      Match_1 <span class="hl opt">:=</span> <span class="hl kwb">Integer</span> <span class="hl opt">(</span>m <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">));</span>
+
+   <span class="hl kwa">end</span> Match<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> Pcre<span class="hl opt">;</span>
+<span class="hl slc">-------------------------------------------------------------------------------</span>
+<span class="hl kwa">package</span> Block_Input <span class="hl kwa">is</span>
+
+   <span class="hl kwa">procedure</span> Read <span class="hl opt">(</span>Item <span class="hl opt">:</span> <span class="hl kwa">in out</span> <span class="hl kwb">String</span><span class="hl opt">;</span> Last <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Natural</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">procedure</span> Open_Stdin<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Close_Stdin<span class="hl opt">;</span>
+
+   <span class="hl kwa">pragma</span> Inline <span class="hl opt">(</span>Read<span class="hl opt">);</span>
+
+<span class="hl kwa">end</span> Block_Input<span class="hl opt">;</span>
+<span class="hl slc">------------------------------------------------------------------------------</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Streams<span class="hl opt">.</span>Stream_IO<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Unchecked_Conversion<span class="hl opt">;</span>
+
+<span class="hl kwa">package body</span> Block_Input <span class="hl kwa">is</span>
+
+   <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Streams<span class="hl opt">;</span>
+
+   Stdin <span class="hl opt">:</span> Stream_IO<span class="hl opt">.</span>File_Type<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Read <span class="hl opt">(</span>Item <span class="hl opt">:</span> <span class="hl kwa">in out</span> <span class="hl kwb">String</span><span class="hl opt">;</span> Last <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Natural</span><span class="hl opt">)</span> <span class="hl kwa">is</span>
+
+      Block_Size <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">16</span> <span class="hl opt">*</span> <span class="hl num">1024</span><span class="hl opt">;</span>
+
+      <span class="hl kwa">subtype</span> Index <span class="hl kwa">is</span> Stream_Element_Offset <span class="hl kwa">range</span>
+         Stream_Element_Offset <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) ..</span> Stream_Element_Offset <span class="hl opt">(</span>Block_Size<span class="hl opt">);</span>
+      <span class="hl kwa">subtype</span> XString <span class="hl kwa">is</span> <span class="hl kwb">String</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Block_Size<span class="hl opt">);</span>
+      <span class="hl kwa">subtype</span> XBytes <span class="hl kwa">is</span> Stream_Element_Array <span class="hl opt">(</span>Index<span class="hl opt">);</span>
+      <span class="hl kwa">function</span> To_String <span class="hl kwa">is new</span> Unchecked_Conversion <span class="hl opt">(</span>
+         Source <span class="hl opt">=&gt;</span> XBytes<span class="hl opt">,</span>
+         Target <span class="hl opt">=&gt;</span> XString<span class="hl opt">);</span>
+
+      One_Block <span class="hl opt">:</span> XBytes<span class="hl opt">;</span>
+      Str_Block <span class="hl opt">:</span> XString<span class="hl opt">;</span>
+      Final     <span class="hl opt">:</span> Stream_Element_Offset<span class="hl opt">;</span>
+      Start     <span class="hl opt">:</span> <span class="hl kwb">Natural</span> <span class="hl opt">:=</span> Item<span class="hl kwd">'First</span><span class="hl opt">;</span>
+      Stop      <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">while not</span> Stream_IO<span class="hl opt">.</span>End_Of_File <span class="hl opt">(</span>Stdin<span class="hl opt">)</span> <span class="hl kwa">loop</span>
+         Stream_IO<span class="hl opt">.</span>Read <span class="hl opt">(</span>Stdin<span class="hl opt">,</span> One_Block<span class="hl opt">,</span> Final<span class="hl opt">);</span>
+         Str_Block            <span class="hl opt">:=</span> To_String <span class="hl opt">(</span>One_Block<span class="hl opt">);</span>
+         Stop                 <span class="hl opt">:=</span> Start <span class="hl opt">+</span> <span class="hl kwb">Natural</span> <span class="hl opt">(</span>Final<span class="hl opt">) -</span> <span class="hl num">1</span><span class="hl opt">;</span>
+         Item <span class="hl opt">(</span>Start <span class="hl opt">..</span> Stop<span class="hl opt">) :=</span> Str_Block <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl kwb">Natural</span> <span class="hl opt">(</span>Final<span class="hl opt">));</span>
+         Start                <span class="hl opt">:=</span> Stop <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      Last <span class="hl opt">:=</span> Stop<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Read<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Open_Stdin <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      Stream_IO<span class="hl opt">.</span>Open
+        <span class="hl opt">(</span>File <span class="hl opt">=&gt;</span> Stdin<span class="hl opt">,</span>
+         Mode <span class="hl opt">=&gt;</span> Stream_IO<span class="hl opt">.</span>In_File<span class="hl opt">,</span>
+         Name <span class="hl opt">=&gt;</span> <span class="hl str">&quot;/dev/stdin&quot;</span><span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Open_Stdin<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Close_Stdin <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      Stream_IO<span class="hl opt">.</span>Close <span class="hl opt">(</span>Stdin<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Close_Stdin<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> Block_Input<span class="hl opt">;</span>

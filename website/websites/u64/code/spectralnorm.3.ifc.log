@@ -1,0 +1,15 @@
+
+Fri, 06 Jan 2012 06:24:40 GMT
+
+MAKE:
+/usr/local/src/intel/bin/ifort -O3 -fast -openmp spectralnorm.ifc-3.f90 -o spectralnorm.ifc-3.ifc_run
+ipo: remark #11001: performing single-file optimizations
+ipo: remark #11006: generating object file /tmp/ipo_ifortRqzQY3.o
+rm spectralnorm.ifc-3.f90
+0.45s to complete and log all make actions
+
+COMMAND LINE:
+./spectralnorm.ifc-3.ifc_run 5500
+
+PROGRAM OUTPUT:
+1.274224153

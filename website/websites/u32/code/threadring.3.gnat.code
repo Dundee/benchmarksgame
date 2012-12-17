@@ -1,0 +1,106 @@
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://shootout.alioth.debian.org/</span>
+<span class="hl slc">--</span>
+<span class="hl slc">--  Contributed by Francois Fabien (23 octobre 2011)</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- Os threads are Ada tasks. Transfer of control is done synchronously by an</span>
+<span class="hl slc">-- array of semaphores using a predefined Ada package.</span>
+<span class="hl slc">-- The token is a global data that needs no protection since only one</span>
+<span class="hl slc">-- thread at a time will use it.</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- Directives are in the source code, so compile only with:</span>
+<span class="hl slc">--    gnatchop threadring.gnat</span>
+<span class="hl slc">--    gnatmake -O3 -gnatn -march=native threadring.adb</span>
+<span class="hl slc">-----------------------------------------------------------------------------</span>
+<span class="hl kwa">pragma</span> Suppress <span class="hl opt">(</span>All_Checks<span class="hl opt">);</span> <span class="hl slc">-- go for speed not safety</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- pragmas used for optimization of the run-time.</span>
+<span class="hl kwa">pragma</span> Restrictions <span class="hl opt">(</span>No_Abort_Statements<span class="hl opt">);</span>
+<span class="hl kwa">pragma</span> Restrictions <span class="hl opt">(</span>Max_Asynchronous_Select_Nesting <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">);</span>
+
+<span class="hl slc">-----------------------------------------------------------------------------</span>
+
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Command_Line<span class="hl opt">;</span>             <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Command_Line<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Synchronous_Task_Control<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Threadring_Pool<span class="hl opt">;</span>              <span class="hl kwa">use</span> Threadring_Pool<span class="hl opt">;</span>
+
+<span class="hl kwa">pragma</span> Elaborate_All <span class="hl opt">(</span>Threadring_Pool<span class="hl opt">);</span>
+
+<span class="hl kwa">procedure</span> Threadring <span class="hl kwa">is</span>
+   <span class="hl slc">-- GNU ld will remove unused sections; GNAT specific</span>
+   <span class="hl kwa">pragma</span> Linker_Options <span class="hl opt">(</span><span class="hl str">&quot;-Wl,--gc-sections&quot;</span><span class="hl opt">);</span>
+
+<span class="hl kwa">begin</span>
+   <span class="hl kwa">if</span> Argument_Count <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl kwa">then</span>
+      Token <span class="hl opt">:=</span> Tokens<span class="hl kwd">'Value</span> <span class="hl opt">(</span>Argument <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">));</span>
+   <span class="hl kwa">end if</span><span class="hl opt">;</span>
+   Synchronous_Task_Control<span class="hl opt">.</span>Set_True <span class="hl opt">(</span>Semaphores <span class="hl opt">(</span>Ring_Nbr<span class="hl kwd">'First</span><span class="hl opt">));</span>
+
+<span class="hl kwa">end</span> Threadring<span class="hl opt">;</span>
+<span class="hl slc">-----------------------------------------------------------------------------</span>
+
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Synchronous_Task_Control<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">,</span> Ada<span class="hl opt">.</span>Synchronous_Task_Control<span class="hl opt">;</span>
+
+<span class="hl kwa">package</span> Threadring_Pool <span class="hl kwa">is</span>
+
+   Ring_Size <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">503</span><span class="hl opt">;</span>
+   <span class="hl kwa">type</span> Ring_Nbr <span class="hl kwa">is range</span> <span class="hl num">1</span> <span class="hl opt">..</span> Ring_Size<span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> Tokens <span class="hl kwa">is range</span> <span class="hl opt">-</span><span class="hl num">1</span> <span class="hl opt">.. +(</span><span class="hl num">2</span> <span class="hl opt">**</span> <span class="hl num">31</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span>
+   <span class="hl slc">---- -1 =&gt; flag for task termination</span>
+   <span class="hl kwa">for</span> Tokens<span class="hl kwd">'Size</span> <span class="hl kwa">use</span> <span class="hl num">32</span><span class="hl opt">;</span>
+
+   Token <span class="hl opt">:</span> Tokens <span class="hl opt">:=</span> <span class="hl num">2</span> <span class="hl opt">*</span> Ring_Size <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span> <span class="hl slc">-- default value for testing</span>
+
+   Semaphores <span class="hl opt">:</span> <span class="hl kwa">array</span> <span class="hl opt">(</span>Ring_Nbr<span class="hl opt">)</span> <span class="hl kwa">of</span> Suspension_Object<span class="hl opt">;</span>
+
+<span class="hl kwa">private</span>
+
+   <span class="hl kwa">task type</span> Threads <span class="hl kwa">is</span>
+      <span class="hl kwa">entry</span> Initialize <span class="hl opt">(</span>Identifier <span class="hl opt">:</span> <span class="hl kwa">in</span> Ring_Nbr<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Threads<span class="hl opt">;</span>
+
+   Ring <span class="hl opt">:</span> <span class="hl kwa">array</span> <span class="hl opt">(</span>Ring_Nbr<span class="hl opt">)</span> <span class="hl kwa">of</span> Threads<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> Threadring_Pool<span class="hl opt">;</span>
+<span class="hl slc">-----------------------------------------------------------------------------</span>
+
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+
+<span class="hl kwa">package body</span> Threadring_Pool <span class="hl kwa">is</span>
+
+   <span class="hl kwa">package</span> Ring_IO <span class="hl kwa">is new</span> Integer_IO <span class="hl opt">(</span>Ring_Nbr<span class="hl opt">);</span>
+
+   <span class="hl kwa">task body</span> Threads <span class="hl kwa">is</span>
+      ID<span class="hl opt">,</span> Next <span class="hl opt">:</span> Ring_Nbr<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">accept</span> Initialize <span class="hl opt">(</span>Identifier <span class="hl opt">:</span> <span class="hl kwa">in</span> Ring_Nbr<span class="hl opt">)</span> <span class="hl kwa">do</span>
+         ID   <span class="hl opt">:=</span> Identifier<span class="hl opt">;</span>
+         Next <span class="hl opt">:=</span> ID <span class="hl kwa">mod</span> Ring_Size <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+         Set_False <span class="hl opt">(</span>Semaphores <span class="hl opt">(</span>ID<span class="hl opt">));</span>
+      <span class="hl kwa">end</span> Initialize<span class="hl opt">;</span>
+
+      <span class="hl kwa">loop</span>
+         Suspend_Until_True <span class="hl opt">(</span>Semaphores <span class="hl opt">(</span>ID<span class="hl opt">));</span>
+         Set_False <span class="hl opt">(</span>Semaphores <span class="hl opt">(</span>ID<span class="hl opt">));</span>
+         <span class="hl kwa">if</span> Token <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl kwa">then</span>
+            Token <span class="hl opt">:=</span> Token <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+            Set_True <span class="hl opt">(</span>Semaphores <span class="hl opt">(</span>Next<span class="hl opt">));</span>
+         <span class="hl kwa">else</span>
+            <span class="hl kwa">exit</span><span class="hl opt">;</span>
+         <span class="hl kwa">end if</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+
+      <span class="hl kwa">if</span> Token <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl kwa">then</span>
+         Ring_IO<span class="hl opt">.</span>Put <span class="hl opt">(</span>ID<span class="hl opt">,</span> Width <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">);</span>
+         New_Line<span class="hl opt">;</span>
+         Token <span class="hl opt">:= -</span><span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl kwa">end if</span><span class="hl opt">;</span>
+      Set_True <span class="hl opt">(</span>Semaphores <span class="hl opt">(</span>Next<span class="hl opt">));</span>
+   <span class="hl kwa">end</span> Threads<span class="hl opt">;</span>
+
+<span class="hl kwa">begin</span>
+   <span class="hl kwa">for</span> T <span class="hl kwa">in</span> Ring<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+      Ring <span class="hl opt">(</span>T<span class="hl opt">).</span>Initialize <span class="hl opt">(</span>Identifier <span class="hl opt">=&gt;</span> T<span class="hl opt">);</span>
+   <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+<span class="hl kwa">end</span> Threadring_Pool<span class="hl opt">;</span>

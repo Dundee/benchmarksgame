@@ -1,0 +1,22 @@
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://shootout.alioth.debian.org/</span>
+<span class="hl slc">-- contributed by Bryan O'Sullivan</span>
+<span class="hl slc">-- modified by Eugene Kirpichov: pidgits only generates</span>
+<span class="hl slc">-- the result string instead of printing it. For some</span>
+<span class="hl slc">-- reason, this gives a speedup.</span>
+
+<span class="hl kwd">import</span> System<span class="hl opt">.</span>Environment
+
+pidgits n <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl opt">% (</span><span class="hl num">0</span> <span class="hl opt"># (</span><span class="hl num">1</span><span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">1</span><span class="hl opt">))</span> <span class="hl kwd">where</span>
+ i<span class="hl opt">%</span>ds
+  | i <span class="hl opt">&gt;=</span> n <span class="hl opt">= []</span>
+  | <span class="hl kwa">True</span> <span class="hl opt">= (</span><span class="hl kwc">concat</span> h <span class="hl opt">++</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">:&quot;</span> <span class="hl opt">++</span> <span class="hl kwc">show</span> j <span class="hl opt">++</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">) ++</span> j<span class="hl opt">%</span>t
+  <span class="hl kwd">where</span> k <span class="hl opt">=</span> i<span class="hl opt">+</span><span class="hl num">10</span><span class="hl opt">;</span> j <span class="hl opt">=</span> <span class="hl kwc">min</span> n k
+        <span class="hl opt">(</span>h<span class="hl opt">,</span>t<span class="hl opt">)</span> | k <span class="hl opt">&gt;</span> n <span class="hl opt">= (</span><span class="hl kwc">take</span> <span class="hl opt">(</span>n`<span class="hl kwc">mod</span>`<span class="hl num">10</span><span class="hl opt">)</span> ds <span class="hl opt">++</span> <span class="hl kwc">replicate</span> <span class="hl opt">(</span>k<span class="hl opt">-</span>n<span class="hl opt">)</span> <span class="hl str">&quot; &quot;</span><span class="hl opt">,[])</span>
+              | <span class="hl kwa">True</span> <span class="hl opt">=</span> <span class="hl kwc">splitAt</span> <span class="hl num">10</span> ds
+ j <span class="hl opt">#</span> s | n<span class="hl opt">&gt;</span>a || r<span class="hl opt">+</span>n<span class="hl opt">&gt;=</span>d <span class="hl opt">=</span> k <span class="hl opt">#</span> t
+     | <span class="hl kwa">True</span> <span class="hl opt">=</span> <span class="hl kwc">show</span> q <span class="hl opt">:</span> k <span class="hl opt"># (</span>n<span class="hl opt">*</span><span class="hl num">10</span><span class="hl opt">,(</span>a<span class="hl opt">-(</span>q<span class="hl opt">*</span>d<span class="hl opt">))*</span><span class="hl num">10</span><span class="hl opt">,</span>d<span class="hl opt">)</span>
+  <span class="hl kwd">where</span> k <span class="hl opt">=</span> j<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">;</span> t<span class="hl opt">&#64;(</span>n<span class="hl opt">,</span>a<span class="hl opt">,</span>d<span class="hl opt">)=</span>k<span class="hl opt">&amp;</span>s<span class="hl opt">; (</span>q<span class="hl opt">,</span>r<span class="hl opt">)=(</span>n<span class="hl opt">*</span><span class="hl num">3</span><span class="hl opt">+</span>a<span class="hl opt">)</span>`<span class="hl kwc">divMod</span>`d
+ j<span class="hl opt">&amp;(</span>n<span class="hl opt">,</span>a<span class="hl opt">,</span>d<span class="hl opt">) = (</span>n<span class="hl opt">*</span>j<span class="hl opt">,(</span>a<span class="hl opt">+</span>n<span class="hl opt">*</span><span class="hl num">2</span><span class="hl opt">)*</span>y<span class="hl opt">,</span>d<span class="hl opt">*</span>y<span class="hl opt">)</span> <span class="hl kwd">where</span> y<span class="hl opt">=(</span>j<span class="hl opt">*</span><span class="hl num">2</span><span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+
+main <span class="hl opt">=</span> <span class="hl kwc">putStr</span><span class="hl opt">.</span>pidgits<span class="hl opt">.</span><span class="hl kwc">read</span><span class="hl opt">.</span><span class="hl kwc">head</span> <span class="hl opt">=&lt;&lt;</span> <span class="hl kwc">getArgs</span>

@@ -1,0 +1,33 @@
+
+Wed, 24 Oct 2012 02:10:24 GMT
+
+MAKE:
+mv regexdna.fsharp regexdna.fs
+/usr/local/bin/fsharpc --target:exe --platform:x86 -O  -o regexdna.fsharp_run.exe regexdna.fs
+Microsoft (R) F# 3.0 Compiler version (Mono build)
+Copyright (c) Microsoft Corporation. All Rights Reserved.
+rm regexdna.fs
+3.91s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/bin/mono --llvm --gc=sgen regexdna.fsharp_run.exe 0 < regexdna-input5000000.txt
+
+PROGRAM OUTPUT:
+agggtaaa|tttaccct 356
+[cgt]gggtaaa|tttaccc[acg] 1250
+a[act]ggtaaa|tttacc[agt]t 4252
+ag[act]gtaaa|tttac[agt]ct 2894
+agg[act]taaa|ttta[agt]cct 5435
+aggg[acg]aaa|ttt[cgt]ccct 1537
+agggt[cgt]aa|tt[acg]accct 1431
+agggta[cgt]a|t[acg]taccct 1608
+agggtaa[cgt]|[acg]ttaccct 2178
+
+50833411
+50000000
+66800214
+
+<premain>: CommandLine Error: Argument 'misched' defined more than once!
+<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
+-simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
+-simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

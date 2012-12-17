@@ -1,0 +1,54 @@
+
+Thu, 27 Sep 2012 20:24:49 GMT
+
+MAKE:
+/usr/local/src/ats-lang-anairiats-0.2.8/bin/atscc  -pipe -Wall -O3 -fomit-frame-pointer -march=native  fannkuchredux.dats -o fannkuchredux.ats_run 
+/usr/local/src/ats-lang-anairiats-0.2.8/bin/atsopt --output fannkuchredux_dats.c --dynamic fannkuchredux.dats
+In file included from fannkuchredux_dats.c:19:0:
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/basics.cats: In function ‘atspre_fprint_newline’:
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/basics.cats:271:11: warning: variable ‘n2’ set but not used [-Wunused-but-set-variable]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/basics.cats:271:7: warning: variable ‘n1’ set but not used [-Wunused-but-set-variable]
+fannkuchredux_dats.c: In function ‘array_get_elt_at__intsz_01354_ats_int_type’:
+fannkuchredux_dats.c:173:1: warning: label ‘__ats_lab_array_get_elt_at__intsz_01354_ats_int_type’ defined but not used [-Wunused-label]
+fannkuchredux_dats.c: In function ‘fprint_iarr_0’:
+fannkuchredux_dats.c:206:1: warning: label ‘__ats_lab_1’ defined but not used [-Wunused-label]
+fannkuchredux_dats.c:194:1: warning: label ‘__ats_lab_fprint_iarr_0’ defined but not used [-Wunused-label]
+fannkuchredux_dats.c: In function ‘array_set_elt_at__intsz_01355_ats_int_type’:
+fannkuchredux_dats.c:222:1: warning: label ‘__ats_lab_array_set_elt_at__intsz_01355_ats_int_type’ defined but not used [-Wunused-label]
+fannkuchredux_dats.c: In function ‘perm_rotate_2’:
+fannkuchredux_dats.c:260:1: warning: label ‘__ats_lab_3’ defined but not used [-Wunused-label]
+fannkuchredux_dats.c:245:1: warning: label ‘__ats_lab_perm_rotate_2’ defined but not used [-Wunused-label]
+fannkuchredux_dats.c: In function ‘perm_next_4’:
+fannkuchredux_dats.c:297:1: warning: label ‘__ats_lab_5_0’ defined but not used [-Wunused-label]
+fannkuchredux_dats.c:289:1: warning: label ‘__ats_lab_4_1’ defined but not used [-Wunused-label]
+fannkuchredux_dats.c:288:1: warning: label ‘__ats_lab_4_0’ defined but not used [-Wunused-label]
+fannkuchredux_dats.c: In function ‘fannkuch_rev1_7’:
+fannkuchredux_dats.c:366:1: warning: label ‘__ats_lab_fannkuch_rev1_7’ defined but not used [-Wunused-label]
+fannkuchredux_dats.c: In function ‘fannkuch_count_5’:
+fannkuchredux_dats.c:432:1: warning: label ‘__ats_lab_7’ defined but not used [-Wunused-label]
+fannkuchredux_dats.c: In function ‘iarr_init_8’:
+fannkuchredux_dats.c:489:1: warning: label ‘__ats_lab_9’ defined but not used [-Wunused-label]
+fannkuchredux_dats.c:478:1: warning: label ‘__ats_lab_iarr_init_8’ defined but not used [-Wunused-label]
+fannkuchredux_dats.c: In function ‘array_ptr_initialize_elt_01307_ats_int_type’:
+fannkuchredux_dats.c:530:1: warning: label ‘__ats_lab_array_ptr_initialize_elt_01307_ats_int_type’ defined but not used [-Wunused-label]
+fannkuchredux_dats.c: In function ‘array_make_elt_01346_ats_int_type’:
+fannkuchredux_dats.c:549:1: warning: label ‘__ats_lab_array_make_elt_01346_ats_int_type’ defined but not used [-Wunused-label]
+fannkuchredux_dats.c: In function ‘mainats’:
+fannkuchredux_dats.c:588:1: warning: label ‘__ats_lab_mainats’ defined but not used [-Wunused-label]
+fannkuchredux_dats.c: At top level:
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/pointer.cats:52:14: warning: ‘atspre_null_ptr’ defined but not used [-Wunused-variable]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/printf.cats:57:1: warning: ‘atspre_fprintf_err’ defined but not used [-Wunused-function]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/printf.cats:69:1: warning: ‘atspre_fprintf_exn’ defined but not used [-Wunused-function]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/printf.cats:105:1: warning: ‘atspre_prerrf_exn’ defined but not used [-Wunused-function]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/string.cats:351:14: warning: ‘atspre_stropt_none’ defined but not used [-Wunused-variable]
+fannkuchredux_dats.c:185:1: warning: ‘fprint_iarr_0’ defined but not used [-Wunused-function]
+gcc -I/usr/local/src/ats-lang-anairiats-0.2.8/ -I/usr/local/src/ats-lang-anairiats-0.2.8/ccomp/runtime/ -L/usr/local/src/ats-lang-anairiats-0.2.8/ccomp/lib/ /usr/local/src/ats-lang-anairiats-0.2.8/ccomp/runtime/ats_prelude.c -pipe -Wall -O3 -fomit-frame-pointer -march=native fannkuchredux_dats.c -o fannkuchredux.ats_run -lats 
+rm fannkuchredux.dats
+0.41s to complete and log all make actions
+
+COMMAND LINE:
+./fannkuchredux.ats_run 12
+
+PROGRAM OUTPUT:
+3968050
+Pfannkuchen(12) = 65

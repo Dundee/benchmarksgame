@@ -1,0 +1,144 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   based on C++ program by Andrew Moon</span>
+<span class="hl com">   contributed by Damien Grassart</span>
+<span class="hl com">*/</span>
+
+<span class="hl ppc">#define _GNU_SOURCE</span>
+<span class="hl ppc">#include &lt;stdlib.h&gt;</span>
+<span class="hl ppc">#include &lt;stdio.h&gt;</span>
+<span class="hl ppc">#include &lt;string.h&gt;</span>
+
+<span class="hl ppc">#define MIN(x, y) ((x &lt; y) ? x : y)</span>
+<span class="hl ppc">#define LINELEN 60</span>
+<span class="hl ppc">#define SLOTS 4095</span>
+
+<span class="hl kwb">struct</span> aminoacid <span class="hl opt">{</span>
+   <span class="hl kwb">char</span> c<span class="hl opt">;</span>
+   <span class="hl kwb">float</span> p<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+<span class="hl kwb">static struct</span> aminoacid <span class="hl opt">*</span>lu<span class="hl opt">[</span>SLOTS <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">];</span>
+
+<span class="hl kwb">static void</span> <span class="hl kwd">repeat_fasta</span><span class="hl opt">(</span><span class="hl kwb">const char</span> <span class="hl opt">*</span>alu<span class="hl opt">,</span> <span class="hl kwb">size_t</span> n<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+   <span class="hl kwb">const size_t</span> alulen <span class="hl opt">=</span> <span class="hl kwd">strlen</span><span class="hl opt">(</span>alu<span class="hl opt">);</span>
+   <span class="hl kwb">char</span> buf<span class="hl opt">[</span>alulen <span class="hl opt">+</span> LINELEN<span class="hl opt">];</span>
+   <span class="hl kwb">size_t</span> pos <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> bytes<span class="hl opt">;</span>
+
+   <span class="hl kwd">memcpy</span><span class="hl opt">(</span>buf<span class="hl opt">,</span> alu<span class="hl opt">,</span> alulen<span class="hl opt">);</span>
+   <span class="hl kwd">memcpy</span><span class="hl opt">(</span>buf <span class="hl opt">+</span> alulen<span class="hl opt">,</span> alu<span class="hl opt">,</span> LINELEN<span class="hl opt">);</span>
+   <span class="hl kwa">while</span> <span class="hl opt">(</span>n<span class="hl opt">) {</span>
+      bytes <span class="hl opt">=</span> <span class="hl kwd">MIN</span><span class="hl opt">(</span>LINELEN<span class="hl opt">,</span> n<span class="hl opt">);</span>
+      <span class="hl kwd">fwrite_unlocked</span><span class="hl opt">(</span>buf <span class="hl opt">+</span> pos<span class="hl opt">,</span> bytes<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> stdout<span class="hl opt">);</span>
+      <span class="hl kwd">putchar_unlocked</span><span class="hl opt">(</span><span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">);</span>
+      pos <span class="hl opt">+=</span> bytes<span class="hl opt">;</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>pos <span class="hl opt">&gt;</span> alulen<span class="hl opt">)</span>
+         pos <span class="hl opt">-=</span> alulen<span class="hl opt">;</span>
+      n <span class="hl opt">-=</span> bytes<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">static void</span> <span class="hl kwd">acc_probs</span><span class="hl opt">(</span><span class="hl kwb">struct</span> aminoacid <span class="hl opt">*</span>table<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+   <span class="hl kwb">struct</span> aminoacid <span class="hl opt">*</span>iter <span class="hl opt">=</span> table<span class="hl opt">;</span>
+
+   <span class="hl kwa">while</span> <span class="hl opt">((++</span>iter<span class="hl opt">)-&gt;</span>c<span class="hl opt">) {</span>
+      iter<span class="hl opt">-&gt;</span>p <span class="hl opt">+= (</span>iter<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)-&gt;</span>p<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;=</span> SLOTS<span class="hl opt">; ++</span>i<span class="hl opt">) {</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(</span>i <span class="hl opt">&gt; (</span>table<span class="hl opt">-&gt;</span>p <span class="hl opt">*</span> SLOTS<span class="hl opt">))</span>
+         <span class="hl opt">++</span>table<span class="hl opt">;</span>
+      lu<span class="hl opt">[</span>i<span class="hl opt">] =</span> table<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">static float</span> <span class="hl kwd">rng</span><span class="hl opt">(</span><span class="hl kwb">float</span> max<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+   <span class="hl kwb">const unsigned int</span> IM <span class="hl opt">=</span> <span class="hl num">139968</span><span class="hl opt">,</span> IA <span class="hl opt">=</span> <span class="hl num">3877</span><span class="hl opt">,</span> IC <span class="hl opt">=</span> <span class="hl num">29573</span><span class="hl opt">;</span>
+   <span class="hl kwb">static unsigned int</span> seed <span class="hl opt">=</span> <span class="hl num">42</span><span class="hl opt">;</span>
+
+   seed <span class="hl opt">= (</span>seed <span class="hl opt">*</span> IA <span class="hl opt">+</span> IC<span class="hl opt">) %</span> IM<span class="hl opt">;</span>
+   <span class="hl kwa">return</span> max <span class="hl opt">*</span> seed <span class="hl opt">/</span> IM<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">static char</span> <span class="hl kwd">nextc</span><span class="hl opt">()</span>
+<span class="hl opt">{</span>
+   <span class="hl kwb">float</span> r<span class="hl opt">;</span>
+   <span class="hl kwb">struct</span> aminoacid <span class="hl opt">*</span>iter<span class="hl opt">;</span>
+
+   r <span class="hl opt">=</span> <span class="hl kwd">rng</span><span class="hl opt">(</span><span class="hl num">1.0</span>f<span class="hl opt">);</span>
+   iter <span class="hl opt">=</span> lu<span class="hl opt">[(</span><span class="hl kwb">int</span><span class="hl opt">)(</span>r <span class="hl opt">*</span> SLOTS<span class="hl opt">)];</span>
+   <span class="hl kwa">while</span> <span class="hl opt">(</span>iter<span class="hl opt">-&gt;</span>p <span class="hl opt">&lt;</span> r<span class="hl opt">)</span>
+      <span class="hl opt">++</span>iter<span class="hl opt">;</span>
+   <span class="hl kwa">return</span> iter<span class="hl opt">-&gt;</span>c<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">static void</span> <span class="hl kwd">random_fasta</span><span class="hl opt">(</span><span class="hl kwb">struct</span> aminoacid <span class="hl opt">*</span>table<span class="hl opt">,</span> <span class="hl kwb">size_t</span> n<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+   <span class="hl kwb">size_t</span> i<span class="hl opt">,</span> lines <span class="hl opt">=</span> n <span class="hl opt">/</span> LINELEN<span class="hl opt">;</span>
+   <span class="hl kwb">const size_t</span> chars_left <span class="hl opt">=</span> n <span class="hl opt">%</span> LINELEN<span class="hl opt">;</span>
+   <span class="hl kwb">char</span> buf<span class="hl opt">[</span>LINELEN <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">];</span>
+
+   <span class="hl kwa">while</span> <span class="hl opt">(</span>lines<span class="hl opt">--) {</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> LINELEN<span class="hl opt">; ++</span>i<span class="hl opt">) {</span>
+         buf<span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl kwd">nextc</span><span class="hl opt">();</span>
+      <span class="hl opt">}</span>
+      buf<span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">;</span>
+      <span class="hl kwd">fwrite_unlocked</span><span class="hl opt">(</span>buf<span class="hl opt">,</span> i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> stdout<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> chars_left<span class="hl opt">; ++</span>i<span class="hl opt">)</span>
+      buf<span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl kwd">nextc</span><span class="hl opt">();</span>
+   <span class="hl kwd">fwrite_unlocked</span><span class="hl opt">(</span>buf<span class="hl opt">,</span> i<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> stdout<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">int</span> <span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">int</span> argc<span class="hl opt">,</span> <span class="hl kwb">char</span> <span class="hl opt">**</span>argv<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+   <span class="hl kwb">const size_t</span> n <span class="hl opt">= (</span>argc <span class="hl opt">&gt;</span> <span class="hl num">1</span><span class="hl opt">)</span> ? <span class="hl kwd">atoi</span><span class="hl opt">(</span>argv<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]) :</span> <span class="hl num">1000</span><span class="hl opt">;</span>
+   <span class="hl kwb">const char</span> alu<span class="hl opt">[] =</span>
+      <span class="hl str">&quot;GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTG&quot;</span>
+      <span class="hl str">&quot;GGAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGA&quot;</span>
+      <span class="hl str">&quot;GACCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAA&quot;</span>
+      <span class="hl str">&quot;AATACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAAT&quot;</span>
+      <span class="hl str">&quot;CCCAGCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTGAAC&quot;</span>
+      <span class="hl str">&quot;CCGGGAGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTG&quot;</span>
+      <span class="hl str">&quot;CACTCCAGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAA&quot;</span><span class="hl opt">;</span>
+   <span class="hl kwb">struct</span> aminoacid iub<span class="hl opt">[] = {</span>
+      <span class="hl opt">{</span> <span class="hl str">'a'</span><span class="hl opt">,</span> <span class="hl num">0.27</span> <span class="hl opt">},</span>
+      <span class="hl opt">{</span> <span class="hl str">'c'</span><span class="hl opt">,</span> <span class="hl num">0.12</span> <span class="hl opt">},</span>
+      <span class="hl opt">{</span> <span class="hl str">'g'</span><span class="hl opt">,</span> <span class="hl num">0.12</span> <span class="hl opt">},</span>
+      <span class="hl opt">{</span> <span class="hl str">'t'</span><span class="hl opt">,</span> <span class="hl num">0.27</span> <span class="hl opt">},</span>
+      <span class="hl opt">{</span> <span class="hl str">'B'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+      <span class="hl opt">{</span> <span class="hl str">'D'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+      <span class="hl opt">{</span> <span class="hl str">'H'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+      <span class="hl opt">{</span> <span class="hl str">'K'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+      <span class="hl opt">{</span> <span class="hl str">'M'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+      <span class="hl opt">{</span> <span class="hl str">'N'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+      <span class="hl opt">{</span> <span class="hl str">'R'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+      <span class="hl opt">{</span> <span class="hl str">'S'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+      <span class="hl opt">{</span> <span class="hl str">'V'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+      <span class="hl opt">{</span> <span class="hl str">'W'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+      <span class="hl opt">{</span> <span class="hl str">'Y'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+      <span class="hl opt">{</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span> <span class="hl opt">}</span>
+   <span class="hl opt">};</span>
+   <span class="hl kwb">struct</span> aminoacid homosapiens<span class="hl opt">[] = {</span>
+      <span class="hl opt">{</span> <span class="hl str">'a'</span><span class="hl opt">,</span> <span class="hl num">0.3029549426680</span> <span class="hl opt">},</span>
+      <span class="hl opt">{</span> <span class="hl str">'c'</span><span class="hl opt">,</span> <span class="hl num">0.1979883004921</span> <span class="hl opt">},</span>
+      <span class="hl opt">{</span> <span class="hl str">'g'</span><span class="hl opt">,</span> <span class="hl num">0.1975473066391</span> <span class="hl opt">},</span>
+      <span class="hl opt">{</span> <span class="hl str">'t'</span><span class="hl opt">,</span> <span class="hl num">0.3015094502008</span> <span class="hl opt">},</span>
+      <span class="hl opt">{</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span> <span class="hl opt">}</span>
+   <span class="hl opt">};</span>
+
+   <span class="hl kwd">fputs_unlocked</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;ONE Homo sapiens alu</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> stdout<span class="hl opt">);</span>
+   <span class="hl kwd">repeat_fasta</span><span class="hl opt">(</span>alu<span class="hl opt">,</span> n <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">);</span>
+   <span class="hl kwd">fputs_unlocked</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;TWO IUB ambiguity codes</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> stdout<span class="hl opt">);</span>
+   <span class="hl kwd">acc_probs</span><span class="hl opt">(</span>iub<span class="hl opt">);</span>
+   <span class="hl kwd">random_fasta</span><span class="hl opt">(</span>iub<span class="hl opt">,</span> n <span class="hl opt">*</span> <span class="hl num">3</span><span class="hl opt">);</span>
+   <span class="hl kwd">fputs_unlocked</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;THREE Homo sapiens frequency</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> stdout<span class="hl opt">);</span>
+   <span class="hl kwd">acc_probs</span><span class="hl opt">(</span>homosapiens<span class="hl opt">);</span>
+   <span class="hl kwd">random_fasta</span><span class="hl opt">(</span>homosapiens<span class="hl opt">,</span> n <span class="hl opt">*</span> <span class="hl num">5</span><span class="hl opt">);</span>
+   <span class="hl kwd">putchar_unlocked</span><span class="hl opt">(</span><span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>

@@ -1,0 +1,302 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Michael Barker</span>
+<span class="hl com">   based on a Java contribution by Luzius Meisser</span>
+<span class="hl com"></span>
+<span class="hl com">   convert to C by dualamd</span>
+<span class="hl com">*/</span>
+
+<span class="hl ppc">#include &lt;stdlib.h&gt;</span>
+<span class="hl ppc">#include &lt;stdio.h&gt;</span>
+<span class="hl ppc">#include &lt;pthread.h&gt;</span>
+
+
+<span class="hl kwb">enum</span> Colour 
+<span class="hl opt">{</span>
+   blue      <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span>
+   red      <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">,</span>
+   yellow   <span class="hl opt">=</span> <span class="hl num">2</span><span class="hl opt">,</span>
+   Invalid   <span class="hl opt">=</span> <span class="hl num">3</span>
+<span class="hl opt">};</span>
+
+<span class="hl kwb">const char</span><span class="hl opt">*</span> ColourName<span class="hl opt">[] = {</span><span class="hl str">&quot;blue&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;red&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;yellow&quot;</span><span class="hl opt">};</span>
+<span class="hl kwb">const int</span> STACK_SIZE   <span class="hl opt">=</span> <span class="hl num">32</span><span class="hl opt">*</span><span class="hl num">1024</span><span class="hl opt">;</span>
+
+<span class="hl kwc">typedef</span> <span class="hl kwb">unsigned int</span> BOOL<span class="hl opt">;</span>
+<span class="hl kwb">const</span> BOOL TRUE <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+<span class="hl kwb">const</span> BOOL FALSE <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+<span class="hl kwb">int</span> CreatureID <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+
+<span class="hl kwb">enum</span> Colour <span class="hl kwd">doCompliment</span><span class="hl opt">(</span><span class="hl kwb">enum</span> Colour c1<span class="hl opt">,</span> <span class="hl kwb">enum</span> Colour c2<span class="hl opt">)</span> 
+<span class="hl opt">{</span>
+   <span class="hl kwa">switch</span> <span class="hl opt">(</span>c1<span class="hl opt">)</span> 
+   <span class="hl opt">{</span>
+   <span class="hl kwa">case</span> blue<span class="hl opt">:</span>
+      <span class="hl kwa">switch</span> <span class="hl opt">(</span>c2<span class="hl opt">)</span> 
+      <span class="hl opt">{</span>
+      <span class="hl kwa">case</span> blue<span class="hl opt">:</span>
+         <span class="hl kwa">return</span> blue<span class="hl opt">;</span>
+      <span class="hl kwa">case</span> red<span class="hl opt">:</span>
+         <span class="hl kwa">return</span> yellow<span class="hl opt">;</span>
+      <span class="hl kwa">case</span> yellow<span class="hl opt">:</span>
+         <span class="hl kwa">return</span> red<span class="hl opt">;</span>
+      <span class="hl kwa">default</span><span class="hl opt">:</span>
+         <span class="hl kwa">goto</span> errlb<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl kwa">case</span> red<span class="hl opt">:</span>
+      <span class="hl kwa">switch</span> <span class="hl opt">(</span>c2<span class="hl opt">)</span> 
+      <span class="hl opt">{</span>
+      <span class="hl kwa">case</span> blue<span class="hl opt">:</span>
+         <span class="hl kwa">return</span> yellow<span class="hl opt">;</span>
+      <span class="hl kwa">case</span> red<span class="hl opt">:</span>
+         <span class="hl kwa">return</span> red<span class="hl opt">;</span>
+      <span class="hl kwa">case</span> yellow<span class="hl opt">:</span>
+         <span class="hl kwa">return</span> blue<span class="hl opt">;</span>
+      <span class="hl kwa">default</span><span class="hl opt">:</span>
+         <span class="hl kwa">goto</span> errlb<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl kwa">case</span> yellow<span class="hl opt">:</span>
+      <span class="hl kwa">switch</span> <span class="hl opt">(</span>c2<span class="hl opt">)</span> 
+      <span class="hl opt">{</span>
+      <span class="hl kwa">case</span> blue<span class="hl opt">:</span>
+         <span class="hl kwa">return</span> red<span class="hl opt">;</span>
+      <span class="hl kwa">case</span> red<span class="hl opt">:</span>
+         <span class="hl kwa">return</span> blue<span class="hl opt">;</span>
+      <span class="hl kwa">case</span> yellow<span class="hl opt">:</span>
+         <span class="hl kwa">return</span> yellow<span class="hl opt">;</span>
+      <span class="hl kwa">default</span><span class="hl opt">:</span>
+         <span class="hl kwa">goto</span> errlb<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl kwa">default</span><span class="hl opt">:</span>
+      <span class="hl kwa">break</span><span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+errlb<span class="hl opt">:</span>   
+   <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;Invalid colour</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">);</span>
+   <span class="hl kwd">exit</span><span class="hl opt">(</span> <span class="hl num">1</span> <span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl com">/* convert integer to number string: 1234 -&gt; &quot;one two three four&quot; */</span>
+<span class="hl kwb">char</span><span class="hl opt">*</span> <span class="hl kwd">formatNumber</span><span class="hl opt">(</span><span class="hl kwb">int</span> n<span class="hl opt">,</span> <span class="hl kwb">char</span><span class="hl opt">*</span> outbuf<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+   <span class="hl kwb">int</span> ochar <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> ichar <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwb">int</span> i<span class="hl opt">;</span>
+   <span class="hl kwb">char</span> tmp<span class="hl opt">[</span><span class="hl num">64</span><span class="hl opt">];</span>
+
+   <span class="hl kwb">const char</span><span class="hl opt">*</span> NUMBERS<span class="hl opt">[] =</span>
+   <span class="hl opt">{</span>
+      <span class="hl str">&quot;zero&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;one&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;two&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;three&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;four&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;five&quot;</span><span class="hl opt">,</span>
+      <span class="hl str">&quot;six&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;seven&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;eight&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;nine&quot;</span>
+   <span class="hl opt">};</span>
+
+   ichar <span class="hl opt">=</span> <span class="hl kwd">sprintf</span><span class="hl opt">(</span>tmp<span class="hl opt">,</span> <span class="hl str">&quot;%d&quot;</span><span class="hl opt">,</span> n<span class="hl opt">);</span>
+
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> ichar<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+      ochar <span class="hl opt">+=</span> <span class="hl kwd">sprintf</span><span class="hl opt">(</span> outbuf <span class="hl opt">+</span> ochar<span class="hl opt">,</span> <span class="hl str">&quot; %s&quot;</span><span class="hl opt">,</span> NUMBERS<span class="hl opt">[</span> tmp<span class="hl opt">[</span>i<span class="hl opt">] -</span> <span class="hl str">'0'</span> <span class="hl opt">] );</span>
+
+   <span class="hl kwa">return</span> outbuf<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+
+<span class="hl kwb">struct</span> MeetingPlace 
+<span class="hl opt">{</span>
+   pthread_mutex_t   mutex<span class="hl opt">;</span>
+   <span class="hl kwb">int</span>             meetingsLeft<span class="hl opt">;</span>
+   <span class="hl kwb">struct</span> Creature<span class="hl opt">*</span>   firstCreature<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+<span class="hl kwb">struct</span> Creature
+<span class="hl opt">{</span>
+   pthread_t         ht<span class="hl opt">;</span>
+   pthread_attr_t      stack_att<span class="hl opt">;</span>
+
+   <span class="hl kwb">struct</span> MeetingPlace<span class="hl opt">*</span> place<span class="hl opt">;</span>
+   <span class="hl kwb">int</span>         count<span class="hl opt">;</span>
+   <span class="hl kwb">int</span>         sameCount<span class="hl opt">;</span>
+
+   <span class="hl kwb">enum</span> Colour   colour<span class="hl opt">;</span>
+   <span class="hl kwb">int</span>          id<span class="hl opt">;</span>
+
+   BOOL      two_met<span class="hl opt">;</span>
+   BOOL      sameid<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+
+<span class="hl kwb">void</span> <span class="hl kwd">MeetingPlace_Init</span><span class="hl opt">(</span><span class="hl kwb">struct</span> MeetingPlace<span class="hl opt">*</span> m<span class="hl opt">,</span> <span class="hl kwb">int</span> meetings <span class="hl opt">)</span> 
+<span class="hl opt">{</span>
+   <span class="hl kwd">pthread_mutex_init</span><span class="hl opt">( &amp;</span>m<span class="hl opt">-&gt;</span>mutex<span class="hl opt">,</span> <span class="hl num">0</span> <span class="hl opt">);</span>
+   m<span class="hl opt">-&gt;</span>meetingsLeft <span class="hl opt">=</span> meetings<span class="hl opt">;</span>
+   m<span class="hl opt">-&gt;</span>firstCreature <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+
+BOOL <span class="hl kwd">Meet</span><span class="hl opt">(</span> <span class="hl kwb">struct</span> Creature<span class="hl opt">*</span> cr<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+   BOOL retval <span class="hl opt">=</span> TRUE<span class="hl opt">;</span>
+
+   <span class="hl kwb">struct</span> MeetingPlace<span class="hl opt">*</span> mp <span class="hl opt">=</span> cr<span class="hl opt">-&gt;</span>place<span class="hl opt">;</span>
+   <span class="hl kwd">pthread_mutex_lock</span><span class="hl opt">( &amp;(</span>mp<span class="hl opt">-&gt;</span>mutex<span class="hl opt">) );</span>
+
+   <span class="hl kwa">if</span> <span class="hl opt">(</span> mp<span class="hl opt">-&gt;</span>meetingsLeft <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span> mp<span class="hl opt">-&gt;</span>firstCreature <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl opt">)</span> 
+      <span class="hl opt">{</span>
+         cr<span class="hl opt">-&gt;</span>two_met <span class="hl opt">=</span> FALSE<span class="hl opt">;</span>
+         mp<span class="hl opt">-&gt;</span>firstCreature <span class="hl opt">=</span> cr<span class="hl opt">;</span>
+      <span class="hl opt">}</span> 
+      <span class="hl kwa">else</span> 
+      <span class="hl opt">{</span>
+         <span class="hl kwb">struct</span> Creature<span class="hl opt">*</span> first<span class="hl opt">;</span>
+         <span class="hl kwb">enum</span> Colour newColour<span class="hl opt">;</span>
+
+         first <span class="hl opt">=</span> mp<span class="hl opt">-&gt;</span>firstCreature<span class="hl opt">;</span>
+         newColour <span class="hl opt">=</span> <span class="hl kwd">doCompliment</span><span class="hl opt">(</span> cr<span class="hl opt">-&gt;</span>colour<span class="hl opt">,</span> first<span class="hl opt">-&gt;</span>colour <span class="hl opt">);</span>
+
+         cr<span class="hl opt">-&gt;</span>sameid <span class="hl opt">=</span> cr<span class="hl opt">-&gt;</span>id <span class="hl opt">==</span> first<span class="hl opt">-&gt;</span>id<span class="hl opt">;</span>
+         cr<span class="hl opt">-&gt;</span>colour <span class="hl opt">=</span> newColour<span class="hl opt">;</span>
+         cr<span class="hl opt">-&gt;</span>two_met <span class="hl opt">=</span> TRUE<span class="hl opt">;</span>
+         
+         first<span class="hl opt">-&gt;</span>sameid <span class="hl opt">=</span> cr<span class="hl opt">-&gt;</span>sameid<span class="hl opt">;</span>
+         first<span class="hl opt">-&gt;</span>colour <span class="hl opt">=</span> newColour<span class="hl opt">;</span>
+         first<span class="hl opt">-&gt;</span>two_met <span class="hl opt">=</span> TRUE<span class="hl opt">;</span>
+
+         mp<span class="hl opt">-&gt;</span>firstCreature <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+         mp<span class="hl opt">-&gt;</span>meetingsLeft<span class="hl opt">--;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span> 
+   <span class="hl kwa">else</span> 
+      retval <span class="hl opt">=</span> FALSE<span class="hl opt">;</span>
+
+   <span class="hl kwd">pthread_mutex_unlock</span><span class="hl opt">( &amp;(</span>mp<span class="hl opt">-&gt;</span>mutex<span class="hl opt">) );</span>
+   <span class="hl kwa">return</span> retval<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+   
+<span class="hl kwb">void</span><span class="hl opt">*</span> <span class="hl kwd">CreatureThreadRun</span><span class="hl opt">(</span><span class="hl kwb">void</span><span class="hl opt">*</span> param<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+   <span class="hl kwb">struct</span> Creature<span class="hl opt">*</span> cr <span class="hl opt">= (</span><span class="hl kwb">struct</span> Creature<span class="hl opt">*)</span>param<span class="hl opt">;</span>
+   
+   <span class="hl kwa">while</span> <span class="hl opt">(</span>TRUE<span class="hl opt">)</span> 
+   <span class="hl opt">{</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span> <span class="hl kwd">Meet</span><span class="hl opt">(</span>cr<span class="hl opt">) )</span>
+      <span class="hl opt">{</span>
+         <span class="hl kwa">while</span> <span class="hl opt">(</span>cr<span class="hl opt">-&gt;</span>two_met <span class="hl opt">==</span> FALSE<span class="hl opt">)</span>
+            <span class="hl kwd">sched_yield</span><span class="hl opt">();</span>
+            
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>cr<span class="hl opt">-&gt;</span>sameid<span class="hl opt">)</span> 
+            cr<span class="hl opt">-&gt;</span>sameCount<span class="hl opt">++;</span>
+         cr<span class="hl opt">-&gt;</span>count<span class="hl opt">++;</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">else</span>
+         <span class="hl kwa">break</span><span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">Creature_Init</span><span class="hl opt">(</span> <span class="hl kwb">struct</span> Creature <span class="hl opt">*</span>cr<span class="hl opt">,</span> <span class="hl kwb">struct</span> MeetingPlace<span class="hl opt">*</span> place<span class="hl opt">,</span> <span class="hl kwb">enum</span> Colour colour <span class="hl opt">)</span> 
+<span class="hl opt">{</span>
+   cr<span class="hl opt">-&gt;</span>place <span class="hl opt">=</span> place<span class="hl opt">;</span>
+   cr<span class="hl opt">-&gt;</span>count <span class="hl opt">=</span> cr<span class="hl opt">-&gt;</span>sameCount <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+   cr<span class="hl opt">-&gt;</span>id <span class="hl opt">= ++</span>CreatureID<span class="hl opt">;</span>
+   cr<span class="hl opt">-&gt;</span>colour <span class="hl opt">=</span> colour<span class="hl opt">;</span>
+   cr<span class="hl opt">-&gt;</span>two_met <span class="hl opt">=</span> FALSE<span class="hl opt">;</span>
+
+   <span class="hl kwd">pthread_attr_init</span><span class="hl opt">( &amp;</span>cr<span class="hl opt">-&gt;</span>stack_att <span class="hl opt">);</span>
+   <span class="hl kwd">pthread_attr_setstacksize</span><span class="hl opt">( &amp;</span>cr<span class="hl opt">-&gt;</span>stack_att<span class="hl opt">,</span> STACK_SIZE <span class="hl opt">);</span>
+   <span class="hl kwd">pthread_create</span><span class="hl opt">( &amp;</span>cr<span class="hl opt">-&gt;</span>ht<span class="hl opt">, &amp;</span>cr<span class="hl opt">-&gt;</span>stack_att<span class="hl opt">, &amp;</span>CreatureThreadRun<span class="hl opt">, (</span><span class="hl kwb">void</span><span class="hl opt">*)(</span>cr<span class="hl opt">) );</span>
+<span class="hl opt">}</span>
+
+<span class="hl com">/* format meeting times of each creature to string */</span>
+<span class="hl kwb">char</span><span class="hl opt">*</span> <span class="hl kwd">Creature_getResult</span><span class="hl opt">(</span><span class="hl kwb">struct</span> Creature<span class="hl opt">*</span> cr<span class="hl opt">,</span> <span class="hl kwb">char</span><span class="hl opt">*</span> str<span class="hl opt">)</span> 
+<span class="hl opt">{</span>
+   <span class="hl kwb">char</span> numstr<span class="hl opt">[</span><span class="hl num">256</span><span class="hl opt">];</span>
+   <span class="hl kwd">formatNumber</span><span class="hl opt">(</span>cr<span class="hl opt">-&gt;</span>sameCount<span class="hl opt">,</span> numstr<span class="hl opt">);</span>
+
+   <span class="hl kwd">sprintf</span><span class="hl opt">(</span> str<span class="hl opt">,</span> <span class="hl str">&quot;%u%s&quot;</span><span class="hl opt">,</span> cr<span class="hl opt">-&gt;</span>count<span class="hl opt">,</span> numstr <span class="hl opt">);</span>
+   <span class="hl kwa">return</span> str<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+
+<span class="hl kwb">void</span> <span class="hl kwd">runGame</span><span class="hl opt">(</span> <span class="hl kwb">int</span> n_meeting<span class="hl opt">,</span> <span class="hl kwb">int</span> ncolor<span class="hl opt">,</span> <span class="hl kwb">const enum</span> Colour<span class="hl opt">*</span> colours <span class="hl opt">)</span> 
+<span class="hl opt">{</span>
+   <span class="hl kwb">int</span> i<span class="hl opt">;</span>
+   <span class="hl kwb">int</span> total <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwb">char</span> str<span class="hl opt">[</span><span class="hl num">256</span><span class="hl opt">];</span>
+
+   <span class="hl kwb">struct</span> MeetingPlace place<span class="hl opt">;</span>
+   <span class="hl kwb">struct</span> Creature <span class="hl opt">*</span>creatures <span class="hl opt">= (</span><span class="hl kwb">struct</span> Creature<span class="hl opt">*)</span> <span class="hl kwd">calloc</span><span class="hl opt">(</span> ncolor<span class="hl opt">,</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span><span class="hl kwb">struct</span> Creature<span class="hl opt">) );</span>
+
+   <span class="hl kwd">MeetingPlace_Init</span><span class="hl opt">( &amp;</span>place<span class="hl opt">,</span> n_meeting <span class="hl opt">);</span>
+
+   <span class="hl com">/* print initial color of each creature */</span>
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> ncolor<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+   <span class="hl opt">{</span>
+      <span class="hl kwd">printf</span><span class="hl opt">(</span> <span class="hl str">&quot;%s &quot;</span><span class="hl opt">,</span> ColourName<span class="hl opt">[</span> colours<span class="hl opt">[</span>i<span class="hl opt">] ] );</span>
+      <span class="hl kwd">Creature_Init</span><span class="hl opt">( &amp;(</span>creatures<span class="hl opt">[</span>i<span class="hl opt">]), &amp;</span>place<span class="hl opt">,</span> colours<span class="hl opt">[</span>i<span class="hl opt">] );</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">);</span>
+
+   <span class="hl com">/* wait for them to meet */</span>
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> ncolor<span class="hl opt">;</span> i<span class="hl opt">++)</span> 
+      <span class="hl kwd">pthread_join</span><span class="hl opt">(</span> creatures<span class="hl opt">[</span>i<span class="hl opt">].</span>ht<span class="hl opt">,</span> <span class="hl num">0</span> <span class="hl opt">);</span>      
+
+   <span class="hl com">/* print meeting times of each creature */</span>
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> ncolor<span class="hl opt">;</span> i<span class="hl opt">++)</span> 
+   <span class="hl opt">{</span>
+      <span class="hl kwd">printf</span><span class="hl opt">(</span> <span class="hl str">&quot;%s</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> <span class="hl kwd">Creature_getResult</span><span class="hl opt">(&amp;(</span>creatures<span class="hl opt">[</span>i<span class="hl opt">]),</span> str<span class="hl opt">) );</span>
+      total <span class="hl opt">+=</span> creatures<span class="hl opt">[</span>i<span class="hl opt">].</span>count<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl com">/* print total meeting times, should equal n_meeting */</span>
+   <span class="hl kwd">printf</span><span class="hl opt">(</span> <span class="hl str">&quot;%s</span><span class="hl esc">\n\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> <span class="hl kwd">formatNumber</span><span class="hl opt">(</span>total<span class="hl opt">,</span> str<span class="hl opt">) );</span>
+
+   <span class="hl com">/* cleaup &amp; quit */</span>
+   <span class="hl kwd">pthread_mutex_destroy</span><span class="hl opt">( &amp;</span>place<span class="hl opt">.</span>mutex <span class="hl opt">);</span>
+   <span class="hl kwd">free</span><span class="hl opt">(</span> creatures <span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+
+<span class="hl kwb">void</span> <span class="hl kwd">printColours</span><span class="hl opt">(</span> <span class="hl kwb">enum</span> Colour c1<span class="hl opt">,</span> <span class="hl kwb">enum</span> Colour c2 <span class="hl opt">)</span> 
+<span class="hl opt">{</span>
+   <span class="hl kwd">printf</span><span class="hl opt">(</span> <span class="hl str">&quot;%s + %s -&gt; %s</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> 
+      ColourName<span class="hl opt">[</span>c1<span class="hl opt">],</span> 
+      ColourName<span class="hl opt">[</span>c2<span class="hl opt">],</span> 
+      ColourName<span class="hl opt">[</span><span class="hl kwd">doCompliment</span><span class="hl opt">(</span>c1<span class="hl opt">,</span> c2<span class="hl opt">)]   );</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">printColoursTable</span><span class="hl opt">(</span><span class="hl kwb">void</span><span class="hl opt">)</span> 
+<span class="hl opt">{</span>
+   <span class="hl kwd">printColours</span><span class="hl opt">(</span>blue<span class="hl opt">,</span> blue<span class="hl opt">);</span>
+   <span class="hl kwd">printColours</span><span class="hl opt">(</span>blue<span class="hl opt">,</span> red<span class="hl opt">);</span>
+   <span class="hl kwd">printColours</span><span class="hl opt">(</span>blue<span class="hl opt">,</span> yellow<span class="hl opt">);</span>
+   <span class="hl kwd">printColours</span><span class="hl opt">(</span>red<span class="hl opt">,</span> blue<span class="hl opt">);</span>
+   <span class="hl kwd">printColours</span><span class="hl opt">(</span>red<span class="hl opt">,</span> red<span class="hl opt">);</span>
+   <span class="hl kwd">printColours</span><span class="hl opt">(</span>red<span class="hl opt">,</span> yellow<span class="hl opt">);</span>
+   <span class="hl kwd">printColours</span><span class="hl opt">(</span>yellow<span class="hl opt">,</span> blue<span class="hl opt">);</span>
+   <span class="hl kwd">printColours</span><span class="hl opt">(</span>yellow<span class="hl opt">,</span> red<span class="hl opt">);</span>
+   <span class="hl kwd">printColours</span><span class="hl opt">(</span>yellow<span class="hl opt">,</span> yellow<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">int</span> <span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">int</span> argc<span class="hl opt">,</span> <span class="hl kwb">char</span><span class="hl opt">**</span> argv<span class="hl opt">)</span> 
+<span class="hl opt">{</span>
+   <span class="hl kwb">int</span> n <span class="hl opt">= (</span>argc <span class="hl opt">==</span> <span class="hl num">2</span><span class="hl opt">)</span> ? <span class="hl kwd">atoi</span><span class="hl opt">(</span>argv<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]) :</span> <span class="hl num">600</span><span class="hl opt">;</span>
+
+   <span class="hl kwd">printColoursTable</span><span class="hl opt">();</span>
+   <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">);</span>
+   
+   <span class="hl kwb">const enum</span> Colour r1<span class="hl opt">[] = {</span>   blue<span class="hl opt">,</span> red<span class="hl opt">,</span> yellow   <span class="hl opt">};</span>
+   <span class="hl kwb">const enum</span> Colour r2<span class="hl opt">[] = {</span>   blue<span class="hl opt">,</span> red<span class="hl opt">,</span> yellow<span class="hl opt">,</span> 
+               red<span class="hl opt">,</span> yellow<span class="hl opt">,</span> blue<span class="hl opt">,</span> 
+               red<span class="hl opt">,</span> yellow<span class="hl opt">,</span> red<span class="hl opt">,</span> blue   <span class="hl opt">};</span>
+
+   <span class="hl kwd">runGame</span><span class="hl opt">(</span> n<span class="hl opt">,</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span>r1<span class="hl opt">) /</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span>r1<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]),</span> r1 <span class="hl opt">);</span>
+   <span class="hl kwd">runGame</span><span class="hl opt">(</span> n<span class="hl opt">,</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span>r2<span class="hl opt">) /</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span>r2<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]),</span> r2 <span class="hl opt">);</span>
+
+   <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+

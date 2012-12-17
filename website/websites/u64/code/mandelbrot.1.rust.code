@@ -1,0 +1,140 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * contributed by Brian Anderson</span>
+<span class="hl com"> */</span>
+
+use std<span class="hl opt">;</span>
+import io<span class="hl opt">::</span>writer_util<span class="hl opt">;</span>
+import std<span class="hl opt">::</span>map<span class="hl opt">::</span>hashmap<span class="hl opt">;</span>
+
+type cmplx <span class="hl opt">= {</span>re<span class="hl opt">:</span> f64<span class="hl opt">,</span> im<span class="hl opt">:</span> f64<span class="hl opt">};</span>
+type line <span class="hl opt">= {</span>i<span class="hl opt">:</span> uint<span class="hl opt">,</span> b<span class="hl opt">: ~[</span>u8<span class="hl opt">]};</span>
+
+impl arith <span class="hl kwa">for</span> cmplx <span class="hl opt">{</span>
+    fn <span class="hl opt">*(</span>x<span class="hl opt">:</span> cmplx<span class="hl opt">) -&gt;</span> cmplx <span class="hl opt">{</span>
+        <span class="hl opt">{</span>re<span class="hl opt">:</span> self<span class="hl opt">.</span>re<span class="hl opt">*</span>x<span class="hl opt">.</span>re <span class="hl opt">-</span> self<span class="hl opt">.</span>im<span class="hl opt">*</span>x<span class="hl opt">.</span>im<span class="hl opt">,</span> im<span class="hl opt">:</span> self<span class="hl opt">.</span>re<span class="hl opt">*</span>x<span class="hl opt">.</span>im <span class="hl opt">+</span> self<span class="hl opt">.</span>im<span class="hl opt">*</span>x<span class="hl opt">.</span>re<span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+
+    fn <span class="hl opt">+(</span>x<span class="hl opt">:</span> cmplx<span class="hl opt">) -&gt;</span> cmplx <span class="hl opt">{</span>
+        <span class="hl opt">{</span>re<span class="hl opt">:</span> self<span class="hl opt">.</span>re <span class="hl opt">+</span> x<span class="hl opt">.</span>re<span class="hl opt">,</span> im<span class="hl opt">:</span> self<span class="hl opt">.</span>im <span class="hl opt">+</span> x<span class="hl opt">.</span>im<span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+pure fn <span class="hl kwd">cabs</span><span class="hl opt">(</span>x<span class="hl opt">:</span> cmplx<span class="hl opt">) -&gt;</span> f64
+<span class="hl opt">{</span>
+    x<span class="hl opt">.</span>re<span class="hl opt">*</span>x<span class="hl opt">.</span>re <span class="hl opt">+</span> x<span class="hl opt">.</span>im<span class="hl opt">*</span>x<span class="hl opt">.</span>im
+<span class="hl opt">}</span>
+
+fn <span class="hl kwd">mb</span><span class="hl opt">(</span>x<span class="hl opt">:</span> cmplx<span class="hl opt">) -&gt;</span> <span class="hl kwb">bool</span>
+<span class="hl opt">{</span>
+    let mut z <span class="hl opt">= {</span>re<span class="hl opt">:</span> <span class="hl num">0</span>f64<span class="hl opt">,</span> im<span class="hl opt">:</span> <span class="hl num">0</span>f64<span class="hl opt">};</span>
+    let mut i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    let mut in <span class="hl opt">=</span> <span class="hl kwa">true</span><span class="hl opt">;</span>
+    <span class="hl kwa">while</span> i <span class="hl opt">&lt;</span> <span class="hl num">50</span> <span class="hl opt">{</span>
+        z <span class="hl opt">=</span> z<span class="hl opt">*</span>z <span class="hl opt">+</span> x<span class="hl opt">;</span>
+        <span class="hl kwa">if</span> <span class="hl kwd">cabs</span><span class="hl opt">(</span>z<span class="hl opt">) &gt;=</span> <span class="hl num">4</span>f64 <span class="hl opt">{</span>
+            in <span class="hl opt">=</span> <span class="hl kwa">false</span><span class="hl opt">;</span>
+            <span class="hl kwa">break</span><span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+        i <span class="hl opt">+=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+    in
+<span class="hl opt">}</span>
+
+fn <span class="hl kwd">fillbyte</span><span class="hl opt">(</span>x<span class="hl opt">:</span> cmplx<span class="hl opt">,</span> incr<span class="hl opt">:</span> f64<span class="hl opt">) -&gt;</span> u8 <span class="hl opt">{</span>
+    let mut rv <span class="hl opt">=</span> <span class="hl num">0</span>_u8<span class="hl opt">;</span>
+    let mut i <span class="hl opt">=</span> <span class="hl num">0</span>_u8<span class="hl opt">;</span>
+    <span class="hl kwa">while</span> i <span class="hl opt">&lt;</span> <span class="hl num">8</span>_u8 <span class="hl opt">{</span>
+        let z <span class="hl opt">= {</span>re<span class="hl opt">:</span> x<span class="hl opt">.</span>re <span class="hl opt">+ (</span>i as f64<span class="hl opt">)*</span>incr<span class="hl opt">,</span> im<span class="hl opt">:</span> x<span class="hl opt">.</span>im<span class="hl opt">};</span>
+        <span class="hl kwa">if</span> <span class="hl kwd">mb</span><span class="hl opt">(</span>z<span class="hl opt">) {</span>
+            rv <span class="hl opt">+=</span> <span class="hl num">1</span>_u8 <span class="hl opt">&lt;&lt; (</span><span class="hl num">7</span>_u8 <span class="hl opt">-</span> i<span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+        i <span class="hl opt">+=</span> <span class="hl num">1</span>_u8<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+    rv
+<span class="hl opt">}</span>
+
+fn <span class="hl kwd">chanmb</span><span class="hl opt">(</span>i<span class="hl opt">:</span> uint<span class="hl opt">,</span> size<span class="hl opt">:</span> uint<span class="hl opt">,</span> ch<span class="hl opt">:</span> comm<span class="hl opt">::</span>chan<span class="hl opt">&lt;</span>line<span class="hl opt">&gt;) -&gt; ()</span>
+<span class="hl opt">{</span>
+    let mut crv <span class="hl opt">= ~[];</span>
+    let incr <span class="hl opt">=</span> <span class="hl num">2</span>f64<span class="hl opt">/(</span>size as f64<span class="hl opt">);</span>
+    let y <span class="hl opt">=</span> incr<span class="hl opt">*(</span>i as f64<span class="hl opt">) -</span> <span class="hl num">1</span>f64<span class="hl opt">;</span>
+    let xincr <span class="hl opt">=</span> <span class="hl num">8</span>f64<span class="hl opt">*</span>incr<span class="hl opt">;</span>
+    <span class="hl kwa">for</span> uint<span class="hl opt">::</span><span class="hl kwd">range</span><span class="hl opt">(</span><span class="hl num">0</span>_u<span class="hl opt">,</span> size<span class="hl opt">/</span><span class="hl num">8</span>_u<span class="hl opt">) |</span>j<span class="hl opt">| {</span>
+        let x <span class="hl opt">= {</span>re<span class="hl opt">:</span> xincr<span class="hl opt">*(</span>j as f64<span class="hl opt">) -</span> <span class="hl num">1.5</span>f64<span class="hl opt">,</span> im<span class="hl opt">:</span> y<span class="hl opt">};</span>
+        vec<span class="hl opt">::</span><span class="hl kwd">push</span><span class="hl opt">(</span>crv<span class="hl opt">,</span> <span class="hl kwd">fillbyte</span><span class="hl opt">(</span>x<span class="hl opt">,</span> incr<span class="hl opt">));</span>
+    <span class="hl opt">};</span>
+    comm<span class="hl opt">::</span><span class="hl kwd">send</span><span class="hl opt">(</span>ch<span class="hl opt">, {</span>i<span class="hl opt">:</span>i<span class="hl opt">,</span> b<span class="hl opt">:</span>crv<span class="hl opt">});</span>
+<span class="hl opt">}</span>
+
+type devnull <span class="hl opt">= {</span>dn<span class="hl opt">:</span> <span class="hl kwb">int</span><span class="hl opt">};</span>
+
+impl of io<span class="hl opt">::</span>writer <span class="hl kwa">for</span> devnull <span class="hl opt">{</span>
+    fn <span class="hl kwd">write</span><span class="hl opt">(</span>_b<span class="hl opt">: &amp;[</span><span class="hl kwb">const</span> u8<span class="hl opt">]) {}</span>
+    fn <span class="hl kwd">seek</span><span class="hl opt">(</span>_i<span class="hl opt">:</span> <span class="hl kwb">int</span><span class="hl opt">,</span> _s<span class="hl opt">:</span> io<span class="hl opt">::</span>seek_style<span class="hl opt">) {}</span>
+    fn <span class="hl kwd">tell</span><span class="hl opt">() -&gt;</span> uint <span class="hl opt">{</span><span class="hl num">0</span>_u<span class="hl opt">}</span>
+    fn <span class="hl kwd">flush</span><span class="hl opt">() -&gt;</span> <span class="hl kwb">int</span> <span class="hl opt">{</span><span class="hl num">0</span><span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+fn <span class="hl kwd">writer</span><span class="hl opt">(</span>path<span class="hl opt">:</span> str<span class="hl opt">,</span> writech<span class="hl opt">:</span> comm<span class="hl opt">::</span>chan<span class="hl opt">&lt;</span>comm<span class="hl opt">::</span>chan<span class="hl opt">&lt;</span>line<span class="hl opt">&gt;&gt;,</span> size<span class="hl opt">:</span> uint<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+    let p<span class="hl opt">:</span> comm<span class="hl opt">::</span>port<span class="hl opt">&lt;</span>line<span class="hl opt">&gt; =</span> comm<span class="hl opt">::</span><span class="hl kwd">port</span><span class="hl opt">();</span>
+    let ch <span class="hl opt">=</span> comm<span class="hl opt">::</span><span class="hl kwd">chan</span><span class="hl opt">(</span>p<span class="hl opt">);</span>
+    comm<span class="hl opt">::</span><span class="hl kwd">send</span><span class="hl opt">(</span>writech<span class="hl opt">,</span> ch<span class="hl opt">);</span>
+    let cout<span class="hl opt">:</span> io<span class="hl opt">::</span>writer <span class="hl opt">=</span> io<span class="hl opt">::</span><span class="hl kwd">stdout</span><span class="hl opt">();</span>
+    cout<span class="hl opt">.</span><span class="hl kwd">write_line</span><span class="hl opt">(</span><span class="hl str">&quot;P4&quot;</span><span class="hl opt">);</span>
+    cout<span class="hl opt">.</span><span class="hl kwd">write_line</span><span class="hl opt">(</span><span class="hl ppc">#fmt(</span><span class="hl pps">&quot;%u %u&quot;</span><span class="hl ppc">, size, size));</span>
+    let lines <span class="hl opt">=</span> std<span class="hl opt">::</span>map<span class="hl opt">::</span><span class="hl kwd">uint_hash</span><span class="hl opt">();</span>
+    let mut done <span class="hl opt">=</span> <span class="hl num">0</span>_u<span class="hl opt">;</span>
+    let mut i <span class="hl opt">=</span> <span class="hl num">0</span>_u<span class="hl opt">;</span>
+    <span class="hl kwa">while</span> i <span class="hl opt">&lt;</span> size <span class="hl opt">{</span>
+        let aline <span class="hl opt">=</span> comm<span class="hl opt">::</span><span class="hl kwd">recv</span><span class="hl opt">(</span>p<span class="hl opt">);</span>
+        <span class="hl kwa">if</span> aline<span class="hl opt">.</span>i <span class="hl opt">==</span> done <span class="hl opt">{</span>
+            <span class="hl ppc">#debug(</span><span class="hl pps">&quot;W %u&quot;</span><span class="hl ppc">, aline.i);</span>
+            cout<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span>aline<span class="hl opt">.</span>b<span class="hl opt">);</span>
+            done <span class="hl opt">+=</span> <span class="hl num">1</span>_u<span class="hl opt">;</span>
+            let mut prev <span class="hl opt">=</span> done<span class="hl opt">;</span>
+            <span class="hl kwa">while</span> prev <span class="hl opt">&lt;=</span> i <span class="hl opt">{</span>
+                <span class="hl kwa">if</span> lines<span class="hl opt">.</span><span class="hl kwd">contains_key</span><span class="hl opt">(</span>prev<span class="hl opt">) {</span>
+                    <span class="hl ppc">#debug(</span><span class="hl pps">&quot;WS %u&quot;</span><span class="hl ppc">, prev);</span>
+                    <span class="hl slc">// FIXME (#2280): this temporary shouldn't be</span>
+                    <span class="hl slc">// necessary, but seems to be, for borrowing.</span>
+                    let v <span class="hl opt">: ~[</span>u8<span class="hl opt">] =</span> lines<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">(</span>prev<span class="hl opt">);</span>
+                    cout<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span>v<span class="hl opt">);</span>
+                    done <span class="hl opt">+=</span> <span class="hl num">1</span>_u<span class="hl opt">;</span>
+                    lines<span class="hl opt">.</span><span class="hl kwd">remove</span><span class="hl opt">(</span>prev<span class="hl opt">);</span>
+                    prev <span class="hl opt">+=</span> <span class="hl num">1</span>_u<span class="hl opt">;</span>
+                <span class="hl opt">}</span>
+                <span class="hl kwa">else</span> <span class="hl opt">{</span>
+                    <span class="hl kwa">break</span>
+                <span class="hl opt">}</span>
+            <span class="hl opt">};</span>
+        <span class="hl opt">}</span>
+        <span class="hl kwa">else</span> <span class="hl opt">{</span>
+            <span class="hl ppc">#debug(</span><span class="hl pps">&quot;S %u&quot;</span><span class="hl ppc">, aline.i);</span>
+            lines<span class="hl opt">.</span><span class="hl kwd">insert</span><span class="hl opt">(</span>aline<span class="hl opt">.</span>i<span class="hl opt">,</span> aline<span class="hl opt">.</span>b<span class="hl opt">);</span>
+        <span class="hl opt">};</span>
+        i <span class="hl opt">+=</span> <span class="hl num">1</span>_u<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+fn <span class="hl kwd">main</span><span class="hl opt">(</span>args<span class="hl opt">: ~[</span>str<span class="hl opt">]) {</span>
+   let n <span class="hl opt">=</span> uint<span class="hl opt">::</span><span class="hl kwd">from_str</span><span class="hl opt">(</span>args<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]).</span><span class="hl kwd">get</span><span class="hl opt">();</span>
+   let yieldevery <span class="hl opt">=</span> <span class="hl num">10</span>_u<span class="hl opt">;</span>
+   let path <span class="hl opt">=</span> <span class="hl str">&quot;&quot;</span><span class="hl opt">;</span>
+
+    let writep <span class="hl opt">=</span> comm<span class="hl opt">::</span><span class="hl kwd">port</span><span class="hl opt">();</span>
+    let writech <span class="hl opt">=</span> comm<span class="hl opt">::</span><span class="hl kwd">chan</span><span class="hl opt">(</span>writep<span class="hl opt">);</span>
+    <span class="hl kwa">do</span> task<span class="hl opt">::</span>spawn <span class="hl opt">{</span>
+        <span class="hl kwd">writer</span><span class="hl opt">(</span>path<span class="hl opt">,</span> writech<span class="hl opt">,</span> n<span class="hl opt">);</span>
+    <span class="hl opt">};</span>
+    let ch <span class="hl opt">=</span> comm<span class="hl opt">::</span><span class="hl kwd">recv</span><span class="hl opt">(</span>writep<span class="hl opt">);</span>
+    <span class="hl kwa">for</span> uint<span class="hl opt">::</span><span class="hl kwd">range</span><span class="hl opt">(</span><span class="hl num">0</span>_u<span class="hl opt">,</span> n<span class="hl opt">) |</span>j<span class="hl opt">| {</span>
+        task<span class="hl opt">::</span><span class="hl kwd">spawn</span><span class="hl opt">(||</span> <span class="hl kwd">chanmb</span><span class="hl opt">(</span>j<span class="hl opt">,</span> n<span class="hl opt">,</span> ch<span class="hl opt">) );</span>
+        <span class="hl kwa">if</span> j <span class="hl opt">%</span> yieldevery <span class="hl opt">==</span> <span class="hl num">0</span>_u <span class="hl opt">{</span>
+            <span class="hl ppc">#debug(</span><span class="hl pps">&quot;Y %u&quot;</span><span class="hl ppc">, j);</span>
+            task<span class="hl opt">::</span><span class="hl kwd">yield</span><span class="hl opt">();</span>
+        <span class="hl opt">};</span>
+    <span class="hl opt">};</span>
+<span class="hl opt">}</span>

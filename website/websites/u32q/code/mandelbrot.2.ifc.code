@@ -1,0 +1,96 @@
+<span class="hl slc">!!! The Computer Language Benchmarks Game</span>
+<span class="hl slc">!!!   http://shootout.alioth.debian.org/</span>
+<span class="hl slc">!!!</span>
+<span class="hl slc">!!!      contributed by George R. Gonzalez</span>
+<span class="hl slc">!!!      fixed by Simon Geard</span>
+
+<span class="hl kwa">program</span> mandelbrot
+    <span class="hl kwa">IMPLICIT NONE</span>
+    <span class="hl kwa">INTEGER</span><span class="hl opt">,</span> <span class="hl kwa">PARAMETER</span>                      <span class="hl opt">::</span> WantedPrecision <span class="hl opt">=</span> <span class="hl num">8</span><span class="hl opt">,</span> Iterations <span class="hl opt">=</span> <span class="hl num">50</span>
+    <span class="hl kwa">INTEGER</span>                                 <span class="hl opt">::</span> w<span class="hl opt">,</span> h<span class="hl opt">,</span>   Len<span class="hl opt">,</span>   i
+    <span class="hl kwa">INTEGER</span>                                 <span class="hl opt">::</span> y<span class="hl opt">,</span> x<span class="hl opt">,</span> LenOut<span class="hl opt">,</span> row
+    <span class="hl kwa">REAL</span><span class="hl opt">(</span> WantedPrecision <span class="hl opt">)                 ::</span> limit<span class="hl opt">,</span> limit2
+    <span class="hl kwa">REAL</span><span class="hl opt">(</span> WantedPrecision <span class="hl opt">)                 ::</span> rx<span class="hl opt">,</span> ry<span class="hl opt">,</span> rw<span class="hl opt">,</span> rh
+    <span class="hl kwa">REAL</span><span class="hl opt">(</span> WantedPrecision <span class="hl opt">)                 ::</span> Zr<span class="hl opt">,</span> Zi<span class="hl opt">,</span> Cr<span class="hl opt">,</span> Ci<span class="hl opt">,</span> Tr<span class="hl opt">,</span> Ti
+    <span class="hl kwa">REAL</span><span class="hl opt">(</span> WantedPrecision <span class="hl opt">)                 ::</span> zero<span class="hl opt">,</span> one<span class="hl opt">,</span> v1p5<span class="hl opt">,</span> two
+    <span class="hl kwa">CHARACTER</span><span class="hl opt">(</span><span class="hl num">10</span><span class="hl opt">)                           ::</span> NUM
+    <span class="hl kwa">INTEGER</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">),</span> ALLOCATABLE<span class="hl opt">,</span> <span class="hl kwa">DIMENSION</span><span class="hl opt">( : ) ::</span> OUTA
+    <span class="hl kwa">INTEGER</span>                                 <span class="hl opt">::</span> OUTP<span class="hl opt">,</span> OUTB<span class="hl opt">,</span> OutUnit
+    <span class="hl kwa">INTEGER</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">),</span> ALLOCATABLE<span class="hl opt">,</span> <span class="hl kwa">DIMENSION</span><span class="hl opt">( : ) ::</span> OutBuf
+    <span class="hl kwa">INTEGER</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)                              ::</span> B
+    <span class="hl kwa">LOGICAL</span>                                 <span class="hl opt">::</span> Ans
+    <span class="hl kwa">CONTINUE</span>
+    OutUnit <span class="hl opt">=</span> <span class="hl num">6</span> 
+    <span class="hl kwa">Call</span> <span class="hl kwd">GetArg</span><span class="hl opt">(</span> <span class="hl num">1</span><span class="hl opt">,</span> NUM <span class="hl opt">)</span>
+    <span class="hl kwa">READ</span><span class="hl opt">(</span> NUM<span class="hl opt">, *,</span> <span class="hl kwa">END</span> <span class="hl opt">=</span> <span class="hl num">100</span> <span class="hl opt">)</span> w<span class="hl opt">;</span>  h <span class="hl opt">=</span> w<span class="hl opt">;</span>    rw <span class="hl opt">=</span> w<span class="hl opt">;</span> rh <span class="hl opt">=</span> h
+    Len <span class="hl opt">=</span> w <span class="hl opt">*</span> h
+    <span class="hl kwd">ALLOCATE</span><span class="hl opt">(</span> <span class="hl kwd">OUTA</span> <span class="hl opt">(</span> Len <span class="hl opt">) )</span>
+    OUTA <span class="hl opt">=</span> <span class="hl num">0</span>
+    OUTB <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    limit <span class="hl opt">=</span> <span class="hl num">2.0</span><span class="hl opt">;</span> limit2 <span class="hl opt">=</span> limit <span class="hl opt">*</span> limit
+    <span class="hl kwa">IF</span><span class="hl opt">(</span> w <span class="hl opt">&lt;</span> <span class="hl num">1000</span> <span class="hl opt">)</span> <span class="hl kwa">THEN</span>
+        <span class="hl kwa">WRITE</span><span class="hl opt">(</span> UNIT <span class="hl opt">=</span> OutUnit<span class="hl opt">,</span> FMT <span class="hl opt">=</span> <span class="hl str">&quot;( 'P4', /, I3, 1X, I3 )&quot;</span> <span class="hl opt">)</span> w<span class="hl opt">,</span> h
+    <span class="hl kwa">ELSE</span>
+        <span class="hl kwa">WRITE</span><span class="hl opt">(</span> UNIT <span class="hl opt">=</span> OutUnit<span class="hl opt">,</span> FMT <span class="hl opt">=</span> <span class="hl str">&quot;( 'P4', /, I4, 1X, I4 )&quot;</span> <span class="hl opt">)</span> w<span class="hl opt">,</span> h
+    <span class="hl kwa">ENDIF</span>
+
+    <span class="hl kwa">DO</span> y <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span>h<span class="hl opt">-</span><span class="hl num">1</span>
+        ry <span class="hl opt">=</span> y
+
+        <span class="hl kwa">DO</span> x <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span>w<span class="hl opt">-</span><span class="hl num">1</span> 
+            rx <span class="hl opt">=</span> x<span class="hl opt">;</span>
+            Zr <span class="hl opt">=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>Zi <span class="hl opt">=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>Tr <span class="hl opt">=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>Ti <span class="hl opt">=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+            Cr <span class="hl opt">=</span> <span class="hl num">2.0</span> <span class="hl opt">*</span> rx <span class="hl opt">/</span> rw <span class="hl opt">-</span> <span class="hl num">1.5</span>
+            Ci <span class="hl opt">=</span> <span class="hl num">2.0</span> <span class="hl opt">*</span> ry <span class="hl opt">/</span> rh <span class="hl opt">-</span> <span class="hl num">1.0</span>
+            Ans <span class="hl opt">= .</span>TRUE<span class="hl opt">.</span>
+            i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> 
+            OUTB <span class="hl opt">=</span> OUTB <span class="hl opt">+</span> <span class="hl num">1</span>
+
+            <span class="hl kwa">DO WHILE</span><span class="hl opt">(</span>  i <span class="hl opt">&lt;</span> Iterations   <span class="hl opt">.</span>AND<span class="hl opt">.</span>   Ans  <span class="hl opt">)</span> 
+                Zi    <span class="hl opt">=</span>       <span class="hl num">2.0</span> <span class="hl opt">*</span> Zr <span class="hl opt">*</span> Zi <span class="hl opt">+</span> Ci
+                Zr    <span class="hl opt">=</span>       Tr <span class="hl opt">-</span> Ti <span class="hl opt">+</span> Cr
+                Ti    <span class="hl opt">=</span>       Zi <span class="hl opt">*</span> Zi
+                Tr    <span class="hl opt">=</span>       Zr <span class="hl opt">*</span> Zr
+                i     <span class="hl opt">=</span>       i <span class="hl opt">+</span> <span class="hl num">1</span>
+                Ans   <span class="hl opt">=</span>       Tr <span class="hl opt">+</span> Ti <span class="hl opt">&lt;=</span> limit2
+            <span class="hl kwa">END DO</span>
+
+            <span class="hl kwa">IF</span><span class="hl opt">(</span> Ans <span class="hl opt">)</span> <span class="hl kwd">OUTA</span><span class="hl opt">(</span> OUTB <span class="hl opt">) =</span> <span class="hl num">1</span><span class="hl opt">;</span>
+          <span class="hl kwa">END DO</span>
+
+    <span class="hl kwa">END DO</span>
+
+   LenOut <span class="hl opt">=</span> Len <span class="hl opt">/</span> <span class="hl num">8</span> <span class="hl opt">+</span> <span class="hl num">10</span> <span class="hl opt">+</span> h<span class="hl opt">;</span>
+   <span class="hl kwd">ALLOCATE</span><span class="hl opt">(</span> <span class="hl kwd">OutBuf</span><span class="hl opt">(</span> LenOut <span class="hl opt">) )</span>
+
+   I <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>  OUTP <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> B <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> row <span class="hl opt">=</span> <span class="hl num">0</span>
+
+   <span class="hl kwa">DO WHILE</span><span class="hl opt">(</span> I <span class="hl opt">&lt;</span> OUTB <span class="hl opt">)</span>
+      I <span class="hl opt">=</span> I <span class="hl opt">+</span> <span class="hl num">1</span>
+      B <span class="hl opt">=</span> <span class="hl kwd">ISHFT</span><span class="hl opt">(</span> B<span class="hl opt">,</span> <span class="hl num">1</span> <span class="hl opt">) +</span> <span class="hl kwd">OUTA</span><span class="hl opt">(</span> I <span class="hl opt">)</span>
+      row <span class="hl opt">=</span> row <span class="hl opt">+</span> <span class="hl num">1</span>
+      <span class="hl kwa">IF</span><span class="hl opt">(</span> <span class="hl kwd">IAND</span><span class="hl opt">(</span> I<span class="hl opt">,</span> <span class="hl num">7</span> <span class="hl opt">) ==</span> <span class="hl num">0</span> <span class="hl opt">)</span> <span class="hl kwa">THEN</span>
+         OUTP <span class="hl opt">=</span> OUTP <span class="hl opt">+</span> <span class="hl num">1</span>
+         <span class="hl kwd">OutBuf</span><span class="hl opt">(</span> OUTP <span class="hl opt">) =</span> B<span class="hl opt">;</span>
+         B              <span class="hl opt">=</span> <span class="hl num">0</span>
+      <span class="hl kwa">ELSEIF</span><span class="hl opt">(</span>  row <span class="hl opt">&gt;=</span> w <span class="hl opt">-</span> <span class="hl num">1</span> <span class="hl opt">)</span> <span class="hl kwa">THEN</span>
+         OUTP <span class="hl opt">=</span> OUTP <span class="hl opt">+</span> <span class="hl num">1</span>
+
+         <span class="hl kwa">DO WHILE</span><span class="hl opt">(</span> <span class="hl kwd">IAND</span><span class="hl opt">(</span> I<span class="hl opt">,</span> <span class="hl num">7</span> <span class="hl opt">) /=</span> <span class="hl num">0</span> <span class="hl opt">)</span>
+            B <span class="hl opt">=</span> <span class="hl kwd">ISHFT</span><span class="hl opt">(</span> B<span class="hl opt">,</span> <span class="hl num">1</span> <span class="hl opt">)</span>
+            I <span class="hl opt">=</span> I <span class="hl opt">+</span> <span class="hl num">1</span>
+         <span class="hl kwa">END DO</span>
+
+         <span class="hl kwd">OutBuf</span><span class="hl opt">(</span> OUTP <span class="hl opt">) =</span> B<span class="hl opt">;</span>
+         B              <span class="hl opt">=</span> <span class="hl num">0</span>
+         row            <span class="hl opt">=</span> <span class="hl num">0</span>
+      <span class="hl kwa">ENDIF</span>
+   <span class="hl kwa">ENDDO</span>
+
+
+   <span class="hl kwa">WRITE</span><span class="hl opt">(</span> OutUnit<span class="hl opt">,</span> FMT <span class="hl opt">=</span> <span class="hl str">&quot;(10000000A1)&quot;</span> <span class="hl opt">,</span> advance<span class="hl opt">=</span><span class="hl str">'no'</span><span class="hl opt">) (</span> <span class="hl kwd">OutBuf</span><span class="hl opt">(</span>I<span class="hl opt">),</span>I<span class="hl opt">=</span><span class="hl num">1</span><span class="hl opt">,</span>OUTP <span class="hl opt">)</span>
+
+<span class="hl num">100</span>     <span class="hl kwa">CONTINUE</span>
+
+<span class="hl kwa">end program</span> mandelbrot
+

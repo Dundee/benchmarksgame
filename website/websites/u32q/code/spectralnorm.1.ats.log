@@ -1,0 +1,40 @@
+
+Thu, 27 Sep 2012 20:40:37 GMT
+
+MAKE:
+/usr/local/src/ats-lang-anairiats-0.2.8/bin/atscc -pthread -D_GNU_SOURCE -D_ATS_MULTITHREAD -pipe -Wall -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse2 spectralnorm.dats -o spectralnorm.ats_run -lm
+/usr/local/src/ats-lang-anairiats-0.2.8/bin/atsopt --output spectralnorm_dats.c --dynamic spectralnorm.dats
+In file included from spectralnorm_dats.c:19:0:
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/basics.cats: In function ‘atspre_fprint_newline’:
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/basics.cats:271:11: warning: variable ‘n2’ set but not used [-Wunused-but-set-variable]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/basics.cats:271:7: warning: variable ‘n1’ set but not used [-Wunused-but-set-variable]
+spectralnorm_dats.c: In function ‘eval_A_times_u_0’:
+spectralnorm_dats.c:293:1: warning: label ‘__ats_lab_eval_A_times_u_0’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘eval_At_times_u_3’:
+spectralnorm_dats.c:424:1: warning: label ‘__ats_lab_eval_At_times_u_3’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘eval_AtA_times_u_6’:
+spectralnorm_dats.c:442:1: warning: label ‘__ats_lab_eval_AtA_times_u_6’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘mainats’:
+spectralnorm_dats.c:621:1: warning: label ‘__ats_lab_mainats’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: At top level:
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/pointer.cats:52:14: warning: ‘atspre_null_ptr’ defined but not used [-Wunused-variable]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/printf.cats:57:1: warning: ‘atspre_fprintf_err’ defined but not used [-Wunused-function]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/printf.cats:69:1: warning: ‘atspre_fprintf_exn’ defined but not used [-Wunused-function]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/printf.cats:105:1: warning: ‘atspre_prerrf_exn’ defined but not used [-Wunused-function]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/string.cats:351:14: warning: ‘atspre_stropt_none’ defined but not used [-Wunused-variable]
+spectralnorm_dats.c:224:1: warning: ‘loop2_1_closure_make’ defined but not used [-Wunused-function]
+spectralnorm_dats.c:278:1: warning: ‘loop1_2_closure_make’ defined but not used [-Wunused-function]
+spectralnorm_dats.c:355:1: warning: ‘loop2_4_closure_make’ defined but not used [-Wunused-function]
+spectralnorm_dats.c:409:1: warning: ‘loop1_5_closure_make’ defined but not used [-Wunused-function]
+spectralnorm_dats.c:468:1: warning: ‘eval_AtA_times_u_6_closure_make’ defined but not used [-Wunused-function]
+spectralnorm_dats.c:522:1: warning: ‘loop1_8_closure_make’ defined but not used [-Wunused-function]
+spectralnorm_dats.c:588:1: warning: ‘loop2_9_closure_make’ defined but not used [-Wunused-function]
+gcc -I/usr/local/src/ats-lang-anairiats-0.2.8/ -I/usr/local/src/ats-lang-anairiats-0.2.8/ccomp/runtime/ -L/usr/local/src/ats-lang-anairiats-0.2.8/ccomp/lib/ /usr/local/src/ats-lang-anairiats-0.2.8/ccomp/runtime/ats_prelude.c -pthread -D_GNU_SOURCE -D_ATS_MULTITHREAD -pipe -Wall -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse2 spectralnorm_dats.c -o spectralnorm.ats_run -lm -lats_mt -lats 
+rm spectralnorm.dats
+0.35s to complete and log all make actions
+
+COMMAND LINE:
+./spectralnorm.ats_run 5500
+
+PROGRAM OUTPUT:
+1.274224153

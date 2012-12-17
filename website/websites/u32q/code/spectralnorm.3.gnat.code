@@ -1,0 +1,308 @@
+
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://shootout.alioth.debian.org/</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- Contributed by Jim Rogers</span>
+<span class="hl slc">-- Modified by Jonathan Parker (Oct 2009)</span>
+
+<span class="hl kwa">pragma</span> Restrictions <span class="hl opt">(</span>No_Abort_Statements<span class="hl opt">);</span>
+<span class="hl kwa">pragma</span> Restrictions <span class="hl opt">(</span>Max_Asynchronous_Select_Nesting <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">);</span>
+
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_Io<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Numerics<span class="hl opt">.</span>Generic_Elementary_Functions<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Command_Line<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Command_Line<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Spectral_Utils<span class="hl opt">;</span>
+
+<span class="hl kwa">procedure</span> SpectralNorm <span class="hl kwa">is</span>
+
+   <span class="hl kwa">type</span> Real <span class="hl kwa">is digits</span> <span class="hl num">15</span><span class="hl opt">;</span>
+
+   No_of_Cores_to_Use <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">4</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">package</span> Real_IO <span class="hl kwa">is new</span> Ada<span class="hl opt">.</span>Text_Io<span class="hl opt">.</span>Float_Io<span class="hl opt">(</span>Real<span class="hl opt">);</span>
+   <span class="hl kwa">package</span> Real_Funcs <span class="hl kwa">is new</span> Ada<span class="hl opt">.</span>Numerics<span class="hl opt">.</span>Generic_Elementary_Functions<span class="hl opt">(</span>Real<span class="hl opt">);</span>
+   <span class="hl kwa">use</span> Real_Funcs<span class="hl opt">;</span>
+
+   N <span class="hl opt">:</span> <span class="hl kwb">Natural</span> <span class="hl opt">:=</span> <span class="hl num">100</span><span class="hl opt">;</span>
+   Vbv<span class="hl opt">,</span> Vv <span class="hl opt">:</span> Real <span class="hl opt">:=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+   <span class="hl kwa">if</span> Argument_Count <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl kwa">then</span>
+      N <span class="hl opt">:=</span> <span class="hl kwb">Natural</span><span class="hl kwd">'Value</span> <span class="hl opt">(</span>Argument<span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">));</span>
+   <span class="hl kwa">end if</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">declare</span>
+      <span class="hl kwa">package</span> Spectral_Utilities <span class="hl kwa">is new</span> Spectral_Utils
+        <span class="hl opt">(</span>Real<span class="hl opt">,</span> No_of_Tasks <span class="hl opt">=&gt;</span> No_of_Cores_to_Use<span class="hl opt">,</span> Matrix_Size <span class="hl opt">=&gt;</span> N<span class="hl opt">);</span>
+      <span class="hl kwa">use</span> Spectral_Utilities<span class="hl opt">;</span>
+
+      U <span class="hl opt">:</span> Matrix <span class="hl opt">:= (</span><span class="hl kwa">Others</span> <span class="hl opt">=&gt;</span> <span class="hl num">1.0</span><span class="hl opt">);</span>
+      V <span class="hl opt">:</span> Matrix <span class="hl opt">:= (</span><span class="hl kwa">Others</span> <span class="hl opt">=&gt;</span> <span class="hl num">0.0</span><span class="hl opt">);</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">for</span> I <span class="hl kwa">in</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span> <span class="hl kwa">loop</span>
+         Eval_Ata_Times_U<span class="hl opt">(</span>U<span class="hl opt">,</span> V<span class="hl opt">);</span>
+         Eval_Ata_Times_U<span class="hl opt">(</span>V<span class="hl opt">,</span> U<span class="hl opt">);</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      <span class="hl kwa">for</span> I <span class="hl kwa">in</span> V<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+         Vbv <span class="hl opt">:=</span> Vbv <span class="hl opt">+</span> U<span class="hl opt">(</span>I<span class="hl opt">) *</span> V<span class="hl opt">(</span>I<span class="hl opt">);</span>
+         Vv  <span class="hl opt">:=</span> Vv  <span class="hl opt">+</span> V<span class="hl opt">(</span>I<span class="hl opt">) *</span> V<span class="hl opt">(</span>I<span class="hl opt">);</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span><span class="hl opt">;</span>
+   Real_IO<span class="hl opt">.</span>Put<span class="hl opt">(</span>Item <span class="hl opt">=&gt;</span> Sqrt<span class="hl opt">(</span>Vbv<span class="hl opt">/</span>Vv<span class="hl opt">),</span> Fore <span class="hl opt">=&gt;</span> <span class="hl num">1</span><span class="hl opt">,</span> Aft <span class="hl opt">=&gt;</span> <span class="hl num">9</span><span class="hl opt">,</span> Exp <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">);</span>
+   Ada<span class="hl opt">.</span>Text_Io<span class="hl opt">.</span>New_Line<span class="hl opt">;</span>
+<span class="hl kwa">end</span> SpectralNorm<span class="hl opt">;</span>
+
+<span class="hl kwa">generic</span>
+
+   <span class="hl kwa">type</span> Real <span class="hl kwa">is digits</span> <span class="hl opt">&lt;&gt;;</span>
+   No_Of_Tasks <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span>
+   Matrix_Size <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span>
+
+<span class="hl kwa">package</span> Spectral_Utils <span class="hl kwa">is</span>
+
+   <span class="hl kwa">type</span> Matrix <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl kwb">Natural</span> <span class="hl kwa">range</span> <span class="hl num">0</span> <span class="hl opt">..</span> Matrix_Size<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span> <span class="hl kwa">of</span> Real<span class="hl opt">;</span>
+
+   <span class="hl slc">--  Evaluate matrix A at indices I, J.</span>
+ 
+   <span class="hl kwa">function</span> Eval_A<span class="hl opt">(</span>I<span class="hl opt">,</span> J <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">)</span> <span class="hl kwa">return</span> Real<span class="hl opt">;</span>
+
+   <span class="hl slc">--  Get   A_transpose_A_times_U = A_transpose * A * U. </span>
+ 
+   <span class="hl kwa">procedure</span> Eval_Ata_Times_U
+     <span class="hl opt">(</span>U                     <span class="hl opt">:</span> <span class="hl kwa">in</span> Matrix<span class="hl opt">;</span> 
+      A_transpose_A_times_U <span class="hl opt">:</span> <span class="hl kwa">out</span> Matrix<span class="hl opt">);</span>
+
+   <span class="hl slc">--  Get   AU = A * U.  Calculate only AU(Start .. Finish).</span>
+ 
+   <span class="hl kwa">procedure</span> Eval_A_Times 
+     <span class="hl opt">(</span>U      <span class="hl opt">:</span> <span class="hl kwa">in</span>  Matrix<span class="hl opt">;</span> 
+      Start  <span class="hl opt">:</span> <span class="hl kwa">in</span>  <span class="hl kwb">Natural</span><span class="hl opt">;</span> 
+      Finish <span class="hl opt">:</span> <span class="hl kwa">in</span>  <span class="hl kwb">Natural</span><span class="hl opt">;</span> 
+      AU     <span class="hl opt">:</span> <span class="hl kwa">out</span> Matrix<span class="hl opt">);</span>
+
+   <span class="hl slc">--  Get   AU = A_transpose * U.   Calculate only AU(Start .. Finish).</span>
+ 
+   <span class="hl kwa">procedure</span> Eval_At_Times
+     <span class="hl opt">(</span>U      <span class="hl opt">:</span> <span class="hl kwa">in</span>  Matrix<span class="hl opt">;</span> 
+      Start  <span class="hl opt">:</span> <span class="hl kwa">in</span>  <span class="hl kwb">Natural</span><span class="hl opt">;</span> 
+      Finish <span class="hl opt">:</span> <span class="hl kwa">in</span>  <span class="hl kwb">Natural</span><span class="hl opt">;</span> 
+      AU     <span class="hl opt">:</span> <span class="hl kwa">out</span> Matrix<span class="hl opt">);</span>
+
+   <span class="hl kwa">pragma</span> Inline <span class="hl opt">(</span>Eval_A_Times<span class="hl opt">,</span> Eval_At_Times<span class="hl opt">);</span>
+   <span class="hl kwa">pragma</span> Inline <span class="hl opt">(</span>Eval_A<span class="hl opt">,</span> Eval_Ata_Times_U<span class="hl opt">);</span>
+
+<span class="hl kwa">end</span> Spectral_Utils<span class="hl opt">;</span>
+
+<span class="hl kwa">package body</span> Spectral_Utils <span class="hl kwa">is</span>
+
+   <span class="hl kwa">function</span> Eval_A <span class="hl opt">(</span>I<span class="hl opt">,</span> J <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Natural</span><span class="hl opt">)</span> <span class="hl kwa">return</span> Real <span class="hl kwa">is</span>
+      Denom <span class="hl opt">:</span> <span class="hl kwa">constant</span> Real <span class="hl opt">:=</span> Real <span class="hl opt">(((</span>I <span class="hl opt">+</span> J<span class="hl opt">) * (</span>I <span class="hl opt">+</span> J <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)) /</span> <span class="hl num">2</span> <span class="hl opt">+</span> I <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">);</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">return</span> <span class="hl num">1.0</span> <span class="hl opt">/</span> Denom<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Eval_A<span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> A_Element_Pair <span class="hl kwa">is array</span> <span class="hl opt">(</span><span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">1</span><span class="hl opt">)</span> <span class="hl kwa">of</span> Real<span class="hl opt">;</span>
+
+   <span class="hl slc">-- Evaluate matrix A twice - at (I,J) and (I,J+1):</span>
+
+   <span class="hl kwa">function</span> Eval_A_Twice <span class="hl opt">(</span>I<span class="hl opt">,</span> J <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">return</span> A_Element_Pair <span class="hl kwa">is</span>
+      Denom_0 <span class="hl opt">:</span> <span class="hl kwa">constant</span> Real <span class="hl opt">:=</span> Real <span class="hl opt">((</span>I <span class="hl opt">+</span> J    <span class="hl opt">)*(</span>I <span class="hl opt">+</span> J <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)/</span><span class="hl num">2</span> <span class="hl opt">+</span> I <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">);</span>
+      Denom_1 <span class="hl opt">:</span> <span class="hl kwa">constant</span> Real <span class="hl opt">:=</span> Real <span class="hl opt">((</span>I <span class="hl opt">+</span> J <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)*(</span>I <span class="hl opt">+</span> J <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">)/</span><span class="hl num">2</span> <span class="hl opt">+</span> I <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">);</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">return</span> <span class="hl opt">(</span><span class="hl num">1.0</span> <span class="hl opt">/</span> Denom_0<span class="hl opt">,</span> <span class="hl num">1.0</span> <span class="hl opt">/</span> Denom_1<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Eval_A_Twice<span class="hl opt">;</span>
+
+   <span class="hl slc">-- Evaluate A_transpose (indices I and J swapped):</span>
+
+   <span class="hl kwa">function</span> Eval_A_tr_Twice <span class="hl opt">(</span>I<span class="hl opt">,</span> J <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">return</span> A_Element_Pair <span class="hl kwa">is</span> 
+      Denom_0 <span class="hl opt">:</span> <span class="hl kwa">constant</span> Real <span class="hl opt">:=</span> Real <span class="hl opt">((</span>I <span class="hl opt">+</span> J    <span class="hl opt">)*(</span>I <span class="hl opt">+</span> J <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)/</span><span class="hl num">2</span> <span class="hl opt">+</span> J <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">);</span>
+      Denom_1 <span class="hl opt">:</span> <span class="hl kwa">constant</span> Real <span class="hl opt">:=</span> Real <span class="hl opt">((</span>I <span class="hl opt">+</span> J <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)*(</span>I <span class="hl opt">+</span> J <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">)/</span><span class="hl num">2</span> <span class="hl opt">+</span> J <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">);</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">return</span> <span class="hl opt">(</span><span class="hl num">1.0</span> <span class="hl opt">/</span> Denom_0<span class="hl opt">,</span> <span class="hl num">1.0</span> <span class="hl opt">/</span> Denom_1<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Eval_A_tr_Twice<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Eval_A_Times
+     <span class="hl opt">(</span>U      <span class="hl opt">:</span> <span class="hl kwa">in</span>  Matrix<span class="hl opt">;</span> 
+      Start  <span class="hl opt">:</span> <span class="hl kwa">in</span>  <span class="hl kwb">Natural</span><span class="hl opt">;</span> 
+      Finish <span class="hl opt">:</span> <span class="hl kwa">in</span>  <span class="hl kwb">Natural</span><span class="hl opt">;</span> 
+      Au     <span class="hl opt">:</span> <span class="hl kwa">out</span> Matrix<span class="hl opt">)</span> 
+   <span class="hl kwa">is</span>
+      Sum <span class="hl opt">:</span> Real<span class="hl opt">;</span>
+      J_Index <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+      A_Elements <span class="hl opt">:</span> A_Element_Pair<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">for</span> I <span class="hl kwa">in</span> Start <span class="hl opt">..</span> Finish <span class="hl kwa">loop</span>
+         Sum <span class="hl opt">:=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+         <span class="hl kwa">for</span> J <span class="hl kwa">in</span> <span class="hl kwb">Natural</span> <span class="hl kwa">range</span> <span class="hl num">0</span> <span class="hl opt">..</span> U<span class="hl kwd">'Length</span><span class="hl opt">/</span><span class="hl num">2</span> <span class="hl opt">-</span> <span class="hl num">1</span> <span class="hl kwa">loop</span>
+            J_Index    <span class="hl opt">:=</span> U<span class="hl kwd">'First</span> <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">*</span>J<span class="hl opt">;</span>
+            A_Elements <span class="hl opt">:=</span> Eval_A_Twice <span class="hl opt">(</span>I<span class="hl opt">,</span> J_Index<span class="hl opt">);</span>
+            Sum <span class="hl opt">:=</span> Sum <span class="hl opt">+</span> A_Elements<span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">)*</span>U<span class="hl opt">(</span>J_Index<span class="hl opt">) +</span> A_Elements<span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)*</span>U<span class="hl opt">(</span>J_Index<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">);</span>
+         <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+         <span class="hl kwa">if</span> U<span class="hl kwd">'Length</span> <span class="hl kwa">mod</span> <span class="hl num">2</span> <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl kwa">then</span>
+            Sum <span class="hl opt">:=</span> Sum <span class="hl opt">+</span> Eval_A<span class="hl opt">(</span>I<span class="hl opt">,</span> U<span class="hl kwd">'Last</span><span class="hl opt">) *</span> U<span class="hl opt">(</span>U<span class="hl kwd">'Last</span><span class="hl opt">);</span> <span class="hl slc">-- J_Index := U'Last;</span>
+         <span class="hl kwa">end if</span><span class="hl opt">;</span>
+         Au<span class="hl opt">(</span>I<span class="hl opt">) :=</span> Sum<span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Eval_A_Times<span class="hl opt">;</span>
+
+
+   <span class="hl kwa">procedure</span> Eval_At_Times
+     <span class="hl opt">(</span>U      <span class="hl opt">:</span> <span class="hl kwa">in</span>  Matrix<span class="hl opt">;</span> 
+      Start  <span class="hl opt">:</span> <span class="hl kwa">in</span>  <span class="hl kwb">Natural</span><span class="hl opt">;</span> 
+      Finish <span class="hl opt">:</span> <span class="hl kwa">in</span>  <span class="hl kwb">Natural</span><span class="hl opt">;</span> 
+      Au     <span class="hl opt">:</span> <span class="hl kwa">out</span> Matrix<span class="hl opt">)</span> 
+   <span class="hl kwa">is</span>
+      Sum <span class="hl opt">:</span> Real<span class="hl opt">;</span>
+      J_Index <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+      A_Elements <span class="hl opt">:</span> A_Element_Pair<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">for</span> I <span class="hl kwa">in</span> Start <span class="hl opt">..</span> Finish <span class="hl kwa">loop</span>
+         Sum <span class="hl opt">:=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+         <span class="hl kwa">for</span> J <span class="hl kwa">in</span> <span class="hl kwb">Natural</span> <span class="hl kwa">range</span> <span class="hl num">0</span> <span class="hl opt">..</span> U<span class="hl kwd">'Length</span><span class="hl opt">/</span><span class="hl num">2</span> <span class="hl opt">-</span> <span class="hl num">1</span> <span class="hl kwa">loop</span>
+            J_Index    <span class="hl opt">:=</span> U<span class="hl kwd">'First</span> <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">*</span>J<span class="hl opt">;</span>
+            A_Elements <span class="hl opt">:=</span> Eval_A_tr_Twice <span class="hl opt">(</span>I<span class="hl opt">,</span> J_Index<span class="hl opt">);</span>
+            Sum <span class="hl opt">:=</span> Sum <span class="hl opt">+</span> A_Elements<span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">)*</span>U<span class="hl opt">(</span>J_Index<span class="hl opt">) +</span> A_Elements<span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)*</span>U<span class="hl opt">(</span>J_Index<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">);</span>
+         <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+         <span class="hl kwa">if</span> U<span class="hl kwd">'Length</span> <span class="hl kwa">mod</span> <span class="hl num">2</span> <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl kwa">then</span>
+            Sum <span class="hl opt">:=</span> Sum <span class="hl opt">+</span> Eval_A <span class="hl opt">(</span>U<span class="hl kwd">'Last</span><span class="hl opt">,</span> I<span class="hl opt">) *</span> U<span class="hl opt">(</span>U<span class="hl kwd">'Last</span><span class="hl opt">);</span> <span class="hl slc">-- J_Index := U'Last;</span>
+         <span class="hl kwa">end if</span><span class="hl opt">;</span>
+         Au<span class="hl opt">(</span>I<span class="hl opt">) :=</span> Sum<span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Eval_At_Times<span class="hl opt">;</span>
+
+
+   <span class="hl slc">-- Calculate A * U</span>
+
+   <span class="hl kwa">task type</span> Matrix_A_times_U <span class="hl kwa">is</span>
+      <span class="hl kwa">pragma</span> Storage_Size <span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">**</span><span class="hl num">20</span><span class="hl opt">);</span>
+      <span class="hl kwa">entry</span> Multiply <span class="hl opt">(</span>U <span class="hl opt">:</span> <span class="hl kwa">in</span> Matrix<span class="hl opt">;</span> Start <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span> Finish <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Natural</span><span class="hl opt">);</span>
+      <span class="hl kwa">entry</span> Result <span class="hl opt">(</span>Start <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span> Finish <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span> R <span class="hl opt">:</span> <span class="hl kwa">out</span> Matrix<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Matrix_A_times_U<span class="hl opt">;</span>
+
+   <span class="hl kwa">task body</span> Matrix_A_times_U <span class="hl kwa">is</span>
+      I1<span class="hl opt">,</span> I2 <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+      AU<span class="hl opt">,</span> U_local <span class="hl opt">:</span> Matrix<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+     <span class="hl kwa">loop</span>
+     <span class="hl kwa">select</span>
+        <span class="hl kwa">accept</span> Multiply <span class="hl opt">(</span>U <span class="hl opt">:</span> <span class="hl kwa">in</span> Matrix<span class="hl opt">;</span> Start <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span> Finish <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Natural</span><span class="hl opt">)</span> <span class="hl kwa">do</span>
+           I1 <span class="hl opt">:=</span> Start<span class="hl opt">;</span>
+           I2 <span class="hl opt">:=</span> Finish<span class="hl opt">;</span>
+           U_local <span class="hl opt">:=</span> U<span class="hl opt">;</span>
+        <span class="hl kwa">end</span> Multiply<span class="hl opt">;</span>
+  
+        Eval_A_Times <span class="hl opt">(</span>U_local<span class="hl opt">,</span> I1<span class="hl opt">,</span> I2<span class="hl opt">,</span> AU<span class="hl opt">);</span> <span class="hl slc">-- updates AU(I1..I2)</span>
+  
+        <span class="hl kwa">accept</span> Result <span class="hl opt">(</span>Start <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span> Finish <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span> R <span class="hl opt">:</span> <span class="hl kwa">out</span> Matrix<span class="hl opt">)</span> <span class="hl kwa">do</span>
+           Start  <span class="hl opt">:=</span> I1<span class="hl opt">;</span>
+           Finish <span class="hl opt">:=</span> I2<span class="hl opt">;</span>
+           R<span class="hl opt">(</span>Start <span class="hl opt">..</span> Finish<span class="hl opt">) :=</span> AU<span class="hl opt">(</span>Start <span class="hl opt">..</span> Finish<span class="hl opt">);</span>
+        <span class="hl kwa">end</span> Result<span class="hl opt">;</span>
+     <span class="hl kwa">or</span>
+        <span class="hl kwa">terminate</span><span class="hl opt">;</span>
+     <span class="hl kwa">end select</span><span class="hl opt">;</span>
+     <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Matrix_A_times_U<span class="hl opt">;</span>
+
+
+   <span class="hl slc">-- Calculate A_transpose * V</span>
+
+   <span class="hl kwa">task type</span> Matrix_A_tr_times_V <span class="hl kwa">is</span>
+      <span class="hl kwa">pragma</span> Storage_Size <span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">**</span><span class="hl num">20</span><span class="hl opt">);</span>
+      <span class="hl kwa">entry</span> Multiply <span class="hl opt">(</span>V <span class="hl opt">:</span> <span class="hl kwa">in</span> Matrix<span class="hl opt">;</span> Start <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span> Finish <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Natural</span><span class="hl opt">);</span>
+      <span class="hl kwa">entry</span> Result <span class="hl opt">(</span>Start <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span> Finish <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span> R <span class="hl opt">:</span> <span class="hl kwa">out</span> Matrix<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Matrix_A_tr_times_V<span class="hl opt">;</span>
+
+   <span class="hl kwa">task body</span> Matrix_A_tr_times_V <span class="hl kwa">is</span>
+      I1<span class="hl opt">,</span> I2 <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+      AV<span class="hl opt">,</span> V_local <span class="hl opt">:</span> Matrix<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+     <span class="hl kwa">loop</span>
+     <span class="hl kwa">select</span>
+        <span class="hl kwa">accept</span> Multiply <span class="hl opt">(</span>V <span class="hl opt">:</span> <span class="hl kwa">in</span> Matrix<span class="hl opt">;</span> Start <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span> Finish <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Natural</span><span class="hl opt">)</span> <span class="hl kwa">do</span>
+           I1 <span class="hl opt">:=</span> Start<span class="hl opt">;</span>
+           I2 <span class="hl opt">:=</span> Finish<span class="hl opt">;</span>
+           V_local <span class="hl opt">:=</span> V<span class="hl opt">;</span>
+        <span class="hl kwa">end</span> Multiply<span class="hl opt">;</span>
+  
+        Eval_At_Times <span class="hl opt">(</span>V_local<span class="hl opt">,</span> I1<span class="hl opt">,</span> I2<span class="hl opt">,</span> AV<span class="hl opt">);</span>  <span class="hl slc">-- AV = A_transpose * V_local</span>
+  
+        <span class="hl kwa">accept</span> Result <span class="hl opt">(</span>Start <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span> Finish <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span> R <span class="hl opt">:</span> <span class="hl kwa">out</span> Matrix<span class="hl opt">)</span> <span class="hl kwa">do</span>
+           Start  <span class="hl opt">:=</span> I1<span class="hl opt">;</span>
+           Finish <span class="hl opt">:=</span> I2<span class="hl opt">;</span>
+           R<span class="hl opt">(</span>Start <span class="hl opt">..</span> Finish<span class="hl opt">) :=</span> AV<span class="hl opt">(</span>Start <span class="hl opt">..</span> Finish<span class="hl opt">);</span>
+        <span class="hl kwa">end</span> Result<span class="hl opt">;</span>
+     <span class="hl kwa">or</span>
+        <span class="hl kwa">terminate</span><span class="hl opt">;</span>
+     <span class="hl kwa">end select</span><span class="hl opt">;</span>
+     <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Matrix_A_tr_times_V<span class="hl opt">;</span>
+
+
+   <span class="hl slc">-- Create (No_Of_Tasks-1) tasks. The final task is the environmental task, </span>
+   <span class="hl slc">-- which does its fair share of the work in procedure Eval_Ata_Times_U.</span>
+
+   <span class="hl kwa">subtype</span> Task_Range <span class="hl kwa">is</span> <span class="hl kwb">Positive</span> <span class="hl kwa">range</span> <span class="hl num">1</span> <span class="hl opt">..</span> No_Of_Tasks<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">;</span>
+
+   Partial_Matrix_A_times_U    <span class="hl opt">:</span> <span class="hl kwa">array</span> <span class="hl opt">(</span>Task_Range<span class="hl opt">)</span> <span class="hl kwa">of</span> Matrix_A_times_U<span class="hl opt">;</span> 
+   Partial_Matrix_A_tr_times_V <span class="hl opt">:</span> <span class="hl kwa">array</span> <span class="hl opt">(</span>Task_Range<span class="hl opt">)</span> <span class="hl kwa">of</span> Matrix_A_tr_times_V<span class="hl opt">;</span> 
+
+
+   <span class="hl kwa">procedure</span> Eval_Ata_Times_U 
+     <span class="hl opt">(</span>U                     <span class="hl opt">:</span> <span class="hl kwa">in</span>  Matrix<span class="hl opt">;</span> 
+      A_transpose_A_times_U <span class="hl opt">:</span> <span class="hl kwa">out</span> Matrix<span class="hl opt">)</span> 
+   <span class="hl kwa">is</span>
+      V<span class="hl opt">,</span> Partial_Product <span class="hl opt">:</span> Matrix<span class="hl opt">;</span>
+   
+      Segment_Length <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> U<span class="hl kwd">'Length</span> <span class="hl opt">/</span> No_Of_Tasks <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl slc">-- Gives the 1st few tasks a slightly greater share of the work.</span>
+ 
+      I1<span class="hl opt">,</span> I2<span class="hl opt">,</span> J1<span class="hl opt">,</span> J2 <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      I1 <span class="hl opt">:=</span> V<span class="hl kwd">'First</span><span class="hl opt">;</span>
+      I2 <span class="hl opt">:=</span> V<span class="hl kwd">'First</span> <span class="hl opt">+</span> Segment_Length <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      I2 <span class="hl opt">:=</span> <span class="hl kwb">Integer</span><span class="hl kwd">'Min</span> <span class="hl opt">(</span>I2<span class="hl opt">,</span> V<span class="hl kwd">'Last</span><span class="hl opt">);</span> 
+
+      <span class="hl slc">-- Start running the tasks in Task_Range:</span>
+
+      <span class="hl kwa">for</span> k <span class="hl kwa">in</span> Task_Range <span class="hl kwa">loop</span>
+         Partial_Matrix_A_times_U<span class="hl opt">(</span>k<span class="hl opt">).</span>Multiply <span class="hl opt">(</span>U<span class="hl opt">,</span> I1<span class="hl opt">,</span> I2<span class="hl opt">);</span>
+         I1 <span class="hl opt">:=</span> I2 <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+         I2 <span class="hl opt">:=</span> I2 <span class="hl opt">+</span> Segment_Length<span class="hl opt">;</span>
+         I2 <span class="hl opt">:=</span> <span class="hl kwb">Integer</span><span class="hl kwd">'Min</span> <span class="hl opt">(</span>I2<span class="hl opt">,</span> V<span class="hl kwd">'Last</span><span class="hl opt">);</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+
+      Eval_A_Times <span class="hl opt">(</span>U<span class="hl opt">,</span> I1<span class="hl opt">,</span> V<span class="hl kwd">'Last</span><span class="hl opt">,</span> V<span class="hl opt">);</span> <span class="hl slc">-- Env task updates V(I1 .. V'Last).</span>
+
+      <span class="hl slc">-- Rendezvous with tasks to get partial results. Write results to V:</span>
+
+      <span class="hl kwa">for</span> k <span class="hl kwa">in</span> Task_Range <span class="hl kwa">loop</span>
+         Partial_Matrix_A_times_U<span class="hl opt">(</span>k<span class="hl opt">).</span>Result <span class="hl opt">(</span>J1<span class="hl opt">,</span> J2<span class="hl opt">,</span> Partial_Product<span class="hl opt">);</span>
+         V<span class="hl opt">(</span>J1 <span class="hl opt">..</span> J2<span class="hl opt">) :=</span> Partial_Product<span class="hl opt">(</span>J1 <span class="hl opt">..</span> J2<span class="hl opt">);</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+
+      <span class="hl slc">-- The result, stored in V, is A*U. Next get A_transpose * (A*U).</span>
+
+      I1 <span class="hl opt">:=</span> V<span class="hl kwd">'First</span><span class="hl opt">;</span>
+      I2 <span class="hl opt">:=</span> V<span class="hl kwd">'First</span> <span class="hl opt">+</span> Segment_Length <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      I2 <span class="hl opt">:=</span> <span class="hl kwb">Integer</span><span class="hl kwd">'Min</span> <span class="hl opt">(</span>I2<span class="hl opt">,</span> V<span class="hl kwd">'Last</span><span class="hl opt">);</span> 
+
+      <span class="hl kwa">for</span> k <span class="hl kwa">in</span> Task_Range <span class="hl kwa">loop</span>
+         Partial_Matrix_A_tr_times_V<span class="hl opt">(</span>k<span class="hl opt">).</span>Multiply <span class="hl opt">(</span>V<span class="hl opt">,</span> I1<span class="hl opt">,</span> I2<span class="hl opt">);</span>
+         I1 <span class="hl opt">:=</span> I2 <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+         I2 <span class="hl opt">:=</span> I2 <span class="hl opt">+</span> Segment_Length<span class="hl opt">;</span>
+         I2 <span class="hl opt">:=</span> <span class="hl kwb">Integer</span><span class="hl kwd">'Min</span> <span class="hl opt">(</span>I2<span class="hl opt">,</span> V<span class="hl kwd">'Last</span><span class="hl opt">);</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+
+      Eval_At_Times <span class="hl opt">(</span>V<span class="hl opt">,</span> I1<span class="hl opt">,</span> V<span class="hl kwd">'Last</span><span class="hl opt">,</span> A_transpose_A_times_U<span class="hl opt">);</span> 
+      <span class="hl slc">-- Env. task updates A_transpose_A_times_U (I1 .. V'Last).</span>
+
+      <span class="hl kwa">for</span> k <span class="hl kwa">in</span> Task_Range <span class="hl kwa">loop</span>
+         Partial_Matrix_A_tr_times_V<span class="hl opt">(</span>k<span class="hl opt">).</span>Result <span class="hl opt">(</span>J1<span class="hl opt">,</span> J2<span class="hl opt">,</span> Partial_Product<span class="hl opt">);</span>
+         A_transpose_A_times_U<span class="hl opt">(</span>J1 <span class="hl opt">..</span> J2<span class="hl opt">) :=</span> Partial_Product<span class="hl opt">(</span>J1 <span class="hl opt">..</span> J2<span class="hl opt">);</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">end</span> Eval_Ata_Times_U<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> Spectral_Utils<span class="hl opt">;</span>
+
+

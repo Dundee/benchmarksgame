@@ -1,0 +1,65 @@
+<span class="hl com">{-  The Computer Language Benchmarks Game</span>
+<span class="hl com"></span>
+<span class="hl com">    http://shootout.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">    contributed by Miha Vučkovič</span>
+<span class="hl com"></span>
+<span class="hl com">-}</span>
+
+<span class="hl kwd">import</span> System<span class="hl opt">.</span>Environment
+<span class="hl kwd">import qualified</span> Data<span class="hl opt">.</span>Vector<span class="hl opt">.</span>Unboxed <span class="hl kwd">as</span> V
+<span class="hl kwd">import qualified</span> Data<span class="hl opt">.</span>Vector<span class="hl opt">.</span>Unboxed<span class="hl opt">.</span>Mutable <span class="hl kwd">as</span> MV
+<span class="hl kwd">import qualified</span> Data<span class="hl opt">.</span>Vector<span class="hl opt">.</span>Generic<span class="hl opt">.</span>Mutable <span class="hl kwd">as</span> GMV
+<span class="hl kwd">import</span> Control<span class="hl opt">.</span>Monad <span class="hl opt">(</span><span class="hl kwc">unless</span><span class="hl opt">,</span> void<span class="hl opt">,</span> forM_<span class="hl opt">)</span>
+<span class="hl kwd">import</span> Control<span class="hl opt">.</span>Monad<span class="hl opt">.</span>ST
+<span class="hl kwd">import</span> Control<span class="hl opt">.</span>Parallel
+<span class="hl kwd">import</span> Control<span class="hl opt">.</span>Parallel<span class="hl opt">.</span>Strategies
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span>STRef
+
+flopST v flopCount <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    h <span class="hl opt">&lt;-</span> MV<span class="hl opt">.</span>unsafeRead v <span class="hl num">0</span>
+    <span class="hl kwd">if</span> h <span class="hl opt">==</span> <span class="hl num">1</span> <span class="hl kwd">then</span> <span class="hl kwc">return</span> flopCount
+    <span class="hl kwd">else do</span>
+        GMV<span class="hl opt">.</span><span class="hl kwc">reverse</span> <span class="hl opt">$</span> MV<span class="hl opt">.</span>unsafeSlice <span class="hl num">0</span> h v
+        flopST v <span class="hl opt">(</span>flopCount <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)</span>
+
+countFlops <span class="hl opt">::</span> V<span class="hl opt">.</span>Vector <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span>
+countFlops v <span class="hl opt">=</span> runST <span class="hl opt">$</span> <span class="hl kwd">do</span>
+    mv <span class="hl opt">&lt;-</span> V<span class="hl opt">.</span>thaw v
+    flopST mv <span class="hl num">0</span>
+
+permut n <span class="hl opt">=</span> <span class="hl kwc">foldr</span> permConcat <span class="hl opt">[</span>V<span class="hl opt">.</span>fromList <span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">..</span>n<span class="hl opt">]] [</span><span class="hl num">5</span><span class="hl opt">..</span>n<span class="hl opt">]</span>
+
+permConcat x lst <span class="hl opt">=</span> <span class="hl kwc">concat</span> <span class="hl opt">[</span><span class="hl kwc">take</span> x <span class="hl opt">$</span> <span class="hl kwc">iterate</span> <span class="hl opt">(</span>rotate x<span class="hl opt">)</span> l | l <span class="hl opt">&lt;-</span> lst<span class="hl opt">]</span>
+
+perm <span class="hl opt">::</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> V<span class="hl opt">.</span>Vector <span class="hl kwb">Int</span> <span class="hl opt">-&gt; [</span>V<span class="hl opt">.</span>Vector <span class="hl kwb">Int</span><span class="hl opt">]</span>
+perm x l <span class="hl opt">=</span> <span class="hl kwc">take</span> x <span class="hl opt">$</span> <span class="hl kwc">iterate</span> <span class="hl opt">(</span>rotate x<span class="hl opt">)</span> l
+
+rotate <span class="hl opt">::</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> V<span class="hl opt">.</span>Vector <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> V<span class="hl opt">.</span>Vector <span class="hl kwb">Int</span>
+rotate <span class="hl num">1</span> xs <span class="hl opt">=</span> xs
+rotate n v <span class="hl opt">=</span> runST <span class="hl opt">$</span> <span class="hl kwd">do</span>
+    mv <span class="hl opt">&lt;-</span> V<span class="hl opt">.</span>thaw v
+    veryUnsafeV <span class="hl opt">&lt;-</span> V<span class="hl opt">.</span>unsafeThaw v
+    h <span class="hl opt">&lt;-</span> MV<span class="hl opt">.</span>unsafeRead mv <span class="hl num">0</span>
+    MV<span class="hl opt">.</span>unsafeCopy <span class="hl opt">(</span>MV<span class="hl opt">.</span>unsafeSlice <span class="hl num">0</span> <span class="hl opt">(</span>n<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span> mv<span class="hl opt">) (</span>MV<span class="hl opt">.</span>unsafeSlice <span class="hl num">1</span> <span class="hl opt">(</span>n<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span> veryUnsafeV<span class="hl opt">)</span>
+    MV<span class="hl opt">.</span>unsafeWrite mv <span class="hl opt">(</span>n<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span> h
+    V<span class="hl opt">.</span>unsafeFreeze mv
+
+calculateMaxAndChecksum <span class="hl opt">:: [</span><span class="hl kwb">Int</span><span class="hl opt">] -&gt; (</span><span class="hl kwb">Int</span><span class="hl opt">,</span> <span class="hl kwb">Int</span><span class="hl opt">)</span>
+calculateMaxAndChecksum <span class="hl opt">=</span> go <span class="hl num">0 0</span>
+    <span class="hl kwd">where</span> go <span class="hl opt">!</span>m <span class="hl opt">!</span>c <span class="hl opt">[] = (</span>m<span class="hl opt">,</span> c<span class="hl opt">)</span>
+          go <span class="hl opt">!</span>m <span class="hl opt">!</span>c <span class="hl opt">[</span>x<span class="hl opt">] = (</span><span class="hl kwc">max</span> m x<span class="hl opt">,</span> c <span class="hl opt">+</span> x<span class="hl opt">)</span>
+          go <span class="hl opt">!</span>m <span class="hl opt">!</span>c <span class="hl opt">(</span>x0<span class="hl opt">:</span>x1<span class="hl opt">:</span>xs<span class="hl opt">) =</span> go <span class="hl opt">(</span>max3 m x0 x1<span class="hl opt">) (</span>c <span class="hl opt">+</span> x0 <span class="hl opt">-</span> x1<span class="hl opt">)</span> xs
+          max3 <span class="hl opt">!</span>a <span class="hl opt">!</span>b <span class="hl opt">!</span>c <span class="hl opt">=</span> <span class="hl kwc">max</span> c <span class="hl opt">(</span><span class="hl kwc">max</span> a b<span class="hl opt">)</span>
+
+niceParallelMap <span class="hl opt">::</span> NFData b <span class="hl opt">=&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt; (</span>a <span class="hl opt">-&gt;</span> b<span class="hl opt">) -&gt; [</span>a<span class="hl opt">] -&gt; [</span>b<span class="hl opt">]</span>
+niceParallelMap bufferSize f xs <span class="hl opt">=</span> runEval <span class="hl opt">$</span> parBuffer bufferSize rdeepseq <span class="hl opt">$</span> <span class="hl kwc">map</span> f xs
+
+main <span class="hl opt">::</span> <span class="hl kwb">IO</span> <span class="hl opt">()</span>
+main <span class="hl opt">=</span> <span class="hl kwd">do</span>
+   n <span class="hl opt">&lt;-</span> <span class="hl kwc">fmap</span> <span class="hl opt">(</span><span class="hl kwc">read</span> <span class="hl opt">.</span> <span class="hl kwc">head</span><span class="hl opt">)</span> <span class="hl kwc">getArgs</span>
+   <span class="hl kwd">let</span> permutations <span class="hl opt">=</span> permut n
+       flopCounts <span class="hl opt">=</span> <span class="hl kwc">concat</span> <span class="hl opt">$</span> niceParallelMap <span class="hl num">50</span>
+            <span class="hl opt">(</span><span class="hl kwc">map</span> countFlops <span class="hl opt">.</span> <span class="hl kwc">concatMap</span> <span class="hl opt">(</span>perm <span class="hl num">2</span><span class="hl opt">) .</span> <span class="hl kwc">concatMap</span> <span class="hl opt">(</span>perm <span class="hl num">3</span><span class="hl opt">) .</span> perm <span class="hl num">4</span><span class="hl opt">)</span> permutations
+       <span class="hl opt">(</span>mflops<span class="hl opt">,</span> checksum<span class="hl opt">) =</span> calculateMaxAndChecksum flopCounts
+   <span class="hl kwc">putStrLn</span> <span class="hl opt">$</span> <span class="hl kwc">show</span> checksum <span class="hl opt">++</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">Pfannkuchen(&quot;</span> <span class="hl opt">++</span> <span class="hl kwc">show</span> n <span class="hl opt">++</span> <span class="hl str">&quot;) = &quot;</span> <span class="hl opt">++</span> <span class="hl kwc">show</span> mflops

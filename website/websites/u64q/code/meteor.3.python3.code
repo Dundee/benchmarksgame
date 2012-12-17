@@ -1,0 +1,143 @@
+<span class="hl slc"># The Computer Language Benchmarks Game</span>
+<span class="hl slc"># http://shootout.alioth.debian.org/</span>
+<span class="hl slc">#</span>
+<span class="hl slc"># contributed by Daniel Nanz, 2008-08-21</span>
+<span class="hl slc"># 2to3</span>
+
+<span class="hl kwa">import</span> sys
+<span class="hl kwa">from</span> bisect <span class="hl kwa">import</span> bisect
+
+w<span class="hl opt">,</span> h <span class="hl opt">=</span> <span class="hl num">5</span><span class="hl opt">,</span> <span class="hl num">10</span>
+dir_no <span class="hl opt">=</span> <span class="hl num">6</span>
+S<span class="hl opt">,</span> E <span class="hl opt">=</span> w <span class="hl opt">*</span> h<span class="hl opt">,</span> <span class="hl num">2</span>
+SE <span class="hl opt">=</span> S <span class="hl opt">+ (</span>E <span class="hl opt">/</span> <span class="hl num">2</span><span class="hl opt">)</span>
+SW <span class="hl opt">=</span> SE <span class="hl opt">-</span> E
+W<span class="hl opt">,</span> NW<span class="hl opt">,</span> NE <span class="hl opt">= -</span>E<span class="hl opt">, -</span>SE<span class="hl opt">, -</span>SW
+
+
+<span class="hl kwa">def</span> <span class="hl kwd">rotate</span><span class="hl opt">(</span>ido<span class="hl opt">,</span> rd<span class="hl opt">={</span>E<span class="hl opt">:</span> NE<span class="hl opt">,</span> NE<span class="hl opt">:</span> NW<span class="hl opt">,</span> NW<span class="hl opt">:</span> W<span class="hl opt">,</span> W<span class="hl opt">:</span> SW<span class="hl opt">,</span> SW<span class="hl opt">:</span> SE<span class="hl opt">,</span> SE<span class="hl opt">:</span> E<span class="hl opt">}):</span>
+    <span class="hl kwa">return</span> <span class="hl opt">[</span>rd<span class="hl opt">[</span>o<span class="hl opt">]</span> <span class="hl kwa">for</span> o <span class="hl kwa">in</span> ido<span class="hl opt">]</span>
+
+<span class="hl kwa">def</span> <span class="hl kwd">flip</span><span class="hl opt">(</span>ido<span class="hl opt">,</span> fd<span class="hl opt">={</span>E<span class="hl opt">:</span> E<span class="hl opt">,</span> NE<span class="hl opt">:</span> SE<span class="hl opt">,</span> NW<span class="hl opt">:</span> SW<span class="hl opt">,</span> W<span class="hl opt">:</span> W<span class="hl opt">,</span> SW<span class="hl opt">:</span> NW<span class="hl opt">,</span> SE<span class="hl opt">:</span> NE<span class="hl opt">}):</span>
+    <span class="hl kwa">return</span> <span class="hl opt">[</span>fd<span class="hl opt">[</span>o<span class="hl opt">]</span> <span class="hl kwa">for</span> o <span class="hl kwa">in</span> ido<span class="hl opt">]</span>
+
+
+<span class="hl kwa">def</span> <span class="hl kwd">permute</span><span class="hl opt">(</span>ido<span class="hl opt">,</span> r_ido<span class="hl opt">,</span> rotate<span class="hl opt">=</span>rotate<span class="hl opt">,</span> flip<span class="hl opt">=</span>flip<span class="hl opt">):</span>
+
+    ps <span class="hl opt">= [</span>ido<span class="hl opt">]</span>
+    <span class="hl kwa">for</span> r <span class="hl kwa">in</span> <span class="hl kwb">range</span><span class="hl opt">(</span>dir_no <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">):</span>
+        ps<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span><span class="hl kwd">rotate</span><span class="hl opt">(</span>ps<span class="hl opt">[-</span><span class="hl num">1</span><span class="hl opt">]))</span>
+        <span class="hl kwa">if</span> ido <span class="hl opt">==</span> r_ido<span class="hl opt">:</span>                 <span class="hl slc"># C2-symmetry</span>
+            ps <span class="hl opt">=</span> ps<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">:</span>dir_no<span class="hl opt">//</span><span class="hl num">2</span><span class="hl opt">]</span>
+    <span class="hl kwa">for</span> pp <span class="hl kwa">in</span> ps<span class="hl opt">[:]:</span>
+        ps<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span><span class="hl kwd">flip</span><span class="hl opt">(</span>pp<span class="hl opt">))</span>
+    <span class="hl kwa">return</span> ps
+
+
+<span class="hl kwa">def</span> <span class="hl kwd">convert</span><span class="hl opt">(</span>ido<span class="hl opt">):</span>
+    <span class="hl str">'''incremental direction offsets -&gt; &quot;coordinate offsets&quot; '''</span>
+    out <span class="hl opt">= [</span><span class="hl num">0</span><span class="hl opt">]</span>
+    <span class="hl kwa">for</span> o <span class="hl kwa">in</span> ido<span class="hl opt">:</span>
+        out<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span>out<span class="hl opt">[-</span><span class="hl num">1</span><span class="hl opt">] +</span> o<span class="hl opt">)</span>
+    <span class="hl kwa">return</span> <span class="hl kwb">list</span><span class="hl opt">(</span><span class="hl kwb">set</span><span class="hl opt">(</span>out<span class="hl opt">))</span>
+
+
+<span class="hl kwa">def</span> <span class="hl kwd">get_footprints</span><span class="hl opt">(</span>board<span class="hl opt">,</span> cti<span class="hl opt">,</span> pieces<span class="hl opt">):</span>
+
+    fps <span class="hl opt">= [[[]</span> <span class="hl kwa">for</span> p <span class="hl kwa">in</span> <span class="hl kwb">range</span><span class="hl opt">(</span><span class="hl kwb">len</span><span class="hl opt">(</span>pieces<span class="hl opt">))]</span> <span class="hl kwa">for</span> ci <span class="hl kwa">in</span> <span class="hl kwb">range</span><span class="hl opt">(</span><span class="hl kwb">len</span><span class="hl opt">(</span>board<span class="hl opt">))]</span>
+    <span class="hl kwa">for</span> c <span class="hl kwa">in</span> board<span class="hl opt">:</span>
+        <span class="hl kwa">for</span> pi<span class="hl opt">,</span> p <span class="hl kwa">in</span> <span class="hl kwb">enumerate</span><span class="hl opt">(</span>pieces<span class="hl opt">):</span>
+            <span class="hl kwa">for</span> pp <span class="hl kwa">in</span> p<span class="hl opt">:</span>
+                fp <span class="hl opt">=</span> <span class="hl kwb">frozenset</span><span class="hl opt">(</span>cti<span class="hl opt">[</span>c <span class="hl opt">+</span> o<span class="hl opt">]</span> <span class="hl kwa">for</span> o <span class="hl kwa">in</span> pp <span class="hl kwa">if</span> <span class="hl opt">(</span>c <span class="hl opt">+</span> o<span class="hl opt">)</span> <span class="hl kwa">in</span> cti<span class="hl opt">)</span>
+                <span class="hl kwa">if</span> <span class="hl kwb">len</span><span class="hl opt">(</span>fp<span class="hl opt">) ==</span> <span class="hl num">5</span><span class="hl opt">:</span>
+                    fps<span class="hl opt">[</span><span class="hl kwb">min</span><span class="hl opt">(</span>fp<span class="hl opt">)][</span>pi<span class="hl opt">].</span><span class="hl kwd">append</span><span class="hl opt">(</span>fp<span class="hl opt">)</span>
+    <span class="hl kwa">return</span> fps
+
+
+<span class="hl kwa">def</span> <span class="hl kwd">get_senh</span><span class="hl opt">(</span>board<span class="hl opt">,</span> cti<span class="hl opt">):</span>
+    <span class="hl str">'''-&gt; south-east neighborhood'''</span>
+    se_nh <span class="hl opt">= []</span>
+    nh <span class="hl opt">= [</span>E<span class="hl opt">,</span> SW<span class="hl opt">,</span> SE<span class="hl opt">]</span>
+    <span class="hl kwa">for</span> c <span class="hl kwa">in</span> board<span class="hl opt">:</span>
+        se_nh<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span><span class="hl kwb">frozenset</span><span class="hl opt">(</span>cti<span class="hl opt">[</span>c <span class="hl opt">+</span> o<span class="hl opt">]</span> <span class="hl kwa">for</span> o <span class="hl kwa">in</span> nh <span class="hl kwa">if</span> <span class="hl opt">(</span>c <span class="hl opt">+</span> o<span class="hl opt">)</span> <span class="hl kwa">in</span> cti<span class="hl opt">))</span>
+    <span class="hl kwa">return</span> se_nh
+
+
+<span class="hl kwa">def</span> <span class="hl kwd">get_puzzle</span><span class="hl opt">(</span>w<span class="hl opt">=</span>w<span class="hl opt">,</span> h<span class="hl opt">=</span>h<span class="hl opt">):</span>
+
+    board <span class="hl opt">= [</span>E<span class="hl opt">*</span>x <span class="hl opt">+</span> S<span class="hl opt">*</span>y <span class="hl opt">+ (</span>y<span class="hl opt">%</span><span class="hl num">2</span><span class="hl opt">)</span> <span class="hl kwa">for</span> y <span class="hl kwa">in</span> <span class="hl kwb">range</span><span class="hl opt">(</span>h<span class="hl opt">)</span> <span class="hl kwa">for</span> x <span class="hl kwa">in</span> <span class="hl kwb">range</span><span class="hl opt">(</span>w<span class="hl opt">)]</span>
+    cti <span class="hl opt">=</span> <span class="hl kwb">dict</span><span class="hl opt">((</span>board<span class="hl opt">[</span>i<span class="hl opt">],</span> i<span class="hl opt">)</span> <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl kwb">range</span><span class="hl opt">(</span><span class="hl kwb">len</span><span class="hl opt">(</span>board<span class="hl opt">)))</span>
+
+    idos <span class="hl opt">= [[</span>E<span class="hl opt">,</span> E<span class="hl opt">,</span> E<span class="hl opt">,</span> SE<span class="hl opt">],</span>         <span class="hl slc"># incremental direction offsets</span>
+            <span class="hl opt">[</span>SE<span class="hl opt">,</span> SW<span class="hl opt">,</span> W<span class="hl opt">,</span> SW<span class="hl opt">],</span>
+            <span class="hl opt">[</span>W<span class="hl opt">,</span> W<span class="hl opt">,</span> SW<span class="hl opt">,</span> SE<span class="hl opt">],</span>
+            <span class="hl opt">[</span>E<span class="hl opt">,</span> E<span class="hl opt">,</span> SW<span class="hl opt">,</span> SE<span class="hl opt">],</span>
+            <span class="hl opt">[</span>NW<span class="hl opt">,</span> W<span class="hl opt">,</span> NW<span class="hl opt">,</span> SE<span class="hl opt">,</span> SW<span class="hl opt">],</span>
+            <span class="hl opt">[</span>E<span class="hl opt">,</span> E<span class="hl opt">,</span> NE<span class="hl opt">,</span> W<span class="hl opt">],</span>
+            <span class="hl opt">[</span>NW<span class="hl opt">,</span> NE<span class="hl opt">,</span> NE<span class="hl opt">,</span> W<span class="hl opt">],</span>
+            <span class="hl opt">[</span>NE<span class="hl opt">,</span> SE<span class="hl opt">,</span> E<span class="hl opt">,</span> NE<span class="hl opt">],</span>
+            <span class="hl opt">[</span>SE<span class="hl opt">,</span> SE<span class="hl opt">,</span> E<span class="hl opt">,</span> SE<span class="hl opt">],</span>
+            <span class="hl opt">[</span>E<span class="hl opt">,</span> NW<span class="hl opt">,</span> NW<span class="hl opt">,</span> NW<span class="hl opt">]]</span>
+
+    perms <span class="hl opt">= (</span><span class="hl kwd">permute</span><span class="hl opt">(</span>p<span class="hl opt">,</span> idos<span class="hl opt">[</span><span class="hl num">3</span><span class="hl opt">])</span> <span class="hl kwa">for</span> p <span class="hl kwa">in</span> idos<span class="hl opt">)</span>    <span class="hl slc"># restrict piece 4</span>
+    pieces <span class="hl opt">= [[</span><span class="hl kwd">convert</span><span class="hl opt">(</span>pp<span class="hl opt">)</span> <span class="hl kwa">for</span> pp <span class="hl kwa">in</span> p<span class="hl opt">]</span> <span class="hl kwa">for</span> p <span class="hl kwa">in</span> perms<span class="hl opt">]</span>
+    <span class="hl kwa">return</span> <span class="hl opt">(</span>board<span class="hl opt">,</span> cti<span class="hl opt">,</span> pieces<span class="hl opt">)</span>
+
+
+<span class="hl kwa">def</span> <span class="hl kwd">print_board</span><span class="hl opt">(</span>board<span class="hl opt">,</span> w<span class="hl opt">=</span>w<span class="hl opt">,</span> h<span class="hl opt">=</span>h<span class="hl opt">):</span>
+
+    <span class="hl kwa">for</span> y <span class="hl kwa">in</span> <span class="hl kwb">range</span><span class="hl opt">(</span>h<span class="hl opt">):</span>
+        <span class="hl kwa">for</span> x <span class="hl kwa">in</span> <span class="hl kwb">range</span><span class="hl opt">(</span>w<span class="hl opt">):</span>
+            <span class="hl kwa">print</span><span class="hl opt">(</span>board<span class="hl opt">[</span>x <span class="hl opt">+</span> y <span class="hl opt">*</span> w<span class="hl opt">],</span> end<span class="hl opt">=</span><span class="hl str">' '</span><span class="hl opt">)</span>
+        <span class="hl kwa">print</span><span class="hl opt">(</span><span class="hl str">''</span><span class="hl opt">)</span>
+        <span class="hl kwa">if</span> y <span class="hl opt">%</span> <span class="hl num">2</span> <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl opt">:</span>
+            <span class="hl kwa">print</span><span class="hl opt">(</span><span class="hl str">''</span><span class="hl opt">,</span> end<span class="hl opt">=</span><span class="hl str">' '</span><span class="hl opt">)</span>
+    <span class="hl kwa">print</span><span class="hl opt">()</span>
+
+
+board<span class="hl opt">,</span> cti<span class="hl opt">,</span> pieces <span class="hl opt">=</span> <span class="hl kwd">get_puzzle</span><span class="hl opt">()</span>
+fps <span class="hl opt">=</span> <span class="hl kwd">get_footprints</span><span class="hl opt">(</span>board<span class="hl opt">,</span> cti<span class="hl opt">,</span> pieces<span class="hl opt">)</span>
+se_nh <span class="hl opt">=</span> <span class="hl kwd">get_senh</span><span class="hl opt">(</span>board<span class="hl opt">,</span> cti<span class="hl opt">)</span>
+
+
+<span class="hl kwa">def</span> <span class="hl kwd">solve</span><span class="hl opt">(</span>n<span class="hl opt">,</span> i_min<span class="hl opt">,</span> free<span class="hl opt">,</span> curr_board<span class="hl opt">,</span> pieces_left<span class="hl opt">,</span> solutions<span class="hl opt">,</span>
+          fps<span class="hl opt">=</span>fps<span class="hl opt">,</span> se_nh<span class="hl opt">=</span>se_nh<span class="hl opt">,</span> bisect<span class="hl opt">=</span>bisect<span class="hl opt">):</span>
+
+    fp_i_cands <span class="hl opt">=</span> fps<span class="hl opt">[</span>i_min<span class="hl opt">]</span>
+    <span class="hl kwa">for</span> p <span class="hl kwa">in</span> pieces_left<span class="hl opt">:</span>
+        fp_cands <span class="hl opt">=</span> fp_i_cands<span class="hl opt">[</span>p<span class="hl opt">]</span>
+        <span class="hl kwa">for</span> fp <span class="hl kwa">in</span> fp_cands<span class="hl opt">:</span>
+            <span class="hl kwa">if</span> fp <span class="hl opt">&lt;=</span> free<span class="hl opt">:</span>
+                n_curr_board <span class="hl opt">=</span> curr_board<span class="hl opt">[:]</span>
+                <span class="hl kwa">for</span> ci <span class="hl kwa">in</span> fp<span class="hl opt">:</span>
+                    n_curr_board<span class="hl opt">[</span>ci<span class="hl opt">] =</span> p
+                <span class="hl kwa">if</span> <span class="hl kwb">len</span><span class="hl opt">(</span>pieces_left<span class="hl opt">) &gt;</span> <span class="hl num">1</span><span class="hl opt">:</span>
+                    n_free <span class="hl opt">=</span> free <span class="hl opt">-</span> fp
+                    n_i_min <span class="hl opt">=</span> <span class="hl kwb">min</span><span class="hl opt">(</span>n_free<span class="hl opt">)</span>
+                    <span class="hl kwa">if</span> <span class="hl kwb">len</span><span class="hl opt">(</span>n_free <span class="hl opt">&amp;</span> se_nh<span class="hl opt">[</span>n_i_min<span class="hl opt">]) &gt;</span> <span class="hl num">0</span><span class="hl opt">:</span>
+                        n_pieces_left <span class="hl opt">=</span> pieces_left<span class="hl opt">[:]</span>
+                        n_pieces_left<span class="hl opt">.</span><span class="hl kwd">remove</span><span class="hl opt">(</span>p<span class="hl opt">)</span>
+                        <span class="hl kwd">solve</span><span class="hl opt">(</span>n<span class="hl opt">,</span> n_i_min<span class="hl opt">,</span> n_free<span class="hl opt">,</span> n_curr_board<span class="hl opt">,</span>
+                              n_pieces_left<span class="hl opt">,</span> solutions<span class="hl opt">)</span>
+                <span class="hl kwa">else</span><span class="hl opt">:</span>
+                    s <span class="hl opt">=</span> <span class="hl str">''</span><span class="hl opt">.</span><span class="hl kwd">join</span><span class="hl opt">(</span><span class="hl kwb">map</span><span class="hl opt">(</span><span class="hl kwb">str</span><span class="hl opt">,</span> n_curr_board<span class="hl opt">))</span>
+                    solutions<span class="hl opt">.</span><span class="hl kwd">insert</span><span class="hl opt">(</span><span class="hl kwd">bisect</span><span class="hl opt">(</span>solutions<span class="hl opt">,</span> s<span class="hl opt">),</span> s<span class="hl opt">)</span>
+                    rs <span class="hl opt">=</span> s<span class="hl opt">[::-</span><span class="hl num">1</span><span class="hl opt">]</span>
+                    solutions<span class="hl opt">.</span><span class="hl kwd">insert</span><span class="hl opt">(</span><span class="hl kwd">bisect</span><span class="hl opt">(</span>solutions<span class="hl opt">,</span> rs<span class="hl opt">),</span> rs<span class="hl opt">)</span>
+                    <span class="hl kwa">if</span> <span class="hl kwb">len</span><span class="hl opt">(</span>solutions<span class="hl opt">) &gt;=</span> n<span class="hl opt">:</span>
+                        <span class="hl kwa">return</span>
+        <span class="hl kwa">if</span> <span class="hl kwb">len</span><span class="hl opt">(</span>solutions<span class="hl opt">) &gt;=</span> n<span class="hl opt">:</span>
+            <span class="hl kwa">return</span>
+    <span class="hl kwa">return</span>
+
+<span class="hl kwa">def</span> <span class="hl kwd">main</span><span class="hl opt">(</span>n<span class="hl opt">):</span>
+
+    free <span class="hl opt">=</span> <span class="hl kwb">frozenset</span><span class="hl opt">(</span><span class="hl kwb">range</span><span class="hl opt">(</span><span class="hl kwb">len</span><span class="hl opt">(</span>board<span class="hl opt">)))</span>
+    curr_board <span class="hl opt">= [-</span><span class="hl num">1</span><span class="hl opt">] *</span> <span class="hl kwb">len</span><span class="hl opt">(</span>board<span class="hl opt">)</span>
+    pieces_left <span class="hl opt">=</span> <span class="hl kwb">list</span><span class="hl opt">(</span><span class="hl kwb">range</span><span class="hl opt">(</span><span class="hl kwb">len</span><span class="hl opt">(</span>pieces<span class="hl opt">)))</span>
+    solutions <span class="hl opt">= []</span>
+    <span class="hl kwd">solve</span><span class="hl opt">(</span>n<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> free<span class="hl opt">,</span> curr_board<span class="hl opt">,</span> pieces_left<span class="hl opt">,</span> solutions<span class="hl opt">)</span>
+    <span class="hl kwa">print</span><span class="hl opt">(</span><span class="hl kwb">len</span><span class="hl opt">(</span>solutions<span class="hl opt">),</span>  <span class="hl str">'solutions found</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">)</span>
+    <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">, -</span><span class="hl num">1</span><span class="hl opt">):</span> <span class="hl kwd">print_board</span><span class="hl opt">(</span>solutions<span class="hl opt">[</span>i<span class="hl opt">])</span>
+
+<span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">int</span><span class="hl opt">(</span>sys<span class="hl opt">.</span>argv<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]))</span>

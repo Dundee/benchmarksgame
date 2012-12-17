@@ -1,0 +1,88 @@
+
+Thu, 22 Sep 2011 01:21:26 GMT
+
+MAKE:
+mv regexdna.clojure-2.clojure regexdna.clj
+/usr/local/src/jdk1.7.0/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.3.0-RC0/clojure-1.3.0-RC0.jar clojure.lang.Compile regexdna
+Compiling regexdna to .
+Exception in thread "main" java.io.FileNotFoundException: Could not locate clojure/contrib/str_utils__init.class or clojure/contrib/str_utils.clj on classpath: , compiling:(regexdna.clj:6)
+	at clojure.lang.Compiler$InvokeExpr.eval(Compiler.java:3342)
+	at clojure.lang.Compiler.compile1(Compiler.java:6985)
+	at clojure.lang.Compiler.compile1(Compiler.java:6975)
+	at clojure.lang.Compiler.compile(Compiler.java:7046)
+	at clojure.lang.RT.compile(RT.java:385)
+	at clojure.lang.RT.load(RT.java:425)
+	at clojure.lang.RT.load(RT.java:398)
+	at clojure.core$load$fn__4610.invoke(core.clj:5386)
+	at clojure.core$load.doInvoke(core.clj:5385)
+	at clojure.lang.RestFn.invoke(RestFn.java:408)
+	at clojure.core$load_one.invoke(core.clj:5200)
+	at clojure.core$compile$fn__4615.invoke(core.clj:5397)
+	at clojure.core$compile.invoke(core.clj:5396)
+	at clojure.lang.Var.invoke(Var.java:401)
+	at clojure.lang.Compile.main(Compile.java:59)
+Caused by: java.io.FileNotFoundException: Could not locate clojure/contrib/str_utils__init.class or clojure/contrib/str_utils.clj on classpath: 
+	at clojure.lang.RT.load(RT.java:430)
+	at clojure.lang.RT.load(RT.java:398)
+	at clojure.core$load$fn__4610.invoke(core.clj:5386)
+	at clojure.core$load.doInvoke(core.clj:5385)
+	at clojure.lang.RestFn.invoke(RestFn.java:408)
+	at clojure.core$load_one.invoke(core.clj:5200)
+	at clojure.core$load_lib.doInvoke(core.clj:5237)
+	at clojure.lang.RestFn.applyTo(RestFn.java:142)
+	at clojure.core$apply.invoke(core.clj:602)
+	at clojure.core$load_libs.doInvoke(core.clj:5271)
+	at clojure.lang.RestFn.applyTo(RestFn.java:137)
+	at clojure.core$apply.invoke(core.clj:604)
+	at clojure.core$use.doInvoke(core.clj:5363)
+	at clojure.lang.RestFn.invoke(RestFn.java:408)
+	at regexdna$loading__4505__auto__.invoke(regexdna.clj:6)
+	at clojure.lang.AFn.applyToHelper(AFn.java:159)
+	at clojure.lang.AFn.applyTo(AFn.java:151)
+	at clojure.lang.Compiler$InvokeExpr.eval(Compiler.java:3337)
+	... 14 more
+make: [regexdna.clojure-2.clojure_run] Error 1 (ignored)
+1.10s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/src/jdk1.7.0/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts -Xmx512m -cp .:/usr/local/src/clojure-1.3.0-RC0/clojure-1.3.0-RC0.jar regexdna 0 < regexdna-input50000.txt
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Exception in thread "main" java.lang.ExceptionInInitializerError
+Caused by: java.lang.RuntimeException: java.io.FileNotFoundException: Could not locate clojure/contrib/str_utils__init.class or clojure/contrib/str_utils.clj on classpath: 
+	at clojure.lang.Util.runtimeException(Util.java:165)
+	at clojure.lang.Compiler.eval(Compiler.java:6476)
+	at clojure.lang.Compiler.eval(Compiler.java:6455)
+	at clojure.lang.Compiler.load(Compiler.java:6902)
+	at clojure.lang.RT.loadResourceScript(RT.java:357)
+	at clojure.lang.RT.loadResourceScript(RT.java:348)
+	at clojure.lang.RT.load(RT.java:427)
+	at clojure.lang.RT.load(RT.java:398)
+	at clojure.core$load$fn__4610.invoke(core.clj:5386)
+	at clojure.core$load.doInvoke(core.clj:5385)
+	at clojure.lang.RestFn.invoke(RestFn.java:408)
+	at clojure.lang.Var.invoke(Var.java:401)
+	at regexdna.<clinit>(Unknown Source)
+Caused by: java.io.FileNotFoundException: Could not locate clojure/contrib/str_utils__init.class or clojure/contrib/str_utils.clj on classpath: 
+	at clojure.lang.RT.load(RT.java:430)
+	at clojure.lang.RT.load(RT.java:398)
+	at clojure.core$load$fn__4610.invoke(core.clj:5386)
+	at clojure.core$load.doInvoke(core.clj:5385)
+	at clojure.lang.RestFn.invoke(RestFn.java:408)
+	at clojure.core$load_one.invoke(core.clj:5200)
+	at clojure.core$load_lib.doInvoke(core.clj:5237)
+	at clojure.lang.RestFn.applyTo(RestFn.java:142)
+	at clojure.core$apply.invoke(core.clj:602)
+	at clojure.core$load_libs.doInvoke(core.clj:5271)
+	at clojure.lang.RestFn.applyTo(RestFn.java:137)
+	at clojure.core$apply.invoke(core.clj:604)
+	at clojure.core$use.doInvoke(core.clj:5363)
+	at clojure.lang.RestFn.invoke(RestFn.java:408)
+	at regexdna$eval3$loading__4505__auto____4.invoke(regexdna.clj:6)
+	at regexdna$eval3.invoke(regexdna.clj:6)
+	at clojure.lang.Compiler.eval(Compiler.java:6465)
+	... 11 more

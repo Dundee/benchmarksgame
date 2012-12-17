@@ -1,0 +1,198 @@
+<span class="hl com">(*</span>
+<span class="hl com"> * The Computer Language Shootout</span>
+<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * contributed by Christophe TROESTLER</span>
+<span class="hl com"> * modified by Matías Giovannini</span>
+<span class="hl com"> * modified by Ethan Burns</span>
+<span class="hl com"> *)</span>
+
+<span class="hl kwa">module</span> <span class="hl kwd">Z</span> <span class="hl opt">=</span> <span class="hl kwa">struct</span>
+  <span class="hl kwa">let</span> lg n <span class="hl opt">=</span>
+    <span class="hl kwa">let open</span> <span class="hl kwd">Int64</span> <span class="hl kwa">in</span>
+    <span class="hl kwa">let</span> x <span class="hl opt">=</span> <span class="hl kwb">ref</span> <span class="hl opt">(</span>of_int n<span class="hl opt">)</span>
+    <span class="hl kwa">and</span> r <span class="hl opt">=</span> <span class="hl kwb">ref</span> <span class="hl num">0</span> <span class="hl kwa">in</span>
+    <span class="hl kwa">if</span> logand <span class="hl opt">!</span>x <span class="hl num">0xffffffff00000000</span><span class="hl kwd">L</span> <span class="hl opt">&lt;&gt;</span> <span class="hl num">0L</span> <span class="hl kwa">then</span> <span class="hl opt">(</span>x <span class="hl opt">:=</span> shift_right_logical <span class="hl opt">!</span>x <span class="hl num">32</span><span class="hl opt">;</span> r <span class="hl opt">:= !</span>r <span class="hl opt">+</span> <span class="hl num">32</span><span class="hl opt">);</span>
+    <span class="hl kwa">if</span> logand <span class="hl opt">!</span>x <span class="hl num">0x00000000ffff0000</span><span class="hl kwd">L</span> <span class="hl opt">&lt;&gt;</span> <span class="hl num">0L</span> <span class="hl kwa">then</span> <span class="hl opt">(</span>x <span class="hl opt">:=</span> shift_right_logical <span class="hl opt">!</span>x <span class="hl num">16</span><span class="hl opt">;</span> r <span class="hl opt">:= !</span>r <span class="hl opt">+</span> <span class="hl num">16</span><span class="hl opt">);</span>
+    <span class="hl kwa">if</span> logand <span class="hl opt">!</span>x <span class="hl num">0x000000000000ff00</span><span class="hl kwd">L</span> <span class="hl opt">&lt;&gt;</span> <span class="hl num">0L</span> <span class="hl kwa">then</span> <span class="hl opt">(</span>x <span class="hl opt">:=</span> shift_right_logical <span class="hl opt">!</span>x  <span class="hl num">8</span><span class="hl opt">;</span> r <span class="hl opt">:= !</span>r <span class="hl opt">+</span>  <span class="hl num">8</span><span class="hl opt">);</span>
+    <span class="hl kwa">if</span> logand <span class="hl opt">!</span>x <span class="hl num">0x00000000000000f0</span><span class="hl kwd">L</span> <span class="hl opt">&lt;&gt;</span> <span class="hl num">0L</span> <span class="hl kwa">then</span> <span class="hl opt">(</span>x <span class="hl opt">:=</span> shift_right_logical <span class="hl opt">!</span>x  <span class="hl num">4</span><span class="hl opt">;</span> r <span class="hl opt">:= !</span>r <span class="hl opt">+</span>  <span class="hl num">4</span><span class="hl opt">);</span>
+    <span class="hl kwa">if</span> logand <span class="hl opt">!</span>x <span class="hl num">0x000000000000000c</span>L <span class="hl opt">&lt;&gt;</span> <span class="hl num">0L</span> <span class="hl kwa">then</span> <span class="hl opt">(</span>x <span class="hl opt">:=</span> shift_right_logical <span class="hl opt">!</span>x  <span class="hl num">2</span><span class="hl opt">;</span> r <span class="hl opt">:= !</span>r <span class="hl opt">+</span>  <span class="hl num">2</span><span class="hl opt">);</span>
+    <span class="hl kwa">if</span> logand <span class="hl opt">!</span>x <span class="hl num">0x0000000000000002</span><span class="hl kwd">L</span> <span class="hl opt">&lt;&gt;</span> <span class="hl num">0L</span> <span class="hl kwa">then</span>                                  r <span class="hl opt">:= !</span>r <span class="hl opt">+</span>  <span class="hl num">1</span> <span class="hl opt">;</span>
+    <span class="hl opt">!</span>r
+
+  <span class="hl kwa">let</span> next_pow2_int n <span class="hl opt">=</span>
+    <span class="hl num">1</span> <span class="hl kwa">lsl</span> <span class="hl opt">(</span>lg <span class="hl opt">(</span>n <span class="hl opt">+</span> pred <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl kwa">lsl</span> <span class="hl opt">(</span>lg n<span class="hl opt">))))</span>
+
+  <span class="hl kwa">let</span> len_int <span class="hl opt">=</span> <span class="hl kwc">Sys</span><span class="hl opt">.</span>word_size <span class="hl opt">-</span> <span class="hl num">2</span>
+
+  <span class="hl kwa">let</span> sgn_int n <span class="hl opt">= (</span>n <span class="hl kwa">asr</span> len_int<span class="hl opt">) - ((-</span>n<span class="hl opt">)</span> <span class="hl kwa">asr</span> len_int<span class="hl opt">)</span>
+
+  <span class="hl kwa">open</span> <span class="hl kwd">Nat</span>
+
+  <span class="hl kwa">let</span> set_abs_digit_nat r o n <span class="hl opt">=</span>
+    set_digit_nat r o <span class="hl opt">(</span>n <span class="hl kwa">lxor</span> <span class="hl opt">(</span>n <span class="hl kwa">asr</span> len_int<span class="hl opt">));</span>
+    ignore <span class="hl opt">(</span>incr_nat r o <span class="hl num">1</span> <span class="hl opt">(</span>n <span class="hl kwa">lsr</span> len_int<span class="hl opt">))</span>
+
+  <span class="hl kwa">type</span> z <span class="hl opt">= {</span>
+    <span class="hl com">(* inv: sign == 0 === is_zero_nat repr 0 (length_nat repr) *)</span>
+    <span class="hl kwa">mutable</span> sign <span class="hl opt">:</span> <span class="hl kwb">int</span><span class="hl opt">;</span>
+    <span class="hl com">(* inv: size == num_digits_nat repr 0 (length_nat repr) *)</span>
+    <span class="hl kwa">mutable</span> size <span class="hl opt">:</span> <span class="hl kwb">int</span><span class="hl opt">;</span>
+    <span class="hl kwa">mutable</span> repr <span class="hl opt">:</span> nat<span class="hl opt">;</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwa">let</span> make len <span class="hl opt">=</span>
+    <span class="hl opt">{</span> sign <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> size <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span> repr <span class="hl opt">=</span> make_nat len<span class="hl opt">; }</span>
+
+  <span class="hl kwa">let</span> of_int n <span class="hl opt">=</span>
+    <span class="hl kwa">let</span> i <span class="hl opt">=</span> make <span class="hl num">1</span> <span class="hl kwa">in</span>
+    set_abs_digit_nat i<span class="hl opt">.</span>repr <span class="hl num">0</span> n<span class="hl opt">;</span>
+    i<span class="hl opt">.</span>sign <span class="hl opt">&lt;-</span> sgn_int n<span class="hl opt">;</span>
+    i
+
+  <span class="hl kwa">let</span> neg i <span class="hl opt">=</span> i<span class="hl opt">.</span>sign <span class="hl opt">&lt;- -</span>i<span class="hl opt">.</span>sign
+
+  <span class="hl kwa">let</span> clear i <span class="hl opt">=</span>
+    set_to_zero_nat i<span class="hl opt">.</span>repr <span class="hl num">0</span> <span class="hl opt">(</span>length_nat i<span class="hl opt">.</span>repr<span class="hl opt">);</span>
+    i<span class="hl opt">.</span>sign <span class="hl opt">&lt;-</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    i<span class="hl opt">.</span>size <span class="hl opt">&lt;-</span> <span class="hl num">1</span>
+
+  <span class="hl kwa">let</span> set i j <span class="hl opt">=</span>
+    <span class="hl kwa">let</span> capa <span class="hl opt">=</span> length_nat i<span class="hl opt">.</span>repr <span class="hl kwa">in</span>
+    <span class="hl kwa">if</span> j<span class="hl opt">.</span>size <span class="hl opt">&gt;</span> capa <span class="hl kwa">then</span>
+      i<span class="hl opt">.</span>repr <span class="hl opt">&lt;-</span> create_nat j<span class="hl opt">.</span>size
+    <span class="hl kwa">else if</span> j<span class="hl opt">.</span>size <span class="hl opt">&lt;</span> capa <span class="hl kwa">then</span>
+      set_to_zero_nat i<span class="hl opt">.</span>repr j<span class="hl opt">.</span>size <span class="hl opt">(</span>capa <span class="hl opt">-</span> j<span class="hl opt">.</span>size<span class="hl opt">);</span>
+    blit_nat i<span class="hl opt">.</span>repr <span class="hl num">0</span> j<span class="hl opt">.</span>repr <span class="hl num">0</span> j<span class="hl opt">.</span>size<span class="hl opt">;</span>
+    i<span class="hl opt">.</span>sign <span class="hl opt">&lt;-</span> j<span class="hl opt">.</span>sign<span class="hl opt">;</span>
+    i<span class="hl opt">.</span>size <span class="hl opt">&lt;-</span> j<span class="hl opt">.</span>size
+
+  <span class="hl kwa">let</span> ensure_capacity i size <span class="hl opt">=</span>
+    <span class="hl kwa">let</span> capa <span class="hl opt">=</span> length_nat i<span class="hl opt">.</span>repr <span class="hl kwa">in</span>
+    <span class="hl kwa">if</span> size <span class="hl opt">&gt;</span> capa <span class="hl kwa">then begin</span>
+      <span class="hl kwa">let</span> capa <span class="hl opt">=</span> next_pow2_int size <span class="hl kwa">in</span>
+      <span class="hl kwa">let</span> repr <span class="hl opt">=</span> create_nat capa <span class="hl kwa">in</span>
+      blit_nat repr <span class="hl num">0</span> i<span class="hl opt">.</span>repr <span class="hl num">0</span> i<span class="hl opt">.</span>size<span class="hl opt">;</span>
+      set_to_zero_nat repr i<span class="hl opt">.</span>size <span class="hl opt">(</span>capa <span class="hl opt">-</span> i<span class="hl opt">.</span>size<span class="hl opt">);</span>
+      i<span class="hl opt">.</span>repr <span class="hl opt">&lt;-</span> repr
+    <span class="hl kwa">end</span>
+
+  <span class="hl kwa">let</span> carryin c i <span class="hl opt">=</span>
+    <span class="hl com">(* [i] might not be normal, since this function is internal *)</span>
+    <span class="hl kwa">let</span> size <span class="hl opt">=</span> i<span class="hl opt">.</span>size <span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl kwa">in</span>
+    ensure_capacity i size<span class="hl opt">;</span>
+    set_digit_nat i<span class="hl opt">.</span>repr i<span class="hl opt">.</span>size c<span class="hl opt">;</span>
+    i<span class="hl opt">.</span>size <span class="hl opt">&lt;-</span> size
+
+  <span class="hl kwa">let</span> addsub ~doadd i j <span class="hl opt">=</span>
+    <span class="hl kwa">let</span> cmp <span class="hl opt">=</span> compare_nat i<span class="hl opt">.</span>repr <span class="hl num">0</span> i<span class="hl opt">.</span>size j<span class="hl opt">.</span>repr <span class="hl num">0</span> j<span class="hl opt">.</span>size <span class="hl kwa">in</span>
+    <span class="hl kwa">if</span> cmp <span class="hl opt">&lt;</span> <span class="hl num">0</span> <span class="hl kwa">then begin</span>
+      <span class="hl com">(* Denormalize i to j's length *)</span>
+      ensure_capacity i j<span class="hl opt">.</span>size<span class="hl opt">;</span>
+      i<span class="hl opt">.</span>size <span class="hl opt">&lt;-</span> j<span class="hl opt">.</span>size
+    <span class="hl kwa">end</span><span class="hl opt">;</span>
+    <span class="hl kwa">if</span> doadd <span class="hl kwa">then begin</span>
+      <span class="hl kwa">let</span> c <span class="hl opt">=</span> add_nat i<span class="hl opt">.</span>repr <span class="hl num">0</span> i<span class="hl opt">.</span>size j<span class="hl opt">.</span>repr <span class="hl num">0</span> j<span class="hl opt">.</span>size <span class="hl num">0</span> <span class="hl kwa">in</span>
+      <span class="hl kwa">if</span> c <span class="hl opt">!=</span> <span class="hl num">0</span> <span class="hl kwa">then</span> carryin c i
+    <span class="hl kwa">end else begin</span>
+      <span class="hl kwa">let</span> c <span class="hl opt">=</span> sub_nat i<span class="hl opt">.</span>repr <span class="hl num">0</span> i<span class="hl opt">.</span>size j<span class="hl opt">.</span>repr <span class="hl num">0</span> j<span class="hl opt">.</span>size <span class="hl num">1</span> <span class="hl kwa">in</span>
+      <span class="hl kwa">if</span> c <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl kwa">then begin</span>
+        complement_nat i<span class="hl opt">.</span>repr <span class="hl num">0</span> i<span class="hl opt">.</span>size<span class="hl opt">;</span>
+        ignore <span class="hl opt">(</span>incr_nat i<span class="hl opt">.</span>repr <span class="hl num">0</span> i<span class="hl opt">.</span>size <span class="hl num">1</span><span class="hl opt">);</span>
+        i<span class="hl opt">.</span>sign <span class="hl opt">&lt;- -</span>i<span class="hl opt">.</span>sign
+      <span class="hl kwa">end</span><span class="hl opt">;</span>
+      <span class="hl com">(* Normalize *)</span>
+      i<span class="hl opt">.</span>size <span class="hl opt">&lt;-</span> num_digits_nat i<span class="hl opt">.</span>repr <span class="hl num">0</span> i<span class="hl opt">.</span>size<span class="hl opt">;</span>
+      <span class="hl kwa">if</span> is_zero_nat i<span class="hl opt">.</span>repr <span class="hl num">0</span> i<span class="hl opt">.</span>size <span class="hl kwa">then</span> i<span class="hl opt">.</span>sign <span class="hl opt">&lt;-</span> <span class="hl num">0</span>
+    <span class="hl kwa">end</span>
+
+  <span class="hl kwa">let</span> add i j <span class="hl opt">=</span>
+    <span class="hl kwa">if</span> j<span class="hl opt">.</span>sign <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl kwa">then</span> <span class="hl opt">()</span> <span class="hl kwa">else</span>
+    <span class="hl kwa">if</span> i<span class="hl opt">.</span>sign <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl kwa">then</span> set i j <span class="hl kwa">else</span>
+    addsub ~doadd<span class="hl opt">:(</span>i<span class="hl opt">.</span>sign <span class="hl opt">==</span> j<span class="hl opt">.</span>sign<span class="hl opt">)</span> i j
+  <span class="hl kwa">and</span> sub i j <span class="hl opt">=</span>
+    <span class="hl kwa">if</span> j<span class="hl opt">.</span>sign <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl kwa">then</span> <span class="hl opt">()</span> <span class="hl kwa">else</span>
+    <span class="hl kwa">if</span> i<span class="hl opt">.</span>sign <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl kwa">then</span> <span class="hl opt">(</span>set i j<span class="hl opt">;</span> neg i<span class="hl opt">)</span> <span class="hl kwa">else</span>
+    addsub ~doadd<span class="hl opt">:(</span>i<span class="hl opt">.</span>sign <span class="hl opt">!=</span> j<span class="hl opt">.</span>sign<span class="hl opt">)</span> i j
+
+  <span class="hl kwa">let</span> temp <span class="hl opt">=</span> create_nat <span class="hl num">1</span>
+
+  <span class="hl kwa">let</span> imul i n <span class="hl opt">=</span>
+    <span class="hl kwa">if</span> n <span class="hl opt">&lt;=</span> <span class="hl num">0</span> <span class="hl kwa">then</span> failwith <span class="hl str">&quot;imul&quot;</span><span class="hl opt">;</span>
+    set_abs_digit_nat temp <span class="hl num">0</span> <span class="hl opt">(</span>n <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span>
+    <span class="hl kwa">let</span> c <span class="hl opt">=</span> mult_digit_nat i<span class="hl opt">.</span>repr <span class="hl num">0</span> i<span class="hl opt">.</span>size i<span class="hl opt">.</span>repr <span class="hl num">0</span> i<span class="hl opt">.</span>size temp <span class="hl num">0</span> <span class="hl kwa">in</span>
+    <span class="hl kwa">if</span> c <span class="hl opt">!=</span> <span class="hl num">0</span> <span class="hl kwa">then</span> carryin c i
+
+  <span class="hl kwa">let</span> idiv i j <span class="hl opt">=</span>
+    <span class="hl kwa">if</span> compare_nat i<span class="hl opt">.</span>repr <span class="hl num">0</span> i<span class="hl opt">.</span>size j<span class="hl opt">.</span>repr <span class="hl num">0</span> j<span class="hl opt">.</span>size <span class="hl opt">&lt;</span> <span class="hl num">0</span> <span class="hl kwa">then</span> <span class="hl num">0</span> <span class="hl kwa">else begin</span>
+      <span class="hl kwa">if</span> compare_digits_nat i<span class="hl opt">.</span>repr <span class="hl opt">(</span>i<span class="hl opt">.</span>size<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span> j<span class="hl opt">.</span>repr <span class="hl opt">(</span>j<span class="hl opt">.</span>size<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">) &gt;=</span> <span class="hl num">0</span> <span class="hl kwa">then</span>
+        carryin <span class="hl num">0</span> i<span class="hl opt">;</span>
+      <span class="hl kwa">if</span> i<span class="hl opt">.</span>size <span class="hl opt">!=</span> j<span class="hl opt">.</span>size <span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl kwa">then</span> failwith <span class="hl str">&quot;idiv&quot;</span><span class="hl opt">;</span> <span class="hl com">(* multidigit *)</span>
+      div_nat i<span class="hl opt">.</span>repr <span class="hl num">0</span> i<span class="hl opt">.</span>size j<span class="hl opt">.</span>repr <span class="hl num">0</span> j<span class="hl opt">.</span>size<span class="hl opt">;</span>
+      i<span class="hl opt">.</span>sign <span class="hl opt">*</span> j<span class="hl opt">.</span>sign <span class="hl opt">*</span> nth_digit_nat i<span class="hl opt">.</span>repr j<span class="hl opt">.</span>size
+    <span class="hl kwa">end</span>
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">let</span> u<span class="hl opt">,</span> v <span class="hl opt">=</span> <span class="hl kwc">Z</span><span class="hl opt">.(</span>make <span class="hl num">1</span><span class="hl opt">,</span> make <span class="hl num">1</span><span class="hl opt">)</span>
+
+<span class="hl kwa">let</span> extract i n a d <span class="hl opt">=</span>
+  <span class="hl kwa">let open</span> <span class="hl kwd">Z</span> <span class="hl kwa">in</span>
+  set  u n<span class="hl opt">;</span>
+  imul u i<span class="hl opt">;</span>
+  add  u a<span class="hl opt">;</span>
+  idiv u d
+
+<span class="hl kwa">let</span> produce i n a d <span class="hl opt">=</span>
+  <span class="hl kwa">let open</span> <span class="hl kwd">Z</span> <span class="hl kwa">in</span>
+  <span class="hl kwa">if</span> i <span class="hl opt">!=</span> <span class="hl num">0</span> <span class="hl kwa">then begin</span>
+    set  u d<span class="hl opt">;</span>
+    imul u i<span class="hl opt">;</span>
+    sub  a u
+  <span class="hl kwa">end</span><span class="hl opt">;</span>
+  imul n <span class="hl num">10</span><span class="hl opt">;</span>
+  imul a <span class="hl num">10</span>
+
+<span class="hl kwa">and</span> consume i n a d <span class="hl opt">=</span>
+  <span class="hl kwa">let open</span> <span class="hl kwd">Z</span> <span class="hl kwa">in</span>
+  <span class="hl kwa">let</span> j <span class="hl opt">=</span> <span class="hl num">2</span><span class="hl opt">*</span>i <span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl kwa">in</span>
+  set  u n<span class="hl opt">;</span>
+  add  u n<span class="hl opt">;</span>
+  add  a u<span class="hl opt">;</span>
+  imul n i<span class="hl opt">;</span>
+  imul a j<span class="hl opt">;</span>
+  imul d j
+
+<span class="hl kwa">let</span> pi num <span class="hl opt">=</span>
+  <span class="hl kwa">let</span> cnt <span class="hl opt">=</span> <span class="hl kwb">ref</span> <span class="hl num">0</span>
+  <span class="hl kwa">and</span> pos <span class="hl opt">=</span> <span class="hl kwb">ref</span> <span class="hl num">0</span> <span class="hl kwa">in</span>
+  <span class="hl kwa">let</span> end_row <span class="hl opt">() =</span>
+    print_string  <span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">:&quot;</span><span class="hl opt">;</span>
+    print_int     <span class="hl opt">!</span>cnt<span class="hl opt">;</span>
+    print_newline <span class="hl opt">();</span>
+    pos <span class="hl opt">:=</span> <span class="hl num">0</span>
+  <span class="hl kwa">in</span>
+  <span class="hl kwa">let</span> show d <span class="hl opt">=</span>
+    print_char <span class="hl opt">(</span>char_of_int <span class="hl opt">(</span>d <span class="hl opt">+</span> <span class="hl num">48</span><span class="hl opt">));</span>
+    incr cnt<span class="hl opt">;</span>
+    incr pos<span class="hl opt">;</span>
+    <span class="hl kwa">if</span> <span class="hl opt">!</span>pos <span class="hl opt">==</span> <span class="hl num">10</span> <span class="hl kwa">then</span> end_row <span class="hl opt">();</span>
+    <span class="hl kwa">if</span> <span class="hl opt">!</span>cnt <span class="hl opt">==</span> num <span class="hl kwa">then begin</span>
+      <span class="hl kwa">if</span> <span class="hl opt">!</span>pos <span class="hl opt">!=</span> <span class="hl num">0</span> <span class="hl kwa">then begin</span>
+        print_string <span class="hl opt">(</span><span class="hl kwc">String</span><span class="hl opt">.</span>make <span class="hl opt">(</span><span class="hl num">10</span> <span class="hl opt">- !</span>pos<span class="hl opt">)</span> <span class="hl str">' '</span><span class="hl opt">);</span>
+        end_row <span class="hl opt">()</span>
+      <span class="hl kwa">end</span><span class="hl opt">;</span>
+      raise <span class="hl kwd">Exit</span>
+    <span class="hl kwa">end</span>
+  <span class="hl kwa">in</span>
+  <span class="hl kwa">let</span> numer <span class="hl opt">=</span> <span class="hl kwc">Z</span><span class="hl opt">.</span>of_int <span class="hl num">1</span>
+  <span class="hl kwa">and</span> accum <span class="hl opt">=</span> <span class="hl kwc">Z</span><span class="hl opt">.</span>of_int <span class="hl num">0</span>
+  <span class="hl kwa">and</span> denom <span class="hl opt">=</span> <span class="hl kwc">Z</span><span class="hl opt">.</span>of_int <span class="hl num">1</span>
+  <span class="hl kwa">and</span> i     <span class="hl opt">=</span> <span class="hl kwb">ref</span> <span class="hl num">1</span> <span class="hl kwa">in</span>
+  <span class="hl kwa">try while true do</span>
+    <span class="hl kwa">let</span> d <span class="hl opt">=</span> extract <span class="hl num">3</span> numer accum denom <span class="hl kwa">in</span>
+    <span class="hl kwa">if</span> d <span class="hl opt">==</span> extract <span class="hl num">4</span> numer accum denom
+    <span class="hl kwa">then</span> <span class="hl opt">(</span>show d<span class="hl opt">;</span>  produce d numer accum denom<span class="hl opt">)</span>
+    <span class="hl kwa">else</span> <span class="hl opt">(</span>consume <span class="hl opt">!</span>i numer accum denom<span class="hl opt">;</span> incr i<span class="hl opt">)</span>
+  <span class="hl kwa">done with</span> <span class="hl kwd">Exit</span> <span class="hl opt">-&gt; ()</span>
+
+<span class="hl kwa">let</span> <span class="hl opt">() =</span> pi <span class="hl opt">(</span><span class="hl kwa">try</span> int_of_string <span class="hl opt">(</span><span class="hl kwc">Array</span><span class="hl opt">.</span>get <span class="hl kwc">Sys</span><span class="hl opt">.</span>argv <span class="hl num">1</span><span class="hl opt">)</span> <span class="hl kwa">with</span> _ <span class="hl opt">-&gt;</span> <span class="hl num">27</span><span class="hl opt">)</span>

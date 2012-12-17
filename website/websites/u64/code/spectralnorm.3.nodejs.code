@@ -1,0 +1,57 @@
+<span class="hl slc">// The Computer Language Benchmarks Game</span>
+<span class="hl slc">// http://shootout.alioth.debian.org/</span>
+<span class="hl slc">//</span>
+<span class="hl slc">// contributed by Ian Osgood</span>
+<span class="hl slc">// Optimized by Roy Williams</span>
+<span class="hl slc">// transliterated for nodejs</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">A</span><span class="hl opt">(</span>i<span class="hl opt">,</span>j<span class="hl opt">) {</span>
+  <span class="hl kwa">return</span> <span class="hl num">1</span><span class="hl opt">/(((</span>i<span class="hl opt">+</span>j<span class="hl opt">)*(</span>i<span class="hl opt">+</span>j<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)&gt;&gt;&gt;</span><span class="hl num">1</span><span class="hl opt">)+</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">Au</span><span class="hl opt">(</span>u<span class="hl opt">,</span>v<span class="hl opt">) {</span>
+    <span class="hl kwa">var</span> n <span class="hl opt">=</span> u<span class="hl opt">.</span>length<span class="hl opt">;</span>
+  <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwa">var</span> i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">&lt;</span>n<span class="hl opt">; ++</span>i<span class="hl opt">) {</span>
+    <span class="hl kwa">var</span> t <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwa">var</span> j<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> j<span class="hl opt">&lt;</span>n<span class="hl opt">; ++</span>j<span class="hl opt">)</span>
+      t <span class="hl opt">+=</span> <span class="hl kwd">A</span><span class="hl opt">(</span>i<span class="hl opt">,</span>j<span class="hl opt">) *</span> u<span class="hl kwc">[j]</span><span class="hl opt">;</span>
+    v<span class="hl kwc">[i]</span> <span class="hl opt">=</span> t<span class="hl opt">;</span>
+  <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">Atu</span><span class="hl opt">(</span>u<span class="hl opt">,</span>v<span class="hl opt">) {</span>
+  <span class="hl kwa">var</span> n <span class="hl opt">=</span> u<span class="hl opt">.</span>length<span class="hl opt">;</span>
+  <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwa">var</span> i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">&lt;</span>n<span class="hl opt">; ++</span>i<span class="hl opt">) {</span>
+    <span class="hl kwa">var</span> t <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwa">var</span> j<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> j<span class="hl opt">&lt;</span>n<span class="hl opt">; ++</span>j<span class="hl opt">)</span>
+      t <span class="hl opt">+=</span> <span class="hl kwd">A</span><span class="hl opt">(</span>j<span class="hl opt">,</span>i<span class="hl opt">) *</span> u<span class="hl kwc">[j]</span><span class="hl opt">;</span>
+    v<span class="hl kwc">[i]</span> <span class="hl opt">=</span> t<span class="hl opt">;</span>
+  <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">AtAu</span><span class="hl opt">(</span>u<span class="hl opt">,</span>v<span class="hl opt">,</span>w<span class="hl opt">) {</span>
+  <span class="hl kwd">Au</span><span class="hl opt">(</span>u<span class="hl opt">,</span>w<span class="hl opt">);</span>
+  <span class="hl kwd">Atu</span><span class="hl opt">(</span>w<span class="hl opt">,</span>v<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">spectralnorm</span><span class="hl opt">(</span>n<span class="hl opt">) {</span>
+  <span class="hl kwa">var</span> storage_ <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">ArrayBuffer</span><span class="hl opt">(</span>n <span class="hl opt">*</span> <span class="hl num">24</span><span class="hl opt">);</span>
+  <span class="hl kwa">var</span> u <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Float64Array</span><span class="hl opt">(</span>storage_<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> n<span class="hl opt">),</span>
+      v <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Float64Array</span><span class="hl opt">(</span>storage_<span class="hl opt">,</span> <span class="hl num">8</span><span class="hl opt">*</span>n<span class="hl opt">,</span> n<span class="hl opt">),</span>
+      w <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Float64Array</span><span class="hl opt">(</span>storage_<span class="hl opt">,</span> <span class="hl num">16</span><span class="hl opt">*</span>n<span class="hl opt">,</span> n<span class="hl opt">);</span>
+  <span class="hl kwa">var</span> i<span class="hl opt">,</span> vv<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">,</span> vBv<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span>
+  <span class="hl kwa">for</span> <span class="hl opt">(</span>i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">&lt;</span>n<span class="hl opt">; ++</span>i<span class="hl opt">) {</span>
+    u<span class="hl kwc">[i]</span> <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span> v<span class="hl kwc">[i]</span> <span class="hl opt">=</span> w<span class="hl kwc">[i]</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> 
+  <span class="hl opt">}</span>
+  <span class="hl kwa">for</span> <span class="hl opt">(</span>i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">&lt;</span><span class="hl num">10</span><span class="hl opt">; ++</span>i<span class="hl opt">) {</span>
+    <span class="hl kwd">AtAu</span><span class="hl opt">(</span>u<span class="hl opt">,</span>v<span class="hl opt">,</span>w<span class="hl opt">);</span>
+    <span class="hl kwd">AtAu</span><span class="hl opt">(</span>v<span class="hl opt">,</span>u<span class="hl opt">,</span>w<span class="hl opt">);</span>
+  <span class="hl opt">}</span>
+  <span class="hl kwa">for</span> <span class="hl opt">(</span>i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">&lt;</span>n<span class="hl opt">; ++</span>i<span class="hl opt">) {</span>
+    vBv <span class="hl opt">+=</span> u<span class="hl kwc">[i]</span><span class="hl opt">*</span>v<span class="hl kwc">[i]</span><span class="hl opt">;</span>
+    vv  <span class="hl opt">+=</span> v<span class="hl kwc">[i]</span><span class="hl opt">*</span>v<span class="hl kwc">[i]</span><span class="hl opt">;</span>
+  <span class="hl opt">}</span>
+  <span class="hl kwa">return</span> Math<span class="hl opt">.</span><span class="hl kwd">sqrt</span><span class="hl opt">(</span>vBv<span class="hl opt">/</span>vv<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+console<span class="hl opt">.</span><span class="hl kwd">log</span><span class="hl opt">(</span><span class="hl kwd">spectralnorm</span><span class="hl opt">(</span>process<span class="hl opt">.</span>argv<span class="hl kwc">[2]</span><span class="hl opt">).</span><span class="hl kwd">toFixed</span><span class="hl opt">(</span><span class="hl num">9</span><span class="hl opt">));</span>

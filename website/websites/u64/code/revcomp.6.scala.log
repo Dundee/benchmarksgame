@@ -1,0 +1,16 @@
+
+Fri, 14 Dec 2012 19:01:48 GMT
+
+MAKE:
+make: *** No rule to make target `revcomp.scala-6.scala_run'.  Stop.
+0.02s to complete and log all make actions
+
+COMMAND LINE:
+env JAVA_OPTS=-Xmx512m /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.9.2/lib/scala-library.jar revcomp 0 < revcomp-input250000.txt
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Error: Could not find or load main class revcomp

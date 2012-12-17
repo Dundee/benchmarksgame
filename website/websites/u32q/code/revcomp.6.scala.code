@@ -1,0 +1,48 @@
+<span class="hl com">/*</span>
+<span class="hl com"> * The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"> * contributed by Benedikt Nordhoff</span>
+<span class="hl com"> * port from revcomp.scala-5.scala (Rex Kerr)</span>
+<span class="hl com"> */</span>
+
+<span class="hl kwa">import</span> scala<span class="hl opt">.</span>collection<span class="hl opt">.</span>mutable<span class="hl opt">.</span>ArrayBuffer
+
+<span class="hl kwa">object</span> revcomp <span class="hl opt">{</span>
+  <span class="hl kwa">def</span> <span class="hl kwd">hl</span><span class="hl opt">(</span>s<span class="hl opt">:</span> String<span class="hl opt">) =</span> s <span class="hl opt">+</span> s<span class="hl opt">.</span>toLowerCase
+  <span class="hl kwa">val</span> table<span class="hl opt">:</span>Map<span class="hl opt">[</span>Char<span class="hl opt">,</span>Char<span class="hl opt">] =</span> <span class="hl kwd">Map</span><span class="hl opt">( (</span><span class="hl kwd">hl</span><span class="hl opt">(</span><span class="hl str">&quot;ACGTUMRWSYKVHDBN&quot;</span><span class="hl opt">)</span> <span class="hl kwd">zip</span> <span class="hl opt">(</span><span class="hl str">&quot;TGCAAKYWSRMBDHVN&quot;</span><span class="hl opt">*</span><span class="hl num">2</span><span class="hl opt">)):</span> _<span class="hl opt">* )</span>
+  <span class="hl kwa">def</span> <span class="hl kwd">mapChar</span><span class="hl opt">(</span>s<span class="hl opt">:</span>Char<span class="hl opt">) =</span> <span class="hl kwd">table</span><span class="hl opt">(</span>s<span class="hl opt">)</span>
+
+  <span class="hl kwa">def</span> <span class="hl kwd">main</span><span class="hl opt">(</span>args<span class="hl opt">:</span>Array<span class="hl opt">[</span>String<span class="hl opt">]) = {</span>
+    <span class="hl kwa">var</span> buf<span class="hl opt">:</span>ArrayBuffer<span class="hl opt">[</span>Char<span class="hl opt">] =</span> <span class="hl kwa">new</span> ArrayBuffer
+    <span class="hl kwa">var</span> name <span class="hl opt">=</span> <span class="hl str">&quot;&quot;</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span>line <span class="hl opt">&lt;-</span> io<span class="hl opt">.</span>Source<span class="hl opt">.</span>stdin<span class="hl opt">.</span>getLines<span class="hl opt">) {</span>
+      <span class="hl kwa">if</span><span class="hl opt">(</span>line<span class="hl opt">.</span><span class="hl kwd">startsWith</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;&quot;</span><span class="hl opt">)) {</span>
+        <span class="hl kwd">printResult</span><span class="hl opt">(</span>name<span class="hl opt">,</span>buf<span class="hl opt">)</span> <span class="hl slc">// print the old stuff</span>
+        name <span class="hl opt">=</span> line
+        buf <span class="hl opt">=</span> <span class="hl kwa">new</span> ArrayBuffer 
+      <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+        buf <span class="hl opt">++=</span> line
+      <span class="hl opt">}</span>        
+    <span class="hl opt">}</span>
+    <span class="hl kwd">printResult</span><span class="hl opt">(</span>name<span class="hl opt">,</span>buf<span class="hl opt">)</span>
+  <span class="hl opt">}</span>
+
+  
+  <span class="hl kwa">private var</span> lastThread<span class="hl opt">:</span>Thread <span class="hl opt">=</span> null
+  <span class="hl kwa">def</span> <span class="hl kwd">printResult</span><span class="hl opt">(</span>name<span class="hl opt">:</span> String<span class="hl opt">,</span> buf<span class="hl opt">:</span>ArrayBuffer<span class="hl opt">[</span>Char<span class="hl opt">]) {</span>
+    <span class="hl kwa">if</span><span class="hl opt">(</span>buf<span class="hl opt">.</span>isEmpty<span class="hl opt">)</span> <span class="hl kwa">return</span>   
+    <span class="hl kwa">val</span> prev <span class="hl opt">=</span> lastThread
+    lastThread <span class="hl opt">=</span> <span class="hl kwa">new</span> Thread <span class="hl opt">{</span> 
+      <span class="hl kwa">override def</span> <span class="hl kwd">run</span><span class="hl opt">() {</span>
+        buf<span class="hl opt">.</span><span class="hl kwd">transform</span><span class="hl opt">(</span>mapChar<span class="hl opt">)</span> <span class="hl slc">// do the mapping inplace</span>
+        <span class="hl kwa">val</span> res <span class="hl opt">=</span> <span class="hl kwa">new</span> ArrayBuffer<span class="hl opt">[</span>Array<span class="hl opt">[</span>Char<span class="hl opt">]]</span> <span class="hl slc">// buffer for reverse grouped data</span>
+        <span class="hl kwa">for</span><span class="hl opt">(</span>x <span class="hl opt">&lt;-</span> buf<span class="hl opt">.</span>reverseIterator<span class="hl opt">.</span><span class="hl kwd">grouped</span><span class="hl opt">(</span><span class="hl num">60</span><span class="hl opt">)) {</span>res <span class="hl opt">+=</span> x<span class="hl opt">.</span>toArray<span class="hl opt">}</span> <span class="hl slc">// fill buffer</span>
+        <span class="hl kwa">if</span><span class="hl opt">(</span>prev <span class="hl opt">!=</span> null<span class="hl opt">)</span>
+          prev<span class="hl opt">.</span><span class="hl kwd">join</span><span class="hl opt">()</span> <span class="hl slc">// join with previous thread before output</span>
+        <span class="hl kwd">println</span><span class="hl opt">(</span>name<span class="hl opt">)</span>
+        <span class="hl kwa">for</span><span class="hl opt">(</span>x <span class="hl opt">&lt;-</span> res<span class="hl opt">){</span>System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">(</span>x<span class="hl opt">)}</span> <span class="hl slc">// print char arrays </span>
+      <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+    lastThread<span class="hl opt">.</span><span class="hl kwd">start</span><span class="hl opt">()</span>
+  <span class="hl opt">}</span>
+<span class="hl opt">}</span>

@@ -1,0 +1,125 @@
+<span class="hl slc">% The Computer Language Benchmarks Game</span>
+<span class="hl slc">% http://shootout.alioth.debian.org/</span>
+<span class="hl slc">% Contributed by: Hynek Vychodil 2009</span>
+<span class="hl slc">% Inspired by regex-dna Erlang HiPE #5 program</span>
+<span class="hl slc">%    by Sergei Matusevich 2007 and Thanassis Avgerinos 2009</span>
+
+<span class="hl slc">% Main changes:</span>
+<span class="hl slc">%   1/ Very fast Port line input instead stdio (~5x)</span>
+<span class="hl slc">%   2/ Faster IUB code alternatives explicit expansion</span>
+<span class="hl slc">%      using binary instead lists (~5x)</span>
+<span class="hl slc">%   3/ Precompile regexps in data loading phase</span>
+<span class="hl slc">%   4/ Simpler dispatch and result join code</span>
+
+<span class="hl slc">% Note: re module is damn slow. Boyer-Moore like binary matcher</span>
+<span class="hl slc">% written in Erlang should be magnitude faster (HiPE of course).</span>
+
+<span class="hl opt">-</span><span class="hl kwd">module</span><span class="hl opt">(</span>regexdna<span class="hl opt">).</span>
+
+<span class="hl opt">-</span><span class="hl kwd">compile</span><span class="hl opt">([</span>native<span class="hl opt">, {</span>hipe<span class="hl opt">, [</span>o3<span class="hl opt">]}]).</span>
+
+<span class="hl opt">-</span><span class="hl kwd">export</span><span class="hl opt">([</span>main<span class="hl opt">/</span><span class="hl num">1</span><span class="hl opt">]).</span>
+
+<span class="hl kwd">main</span><span class="hl opt">(</span>_<span class="hl opt">) -&gt;</span> <span class="hl kwd">main</span><span class="hl opt">().</span>
+
+<span class="hl kwd">main</span><span class="hl opt">() -&gt;</span> <span class="hl kwd">do</span><span class="hl opt">(),</span> <span class="hl kwb">halt</span><span class="hl opt">().</span>
+
+<span class="hl kwd">do</span><span class="hl opt">() -&gt;</span>
+    S <span class="hl opt">=</span> <span class="hl kwb">self</span><span class="hl opt">(),</span>
+    Worker <span class="hl opt">=</span> <span class="hl kwb">spawn_link</span><span class="hl opt">(</span><span class="hl kwa">fun</span> <span class="hl opt">() -&gt;</span> <span class="hl kwd">work</span><span class="hl opt">(</span>S<span class="hl opt">)</span> <span class="hl kwa">end</span><span class="hl opt">),</span>
+    Worker <span class="hl opt">! {</span>data<span class="hl opt">,</span> <span class="hl kwd">read</span><span class="hl opt">()},</span>
+    <span class="hl kwa">receive</span> finish <span class="hl opt">-&gt;</span> ok <span class="hl kwa">end</span><span class="hl opt">.</span>
+
+<span class="hl kwd">work</span><span class="hl opt">(</span>Master<span class="hl opt">) -&gt;</span>
+    S <span class="hl opt">=</span> <span class="hl kwb">self</span><span class="hl opt">(),</span>
+    Patterns <span class="hl opt">= [{</span>Pat<span class="hl opt">,</span> <span class="hl kwc">re</span><span class="hl opt">:</span><span class="hl kwd">compile</span><span class="hl opt">(</span>Pat<span class="hl opt">, [</span>caseless<span class="hl opt">])}</span>
+		|| Pat <span class="hl opt">&lt;-</span> <span class="hl kwd">patterns</span><span class="hl opt">()],</span>
+    <span class="hl opt">{</span>RawSize<span class="hl opt">, [</span>B3<span class="hl opt">,</span> B2<span class="hl opt">,</span> B1 | _<span class="hl opt">]} =</span> <span class="hl kwa">receive</span>
+				    <span class="hl opt">{</span>data<span class="hl opt">,</span> Data<span class="hl opt">} -&gt;</span> Data
+				  <span class="hl kwa">end</span><span class="hl opt">,</span>
+    <span class="hl opt">[</span>L1<span class="hl opt">,</span> L2<span class="hl opt">,</span> L3<span class="hl opt">] =</span> L <span class="hl opt">= [</span><span class="hl kwb">size</span><span class="hl opt">(</span>X<span class="hl opt">)</span> || X <span class="hl opt">&lt;- [</span>B1<span class="hl opt">,</span> B2<span class="hl opt">,</span> B3<span class="hl opt">]],</span>
+    Size <span class="hl opt">=</span> <span class="hl kwc">lists</span><span class="hl opt">:</span><span class="hl kwd">sum</span><span class="hl opt">(</span>L<span class="hl opt">),</span>
+    PIDS <span class="hl opt">= [{</span><span class="hl kwb">spawn_link</span><span class="hl opt">(</span><span class="hl kwd">matcher</span><span class="hl opt">(</span>S<span class="hl opt">,</span> B2<span class="hl opt">,</span> B3<span class="hl opt">,</span> MR<span class="hl opt">)),</span>
+	     <span class="hl kwd">printer</span><span class="hl opt">(</span>Pat<span class="hl opt">)}</span>
+	    || <span class="hl opt">{</span>Pat<span class="hl opt">, {</span>ok<span class="hl opt">,</span> MR<span class="hl opt">}} &lt;-</span> Patterns<span class="hl opt">],</span>
+    ExpandedSize <span class="hl opt">=</span> L1 <span class="hl opt">+</span> L3 <span class="hl opt">+</span> <span class="hl kwb">size</span><span class="hl opt">(</span><span class="hl kwd">expand</span><span class="hl opt">(</span>B2<span class="hl opt">,</span> L2<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">, &lt;&lt;&gt;&gt;)),</span>
+    <span class="hl kwd">results</span><span class="hl opt">(</span>PIDS<span class="hl opt">),</span>
+    <span class="hl kwc">io</span><span class="hl opt">:</span><span class="hl kwd">format</span><span class="hl opt">(</span><span class="hl str">&quot;~n~b~n~b~n~b~n&quot;</span><span class="hl opt">,</span>
+	      <span class="hl opt">[</span>RawSize<span class="hl opt">,</span> Size<span class="hl opt">,</span> ExpandedSize<span class="hl opt">]),</span>
+    Master <span class="hl opt">!</span> finish<span class="hl opt">.</span>
+
+<span class="hl kwd">expand</span><span class="hl opt">(</span>B<span class="hl opt">,</span> S<span class="hl opt">,</span> I<span class="hl opt">,</span> R<span class="hl opt">)</span> <span class="hl kwa">when</span> I <span class="hl opt">&lt;</span> S <span class="hl opt">-&gt;</span>
+    <span class="hl kwa">case</span> B <span class="hl kwa">of</span>
+      <span class="hl opt">&lt;&lt;</span><span class="hl kwc">_</span><span class="hl opt">:</span>I<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> $B<span class="hl opt">,</span> _<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">&gt;&gt; -&gt;</span>
+	  <span class="hl kwd">expand</span><span class="hl opt">(</span>B<span class="hl opt">,</span> S<span class="hl opt">,</span> I <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">, &lt;&lt;</span>R<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> <span class="hl str">&quot;(c|g|t)&quot;</span><span class="hl opt">&gt;&gt;);</span>
+      <span class="hl opt">&lt;&lt;</span><span class="hl kwc">_</span><span class="hl opt">:</span>I<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> $D<span class="hl opt">,</span> _<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">&gt;&gt; -&gt;</span>
+	  <span class="hl kwd">expand</span><span class="hl opt">(</span>B<span class="hl opt">,</span> S<span class="hl opt">,</span> I <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">, &lt;&lt;</span>R<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> <span class="hl str">&quot;(a|g|t)&quot;</span><span class="hl opt">&gt;&gt;);</span>
+      <span class="hl opt">&lt;&lt;</span><span class="hl kwc">_</span><span class="hl opt">:</span>I<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> $H<span class="hl opt">,</span> _<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">&gt;&gt; -&gt;</span>
+	  <span class="hl kwd">expand</span><span class="hl opt">(</span>B<span class="hl opt">,</span> S<span class="hl opt">,</span> I <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">, &lt;&lt;</span>R<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> <span class="hl str">&quot;(a|c|t)&quot;</span><span class="hl opt">&gt;&gt;);</span>
+      <span class="hl opt">&lt;&lt;</span><span class="hl kwc">_</span><span class="hl opt">:</span>I<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> $K<span class="hl opt">,</span> _<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">&gt;&gt; -&gt;</span>
+	  <span class="hl kwd">expand</span><span class="hl opt">(</span>B<span class="hl opt">,</span> S<span class="hl opt">,</span> I <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">, &lt;&lt;</span>R<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> <span class="hl str">&quot;(g|t)&quot;</span><span class="hl opt">&gt;&gt;);</span>
+      <span class="hl opt">&lt;&lt;</span><span class="hl kwc">_</span><span class="hl opt">:</span>I<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> $M<span class="hl opt">,</span> _<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">&gt;&gt; -&gt;</span>
+	  <span class="hl kwd">expand</span><span class="hl opt">(</span>B<span class="hl opt">,</span> S<span class="hl opt">,</span> I <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">, &lt;&lt;</span>R<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> <span class="hl str">&quot;(a|c)&quot;</span><span class="hl opt">&gt;&gt;);</span>
+      <span class="hl opt">&lt;&lt;</span><span class="hl kwc">_</span><span class="hl opt">:</span>I<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> $N<span class="hl opt">,</span> _<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">&gt;&gt; -&gt;</span>
+	  <span class="hl kwd">expand</span><span class="hl opt">(</span>B<span class="hl opt">,</span> S<span class="hl opt">,</span> I <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">, &lt;&lt;</span>R<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> <span class="hl str">&quot;(a|c|g|t)&quot;</span><span class="hl opt">&gt;&gt;);</span>
+      <span class="hl opt">&lt;&lt;</span><span class="hl kwc">_</span><span class="hl opt">:</span>I<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> $R<span class="hl opt">,</span> _<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">&gt;&gt; -&gt;</span>
+	  <span class="hl kwd">expand</span><span class="hl opt">(</span>B<span class="hl opt">,</span> S<span class="hl opt">,</span> I <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">, &lt;&lt;</span>R<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> <span class="hl str">&quot;(a|g)&quot;</span><span class="hl opt">&gt;&gt;);</span>
+      <span class="hl opt">&lt;&lt;</span><span class="hl kwc">_</span><span class="hl opt">:</span>I<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> $S<span class="hl opt">,</span> _<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">&gt;&gt; -&gt;</span>
+	  <span class="hl kwd">expand</span><span class="hl opt">(</span>B<span class="hl opt">,</span> S<span class="hl opt">,</span> I <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">, &lt;&lt;</span>R<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> <span class="hl str">&quot;(c|g)&quot;</span><span class="hl opt">&gt;&gt;);</span>
+      <span class="hl opt">&lt;&lt;</span><span class="hl kwc">_</span><span class="hl opt">:</span>I<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> $V<span class="hl opt">,</span> _<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">&gt;&gt; -&gt;</span>
+	  <span class="hl kwd">expand</span><span class="hl opt">(</span>B<span class="hl opt">,</span> S<span class="hl opt">,</span> I <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">, &lt;&lt;</span>R<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> <span class="hl str">&quot;(a|c|g)&quot;</span><span class="hl opt">&gt;&gt;);</span>
+      <span class="hl opt">&lt;&lt;</span><span class="hl kwc">_</span><span class="hl opt">:</span>I<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> $W<span class="hl opt">,</span> _<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">&gt;&gt; -&gt;</span>
+	  <span class="hl kwd">expand</span><span class="hl opt">(</span>B<span class="hl opt">,</span> S<span class="hl opt">,</span> I <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">, &lt;&lt;</span>R<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> <span class="hl str">&quot;(a|t)&quot;</span><span class="hl opt">&gt;&gt;);</span>
+      <span class="hl opt">&lt;&lt;</span><span class="hl kwc">_</span><span class="hl opt">:</span>I<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> $Y<span class="hl opt">,</span> _<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">&gt;&gt; -&gt;</span>
+	  <span class="hl kwd">expand</span><span class="hl opt">(</span>B<span class="hl opt">,</span> S<span class="hl opt">,</span> I <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">, &lt;&lt;</span>R<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> <span class="hl str">&quot;(c|t)&quot;</span><span class="hl opt">&gt;&gt;);</span>
+      <span class="hl opt">&lt;&lt;</span><span class="hl kwc">_</span><span class="hl opt">:</span>I<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> X<span class="hl opt">,</span> _<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">&gt;&gt; -&gt;</span>
+	  <span class="hl kwd">expand</span><span class="hl opt">(</span>B<span class="hl opt">,</span> S<span class="hl opt">,</span> I <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">, &lt;&lt;</span>R<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> X<span class="hl opt">&gt;&gt;)</span>
+    <span class="hl kwa">end</span><span class="hl opt">;</span>
+<span class="hl kwd">expand</span><span class="hl opt">(</span>_<span class="hl opt">,</span> _<span class="hl opt">,</span> _<span class="hl opt">,</span> R<span class="hl opt">) -&gt;</span> R<span class="hl opt">.</span>
+
+<span class="hl kwd">matcher</span><span class="hl opt">(</span>S<span class="hl opt">,</span> B2<span class="hl opt">,</span> B3<span class="hl opt">,</span> MR<span class="hl opt">) -&gt;</span>
+    <span class="hl kwa">fun</span> <span class="hl opt">() -&gt;</span>
+	    S <span class="hl opt">!</span>
+	      <span class="hl opt">{</span><span class="hl kwb">self</span><span class="hl opt">(),</span> <span class="hl kwd">countMatches</span><span class="hl opt">(</span>B2<span class="hl opt">,</span> MR<span class="hl opt">) +</span> <span class="hl kwd">countMatches</span><span class="hl opt">(</span>B3<span class="hl opt">,</span> MR<span class="hl opt">)}</span>
+    <span class="hl kwa">end</span><span class="hl opt">.</span>
+
+<span class="hl kwd">printer</span><span class="hl opt">(</span>Pat<span class="hl opt">) -&gt;</span>
+    <span class="hl kwa">fun</span> <span class="hl opt">(</span>Num<span class="hl opt">) -&gt;</span> <span class="hl kwc">io</span><span class="hl opt">:</span><span class="hl kwd">format</span><span class="hl opt">(</span><span class="hl str">&quot;~s ~b~n&quot;</span><span class="hl opt">, [</span>Pat<span class="hl opt">,</span> Num<span class="hl opt">])</span> <span class="hl kwa">end</span><span class="hl opt">.</span>
+
+<span class="hl kwd">countMatches</span><span class="hl opt">(</span>Data<span class="hl opt">,</span> RE<span class="hl opt">) -&gt;</span>
+    <span class="hl kwa">case</span> <span class="hl kwc">re</span><span class="hl opt">:</span><span class="hl kwd">run</span><span class="hl opt">(</span>Data<span class="hl opt">,</span> RE<span class="hl opt">, [</span>global<span class="hl opt">])</span> <span class="hl kwa">of</span>
+      <span class="hl opt">{</span>match<span class="hl opt">,</span> M<span class="hl opt">} -&gt;</span> <span class="hl kwb">length</span><span class="hl opt">(</span>M<span class="hl opt">);</span>
+      nomatch <span class="hl opt">-&gt;</span> <span class="hl num">0</span>
+    <span class="hl kwa">end</span><span class="hl opt">.</span>
+
+<span class="hl kwd">results</span><span class="hl opt">([{</span>PID<span class="hl opt">,</span> Fin<span class="hl opt">}</span> | R<span class="hl opt">]) -&gt;</span>
+    <span class="hl kwa">receive</span> <span class="hl opt">{</span>PID<span class="hl opt">,</span> Ret<span class="hl opt">} -&gt;</span> <span class="hl kwd">Fin</span><span class="hl opt">(</span>Ret<span class="hl opt">),</span> <span class="hl kwd">results</span><span class="hl opt">(</span>R<span class="hl opt">)</span> <span class="hl kwa">end</span><span class="hl opt">;</span>
+<span class="hl kwd">results</span><span class="hl opt">([]) -&gt;</span> ok<span class="hl opt">.</span>
+
+<span class="hl kwd">patterns</span><span class="hl opt">() -&gt;</span>
+    <span class="hl opt">[</span><span class="hl str">&quot;agggtaaa|tttaccct&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;[cgt]gggtaaa|tttaccc[acg]&quot;</span><span class="hl opt">,</span>
+     <span class="hl str">&quot;a[act]ggtaaa|tttacc[agt]t&quot;</span><span class="hl opt">,</span>
+     <span class="hl str">&quot;ag[act]gtaaa|tttac[agt]ct&quot;</span><span class="hl opt">,</span>
+     <span class="hl str">&quot;agg[act]taaa|ttta[agt]cct&quot;</span><span class="hl opt">,</span>
+     <span class="hl str">&quot;aggg[acg]aaa|ttt[cgt]ccct&quot;</span><span class="hl opt">,</span>
+     <span class="hl str">&quot;agggt[cgt]aa|tt[acg]accct&quot;</span><span class="hl opt">,</span>
+     <span class="hl str">&quot;agggta[cgt]a|t[acg]taccct&quot;</span><span class="hl opt">,</span>
+     <span class="hl str">&quot;agggtaa[cgt]|[acg]ttaccct&quot;</span><span class="hl opt">].</span>
+
+<span class="hl kwd">read</span><span class="hl opt">() -&gt;</span>
+    Port <span class="hl opt">=</span> <span class="hl kwb">open_port</span><span class="hl opt">({</span>fd<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">}, [</span>in<span class="hl opt">,</span> <span class="hl kwb">binary</span><span class="hl opt">, {</span>line<span class="hl opt">,</span> <span class="hl num">256</span><span class="hl opt">}]),</span>
+    <span class="hl kwd">read</span><span class="hl opt">(</span>Port<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">, [], []).</span>
+
+<span class="hl kwd">read</span><span class="hl opt">(</span>Port<span class="hl opt">,</span> Size<span class="hl opt">,</span> Seg<span class="hl opt">,</span> R<span class="hl opt">) -&gt;</span>
+    <span class="hl kwa">receive</span>
+      <span class="hl opt">{</span>Port<span class="hl opt">, {</span>data<span class="hl opt">, {</span>eol<span class="hl opt">, &lt;&lt;</span>$<span class="hl opt">&gt;:</span><span class="hl num">8</span><span class="hl opt">,</span> _<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">&gt;&gt; =</span> Line<span class="hl opt">}}} -&gt;</span>
+	  <span class="hl kwd">read</span><span class="hl opt">(</span>Port<span class="hl opt">,</span> Size <span class="hl opt">+</span> <span class="hl kwb">size</span><span class="hl opt">(</span>Line<span class="hl opt">) +</span> <span class="hl num">1</span><span class="hl opt">, [],</span>
+	       <span class="hl opt">[</span><span class="hl kwd">iolist_to_binary</span><span class="hl opt">(</span><span class="hl kwc">lists</span><span class="hl opt">:</span><span class="hl kwd">reverse</span><span class="hl opt">(</span>Seg<span class="hl opt">, []))</span> | R<span class="hl opt">]);</span>
+      <span class="hl opt">{</span>Port<span class="hl opt">, {</span>data<span class="hl opt">, {</span>eol<span class="hl opt">,</span> Line<span class="hl opt">}}} -&gt;</span>
+	  <span class="hl kwd">read</span><span class="hl opt">(</span>Port<span class="hl opt">,</span> Size <span class="hl opt">+</span> <span class="hl kwb">size</span><span class="hl opt">(</span>Line<span class="hl opt">) +</span> <span class="hl num">1</span><span class="hl opt">, [</span>Line | Seg<span class="hl opt">],</span> R<span class="hl opt">);</span>
+      <span class="hl opt">{</span><span class="hl str">'EXIT'</span><span class="hl opt">,</span> Port<span class="hl opt">,</span> normal<span class="hl opt">} -&gt;</span>
+	  <span class="hl opt">{</span>Size<span class="hl opt">, [</span><span class="hl kwd">iolist_to_binary</span><span class="hl opt">(</span><span class="hl kwc">lists</span><span class="hl opt">:</span><span class="hl kwd">reverse</span><span class="hl opt">(</span>Seg<span class="hl opt">, []))</span> | R<span class="hl opt">]};</span>
+      Other <span class="hl opt">-&gt;</span>
+	  <span class="hl kwc">io</span><span class="hl opt">:</span><span class="hl kwd">format</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Wrong! ~p~n&quot;</span><span class="hl opt">, [</span>Other<span class="hl opt">]),</span>
+	  <span class="hl kwb">exit</span><span class="hl opt">(</span>bad_data<span class="hl opt">)</span>
+    <span class="hl kwa">end</span><span class="hl opt">.</span>

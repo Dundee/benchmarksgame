@@ -1,0 +1,289 @@
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://shootout.alioth.debian.org</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- Contributed by Pascal Obry on 2005/03/21</span>
+<span class="hl slc">-- Modified by Brian Drummond on 2011/03/24</span>
+<span class="hl slc">-- Updated by Jonathan Parker and Georg Bauhaus (May 2012)</span>
+
+
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Command_Line<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Command_Line<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>      <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Nbody_Pck<span class="hl opt">;</span>        <span class="hl kwa">use</span> Nbody_Pck<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Root<span class="hl opt">;</span>
+
+<span class="hl kwa">procedure</span> Nbody <span class="hl kwa">is</span>
+
+   <span class="hl kwa">subtype</span> Real <span class="hl kwa">is</span> Root<span class="hl opt">.</span>S_Real<span class="hl opt">;</span>
+
+   <span class="hl kwa">package</span> RIO <span class="hl kwa">is new</span> Float_Io <span class="hl opt">(</span>Real<span class="hl opt">);</span>
+
+   <span class="hl kwa">procedure</span> Put
+     <span class="hl opt">(</span>Item <span class="hl opt">:</span> Real<span class="hl opt">;</span> Fore <span class="hl opt">:</span> Field <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> Aft <span class="hl opt">:</span> Field <span class="hl opt">:=</span> <span class="hl num">9</span><span class="hl opt">;</span>
+      Exp  <span class="hl opt">:</span> Field <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">)</span> <span class="hl kwa">renames</span> RIO<span class="hl opt">.</span>Put<span class="hl opt">;</span>
+
+   N <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> <span class="hl kwb">Integer</span><span class="hl kwd">'Value</span> <span class="hl opt">(</span>Argument <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">));</span>
+
+   Px<span class="hl opt">,</span> Py<span class="hl opt">,</span> Pz <span class="hl opt">:</span> Real <span class="hl opt">:=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+
+<span class="hl kwa">begin</span>
+   <span class="hl kwa">for</span> I <span class="hl kwa">in</span> Body_Name<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+      Add_Momentum <span class="hl opt">(</span>I<span class="hl opt">,</span> Px<span class="hl opt">,</span> Py<span class="hl opt">,</span> Pz<span class="hl opt">);</span>
+   <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+
+   Offset_Momentum <span class="hl opt">(</span>Sun<span class="hl opt">,</span> Px<span class="hl opt">,</span> Py<span class="hl opt">,</span> Pz<span class="hl opt">);</span>
+
+   Put <span class="hl opt">(</span>Energy<span class="hl opt">);</span>
+   New_Line<span class="hl opt">;</span>
+
+   <span class="hl kwa">for</span> K <span class="hl kwa">in</span> <span class="hl num">1</span> <span class="hl opt">..</span> N <span class="hl kwa">loop</span>
+      Advance <span class="hl opt">(</span><span class="hl num">0.01</span><span class="hl opt">);</span>
+   <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+
+   Put <span class="hl opt">(</span>Energy<span class="hl opt">);</span>
+   New_Line<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> Nbody<span class="hl opt">;</span>
+
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Numerics<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Numerics<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Root<span class="hl opt">;</span> <span class="hl kwa">use</span> Root<span class="hl opt">;</span>
+
+<span class="hl kwa">package</span> Nbody_Pck <span class="hl kwa">is</span>
+
+   <span class="hl kwa">subtype</span> Real <span class="hl kwa">is</span> Root<span class="hl opt">.</span>S_Real<span class="hl opt">;</span>
+
+   Solar_Mass    <span class="hl opt">:</span> <span class="hl kwa">constant</span> Real <span class="hl opt">:=</span> <span class="hl num">4.0</span> <span class="hl opt">*</span> Pi <span class="hl opt">*</span> Pi<span class="hl opt">;</span>
+   Days_Per_Year <span class="hl opt">:</span> <span class="hl kwa">constant</span> Real <span class="hl opt">:=</span> <span class="hl num">365.24</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> Signed <span class="hl kwa">is range</span> <span class="hl opt">-</span><span class="hl num">2</span><span class="hl opt">**</span><span class="hl num">15</span> <span class="hl opt">..</span> <span class="hl num">2</span><span class="hl opt">**</span><span class="hl num">15</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">;</span> 
+   <span class="hl kwa">subtype</span> Body_Name <span class="hl kwa">is</span> Signed <span class="hl kwa">range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">4</span><span class="hl opt">;</span>
+
+   Jupiter <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   Saturn  <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+   Neptune <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">2</span><span class="hl opt">;</span>
+   Uranus  <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+   Sun     <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">4</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> Axes <span class="hl kwa">is</span> <span class="hl opt">(</span>X<span class="hl opt">,</span> Y<span class="hl opt">,</span> Z<span class="hl opt">);</span>
+
+   <span class="hl kwa">procedure</span> Offset_Momentum
+     <span class="hl opt">(</span>Planet     <span class="hl opt">:</span> <span class="hl kwa">in</span> Body_Name<span class="hl opt">;</span>
+      Px<span class="hl opt">,</span> Py<span class="hl opt">,</span> Pz <span class="hl opt">:</span> <span class="hl kwa">in</span> Real<span class="hl opt">);</span>
+
+   <span class="hl kwa">procedure</span> Add_Momentum
+     <span class="hl opt">(</span>Planet     <span class="hl opt">:</span> <span class="hl kwa">in</span>     Body_Name<span class="hl opt">;</span>
+      Px<span class="hl opt">,</span> Py<span class="hl opt">,</span> Pz <span class="hl opt">:</span> <span class="hl kwa">in out</span> Real<span class="hl opt">);</span>
+
+   <span class="hl kwa">function</span> Energy <span class="hl kwa">return</span> Real<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Advance <span class="hl opt">(</span>Dt <span class="hl opt">:</span> <span class="hl kwa">in</span> Real<span class="hl opt">);</span>
+
+<span class="hl kwa">private</span>
+
+   <span class="hl kwa">type</span> Solar_System <span class="hl kwa">is array</span> <span class="hl opt">(</span>Body_Name<span class="hl opt">,</span> Axes<span class="hl opt">)</span> <span class="hl kwa">of</span> Real<span class="hl opt">;</span>
+   <span class="hl kwa">pragma</span> Convention <span class="hl opt">(</span>Ada<span class="hl opt">,</span> Solar_System<span class="hl opt">);</span>
+
+   Position <span class="hl opt">:</span> Solar_System <span class="hl opt">:=</span>
+     <span class="hl opt">(</span>Jupiter <span class="hl opt">=&gt; (</span>X  <span class="hl opt">=&gt;</span>  <span class="hl num">4.84143144246472090e+00</span><span class="hl opt">,</span>
+                  Y  <span class="hl opt">=&gt; -</span><span class="hl num">1.16032004402742839e+00</span><span class="hl opt">,</span>
+                  Z  <span class="hl opt">=&gt; -</span><span class="hl num">1.03622044471123109e-01</span><span class="hl opt">),</span>
+      Saturn  <span class="hl opt">=&gt; (</span>X  <span class="hl opt">=&gt;</span>  <span class="hl num">8.34336671824457987e+00</span><span class="hl opt">,</span>
+                  Y  <span class="hl opt">=&gt;</span>  <span class="hl num">4.12479856412430479e+00</span><span class="hl opt">,</span>
+                  Z  <span class="hl opt">=&gt; -</span><span class="hl num">4.03523417114321381e-01</span><span class="hl opt">),</span>
+      Uranus  <span class="hl opt">=&gt; (</span>X  <span class="hl opt">=&gt;</span>  <span class="hl num">1.28943695621391310e+01</span><span class="hl opt">,</span>
+                  y  <span class="hl opt">=&gt; -</span><span class="hl num">1.51111514016986312e+01</span><span class="hl opt">,</span>
+                  Z  <span class="hl opt">=&gt; -</span><span class="hl num">2.23307578892655734e-01</span><span class="hl opt">),</span>
+      Neptune <span class="hl opt">=&gt; (</span>X  <span class="hl opt">=&gt;</span>  <span class="hl num">1.53796971148509165e+01</span><span class="hl opt">,</span>
+                  Y  <span class="hl opt">=&gt; -</span><span class="hl num">2.59193146099879641e+01</span><span class="hl opt">,</span>
+                  Z  <span class="hl opt">=&gt;</span>  <span class="hl num">1.79258772950371181e-01</span><span class="hl opt">),</span>
+      Sun     <span class="hl opt">=&gt; (</span>X  <span class="hl opt">=&gt;</span>  <span class="hl num">0.0</span><span class="hl opt">,</span>
+                  Y  <span class="hl opt">=&gt;</span>  <span class="hl num">0.0</span><span class="hl opt">,</span>
+                  Z  <span class="hl opt">=&gt;</span>  <span class="hl num">0.0</span><span class="hl opt">));</span>
+
+   Velocity <span class="hl opt">:</span> Solar_System <span class="hl opt">:=</span>
+     <span class="hl opt">(</span>Jupiter <span class="hl opt">=&gt; (</span>X  <span class="hl opt">=&gt;</span>  <span class="hl num">1.66007664274403694e-03</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+                  Y  <span class="hl opt">=&gt;</span>  <span class="hl num">7.69901118419740425e-03</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+                  Z  <span class="hl opt">=&gt; -</span><span class="hl num">6.90460016972063023e-05</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">),</span>
+      Saturn  <span class="hl opt">=&gt; (</span>X  <span class="hl opt">=&gt; -</span><span class="hl num">2.76742510726862411e-03</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+                  Y  <span class="hl opt">=&gt;</span>  <span class="hl num">4.99852801234917238e-03</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+                  Z  <span class="hl opt">=&gt;</span>  <span class="hl num">2.30417297573763929e-05</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">),</span>
+      Uranus  <span class="hl opt">=&gt; (</span>X  <span class="hl opt">=&gt;</span>  <span class="hl num">2.96460137564761618e-03</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+                  Y  <span class="hl opt">=&gt;</span>  <span class="hl num">2.37847173959480950e-03</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+                  Z  <span class="hl opt">=&gt; -</span><span class="hl num">2.96589568540237556e-05</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">),</span>
+      Neptune <span class="hl opt">=&gt; (</span>X  <span class="hl opt">=&gt;</span>  <span class="hl num">2.68067772490389322e-03</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+                  Y  <span class="hl opt">=&gt;</span>  <span class="hl num">1.62824170038242295e-03</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">,</span>
+                  Z  <span class="hl opt">=&gt; -</span><span class="hl num">9.51592254519715870e-05</span> <span class="hl opt">*</span> Days_Per_Year<span class="hl opt">),</span>
+      Sun     <span class="hl opt">=&gt; (</span>X  <span class="hl opt">=&gt;</span>  <span class="hl num">0.0</span><span class="hl opt">,</span>
+                  Y  <span class="hl opt">=&gt;</span>  <span class="hl num">0.0</span><span class="hl opt">,</span>
+                  Z  <span class="hl opt">=&gt;</span>  <span class="hl num">0.0</span><span class="hl opt">));</span>
+
+   <span class="hl kwa">type</span> Body_Mass <span class="hl kwa">is array</span><span class="hl opt">(</span>Body_Name<span class="hl opt">)</span> <span class="hl kwa">of</span> Real<span class="hl opt">;</span>
+
+   Mass <span class="hl opt">:</span> <span class="hl kwa">constant</span> Body_Mass <span class="hl opt">:=</span>
+     <span class="hl opt">(</span>Jupiter <span class="hl opt">=&gt;</span> <span class="hl num">9.54791938424326609e-04</span> <span class="hl opt">*</span> Solar_Mass<span class="hl opt">,</span>
+      Saturn  <span class="hl opt">=&gt;</span> <span class="hl num">2.85885980666130812e-04</span> <span class="hl opt">*</span> Solar_Mass<span class="hl opt">,</span>
+      Uranus  <span class="hl opt">=&gt;</span> <span class="hl num">4.36624404335156298e-05</span> <span class="hl opt">*</span> Solar_Mass<span class="hl opt">,</span>
+      Neptune <span class="hl opt">=&gt;</span> <span class="hl num">5.15138902046611451e-05</span> <span class="hl opt">*</span> Solar_Mass<span class="hl opt">,</span>
+      Sun     <span class="hl opt">=&gt;</span> Solar_Mass<span class="hl opt">);</span>
+
+<span class="hl kwa">end</span> Nbody_Pck<span class="hl opt">;</span>
+
+<span class="hl kwa">package body</span> Nbody_Pck <span class="hl kwa">is</span>
+
+   <span class="hl kwa">procedure</span> Offset_Momentum
+     <span class="hl opt">(</span>Planet     <span class="hl opt">:</span> <span class="hl kwa">in</span> Body_Name<span class="hl opt">;</span>
+      Px<span class="hl opt">,</span> Py<span class="hl opt">,</span> Pz <span class="hl opt">:</span> <span class="hl kwa">in</span> Real<span class="hl opt">)</span> <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      Velocity <span class="hl opt">(</span>Planet<span class="hl opt">,</span> X<span class="hl opt">) := -</span>Px <span class="hl opt">/</span> Solar_Mass<span class="hl opt">;</span>
+      Velocity <span class="hl opt">(</span>Planet<span class="hl opt">,</span> Y<span class="hl opt">) := -</span>Py <span class="hl opt">/</span> Solar_Mass<span class="hl opt">;</span>
+      Velocity <span class="hl opt">(</span>Planet<span class="hl opt">,</span> Z<span class="hl opt">) := -</span>Pz <span class="hl opt">/</span> Solar_Mass<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Offset_Momentum<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Add_Momentum
+     <span class="hl opt">(</span>Planet     <span class="hl opt">:</span> <span class="hl kwa">in</span>     Body_Name<span class="hl opt">;</span>
+      Px<span class="hl opt">,</span> Py<span class="hl opt">,</span> Pz <span class="hl opt">:</span> <span class="hl kwa">in out</span> Real<span class="hl opt">)</span> <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      Px <span class="hl opt">:=</span> Px <span class="hl opt">+</span> Velocity <span class="hl opt">(</span>Planet<span class="hl opt">,</span> X<span class="hl opt">) *</span> Mass <span class="hl opt">(</span>Planet<span class="hl opt">);</span>
+      Py <span class="hl opt">:=</span> Py <span class="hl opt">+</span> Velocity <span class="hl opt">(</span>Planet<span class="hl opt">,</span> Y<span class="hl opt">) *</span> Mass <span class="hl opt">(</span>Planet<span class="hl opt">);</span>
+      Pz <span class="hl opt">:=</span> Pz <span class="hl opt">+</span> Velocity <span class="hl opt">(</span>Planet<span class="hl opt">,</span> Z<span class="hl opt">) *</span> Mass <span class="hl opt">(</span>Planet<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Add_Momentum<span class="hl opt">;</span>
+
+   <span class="hl kwa">function</span> Energy <span class="hl kwa">return</span> Real <span class="hl kwa">is</span>
+      Dx<span class="hl opt">,</span> Dy<span class="hl opt">,</span> Dz<span class="hl opt">,</span> Distance <span class="hl opt">:</span> Real<span class="hl opt">;</span>
+      E                    <span class="hl opt">:</span> Real <span class="hl opt">:=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">for</span> i <span class="hl kwa">in</span> Body_Name <span class="hl kwa">loop</span>
+        E <span class="hl opt">:=</span> E <span class="hl opt">+</span> <span class="hl num">0.5</span> <span class="hl opt">*</span> Mass <span class="hl opt">(</span>i<span class="hl opt">) *</span>
+          <span class="hl opt">(</span>Velocity <span class="hl opt">(</span>i<span class="hl opt">,</span> X<span class="hl opt">) *</span> Velocity <span class="hl opt">(</span>i<span class="hl opt">,</span> X<span class="hl opt">)</span>
+         <span class="hl opt">+</span> Velocity <span class="hl opt">(</span>i<span class="hl opt">,</span> Y<span class="hl opt">) *</span> Velocity <span class="hl opt">(</span>i<span class="hl opt">,</span> Y<span class="hl opt">)</span>
+         <span class="hl opt">+</span> Velocity <span class="hl opt">(</span>i<span class="hl opt">,</span> Z<span class="hl opt">) *</span> Velocity <span class="hl opt">(</span>i<span class="hl opt">,</span> Z<span class="hl opt">));</span>
+
+        <span class="hl kwa">if</span> i <span class="hl opt">/=</span> Body_Name<span class="hl kwd">'Last</span> <span class="hl kwa">then</span>
+           <span class="hl kwa">for</span> j <span class="hl kwa">in</span> Body_Name<span class="hl kwd">'Succ</span> <span class="hl opt">(</span>i<span class="hl opt">) ..</span> Body_Name<span class="hl kwd">'Last</span> <span class="hl kwa">loop</span>
+              Dx <span class="hl opt">:=</span> Position <span class="hl opt">(</span>i<span class="hl opt">,</span> X<span class="hl opt">) -</span> Position <span class="hl opt">(</span>j<span class="hl opt">,</span> X<span class="hl opt">);</span>
+              Dy <span class="hl opt">:=</span> Position <span class="hl opt">(</span>i<span class="hl opt">,</span> Y<span class="hl opt">) -</span> Position <span class="hl opt">(</span>j<span class="hl opt">,</span> Y<span class="hl opt">);</span>
+              Dz <span class="hl opt">:=</span> Position <span class="hl opt">(</span>i<span class="hl opt">,</span> Z<span class="hl opt">) -</span> Position <span class="hl opt">(</span>j<span class="hl opt">,</span> Z<span class="hl opt">);</span>
+              Distance <span class="hl opt">:=</span> Sqrt <span class="hl opt">(</span>Dx <span class="hl opt">*</span> Dx <span class="hl opt">+</span> Dy <span class="hl opt">*</span> Dy <span class="hl opt">+</span> Dz <span class="hl opt">*</span> Dz<span class="hl opt">);</span>
+              E <span class="hl opt">:=</span> E <span class="hl opt">- (</span>Mass <span class="hl opt">(</span>i<span class="hl opt">) *</span> Mass <span class="hl opt">(</span>j<span class="hl opt">)) /</span> Distance<span class="hl opt">;</span>
+           <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+        <span class="hl kwa">end if</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      <span class="hl kwa">return</span> E<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Energy<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Advance <span class="hl opt">(</span>Dt <span class="hl opt">:</span> <span class="hl kwa">in</span> Real<span class="hl opt">)</span> <span class="hl kwa">is</span>
+      Dx<span class="hl opt">,</span> Dy<span class="hl opt">,</span> Dz<span class="hl opt">,</span> Mag<span class="hl opt">,</span> s <span class="hl opt">:</span> Real<span class="hl opt">;</span>
+      Mass_i<span class="hl opt">,</span> Mass_j <span class="hl opt">:</span> Real<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">for</span> i <span class="hl kwa">in</span> Body_Name <span class="hl kwa">loop</span>
+         Mass_i <span class="hl opt">:=</span> Mass<span class="hl opt">(</span>i<span class="hl opt">);</span>
+         <span class="hl kwa">for</span> j <span class="hl kwa">in</span> Body_Name <span class="hl kwa">loop</span>
+            <span class="hl kwa">if</span> j <span class="hl opt">&gt;</span> i <span class="hl kwa">then</span>
+               Dx <span class="hl opt">:=</span> Position <span class="hl opt">(</span>i<span class="hl opt">,</span> X<span class="hl opt">) -</span> Position <span class="hl opt">(</span>j<span class="hl opt">,</span> X<span class="hl opt">);</span>
+               Dy <span class="hl opt">:=</span> Position <span class="hl opt">(</span>i<span class="hl opt">,</span> Y<span class="hl opt">) -</span> Position <span class="hl opt">(</span>j<span class="hl opt">,</span> Y<span class="hl opt">);</span>
+               Dz <span class="hl opt">:=</span> Position <span class="hl opt">(</span>i<span class="hl opt">,</span> Z<span class="hl opt">) -</span> Position <span class="hl opt">(</span>j<span class="hl opt">,</span> Z<span class="hl opt">);</span>
+
+               Mass_j <span class="hl opt">:=</span> Mass<span class="hl opt">(</span>j<span class="hl opt">);</span>
+               s      <span class="hl opt">:=</span> SSE_Reciprocal_Sqrt <span class="hl opt">(</span>Dx<span class="hl opt">*</span>Dx <span class="hl opt">+</span> Dy<span class="hl opt">*</span>Dy <span class="hl opt">+</span> Dz<span class="hl opt">*</span>Dz<span class="hl opt">);</span>
+               Mag    <span class="hl opt">:= (</span>dt <span class="hl opt">*</span> s<span class="hl opt">) * (</span>s <span class="hl opt">*</span> s<span class="hl opt">);</span>
+
+               Velocity <span class="hl opt">(</span>i<span class="hl opt">,</span> X<span class="hl opt">) :=</span> Velocity <span class="hl opt">(</span>i<span class="hl opt">,</span> X<span class="hl opt">) -</span> Dx <span class="hl opt">*</span> Mass_j <span class="hl opt">*</span> Mag<span class="hl opt">;</span>
+               Velocity <span class="hl opt">(</span>j<span class="hl opt">,</span> X<span class="hl opt">) :=</span> Velocity <span class="hl opt">(</span>j<span class="hl opt">,</span> X<span class="hl opt">) +</span> Dx <span class="hl opt">*</span> Mass_i <span class="hl opt">*</span> Mag<span class="hl opt">;</span>
+               Velocity <span class="hl opt">(</span>i<span class="hl opt">,</span> Y<span class="hl opt">) :=</span> Velocity <span class="hl opt">(</span>i<span class="hl opt">,</span> Y<span class="hl opt">) -</span> Dy <span class="hl opt">*</span> Mass_j <span class="hl opt">*</span> Mag<span class="hl opt">;</span>
+               Velocity <span class="hl opt">(</span>j<span class="hl opt">,</span> Y<span class="hl opt">) :=</span> Velocity <span class="hl opt">(</span>j<span class="hl opt">,</span> Y<span class="hl opt">) +</span> Dy <span class="hl opt">*</span> Mass_i <span class="hl opt">*</span> Mag<span class="hl opt">;</span>
+               Velocity <span class="hl opt">(</span>i<span class="hl opt">,</span> Z<span class="hl opt">) :=</span> Velocity <span class="hl opt">(</span>i<span class="hl opt">,</span> Z<span class="hl opt">) -</span> Dz <span class="hl opt">*</span> Mass_j <span class="hl opt">*</span> Mag<span class="hl opt">;</span>
+               Velocity <span class="hl opt">(</span>j<span class="hl opt">,</span> Z<span class="hl opt">) :=</span> Velocity <span class="hl opt">(</span>j<span class="hl opt">,</span> Z<span class="hl opt">) +</span> Dz <span class="hl opt">*</span> Mass_i <span class="hl opt">*</span> Mag<span class="hl opt">;</span>
+            <span class="hl kwa">end if</span><span class="hl opt">;</span>
+         <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+
+      <span class="hl kwa">for</span> i <span class="hl kwa">in</span> Body_Name <span class="hl kwa">loop</span>
+         Position <span class="hl opt">(</span>i<span class="hl opt">,</span> X<span class="hl opt">) :=</span> Position <span class="hl opt">(</span>i<span class="hl opt">,</span> X<span class="hl opt">) +</span> Dt <span class="hl opt">*</span> Velocity <span class="hl opt">(</span>i<span class="hl opt">,</span> X<span class="hl opt">);</span>
+         Position <span class="hl opt">(</span>i<span class="hl opt">,</span> Y<span class="hl opt">) :=</span> Position <span class="hl opt">(</span>i<span class="hl opt">,</span> Y<span class="hl opt">) +</span> Dt <span class="hl opt">*</span> Velocity <span class="hl opt">(</span>i<span class="hl opt">,</span> Y<span class="hl opt">);</span>
+         Position <span class="hl opt">(</span>i<span class="hl opt">,</span> Z<span class="hl opt">) :=</span> Position <span class="hl opt">(</span>i<span class="hl opt">,</span> Z<span class="hl opt">) +</span> Dt <span class="hl opt">*</span> Velocity <span class="hl opt">(</span>i<span class="hl opt">,</span> Z<span class="hl opt">);</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Advance<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> Nbody_Pck<span class="hl opt">;</span>
+
+<span class="hl kwa">package</span> Root <span class="hl kwa">is</span>
+
+   <span class="hl kwa">type</span> S_Real <span class="hl kwa">is new</span> <span class="hl kwb">Long_Float</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">pragma</span> Assert <span class="hl opt">(</span>S_Real<span class="hl kwd">'Size</span> <span class="hl opt">=</span> <span class="hl num">64</span> <span class="hl kwa">and</span> S_Real<span class="hl kwd">'digits</span> <span class="hl opt">&gt;</span> <span class="hl num">13</span><span class="hl opt">);</span>
+  
+   <span class="hl kwa">type</span> SSE_Vector <span class="hl kwa">is array</span> <span class="hl opt">(</span><span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">1</span><span class="hl opt">)</span> <span class="hl kwa">of</span> S_Real<span class="hl opt">;</span>
+
+   <span class="hl kwa">function</span> Sqrt <span class="hl opt">(</span>X <span class="hl opt">:</span> S_Real<span class="hl opt">)</span> <span class="hl kwa">return</span> S_Real<span class="hl opt">;</span>
+
+   <span class="hl kwa">function</span> Sqrt_of_Reciprocal <span class="hl opt">(</span>X <span class="hl opt">:</span> S_Real<span class="hl opt">)</span> <span class="hl kwa">return</span> S_Real<span class="hl opt">;</span>
+
+   <span class="hl kwa">function</span> SSE_Reciprocal_Sqrt <span class="hl opt">(</span>X <span class="hl opt">:</span> S_Real<span class="hl opt">)</span> <span class="hl kwa">return</span> S_Real<span class="hl opt">;</span>
+   <span class="hl slc">-- Returns double precision 1.0 / Sqrt(X), for Long_Float X.</span>
+
+   <span class="hl kwa">pragma</span> Inline <span class="hl opt">(</span>SSE_Reciprocal_Sqrt<span class="hl opt">);</span>
+
+<span class="hl kwa">end</span> Root<span class="hl opt">;</span>
+
+<span class="hl kwa">package body</span> root <span class="hl kwa">is</span>
+
+   <span class="hl slc">-- &quot;divpd&quot; and &quot;sqrtpd&quot; are  double precision:</span>
+
+   <span class="hl kwa">type</span> m128d <span class="hl kwa">is array</span> <span class="hl opt">(</span><span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">1</span><span class="hl opt">)</span> <span class="hl kwa">of</span> S_Real<span class="hl opt">;</span>
+   <span class="hl kwa">for</span> m128d<span class="hl kwd">'Alignment</span> <span class="hl kwa">use</span> <span class="hl num">16</span><span class="hl opt">;</span>
+   <span class="hl kwa">pragma</span> Machine_Attribute <span class="hl opt">(</span>m128d<span class="hl opt">,</span> <span class="hl str">&quot;vector_type&quot;</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">function</span> ia32_Div <span class="hl opt">(</span>X<span class="hl opt">,</span> Y <span class="hl opt">:</span> m128d<span class="hl opt">)</span> <span class="hl kwa">return</span> m128d<span class="hl opt">;</span>
+   <span class="hl kwa">pragma</span> Import <span class="hl opt">(</span>Intrinsic<span class="hl opt">,</span> ia32_Div<span class="hl opt">,</span> <span class="hl str">&quot;__builtin_ia32_divpd&quot;</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">function</span> ia32_Sqrt <span class="hl opt">(</span>X <span class="hl opt">:</span> m128d<span class="hl opt">)</span> <span class="hl kwa">return</span> m128d<span class="hl opt">;</span>
+   <span class="hl kwa">pragma</span> Import <span class="hl opt">(</span>Intrinsic<span class="hl opt">,</span> ia32_Sqrt<span class="hl opt">,</span> <span class="hl str">&quot;__builtin_ia32_sqrtpd&quot;</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">function</span> Sqrt <span class="hl opt">(</span>X <span class="hl opt">:</span> S_Real<span class="hl opt">)</span> <span class="hl kwa">return</span> S_Real <span class="hl kwa">is</span>
+   <span class="hl kwa">begin return</span> ia32_Sqrt <span class="hl opt">((</span>X<span class="hl opt">,</span> <span class="hl num">1.0</span><span class="hl opt">))(</span><span class="hl num">0</span><span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Sqrt<span class="hl opt">;</span>
+
+   <span class="hl kwa">function</span> Sqrt_of_Reciprocal <span class="hl opt">(</span>X <span class="hl opt">:</span> S_Real<span class="hl opt">)</span> <span class="hl kwa">return</span> S_Real <span class="hl kwa">is</span>
+      a <span class="hl opt">:</span> <span class="hl kwa">constant</span> m128d <span class="hl opt">:=</span> ia32_Div <span class="hl opt">((</span><span class="hl num">1.0</span><span class="hl opt">,</span> <span class="hl num">1.0</span><span class="hl opt">), (</span>X<span class="hl opt">,</span> <span class="hl num">1.0</span><span class="hl opt">));</span>
+      b <span class="hl opt">:</span> <span class="hl kwa">constant</span> m128d <span class="hl opt">:=</span> ia32_Sqrt <span class="hl opt">(</span>a<span class="hl opt">);</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">return</span> b<span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Sqrt_of_Reciprocal<span class="hl opt">;</span>
+
+   <span class="hl slc">-- &quot;rsqrtps&quot; (Reciprocal Sqrt) operates on Float (single precision):</span>
+
+   <span class="hl kwa">type</span> m128s <span class="hl kwa">is array</span> <span class="hl opt">(</span><span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">1</span><span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+   <span class="hl kwa">for</span> m128s<span class="hl kwd">'Alignment</span> <span class="hl kwa">use</span> <span class="hl num">16</span><span class="hl opt">;</span>
+   <span class="hl kwa">pragma</span> Machine_Attribute <span class="hl opt">(</span>m128s<span class="hl opt">,</span> <span class="hl str">&quot;vector_type&quot;</span><span class="hl opt">);</span>
+   <span class="hl kwa">pragma</span> Assert <span class="hl opt">(</span><span class="hl kwb">Float</span><span class="hl kwd">'Digits</span> <span class="hl opt">&lt;</span> <span class="hl num">7</span> <span class="hl kwa">and</span> m128s<span class="hl kwd">'size</span> <span class="hl opt">=</span> <span class="hl num">128</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">function</span> ia32_RSqrt <span class="hl opt">(</span>X <span class="hl opt">:</span> m128s<span class="hl opt">)</span> <span class="hl kwa">return</span> m128s<span class="hl opt">;</span>
+   <span class="hl kwa">pragma</span> Import <span class="hl opt">(</span>Intrinsic<span class="hl opt">,</span> ia32_RSqrt<span class="hl opt">,</span> <span class="hl str">&quot;__builtin_ia32_rsqrtps&quot;</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">function</span> Recip_Sqrt <span class="hl opt">(</span>X <span class="hl opt">:</span> S_Real<span class="hl opt">)</span> <span class="hl kwa">return</span> S_Real <span class="hl kwa">is</span>
+      Z <span class="hl opt">:</span>  <span class="hl kwa">constant</span> m128s <span class="hl opt">:=</span> ia32_RSqrt <span class="hl opt">((</span><span class="hl kwb">Float</span> <span class="hl opt">(</span>X<span class="hl opt">),</span> <span class="hl num">1.0</span><span class="hl opt">));</span>
+      r <span class="hl opt">:</span> S_Real <span class="hl opt">:=</span> S_Real <span class="hl opt">(</span>Z<span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">));</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">2</span> <span class="hl kwa">loop</span>
+         r <span class="hl opt">:=</span> r <span class="hl opt">*</span> <span class="hl num">1.5</span> <span class="hl opt">- ((</span><span class="hl num">0.5</span> <span class="hl opt">*</span> X<span class="hl opt">) *</span> r<span class="hl opt">) * (</span>r <span class="hl opt">*</span> r<span class="hl opt">);</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      <span class="hl kwa">return</span> r<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Recip_Sqrt<span class="hl opt">;</span>
+   <span class="hl kwa">pragma</span> Inline <span class="hl opt">(</span>Recip_Sqrt<span class="hl opt">);</span> 
+
+   <span class="hl kwa">function</span> SSE_Reciprocal_Sqrt <span class="hl opt">(</span>X <span class="hl opt">:</span> S_Real<span class="hl opt">)</span> <span class="hl kwa">return</span> S_Real <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">if Abs</span> X <span class="hl opt">&lt;</span> <span class="hl num">1.0e+30</span> <span class="hl kwa">and Abs</span> X <span class="hl opt">&gt;</span> <span class="hl num">1.0e-30</span> <span class="hl kwa">then</span>
+         <span class="hl kwa">return</span> Recip_Sqrt <span class="hl opt">(</span>X<span class="hl opt">);</span>
+      <span class="hl kwa">else</span>
+         <span class="hl kwa">return</span> Sqrt_of_Reciprocal <span class="hl opt">(</span>X<span class="hl opt">);</span>
+      <span class="hl kwa">end if</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> SSE_Reciprocal_Sqrt<span class="hl opt">;</span>
+
+   x <span class="hl opt">:</span> <span class="hl kwa">constant</span> m128d <span class="hl opt">:= (</span><span class="hl num">4.0</span><span class="hl opt">,</span> <span class="hl num">6.0</span><span class="hl opt">);</span>
+   y <span class="hl opt">:</span> <span class="hl kwa">constant</span> m128d <span class="hl opt">:= (</span><span class="hl num">2.0</span><span class="hl opt">,</span> <span class="hl num">2.0</span><span class="hl opt">);</span>
+   <span class="hl kwa">pragma</span> Assert <span class="hl opt">(</span>ia32_Div<span class="hl opt">(</span>x<span class="hl opt">,</span> y<span class="hl opt">) =</span> m128d<span class="hl str">'(2.0, 3.0));</span>
+<span class="hl str">   -- Minimal test, but a good idea when using pragma Import.</span>
+<span class="hl str"></span>
+<span class="hl str">end root;</span>
+<span class="hl str"></span>
+<span class="hl str"></span>

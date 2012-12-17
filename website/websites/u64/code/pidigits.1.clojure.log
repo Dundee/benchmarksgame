@@ -1,0 +1,27 @@
+
+Thu, 22 Sep 2011 01:11:47 GMT
+
+MAKE:
+mv pidigits.clojure pidigits.clj
+/usr/local/src/jdk1.7.0/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.3.0-RC0/clojure-1.3.0-RC0.jar clojure.lang.Compile pidigits
+Compiling pidigits to .
+1.30s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/src/jdk1.7.0/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts -Xmx32m -cp .:/usr/local/src/clojure-1.3.0-RC0/clojure-1.3.0-RC0.jar pidigits 2000
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Exception in thread "main" java.lang.ArithmeticException: integer overflow
+	at clojure.lang.Numbers.throwIntOverflow(Numbers.java:1374)
+	at clojure.lang.Numbers.multiply(Numbers.java:1738)
+	at clojure.lang.Numbers$LongOps.multiply(Numbers.java:442)
+	at clojure.lang.Numbers.multiply(Numbers.java:146)
+	at pidigits$ncomp.invoke(pidigits.clj:15)
+	at pidigits$digit.invoke(pidigits.clj:30)
+	at pidigits$_main.doInvoke(pidigits.clj:37)
+	at clojure.lang.RestFn.applyTo(RestFn.java:137)
+	at pidigits.main(Unknown Source)

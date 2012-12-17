@@ -1,0 +1,192 @@
+<span class="hl slc"># The Computer Language Benchmarks Game</span>
+<span class="hl slc"># http://shootout.alioth.debian.org/</span>
+<span class="hl slc">#</span>
+<span class="hl slc"># contributed by Ersun Warncke</span>
+<span class="hl slc">#</span>
+<span class="hl slc"># Based on regex-dna Perl #7 by Danny Bauer, Mirco Wahab, Jake Berner,</span>
+<span class="hl slc"># Andrew Rodland, and Daniel Green.</span>
+<span class="hl slc">#</span>
+<span class="hl slc"># use re::engine::RE2 - which handles large grouped alternative matches</span>
+<span class="hl slc"># very efficiently.  Do all counting in a single pass (2X as fast on</span>
+<span class="hl slc"># a single core as forking version on 2 cores).</span>
+<span class="hl slc">#</span>
+<span class="hl slc"># Do substitutions one at a time.  Even with 11 subs this is still faster.</span>
+
+<span class="hl kwa">use</span> <span class="hl kwd">strict</span><span class="hl opt">;</span>
+<span class="hl kwa">use</span> <span class="hl kwd">warnings</span><span class="hl opt">;</span>
+
+<span class="hl kwc">my</span> <span class="hl kwb">$l_file</span>  <span class="hl opt">= -</span>s <span class="hl kwd">STDIN</span><span class="hl opt">;</span>
+<span class="hl kwc">my</span> <span class="hl kwb">$content</span><span class="hl opt">;</span> read STDIN<span class="hl opt">,</span> <span class="hl kwb">$content</span><span class="hl opt">,</span> <span class="hl kwb">$l_file</span><span class="hl opt">;</span>
+<span class="hl slc"># this is significantly faster than using &lt;&gt; in this case</span>
+
+<span class="hl kwb">$content</span> <span class="hl opt">=~</span> <span class="hl kwc">s/^&gt;.*//mg</span><span class="hl opt">;</span>
+<span class="hl kwb">$content</span> <span class="hl opt">=~</span> <span class="hl kwc">tr/\n//</span><span class="hl kwd">d</span><span class="hl opt">;</span>
+
+<span class="hl kwc">my</span> <span class="hl kwb">$l_code</span> <span class="hl opt">=</span> length <span class="hl kwb">$content</span><span class="hl opt">;</span>
+
+<span class="hl kwc">my</span> <span class="hl kwb">&#64;seq</span> <span class="hl opt">= (</span>
+    <span class="hl str">'agggtaaa|tttaccct'</span><span class="hl opt">,</span>
+    <span class="hl str">'[cgt]gggtaaa|tttaccc[acg]'</span><span class="hl opt">,</span>
+    <span class="hl str">'a[act]ggtaaa|tttacc[agt]t'</span><span class="hl opt">,</span>
+    <span class="hl str">'ag[act]gtaaa|tttac[agt]ct'</span><span class="hl opt">,</span>
+    <span class="hl str">'agg[act]taaa|ttta[agt]cct'</span><span class="hl opt">,</span>
+    <span class="hl str">'aggg[acg]aaa|ttt[cgt]ccct'</span><span class="hl opt">,</span>
+    <span class="hl str">'agggt[cgt]aa|tt[acg]accct'</span><span class="hl opt">,</span>
+    <span class="hl str">'agggta[cgt]a|t[acg]taccct'</span><span class="hl opt">,</span>
+    <span class="hl str">'agggtaa[cgt]|[acg]ttaccct'</span>
+<span class="hl opt">);</span>
+
+<span class="hl kwc">my</span> <span class="hl kwb">%seq</span> <span class="hl opt">= (</span>
+    aaggtaaa <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    acggtaaa <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    agagtaaa <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    agcgtaaa <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    aggataaa <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    aggctaaa <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    agggaaaa <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    agggcaaa <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    aggggaaa <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    agggtaaa <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    agggtaac <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    agggtaag <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    agggtaat <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    agggtaca <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    agggtaga <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    agggtata <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    agggtcaa <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    agggtgaa <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    agggttaa <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    aggttaaa <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    agtgtaaa <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    atggtaaa <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    attaccct <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    cgggtaaa <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    cttaccct <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    ggggtaaa <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    gttaccct <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    tataccct <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    tctaccct <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    tgggtaaa <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    tgtaccct <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    ttaaccct <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    ttcaccct <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    ttgaccct <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    tttaacct <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    tttacact <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    tttaccat <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    tttaccca <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    tttacccc <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    tttacccg <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    tttaccct <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    tttaccgt <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    tttacctt <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    tttacgct <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    tttactct <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    tttagcct <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    tttatcct <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    tttcccct <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    tttgccct <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+    ttttccct <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">,</span>
+<span class="hl opt">);</span>
+
+<span class="hl kwc">my</span> <span class="hl kwb">%map</span> <span class="hl opt">= (</span>
+    <span class="hl str">'agg[act]taaa|ttta[agt]cct'</span> <span class="hl opt">=&gt; [</span>
+        <span class="hl str">'aggataaa'</span><span class="hl opt">,</span>
+        <span class="hl str">'aggctaaa'</span><span class="hl opt">,</span>
+        <span class="hl str">'aggttaaa'</span><span class="hl opt">,</span>
+        <span class="hl str">'tttaacct'</span><span class="hl opt">,</span>
+        <span class="hl str">'tttagcct'</span><span class="hl opt">,</span>
+        <span class="hl str">'tttatcct'</span>
+    <span class="hl opt">],</span>
+    <span class="hl str">'aggg[acg]aaa|ttt[cgt]ccct'</span> <span class="hl opt">=&gt; [</span>
+        <span class="hl str">'agggaaaa'</span><span class="hl opt">,</span>
+        <span class="hl str">'agggcaaa'</span><span class="hl opt">,</span>
+        <span class="hl str">'aggggaaa'</span><span class="hl opt">,</span>
+        <span class="hl str">'tttcccct'</span><span class="hl opt">,</span>
+        <span class="hl str">'tttgccct'</span><span class="hl opt">,</span>
+        <span class="hl str">'ttttccct'</span>
+    <span class="hl opt">],</span>
+    <span class="hl str">'[cgt]gggtaaa|tttaccc[acg]'</span> <span class="hl opt">=&gt; [</span>
+        <span class="hl str">'cgggtaaa'</span><span class="hl opt">,</span>
+        <span class="hl str">'ggggtaaa'</span><span class="hl opt">,</span>
+        <span class="hl str">'tgggtaaa'</span><span class="hl opt">,</span>
+        <span class="hl str">'tttaccca'</span><span class="hl opt">,</span>
+        <span class="hl str">'tttacccc'</span><span class="hl opt">,</span>
+        <span class="hl str">'tttacccg'</span>
+    <span class="hl opt">],</span>
+    <span class="hl str">'ag[act]gtaaa|tttac[agt]ct'</span> <span class="hl opt">=&gt; [</span>
+        <span class="hl str">'agagtaaa'</span><span class="hl opt">,</span>
+        <span class="hl str">'agcgtaaa'</span><span class="hl opt">,</span>
+        <span class="hl str">'agtgtaaa'</span><span class="hl opt">,</span>
+        <span class="hl str">'tttacact'</span><span class="hl opt">,</span>
+        <span class="hl str">'tttacgct'</span><span class="hl opt">,</span>
+        <span class="hl str">'tttactct'</span>
+    <span class="hl opt">],</span>
+    <span class="hl str">'agggtaa[cgt]|[acg]ttaccct'</span> <span class="hl opt">=&gt; [</span>
+        <span class="hl str">'agggtaac'</span><span class="hl opt">,</span>
+        <span class="hl str">'agggtaag'</span><span class="hl opt">,</span>
+        <span class="hl str">'agggtaat'</span><span class="hl opt">,</span>
+        <span class="hl str">'attaccct'</span><span class="hl opt">,</span>
+        <span class="hl str">'cttaccct'</span><span class="hl opt">,</span>
+        <span class="hl str">'gttaccct'</span>
+    <span class="hl opt">],</span>
+    <span class="hl str">'agggtaaa|tttaccct'</span> <span class="hl opt">=&gt; [</span>
+        <span class="hl str">'agggtaaa'</span><span class="hl opt">,</span>
+        <span class="hl str">'tttaccct'</span>
+    <span class="hl opt">],</span>
+    <span class="hl str">'agggt[cgt]aa|tt[acg]accct'</span> <span class="hl opt">=&gt; [</span>
+        <span class="hl str">'agggtcaa'</span><span class="hl opt">,</span>
+        <span class="hl str">'agggtgaa'</span><span class="hl opt">,</span>
+        <span class="hl str">'agggttaa'</span><span class="hl opt">,</span>
+        <span class="hl str">'ttaaccct'</span><span class="hl opt">,</span>
+        <span class="hl str">'ttcaccct'</span><span class="hl opt">,</span>
+        <span class="hl str">'ttgaccct'</span>
+    <span class="hl opt">],</span>
+    <span class="hl str">'agggta[cgt]a|t[acg]taccct'</span> <span class="hl opt">=&gt; [</span>
+        <span class="hl str">'agggtaca'</span><span class="hl opt">,</span>
+        <span class="hl str">'agggtaga'</span><span class="hl opt">,</span>
+        <span class="hl str">'agggtata'</span><span class="hl opt">,</span>
+        <span class="hl str">'tataccct'</span><span class="hl opt">,</span>
+        <span class="hl str">'tctaccct'</span><span class="hl opt">,</span>
+        <span class="hl str">'tgtaccct'</span>
+    <span class="hl opt">],</span>
+    <span class="hl str">'a[act]ggtaaa|tttacc[agt]t'</span> <span class="hl opt">=&gt; [</span>
+        <span class="hl str">'aaggtaaa'</span><span class="hl opt">,</span>
+        <span class="hl str">'acggtaaa'</span><span class="hl opt">,</span>
+        <span class="hl str">'atggtaaa'</span><span class="hl opt">,</span>
+        <span class="hl str">'tttaccat'</span><span class="hl opt">,</span>
+        <span class="hl str">'tttaccgt'</span><span class="hl opt">,</span>
+        <span class="hl str">'tttacctt'</span>
+    <span class="hl opt">]</span>
+<span class="hl opt">);</span>
+
+<span class="hl kwc">my</span> <span class="hl kwb">$rx</span> <span class="hl opt">=</span> <span class="hl str">'('</span><span class="hl opt">.</span> <span class="hl kwd">join</span><span class="hl opt">(</span><span class="hl str">'|'</span><span class="hl opt">,</span> <span class="hl kwb">&#64;seq</span><span class="hl opt">) .</span> <span class="hl str">')'</span><span class="hl opt">;</span>
+
+<span class="hl opt">{</span>
+    <span class="hl kwa">use</span> re<span class="hl opt">::</span>engine<span class="hl opt">::</span>RE2<span class="hl opt">;</span>
+
+    <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl kwb">$content</span> <span class="hl opt">=~</span> <span class="hl kwc">/$rx/</span>igo<span class="hl opt">) {</span>
+        <span class="hl kwb">$seq</span><span class="hl opt">{</span><span class="hl kwb">$1</span><span class="hl opt">}++;</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">for</span> <span class="hl kwc">my</span> <span class="hl kwb">$m</span> <span class="hl opt">(</span><span class="hl kwb">&#64;seq</span><span class="hl opt">) {</span>
+    <span class="hl kwc">my</span> <span class="hl kwb">$i</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwb">$i</span> <span class="hl opt">+=</span> <span class="hl kwb">$seq</span><span class="hl opt">{</span><span class="hl kwb">$_</span><span class="hl opt">}</span> <span class="hl kwa">for</span> &#64;<span class="hl opt">{</span><span class="hl kwb">$map</span><span class="hl opt">{</span><span class="hl kwb">$m</span><span class="hl opt">}};</span>
+    <span class="hl kwc">print</span> <span class="hl str">&quot;$m $i</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">$content</span> <span class="hl opt">=~</span> <span class="hl kwc">s/B/(c|g|t)/g</span><span class="hl opt">;</span>
+<span class="hl kwb">$content</span> <span class="hl opt">=~</span> <span class="hl kwc">s/D/(a|g|t)/g</span><span class="hl opt">;</span>
+<span class="hl kwb">$content</span> <span class="hl opt">=~</span> <span class="hl kwc">s/H/(a|c|t)/g</span><span class="hl opt">;</span>
+<span class="hl kwb">$content</span> <span class="hl opt">=~</span> <span class="hl kwc">s/K/(g|t)/g</span><span class="hl opt">;</span>
+<span class="hl kwb">$content</span> <span class="hl opt">=~</span> <span class="hl kwc">s/M/(a|c)/g</span><span class="hl opt">;</span>
+<span class="hl kwb">$content</span> <span class="hl opt">=~</span> <span class="hl kwc">s/N/(a|c|g|t)/g</span><span class="hl opt">;</span>
+<span class="hl kwb">$content</span> <span class="hl opt">=~</span> <span class="hl kwc">s/R/(a|g)/g</span><span class="hl opt">;</span>
+<span class="hl kwb">$content</span> <span class="hl opt">=~</span> <span class="hl kwc">s/S/(c|g)/g</span><span class="hl opt">;</span>
+<span class="hl kwb">$content</span> <span class="hl opt">=~</span> <span class="hl kwc">s/V/(a|c|g)/g</span><span class="hl opt">;</span>
+<span class="hl kwb">$content</span> <span class="hl opt">=~</span> <span class="hl kwc">s/W/(a|t)/g</span><span class="hl opt">;</span>
+<span class="hl kwb">$content</span> <span class="hl opt">=~</span> <span class="hl kwc">s/Y/(c|t)/g</span><span class="hl opt">;</span>
+
+printf <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">%d</span><span class="hl esc">\n</span><span class="hl str">%d</span><span class="hl esc">\n</span><span class="hl str">%d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> <span class="hl kwb">$l_file</span><span class="hl opt">,</span> <span class="hl kwb">$l_code</span><span class="hl opt">,</span> length <span class="hl kwb">$content</span><span class="hl opt">;</span>
+

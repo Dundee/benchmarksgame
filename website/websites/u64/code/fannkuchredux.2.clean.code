@@ -1,0 +1,85 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com">   </span>
+<span class="hl com">   swap and copy2 contributed by John van Groningen</span>
+<span class="hl com">   contributed by Isaac Gouy (Clean novice) </span>
+<span class="hl com">   based on the Lua program by Mike Pall</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">module</span> fannkuchredux
+
+<span class="hl kwa">import</span> StdEnv<span class="hl opt">,</span>LanguageShootout
+		
+swap i j a <span class="hl opt">:==</span> <span class="hl kwa">let</span> <span class="hl opt">(</span>ai<span class="hl opt">,</span>a1<span class="hl opt">)=</span>a<span class="hl opt">![</span>i<span class="hl opt">]; (</span>aj1<span class="hl opt">,</span>a2<span class="hl opt">)=</span>a1<span class="hl opt">![</span>j<span class="hl opt">]</span> <span class="hl kwa">in</span> <span class="hl opt">{</span>a2 <span class="hl opt">&amp; [</span>i<span class="hl opt">]=</span>aj1<span class="hl opt">,[</span>j<span class="hl opt">]=</span>ai<span class="hl opt">}</span>		
+
+flop p<span class="hl opt">=:{[</span><span class="hl num">0</span><span class="hl opt">]=</span>q0<span class="hl opt">}</span> q n sign chksum maxflips      <span class="hl slc">// Cache 0th element</span>
+   | q0 <span class="hl opt">==</span> <span class="hl num">0</span>
+      <span class="hl opt">= (</span>p<span class="hl opt">,</span>q<span class="hl opt">,</span>chksum<span class="hl opt">,</span>maxflips<span class="hl opt">)</span>
+      <span class="hl opt"># (</span>p<span class="hl opt">,</span>q<span class="hl opt">) =</span> copy2 <span class="hl num">1</span> n p q                  <span class="hl slc">// Work on a copy</span>
+      <span class="hl opt">=</span> count p q0 q <span class="hl num">1</span>
+      
+   <span class="hl kwa">where</span>
+      
+   copy2 i n a a2
+      | i <span class="hl opt">&lt;</span> n
+         <span class="hl opt">#!</span> e <span class="hl opt">=</span> a<span class="hl opt">.[</span>i<span class="hl opt">]</span>
+         <span class="hl opt">=</span> copy2 <span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span> n a <span class="hl opt">{</span>a2 <span class="hl opt">&amp; [</span>i<span class="hl opt">] =</span> e<span class="hl opt">}</span>
+         <span class="hl opt">= (</span>a<span class="hl opt">,</span>a2<span class="hl opt">)</span>
+            
+   count p q0 q<span class="hl opt">=:{[</span>q0<span class="hl opt">]=</span>qq<span class="hl opt">}</span> flips
+      | qq <span class="hl opt">==</span> <span class="hl num">0</span>                                <span class="hl slc">// ... until 0th element is 0</span>
+         | flips <span class="hl opt">&gt;</span> maxflips                    <span class="hl slc">// New maximum?</span>
+            <span class="hl opt">= (</span>p <span class="hl opt">,</span>q <span class="hl opt">,</span>chksum` <span class="hl opt">,</span>flips<span class="hl opt">)</span> 
+            <span class="hl opt">= (</span>p <span class="hl opt">,</span>q <span class="hl opt">,</span>chksum` <span class="hl opt">,</span>maxflips<span class="hl opt">)</span>
+      <span class="hl opt">#</span> q <span class="hl opt">= {</span>q <span class="hl opt">&amp; [</span>q0<span class="hl opt">] =</span> q0<span class="hl opt">}</span>
+        q <span class="hl opt">=</span> <span class="hl kwa">if</span> <span class="hl opt">(</span>q0 <span class="hl opt">&gt;=</span> <span class="hl num">3</span><span class="hl opt">) (</span>flop2 <span class="hl num">1</span> <span class="hl opt">(</span>q0<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span> q<span class="hl opt">)</span> q
+      <span class="hl opt">=</span> count p qq q <span class="hl opt">(</span>flips<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+      
+      <span class="hl kwa">where</span>
+      
+      chksum` <span class="hl opt">=</span> chksum <span class="hl opt">+ (</span>sign <span class="hl opt">*</span> flips<span class="hl opt">)</span>
+            
+   flop2 i j a
+      | i <span class="hl opt">&lt;</span> j
+         <span class="hl opt">=</span> flop2 <span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">) (</span>j<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">) (</span>swap i j a<span class="hl opt">)</span>
+         <span class="hl opt">=</span> a         
+      			
+permute <span class="hl opt">:: !*{#</span><span class="hl kwb">Int</span><span class="hl opt">} !*{#</span><span class="hl kwb">Int</span><span class="hl opt">} !</span><span class="hl kwb">Int</span> <span class="hl opt">-&gt; (!*{#</span><span class="hl kwb">Int</span><span class="hl opt">},!*{#</span><span class="hl kwb">Int</span><span class="hl opt">},!</span><span class="hl kwb">Int</span><span class="hl opt">)</span>
+permute p s sign 
+   | sign <span class="hl opt">==</span> <span class="hl num">1</span>
+      <span class="hl opt">= ((</span>swap <span class="hl num">0 1</span> p<span class="hl opt">),</span> s<span class="hl opt">, -</span><span class="hl num">1</span><span class="hl opt">)</span>                 <span class="hl slc">// Rotate 0&lt;-1</span>
+      <span class="hl opt">=</span> perm <span class="hl opt">(</span>swap <span class="hl num">1 2</span> p<span class="hl opt">)</span> <span class="hl num">2</span> s <span class="hl num">1</span>               <span class="hl slc">// Rotate 0&lt;-1 and 0&lt;-1&lt;-2  </span>
+          
+   <span class="hl kwa">where</span> 
+   
+   perm p<span class="hl opt">=:{[</span><span class="hl num">0</span><span class="hl opt">]=</span>t<span class="hl opt">}</span> i s<span class="hl opt">=:{[</span>i<span class="hl opt">]=</span>sx<span class="hl opt">}</span> sign
+      | sx <span class="hl opt">&lt;&gt;</span> <span class="hl num">0</span> 
+         <span class="hl opt">= (</span>p<span class="hl opt">, {</span>s<span class="hl opt">&amp;[</span>i<span class="hl opt">]=</span>sx<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">},</span> sign<span class="hl opt">)</span>            <span class="hl slc">// Next permutation</span>
+         <span class="hl opt">=</span> perm <span class="hl opt">(</span>rotate <span class="hl num">0</span> i p t<span class="hl opt">) (</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">) {</span>s<span class="hl opt">&amp;[</span>i<span class="hl opt">]=</span>i<span class="hl opt">}</span> sign
+
+   rotate j i p t
+      <span class="hl opt"># (</span>pj1<span class="hl opt">,</span>p<span class="hl opt">) =</span> p<span class="hl opt">![</span>j<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">]</span>
+      <span class="hl opt">#!</span> p <span class="hl opt">= {</span>p <span class="hl opt">&amp; [</span>j<span class="hl opt">]=</span>pj1<span class="hl opt">}</span>
+      | j <span class="hl opt">&lt;</span> i   <span class="hl opt">=</span> rotate <span class="hl opt">(</span>j<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span> i p t
+                <span class="hl opt">= {</span>p <span class="hl opt">&amp; [</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">]=</span>t<span class="hl opt">}</span>                     
+
+pfannkuchen <span class="hl opt">:: !</span><span class="hl kwb">Int</span> <span class="hl opt">!*{#</span><span class="hl kwb">Int</span><span class="hl opt">} !*{#</span><span class="hl kwb">Int</span><span class="hl opt">} !*{#</span><span class="hl kwb">Int</span><span class="hl opt">} !</span><span class="hl kwb">Int</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">-&gt; (!</span><span class="hl kwb">Int</span><span class="hl opt">,!</span><span class="hl kwb">Int</span><span class="hl opt">)</span>       
+pfannkuchen i p q s n sign chksum maxflips 
+   <span class="hl opt"># (</span>p<span class="hl opt">,</span>q<span class="hl opt">,</span>chksum<span class="hl opt">,</span>maxflips<span class="hl opt">) =</span> flop p q n sign chksum maxflips 
+   | i <span class="hl opt">&gt;</span> <span class="hl num">0</span>           
+      <span class="hl opt"># (</span>p<span class="hl opt">,</span>s<span class="hl opt">,</span>sign<span class="hl opt">) =</span> permute p s sign         
+      <span class="hl opt">=</span> pfannkuchen <span class="hl opt">(</span>i<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span> p q s n sign chksum maxflips	   
+      <span class="hl opt">= (</span>chksum<span class="hl opt">,</span>maxflips<span class="hl opt">)</span>
+		
+		
+Start world
+   <span class="hl opt"># (</span>chksum<span class="hl opt">,</span>maxflips<span class="hl opt">) =</span> pfannkuchen <span class="hl opt">((</span>fac n<span class="hl opt">)-</span><span class="hl num">1</span><span class="hl opt">)</span> p q s n <span class="hl num">1 0 0</span>
+
+   <span class="hl opt">=</span> toString chksum <span class="hl opt">+++</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> <span class="hl opt">+++</span> 
+     <span class="hl str">&quot;Pfannkuchen(&quot;</span> <span class="hl opt">+++</span> toString n <span class="hl opt">+++</span> <span class="hl str">&quot;) = &quot;</span> <span class="hl opt">+++</span> toString maxflips <span class="hl opt">+++</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span>	  	
+
+   <span class="hl kwa">where</span>
+   
+   n <span class="hl opt">=</span> argi
+   fac n <span class="hl opt">=</span> prod <span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">..</span>n<span class="hl opt">]</span>
+   p <span class="hl opt">= {</span>i<span class="hl esc">\\</span>i<span class="hl opt">&lt;-[</span><span class="hl num">0</span><span class="hl opt">..</span>n<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">]};</span> q <span class="hl opt">= {</span>i<span class="hl esc">\\</span>i<span class="hl opt">&lt;-[</span><span class="hl num">0</span><span class="hl opt">..</span>n<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">]};</span> s <span class="hl opt">= {</span>i<span class="hl esc">\\</span>i<span class="hl opt">&lt;-[</span><span class="hl num">0</span><span class="hl opt">..</span>n<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">]}</span> 	

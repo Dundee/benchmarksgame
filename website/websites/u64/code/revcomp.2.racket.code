@@ -1,0 +1,83 @@
+<span class="hl opt">#</span>lang racket<span class="hl opt">/</span>base
+
+<span class="hl slc">;;; The Computer Language Benchmarks Game</span>
+<span class="hl slc">;;; http://shootout.alioth.debian.org/</span>
+<span class="hl slc">;;; contributed by Eli Barzilay</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> translation <span class="hl opt">(</span><span class="hl kwa">make-vector</span> <span class="hl num">128</span><span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">for</span> <span class="hl opt">([</span>from <span class="hl opt">(</span><span class="hl kwa">in-string</span> <span class="hl str">&quot;ACGTUMRWSYKVHDBN&quot;</span><span class="hl opt">)]</span>
+      <span class="hl opt">[</span>to   <span class="hl opt">(</span><span class="hl kwa">in-string</span> <span class="hl str">&quot;TGCAAKYWSRMBDHVN&quot;</span><span class="hl opt">)])</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">([</span>to <span class="hl opt">(</span><span class="hl kwa">char-</span><span class="hl opt">&gt;</span>integer to<span class="hl opt">)])</span>
+    <span class="hl opt">(</span><span class="hl kwa">vector-set</span><span class="hl opt">!</span> translation <span class="hl opt">(</span><span class="hl kwa">char-</span><span class="hl opt">&gt;</span>integer from<span class="hl opt">)</span> to<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">vector-set</span><span class="hl opt">!</span> translation <span class="hl opt">(</span><span class="hl kwa">char-</span><span class="hl opt">&gt;</span>integer <span class="hl opt">(</span><span class="hl kwa">char-downcase</span> from<span class="hl opt">))</span> to<span class="hl opt">)))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> I <span class="hl opt">(</span><span class="hl kwa">current-input-port</span><span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">define</span> O <span class="hl opt">(</span><span class="hl kwa">current-output-port</span><span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> marker <span class="hl opt">(</span><span class="hl kwa">char-</span><span class="hl opt">&gt;</span>integer <span class="hl opt">#</span>\<span class="hl opt">&gt;))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">require</span> racket<span class="hl opt">/</span>require <span class="hl opt">(</span><span class="hl kwa">for-syntax</span> racket<span class="hl opt">/</span>base<span class="hl opt">)</span>
+         <span class="hl opt">(</span><span class="hl kwa">filtered-in</span> <span class="hl opt">(</span><span class="hl kwa">lambda</span> <span class="hl opt">(</span><span class="hl kwa">name</span><span class="hl opt">) (</span><span class="hl kwa">regexp-replace</span> <span class="hl opt">#</span>rx<span class="hl str">&quot;unsafe-&quot;</span> name <span class="hl str">&quot;&quot;</span><span class="hl opt">))</span>
+                      racket<span class="hl opt">/</span>unsafe<span class="hl opt">/</span>ops<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> line-length <span class="hl num">60</span><span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">define</span> buf-size <span class="hl opt">(*</span> <span class="hl num">64 1024</span><span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">define</span> out-buf <span class="hl slc">; so there's always enough room for newlines</span>
+  <span class="hl opt">(</span><span class="hl kwa">make-bytes</span> <span class="hl opt">(+</span> buf-size <span class="hl num">1</span> <span class="hl opt">(</span><span class="hl kwa">quotient</span> buf-size line-length<span class="hl opt">))))</span>
+<span class="hl opt">(</span><span class="hl kwa">define</span> LF <span class="hl opt">(</span><span class="hl kwa">char-</span><span class="hl opt">&gt;</span>integer <span class="hl opt">#</span><span class="hl esc">\n</span>ewline<span class="hl opt">))</span>
+
+<span class="hl opt">#</span>|
+The basic idea is to read the input in chunks<span class="hl opt">,</span> and keep pointers to
+them<span class="hl opt">,</span> then on output process each chunk to translate and reverse it
+before dumping it out.
+|<span class="hl opt">#</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> <span class="hl opt">(</span><span class="hl kwa">output</span> chunks<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> loop <span class="hl opt">([</span>chunks chunks<span class="hl opt">] [</span>col line-length<span class="hl opt">])</span>
+    <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(</span><span class="hl kwa">pair</span>? chunks<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">([</span>chunk <span class="hl opt">(</span><span class="hl kwa">car</span> chunks<span class="hl opt">)])</span>
+        <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">([</span>start  <span class="hl opt">(</span><span class="hl kwa">vector-ref</span> chunk <span class="hl num">0</span><span class="hl opt">)]</span>
+              <span class="hl opt">[</span>end    <span class="hl opt">(</span><span class="hl kwa">vector-ref</span> chunk <span class="hl num">1</span><span class="hl opt">)]</span>
+              <span class="hl opt">[</span>in-buf <span class="hl opt">(</span><span class="hl kwa">vector-ref</span> chunk <span class="hl num">2</span><span class="hl opt">)])</span>
+          <span class="hl opt">(</span><span class="hl kwa">let</span> chunk-loop <span class="hl opt">([</span>i end<span class="hl opt">] [</span>j <span class="hl num">0</span><span class="hl opt">] [</span>col col<span class="hl opt">])</span>
+            <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">&gt;</span> i start<span class="hl opt">)</span>
+              <span class="hl opt">(</span><span class="hl kwa">let</span><span class="hl opt">* ([</span>i <span class="hl opt">(</span><span class="hl kwa">fx-</span> i <span class="hl num">1</span><span class="hl opt">)] [</span>b <span class="hl opt">(</span><span class="hl kwa">bytes-ref</span> in-buf i<span class="hl opt">)])</span>
+                <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">=</span> b LF<span class="hl opt">)</span>
+                  <span class="hl opt">(</span><span class="hl kwa">chunk-loop</span> i j col<span class="hl opt">)</span>
+                  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">([</span>b <span class="hl opt">(</span><span class="hl kwa">vector-ref</span> translation b<span class="hl opt">)])</span>
+                    <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">=</span> <span class="hl num">0</span> col<span class="hl opt">)</span>
+                      <span class="hl opt">(</span><span class="hl kwa">begin</span> <span class="hl opt">(</span><span class="hl kwa">bytes-set</span><span class="hl opt">!</span> out-buf j LF<span class="hl opt">)</span>
+                             <span class="hl opt">(</span><span class="hl kwa">bytes-set</span><span class="hl opt">!</span> out-buf <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">+</span> j <span class="hl num">1</span><span class="hl opt">)</span> b<span class="hl opt">)</span>
+                             <span class="hl opt">(</span><span class="hl kwa">chunk-loop</span> i <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">+</span> j <span class="hl num">2</span><span class="hl opt">) (</span><span class="hl kwa">fx-</span> line-length <span class="hl num">1</span><span class="hl opt">)))</span>
+                      <span class="hl opt">(</span><span class="hl kwa">begin</span> <span class="hl opt">(</span><span class="hl kwa">bytes-set</span><span class="hl opt">!</span> out-buf j b<span class="hl opt">)</span>
+                             <span class="hl opt">(</span><span class="hl kwa">chunk-loop</span> i <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">+</span> j <span class="hl num">1</span><span class="hl opt">) (</span><span class="hl kwa">fx-</span> col <span class="hl num">1</span><span class="hl opt">)))))))</span>
+              <span class="hl opt">(</span><span class="hl kwa">begin</span> <span class="hl opt">(</span><span class="hl kwa">write-bytes</span> out-buf O <span class="hl num">0</span> j<span class="hl opt">)</span>
+                     <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">(</span><span class="hl kwa">cdr</span> chunks<span class="hl opt">)</span> col<span class="hl opt">))))))))</span>
+  <span class="hl opt">(</span><span class="hl kwa">newline</span> O<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define-syntax</span> case-regexp-posns
+  <span class="hl opt">(</span><span class="hl kwa">syntax-rules</span> <span class="hl opt">(=&gt;</span> else<span class="hl opt">)</span>
+    <span class="hl opt">[(</span><span class="hl kwa">_</span> rx buf start <span class="hl opt">[</span>id B1 ...<span class="hl opt">] [</span>else B2 ...<span class="hl opt">])</span>
+     <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">([</span>m <span class="hl opt">(</span><span class="hl kwa">regexp-match-positions</span> rx buf start<span class="hl opt">)])</span>
+       <span class="hl opt">(</span><span class="hl kwa">if</span> m <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">([</span>id <span class="hl opt">(</span><span class="hl kwa">car</span> m<span class="hl opt">)])</span> B1 ...<span class="hl opt">) (</span><span class="hl kwa">begin</span> B2 ...<span class="hl opt">)))]))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">([</span>m <span class="hl opt">(</span><span class="hl kwa">regexp-match</span> <span class="hl opt">#</span>rx<span class="hl str">&quot;^([^</span><span class="hl esc">\n</span><span class="hl str">]+)</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> I<span class="hl opt">)]) (</span><span class="hl kwa">display</span> <span class="hl opt">(</span><span class="hl kwa">car</span> m<span class="hl opt">)))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">let</span> loop <span class="hl opt">([</span>buf <span class="hl opt">(</span><span class="hl kwa">read-bytes</span> buf-size I<span class="hl opt">)] [</span>start <span class="hl num">0</span><span class="hl opt">] [</span>chunks <span class="hl opt">'()])</span>
+  <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">eof-object</span>? buf<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">begin</span> <span class="hl opt">(</span><span class="hl kwa">output</span> chunks<span class="hl opt">) (</span><span class="hl kwa">void</span><span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">case-regexp-posns</span> <span class="hl opt">#</span>rx<span class="hl str">&quot;&gt;&quot;</span> buf start
+      <span class="hl opt">[</span>p1 <span class="hl opt">(</span><span class="hl kwa">output</span> <span class="hl opt">(</span><span class="hl kwa">cons</span> <span class="hl opt">(</span><span class="hl kwa">vector</span> start <span class="hl opt">(</span><span class="hl kwa">car</span> p1<span class="hl opt">)</span> buf<span class="hl opt">)</span> chunks<span class="hl opt">))</span>
+          <span class="hl opt">(</span><span class="hl kwa">case-regexp-posns</span> <span class="hl opt">#</span>rx<span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> buf <span class="hl opt">(</span><span class="hl kwa">cdr</span> p1<span class="hl opt">)</span>
+            <span class="hl opt">[</span>p2 <span class="hl opt">(</span><span class="hl kwa">write-bytes</span> buf O <span class="hl opt">(</span><span class="hl kwa">car</span> p1<span class="hl opt">) (</span><span class="hl kwa">cdr</span> p2<span class="hl opt">))</span>
+                <span class="hl opt">(</span><span class="hl kwa">loop</span> buf <span class="hl opt">(</span><span class="hl kwa">cdr</span> p2<span class="hl opt">) '())]</span>
+            <span class="hl opt">[</span>else <span class="hl opt">(</span><span class="hl kwa">write-bytes</span> buf O <span class="hl opt">(</span><span class="hl kwa">car</span> p1<span class="hl opt">))</span>
+                  <span class="hl opt">(</span><span class="hl kwa">let</span> header-loop <span class="hl opt">()</span>
+                    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">([</span>buf <span class="hl opt">(</span><span class="hl kwa">read-bytes</span> buf-size I<span class="hl opt">)])</span>
+                      <span class="hl opt">(</span><span class="hl kwa">case-regexp-posns</span> <span class="hl opt">#</span>rx<span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> buf <span class="hl num">0</span>
+                        <span class="hl opt">[</span>p2 <span class="hl opt">(</span><span class="hl kwa">write-bytes</span> buf O <span class="hl num">0</span> <span class="hl opt">(</span><span class="hl kwa">cdr</span> p2<span class="hl opt">))</span>
+                            <span class="hl opt">(</span><span class="hl kwa">loop</span> buf <span class="hl opt">(</span><span class="hl kwa">cdr</span> p2<span class="hl opt">) '())]</span>
+                        <span class="hl opt">[</span>else <span class="hl opt">(</span><span class="hl kwa">write-bytes</span> buf O<span class="hl opt">) (</span><span class="hl kwa">header-loop</span><span class="hl opt">)])))])]</span>
+      <span class="hl opt">[</span>else <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">(</span><span class="hl kwa">read-bytes</span> buf-size I<span class="hl opt">)</span> <span class="hl num">0</span>
+                  <span class="hl opt">(</span><span class="hl kwa">cons</span> <span class="hl opt">(</span><span class="hl kwa">vector</span> start <span class="hl opt">(</span><span class="hl kwa">bytes-length</span> buf<span class="hl opt">)</span> buf<span class="hl opt">)</span> chunks<span class="hl opt">))])))</span>

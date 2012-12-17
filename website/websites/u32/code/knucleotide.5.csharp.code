@@ -1,0 +1,378 @@
+﻿<span class="hl com">/* The Computer Benchmarks Game</span>
+<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * contributed by by Robert F. Tobler</span>
+<span class="hl com"> *  + byte processing, C# 3.0 idioms, frame level paralellism</span>
+<span class="hl com"> * modified by Jonathan C. Dickinson</span>
+<span class="hl com"> *  + unsafe code, string-free, micro-optimizations, best performance practices</span>
+<span class="hl com"> *   (33% faster on MSFT CLR)</span>
+<span class="hl com"> */</span>
+
+<span class="hl kwa">using</span> System<span class="hl opt">;</span>
+<span class="hl kwa">using</span> System<span class="hl opt">.</span>IO<span class="hl opt">;</span>
+<span class="hl kwa">using</span> System<span class="hl opt">.</span>Collections<span class="hl opt">.</span>Generic<span class="hl opt">;</span>
+<span class="hl kwa">using</span> System<span class="hl opt">.</span>Linq<span class="hl opt">;</span>
+<span class="hl kwa">using</span> System<span class="hl opt">.</span>Text<span class="hl opt">;</span>
+<span class="hl kwa">using</span> System<span class="hl opt">.</span>Threading<span class="hl opt">;</span>
+<span class="hl kwa">using</span> System<span class="hl opt">.</span>Diagnostics<span class="hl opt">;</span>
+
+<span class="hl kwa">public sealed class</span> ByteString <span class="hl opt">:</span> IEquatable<span class="hl opt">&lt;</span>ByteString<span class="hl opt">&gt;,</span> IComparable<span class="hl opt">&lt;</span>ByteString<span class="hl opt">&gt;</span>
+<span class="hl opt">{</span>
+   <span class="hl kwa">public readonly</span> <span class="hl kwb">byte</span><span class="hl opt">[]</span> Array<span class="hl opt">;</span>
+   <span class="hl kwa">public readonly</span> <span class="hl kwb">int</span> Start<span class="hl opt">;</span>
+   <span class="hl kwa">public readonly</span> <span class="hl kwb">int</span> Length<span class="hl opt">;</span>
+   <span class="hl kwa">private</span> <span class="hl kwb">int</span> HashCode<span class="hl opt">;</span>
+
+   <span class="hl kwa">public</span> unsafe <span class="hl kwd">ByteString</span><span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">[]</span> array<span class="hl opt">,</span> <span class="hl kwb">int</span> start<span class="hl opt">,</span> <span class="hl kwb">int</span> length<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      Array <span class="hl opt">=</span> array<span class="hl opt">;</span> Start <span class="hl opt">=</span> start<span class="hl opt">;</span> Length <span class="hl opt">=</span> length<span class="hl opt">;</span>
+      HashCode <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwd">fixed</span> <span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">*</span> ptrFixed <span class="hl opt">= &amp;</span>Array<span class="hl opt">[</span>Start<span class="hl opt">])</span>
+      <span class="hl opt">{</span>
+         <span class="hl kwb">byte</span><span class="hl opt">*</span> ptr <span class="hl opt">=</span> ptrFixed<span class="hl opt">;</span>
+         <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> Length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+            HashCode <span class="hl opt">=</span> HashCode <span class="hl opt">*</span> <span class="hl num">31</span> <span class="hl opt">+ *</span>ptr<span class="hl opt">++;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public</span> unsafe <span class="hl kwd">ByteString</span><span class="hl opt">(</span><span class="hl kwb">string</span> text<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      Start <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> Length <span class="hl opt">=</span> text<span class="hl opt">.</span>Length<span class="hl opt">;</span>
+      Array <span class="hl opt">=</span> Encoding<span class="hl opt">.</span>ASCII<span class="hl opt">.</span><span class="hl kwd">GetBytes</span><span class="hl opt">(</span>text<span class="hl opt">);</span>
+      HashCode <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwd">fixed</span> <span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">*</span> ptrFixed <span class="hl opt">= &amp;</span>Array<span class="hl opt">[</span>Start<span class="hl opt">])</span>
+      <span class="hl opt">{</span>
+         <span class="hl kwb">byte</span><span class="hl opt">*</span> ptr <span class="hl opt">=</span> ptrFixed<span class="hl opt">;</span>
+         <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> Length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+            HashCode <span class="hl opt">=</span> HashCode <span class="hl opt">*</span> <span class="hl num">31</span> <span class="hl opt">+ *</span>ptr<span class="hl opt">++;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public override</span> <span class="hl kwb">int</span> <span class="hl kwd">GetHashCode</span><span class="hl opt">()</span>
+   <span class="hl opt">{</span>
+      <span class="hl kwa">return</span> HashCode<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public</span> unsafe <span class="hl kwb">bool</span> <span class="hl kwd">Equals</span><span class="hl opt">(</span>ByteString other<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>Length <span class="hl opt">!=</span> other<span class="hl opt">.</span>Length<span class="hl opt">)</span> <span class="hl kwa">return false</span><span class="hl opt">;</span>
+      <span class="hl kwd">fixed</span> <span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">*</span> thisFixed <span class="hl opt">= &amp;</span>Array<span class="hl opt">[</span>Start<span class="hl opt">],</span> otherFixed <span class="hl opt">= &amp;</span>other<span class="hl opt">.</span>Array<span class="hl opt">[</span>other<span class="hl opt">.</span>Start<span class="hl opt">])</span>
+      <span class="hl opt">{</span>
+         var tf <span class="hl opt">=</span> thisFixed<span class="hl opt">;</span>
+         var of <span class="hl opt">=</span> otherFixed<span class="hl opt">;</span>
+         <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> Length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(*(</span>tf<span class="hl opt">++) != *(</span>of<span class="hl opt">++))</span> <span class="hl kwa">return false</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">return true</span><span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public</span> unsafe <span class="hl kwb">int</span> <span class="hl kwd">CompareTo</span><span class="hl opt">(</span>ByteString other<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      <span class="hl slc">// Converting to strings to compare is just wasteful.</span>
+
+      var len <span class="hl opt">=</span> Math<span class="hl opt">.</span><span class="hl kwd">Min</span><span class="hl opt">(</span><span class="hl kwa">this</span><span class="hl opt">.</span>Length<span class="hl opt">,</span> other<span class="hl opt">.</span>Length<span class="hl opt">);</span>
+      <span class="hl kwd">fixed</span> <span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">*</span> thisFixed <span class="hl opt">= &amp;</span>Array<span class="hl opt">[</span>Start<span class="hl opt">],</span> otherFixed <span class="hl opt">= &amp;</span>other<span class="hl opt">.</span>Array<span class="hl opt">[</span>other<span class="hl opt">.</span>Start<span class="hl opt">])</span>
+      <span class="hl opt">{</span>
+         var tf <span class="hl opt">=</span> thisFixed<span class="hl opt">;</span>
+         var of <span class="hl opt">=</span> otherFixed<span class="hl opt">;</span>
+         <span class="hl slc">// We have to do this loop because of how strings compare.</span>
+         <span class="hl kwa">for</span> <span class="hl opt">(</span>var i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> len<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+         <span class="hl opt">{</span>
+            var c1 <span class="hl opt">= (</span><span class="hl kwb">char</span><span class="hl opt">)(*(</span>tf<span class="hl opt">++));</span>
+            var c2 <span class="hl opt">= (</span><span class="hl kwb">char</span><span class="hl opt">)(*(</span>of<span class="hl opt">++));</span>
+            var c <span class="hl opt">=</span> c1<span class="hl opt">.</span><span class="hl kwd">CompareTo</span><span class="hl opt">(</span>c2<span class="hl opt">);</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>c <span class="hl opt">!=</span> <span class="hl num">0</span><span class="hl opt">)</span>
+               <span class="hl kwa">return</span> c<span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">return this</span><span class="hl opt">.</span>Length<span class="hl opt">.</span><span class="hl kwd">CompareTo</span><span class="hl opt">(</span>other<span class="hl opt">.</span>Length<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public override</span> <span class="hl kwb">string</span> <span class="hl kwd">ToString</span><span class="hl opt">()</span>
+   <span class="hl opt">{</span>
+      <span class="hl kwa">return</span> Encoding<span class="hl opt">.</span>ASCII<span class="hl opt">.</span><span class="hl kwd">GetString</span><span class="hl opt">(</span>Array<span class="hl opt">,</span> Start<span class="hl opt">,</span> Length<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">public static class</span> Extensions
+<span class="hl opt">{</span>
+   <span class="hl kwa">public static readonly</span> <span class="hl kwb">byte</span><span class="hl opt">[]</span> NewLine<span class="hl opt">;</span>
+
+   <span class="hl kwa">static</span> <span class="hl kwd">Extensions</span><span class="hl opt">()</span>
+   <span class="hl opt">{</span>
+      <span class="hl slc">//NewLine = Environment.NewLine.Select(x =&gt; (byte)x).ToArray();</span>
+      NewLine <span class="hl opt">=</span> <span class="hl kwa">new</span><span class="hl opt">[] { (</span><span class="hl kwb">byte</span><span class="hl opt">)</span><span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span> <span class="hl opt">};</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public static</span> <span class="hl kwb">bool</span> <span class="hl kwd">Contains</span><span class="hl opt">(</span><span class="hl kwa">this</span> <span class="hl kwb">byte</span><span class="hl opt">[]</span> buffer<span class="hl opt">,</span> <span class="hl kwb">byte</span><span class="hl opt">[]</span> data<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      var index <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span>var i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> buffer<span class="hl opt">.</span>Length <span class="hl opt">-</span> data<span class="hl opt">.</span>Length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+      <span class="hl opt">{</span>
+         var b <span class="hl opt">=</span> buffer<span class="hl opt">[</span>i<span class="hl opt">];</span>
+
+         <span class="hl slc">// ToUpper</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>b <span class="hl opt">&gt;</span> <span class="hl num">96</span> <span class="hl opt">&amp;&amp;</span> b <span class="hl opt">&lt;</span> <span class="hl num">123</span><span class="hl opt">)</span>
+            b <span class="hl opt">= (</span><span class="hl kwb">byte</span><span class="hl opt">)(</span>b <span class="hl opt">-</span> <span class="hl num">32</span><span class="hl opt">);</span>
+
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>data<span class="hl opt">[</span>index<span class="hl opt">] ==</span> b<span class="hl opt">)</span>
+         <span class="hl opt">{</span>
+            index<span class="hl opt">++;</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>index <span class="hl opt">==</span> data<span class="hl opt">.</span>Length<span class="hl opt">)</span>
+            <span class="hl opt">{</span>
+               <span class="hl kwa">return true</span><span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+         <span class="hl opt">}</span>
+         <span class="hl kwa">else</span>
+         <span class="hl opt">{</span>
+            index <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">return false</span><span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public static</span> IEnumerable<span class="hl opt">&lt;</span><span class="hl kwb">byte</span><span class="hl opt">[]&gt;</span> <span class="hl kwd">ReadByteLines</span><span class="hl opt">(</span><span class="hl kwa">this</span> Stream stream<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      <span class="hl slc">// Read a stream as a set of byte arrays representing strings.</span>
+      var dynamic <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span><span class="hl num">85</span><span class="hl opt">];</span>
+      var lineLength <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+      var buffer <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span><span class="hl num">4096</span><span class="hl opt">];</span> <span class="hl slc">// Ideally the system page size but I am not sure what Linux uses.</span>
+      var index <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      var readCount <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+      <span class="hl kwa">while</span> <span class="hl opt">((</span>readCount <span class="hl opt">=</span> stream<span class="hl opt">.</span><span class="hl kwd">Read</span><span class="hl opt">(</span>buffer<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> buffer<span class="hl opt">.</span>Length<span class="hl opt">)) !=</span> <span class="hl num">0</span><span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+         <span class="hl kwa">for</span> <span class="hl opt">(</span>var i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> readCount<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+         <span class="hl opt">{</span>
+            var b <span class="hl opt">=</span> buffer<span class="hl opt">[</span>i<span class="hl opt">];</span>
+
+            <span class="hl slc">// ToUpper</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>b <span class="hl opt">&gt;</span> <span class="hl num">96</span> <span class="hl opt">&amp;&amp;</span> b <span class="hl opt">&lt;</span> <span class="hl num">123</span><span class="hl opt">)</span>
+               b <span class="hl opt">= (</span><span class="hl kwb">byte</span><span class="hl opt">)(</span>b <span class="hl opt">-</span> <span class="hl num">32</span><span class="hl opt">);</span>
+
+            <span class="hl slc">// Check for a newline.</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>NewLine<span class="hl opt">[</span>index<span class="hl opt">] ==</span> b<span class="hl opt">)</span>
+            <span class="hl opt">{</span>
+               index<span class="hl opt">++;</span>
+               <span class="hl kwa">if</span> <span class="hl opt">(</span>index <span class="hl opt">==</span> NewLine<span class="hl opt">.</span>Length<span class="hl opt">)</span>
+               <span class="hl opt">{</span>
+                  <span class="hl kwa">if</span> <span class="hl opt">(</span>lineLength <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl opt">)</span>
+                     yield <span class="hl kwa">return new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">];</span>
+                  var result <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>lineLength<span class="hl opt">];</span>
+                  Buffer<span class="hl opt">.</span><span class="hl kwd">BlockCopy</span><span class="hl opt">(</span>dynamic<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> result<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> lineLength<span class="hl opt">);</span>
+                  yield <span class="hl kwa">return</span> result<span class="hl opt">;</span>
+                  lineLength <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+                  index <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+               <span class="hl opt">}</span>
+            <span class="hl opt">}</span>
+            <span class="hl kwa">else</span>
+            <span class="hl opt">{</span>
+               <span class="hl slc">// Otherwise append what we had of the newline.</span>
+               <span class="hl kwa">for</span> <span class="hl opt">(</span>var j <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> j <span class="hl opt">&lt;</span> index<span class="hl opt">;</span> j<span class="hl opt">++)</span>
+               <span class="hl opt">{</span>
+                  <span class="hl kwd">Append</span><span class="hl opt">(</span><span class="hl kwa">ref</span> dynamic<span class="hl opt">,</span> <span class="hl kwa">ref</span> lineLength<span class="hl opt">,</span> NewLine<span class="hl opt">[</span>j<span class="hl opt">]);</span>
+               <span class="hl opt">}</span>
+
+               <span class="hl slc">// And the data.</span>
+               index <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+               <span class="hl kwd">Append</span><span class="hl opt">(</span><span class="hl kwa">ref</span> dynamic<span class="hl opt">,</span> <span class="hl kwa">ref</span> lineLength<span class="hl opt">,</span> b<span class="hl opt">);</span>
+            <span class="hl opt">}</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">Append</span><span class="hl opt">(</span><span class="hl kwa">ref</span> <span class="hl kwb">byte</span><span class="hl opt">[]</span> dynamic<span class="hl opt">,</span> <span class="hl kwa">ref</span> <span class="hl kwb">int</span> lineLength<span class="hl opt">,</span> <span class="hl kwb">byte</span> b<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      var newLength <span class="hl opt">=</span> lineLength <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>dynamic<span class="hl opt">.</span>Length <span class="hl opt">&lt;</span> newLength<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+         <span class="hl slc">// Allocate into an new array but use a DMA function</span>
+         <span class="hl slc">// instead of a silly O(n) Array.Copy/Resize.</span>
+         var newArr <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>dynamic<span class="hl opt">.</span>Length <span class="hl opt">+</span> <span class="hl num">85</span><span class="hl opt">];</span>
+         Buffer<span class="hl opt">.</span><span class="hl kwd">BlockCopy</span><span class="hl opt">(</span>dynamic<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> newArr<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> dynamic<span class="hl opt">.</span>Length<span class="hl opt">);</span>
+         dynamic <span class="hl opt">=</span> newArr<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+      dynamic<span class="hl opt">[</span>lineLength<span class="hl opt">] =</span> b<span class="hl opt">;</span>
+      lineLength <span class="hl opt">=</span> newLength<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public static</span> <span class="hl kwb">byte</span><span class="hl opt">[]</span> <span class="hl kwd">Concat</span><span class="hl opt">(</span><span class="hl kwa">this</span> IList<span class="hl opt">&lt;</span><span class="hl kwb">byte</span><span class="hl opt">[]&gt;</span> bytes<span class="hl opt">,</span> <span class="hl kwb">int</span> totalCount<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      <span class="hl slc">// Once again we use DMA.</span>
+      var buffer <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>totalCount<span class="hl opt">];</span>
+      var pos <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span>var i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> bytes<span class="hl opt">.</span>Count<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+      <span class="hl opt">{</span>
+         var arr <span class="hl opt">=</span> bytes<span class="hl opt">[</span>i<span class="hl opt">];</span>
+         Buffer<span class="hl opt">.</span><span class="hl kwd">BlockCopy</span><span class="hl opt">(</span>arr<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> buffer<span class="hl opt">,</span> pos<span class="hl opt">,</span> arr<span class="hl opt">.</span>Length<span class="hl opt">);</span>
+         pos <span class="hl opt">+=</span> arr<span class="hl opt">.</span>Length<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">return</span> buffer<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">public static class</span> Program
+<span class="hl opt">{</span>
+   <span class="hl kwa">public static</span> <span class="hl kwb">int</span> TaskCount<span class="hl opt">;</span>
+   <span class="hl kwa">public static</span> <span class="hl kwb">int</span> Current <span class="hl opt">= -</span><span class="hl num">1</span><span class="hl opt">;</span>
+   <span class="hl kwa">public static</span> KNucleotide<span class="hl opt">[]</span> kna<span class="hl opt">;</span>
+
+   <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">Main</span><span class="hl opt">(</span><span class="hl kwb">string</span><span class="hl opt">[]</span> args<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      <span class="hl slc">// The help page asks to deal with command-line args.</span>
+      var source <span class="hl opt">=</span> Console<span class="hl opt">.</span><span class="hl kwd">OpenStandardInput</span><span class="hl opt">();</span>
+      var input <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span><span class="hl kwb">byte</span><span class="hl opt">[]&gt;();</span>
+      var totalCount <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+      var hasSeenThree <span class="hl opt">=</span> <span class="hl kwa">false</span><span class="hl opt">;</span>
+      <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var line <span class="hl kwa">in</span> source<span class="hl opt">.</span><span class="hl kwd">ReadByteLines</span><span class="hl opt">())</span>
+      <span class="hl opt">{</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(!</span>hasSeenThree<span class="hl opt">)</span>
+         <span class="hl opt">{</span>
+            hasSeenThree <span class="hl opt">=</span> line<span class="hl opt">.</span><span class="hl kwd">Contains</span><span class="hl opt">(</span><span class="hl kwa">new</span><span class="hl opt">[] { (</span><span class="hl kwb">byte</span><span class="hl opt">)</span><span class="hl str">'&gt;'</span><span class="hl opt">, (</span><span class="hl kwb">byte</span><span class="hl opt">)</span><span class="hl str">'T'</span><span class="hl opt">, (</span><span class="hl kwb">byte</span><span class="hl opt">)</span><span class="hl str">'H'</span><span class="hl opt">, (</span><span class="hl kwb">byte</span><span class="hl opt">)</span><span class="hl str">'R'</span><span class="hl opt">, (</span><span class="hl kwb">byte</span><span class="hl opt">)</span><span class="hl str">'E'</span><span class="hl opt">, (</span><span class="hl kwb">byte</span><span class="hl opt">)</span><span class="hl str">'E'</span> <span class="hl opt">});</span>
+            <span class="hl kwa">continue</span><span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>line<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] == (</span><span class="hl kwb">byte</span><span class="hl opt">)</span><span class="hl str">'&gt;'</span><span class="hl opt">)</span> <span class="hl kwa">break</span><span class="hl opt">;</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>line<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] != (</span><span class="hl kwb">byte</span><span class="hl opt">)</span><span class="hl str">';'</span><span class="hl opt">)</span>
+         <span class="hl opt">{</span>
+            totalCount <span class="hl opt">+=</span> line<span class="hl opt">.</span>Length<span class="hl opt">;</span>
+            input<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>line<span class="hl opt">);</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+
+      var lengths <span class="hl opt">=</span> <span class="hl kwa">new</span><span class="hl opt">[] {</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl num">3</span><span class="hl opt">,</span> <span class="hl num">4</span><span class="hl opt">,</span> <span class="hl num">6</span><span class="hl opt">,</span> <span class="hl num">12</span><span class="hl opt">,</span> <span class="hl num">18</span> <span class="hl opt">};</span>
+      TaskCount <span class="hl opt">=</span> lengths<span class="hl opt">.</span><span class="hl kwd">Aggregate</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">, (</span>cnt<span class="hl opt">,</span> len<span class="hl opt">) =&gt;</span> cnt <span class="hl opt">+</span> len<span class="hl opt">);</span> <span class="hl slc">// Wasteful but likely not an issue.</span>
+      kna <span class="hl opt">=</span> <span class="hl kwa">new</span> KNucleotide<span class="hl opt">[</span>TaskCount<span class="hl opt">];</span>
+
+      var bytes <span class="hl opt">=</span> input<span class="hl opt">.</span><span class="hl kwd">Concat</span><span class="hl opt">(</span>totalCount<span class="hl opt">);</span>
+      lengths<span class="hl opt">.</span><span class="hl kwd">Aggregate</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">, (</span>cnt<span class="hl opt">,</span> len<span class="hl opt">) =&gt;</span>
+      <span class="hl opt">{</span>
+         <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> len<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+            kna<span class="hl opt">[</span>cnt <span class="hl opt">+</span> i<span class="hl opt">] =</span> <span class="hl kwa">new</span> <span class="hl kwd">KNucleotide</span><span class="hl opt">(</span>bytes<span class="hl opt">,</span> len<span class="hl opt">,</span> i<span class="hl opt">);</span>
+         <span class="hl kwa">return</span> cnt <span class="hl opt">+</span> len<span class="hl opt">;</span>
+      <span class="hl opt">});</span>
+
+      <span class="hl slc">// This technically should be faster, but my profiler is broken.</span>
+      var events <span class="hl opt">=</span> <span class="hl kwa">new</span> AutoResetEvent<span class="hl opt">[</span>Environment<span class="hl opt">.</span>ProcessorCount<span class="hl opt">];</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> events<span class="hl opt">.</span>Length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+      <span class="hl opt">{</span>
+         events<span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl kwa">new</span> <span class="hl kwd">AutoResetEvent</span><span class="hl opt">(</span><span class="hl kwa">false</span><span class="hl opt">);</span>
+         <span class="hl kwa">new</span> <span class="hl kwd">Thread</span><span class="hl opt">(</span>CountFrequencies<span class="hl opt">).</span><span class="hl kwd">Start</span><span class="hl opt">(</span>events<span class="hl opt">[</span>i<span class="hl opt">]);</span>
+      <span class="hl opt">}</span>
+
+      WaitHandle<span class="hl opt">.</span><span class="hl kwd">WaitAll</span><span class="hl opt">(</span>events<span class="hl opt">);</span>
+
+      <span class="hl slc">// Converting these to byte arrays at compile time is slightly wasteful but likely premature.</span>
+      var seqs <span class="hl opt">=</span> <span class="hl kwa">new</span><span class="hl opt">[] {</span> <span class="hl kwa">null</span><span class="hl opt">,</span> <span class="hl kwa">null</span><span class="hl opt">,</span>
+            <span class="hl str">&quot;GGT&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTA&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATT&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATTTTAATT&quot;</span><span class="hl opt">,</span>
+            <span class="hl str">&quot;GGTATTTTAATTTATAGT&quot;</span><span class="hl opt">};</span>
+
+      <span class="hl kwb">int</span> index <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      lengths<span class="hl opt">.</span><span class="hl kwd">Aggregate</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">, (</span>cnt<span class="hl opt">,</span> len<span class="hl opt">) =&gt;</span>
+      <span class="hl opt">{</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>len <span class="hl opt">&lt;</span> <span class="hl num">3</span><span class="hl opt">)</span>
+         <span class="hl opt">{</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> len<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+               kna<span class="hl opt">[</span>cnt<span class="hl opt">].</span><span class="hl kwd">AddFrequencies</span><span class="hl opt">(</span>kna<span class="hl opt">[</span>cnt <span class="hl opt">+</span> i<span class="hl opt">]);</span>
+            kna<span class="hl opt">[</span>cnt<span class="hl opt">].</span><span class="hl kwd">WriteFrequencies</span><span class="hl opt">();</span>
+         <span class="hl opt">}</span>
+         <span class="hl kwa">else</span>
+         <span class="hl opt">{</span>
+            var fragment <span class="hl opt">=</span> seqs<span class="hl opt">[</span>index<span class="hl opt">];</span>
+            <span class="hl kwb">int</span> freq <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> len<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+               freq <span class="hl opt">+=</span> kna<span class="hl opt">[</span>cnt <span class="hl opt">+</span> i<span class="hl opt">].</span><span class="hl kwd">GetCount</span><span class="hl opt">(</span>fragment<span class="hl opt">);</span>
+            Console<span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(</span><span class="hl str">&quot;{0}</span><span class="hl esc">\t</span><span class="hl str">{1}&quot;</span><span class="hl opt">,</span> freq<span class="hl opt">,</span> fragment<span class="hl opt">);</span>
+         <span class="hl opt">}</span>
+         index<span class="hl opt">++;</span>
+         <span class="hl kwa">return</span> cnt <span class="hl opt">+</span> len<span class="hl opt">;</span>
+      <span class="hl opt">});</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">static</span> <span class="hl kwb">void</span> <span class="hl kwd">CountFrequencies</span><span class="hl opt">(</span><span class="hl kwb">object</span> state<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      <span class="hl kwb">int</span> index<span class="hl opt">;</span>
+      <span class="hl kwa">while</span> <span class="hl opt">((</span>index <span class="hl opt">=</span> Interlocked<span class="hl opt">.</span><span class="hl kwd">Increment</span><span class="hl opt">(</span><span class="hl kwa">ref</span> Current<span class="hl opt">)) &lt;</span> TaskCount<span class="hl opt">)</span>
+         kna<span class="hl opt">[</span>index<span class="hl opt">].</span><span class="hl kwd">KFrequency</span><span class="hl opt">();</span>
+      <span class="hl opt">((</span>AutoResetEvent<span class="hl opt">)</span>state<span class="hl opt">).</span><span class="hl kwd">Set</span><span class="hl opt">();</span>
+   <span class="hl opt">}</span>
+
+<span class="hl opt">}</span>
+
+<span class="hl kwa">public sealed class</span> KNucleotide
+<span class="hl opt">{</span>
+
+   <span class="hl kwa">private sealed class</span> Count
+   <span class="hl opt">{</span>
+      <span class="hl kwa">public</span> <span class="hl kwb">int</span> V<span class="hl opt">;</span>
+      <span class="hl kwa">public</span> <span class="hl kwd">Count</span><span class="hl opt">(</span><span class="hl kwb">int</span> v<span class="hl opt">) {</span> V <span class="hl opt">=</span> v<span class="hl opt">; }</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private</span> Dictionary<span class="hl opt">&lt;</span>ByteString<span class="hl opt">,</span> Count<span class="hl opt">&gt;</span> frequencies
+      <span class="hl opt">=</span> <span class="hl kwa">new</span> Dictionary<span class="hl opt">&lt;</span>ByteString<span class="hl opt">,</span> Count<span class="hl opt">&gt;();</span>
+
+   <span class="hl kwa">private</span> <span class="hl kwb">byte</span><span class="hl opt">[]</span> sequence<span class="hl opt">;</span>
+   <span class="hl kwb">int</span> length<span class="hl opt">;</span>
+   <span class="hl kwb">int</span> frame<span class="hl opt">;</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwd">KNucleotide</span><span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">[]</span> s<span class="hl opt">,</span> <span class="hl kwb">int</span> l<span class="hl opt">,</span> <span class="hl kwb">int</span> f<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      sequence <span class="hl opt">=</span> s<span class="hl opt">;</span> length <span class="hl opt">=</span> l<span class="hl opt">;</span> frame <span class="hl opt">=</span> f<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">AddFrequencies</span><span class="hl opt">(</span>KNucleotide other<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var kvp <span class="hl kwa">in</span> other<span class="hl opt">.</span>frequencies<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+         Count count<span class="hl opt">;</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>frequencies<span class="hl opt">.</span><span class="hl kwd">TryGetValue</span><span class="hl opt">(</span>kvp<span class="hl opt">.</span>Key<span class="hl opt">,</span> out count<span class="hl opt">))</span>
+            count<span class="hl opt">.</span>V <span class="hl opt">+=</span> kvp<span class="hl opt">.</span>Value<span class="hl opt">.</span>V<span class="hl opt">;</span>
+         <span class="hl kwa">else</span>
+            frequencies<span class="hl opt">[</span>kvp<span class="hl opt">.</span>Key<span class="hl opt">] =</span> kvp<span class="hl opt">.</span>Value<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">WriteFrequencies</span><span class="hl opt">()</span>
+   <span class="hl opt">{</span>
+      var items <span class="hl opt">=</span> frequencies<span class="hl opt">.</span><span class="hl kwd">ToArray</span><span class="hl opt">();</span>
+      Array<span class="hl opt">.</span><span class="hl kwd">Sort</span><span class="hl opt">(</span>items<span class="hl opt">,</span> SortByFrequencyAndCode<span class="hl opt">);</span> <span class="hl slc">// Apparantly faster, who knows?</span>
+      <span class="hl kwb">double</span> percent <span class="hl opt">=</span> <span class="hl num">100.0</span> <span class="hl opt">/ (</span>sequence<span class="hl opt">.</span>Length <span class="hl opt">-</span> length <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">);</span>
+      <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var item <span class="hl kwa">in</span> items<span class="hl opt">)</span>
+         Console<span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(</span><span class="hl str">&quot;{0} {1:f3}&quot;</span><span class="hl opt">,</span>
+                  item<span class="hl opt">.</span>Key<span class="hl opt">.</span><span class="hl kwd">ToString</span><span class="hl opt">(),</span> item<span class="hl opt">.</span>Value<span class="hl opt">.</span>V <span class="hl opt">*</span> percent<span class="hl opt">);</span>
+      Console<span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">();</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">GetCount</span><span class="hl opt">(</span><span class="hl kwb">string</span> fragment<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      Count count<span class="hl opt">;</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(!</span>frequencies<span class="hl opt">.</span><span class="hl kwd">TryGetValue</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">ByteString</span><span class="hl opt">(</span>fragment<span class="hl opt">),</span> out count<span class="hl opt">))</span>
+         count <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Count</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
+      <span class="hl kwa">return</span> count<span class="hl opt">.</span>V<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">KFrequency</span><span class="hl opt">()</span>
+   <span class="hl opt">{</span>
+      <span class="hl kwb">int</span> n <span class="hl opt">=</span> sequence<span class="hl opt">.</span>Length <span class="hl opt">-</span> length <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> frame<span class="hl opt">;</span> i <span class="hl opt">&lt;</span> n<span class="hl opt">;</span> i <span class="hl opt">+=</span> length<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+         var key <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">ByteString</span><span class="hl opt">(</span>sequence<span class="hl opt">,</span> i<span class="hl opt">,</span> length<span class="hl opt">);</span>
+         Count count<span class="hl opt">;</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>frequencies<span class="hl opt">.</span><span class="hl kwd">TryGetValue</span><span class="hl opt">(</span>key<span class="hl opt">,</span> out count<span class="hl opt">))</span>
+            count<span class="hl opt">.</span>V<span class="hl opt">++;</span>
+         <span class="hl kwa">else</span>
+            frequencies<span class="hl opt">[</span>key<span class="hl opt">] =</span> <span class="hl kwa">new</span> <span class="hl kwd">Count</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwb">int</span> <span class="hl kwd">SortByFrequencyAndCode</span><span class="hl opt">(</span>
+         KeyValuePair<span class="hl opt">&lt;</span>ByteString<span class="hl opt">,</span> Count<span class="hl opt">&gt;</span> i0<span class="hl opt">,</span>
+         KeyValuePair<span class="hl opt">&lt;</span>ByteString<span class="hl opt">,</span> Count<span class="hl opt">&gt;</span> i1<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      <span class="hl kwb">int</span> order <span class="hl opt">=</span> i1<span class="hl opt">.</span>Value<span class="hl opt">.</span>V<span class="hl opt">.</span><span class="hl kwd">CompareTo</span><span class="hl opt">(</span>i0<span class="hl opt">.</span>Value<span class="hl opt">.</span>V<span class="hl opt">);</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>order <span class="hl opt">!=</span> <span class="hl num">0</span><span class="hl opt">)</span> <span class="hl kwa">return</span> order<span class="hl opt">;</span>
+      <span class="hl kwa">return</span> i0<span class="hl opt">.</span>Key<span class="hl opt">.</span><span class="hl kwd">CompareTo</span><span class="hl opt">(</span>i1<span class="hl opt">.</span>Key<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>

@@ -1,0 +1,18 @@
+
+Fri, 07 Sep 2012 19:19:58 GMT
+
+MAKE:
+mv fannkuchredux.ghc-3.ghc fannkuchredux.ghc-3.hs
+/usr/local/src/ghc-7.6.1/bin/ghc --make -fllvm -O2 -XBangPatterns -rtsopts  fannkuchredux.ghc-3.hs -o fannkuchredux.ghc-3.ghc_run
+[1 of 1] Compiling Main             ( fannkuchredux.ghc-3.hs, fannkuchredux.ghc-3.o )
+Linking fannkuchredux.ghc-3.ghc_run ...
+rm fannkuchredux.ghc-3.hs
+1.22s to complete and log all make actions
+
+COMMAND LINE:
+./fannkuchredux.ghc-3.ghc_run  10
+
+TIMED OUT after 300s
+
+
+PROGRAM OUTPUT:

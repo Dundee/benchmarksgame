@@ -1,0 +1,38 @@
+
+Mon, 08 Oct 2012 22:13:08 GMT
+
+MAKE:
+cp: `spectralnorm.sbcl-3.sbcl' and `./spectralnorm.sbcl-3.sbcl' are the same file
+SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load "spectralnorm.sbcl-3.sbcl_compile")'
+### START spectralnorm.sbcl-3.sbcl_compile
+(handler-bind ((sb-ext:defconstant-uneql      (lambda (c) (abort c))))      (load (compile-file "spectralnorm.sbcl-3.sbcl" ))) (save-lisp-and-die "sbcl.core" :purify t)
+### END spectralnorm.sbcl-3.sbcl_compile
+
+
+; compiling file "/home/dunham/shootout/bench/spectralnorm/spectralnorm.sbcl-3.sbcl" (written 05 DEC 2008 06:18:46 PM):
+; compiling (DEFMACRO EVAL-A ...)
+; compiling (DEFUN EVAL-AT-TIMES-U ...)
+; compiling (DEFUN EVAL-A-TIMES-U ...)
+; compiling (DEFUN EXECUTE-PARALLEL ...)
+; compiling (DEFUN EVAL-ATA-TIMES-U ...)
+; compiling (DEFUN MAIN ...)
+
+; /home/dunham/benchmarksgame/spectralnorm/tmp/spectralnorm.sbcl-3.fasl written
+; compilation finished in 0:00:00.074
+[undoing binding stack and other enclosing state... done]
+[saving current Lisp image into sbcl.core:
+writing 5952 bytes from the read-only space at 0x20000000
+writing 4000 bytes from the static space at 0x20100000
+writing 43122688 bytes from the dynamic space at 0x1000000000
+done]
+### START spectralnorm.sbcl-3.sbcl_run
+(main) (quit)
+### END spectralnorm.sbcl-3.sbcl_run
+
+0.42s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/bin/sbcl --dynamic-space-size 500 --noinform --core sbcl.core --userinit /dev/null --load spectralnorm.sbcl-3.sbcl_run 5500
+
+PROGRAM OUTPUT:
+1.274224153

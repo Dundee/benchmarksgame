@@ -1,0 +1,56 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/ </span>
+<span class="hl com"> </span>
+<span class="hl com">   contributed by Isaac Gouy (Clean novice)</span>
+<span class="hl com">   corrected by John van Groningen</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">module</span> binarytreesredux
+<span class="hl kwa">import</span> StdEnv<span class="hl opt">,</span> LanguageShootout
+
+Start world
+   <span class="hl opt">#</span> max`          <span class="hl opt">=</span> max <span class="hl opt">(</span>min`<span class="hl opt">+</span><span class="hl num">2</span><span class="hl opt">)</span> argi
+   <span class="hl opt">#</span> stretch`      <span class="hl opt">=</span> max` <span class="hl opt">+</span> <span class="hl num">1</span>
+   <span class="hl opt"># (</span>io<span class="hl opt">,</span>world<span class="hl opt">)    =</span> stdio world
+   <span class="hl opt">#!</span> io           <span class="hl opt">=</span> showItemCheck stretch` <span class="hl opt">(</span>bottomup <span class="hl num">0</span> stretch`<span class="hl opt">)</span> <span class="hl str">&quot;stretch tree of depth &quot;</span> io
+   <span class="hl opt">#!</span> longLived    <span class="hl opt">=</span> bottomup <span class="hl num">0</span> max`
+   <span class="hl opt">#!</span> io           <span class="hl opt">=</span> depthloop min` max` io
+   <span class="hl opt">#!</span> io           <span class="hl opt">=</span> showItemCheck max` longLived <span class="hl str">&quot;long lived tree of depth &quot;</span> io		
+   <span class="hl opt"># (</span>error<span class="hl opt">,</span>world<span class="hl opt">) =</span> fclose io world
+   <span class="hl opt">=</span> world		
+
+min` <span class="hl opt">=</span> <span class="hl num">4</span>	
+	
+showItemCheck d a s io
+   <span class="hl opt">=</span> io <span class="hl opt">&lt;&lt;&lt;</span> s <span class="hl opt">&lt;&lt;&lt;</span> toString <span class="hl opt">(</span>d<span class="hl opt">) &lt;&lt;&lt;</span>
+      <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">check: &quot;</span> <span class="hl opt">&lt;&lt;&lt;</span> toString <span class="hl opt">(</span>itemcheck a<span class="hl opt">) &lt;&lt;&lt;</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span>	
+		
+showCheck i d check io
+   <span class="hl opt">=</span> io <span class="hl opt">&lt;&lt;&lt;</span> toString <span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">*</span>i<span class="hl opt">) &lt;&lt;&lt;</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">trees of depth &quot;</span> <span class="hl opt">&lt;&lt;&lt;</span> 
+      toString <span class="hl opt">(</span>d<span class="hl opt">) &lt;&lt;&lt;</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">check: &quot;</span> <span class="hl opt">&lt;&lt;&lt;</span> toString <span class="hl opt">(</span>check<span class="hl opt">) &lt;&lt;&lt;</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span>						
+				
+depthloop d m io
+   | d <span class="hl opt">&gt;</span> m  <span class="hl opt">=</span> io
+            <span class="hl opt">=</span> depthloop <span class="hl opt">(</span>d<span class="hl opt">+</span><span class="hl num">2</span><span class="hl opt">)</span> m <span class="hl opt">(</span>showCheck n d check io<span class="hl opt">)</span>	
+   <span class="hl kwa">where</span> 
+   n <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl opt">&lt;&lt; (</span>m <span class="hl opt">-</span> d <span class="hl opt">+</span> min`<span class="hl opt">)</span>
+   check <span class="hl opt">=</span> sumloop n d <span class="hl num">0</span>	
+
+sumloop <span class="hl opt">:: !</span><span class="hl kwb">Int</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span>	
+sumloop n d sum
+   | n <span class="hl opt">&gt;</span> <span class="hl num">0</span>	<span class="hl opt">=</span> sumloop <span class="hl opt">(</span>n<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span> d <span class="hl opt">(</span>sum <span class="hl opt">+</span> check <span class="hl opt">+</span> check`<span class="hl opt">)</span>	
+            <span class="hl opt">=</span> sum
+   <span class="hl kwa">where</span> 
+   check <span class="hl opt">=</span> itemcheck <span class="hl opt">(</span>bottomup n d<span class="hl opt">)</span>
+   check` <span class="hl opt">=</span> itemcheck <span class="hl opt">(</span>bottomup <span class="hl opt">(-</span><span class="hl num">1</span><span class="hl opt">*</span>n<span class="hl opt">)</span> d<span class="hl opt">)</span>	   
+
+
+<span class="hl opt">::</span> Tree <span class="hl opt">=</span> TreeNode <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">!</span>Tree <span class="hl opt">!</span>Tree | Nil
+
+bottomup <span class="hl opt">:: !</span><span class="hl kwb">Int</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> Tree
+bottomup i d
+   | d <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl opt">=</span> TreeNode i Nil Nil
+            <span class="hl opt">=</span> TreeNode i <span class="hl opt">(</span>bottomup <span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">*</span>i<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)(</span>d<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)) (</span>bottomup <span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">*</span>i<span class="hl opt">)(</span>d<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">))</span>
+
+itemcheck Nil <span class="hl opt">=</span> <span class="hl num">0</span>
+itemcheck <span class="hl opt">(</span>TreeNode a left right<span class="hl opt">) =</span> a <span class="hl opt">+</span> itemcheck<span class="hl opt">(</span>left<span class="hl opt">) -</span> itemcheck<span class="hl opt">(</span>right<span class="hl opt">)</span>					

@@ -1,0 +1,78 @@
+<span class="hl slc"># The Computer Language Benchmarks Game</span>
+<span class="hl slc"># http://shootout.alioth.debian.org/</span>
+<span class="hl slc">#</span>
+<span class="hl slc"># contributed by Rodrigo de Almeida Siqueira</span>
+
+<span class="hl kwa">use</span> <span class="hl kwd">strict</span><span class="hl opt">;</span>
+
+<span class="hl kwc">my</span> <span class="hl kwb">$MAXITER</span> <span class="hl opt">=</span> <span class="hl num">50</span><span class="hl opt">;</span>
+<span class="hl kwc">my</span> <span class="hl kwb">$LIMIT</span> <span class="hl opt">=</span> <span class="hl num">4</span><span class="hl opt">;</span>
+<span class="hl kwc">my</span> <span class="hl kwb">$xmin</span> <span class="hl opt">= -</span><span class="hl num">1.5</span><span class="hl opt">;</span>
+<span class="hl kwc">my</span> <span class="hl kwb">$ymin</span> <span class="hl opt">= -</span><span class="hl num">1</span><span class="hl opt">;</span>
+
+<span class="hl kwc">my</span> <span class="hl opt">(</span><span class="hl kwb">$w</span><span class="hl opt">,</span> <span class="hl kwb">$h</span><span class="hl opt">);</span>
+
+<span class="hl kwb">$w</span> <span class="hl opt">=</span> <span class="hl kwb">$h</span> <span class="hl opt">=</span> shift || <span class="hl num">200</span><span class="hl opt">;</span>
+<span class="hl kwc">my</span> <span class="hl kwb">$invN</span> <span class="hl opt">=</span> <span class="hl num">2</span><span class="hl opt">/</span><span class="hl kwb">$w</span><span class="hl opt">;</span>
+
+<span class="hl kwc">print</span> <span class="hl str">&quot;P4</span><span class="hl esc">\n</span><span class="hl str">$w $h</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span> <span class="hl slc"># PBM image header</span>
+
+<span class="hl kwc">my</span> <span class="hl kwb">$checknext</span><span class="hl opt">=</span><span class="hl num">1</span><span class="hl opt">;</span>
+
+<span class="hl kwa">for</span> <span class="hl kwc">my</span> <span class="hl kwb">$y</span> <span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">..</span><span class="hl kwb">$h</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">) {</span>
+
+  <span class="hl kwc">my</span> <span class="hl kwb">&#64;v</span><span class="hl opt">;</span>
+
+  <span class="hl kwc">my</span> <span class="hl kwb">$Ci</span> <span class="hl opt">=</span> <span class="hl kwb">$y</span> <span class="hl opt">*</span> <span class="hl kwb">$invN</span> <span class="hl opt">+</span> <span class="hl kwb">$ymin</span><span class="hl opt">;</span>
+
+  X<span class="hl opt">:</span>
+  <span class="hl kwa">for</span> <span class="hl kwc">my</span> <span class="hl kwb">$x</span> <span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">..</span><span class="hl kwb">$w</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">) {</span>
+
+    <span class="hl kwc">my</span> <span class="hl opt">(</span><span class="hl kwb">$Zr</span><span class="hl opt">,</span> <span class="hl kwb">$Zi</span><span class="hl opt">,</span> <span class="hl kwb">$Tr</span><span class="hl opt">,</span> <span class="hl kwb">$Ti</span><span class="hl opt">);</span>
+
+    <span class="hl kwc">my</span> <span class="hl kwb">$Cr</span> <span class="hl opt">=</span> <span class="hl kwb">$x</span> <span class="hl opt">*</span> <span class="hl kwb">$invN</span> <span class="hl opt">+</span> <span class="hl kwb">$xmin</span><span class="hl opt">;</span>
+
+    <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwb">$checknext</span><span class="hl opt">) {</span>
+
+        <span class="hl slc"># Iterate with checking (likely outer pixel)</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">..</span><span class="hl kwb">$MAXITER</span><span class="hl opt">) {</span>
+          <span class="hl kwb">$Zi</span> <span class="hl opt">=</span> <span class="hl num">2</span> <span class="hl opt">*</span> <span class="hl kwb">$Zr</span> <span class="hl opt">*</span> <span class="hl kwb">$Zi</span> <span class="hl opt">+</span> <span class="hl kwb">$Ci</span><span class="hl opt">;</span>
+          <span class="hl kwb">$Zr</span> <span class="hl opt">=</span> <span class="hl kwb">$Tr</span> <span class="hl opt">-</span> <span class="hl kwb">$Ti</span> <span class="hl opt">+</span> <span class="hl kwb">$Cr</span><span class="hl opt">;</span>
+          <span class="hl kwb">$Ti</span> <span class="hl opt">=</span> <span class="hl kwb">$Zi</span> <span class="hl opt">*</span> <span class="hl kwb">$Zi</span><span class="hl opt">;</span>
+          <span class="hl kwb">$Tr</span> <span class="hl opt">=</span> <span class="hl kwb">$Zr</span> <span class="hl opt">*</span> <span class="hl kwb">$Zr</span><span class="hl opt">;</span>
+
+          <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwb">$Tr</span> <span class="hl opt">+</span> <span class="hl kwb">$Ti</span> <span class="hl opt">&gt;</span> <span class="hl kwb">$LIMIT</span><span class="hl opt">) {</span>
+            push <span class="hl kwb">&#64;v</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">;</span> <span class="hl slc"># White pixel</span>
+            <span class="hl kwa">next</span> <span class="hl kwd">X</span><span class="hl opt">;</span>
+          <span class="hl opt">}</span>
+        <span class="hl opt">}</span>
+
+        push <span class="hl kwb">&#64;v</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">;</span>     <span class="hl slc"># Black pixel</span>
+        <span class="hl kwb">$checknext</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> <span class="hl slc"># Is inner pixel.</span>
+
+    <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+
+      <span class="hl slc"># Iterate without checking (likely inner pixel)</span>
+
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">..</span><span class="hl kwb">$MAXITER</span><span class="hl opt">) {</span>
+        <span class="hl kwb">$Zi</span> <span class="hl opt">=</span> <span class="hl num">2</span> <span class="hl opt">*</span> <span class="hl kwb">$Zr</span> <span class="hl opt">*</span> <span class="hl kwb">$Zi</span> <span class="hl opt">+</span> <span class="hl kwb">$Ci</span><span class="hl opt">;</span>
+        <span class="hl kwb">$Zr</span> <span class="hl opt">=</span> <span class="hl kwb">$Tr</span> <span class="hl opt">-</span> <span class="hl kwb">$Ti</span> <span class="hl opt">+</span> <span class="hl kwb">$Cr</span><span class="hl opt">;</span>
+        <span class="hl kwb">$Ti</span> <span class="hl opt">=</span> <span class="hl kwb">$Zi</span> <span class="hl opt">*</span> <span class="hl kwb">$Zi</span><span class="hl opt">;</span>
+        <span class="hl kwb">$Tr</span> <span class="hl opt">=</span> <span class="hl kwb">$Zr</span> <span class="hl opt">*</span> <span class="hl kwb">$Zr</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwb">$Tr</span><span class="hl opt">+</span><span class="hl kwb">$Ti</span> <span class="hl opt">&lt;=</span> <span class="hl num">4</span><span class="hl opt">) {</span>
+        push <span class="hl kwb">&#64;v</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span> <span class="hl slc"># $Tr+$Ti is a large number or overflow ('nan' or 'inf')</span>
+        push <span class="hl kwb">&#64;v</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">;</span>
+        <span class="hl kwb">$checknext</span> <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+    <span class="hl opt">}</span>
+
+  <span class="hl opt">}</span>
+
+  <span class="hl kwc">print</span> pack <span class="hl str">'B*'</span><span class="hl opt">,</span> pack <span class="hl str">'C*'</span><span class="hl opt">,</span> <span class="hl kwb">&#64;v</span><span class="hl opt">;</span>
+
+<span class="hl opt">}</span>
+

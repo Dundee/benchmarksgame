@@ -1,0 +1,26 @@
+
+Tue, 04 Dec 2012 19:14:01 GMT
+
+MAKE:
+/usr/local/src/rust-0.4/bin/rustc --opt-level=3 fannkuchredux.rs -o fannkuchredux.rust_run
+fannkuchredux.rs:15:12: 15:15 warning: value assigned to `f` is never read
+fannkuchredux.rs:15     let mut f = 0;
+                                ^~~
+fannkuchredux.rs:16:12: 16:15 warning: value assigned to `i` is never read
+fannkuchredux.rs:16     let mut i = 0;
+                                ^~~
+fannkuchredux.rs:17:12: 17:15 warning: value assigned to `k` is never read
+fannkuchredux.rs:17     let mut k = 0;
+                                ^~~
+fannkuchredux.rs:18:12: 18:15 warning: value assigned to `r` is never read
+fannkuchredux.rs:18     let mut r = 0;
+                                ^~~
+rm fannkuchredux.rs
+2.10s to complete and log all make actions
+
+COMMAND LINE:
+./fannkuchredux.rust_run 12
+
+PROGRAM OUTPUT:
+3968050
+Pfannkuchen(12) = 65

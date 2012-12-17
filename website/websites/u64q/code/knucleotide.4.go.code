@@ -1,0 +1,218 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * contributed by K P anonymous</span>
+<span class="hl com"> */</span>
+
+<span class="hl kwa">package</span> main
+
+<span class="hl kwa">import</span> <span class="hl opt">(</span>
+   <span class="hl str">&quot;bufio&quot;</span>
+   <span class="hl str">&quot;bytes&quot;</span>
+   <span class="hl str">&quot;sync&quot;</span>
+   <span class="hl str">&quot;fmt&quot;</span>
+   <span class="hl str">&quot;io/ioutil&quot;</span>
+   <span class="hl str">&quot;os&quot;</span>
+   <span class="hl str">&quot;sort&quot;</span>
+   <span class="hl str">&quot;runtime&quot;</span>
+<span class="hl opt">)</span>
+
+<span class="hl kwa">type</span> byteseg <span class="hl kwa">struct</span> <span class="hl opt">{</span>
+   hash  <span class="hl kwb">uint</span>
+   slice <span class="hl opt">[]</span><span class="hl kwb">byte</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">type</span> entry <span class="hl kwa">struct</span> <span class="hl opt">{</span>
+   bs    <span class="hl opt">[]</span><span class="hl kwb">byte</span>
+   value <span class="hl kwb">int</span>
+   next  <span class="hl opt">*</span>entry
+<span class="hl opt">}</span>
+
+<span class="hl kwa">const</span> tabSize <span class="hl opt">=</span> <span class="hl num">2</span> <span class="hl opt">&lt;&lt;</span> <span class="hl num">16</span>
+
+<span class="hl kwa">type</span> Table <span class="hl kwa">struct</span> <span class="hl opt">{</span>
+   count <span class="hl kwb">int</span>
+   items <span class="hl opt">[</span>tabSize<span class="hl opt">]*</span>entry
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl opt">(</span>bt <span class="hl opt">*</span>Table<span class="hl opt">)</span> <span class="hl kwd">Dump</span><span class="hl opt">() []</span>kNuc <span class="hl opt">{</span>
+   res <span class="hl opt">:=</span> <span class="hl kwb">make</span><span class="hl opt">([]</span>kNuc<span class="hl opt">,</span> bt<span class="hl opt">.</span>count<span class="hl opt">)</span>
+   ind <span class="hl opt">:=</span> <span class="hl num">0</span>
+   <span class="hl kwa">for</span> _<span class="hl opt">,</span> e <span class="hl opt">:=</span> <span class="hl kwa">range</span> bt<span class="hl opt">.</span>items <span class="hl opt">{</span>
+      <span class="hl kwa">for</span> e <span class="hl opt">!=</span> <span class="hl kwb">nil</span> <span class="hl opt">{</span>
+         res<span class="hl opt">[</span>ind<span class="hl opt">] =</span> kNuc<span class="hl opt">{</span>name<span class="hl opt">:</span> e<span class="hl opt">.</span>bs<span class="hl opt">,</span> count<span class="hl opt">:</span> e<span class="hl opt">.</span>value<span class="hl opt">}</span>
+         ind<span class="hl opt">++</span>
+         e <span class="hl opt">=</span> e<span class="hl opt">.</span>next
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">return</span> res
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">hashbytes</span><span class="hl opt">(</span>seg <span class="hl opt">[]</span><span class="hl kwb">byte</span><span class="hl opt">)</span> <span class="hl kwb">uint</span> <span class="hl opt">{</span>
+   l <span class="hl opt">:=</span> <span class="hl kwb">len</span><span class="hl opt">(</span>seg<span class="hl opt">)</span>
+   h <span class="hl opt">:=</span> <span class="hl kwb">uint</span><span class="hl opt">(</span>l<span class="hl opt">)</span>
+   <span class="hl kwa">for</span> i <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> l<span class="hl opt">;</span> i<span class="hl opt">++ {</span>
+      h <span class="hl opt">=</span> h<span class="hl opt">*</span><span class="hl num">131</span> <span class="hl opt">+</span> <span class="hl kwb">uint</span><span class="hl opt">(</span>seg<span class="hl opt">[</span>i<span class="hl opt">])</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">return</span> h
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">eqbytes</span><span class="hl opt">(</span>a<span class="hl opt">,</span> b <span class="hl opt">[]</span><span class="hl kwb">byte</span><span class="hl opt">)</span> <span class="hl kwb">bool</span> <span class="hl opt">{</span>
+   l <span class="hl opt">:=</span> <span class="hl kwb">len</span><span class="hl opt">(</span>a<span class="hl opt">)</span>
+   <span class="hl kwa">if</span> l <span class="hl opt">!=</span> <span class="hl kwb">len</span><span class="hl opt">(</span>b<span class="hl opt">) {</span>
+      <span class="hl kwa">return</span> <span class="hl kwb">false</span>
+   <span class="hl opt">}</span>
+   i <span class="hl opt">:=</span> <span class="hl num">0</span>
+   <span class="hl kwa">for</span> <span class="hl opt">;</span> i <span class="hl opt">&lt;</span> l <span class="hl opt">&amp;&amp;</span> a<span class="hl opt">[</span>i<span class="hl opt">] ==</span> b<span class="hl opt">[</span>i<span class="hl opt">];</span> i<span class="hl opt">++ {</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">return</span> i <span class="hl opt">==</span> l
+<span class="hl opt">}</span>
+
+
+<span class="hl kwa">func</span> <span class="hl opt">(</span>bt <span class="hl opt">*</span>Table<span class="hl opt">)</span> <span class="hl kwd">get</span><span class="hl opt">(</span>bs <span class="hl opt">[]</span><span class="hl kwb">byte</span><span class="hl opt">) *</span>entry <span class="hl opt">{</span>
+   ind <span class="hl opt">:=</span> <span class="hl kwd">hashbytes</span><span class="hl opt">(</span>bs<span class="hl opt">) %</span> <span class="hl kwb">uint</span><span class="hl opt">(</span>tabSize<span class="hl opt">)</span>
+   e <span class="hl opt">:=</span> bt<span class="hl opt">.</span>items<span class="hl opt">[</span>ind<span class="hl opt">]</span>
+   <span class="hl kwa">if</span> e <span class="hl opt">==</span> <span class="hl kwb">nil</span> <span class="hl opt">{</span>
+      r <span class="hl opt">:= &amp;</span>entry<span class="hl opt">{</span>bs<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwb">nil</span><span class="hl opt">}</span>
+      bt<span class="hl opt">.</span>count<span class="hl opt">++</span>
+      bt<span class="hl opt">.</span>items<span class="hl opt">[</span>ind<span class="hl opt">] =</span> r
+      <span class="hl kwa">return</span> r
+   <span class="hl opt">}</span>
+   <span class="hl kwa">for</span> <span class="hl opt">{</span>
+      <span class="hl kwa">if</span> <span class="hl kwd">eqbytes</span><span class="hl opt">(</span>e<span class="hl opt">.</span>bs<span class="hl opt">,</span> bs<span class="hl opt">) {</span>
+         <span class="hl kwa">return</span> e
+      <span class="hl opt">}</span>
+      <span class="hl kwa">if</span> e<span class="hl opt">.</span>next <span class="hl opt">==</span> <span class="hl kwb">nil</span> <span class="hl opt">{</span>
+         r <span class="hl opt">:= &amp;</span>entry<span class="hl opt">{</span>bs<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwb">nil</span><span class="hl opt">}</span>
+         bt<span class="hl opt">.</span>count<span class="hl opt">++</span>
+         e<span class="hl opt">.</span>next <span class="hl opt">=</span> r
+         <span class="hl kwa">return</span> r
+      <span class="hl opt">}</span>
+      e <span class="hl opt">=</span> e<span class="hl opt">.</span>next
+   <span class="hl opt">}</span>
+   <span class="hl kwa">return</span> <span class="hl kwb">nil</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl opt">(</span>bt <span class="hl opt">*</span>Table<span class="hl opt">)</span> <span class="hl kwd">Increment</span><span class="hl opt">(</span>bs <span class="hl opt">[]</span><span class="hl kwb">byte</span><span class="hl opt">) {</span>
+   bt<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">(</span>bs<span class="hl opt">).</span>value<span class="hl opt">++</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl opt">(</span>bt <span class="hl opt">*</span>Table<span class="hl opt">)</span> <span class="hl kwd">Lookup</span><span class="hl opt">(</span>bs <span class="hl opt">[]</span><span class="hl kwb">byte</span><span class="hl opt">)</span> <span class="hl kwb">int</span> <span class="hl opt">{</span>
+   <span class="hl kwa">return</span> bt<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">(</span>bs<span class="hl opt">).</span>value
+<span class="hl opt">}</span>
+
+<span class="hl kwa">var</span> tables <span class="hl opt">[</span><span class="hl num">8</span><span class="hl opt">]</span>Table
+<span class="hl kwa">var</span> ti <span class="hl opt">=</span> <span class="hl num">0</span>
+<span class="hl kwa">var</span> tmux sync<span class="hl opt">.</span>Mutex
+
+<span class="hl kwa">func</span> <span class="hl kwd">newTable</span><span class="hl opt">() *</span>Table <span class="hl opt">{</span>
+   tmux<span class="hl opt">.</span><span class="hl kwd">Lock</span><span class="hl opt">()</span>
+   t <span class="hl opt">:= &amp;</span>tables<span class="hl opt">[</span>ti<span class="hl opt">]</span>
+   ti<span class="hl opt">++</span>
+   tmux<span class="hl opt">.</span><span class="hl kwd">Unlock</span><span class="hl opt">()</span>
+   <span class="hl kwa">return</span> t
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">count</span><span class="hl opt">(</span>data <span class="hl opt">[]</span><span class="hl kwb">byte</span><span class="hl opt">,</span> n <span class="hl kwb">int</span><span class="hl opt">) *</span>Table <span class="hl opt">{</span>
+   counts <span class="hl opt">:=</span> <span class="hl kwd">newTable</span><span class="hl opt">()</span>
+   top <span class="hl opt">:=</span> <span class="hl kwb">len</span><span class="hl opt">(</span>data<span class="hl opt">) -</span> n
+   <span class="hl kwa">for</span> i <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;=</span> top<span class="hl opt">;</span> i<span class="hl opt">++ {</span>
+      counts<span class="hl opt">.</span><span class="hl kwd">Increment</span><span class="hl opt">(</span>data<span class="hl opt">[</span>i <span class="hl opt">:</span> i<span class="hl opt">+</span>n<span class="hl opt">])</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">return</span> counts
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">countOne</span><span class="hl opt">(</span>data <span class="hl opt">[]</span><span class="hl kwb">byte</span><span class="hl opt">,</span> s <span class="hl opt">[]</span><span class="hl kwb">byte</span><span class="hl opt">)</span> <span class="hl kwb">int</span> <span class="hl opt">{</span>
+   <span class="hl kwa">return</span> <span class="hl kwd">count</span><span class="hl opt">(</span>data<span class="hl opt">,</span> <span class="hl kwb">len</span><span class="hl opt">(</span>s<span class="hl opt">)).</span><span class="hl kwd">Lookup</span><span class="hl opt">(</span>s<span class="hl opt">)</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">type</span> kNuc <span class="hl kwa">struct</span> <span class="hl opt">{</span>
+   name  <span class="hl opt">[]</span><span class="hl kwb">byte</span>
+   count <span class="hl kwb">int</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">type</span> kNucArray <span class="hl opt">[]</span>kNuc
+
+<span class="hl kwa">func</span> <span class="hl opt">(</span>kn kNucArray<span class="hl opt">)</span> <span class="hl kwd">Len</span><span class="hl opt">()</span> <span class="hl kwb">int</span>      <span class="hl opt">{</span> <span class="hl kwa">return</span> <span class="hl kwb">len</span><span class="hl opt">(</span>kn<span class="hl opt">) }</span>
+<span class="hl kwa">func</span> <span class="hl opt">(</span>kn kNucArray<span class="hl opt">)</span> <span class="hl kwd">Swap</span><span class="hl opt">(</span>i<span class="hl opt">,</span> j <span class="hl kwb">int</span><span class="hl opt">) {</span> kn<span class="hl opt">[</span>i<span class="hl opt">],</span> kn<span class="hl opt">[</span>j<span class="hl opt">] =</span> kn<span class="hl opt">[</span>j<span class="hl opt">],</span> kn<span class="hl opt">[</span>i<span class="hl opt">] }</span>
+<span class="hl kwa">func</span> <span class="hl opt">(</span>kn kNucArray<span class="hl opt">)</span> <span class="hl kwd">Less</span><span class="hl opt">(</span>i<span class="hl opt">,</span> j <span class="hl kwb">int</span><span class="hl opt">)</span> <span class="hl kwb">bool</span> <span class="hl opt">{</span>
+   <span class="hl kwa">if</span> kn<span class="hl opt">[</span>i<span class="hl opt">].</span>count <span class="hl opt">==</span> kn<span class="hl opt">[</span>j<span class="hl opt">].</span>count <span class="hl opt">{</span>
+      <span class="hl kwa">return</span> bytes<span class="hl opt">.</span><span class="hl kwd">Compare</span><span class="hl opt">(</span>kn<span class="hl opt">[</span>i<span class="hl opt">].</span>name<span class="hl opt">,</span> kn<span class="hl opt">[</span>j<span class="hl opt">].</span>name<span class="hl opt">) &lt;</span> <span class="hl num">0</span> <span class="hl slc">// sort down</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">return</span> kn<span class="hl opt">[</span>i<span class="hl opt">].</span>count <span class="hl opt">&gt;</span> kn<span class="hl opt">[</span>j<span class="hl opt">].</span>count
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">sortedArray</span><span class="hl opt">(</span>m <span class="hl opt">*</span>Table<span class="hl opt">)</span> kNucArray <span class="hl opt">{</span>
+   kn <span class="hl opt">:=</span> <span class="hl kwd">kNucArray</span><span class="hl opt">(</span>m<span class="hl opt">.</span><span class="hl kwd">Dump</span><span class="hl opt">())</span>
+   sort<span class="hl opt">.</span><span class="hl kwd">Sort</span><span class="hl opt">(</span>kn<span class="hl opt">)</span>
+   <span class="hl kwa">return</span> kn
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">printKnucs</span><span class="hl opt">(</span>a kNucArray<span class="hl opt">) {</span>
+   sum <span class="hl opt">:=</span> <span class="hl num">0</span>
+   <span class="hl kwa">for</span> _<span class="hl opt">,</span> kn <span class="hl opt">:=</span> <span class="hl kwa">range</span> a <span class="hl opt">{</span>
+      sum <span class="hl opt">+=</span> kn<span class="hl opt">.</span>count
+   <span class="hl opt">}</span>
+   <span class="hl kwa">for</span> _<span class="hl opt">,</span> kn <span class="hl opt">:=</span> <span class="hl kwa">range</span> a <span class="hl opt">{</span>
+      fmt<span class="hl opt">.</span><span class="hl kwd">Printf</span><span class="hl opt">(</span><span class="hl str">&quot;%s %.3f</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> kn<span class="hl opt">.</span>name<span class="hl opt">,</span> <span class="hl num">100</span><span class="hl opt">*</span><span class="hl kwb">float64</span><span class="hl opt">(</span>kn<span class="hl opt">.</span>count<span class="hl opt">)/</span><span class="hl kwb">float64</span><span class="hl opt">(</span>sum<span class="hl opt">))</span>
+   <span class="hl opt">}</span>
+   fmt<span class="hl opt">.</span><span class="hl kwd">Print</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">)</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">main</span><span class="hl opt">() {</span>
+   runtime<span class="hl opt">.</span><span class="hl kwd">GOMAXPROCS</span><span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">)</span>
+   in <span class="hl opt">:=</span> bufio<span class="hl opt">.</span><span class="hl kwd">NewReader</span><span class="hl opt">(</span>os<span class="hl opt">.</span>Stdin<span class="hl opt">)</span>
+   three <span class="hl opt">:= []</span><span class="hl kwb">byte</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;THREE &quot;</span><span class="hl opt">)</span>
+   <span class="hl kwa">for</span> <span class="hl opt">{</span>
+      line<span class="hl opt">,</span> err <span class="hl opt">:=</span> in<span class="hl opt">.</span><span class="hl kwd">ReadSlice</span><span class="hl opt">(</span><span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">)</span>
+      <span class="hl kwa">if</span> err <span class="hl opt">!=</span> <span class="hl kwb">nil</span> <span class="hl opt">{</span>
+         fmt<span class="hl opt">.</span><span class="hl kwd">Fprintln</span><span class="hl opt">(</span>os<span class="hl opt">.</span>Stderr<span class="hl opt">,</span> <span class="hl str">&quot;ReadLine err:&quot;</span><span class="hl opt">,</span> err<span class="hl opt">)</span>
+         os<span class="hl opt">.</span><span class="hl kwd">Exit</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">)</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">if</span> line<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] ==</span> <span class="hl str">'&gt;'</span> <span class="hl opt">&amp;&amp;</span> bytes<span class="hl opt">.</span><span class="hl kwd">Equal</span><span class="hl opt">(</span>line<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">:</span><span class="hl kwb">len</span><span class="hl opt">(</span>three<span class="hl opt">)],</span> three<span class="hl opt">) {</span>
+         <span class="hl kwa">break</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+   data<span class="hl opt">,</span> err <span class="hl opt">:=</span> ioutil<span class="hl opt">.</span><span class="hl kwd">ReadAll</span><span class="hl opt">(</span>in<span class="hl opt">)</span>
+   <span class="hl kwa">if</span> err <span class="hl opt">!=</span> <span class="hl kwb">nil</span> <span class="hl opt">{</span>
+      fmt<span class="hl opt">.</span><span class="hl kwd">Fprintln</span><span class="hl opt">(</span>os<span class="hl opt">.</span>Stderr<span class="hl opt">,</span> <span class="hl str">&quot;ReadAll err:&quot;</span><span class="hl opt">,</span> err<span class="hl opt">)</span>
+      os<span class="hl opt">.</span><span class="hl kwd">Exit</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">)</span>
+   <span class="hl opt">}</span>
+   <span class="hl slc">// delete the newlines and convert to upper case</span>
+   j <span class="hl opt">:=</span> <span class="hl num">0</span>
+   <span class="hl kwa">for</span> i <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> <span class="hl kwb">len</span><span class="hl opt">(</span>data<span class="hl opt">);</span> i<span class="hl opt">++ {</span>
+      <span class="hl kwa">if</span> data<span class="hl opt">[</span>i<span class="hl opt">] !=</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span> <span class="hl opt">{</span>
+         data<span class="hl opt">[</span>j<span class="hl opt">] =</span> data<span class="hl opt">[</span>i<span class="hl opt">] &amp;^</span> <span class="hl str">' '</span> <span class="hl slc">// upper case</span>
+         j<span class="hl opt">++</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+   str <span class="hl opt">:=</span> data<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">:</span>j<span class="hl opt">]</span>
+
+   <span class="hl kwa">var</span> arr1<span class="hl opt">,</span> arr2 kNucArray
+   countsdone <span class="hl opt">:=</span> <span class="hl kwb">make</span><span class="hl opt">(</span><span class="hl kwa">chan</span> <span class="hl kwb">bool</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">)</span>
+   <span class="hl kwa">go func</span><span class="hl opt">() {</span>
+      arr1 <span class="hl opt">=</span> <span class="hl kwd">sortedArray</span><span class="hl opt">(</span><span class="hl kwd">count</span><span class="hl opt">(</span>str<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">))</span>
+      countsdone <span class="hl opt">&lt;-</span> <span class="hl kwb">true</span>
+   <span class="hl opt">}()</span>
+   <span class="hl kwa">go func</span><span class="hl opt">() {</span>
+      arr2 <span class="hl opt">=</span> <span class="hl kwd">sortedArray</span><span class="hl opt">(</span><span class="hl kwd">count</span><span class="hl opt">(</span>str<span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">))</span>
+      countsdone <span class="hl opt">&lt;-</span> <span class="hl kwb">true</span>
+   <span class="hl opt">}()</span>
+
+   interests <span class="hl opt">:= []</span><span class="hl kwb">string</span><span class="hl opt">{</span><span class="hl str">&quot;GGT&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTA&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATT&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATTTTAATT&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATTTTAATTTATAGT&quot;</span><span class="hl opt">}</span>
+   results <span class="hl opt">:=</span> <span class="hl kwb">make</span><span class="hl opt">([]</span><span class="hl kwa">chan</span> <span class="hl kwb">string</span><span class="hl opt">,</span> <span class="hl kwb">len</span><span class="hl opt">(</span>interests<span class="hl opt">))</span>
+   <span class="hl kwa">for</span> i<span class="hl opt">,</span> s <span class="hl opt">:=</span> <span class="hl kwa">range</span> interests <span class="hl opt">{</span>
+      ch <span class="hl opt">:=</span> <span class="hl kwb">make</span><span class="hl opt">(</span><span class="hl kwa">chan</span> <span class="hl kwb">string</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">)</span>
+      results<span class="hl opt">[</span>i<span class="hl opt">] =</span> ch
+      <span class="hl kwa">go func</span><span class="hl opt">(</span>result <span class="hl kwa">chan</span> <span class="hl kwb">string</span><span class="hl opt">,</span> ss <span class="hl kwb">string</span><span class="hl opt">) {</span>
+         result <span class="hl opt">&lt;-</span> fmt<span class="hl opt">.</span><span class="hl kwd">Sprintf</span><span class="hl opt">(</span><span class="hl str">&quot;%d</span><span class="hl esc">\t</span><span class="hl str">%s</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> <span class="hl kwd">countOne</span><span class="hl opt">(</span>str<span class="hl opt">, []</span><span class="hl kwb">byte</span><span class="hl opt">(</span>ss<span class="hl opt">)),</span> ss<span class="hl opt">)</span>
+      <span class="hl opt">}(</span>ch<span class="hl opt">,</span> s<span class="hl opt">)</span>
+   <span class="hl opt">}</span>
+   <span class="hl opt">&lt;-</span>countsdone
+   <span class="hl opt">&lt;-</span>countsdone
+   <span class="hl kwd">printKnucs</span><span class="hl opt">(</span>arr1<span class="hl opt">)</span>
+   <span class="hl kwd">printKnucs</span><span class="hl opt">(</span>arr2<span class="hl opt">)</span>
+   <span class="hl kwa">for</span> _<span class="hl opt">,</span> rc <span class="hl opt">:=</span> <span class="hl kwa">range</span> results <span class="hl opt">{</span>
+      fmt<span class="hl opt">.</span><span class="hl kwd">Print</span><span class="hl opt">(&lt;-</span>rc<span class="hl opt">)</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>

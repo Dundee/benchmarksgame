@@ -1,0 +1,22 @@
+
+Fri, 18 May 2012 01:25:38 GMT
+
+MAKE:
+/usr/bin/gnatchop -r -w nbody.gnat-4.gnat
+splitting nbody.gnat-4.gnat into:
+   nbody.adb
+   nbody_pck.ads
+   nbody_pck.adb
+/usr/bin/gnatmake -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp -f nbody.adb -o nbody.gnat-4.gnat_run 
+gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp nbody.adb
+gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp nbody_pck.adb
+gnatbind -x nbody.ali
+gnatlink nbody.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o nbody.gnat-4.gnat_run
+0.43s to complete and log all make actions
+
+COMMAND LINE:
+./nbody.gnat-4.gnat_run 50000000
+
+PROGRAM OUTPUT:
+-0.169075164
+-0.169059907

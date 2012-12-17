@@ -1,0 +1,110 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * based on pidigits.c (by Paolo Bonzini &amp; Sean Bartlett,</span>
+<span class="hl com"> *                      modified by Michael Mellor)</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * contributed by The Go Authors.</span>
+<span class="hl com"> * flag.Arg hack by Isaac Gouy</span>
+<span class="hl com"> */</span>
+
+<span class="hl kwa">package</span> main
+
+<span class="hl kwa">import</span> <span class="hl opt">(</span>
+   <span class="hl str">&quot;big&quot;</span>
+   <span class="hl str">&quot;flag&quot;</span>
+   <span class="hl str">&quot;fmt&quot;</span>
+   <span class="hl str">&quot;strconv&quot;</span>
+<span class="hl opt">)</span>
+
+<span class="hl kwa">var</span> n <span class="hl opt">=</span> <span class="hl num">0</span>
+<span class="hl kwa">var</span> silent <span class="hl opt">=</span> <span class="hl kwb">false</span>
+
+<span class="hl kwa">var</span> <span class="hl opt">(</span>
+	tmp1  <span class="hl opt">=</span> big<span class="hl opt">.</span><span class="hl kwd">NewInt</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">)</span>
+	tmp2  <span class="hl opt">=</span> big<span class="hl opt">.</span><span class="hl kwd">NewInt</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">)</span>
+	y2    <span class="hl opt">=</span> big<span class="hl opt">.</span><span class="hl kwd">NewInt</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">)</span>
+	bigk  <span class="hl opt">=</span> big<span class="hl opt">.</span><span class="hl kwd">NewInt</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">)</span>
+	numer <span class="hl opt">=</span> big<span class="hl opt">.</span><span class="hl kwd">NewInt</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)</span>
+	accum <span class="hl opt">=</span> big<span class="hl opt">.</span><span class="hl kwd">NewInt</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">)</span>
+	denom <span class="hl opt">=</span> big<span class="hl opt">.</span><span class="hl kwd">NewInt</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)</span>
+	ten   <span class="hl opt">=</span> big<span class="hl opt">.</span><span class="hl kwd">NewInt</span><span class="hl opt">(</span><span class="hl num">10</span><span class="hl opt">)</span>
+<span class="hl opt">)</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">extract_digit</span><span class="hl opt">()</span> <span class="hl kwb">int64</span> <span class="hl opt">{</span>
+	<span class="hl kwa">if</span> numer<span class="hl opt">.</span><span class="hl kwd">Cmp</span><span class="hl opt">(</span>accum<span class="hl opt">) &gt;</span> <span class="hl num">0</span> <span class="hl opt">{</span>
+		<span class="hl kwa">return</span> <span class="hl opt">-</span><span class="hl num">1</span>
+	<span class="hl opt">}</span>
+
+	<span class="hl slc">// Compute (numer * 3 + accum) / denom</span>
+	tmp1<span class="hl opt">.</span><span class="hl kwd">Lsh</span><span class="hl opt">(</span>numer<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">)</span>
+	tmp1<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>tmp1<span class="hl opt">,</span> numer<span class="hl opt">)</span>
+	tmp1<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>tmp1<span class="hl opt">,</span> accum<span class="hl opt">)</span>
+	tmp1<span class="hl opt">.</span><span class="hl kwd">DivMod</span><span class="hl opt">(</span>tmp1<span class="hl opt">,</span> denom<span class="hl opt">,</span> tmp2<span class="hl opt">)</span>
+
+	<span class="hl slc">// Now, if (numer * 4 + accum) % denom...</span>
+	tmp2<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>tmp2<span class="hl opt">,</span> numer<span class="hl opt">)</span>
+
+	<span class="hl slc">// ... is normalized, then the two divisions have the same result.</span>
+	<span class="hl kwa">if</span> tmp2<span class="hl opt">.</span><span class="hl kwd">Cmp</span><span class="hl opt">(</span>denom<span class="hl opt">) &gt;=</span> <span class="hl num">0</span> <span class="hl opt">{</span>
+		<span class="hl kwa">return</span> <span class="hl opt">-</span><span class="hl num">1</span>
+	<span class="hl opt">}</span>
+
+	<span class="hl kwa">return</span> tmp1<span class="hl opt">.</span><span class="hl kwd">Int64</span><span class="hl opt">()</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">next_term</span><span class="hl opt">(</span>k <span class="hl kwb">int64</span><span class="hl opt">) {</span>
+	<span class="hl slc">// TODO(eds) If big.Int ever gets a Scale method, y2 and bigk could be int64</span>
+	y2<span class="hl opt">.</span><span class="hl kwd">SetInt64</span><span class="hl opt">(</span>k<span class="hl opt">*</span><span class="hl num">2</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)</span>
+	bigk<span class="hl opt">.</span><span class="hl kwd">SetInt64</span><span class="hl opt">(</span>k<span class="hl opt">)</span>
+
+	tmp1<span class="hl opt">.</span><span class="hl kwd">Lsh</span><span class="hl opt">(</span>numer<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">)</span>
+	accum<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>accum<span class="hl opt">,</span> tmp1<span class="hl opt">)</span>
+	accum<span class="hl opt">.</span><span class="hl kwd">Mul</span><span class="hl opt">(</span>accum<span class="hl opt">,</span> y2<span class="hl opt">)</span>
+	numer<span class="hl opt">.</span><span class="hl kwd">Mul</span><span class="hl opt">(</span>numer<span class="hl opt">,</span> bigk<span class="hl opt">)</span>
+	denom<span class="hl opt">.</span><span class="hl kwd">Mul</span><span class="hl opt">(</span>denom<span class="hl opt">,</span> y2<span class="hl opt">)</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">eliminate_digit</span><span class="hl opt">(</span>d <span class="hl kwb">int64</span><span class="hl opt">) {</span>
+	tmp <span class="hl opt">:=</span> big<span class="hl opt">.</span><span class="hl kwd">NewInt</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">).</span><span class="hl kwd">Set</span><span class="hl opt">(</span>denom<span class="hl opt">)</span>
+	accum<span class="hl opt">.</span><span class="hl kwd">Sub</span><span class="hl opt">(</span>accum<span class="hl opt">,</span> tmp<span class="hl opt">.</span><span class="hl kwd">Mul</span><span class="hl opt">(</span>tmp<span class="hl opt">,</span> big<span class="hl opt">.</span><span class="hl kwd">NewInt</span><span class="hl opt">(</span>d<span class="hl opt">)))</span>
+	accum<span class="hl opt">.</span><span class="hl kwd">Mul</span><span class="hl opt">(</span>accum<span class="hl opt">,</span> ten<span class="hl opt">)</span>
+	numer<span class="hl opt">.</span><span class="hl kwd">Mul</span><span class="hl opt">(</span>numer<span class="hl opt">,</span> ten<span class="hl opt">)</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">printf</span><span class="hl opt">(</span>s <span class="hl kwb">string</span><span class="hl opt">,</span> arg <span class="hl opt">...</span><span class="hl kwa">interface</span><span class="hl opt">{}) {</span>
+   <span class="hl kwa">if</span> <span class="hl opt">!</span>silent <span class="hl opt">{</span>
+      fmt<span class="hl opt">.</span><span class="hl kwd">Printf</span><span class="hl opt">(</span>s<span class="hl opt">,</span> arg<span class="hl opt">...)</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">main</span><span class="hl opt">() {</span>
+   flag<span class="hl opt">.</span><span class="hl kwd">Parse</span><span class="hl opt">()</span>
+   <span class="hl kwa">if</span> flag<span class="hl opt">.</span><span class="hl kwd">NArg</span><span class="hl opt">() &gt;</span> <span class="hl num">0</span> <span class="hl opt">{</span> n<span class="hl opt">,</span>_ <span class="hl opt">=</span> strconv<span class="hl opt">.</span><span class="hl kwd">Atoi</span><span class="hl opt">(</span> flag<span class="hl opt">.</span><span class="hl kwd">Arg</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">) ) }</span>
+
+   <span class="hl kwa">var</span> m <span class="hl kwb">int</span> <span class="hl slc">// 0 &lt;= m &lt; 10</span>
+   <span class="hl kwa">for</span> i<span class="hl opt">,</span> k <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwb">int64</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">); ; {</span>
+      d <span class="hl opt">:=</span> <span class="hl kwb">int64</span><span class="hl opt">(-</span><span class="hl num">1</span><span class="hl opt">)</span>
+      <span class="hl kwa">for</span> d <span class="hl opt">&lt;</span> <span class="hl num">0</span> <span class="hl opt">{</span>
+         k<span class="hl opt">++</span>
+         <span class="hl kwd">next_term</span><span class="hl opt">(</span>k<span class="hl opt">)</span>
+         d <span class="hl opt">=</span> <span class="hl kwd">extract_digit</span><span class="hl opt">()</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%c&quot;</span><span class="hl opt">,</span> d<span class="hl opt">+</span><span class="hl str">'0'</span><span class="hl opt">)</span>
+
+      i<span class="hl opt">++</span>
+      m <span class="hl opt">=</span> i <span class="hl opt">%</span> <span class="hl num">10</span>
+      <span class="hl kwa">if</span> m <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl opt">{</span>
+         <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">:%d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> i<span class="hl opt">)</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">if</span> i <span class="hl opt">&gt;=</span> n <span class="hl opt">{</span>
+         <span class="hl kwa">break</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwd">eliminate_digit</span><span class="hl opt">(</span>d<span class="hl opt">)</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">if</span> m <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl opt">{</span>
+      <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%s</span><span class="hl esc">\t</span><span class="hl str">:%d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;          &quot;</span><span class="hl opt">[</span>m<span class="hl opt">:</span><span class="hl num">10</span><span class="hl opt">],</span> n<span class="hl opt">)</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>

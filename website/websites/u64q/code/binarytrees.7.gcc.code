@@ -1,0 +1,129 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * contributed by Francesco Abbate</span>
+<span class="hl com"> */</span>
+
+
+<span class="hl ppc">#include &lt;stdlib.h&gt;</span>
+<span class="hl ppc">#include &lt;stdio.h&gt;</span>
+
+<span class="hl kwc">typedef</span> off_t off64_t<span class="hl opt">;</span>
+<span class="hl ppc">#include &lt;apr_pools.h&gt;</span>
+
+<span class="hl kwb">const size_t</span>	LINE_SIZE <span class="hl opt">=</span> <span class="hl num">64</span><span class="hl opt">;</span>
+
+<span class="hl kwb">struct</span> node
+<span class="hl opt">{</span>
+  <span class="hl kwb">int</span> i<span class="hl opt">;</span>
+  <span class="hl kwb">struct</span> node <span class="hl opt">*</span>left<span class="hl opt">;</span>
+  <span class="hl kwb">struct</span> node <span class="hl opt">*</span>right<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+<span class="hl kwb">int</span>
+<span class="hl kwd">node_check</span><span class="hl opt">(</span><span class="hl kwb">const struct</span> node <span class="hl opt">*</span>n<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+  <span class="hl kwa">if</span> <span class="hl opt">(</span>n<span class="hl opt">-&gt;</span>left<span class="hl opt">)</span>
+    <span class="hl opt">{</span>
+      <span class="hl kwb">int</span> lc <span class="hl opt">=</span> <span class="hl kwd">node_check</span> <span class="hl opt">(</span>n<span class="hl opt">-&gt;</span>left<span class="hl opt">);</span>
+      <span class="hl kwb">int</span> rc <span class="hl opt">=</span> <span class="hl kwd">node_check</span> <span class="hl opt">(</span>n<span class="hl opt">-&gt;</span>right<span class="hl opt">);</span>
+      <span class="hl kwa">return</span> lc <span class="hl opt">+</span> n<span class="hl opt">-&gt;</span>i <span class="hl opt">-</span> rc<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+
+  <span class="hl kwa">return</span> n<span class="hl opt">-&gt;</span>i<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">struct</span> node <span class="hl opt">*</span>
+<span class="hl kwd">node_get_avail</span> <span class="hl opt">(</span>apr_pool_t <span class="hl opt">*</span>pool<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+  <span class="hl kwa">return</span> <span class="hl kwd">apr_palloc</span> <span class="hl opt">(</span>pool<span class="hl opt">,</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span><span class="hl kwb">struct</span> node<span class="hl opt">));</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">struct</span> node <span class="hl opt">*</span>
+<span class="hl kwd">make</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">,</span> <span class="hl kwb">int</span> depth<span class="hl opt">,</span> apr_pool_t <span class="hl opt">*</span>pool<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+  <span class="hl kwb">struct</span> node <span class="hl opt">*</span>curr <span class="hl opt">=</span> <span class="hl kwd">node_get_avail</span> <span class="hl opt">(</span>pool<span class="hl opt">);</span>
+
+  curr<span class="hl opt">-&gt;</span>i <span class="hl opt">=</span> i<span class="hl opt">;</span>
+
+  <span class="hl kwa">if</span> <span class="hl opt">(</span>depth <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">)</span>
+    <span class="hl opt">{</span>
+      curr<span class="hl opt">-&gt;</span>left  <span class="hl opt">=</span> <span class="hl kwd">make</span> <span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">*</span>i<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">,</span> depth <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">,</span> pool<span class="hl opt">);</span>
+      curr<span class="hl opt">-&gt;</span>right <span class="hl opt">=</span> <span class="hl kwd">make</span> <span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">*</span>i  <span class="hl opt">,</span> depth <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">,</span> pool<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+  <span class="hl kwa">else</span>
+    <span class="hl opt">{</span>
+      curr<span class="hl opt">-&gt;</span>left  <span class="hl opt">=</span> NULL<span class="hl opt">;</span>
+      curr<span class="hl opt">-&gt;</span>right <span class="hl opt">=</span> NULL<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+
+  <span class="hl kwa">return</span> curr<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">int</span>
+<span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">int</span> argc<span class="hl opt">,</span> <span class="hl kwb">char</span> <span class="hl opt">*</span>argv<span class="hl opt">[])</span>
+<span class="hl opt">{</span>
+  apr_pool_t <span class="hl opt">*</span>long_lived_pool<span class="hl opt">;</span>
+  <span class="hl kwb">int</span> min_depth <span class="hl opt">=</span> <span class="hl num">4</span><span class="hl opt">;</span>
+  <span class="hl kwb">int</span> req_depth <span class="hl opt">= (</span>argc <span class="hl opt">==</span> <span class="hl num">2</span> ? <span class="hl kwd">atoi</span><span class="hl opt">(</span>argv<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]) :</span> <span class="hl num">10</span><span class="hl opt">);</span>
+  <span class="hl kwb">int</span> max_depth <span class="hl opt">= (</span>req_depth <span class="hl opt">&gt;</span> min_depth <span class="hl opt">+</span> <span class="hl num">2</span> ? req_depth <span class="hl opt">:</span> min_depth <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">);</span>
+  <span class="hl kwb">int</span> stretch_depth <span class="hl opt">=</span> max_depth<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">;</span>
+
+  <span class="hl kwd">apr_initialize</span><span class="hl opt">();</span>
+
+  <span class="hl com">/* Alloc then dealloc stretchdepth tree */</span>
+  <span class="hl opt">{</span>
+    apr_pool_t <span class="hl opt">*</span>store<span class="hl opt">;</span>
+    <span class="hl kwb">struct</span> node <span class="hl opt">*</span>curr<span class="hl opt">;</span>
+
+    <span class="hl kwd">apr_pool_create</span> <span class="hl opt">(&amp;</span>store<span class="hl opt">,</span> NULL<span class="hl opt">);</span>
+    curr <span class="hl opt">=</span> <span class="hl kwd">make</span> <span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> stretch_depth<span class="hl opt">,</span> store<span class="hl opt">);</span>
+    <span class="hl kwd">printf</span> <span class="hl opt">(</span><span class="hl str">&quot;stretch tree of depth %i</span><span class="hl esc">\t</span> <span class="hl str">check: %i</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> stretch_depth<span class="hl opt">,</span> 
+	    <span class="hl kwd">node_check</span> <span class="hl opt">(</span>curr<span class="hl opt">));</span>
+    <span class="hl kwd">apr_pool_destroy</span> <span class="hl opt">(</span>store<span class="hl opt">);</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwd">apr_pool_create</span> <span class="hl opt">(&amp;</span>long_lived_pool<span class="hl opt">,</span> NULL<span class="hl opt">);</span>
+
+  <span class="hl opt">{</span>
+    <span class="hl kwb">struct</span> node <span class="hl opt">*</span>long_lived_tree <span class="hl opt">=</span> <span class="hl kwd">make</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> max_depth<span class="hl opt">,</span> long_lived_pool<span class="hl opt">);</span>
+
+    <span class="hl com">/* buffer to store output of each thread */</span>
+    <span class="hl kwb">char</span> <span class="hl opt">*</span>outputstr <span class="hl opt">= (</span><span class="hl kwb">char</span><span class="hl opt">*)</span> <span class="hl kwd">malloc</span><span class="hl opt">(</span>LINE_SIZE <span class="hl opt">* (</span>max_depth <span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">) *</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span><span class="hl kwb">char</span><span class="hl opt">));</span>
+    <span class="hl kwb">int</span> d<span class="hl opt">;</span>
+
+<span class="hl ppc">#pragma omp parallel for</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span>d <span class="hl opt">=</span> min_depth<span class="hl opt">;</span> d <span class="hl opt">&lt;=</span> max_depth<span class="hl opt">;</span> d <span class="hl opt">+=</span> <span class="hl num">2</span><span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+        <span class="hl kwb">int</span> iterations <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl opt">&lt;&lt; (</span>max_depth <span class="hl opt">-</span> d <span class="hl opt">+</span> min_depth<span class="hl opt">);</span>
+	apr_pool_t <span class="hl opt">*</span>store<span class="hl opt">;</span>
+        <span class="hl kwb">int</span> c <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> i<span class="hl opt">;</span>
+
+	<span class="hl kwd">apr_pool_create</span> <span class="hl opt">(&amp;</span>store<span class="hl opt">,</span> NULL<span class="hl opt">);</span>
+
+        <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span> i <span class="hl opt">&lt;=</span> iterations<span class="hl opt">; ++</span>i<span class="hl opt">)</span>
+	  <span class="hl opt">{</span>
+	    <span class="hl kwb">struct</span> node <span class="hl opt">*</span>a<span class="hl opt">, *</span>b<span class="hl opt">;</span>
+
+	    a <span class="hl opt">=</span> <span class="hl kwd">make</span> <span class="hl opt">(</span> i<span class="hl opt">,</span> d<span class="hl opt">,</span> store<span class="hl opt">);</span>
+	    b <span class="hl opt">=</span> <span class="hl kwd">make</span> <span class="hl opt">(-</span>i<span class="hl opt">,</span> d<span class="hl opt">,</span> store<span class="hl opt">);</span>
+            c <span class="hl opt">+=</span> <span class="hl kwd">node_check</span> <span class="hl opt">(</span>a<span class="hl opt">) +</span> <span class="hl kwd">node_check</span> <span class="hl opt">(</span>b<span class="hl opt">);</span>
+	    <span class="hl kwd">apr_pool_clear</span> <span class="hl opt">(</span>store<span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+	<span class="hl kwd">apr_pool_destroy</span> <span class="hl opt">(</span>store<span class="hl opt">);</span>
+	
+	<span class="hl com">/* each thread write to separate location */</span>
+	<span class="hl kwd">sprintf</span><span class="hl opt">(</span>outputstr <span class="hl opt">+</span> LINE_SIZE <span class="hl opt">*</span> d<span class="hl opt">,</span> <span class="hl str">&quot;%d</span><span class="hl esc">\t</span> <span class="hl str">trees of depth %d</span><span class="hl esc">\t</span> <span class="hl str">check: %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">, (</span><span class="hl num">2</span> <span class="hl opt">*</span> iterations<span class="hl opt">),</span> d<span class="hl opt">,</span> c<span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+
+    <span class="hl com">/* print all results */</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span>d <span class="hl opt">=</span> min_depth<span class="hl opt">;</span> d <span class="hl opt">&lt;=</span> max_depth<span class="hl opt">;</span> d <span class="hl opt">+=</span> <span class="hl num">2</span><span class="hl opt">)</span>
+      <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%s&quot;</span><span class="hl opt">,</span> outputstr <span class="hl opt">+ (</span>d <span class="hl opt">*</span> LINE_SIZE<span class="hl opt">) );</span>
+    <span class="hl kwd">free</span><span class="hl opt">(</span>outputstr<span class="hl opt">);</span>
+
+    <span class="hl kwd">printf</span> <span class="hl opt">(</span><span class="hl str">&quot;long lived tree of depth %i</span><span class="hl esc">\t</span> <span class="hl str">check: %i</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> max_depth<span class="hl opt">,</span> 
+	    <span class="hl kwd">node_check</span> <span class="hl opt">(</span>long_lived_tree<span class="hl opt">));</span>
+
+    <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+  <span class="hl opt">}</span>
+<span class="hl opt">}</span>

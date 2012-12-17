@@ -1,0 +1,760 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com"> http://shootout.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com"> contributed by Rikard Mustajärvi</span>
+<span class="hl com">*/</span>
+
+
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>io<span class="hl opt">.</span>FilterInputStream<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>io<span class="hl opt">.</span>IOException<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>io<span class="hl opt">.</span>InputStream<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>lang<span class="hl opt">.</span>management<span class="hl opt">.</span>ManagementFactory<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>lang<span class="hl opt">.</span>reflect<span class="hl opt">.</span>Field<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>nio<span class="hl opt">.</span>ByteBuffer<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>nio<span class="hl opt">.</span>channels<span class="hl opt">.</span>Channels<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>nio<span class="hl opt">.</span>channels<span class="hl opt">.</span>ReadableByteChannel<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>ArrayList<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>Arrays<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>Collections<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>Comparator<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>HashSet<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>Iterator<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>List<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>Map<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>Set<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>TreeMap<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>concurrent<span class="hl opt">.</span>ArrayBlockingQueue<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>concurrent<span class="hl opt">.</span>ExecutorService<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>concurrent<span class="hl opt">.</span>Executors<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>concurrent<span class="hl opt">.</span>LinkedBlockingQueue<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>concurrent<span class="hl opt">.</span>TimeUnit<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>concurrent<span class="hl opt">.</span>atomic<span class="hl opt">.</span>AtomicLong<span class="hl opt">;</span>
+
+
+<span class="hl kwa">public class</span> knucleotide <span class="hl opt">{</span>
+   <span class="hl kwa">static final</span> <span class="hl kwb">int</span> LINE_WIDTH <span class="hl opt">=</span> <span class="hl num">60</span><span class="hl opt">;</span>
+   <span class="hl kwa">static final</span> <span class="hl kwb">int</span> BITS_PER_CHAR <span class="hl opt">=</span> <span class="hl num">2</span><span class="hl opt">;</span>
+   <span class="hl kwa">static final</span> <span class="hl kwb">int</span> BITS_MASK <span class="hl opt">=</span> Byte<span class="hl opt">.</span><span class="hl kwd">parseByte</span><span class="hl opt">(</span><span class="hl str">&quot;11&quot;</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">static final</span> <span class="hl kwb">byte</span> A <span class="hl opt">=</span> Byte<span class="hl opt">.</span><span class="hl kwd">parseByte</span><span class="hl opt">(</span><span class="hl str">&quot;11&quot;</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">);</span>
+   <span class="hl kwa">static final</span> <span class="hl kwb">byte</span> C <span class="hl opt">=</span> Byte<span class="hl opt">.</span><span class="hl kwd">parseByte</span><span class="hl opt">(</span><span class="hl str">&quot;01&quot;</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">);</span>
+   <span class="hl kwa">static final</span> <span class="hl kwb">byte</span> G <span class="hl opt">=</span> Byte<span class="hl opt">.</span><span class="hl kwd">parseByte</span><span class="hl opt">(</span><span class="hl str">&quot;00&quot;</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">);</span>
+   <span class="hl kwa">static final</span> <span class="hl kwb">byte</span> T <span class="hl opt">=</span> Byte<span class="hl opt">.</span><span class="hl kwd">parseByte</span><span class="hl opt">(</span><span class="hl str">&quot;10&quot;</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">private static final</span> <span class="hl kwb">byte</span><span class="hl opt">[]</span> ENCODE<span class="hl opt">;</span>
+   <span class="hl kwa">private static final</span> <span class="hl kwb">byte</span><span class="hl opt">[]</span> DECODE<span class="hl opt">;</span>
+
+   <span class="hl kwa">static</span> <span class="hl opt">{</span>
+      ENCODE <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span><span class="hl str">'t'</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">];</span>
+      ENCODE<span class="hl opt">[</span><span class="hl str">'a'</span><span class="hl opt">] =</span> A<span class="hl opt">;</span>
+      ENCODE<span class="hl opt">[</span><span class="hl str">'A'</span><span class="hl opt">] =</span> A<span class="hl opt">;</span>
+      ENCODE<span class="hl opt">[</span><span class="hl str">'c'</span><span class="hl opt">] =</span> C<span class="hl opt">;</span>
+      ENCODE<span class="hl opt">[</span><span class="hl str">'C'</span><span class="hl opt">] =</span> C<span class="hl opt">;</span>
+      ENCODE<span class="hl opt">[</span><span class="hl str">'g'</span><span class="hl opt">] =</span> G<span class="hl opt">;</span>
+      ENCODE<span class="hl opt">[</span><span class="hl str">'G'</span><span class="hl opt">] =</span> G<span class="hl opt">;</span>
+      ENCODE<span class="hl opt">[</span><span class="hl str">'t'</span><span class="hl opt">] =</span> T<span class="hl opt">;</span>
+      ENCODE<span class="hl opt">[</span><span class="hl str">'T'</span><span class="hl opt">] =</span> T<span class="hl opt">;</span>
+
+      DECODE <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span><span class="hl num">4</span><span class="hl opt">];</span>
+      DECODE<span class="hl opt">[</span>A<span class="hl opt">] =</span> <span class="hl str">'A'</span><span class="hl opt">;</span>
+      DECODE<span class="hl opt">[</span>C<span class="hl opt">] =</span> <span class="hl str">'C'</span><span class="hl opt">;</span>
+      DECODE<span class="hl opt">[</span>G<span class="hl opt">] =</span> <span class="hl str">'G'</span><span class="hl opt">;</span>
+      DECODE<span class="hl opt">[</span>T<span class="hl opt">] =</span> <span class="hl str">'T'</span><span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl slc">// try to determine effective number of cores</span>
+   <span class="hl kwa">private static final</span> <span class="hl kwb">int</span> concurrency <span class="hl opt">=</span>
+         AffinityDetectionHelper<span class="hl opt">.</span><span class="hl kwd">isLockedToSingleCore</span><span class="hl opt">()</span> ?
+               <span class="hl num">1</span> <span class="hl opt">:</span> Runtime<span class="hl opt">.</span><span class="hl kwd">getRuntime</span><span class="hl opt">().</span><span class="hl kwd">availableProcessors</span><span class="hl opt">();</span>
+
+   <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">main</span><span class="hl opt">(</span>String<span class="hl opt">[]</span> args<span class="hl opt">)</span> <span class="hl kwa">throws</span> Exception <span class="hl opt">{</span>
+      InputStream is<span class="hl opt">;</span>
+      is <span class="hl opt">=</span> System<span class="hl opt">.</span><span class="hl kwa">in</span><span class="hl opt">;</span>
+<span class="hl slc">//      is = new FileInputStream(&quot;knucleotide-input_n25m.txt&quot;);</span>
+      <span class="hl kwa">final</span> IsReader isr <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">IsReader</span><span class="hl opt">(</span>is<span class="hl opt">);</span>
+
+      <span class="hl kwd">findGenome</span><span class="hl opt">(</span>isr<span class="hl opt">);</span>
+
+      <span class="hl kwb">int</span><span class="hl opt">[]</span> ks <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">int</span><span class="hl opt">[]{</span><span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl num">3</span><span class="hl opt">,</span> <span class="hl num">4</span><span class="hl opt">,</span> <span class="hl num">6</span><span class="hl opt">,</span> <span class="hl num">12</span><span class="hl opt">,</span> <span class="hl num">18</span><span class="hl opt">};</span>
+
+      LinkedBlockingQueue<span class="hl opt">&lt;</span>AbstractCounter<span class="hl opt">&gt;</span> counterQueue <span class="hl opt">=</span> <span class="hl kwa">new</span> LinkedBlockingQueue<span class="hl opt">&lt;</span>AbstractCounter<span class="hl opt">&gt;();</span>
+
+      Counters counters <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Counters</span><span class="hl opt">(</span>ks<span class="hl opt">);</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span>AbstractCounter counter <span class="hl opt">:</span> counters<span class="hl opt">.</span><span class="hl kwd">getCounters</span><span class="hl opt">()) {</span>
+         counterQueue<span class="hl opt">.</span><span class="hl kwd">put</span><span class="hl opt">(</span>counter<span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+
+      List<span class="hl opt">&lt;</span>LinkedBlockingQueue<span class="hl opt">&lt;</span>WorkChunk<span class="hl opt">&gt;&gt;</span> workQueues <span class="hl opt">=</span> <span class="hl kwa">new</span> ArrayList<span class="hl opt">&lt;</span>LinkedBlockingQueue<span class="hl opt">&lt;</span>WorkChunk<span class="hl opt">&gt;&gt;();</span>
+
+      <span class="hl kwa">final</span> ExecutorService executor <span class="hl opt">=</span> Executors<span class="hl opt">.</span><span class="hl kwd">newFixedThreadPool</span><span class="hl opt">(</span>concurrency<span class="hl opt">);</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> concurrency<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+         LinkedBlockingQueue<span class="hl opt">&lt;</span>WorkChunk<span class="hl opt">&gt;</span> workQueue <span class="hl opt">=</span> <span class="hl kwa">new</span> LinkedBlockingQueue<span class="hl opt">&lt;</span>WorkChunk<span class="hl opt">&gt;();</span>
+         workQueues<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>workQueue<span class="hl opt">);</span>
+         executor<span class="hl opt">.</span><span class="hl kwd">submit</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">CounterProcesser</span><span class="hl opt">(</span>counterQueue<span class="hl opt">,</span> workQueue<span class="hl opt">));</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwb">int</span> chunkSize <span class="hl opt">=</span> LINE_WIDTH<span class="hl opt">*</span><span class="hl num">100</span><span class="hl opt">;</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(!</span>isr<span class="hl opt">.</span><span class="hl kwd">eof</span><span class="hl opt">()) {</span>
+         <span class="hl kwb">byte</span><span class="hl opt">[]</span> chunk <span class="hl opt">=</span> isr<span class="hl opt">.</span><span class="hl kwd">getNextChunk</span><span class="hl opt">(</span>chunkSize<span class="hl opt">);</span>
+         <span class="hl kwb">int</span> len <span class="hl opt">=</span> <span class="hl kwd">encode</span><span class="hl opt">(</span>chunk<span class="hl opt">);</span>
+
+         WorkChunk wc <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">WorkChunk</span><span class="hl opt">();</span>
+         wc<span class="hl opt">.</span>data <span class="hl opt">=</span> chunk<span class="hl opt">;</span>
+         wc<span class="hl opt">.</span>length <span class="hl opt">=</span> len<span class="hl opt">;</span>
+
+         <span class="hl kwa">for</span> <span class="hl opt">(</span>LinkedBlockingQueue<span class="hl opt">&lt;</span>WorkChunk<span class="hl opt">&gt;</span> wcQueue <span class="hl opt">:</span> workQueues<span class="hl opt">) {</span>
+            wcQueue<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>wc<span class="hl opt">);</span>
+         <span class="hl opt">}</span>
+
+         chunkSize <span class="hl opt">=</span> LINE_WIDTH<span class="hl opt">*</span><span class="hl num">5000</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">for</span> <span class="hl opt">(</span>LinkedBlockingQueue<span class="hl opt">&lt;</span>WorkChunk<span class="hl opt">&gt;</span> wcQueue <span class="hl opt">:</span> workQueues<span class="hl opt">) {</span>
+         wcQueue<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>WorkChunk<span class="hl opt">.</span>END_MESSAGE<span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+
+      executor<span class="hl opt">.</span><span class="hl kwd">shutdown</span><span class="hl opt">();</span>
+      executor<span class="hl opt">.</span><span class="hl kwd">awaitTermination</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span> TimeUnit<span class="hl opt">.</span>MINUTES<span class="hl opt">);</span>
+
+      <span class="hl kwd">writeRelativeFreqs</span><span class="hl opt">(</span>counters<span class="hl opt">.</span><span class="hl kwd">getCounter</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">));</span>
+      System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">();</span>
+
+      <span class="hl kwd">writeRelativeFreqs</span><span class="hl opt">(</span>counters<span class="hl opt">.</span><span class="hl kwd">getCounter</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">));</span>
+      System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">();</span>
+
+      String<span class="hl opt">[]</span> nucleotides <span class="hl opt">= {</span><span class="hl str">&quot;GGT&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTA&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATT&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATTTTAATT&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATTTTAATTTATAGT&quot;</span><span class="hl opt">};</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span>String nucleotide <span class="hl opt">:</span> nucleotides<span class="hl opt">) {</span>
+         System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">(</span>String<span class="hl opt">.</span><span class="hl kwd">format</span><span class="hl opt">(</span><span class="hl str">&quot;%d</span><span class="hl esc">\t</span><span class="hl str">%s&quot;</span><span class="hl opt">,</span> counters<span class="hl opt">.</span><span class="hl kwd">getCount</span><span class="hl opt">(</span>nucleotide<span class="hl opt">),</span> nucleotide<span class="hl opt">));</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">static class</span> WorkChunk <span class="hl opt">{</span>
+      <span class="hl kwa">public static final</span> WorkChunk END_MESSAGE <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">WorkChunk</span><span class="hl opt">();</span>
+
+      <span class="hl kwa">public</span> <span class="hl kwb">byte</span><span class="hl opt">[]</span> data<span class="hl opt">;</span>
+      <span class="hl kwa">public</span> <span class="hl kwb">int</span> length<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">static class</span> CounterProcesser <span class="hl kwa">implements</span> Runnable <span class="hl opt">{</span>
+      <span class="hl kwa">private final</span> LinkedBlockingQueue<span class="hl opt">&lt;</span>AbstractCounter<span class="hl opt">&gt;</span> counterQueue<span class="hl opt">;</span>
+      <span class="hl kwa">private final</span> LinkedBlockingQueue<span class="hl opt">&lt;</span>WorkChunk<span class="hl opt">&gt;</span> workQueue<span class="hl opt">;</span>
+
+      <span class="hl kwa">public</span> <span class="hl kwd">CounterProcesser</span><span class="hl opt">(</span>LinkedBlockingQueue<span class="hl opt">&lt;</span>AbstractCounter<span class="hl opt">&gt;</span> counterQueue<span class="hl opt">,</span> LinkedBlockingQueue<span class="hl opt">&lt;</span>WorkChunk<span class="hl opt">&gt;</span> workQueue<span class="hl opt">) {</span>
+         <span class="hl kwa">this</span><span class="hl opt">.</span>counterQueue <span class="hl opt">=</span> counterQueue<span class="hl opt">;</span>
+         <span class="hl kwa">this</span><span class="hl opt">.</span>workQueue <span class="hl opt">=</span> workQueue<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwc">&#64;Override</span>
+      <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">run</span><span class="hl opt">() {</span>
+         <span class="hl kwa">try</span> <span class="hl opt">{</span>
+            AbstractCounter counter<span class="hl opt">;</span>
+
+            List<span class="hl opt">&lt;</span>WorkChunk<span class="hl opt">&gt;</span> workList <span class="hl opt">=</span> <span class="hl kwa">new</span> ArrayList<span class="hl opt">&lt;</span>WorkChunk<span class="hl opt">&gt;(</span><span class="hl num">1024</span><span class="hl opt">);</span>
+
+            <span class="hl slc">// process first counter by taking from work queue</span>
+            counter <span class="hl opt">=</span> counterQueue<span class="hl opt">.</span><span class="hl kwd">poll</span><span class="hl opt">();</span>
+
+            WorkChunk wc <span class="hl opt">=</span> workQueue<span class="hl opt">.</span><span class="hl kwd">take</span><span class="hl opt">();</span>
+            counter<span class="hl opt">.</span><span class="hl kwd">seed</span><span class="hl opt">(</span>wc<span class="hl opt">.</span>data<span class="hl opt">,</span> wc<span class="hl opt">.</span>length<span class="hl opt">);</span>
+
+            workList<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>wc<span class="hl opt">);</span>
+
+            <span class="hl kwa">while</span> <span class="hl opt">( (</span>wc <span class="hl opt">=</span> workQueue<span class="hl opt">.</span><span class="hl kwd">take</span><span class="hl opt">()) !=</span> WorkChunk<span class="hl opt">.</span>END_MESSAGE<span class="hl opt">) {</span>
+               workList<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>wc<span class="hl opt">);</span>
+               counter<span class="hl opt">.</span><span class="hl kwd">consume</span><span class="hl opt">(</span>wc<span class="hl opt">.</span>data<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> wc<span class="hl opt">.</span>length<span class="hl opt">);</span>
+            <span class="hl opt">}</span>
+
+            workList<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>WorkChunk<span class="hl opt">.</span>END_MESSAGE<span class="hl opt">);</span>
+
+            <span class="hl slc">// subsequential counters will take work from list</span>
+            <span class="hl kwa">while</span> <span class="hl opt">( (</span>counter <span class="hl opt">=</span> counterQueue<span class="hl opt">.</span><span class="hl kwd">poll</span><span class="hl opt">()) !=</span> null<span class="hl opt">) {</span>
+               Iterator<span class="hl opt">&lt;</span>WorkChunk<span class="hl opt">&gt;</span> wcIt <span class="hl opt">=</span> workList<span class="hl opt">.</span><span class="hl kwd">iterator</span><span class="hl opt">();</span>
+
+               wc <span class="hl opt">=</span> wcIt<span class="hl opt">.</span><span class="hl kwd">next</span><span class="hl opt">();</span>
+               counter<span class="hl opt">.</span><span class="hl kwd">seed</span><span class="hl opt">(</span>wc<span class="hl opt">.</span>data<span class="hl opt">,</span> wc<span class="hl opt">.</span>length<span class="hl opt">);</span>
+
+               <span class="hl kwa">while</span> <span class="hl opt">( (</span>wc <span class="hl opt">=</span> wcIt<span class="hl opt">.</span><span class="hl kwd">next</span><span class="hl opt">()) !=</span> WorkChunk<span class="hl opt">.</span>END_MESSAGE<span class="hl opt">) {</span>
+                  counter<span class="hl opt">.</span><span class="hl kwd">consume</span><span class="hl opt">(</span>wc<span class="hl opt">.</span>data<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> wc<span class="hl opt">.</span>length<span class="hl opt">);</span>
+               <span class="hl opt">}</span>
+            <span class="hl opt">}</span>
+         <span class="hl opt">}</span> <span class="hl kwa">catch</span> <span class="hl opt">(</span>Exception e<span class="hl opt">) {</span>
+            <span class="hl kwa">throw new</span> <span class="hl kwd">RuntimeException</span><span class="hl opt">(</span>e<span class="hl opt">);</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">static</span> <span class="hl kwb">int</span> <span class="hl kwd">encode</span><span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">[]</span> chunk<span class="hl opt">) {</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl opt">;</span> i <span class="hl opt">&lt;</span> chunk<span class="hl opt">.</span>length<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+         chunk<span class="hl opt">[</span>i<span class="hl opt">] =</span> ENCODE<span class="hl opt">[</span>chunk<span class="hl opt">[</span>i<span class="hl opt">]];</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">return</span> chunk<span class="hl opt">.</span>length<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">static</span> <span class="hl kwb">int</span> <span class="hl kwd">seedCounters</span><span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">[]</span> chunk<span class="hl opt">,</span> AbstractCounter<span class="hl opt">[]</span> counters<span class="hl opt">)</span> <span class="hl kwa">throws</span> IOException <span class="hl opt">{</span>
+      <span class="hl kwb">int</span> len <span class="hl opt">=</span> <span class="hl kwd">encode</span><span class="hl opt">(</span>chunk<span class="hl opt">);</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span>AbstractCounter c <span class="hl opt">:</span> counters<span class="hl opt">) {</span>
+         c<span class="hl opt">.</span><span class="hl kwd">seed</span><span class="hl opt">(</span>chunk<span class="hl opt">,</span> len<span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">return</span> len<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">static</span> <span class="hl kwb">void</span> <span class="hl kwd">findGenome</span><span class="hl opt">(</span>IsReader isr<span class="hl opt">)</span> <span class="hl kwa">throws</span> IOException <span class="hl opt">{</span>
+      <span class="hl kwb">byte</span><span class="hl opt">[]</span> line <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>LINE_WIDTH<span class="hl opt">];</span>
+
+      <span class="hl kwa">while</span> <span class="hl opt">(</span>true<span class="hl opt">) {</span>
+         isr<span class="hl opt">.</span><span class="hl kwd">readLine</span><span class="hl opt">(</span>line<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>line<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] ==</span> <span class="hl str">'&gt;'</span> <span class="hl opt">&amp;&amp;</span> line<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] ==</span> <span class="hl str">'T'</span> <span class="hl opt">&amp;&amp;</span> line<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">] ==</span> <span class="hl str">'H'</span> <span class="hl opt">&amp;&amp;</span> line<span class="hl opt">[</span><span class="hl num">3</span><span class="hl opt">] ==</span> <span class="hl str">'R'</span><span class="hl opt">) {</span>
+            <span class="hl kwa">break</span><span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">static</span> <span class="hl kwb">void</span> <span class="hl kwd">writeRelativeFreqs</span><span class="hl opt">(</span>AbstractCounter counter<span class="hl opt">) {</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>counter <span class="hl opt">==</span> null<span class="hl opt">)</span> <span class="hl kwa">return</span><span class="hl opt">;</span> <span class="hl slc">// simplify debugging</span>
+
+      <span class="hl kwa">class</span> CountString <span class="hl opt">{</span>
+         Integer count<span class="hl opt">;</span>
+         String string<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      List<span class="hl opt">&lt;</span>CountString<span class="hl opt">&gt;</span> list <span class="hl opt">=</span> <span class="hl kwa">new</span> ArrayList<span class="hl opt">&lt;</span>CountString<span class="hl opt">&gt;();</span>
+
+      <span class="hl kwb">int</span> sum <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwb">int</span> to <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">&lt;&lt;(</span>counter<span class="hl opt">.</span>shift<span class="hl opt">);</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> key <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> key <span class="hl opt">&lt;</span> to<span class="hl opt">;</span> key<span class="hl opt">++) {</span>
+         <span class="hl kwb">int</span> count <span class="hl opt">=</span> counter<span class="hl opt">.</span><span class="hl kwd">getCount</span><span class="hl opt">(</span>key<span class="hl opt">);</span>
+         sum <span class="hl opt">+=</span> count<span class="hl opt">;</span>
+
+         StringBuilder sb <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">StringBuilder</span><span class="hl opt">();</span>
+         <span class="hl kwb">int</span> tmp <span class="hl opt">=</span> key<span class="hl opt">;</span>
+         <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> j <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> j <span class="hl opt">&lt;</span> counter<span class="hl opt">.</span>k<span class="hl opt">;</span> j<span class="hl opt">++) {</span>
+            <span class="hl kwb">byte</span> b <span class="hl opt">= (</span><span class="hl kwb">byte</span><span class="hl opt">)(</span>tmp <span class="hl opt">&amp;</span> BITS_MASK<span class="hl opt">);</span>
+            tmp <span class="hl opt">&gt;&gt;=</span> BITS_PER_CHAR<span class="hl opt">;</span>
+            sb<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">((</span><span class="hl kwb">char</span><span class="hl opt">)</span>DECODE<span class="hl opt">[</span>b<span class="hl opt">]);</span>
+         <span class="hl opt">}</span>
+         sb<span class="hl opt">.</span><span class="hl kwd">reverse</span><span class="hl opt">();</span>
+
+         CountString cs <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">CountString</span><span class="hl opt">();</span>
+         cs<span class="hl opt">.</span>count <span class="hl opt">=</span> count<span class="hl opt">;</span>
+         cs<span class="hl opt">.</span>string <span class="hl opt">=</span> sb<span class="hl opt">.</span><span class="hl kwd">toString</span><span class="hl opt">();</span>
+         list<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>cs<span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+
+      Collections<span class="hl opt">.</span><span class="hl kwd">sort</span><span class="hl opt">(</span>list<span class="hl opt">,</span> <span class="hl kwa">new</span> Comparator<span class="hl opt">&lt;</span>CountString<span class="hl opt">&gt;() {</span>
+         <span class="hl kwc">&#64;Override</span>
+         <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">compare</span><span class="hl opt">(</span>CountString o1<span class="hl opt">,</span> CountString o2<span class="hl opt">) {</span>
+            <span class="hl kwb">int</span> res <span class="hl opt">= -</span>o1<span class="hl opt">.</span>count<span class="hl opt">.</span><span class="hl kwd">compareTo</span><span class="hl opt">(</span>o2<span class="hl opt">.</span>count<span class="hl opt">);</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>res <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl opt">)</span> res <span class="hl opt">=</span> o1<span class="hl opt">.</span>string<span class="hl opt">.</span><span class="hl kwd">compareTo</span><span class="hl opt">(</span>o2<span class="hl opt">.</span>string<span class="hl opt">);</span>
+            <span class="hl kwa">return</span> res<span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">});</span>
+
+      <span class="hl kwa">for</span> <span class="hl opt">(</span>CountString cs <span class="hl opt">:</span> list<span class="hl opt">) {</span>
+         System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">(</span>String<span class="hl opt">.</span><span class="hl kwd">format</span><span class="hl opt">(</span><span class="hl str">&quot;%s %.3f&quot;</span><span class="hl opt">,</span> cs<span class="hl opt">.</span>string<span class="hl opt">, (</span><span class="hl num">100.0</span>f<span class="hl opt">*</span>cs<span class="hl opt">.</span>count<span class="hl opt">)/</span>sum<span class="hl opt">));</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">static</span> <span class="hl kwb">int</span> <span class="hl kwd">toIntKey</span><span class="hl opt">(</span>String str<span class="hl opt">) {</span>
+      <span class="hl kwb">int</span> k <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">byte</span> b <span class="hl opt">:</span> str<span class="hl opt">.</span><span class="hl kwd">getBytes</span><span class="hl opt">()) {</span>
+         k <span class="hl opt">=</span> k <span class="hl opt">&lt;&lt;</span> BITS_PER_CHAR <span class="hl opt">|</span> ENCODE<span class="hl opt">[</span>b<span class="hl opt">];</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">return</span> k<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">static</span> <span class="hl kwb">long</span> <span class="hl kwd">toLongKey</span><span class="hl opt">(</span>String str<span class="hl opt">) {</span>
+      <span class="hl kwb">long</span> k <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">byte</span> b <span class="hl opt">:</span> str<span class="hl opt">.</span><span class="hl kwd">getBytes</span><span class="hl opt">()) {</span>
+         k <span class="hl opt">=</span> k <span class="hl opt">&lt;&lt;</span> BITS_PER_CHAR <span class="hl opt">|</span> ENCODE<span class="hl opt">[</span>b<span class="hl opt">];</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">return</span> k<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">static class</span> Counters <span class="hl opt">{</span>
+      <span class="hl kwa">private final static</span> <span class="hl kwb">int</span> SMALL_BIG_THRESHOLD <span class="hl opt">=</span> <span class="hl num">9</span><span class="hl opt">;</span> <span class="hl slc">// 2^(9*2)*4 = 2mb, lets make it possible to keep the tables in L3 cache</span>
+
+      <span class="hl kwa">private final</span> Map<span class="hl opt">&lt;</span>Integer<span class="hl opt">,</span> Map<span class="hl opt">&lt;</span>Byte<span class="hl opt">,</span> AbstractCounter<span class="hl opt">&gt;&gt;</span> counterMap <span class="hl opt">=</span> <span class="hl kwa">new</span> TreeMap<span class="hl opt">&lt;</span>Integer<span class="hl opt">,</span> Map<span class="hl opt">&lt;</span>Byte<span class="hl opt">,</span> AbstractCounter<span class="hl opt">&gt;&gt;();</span>
+      <span class="hl kwa">private final</span> AbstractCounter<span class="hl opt">[]</span> counters<span class="hl opt">;</span>
+
+      <span class="hl kwa">public</span> <span class="hl kwd">Counters</span><span class="hl opt">(</span><span class="hl kwb">int</span><span class="hl opt">[]</span> ks<span class="hl opt">) {</span>
+         <span class="hl kwb">byte</span><span class="hl opt">[]</span> letters <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[]{</span>A<span class="hl opt">,</span> C<span class="hl opt">,</span> G<span class="hl opt">,</span> T<span class="hl opt">};</span>
+
+         Set<span class="hl opt">&lt;</span>AbstractCounter<span class="hl opt">&gt;</span> counterSet <span class="hl opt">=</span> <span class="hl kwa">new</span> HashSet<span class="hl opt">&lt;</span>AbstractCounter<span class="hl opt">&gt;();</span>
+         <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> k <span class="hl opt">:</span> ks<span class="hl opt">) {</span>
+            Map<span class="hl opt">&lt;</span>Byte<span class="hl opt">,</span> AbstractCounter<span class="hl opt">&gt;</span> lastChar2Counter <span class="hl opt">=</span> <span class="hl kwa">new</span> TreeMap<span class="hl opt">&lt;</span>Byte<span class="hl opt">,</span> AbstractCounter<span class="hl opt">&gt;();</span>
+            counterMap<span class="hl opt">.</span><span class="hl kwd">put</span><span class="hl opt">(</span>k<span class="hl opt">,</span> lastChar2Counter<span class="hl opt">);</span>
+
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>k <span class="hl opt">&lt;=</span> SMALL_BIG_THRESHOLD<span class="hl opt">) {</span>
+               SmallCounter counter <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">SmallCounter</span><span class="hl opt">(</span>k<span class="hl opt">);</span>
+               <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">byte</span> letter <span class="hl opt">:</span> letters<span class="hl opt">) {</span>
+                  lastChar2Counter<span class="hl opt">.</span><span class="hl kwd">put</span><span class="hl opt">(</span>letter<span class="hl opt">,</span> counter<span class="hl opt">);</span>
+               <span class="hl opt">}</span>
+            <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+               <span class="hl kwa">if</span> <span class="hl opt">(</span>concurrency <span class="hl opt">&gt;</span> <span class="hl num">1</span><span class="hl opt">) {</span>
+                  <span class="hl slc">// one counter per letter</span>
+                  <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">byte</span> letter <span class="hl opt">:</span> letters<span class="hl opt">) {</span>
+                     BigCounter counter <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">BigCounter</span><span class="hl opt">(</span>k<span class="hl opt">,</span> letter<span class="hl opt">);</span>
+                     lastChar2Counter<span class="hl opt">.</span><span class="hl kwd">put</span><span class="hl opt">(</span>letter<span class="hl opt">,</span> counter<span class="hl opt">);</span>
+                  <span class="hl opt">}</span>
+               <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+                  <span class="hl slc">// same counter for all letters</span>
+                  BigCounter counter <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">BigCounter</span><span class="hl opt">(</span>k<span class="hl opt">, (</span><span class="hl kwb">byte</span><span class="hl opt">)-</span><span class="hl num">1</span><span class="hl opt">);</span>
+                  <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">byte</span> letter <span class="hl opt">:</span> letters<span class="hl opt">) {</span>
+                     lastChar2Counter<span class="hl opt">.</span><span class="hl kwd">put</span><span class="hl opt">(</span>letter<span class="hl opt">,</span> counter<span class="hl opt">);</span>
+                  <span class="hl opt">}</span>
+               <span class="hl opt">}</span>
+
+            <span class="hl opt">}</span>
+
+            counterSet<span class="hl opt">.</span><span class="hl kwd">addAll</span><span class="hl opt">(</span>lastChar2Counter<span class="hl opt">.</span><span class="hl kwd">values</span><span class="hl opt">());</span>
+         <span class="hl opt">}</span>
+
+         counters <span class="hl opt">=</span> counterSet<span class="hl opt">.</span><span class="hl kwd">toArray</span><span class="hl opt">(</span><span class="hl kwa">new</span> AbstractCounter<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]);</span>
+         Arrays<span class="hl opt">.</span><span class="hl kwd">sort</span><span class="hl opt">(</span>counters<span class="hl opt">,</span> <span class="hl kwa">new</span> Comparator<span class="hl opt">&lt;</span>AbstractCounter<span class="hl opt">&gt;() {</span>
+            <span class="hl kwc">&#64;Override</span>
+            <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">compare</span><span class="hl opt">(</span>AbstractCounter o1<span class="hl opt">,</span> AbstractCounter o2<span class="hl opt">) {</span>
+               <span class="hl kwa">if</span> <span class="hl opt">(</span>o1 <span class="hl kwa">instanceof</span> BigCounter <span class="hl opt">&amp;&amp;</span> o2 <span class="hl kwa">instanceof</span> BigCounter<span class="hl opt">) {</span>
+                  <span class="hl kwa">return</span> <span class="hl opt">((</span>BigCounter<span class="hl opt">)</span>o2<span class="hl opt">).</span>letter <span class="hl opt">- ((</span>BigCounter<span class="hl opt">)</span>o1<span class="hl opt">).</span>letter<span class="hl opt">;</span>
+               <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+                  <span class="hl kwa">return</span> o2<span class="hl opt">.</span>k <span class="hl opt">-</span> o1<span class="hl opt">.</span>k<span class="hl opt">;</span>
+               <span class="hl opt">}</span>
+
+            <span class="hl opt">}</span>
+         <span class="hl opt">});</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwb">int</span> <span class="hl kwd">getCount</span><span class="hl opt">(</span>String nucleotide<span class="hl opt">) {</span>
+         <span class="hl kwb">int</span> length <span class="hl opt">=</span> nucleotide<span class="hl opt">.</span><span class="hl kwd">length</span><span class="hl opt">();</span>
+         <span class="hl kwb">byte</span> lastChar <span class="hl opt">=</span> ENCODE<span class="hl opt">[</span>nucleotide<span class="hl opt">.</span><span class="hl kwd">charAt</span><span class="hl opt">(</span>length <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">)];</span>
+
+         <span class="hl kwb">int</span> count <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+         <span class="hl kwa">try</span> <span class="hl opt">{</span>
+            count <span class="hl opt">=</span> counterMap<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">(</span>length<span class="hl opt">).</span><span class="hl kwd">get</span><span class="hl opt">(</span>lastChar<span class="hl opt">).</span><span class="hl kwd">getCount</span><span class="hl opt">(</span>nucleotide<span class="hl opt">);</span>
+         <span class="hl opt">}</span> <span class="hl kwa">catch</span> <span class="hl opt">(</span>NullPointerException e<span class="hl opt">) {}</span> <span class="hl slc">// beautiful code...</span>
+
+         <span class="hl kwa">return</span> count<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      AbstractCounter <span class="hl kwd">getCounter</span><span class="hl opt">(</span><span class="hl kwb">int</span> k<span class="hl opt">) {</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>k <span class="hl opt">&gt;</span> SMALL_BIG_THRESHOLD<span class="hl opt">)</span> <span class="hl kwa">throw new</span> <span class="hl kwd">UnsupportedOperationException</span><span class="hl opt">();</span>
+
+         AbstractCounter counter <span class="hl opt">=</span> null<span class="hl opt">;</span>
+         <span class="hl kwa">try</span> <span class="hl opt">{</span>
+            counter <span class="hl opt">=</span> counterMap<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">(</span>k<span class="hl opt">).</span><span class="hl kwd">get</span><span class="hl opt">(</span>A<span class="hl opt">);</span> <span class="hl slc">// for small counters all letters map to the same counter</span>
+         <span class="hl opt">}</span> <span class="hl kwa">catch</span> <span class="hl opt">(</span>NullPointerException e<span class="hl opt">) {}</span>
+
+         <span class="hl kwa">return</span> counter<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      AbstractCounter<span class="hl opt">[]</span> <span class="hl kwd">getCounters</span><span class="hl opt">() {</span><span class="hl kwa">return</span>  counters<span class="hl opt">;}</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+
+<span class="hl kwa">final class</span> IsReader <span class="hl opt">{</span>
+   <span class="hl kwa">static final</span> <span class="hl kwb">int</span> IO_BUFFER_SIZE <span class="hl opt">=</span> <span class="hl num">256</span><span class="hl opt">*</span><span class="hl num">1024</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">final</span> ReadableByteChannel rbc<span class="hl opt">;</span>
+   <span class="hl kwa">final</span> ByteBuffer bb<span class="hl opt">;</span>
+
+   <span class="hl kwb">int</span> index<span class="hl opt">;</span> <span class="hl slc">// current index into backing array</span>
+   <span class="hl kwb">int</span> length <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> <span class="hl slc">// the number of bytes in the backing array</span>
+   <span class="hl kwb">byte</span><span class="hl opt">[]</span> backingArray<span class="hl opt">;</span>
+   <span class="hl kwb">boolean</span> eof <span class="hl opt">=</span> false<span class="hl opt">;</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwd">IsReader</span><span class="hl opt">(</span>InputStream is<span class="hl opt">)</span> <span class="hl kwa">throws</span> Exception <span class="hl opt">{</span>
+      rbc <span class="hl opt">=</span> <span class="hl kwd">extractChannel</span><span class="hl opt">(</span>is<span class="hl opt">);</span>
+      bb <span class="hl opt">=</span> ByteBuffer<span class="hl opt">.</span><span class="hl kwd">allocateDirect</span><span class="hl opt">(</span>IO_BUFFER_SIZE<span class="hl opt">);</span>
+
+      backingArray <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>IO_BUFFER_SIZE<span class="hl opt">];</span>
+      index <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+      <span class="hl kwd">readMoreIfNeeded</span><span class="hl opt">();</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private</span> <span class="hl kwb">void</span> <span class="hl kwd">readMoreIfNeeded</span><span class="hl opt">()</span> <span class="hl kwa">throws</span> IOException <span class="hl opt">{</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(</span>length <span class="hl opt">==</span> index<span class="hl opt">) {</span>
+         length <span class="hl opt">=</span> rbc<span class="hl opt">.</span><span class="hl kwd">read</span><span class="hl opt">(</span>bb<span class="hl opt">);</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>length <span class="hl opt">== -</span><span class="hl num">1</span><span class="hl opt">) {</span>
+            length <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+            eof <span class="hl opt">=</span> true<span class="hl opt">;</span>
+            <span class="hl kwa">break</span><span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+         bb<span class="hl opt">.</span><span class="hl kwd">flip</span><span class="hl opt">();</span>
+         bb<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">(</span>backingArray<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> length<span class="hl opt">);</span>
+         index <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwb">byte</span> <span class="hl kwd">get</span><span class="hl opt">()</span> <span class="hl kwa">throws</span> IOException <span class="hl opt">{</span>
+      <span class="hl kwd">readMoreIfNeeded</span><span class="hl opt">();</span>
+      <span class="hl kwa">return</span> backingArray<span class="hl opt">[</span>index<span class="hl opt">++];</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">readLine</span><span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">[]</span> dst<span class="hl opt">,</span> <span class="hl kwb">int</span> dstOffset<span class="hl opt">)</span> <span class="hl kwa">throws</span> IOException <span class="hl opt">{</span>
+      <span class="hl kwb">int</span> dstIndex <span class="hl opt">=</span> dstOffset<span class="hl opt">;</span>
+      <span class="hl kwb">int</span> dstLength <span class="hl opt">=</span> dst<span class="hl opt">.</span>length<span class="hl opt">;</span>
+
+      outer<span class="hl opt">:</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(!</span><span class="hl kwd">eof</span><span class="hl opt">()) {</span>
+         <span class="hl kwd">readMoreIfNeeded</span><span class="hl opt">();</span>
+
+         <span class="hl kwb">int</span> index <span class="hl opt">=</span> <span class="hl kwa">this</span><span class="hl opt">.</span>index<span class="hl opt">;</span>
+         <span class="hl kwb">int</span> length <span class="hl opt">=</span> <span class="hl kwa">this</span><span class="hl opt">.</span>length<span class="hl opt">;</span>
+
+         <span class="hl kwa">while</span> <span class="hl opt">(</span>index <span class="hl opt">&lt;</span> length<span class="hl opt">) {</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>dstIndex <span class="hl opt">&gt;=</span> dstLength<span class="hl opt">) {</span>
+               <span class="hl kwa">this</span><span class="hl opt">.</span>index <span class="hl opt">=</span> index<span class="hl opt">;</span>
+               <span class="hl kwa">break</span> outer<span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+
+            <span class="hl kwb">byte</span> b <span class="hl opt">=</span> backingArray<span class="hl opt">[</span>index<span class="hl opt">++];</span>
+
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>b <span class="hl opt">==</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">) {</span>
+               <span class="hl kwa">this</span><span class="hl opt">.</span>index <span class="hl opt">=</span> index<span class="hl opt">;</span>
+               <span class="hl kwa">break</span> outer<span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+
+            dst<span class="hl opt">[</span>dstIndex<span class="hl opt">++] =</span> b<span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+
+         <span class="hl kwa">this</span><span class="hl opt">.</span>index <span class="hl opt">=</span> index<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">return</span> dstIndex <span class="hl opt">-</span> dstOffset<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwb">byte</span><span class="hl opt">[]</span> <span class="hl kwd">getNextChunk</span><span class="hl opt">(</span><span class="hl kwb">int</span> size<span class="hl opt">)</span> <span class="hl kwa">throws</span> IOException <span class="hl opt">{</span>
+      size <span class="hl opt">= (</span>size <span class="hl opt">&lt;=</span> <span class="hl num">0</span> ? IO_BUFFER_SIZE <span class="hl opt">:</span> size<span class="hl opt">);</span>
+      <span class="hl kwb">byte</span><span class="hl opt">[]</span> tmp <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>size<span class="hl opt">];</span>
+      <span class="hl kwb">int</span> offset <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+      <span class="hl kwa">while</span> <span class="hl opt">(</span>true<span class="hl opt">) {</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwd">eof</span><span class="hl opt">()) {</span>
+            tmp <span class="hl opt">=</span> Arrays<span class="hl opt">.</span><span class="hl kwd">copyOf</span><span class="hl opt">(</span>tmp<span class="hl opt">,</span> offset<span class="hl opt">);</span>
+            <span class="hl kwa">break</span><span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+
+         <span class="hl kwb">int</span> count <span class="hl opt">=</span> <span class="hl kwd">readLine</span><span class="hl opt">(</span>tmp<span class="hl opt">,</span> offset<span class="hl opt">);</span>
+         offset <span class="hl opt">+=</span> count<span class="hl opt">;</span>
+
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>offset <span class="hl opt">==</span> tmp<span class="hl opt">.</span>length<span class="hl opt">)</span> <span class="hl kwa">break</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">return</span> tmp<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwb">boolean</span> <span class="hl kwd">eof</span><span class="hl opt">() {</span>
+      <span class="hl kwa">return</span> eof<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private static</span> ReadableByteChannel <span class="hl kwd">extractChannel</span><span class="hl opt">(</span>InputStream <span class="hl kwa">in</span><span class="hl opt">)</span>
+         <span class="hl kwa">throws</span> NoSuchFieldException<span class="hl opt">,</span> IllegalAccessException <span class="hl opt">{</span>
+
+      Field f <span class="hl opt">=</span> FilterInputStream<span class="hl opt">.</span><span class="hl kwa">class</span><span class="hl opt">.</span><span class="hl kwd">getDeclaredField</span><span class="hl opt">(</span><span class="hl str">&quot;in&quot;</span><span class="hl opt">);</span>
+      f<span class="hl opt">.</span><span class="hl kwd">setAccessible</span><span class="hl opt">(</span>true<span class="hl opt">);</span>
+
+      <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl kwa">in instanceof</span> FilterInputStream<span class="hl opt">) {</span>
+         <span class="hl kwa">in</span> <span class="hl opt">= (</span>InputStream<span class="hl opt">)</span> f<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">(</span><span class="hl kwa">in</span><span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">return</span> Channels<span class="hl opt">.</span><span class="hl kwd">newChannel</span><span class="hl opt">(</span><span class="hl kwa">in</span><span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">abstract class</span> AbstractCounter <span class="hl opt">{</span>
+   <span class="hl kwa">protected final</span> <span class="hl kwb">int</span> k<span class="hl opt">;</span>
+
+   <span class="hl kwa">protected final</span> <span class="hl kwb">int</span> shift<span class="hl opt">;</span>
+
+   <span class="hl kwa">protected</span> <span class="hl kwd">AbstractCounter</span><span class="hl opt">(</span><span class="hl kwa">final</span> <span class="hl kwb">int</span> k<span class="hl opt">) {</span>
+      <span class="hl kwa">this</span><span class="hl opt">.</span>k <span class="hl opt">=</span> k<span class="hl opt">;</span>
+      shift <span class="hl opt">=</span> k<span class="hl opt">*</span>knucleotide<span class="hl opt">.</span>BITS_PER_CHAR<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public abstract</span> <span class="hl kwb">void</span> <span class="hl kwd">seed</span><span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">[]</span> mapped<span class="hl opt">,</span> <span class="hl kwb">int</span> length<span class="hl opt">);</span>
+   <span class="hl kwa">public abstract</span> <span class="hl kwb">void</span> <span class="hl kwd">consume</span><span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">[]</span> mapped<span class="hl opt">,</span> <span class="hl kwb">int</span> offset<span class="hl opt">,</span> <span class="hl kwb">int</span> length<span class="hl opt">);</span>
+   <span class="hl kwa">public abstract</span> <span class="hl kwb">int</span> <span class="hl kwd">getCount</span><span class="hl opt">(</span><span class="hl kwb">int</span> key<span class="hl opt">);</span>
+   <span class="hl kwa">public abstract</span> <span class="hl kwb">int</span> <span class="hl kwd">getCount</span><span class="hl opt">(</span>String key<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">final class</span> SmallCounter <span class="hl kwa">extends</span> AbstractCounter <span class="hl opt">{</span>
+   <span class="hl kwa">protected final</span> <span class="hl kwb">int</span> mask<span class="hl opt">;</span>
+
+   <span class="hl kwb">int</span> readingFrame <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">final</span> <span class="hl kwb">int</span><span class="hl opt">[]</span> counts<span class="hl opt">;</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwd">SmallCounter</span><span class="hl opt">(</span><span class="hl kwb">int</span> k<span class="hl opt">) {</span>
+      <span class="hl kwa">super</span><span class="hl opt">(</span>k<span class="hl opt">);</span>
+
+      <span class="hl kwb">int</span> mask <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl kwb">int</span> n <span class="hl opt">=</span> shift<span class="hl opt">;</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(--</span>n <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+         mask <span class="hl opt">=</span> mask <span class="hl opt">&lt;&lt;</span> <span class="hl num">1</span> <span class="hl opt">|</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">this</span><span class="hl opt">.</span>mask <span class="hl opt">=</span> mask<span class="hl opt">;</span>
+
+      counts <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">int</span><span class="hl opt">[(</span><span class="hl kwb">int</span><span class="hl opt">)</span>Math<span class="hl opt">.</span><span class="hl kwd">round</span><span class="hl opt">(</span>Math<span class="hl opt">.</span><span class="hl kwd">pow</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">,</span> k<span class="hl opt">*</span>knucleotide<span class="hl opt">.</span>BITS_PER_CHAR<span class="hl opt">))];</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwc">&#64;Override</span>
+   <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">seed</span><span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">[]</span> mapped<span class="hl opt">,</span> <span class="hl kwb">int</span> length<span class="hl opt">) {</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>length <span class="hl opt">&lt;</span> k<span class="hl opt">) {</span>
+         <span class="hl kwa">throw new</span> <span class="hl kwd">IllegalArgumentException</span><span class="hl opt">(</span><span class="hl str">&quot;length must be &gt;= &quot;</span> <span class="hl opt">+</span> k<span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> k<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+         readingFrame <span class="hl opt">= (</span>readingFrame <span class="hl opt">&lt;&lt;</span> knucleotide<span class="hl opt">.</span>BITS_PER_CHAR<span class="hl opt">) |</span> mapped<span class="hl opt">[</span>i<span class="hl opt">];</span>
+      <span class="hl opt">}</span>
+      counts<span class="hl opt">[</span>readingFrame<span class="hl opt">]++;</span>
+      <span class="hl kwd">consume</span><span class="hl opt">(</span>mapped<span class="hl opt">,</span> k<span class="hl opt">,</span> length<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwc">&#64;Override</span>
+   <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">consume</span><span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">[]</span> mapped<span class="hl opt">,</span> <span class="hl kwb">int</span> offset<span class="hl opt">,</span> <span class="hl kwb">int</span> length<span class="hl opt">) {</span>
+      <span class="hl kwb">int</span> readingFrame <span class="hl opt">=</span> <span class="hl kwa">this</span><span class="hl opt">.</span>readingFrame<span class="hl opt">;</span>
+      <span class="hl kwb">int</span> mask <span class="hl opt">=</span> <span class="hl kwa">this</span><span class="hl opt">.</span>mask<span class="hl opt">;</span>
+      <span class="hl kwb">int</span><span class="hl opt">[]</span> counts <span class="hl opt">=</span> <span class="hl kwa">this</span><span class="hl opt">.</span>counts<span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> offset<span class="hl opt">;</span> i <span class="hl opt">&lt;</span> length <span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+         readingFrame <span class="hl opt">= (</span>readingFrame <span class="hl opt">&lt;&lt;</span> knucleotide<span class="hl opt">.</span>BITS_PER_CHAR<span class="hl opt">) |</span> mapped<span class="hl opt">[</span>i<span class="hl opt">];</span>
+         readingFrame <span class="hl opt">=</span> readingFrame <span class="hl opt">&amp;</span> mask<span class="hl opt">;</span>
+         counts<span class="hl opt">[</span>readingFrame<span class="hl opt">]++;</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">this</span><span class="hl opt">.</span>readingFrame <span class="hl opt">=</span> readingFrame<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwc">&#64;Override</span>
+   <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">getCount</span><span class="hl opt">(</span><span class="hl kwb">int</span> key<span class="hl opt">) {</span>
+      <span class="hl kwa">return</span> counts<span class="hl opt">[</span>key<span class="hl opt">];</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwc">&#64;Override</span>
+   <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">getCount</span><span class="hl opt">(</span>String key<span class="hl opt">) {</span>
+      <span class="hl kwa">return</span> <span class="hl kwd">getCount</span><span class="hl opt">(</span>knucleotide<span class="hl opt">.</span><span class="hl kwd">toIntKey</span><span class="hl opt">(</span>key<span class="hl opt">));</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">final class</span> BigCounter <span class="hl kwa">extends</span> AbstractCounter <span class="hl opt">{</span>
+   <span class="hl kwa">protected final</span> <span class="hl kwb">long</span> mask<span class="hl opt">;</span>
+
+   <span class="hl kwb">long</span> readingFrame <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">private final</span> PackedHash h <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PackedHash</span><span class="hl opt">();</span>
+
+   <span class="hl kwa">final</span> <span class="hl kwb">byte</span> letter<span class="hl opt">;</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwd">BigCounter</span><span class="hl opt">(</span><span class="hl kwb">int</span> k<span class="hl opt">,</span> <span class="hl kwb">byte</span> letter<span class="hl opt">) {</span>
+      <span class="hl kwa">super</span><span class="hl opt">(</span>k<span class="hl opt">);</span>
+
+      <span class="hl kwa">this</span><span class="hl opt">.</span>letter <span class="hl opt">=</span> letter<span class="hl opt">;</span>
+
+      <span class="hl kwb">long</span> mask <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl kwb">int</span> n <span class="hl opt">=</span> shift<span class="hl opt">;</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(--</span>n <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+         mask <span class="hl opt">=</span> mask <span class="hl opt">&lt;&lt;</span> <span class="hl num">1</span> <span class="hl opt">|</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">this</span><span class="hl opt">.</span>mask <span class="hl opt">=</span> mask<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwc">&#64;Override</span>
+   <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">seed</span><span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">[]</span> mapped<span class="hl opt">,</span> <span class="hl kwb">int</span> length<span class="hl opt">) {</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>length <span class="hl opt">&lt;</span> k<span class="hl opt">) {</span>
+         <span class="hl kwa">throw new</span> <span class="hl kwd">IllegalArgumentException</span><span class="hl opt">(</span><span class="hl str">&quot;length must be &gt;= &quot;</span> <span class="hl opt">+</span> k<span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> k <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+         readingFrame <span class="hl opt">= (</span>readingFrame <span class="hl opt">&lt;&lt;</span> knucleotide<span class="hl opt">.</span>BITS_PER_CHAR<span class="hl opt">) |</span> mapped<span class="hl opt">[</span>i<span class="hl opt">];</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwd">consume</span><span class="hl opt">(</span>mapped<span class="hl opt">,</span> k <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">,</span> length<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+
+   <span class="hl kwc">&#64;Override</span>
+   <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">consume</span><span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">[]</span> mapped<span class="hl opt">,</span> <span class="hl kwb">int</span> offset<span class="hl opt">,</span> <span class="hl kwb">int</span> length<span class="hl opt">) {</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>letter <span class="hl opt">== -</span><span class="hl num">1</span><span class="hl opt">) {</span>
+         <span class="hl slc">// count all letters</span>
+         <span class="hl kwd">countAll</span><span class="hl opt">(</span>mapped<span class="hl opt">,</span> offset<span class="hl opt">,</span> length<span class="hl opt">);</span>
+      <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+         <span class="hl slc">// count specific letter</span>
+         <span class="hl kwd">countSpecific</span><span class="hl opt">(</span>mapped<span class="hl opt">,</span> offset<span class="hl opt">,</span> length<span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">countAll</span><span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">[]</span> mapped<span class="hl opt">,</span> <span class="hl kwb">int</span> offset<span class="hl opt">,</span> <span class="hl kwb">int</span> length<span class="hl opt">) {</span>
+      <span class="hl kwb">long</span> readingFrame <span class="hl opt">=</span> <span class="hl kwa">this</span><span class="hl opt">.</span>readingFrame<span class="hl opt">;</span>
+      <span class="hl kwb">long</span> mask <span class="hl opt">=</span> <span class="hl kwa">this</span><span class="hl opt">.</span>mask<span class="hl opt">;</span>
+
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> offset<span class="hl opt">;</span> i <span class="hl opt">&lt;</span> length <span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+         <span class="hl kwb">byte</span> curLetter <span class="hl opt">=</span> mapped<span class="hl opt">[</span>i<span class="hl opt">];</span>
+         readingFrame <span class="hl opt">= (</span>readingFrame <span class="hl opt">&lt;&lt;</span> knucleotide<span class="hl opt">.</span>BITS_PER_CHAR<span class="hl opt">) |</span> curLetter<span class="hl opt">;</span>
+         readingFrame <span class="hl opt">=</span> readingFrame <span class="hl opt">&amp;</span> mask<span class="hl opt">;</span>
+         <span class="hl kwd">countCurrent</span><span class="hl opt">(</span>readingFrame<span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">this</span><span class="hl opt">.</span>readingFrame <span class="hl opt">=</span> readingFrame<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">countSpecific</span><span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">[]</span> mapped<span class="hl opt">,</span> <span class="hl kwb">int</span> offset<span class="hl opt">,</span> <span class="hl kwb">int</span> length<span class="hl opt">) {</span>
+      <span class="hl kwb">byte</span> letter <span class="hl opt">=</span> <span class="hl kwa">this</span><span class="hl opt">.</span>letter<span class="hl opt">;</span>
+      <span class="hl kwb">long</span> readingFrame <span class="hl opt">=</span> <span class="hl kwa">this</span><span class="hl opt">.</span>readingFrame<span class="hl opt">;</span>
+      <span class="hl kwb">long</span> mask <span class="hl opt">=</span> <span class="hl kwa">this</span><span class="hl opt">.</span>mask<span class="hl opt">;</span>
+
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> offset<span class="hl opt">;</span> i <span class="hl opt">&lt;</span> length <span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+         <span class="hl kwb">byte</span> curLetter <span class="hl opt">=</span> mapped<span class="hl opt">[</span>i<span class="hl opt">];</span>
+         readingFrame <span class="hl opt">= (</span>readingFrame <span class="hl opt">&lt;&lt;</span> knucleotide<span class="hl opt">.</span>BITS_PER_CHAR<span class="hl opt">) |</span> curLetter<span class="hl opt">;</span>
+         readingFrame <span class="hl opt">=</span> readingFrame <span class="hl opt">&amp;</span> mask<span class="hl opt">;</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>curLetter <span class="hl opt">==</span> letter<span class="hl opt">)</span> <span class="hl kwd">countCurrent</span><span class="hl opt">(</span>readingFrame<span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">this</span><span class="hl opt">.</span>readingFrame <span class="hl opt">=</span> readingFrame<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private</span> <span class="hl kwb">void</span> <span class="hl kwd">countCurrent</span><span class="hl opt">(</span><span class="hl kwb">long</span> readingFrame<span class="hl opt">) {</span>
+      h<span class="hl opt">.</span><span class="hl kwd">increment</span><span class="hl opt">(</span>readingFrame<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwc">&#64;Override</span>
+   <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">getCount</span><span class="hl opt">(</span><span class="hl kwb">int</span> key<span class="hl opt">) {</span>
+      <span class="hl kwa">return</span> h<span class="hl opt">.</span><span class="hl kwd">getCount</span><span class="hl opt">(</span>key<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwc">&#64;Override</span>
+   <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">getCount</span><span class="hl opt">(</span>String key<span class="hl opt">) {</span>
+      <span class="hl kwb">long</span> lKey <span class="hl opt">=</span> knucleotide<span class="hl opt">.</span><span class="hl kwd">toLongKey</span><span class="hl opt">(</span>key<span class="hl opt">);</span>
+      <span class="hl kwa">return</span> h<span class="hl opt">.</span><span class="hl kwd">getCount</span><span class="hl opt">(</span>lKey<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">final class</span> PackedHash <span class="hl opt">{</span>
+   <span class="hl kwa">private static final</span> <span class="hl kwb">float</span> LOAD_FACTOR    <span class="hl opt">=</span> <span class="hl num">0.75</span>f<span class="hl opt">;</span>
+   <span class="hl kwa">private static final</span> <span class="hl kwb">int</span> DEFAULT_SIZE    <span class="hl opt">=</span> <span class="hl num">16</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">private static final</span> <span class="hl kwb">long</span> KEY_MASK      <span class="hl opt">=</span> <span class="hl num">0x0000000fffffffff</span>L<span class="hl opt">;</span> <span class="hl slc">// 36 bits for k up to 18</span>
+   <span class="hl kwa">private static final</span> <span class="hl kwb">long</span> COUNT_MASK    <span class="hl opt">=</span> <span class="hl num">0x000000000fffffff</span>L<span class="hl opt">;</span> <span class="hl slc">// should count up to 2^28-1 ~= 256m occurrences</span>
+   <span class="hl kwa">private   static final</span> <span class="hl kwb">long</span> KEY_SHIFT    <span class="hl opt">=</span> Long<span class="hl opt">.</span><span class="hl kwd">numberOfLeadingZeros</span><span class="hl opt">(</span>KEY_MASK<span class="hl opt">);</span>
+
+   <span class="hl kwb">long</span><span class="hl opt">[]</span> table <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">long</span><span class="hl opt">[</span>DEFAULT_SIZE<span class="hl opt">];</span>
+
+   <span class="hl kwb">int</span> size <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwb">int</span> threshold <span class="hl opt">= (</span><span class="hl kwb">int</span><span class="hl opt">)(</span>table<span class="hl opt">.</span>length<span class="hl opt">*</span>LOAD_FACTOR<span class="hl opt">);</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwd">PackedHash</span><span class="hl opt">() {}</span>
+
+   <span class="hl slc">// borrowed from JDK</span>
+   <span class="hl kwa">static final</span> <span class="hl kwb">int</span> <span class="hl kwd">hash</span><span class="hl opt">(</span><span class="hl kwb">int</span> h<span class="hl opt">) {</span>
+      h ^<span class="hl opt">= (</span>h <span class="hl opt">&gt;&gt;&gt;</span> <span class="hl num">20</span><span class="hl opt">)</span> ^ <span class="hl opt">(</span>h <span class="hl opt">&gt;&gt;&gt;</span> <span class="hl num">12</span><span class="hl opt">);</span>
+      <span class="hl kwa">return</span> h ^ <span class="hl opt">(</span>h <span class="hl opt">&gt;&gt;&gt;</span> <span class="hl num">7</span><span class="hl opt">)</span> ^ <span class="hl opt">(</span>h <span class="hl opt">&gt;&gt;&gt;</span> <span class="hl num">4</span><span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">getCount</span><span class="hl opt">(</span><span class="hl kwb">long</span> key<span class="hl opt">) {</span>
+      <span class="hl kwb">int</span> index <span class="hl opt">=</span> <span class="hl kwd">index</span><span class="hl opt">(</span>key<span class="hl opt">,</span> table<span class="hl opt">);</span>
+      <span class="hl kwa">return</span> <span class="hl kwd">getValue</span><span class="hl opt">(</span>table<span class="hl opt">[</span>index<span class="hl opt">]);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">increment</span><span class="hl opt">(</span><span class="hl kwb">long</span> key<span class="hl opt">) {</span>
+      <span class="hl kwb">int</span> index <span class="hl opt">=</span> <span class="hl kwd">index</span><span class="hl opt">(</span>key<span class="hl opt">,</span> table<span class="hl opt">);</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>table<span class="hl opt">[</span>index<span class="hl opt">]++ ==</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+         table<span class="hl opt">[</span>index<span class="hl opt">] =</span> <span class="hl kwd">pack</span><span class="hl opt">(</span>key<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">);</span>
+         size<span class="hl opt">++;</span>
+         <span class="hl kwd">ensureCapacity</span><span class="hl opt">();</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private</span> <span class="hl kwb">void</span> <span class="hl kwd">ensureCapacity</span><span class="hl opt">() {</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>size <span class="hl opt">&gt;=</span> threshold<span class="hl opt">) {</span>
+         <span class="hl kwb">long</span><span class="hl opt">[]</span> oldTable <span class="hl opt">=</span> <span class="hl kwa">this</span><span class="hl opt">.</span>table<span class="hl opt">;</span>
+         <span class="hl kwb">long</span><span class="hl opt">[]</span> newTable <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">long</span><span class="hl opt">[</span>oldTable<span class="hl opt">.</span>length<span class="hl opt">*</span><span class="hl num">2</span><span class="hl opt">];</span>
+
+         <span class="hl kwa">final</span> <span class="hl kwb">int</span> curSize <span class="hl opt">=</span> oldTable<span class="hl opt">.</span>length<span class="hl opt">;</span>
+         <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> curSize<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+            <span class="hl kwb">long</span> entry <span class="hl opt">=</span> oldTable<span class="hl opt">[</span>i<span class="hl opt">];</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>entry <span class="hl opt">!=</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+               <span class="hl slc">//transfer</span>
+               <span class="hl kwb">long</span> key <span class="hl opt">=</span> <span class="hl kwd">getKey</span><span class="hl opt">(</span>entry<span class="hl opt">);</span>
+               <span class="hl kwb">int</span> index <span class="hl opt">=</span> <span class="hl kwd">index</span><span class="hl opt">(</span>key<span class="hl opt">,</span> newTable<span class="hl opt">);</span>
+               newTable<span class="hl opt">[</span>index<span class="hl opt">] =</span> entry<span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+         <span class="hl opt">}</span>
+
+         <span class="hl kwa">this</span><span class="hl opt">.</span>table <span class="hl opt">=</span> newTable<span class="hl opt">;</span>
+         threshold <span class="hl opt">= (</span><span class="hl kwb">int</span><span class="hl opt">)(</span>newTable<span class="hl opt">.</span>length <span class="hl opt">*</span> LOAD_FACTOR<span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private static</span> <span class="hl kwb">int</span> <span class="hl kwd">index</span><span class="hl opt">(</span><span class="hl kwb">long</span> key<span class="hl opt">,</span> <span class="hl kwb">long</span><span class="hl opt">[]</span> table<span class="hl opt">) {</span>
+      <span class="hl kwb">int</span> index <span class="hl opt">= (</span><span class="hl kwb">int</span><span class="hl opt">)(</span>key ^ <span class="hl opt">(</span>key <span class="hl opt">&gt;&gt;&gt;</span> <span class="hl num">32</span><span class="hl opt">));</span>
+      index <span class="hl opt">=</span> <span class="hl kwd">hash</span><span class="hl opt">(</span>index<span class="hl opt">);</span>
+
+      <span class="hl kwa">final</span> <span class="hl kwb">int</span> indexMask <span class="hl opt">=</span> table<span class="hl opt">.</span>length <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      index <span class="hl opt">=</span> index <span class="hl opt">&amp;</span> indexMask<span class="hl opt">;</span>
+
+      <span class="hl kwa">while</span> <span class="hl opt">( ! (</span><span class="hl kwd">getKey</span><span class="hl opt">(</span>table<span class="hl opt">[</span>index<span class="hl opt">]) ==</span> key <span class="hl opt">||</span> table<span class="hl opt">[</span>index<span class="hl opt">] ==</span> <span class="hl num">0</span><span class="hl opt">) ) {</span>
+         index <span class="hl opt">= (</span>index <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">) &amp;</span> indexMask<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">return</span> index<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private static</span> <span class="hl kwb">long</span> <span class="hl kwd">getKey</span><span class="hl opt">(</span><span class="hl kwb">long</span> entry<span class="hl opt">)          {</span><span class="hl kwa">return</span>      <span class="hl opt">(</span>entry <span class="hl opt">&gt;&gt;&gt;</span> KEY_SHIFT<span class="hl opt">) &amp;</span> KEY_MASK<span class="hl opt">;}</span>
+   <span class="hl kwa">private static</span> <span class="hl kwb">int</span> <span class="hl kwd">getValue</span><span class="hl opt">(</span><span class="hl kwb">long</span> entry<span class="hl opt">)       {</span><span class="hl kwa">return</span> <span class="hl opt">(</span><span class="hl kwb">int</span><span class="hl opt">)(</span>entry  <span class="hl opt">&amp;</span>  COUNT_MASK<span class="hl opt">)          ;}</span>
+   <span class="hl kwa">private static</span> <span class="hl kwb">long</span> <span class="hl kwd">pack</span><span class="hl opt">(</span><span class="hl kwb">long</span> key<span class="hl opt">,</span> <span class="hl kwb">int</span> value<span class="hl opt">)    {</span><span class="hl kwa">return</span>      <span class="hl opt">(</span>key   <span class="hl opt">&lt;&lt;</span>  KEY_SHIFT<span class="hl opt">) |</span> value   <span class="hl opt">;}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">class</span> AffinityDetectionHelper <span class="hl opt">{</span>
+   <span class="hl kwa">public static</span> <span class="hl kwb">boolean</span> <span class="hl kwd">isLockedToSingleCore</span><span class="hl opt">() {</span>
+      <span class="hl kwa">try</span> <span class="hl opt">{</span>
+         <span class="hl slc">// when using a native method the effect of the JIT should be less unpredictable...</span>
+         <span class="hl kwb">double</span> cpuWallTimeRatio <span class="hl opt">=</span> <span class="hl kwd">timeNativeMethod</span><span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">);</span>
+
+         <span class="hl slc">// empirically determined to be ~ 0.85 with low variation when the</span>
+         <span class="hl slc">// JVM is locked to a single core</span>
+         <span class="hl kwa">return</span> cpuWallTimeRatio <span class="hl opt">&lt;</span> <span class="hl num">1.0</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span> <span class="hl kwa">catch</span> <span class="hl opt">(</span>InterruptedException e<span class="hl opt">) {</span>
+         <span class="hl kwa">throw new</span> <span class="hl kwd">RuntimeException</span><span class="hl opt">(</span>e<span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private static</span> <span class="hl kwb">double</span> <span class="hl kwd">timeNativeMethod</span><span class="hl opt">(</span><span class="hl kwb">int</span> nThreads<span class="hl opt">)</span> <span class="hl kwa">throws</span> InterruptedException <span class="hl opt">{</span>
+      <span class="hl kwb">int</span> workSize <span class="hl opt">=</span> <span class="hl num">4</span><span class="hl opt">;</span>
+      ArrayList<span class="hl opt">&lt;</span>Thread<span class="hl opt">&gt;</span> threads <span class="hl opt">=</span> <span class="hl kwa">new</span> ArrayList<span class="hl opt">&lt;</span>Thread<span class="hl opt">&gt;(</span>nThreads<span class="hl opt">);</span>
+      <span class="hl kwa">final</span> <span class="hl kwb">int</span> arraySize <span class="hl opt">=</span> <span class="hl num">1024</span><span class="hl opt">*</span><span class="hl num">1024</span><span class="hl opt">;</span>
+      <span class="hl kwa">final</span> <span class="hl kwb">byte</span><span class="hl opt">[]</span> a <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>arraySize<span class="hl opt">];</span>
+
+      <span class="hl kwa">final</span> AtomicLong cpuTime <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">AtomicLong</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
+
+      ArrayList<span class="hl opt">&lt;</span>ArrayBlockingQueue<span class="hl opt">&lt;</span>Runnable<span class="hl opt">&gt;&gt;</span> queueList <span class="hl opt">=</span> <span class="hl kwa">new</span> ArrayList<span class="hl opt">&lt;</span>ArrayBlockingQueue<span class="hl opt">&lt;</span>Runnable<span class="hl opt">&gt;&gt;();</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> nThreads<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+         <span class="hl kwa">final</span> ArrayBlockingQueue<span class="hl opt">&lt;</span>Runnable<span class="hl opt">&gt;</span> q <span class="hl opt">=</span> <span class="hl kwa">new</span> ArrayBlockingQueue<span class="hl opt">&lt;</span>Runnable<span class="hl opt">&gt;(</span>workSize<span class="hl opt">/</span>nThreads<span class="hl opt">);</span>
+         queueList<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>q<span class="hl opt">);</span>
+
+         <span class="hl kwa">while</span> <span class="hl opt">(</span>q<span class="hl opt">.</span><span class="hl kwd">offer</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">Runnable</span><span class="hl opt">() {</span>
+            <span class="hl kwc">&#64;Override</span>
+            <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">run</span><span class="hl opt">() {</span>
+               <span class="hl kwb">byte</span><span class="hl opt">[]</span> b <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>arraySize<span class="hl opt">];</span>
+               System<span class="hl opt">.</span><span class="hl kwd">arraycopy</span><span class="hl opt">(</span>a<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> b<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> a<span class="hl opt">.</span>length<span class="hl opt">);</span>
+               cpuTime<span class="hl opt">.</span><span class="hl kwd">addAndGet</span><span class="hl opt">(</span>ManagementFactory<span class="hl opt">.</span><span class="hl kwd">getThreadMXBean</span><span class="hl opt">( ).</span><span class="hl kwd">getCurrentThreadCpuTime</span><span class="hl opt">());</span>
+            <span class="hl opt">}</span>
+         <span class="hl opt">})) {}</span>
+
+         <span class="hl kwa">final class</span> T <span class="hl kwa">extends</span> Thread <span class="hl opt">{</span>
+            <span class="hl kwc">&#64;Override</span>
+            <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">run</span><span class="hl opt">() {</span>
+               Runnable r<span class="hl opt">;</span>
+               <span class="hl kwa">while</span> <span class="hl opt">( (</span>r <span class="hl opt">=</span> q<span class="hl opt">.</span><span class="hl kwd">poll</span><span class="hl opt">()) !=</span> null <span class="hl opt">)</span> r<span class="hl opt">.</span><span class="hl kwd">run</span><span class="hl opt">();</span>
+            <span class="hl opt">}</span>
+         <span class="hl opt">}</span>
+
+         threads<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">T</span><span class="hl opt">());</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwb">long</span> t0 <span class="hl opt">=</span> System<span class="hl opt">.</span><span class="hl kwd">nanoTime</span><span class="hl opt">();</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span>Thread t <span class="hl opt">:</span> threads<span class="hl opt">)</span> t<span class="hl opt">.</span><span class="hl kwd">start</span><span class="hl opt">();</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span>Thread t <span class="hl opt">:</span> threads<span class="hl opt">)</span> t<span class="hl opt">.</span><span class="hl kwd">join</span><span class="hl opt">();</span>
+      <span class="hl kwb">long</span> wallTime <span class="hl opt">=</span> System<span class="hl opt">.</span><span class="hl kwd">nanoTime</span><span class="hl opt">() -</span> t0<span class="hl opt">;</span>
+
+      <span class="hl kwa">return</span> <span class="hl opt">(</span><span class="hl num">1.0</span><span class="hl opt">*</span>cpuTime<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">()/</span>wallTime<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>

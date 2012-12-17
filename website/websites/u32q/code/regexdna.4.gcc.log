@@ -1,0 +1,23 @@
+
+Sat, 28 Apr 2012 17:54:46 GMT
+
+MAKE:
+/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native  regexdna.gcc-4.c -o regexdna.gcc-4.gcc_run -lpcre
+regexdna.gcc-4.c: In function ‘Count_Patterns’:
+regexdna.gcc-4.c:99:0: warning: ignoring #pragma omp for [-Wunknown-pragmas]
+regexdna.gcc-4.c: In function ‘Replace_Patterns’:
+regexdna.gcc-4.c:173:0: warning: ignoring #pragma omp single [-Wunknown-pragmas]
+regexdna.gcc-4.c: In function ‘main’:
+regexdna.gcc-4.c:253:0: warning: ignoring #pragma omp parallel [-Wunknown-pragmas]
+/tmp/ccGWDOEj.o: In function `Count_Patterns':
+regexdna.gcc-4.c:(.text+0x382): undefined reference to `omp_get_num_threads'
+collect2: ld returned 1 exit status
+make: [regexdna.gcc-4.gcc_run] Error 1 (ignored)
+rm regexdna.gcc-4.c
+0.15s to complete and log all make actions
+
+COMMAND LINE:
+./regexdna.gcc-4.gcc_run 0 < regexdna-input50000.txt
+
+MAKE ERROR 
+

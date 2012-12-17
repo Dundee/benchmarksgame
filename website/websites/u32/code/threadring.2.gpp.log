@@ -1,0 +1,14 @@
+
+Sat, 28 Apr 2012 21:29:44 GMT
+
+MAKE:
+/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native -pthread  threadring.gpp-2.c++ -o threadring.gpp-2.c++.o &&  \
+        /usr/bin/g++ threadring.gpp-2.c++.o -o threadring.gpp-2.gpp_run -lpthread 
+rm threadring.gpp-2.c++
+0.16s to complete and log all make actions
+
+COMMAND LINE:
+./threadring.gpp-2.gpp_run 50000000
+
+PROGRAM OUTPUT:
+292

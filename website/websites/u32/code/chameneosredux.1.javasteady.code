@@ -1,0 +1,265 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Michael Barker</span>
+<span class="hl com">*/</span>
+
+
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>concurrent<span class="hl opt">.</span>ArrayBlockingQueue<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>concurrent<span class="hl opt">.</span>BlockingQueue<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>concurrent<span class="hl opt">.</span>CountDownLatch<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>concurrent<span class="hl opt">.</span>atomic<span class="hl opt">.</span>AtomicInteger<span class="hl opt">;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>concurrent<span class="hl opt">.</span>atomic<span class="hl opt">.</span>AtomicReference<span class="hl opt">;</span>
+
+
+<span class="hl com">/**</span>
+<span class="hl com"> * This implementation uses the java.util.concurrent.atomic library</span>
+<span class="hl com"> * i.e. (compare and set) to avoid locking.  Real threads are used, but</span>
+<span class="hl com"> * are set up as a thread pool and meeting requests are pushed onto a</span>
+<span class="hl com"> * queue that feeds the thread pool.</span>
+<span class="hl com"> */</span>
+<span class="hl kwa">public final class</span> chameneosredux <span class="hl opt">{</span>
+
+    enum Colour <span class="hl opt">{</span>
+        blue<span class="hl opt">,</span>
+        red<span class="hl opt">,</span>
+        yellow
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">private static</span> Colour <span class="hl kwd">doCompliment</span><span class="hl opt">(</span><span class="hl kwa">final</span> Colour c1<span class="hl opt">,</span> <span class="hl kwa">final</span> Colour c2<span class="hl opt">) {</span>
+        <span class="hl kwa">switch</span> <span class="hl opt">(</span>c1<span class="hl opt">) {</span>
+        <span class="hl kwa">case</span> blue<span class="hl opt">:</span>
+            <span class="hl kwa">switch</span> <span class="hl opt">(</span>c2<span class="hl opt">) {</span>
+            <span class="hl kwa">case</span> blue<span class="hl opt">:</span>
+                <span class="hl kwa">return</span> Colour<span class="hl opt">.</span>blue<span class="hl opt">;</span>
+            <span class="hl kwa">case</span> red<span class="hl opt">:</span>
+                <span class="hl kwa">return</span> Colour<span class="hl opt">.</span>yellow<span class="hl opt">;</span>
+            <span class="hl kwa">case</span> yellow<span class="hl opt">:</span>
+                <span class="hl kwa">return</span> Colour<span class="hl opt">.</span>red<span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+        <span class="hl kwa">case</span> red<span class="hl opt">:</span>
+            <span class="hl kwa">switch</span> <span class="hl opt">(</span>c2<span class="hl opt">) {</span>
+            <span class="hl kwa">case</span> blue<span class="hl opt">:</span>
+                <span class="hl kwa">return</span> Colour<span class="hl opt">.</span>yellow<span class="hl opt">;</span>
+            <span class="hl kwa">case</span> red<span class="hl opt">:</span>
+                <span class="hl kwa">return</span> Colour<span class="hl opt">.</span>red<span class="hl opt">;</span>
+            <span class="hl kwa">case</span> yellow<span class="hl opt">:</span>
+                <span class="hl kwa">return</span> Colour<span class="hl opt">.</span>blue<span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+        <span class="hl kwa">case</span> yellow<span class="hl opt">:</span>
+            <span class="hl kwa">switch</span> <span class="hl opt">(</span>c2<span class="hl opt">) {</span>
+            <span class="hl kwa">case</span> blue<span class="hl opt">:</span>
+                <span class="hl kwa">return</span> Colour<span class="hl opt">.</span>red<span class="hl opt">;</span>
+            <span class="hl kwa">case</span> red<span class="hl opt">:</span>
+                <span class="hl kwa">return</span> Colour<span class="hl opt">.</span>blue<span class="hl opt">;</span>
+            <span class="hl kwa">case</span> yellow<span class="hl opt">:</span>
+                <span class="hl kwa">return</span> Colour<span class="hl opt">.</span>yellow<span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">throw new</span> <span class="hl kwd">RuntimeException</span><span class="hl opt">(</span><span class="hl str">&quot;Error&quot;</span><span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">static final class</span> MeetingPlace <span class="hl opt">{</span>
+
+        <span class="hl kwa">private final</span> AtomicInteger meetingsLeft<span class="hl opt">;</span>
+        <span class="hl kwa">private final</span> AtomicReference<span class="hl opt">&lt;</span>Creature<span class="hl opt">&gt;</span> creatureRef <span class="hl opt">=</span> <span class="hl kwa">new</span> AtomicReference<span class="hl opt">&lt;</span>Creature<span class="hl opt">&gt;();</span>
+
+        <span class="hl kwa">public</span> <span class="hl kwd">MeetingPlace</span><span class="hl opt">(</span><span class="hl kwa">final</span> <span class="hl kwb">int</span> meetings<span class="hl opt">) {</span>
+            meetingsLeft <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">AtomicInteger</span><span class="hl opt">(</span>meetings<span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">meet</span><span class="hl opt">(</span><span class="hl kwa">final</span> Creature incoming<span class="hl opt">) {</span>
+            Colour newColour <span class="hl opt">=</span> null<span class="hl opt">;</span>
+            Creature first <span class="hl opt">=</span> null<span class="hl opt">;</span>
+            Creature next <span class="hl opt">=</span> null<span class="hl opt">;</span>
+            <span class="hl kwa">do</span> <span class="hl opt">{</span>
+                first <span class="hl opt">=</span> creatureRef<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">();</span>
+                next <span class="hl opt">=</span> incoming<span class="hl opt">;</span>
+                <span class="hl kwa">if</span> <span class="hl opt">(</span>first <span class="hl opt">!=</span> null<span class="hl opt">) {</span>
+                    newColour <span class="hl opt">=</span> <span class="hl kwd">doCompliment</span><span class="hl opt">(</span>incoming<span class="hl opt">.</span>colour<span class="hl opt">,</span> first<span class="hl opt">.</span>colour<span class="hl opt">);</span>
+                    next <span class="hl opt">=</span> null<span class="hl opt">;</span>
+                <span class="hl opt">}</span>
+            <span class="hl opt">}</span> <span class="hl kwa">while</span> <span class="hl opt">(!</span>creatureRef<span class="hl opt">.</span><span class="hl kwd">compareAndSet</span><span class="hl opt">(</span>first<span class="hl opt">,</span> next<span class="hl opt">));</span>
+
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>first <span class="hl opt">!=</span> null<span class="hl opt">) {</span>
+                <span class="hl kwa">final</span> <span class="hl kwb">int</span> meetings <span class="hl opt">=</span> meetingsLeft<span class="hl opt">.</span><span class="hl kwd">decrementAndGet</span><span class="hl opt">();</span>
+                <span class="hl kwa">if</span> <span class="hl opt">(</span>meetings <span class="hl opt">&gt;=</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+                    first<span class="hl opt">.</span><span class="hl kwd">setColour</span><span class="hl opt">(</span>incoming<span class="hl opt">.</span>id<span class="hl opt">,</span> newColour<span class="hl opt">);</span>
+                    incoming<span class="hl opt">.</span><span class="hl kwd">setColour</span><span class="hl opt">(</span>first<span class="hl opt">.</span>id<span class="hl opt">,</span> newColour<span class="hl opt">);</span>
+                <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+                    first<span class="hl opt">.</span><span class="hl kwd">complete</span><span class="hl opt">();</span>
+                    incoming<span class="hl opt">.</span><span class="hl kwd">complete</span><span class="hl opt">();</span>
+                <span class="hl opt">}</span>
+            <span class="hl opt">}</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">static final class</span> Dispatcher <span class="hl kwa">implements</span> Runnable <span class="hl opt">{</span>
+        <span class="hl kwa">private final</span> BlockingQueue<span class="hl opt">&lt;</span>Creature<span class="hl opt">&gt;</span> q<span class="hl opt">;</span>
+
+        <span class="hl kwa">public</span> <span class="hl kwd">Dispatcher</span><span class="hl opt">(</span><span class="hl kwa">final</span> BlockingQueue<span class="hl opt">&lt;</span>Creature<span class="hl opt">&gt;</span> q<span class="hl opt">) {</span>
+            <span class="hl kwa">this</span><span class="hl opt">.</span>q <span class="hl opt">=</span> q<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">run</span><span class="hl opt">() {</span>
+            <span class="hl kwa">try</span> <span class="hl opt">{</span>
+                <span class="hl kwa">while</span> <span class="hl opt">(</span>true<span class="hl opt">) {</span>
+                    q<span class="hl opt">.</span><span class="hl kwd">take</span><span class="hl opt">().</span><span class="hl kwd">run</span><span class="hl opt">();</span>
+                <span class="hl opt">}</span>
+            <span class="hl opt">}</span> <span class="hl kwa">catch</span> <span class="hl opt">(</span><span class="hl kwa">final</span> InterruptedException e<span class="hl opt">) {</span>
+            <span class="hl opt">}</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">static final class</span> Creature <span class="hl opt">{</span>
+
+        <span class="hl kwa">private final</span> <span class="hl kwb">int</span> id<span class="hl opt">;</span>
+        <span class="hl kwa">private final</span> MeetingPlace place<span class="hl opt">;</span>
+        <span class="hl kwa">private final</span> BlockingQueue<span class="hl opt">&lt;</span>Creature<span class="hl opt">&gt;</span> q<span class="hl opt">;</span>
+        <span class="hl kwa">private final</span> CountDownLatch latch<span class="hl opt">;</span>
+        <span class="hl kwa">private</span> <span class="hl kwb">int</span> count <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+        <span class="hl kwa">private</span> <span class="hl kwb">int</span> sameCount <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+        <span class="hl kwa">private</span> Colour colour<span class="hl opt">;</span>
+
+        <span class="hl kwa">public</span> <span class="hl kwd">Creature</span><span class="hl opt">(</span><span class="hl kwa">final</span> MeetingPlace place<span class="hl opt">,</span> <span class="hl kwa">final</span> Colour colour<span class="hl opt">,</span>
+                        <span class="hl kwa">final</span> BlockingQueue<span class="hl opt">&lt;</span>Creature<span class="hl opt">&gt;</span> q<span class="hl opt">,</span> <span class="hl kwa">final</span> CountDownLatch latch<span class="hl opt">) {</span>
+            <span class="hl kwa">this</span><span class="hl opt">.</span>id <span class="hl opt">=</span> System<span class="hl opt">.</span><span class="hl kwd">identityHashCode</span><span class="hl opt">(</span><span class="hl kwa">this</span><span class="hl opt">);</span>
+            <span class="hl kwa">this</span><span class="hl opt">.</span>place <span class="hl opt">=</span> place<span class="hl opt">;</span>
+            <span class="hl kwa">this</span><span class="hl opt">.</span>latch <span class="hl opt">=</span> latch<span class="hl opt">;</span>
+            <span class="hl kwa">this</span><span class="hl opt">.</span>colour <span class="hl opt">=</span> colour<span class="hl opt">;</span>
+            <span class="hl kwa">this</span><span class="hl opt">.</span>q <span class="hl opt">=</span> q<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">complete</span><span class="hl opt">() {</span>
+            latch<span class="hl opt">.</span><span class="hl kwd">countDown</span><span class="hl opt">();</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">setColour</span><span class="hl opt">(</span><span class="hl kwa">final</span> <span class="hl kwb">int</span> id<span class="hl opt">,</span> <span class="hl kwa">final</span> Colour newColour<span class="hl opt">) {</span>
+            <span class="hl kwa">this</span><span class="hl opt">.</span>colour <span class="hl opt">=</span> newColour<span class="hl opt">;</span>
+            count<span class="hl opt">++;</span>
+            sameCount <span class="hl opt">+=</span> <span class="hl num">1</span> ^ Integer<span class="hl opt">.</span><span class="hl kwd">signum</span><span class="hl opt">(</span><span class="hl kwd">abs</span><span class="hl opt">(</span><span class="hl kwa">this</span><span class="hl opt">.</span>id <span class="hl opt">-</span> id<span class="hl opt">));</span>
+            q<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span><span class="hl kwa">this</span><span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private</span> <span class="hl kwb">int</span> <span class="hl kwd">abs</span><span class="hl opt">(</span><span class="hl kwa">final</span> <span class="hl kwb">int</span> x<span class="hl opt">) {</span>
+            <span class="hl kwa">final</span> <span class="hl kwb">int</span> y <span class="hl opt">=</span> x <span class="hl opt">&gt;&gt;</span> <span class="hl num">31</span><span class="hl opt">;</span>
+            <span class="hl kwa">return</span> <span class="hl opt">(</span>x ^ y<span class="hl opt">) -</span> y<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">run</span><span class="hl opt">() {</span>
+            place<span class="hl opt">.</span><span class="hl kwd">meet</span><span class="hl opt">(</span><span class="hl kwa">this</span><span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">getCount</span><span class="hl opt">() {</span>
+            <span class="hl kwa">return</span> count<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwc">&#64;Override</span>
+        <span class="hl kwa">public</span> String <span class="hl kwd">toString</span><span class="hl opt">() {</span>
+            <span class="hl kwa">return</span> String<span class="hl opt">.</span><span class="hl kwd">valueOf</span><span class="hl opt">(</span>count<span class="hl opt">) +</span> <span class="hl kwd">getNumber</span><span class="hl opt">(</span>sameCount<span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">run</span><span class="hl opt">(</span><span class="hl kwa">final</span> <span class="hl kwb">int</span> n<span class="hl opt">,</span> <span class="hl kwb">boolean</span> isWarm<span class="hl opt">,</span> <span class="hl kwa">final</span> Colour<span class="hl opt">...</span>colours<span class="hl opt">) {</span>
+        <span class="hl kwa">final</span> <span class="hl kwb">int</span> len <span class="hl opt">=</span> colours<span class="hl opt">.</span>length<span class="hl opt">;</span>
+        <span class="hl kwa">final</span> MeetingPlace place <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">MeetingPlace</span><span class="hl opt">(</span>n<span class="hl opt">);</span>
+        <span class="hl kwa">final</span> Creature<span class="hl opt">[]</span> creatures <span class="hl opt">=</span> <span class="hl kwa">new</span> Creature<span class="hl opt">[</span>len<span class="hl opt">];</span>
+        <span class="hl kwa">final</span> BlockingQueue<span class="hl opt">&lt;</span>Creature<span class="hl opt">&gt;</span> q <span class="hl opt">=</span> <span class="hl kwa">new</span> ArrayBlockingQueue<span class="hl opt">&lt;</span>Creature<span class="hl opt">&gt;(</span>len<span class="hl opt">);</span>
+        <span class="hl kwa">final</span> CountDownLatch latch <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">CountDownLatch</span><span class="hl opt">(</span>len <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span>
+
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> len<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>isWarm<span class="hl opt">)</span> System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">print</span><span class="hl opt">(</span><span class="hl str">&quot; &quot;</span> <span class="hl opt">+</span> colours<span class="hl opt">[</span>i<span class="hl opt">]);</span>
+            creatures<span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl kwa">new</span> <span class="hl kwd">Creature</span><span class="hl opt">(</span>place<span class="hl opt">,</span> colours<span class="hl opt">[</span>i<span class="hl opt">],</span> q<span class="hl opt">,</span> latch<span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>isWarm<span class="hl opt">)</span> System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">();</span>
+        <span class="hl kwa">final</span> Thread<span class="hl opt">[]</span> ts <span class="hl opt">=</span> <span class="hl kwa">new</span> Thread<span class="hl opt">[</span>len<span class="hl opt">];</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> h <span class="hl opt">=</span> ts<span class="hl opt">.</span>length<span class="hl opt">;</span> i <span class="hl opt">&lt;</span> h<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+            ts<span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl kwa">new</span> <span class="hl kwd">Thread</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">Dispatcher</span><span class="hl opt">(</span>q<span class="hl opt">));</span>
+            ts<span class="hl opt">[</span>i<span class="hl opt">].</span><span class="hl kwd">setDaemon</span><span class="hl opt">(</span>true<span class="hl opt">);</span>
+            ts<span class="hl opt">[</span>i<span class="hl opt">].</span><span class="hl kwd">start</span><span class="hl opt">();</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwa">final</span> Creature creature <span class="hl opt">:</span> creatures<span class="hl opt">) {</span>
+            q<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>creature<span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">try</span> <span class="hl opt">{</span>
+            latch<span class="hl opt">.</span><span class="hl kwd">await</span><span class="hl opt">();</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwa">final</span> Thread t <span class="hl opt">:</span> ts<span class="hl opt">) {</span>
+                t<span class="hl opt">.</span><span class="hl kwd">interrupt</span><span class="hl opt">();</span>
+            <span class="hl opt">}</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwa">final</span> Thread t <span class="hl opt">:</span> ts<span class="hl opt">) {</span>
+                t<span class="hl opt">.</span><span class="hl kwd">join</span><span class="hl opt">();</span>
+            <span class="hl opt">}</span>
+        <span class="hl opt">}</span> <span class="hl kwa">catch</span> <span class="hl opt">(</span><span class="hl kwa">final</span> InterruptedException e1<span class="hl opt">) {</span>
+            System<span class="hl opt">.</span>err<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">(</span><span class="hl str">&quot;Existing with error: &quot;</span> <span class="hl opt">+</span> e1<span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwb">int</span> total <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwa">final</span> Creature creature <span class="hl opt">:</span> creatures<span class="hl opt">) {</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>isWarm<span class="hl opt">)</span> System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">(</span>creature<span class="hl opt">);</span>
+            total <span class="hl opt">+=</span> creature<span class="hl opt">.</span><span class="hl kwd">getCount</span><span class="hl opt">();</span>
+        <span class="hl opt">}</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>isWarm<span class="hl opt">)</span> System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">(</span><span class="hl kwd">getNumber</span><span class="hl opt">(</span>total<span class="hl opt">));</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>isWarm<span class="hl opt">)</span> System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">();</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">main</span><span class="hl opt">(</span>String<span class="hl opt">[]</span> args<span class="hl opt">){</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">&lt;</span><span class="hl num">65</span><span class="hl opt">; ++</span>i<span class="hl opt">)</span> chameneosredux<span class="hl opt">.</span><span class="hl kwd">program_main</span><span class="hl opt">(</span>args<span class="hl opt">,</span>false<span class="hl opt">);</span>
+        chameneosredux<span class="hl opt">.</span><span class="hl kwd">program_main</span><span class="hl opt">(</span>args<span class="hl opt">,</span>true<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">program_main</span><span class="hl opt">(</span><span class="hl kwa">final</span> String<span class="hl opt">[]</span> args<span class="hl opt">,</span> <span class="hl kwa">final</span> <span class="hl kwb">boolean</span> isWarm<span class="hl opt">) {</span>
+
+        <span class="hl kwb">int</span> n <span class="hl opt">=</span> <span class="hl num">600</span><span class="hl opt">;</span>
+        <span class="hl kwa">try</span> <span class="hl opt">{</span>
+            n <span class="hl opt">=</span> Integer<span class="hl opt">.</span><span class="hl kwd">parseInt</span><span class="hl opt">(</span>args<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]);</span>
+        <span class="hl opt">}</span> <span class="hl kwa">catch</span> <span class="hl opt">(</span><span class="hl kwa">final</span> Exception e<span class="hl opt">) {</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>isWarm<span class="hl opt">){</span>  
+           <span class="hl kwd">printColours</span><span class="hl opt">();</span>
+           System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">();</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwd">run</span><span class="hl opt">(</span>n<span class="hl opt">,</span> isWarm<span class="hl opt">,</span> Colour<span class="hl opt">.</span>blue<span class="hl opt">,</span> Colour<span class="hl opt">.</span>red<span class="hl opt">,</span> Colour<span class="hl opt">.</span>yellow<span class="hl opt">);</span>
+        <span class="hl kwd">run</span><span class="hl opt">(</span>n<span class="hl opt">,</span> isWarm<span class="hl opt">,</span> Colour<span class="hl opt">.</span>blue<span class="hl opt">,</span> Colour<span class="hl opt">.</span>red<span class="hl opt">,</span> Colour<span class="hl opt">.</span>yellow<span class="hl opt">,</span> Colour<span class="hl opt">.</span>red<span class="hl opt">,</span> Colour<span class="hl opt">.</span>yellow<span class="hl opt">,</span>
+               Colour<span class="hl opt">.</span>blue<span class="hl opt">,</span> Colour<span class="hl opt">.</span>red<span class="hl opt">,</span> Colour<span class="hl opt">.</span>yellow<span class="hl opt">,</span> Colour<span class="hl opt">.</span>red<span class="hl opt">,</span> Colour<span class="hl opt">.</span>blue<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">private static final</span> String<span class="hl opt">[]</span> NUMBERS <span class="hl opt">= {</span>
+        <span class="hl str">&quot;zero&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;one&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;two&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;three&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;four&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;five&quot;</span><span class="hl opt">,</span>
+        <span class="hl str">&quot;six&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;seven&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;eight&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;nine&quot;</span>
+    <span class="hl opt">};</span>
+
+    <span class="hl kwa">private static</span> String <span class="hl kwd">getNumber</span><span class="hl opt">(</span><span class="hl kwa">final</span> <span class="hl kwb">int</span> n<span class="hl opt">) {</span>
+        <span class="hl kwa">final</span> StringBuilder sb <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">StringBuilder</span><span class="hl opt">();</span>
+        <span class="hl kwa">final</span> String nStr <span class="hl opt">=</span> String<span class="hl opt">.</span><span class="hl kwd">valueOf</span><span class="hl opt">(</span>n<span class="hl opt">);</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> nStr<span class="hl opt">.</span><span class="hl kwd">length</span><span class="hl opt">();</span> i<span class="hl opt">++) {</span>
+            sb<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span><span class="hl str">&quot; &quot;</span><span class="hl opt">);</span>
+            sb<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span>NUMBERS<span class="hl opt">[</span>Character<span class="hl opt">.</span><span class="hl kwd">getNumericValue</span><span class="hl opt">(</span>nStr<span class="hl opt">.</span><span class="hl kwd">charAt</span><span class="hl opt">(</span>i<span class="hl opt">))]);</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">return</span> sb<span class="hl opt">.</span><span class="hl kwd">toString</span><span class="hl opt">();</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">printColours</span><span class="hl opt">() {</span>
+        <span class="hl kwd">printColours</span><span class="hl opt">(</span>Colour<span class="hl opt">.</span>blue<span class="hl opt">,</span> Colour<span class="hl opt">.</span>blue<span class="hl opt">);</span>
+        <span class="hl kwd">printColours</span><span class="hl opt">(</span>Colour<span class="hl opt">.</span>blue<span class="hl opt">,</span> Colour<span class="hl opt">.</span>red<span class="hl opt">);</span>
+        <span class="hl kwd">printColours</span><span class="hl opt">(</span>Colour<span class="hl opt">.</span>blue<span class="hl opt">,</span> Colour<span class="hl opt">.</span>yellow<span class="hl opt">);</span>
+        <span class="hl kwd">printColours</span><span class="hl opt">(</span>Colour<span class="hl opt">.</span>red<span class="hl opt">,</span> Colour<span class="hl opt">.</span>blue<span class="hl opt">);</span>
+        <span class="hl kwd">printColours</span><span class="hl opt">(</span>Colour<span class="hl opt">.</span>red<span class="hl opt">,</span> Colour<span class="hl opt">.</span>red<span class="hl opt">);</span>
+        <span class="hl kwd">printColours</span><span class="hl opt">(</span>Colour<span class="hl opt">.</span>red<span class="hl opt">,</span> Colour<span class="hl opt">.</span>yellow<span class="hl opt">);</span>
+        <span class="hl kwd">printColours</span><span class="hl opt">(</span>Colour<span class="hl opt">.</span>yellow<span class="hl opt">,</span> Colour<span class="hl opt">.</span>blue<span class="hl opt">);</span>
+        <span class="hl kwd">printColours</span><span class="hl opt">(</span>Colour<span class="hl opt">.</span>yellow<span class="hl opt">,</span> Colour<span class="hl opt">.</span>red<span class="hl opt">);</span>
+        <span class="hl kwd">printColours</span><span class="hl opt">(</span>Colour<span class="hl opt">.</span>yellow<span class="hl opt">,</span> Colour<span class="hl opt">.</span>yellow<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">printColours</span><span class="hl opt">(</span><span class="hl kwa">final</span> Colour c1<span class="hl opt">,</span> <span class="hl kwa">final</span> Colour c2<span class="hl opt">) {</span>
+        System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">(</span>c1 <span class="hl opt">+</span> <span class="hl str">&quot; + &quot;</span> <span class="hl opt">+</span> c2 <span class="hl opt">+</span> <span class="hl str">&quot; -&gt; &quot;</span> <span class="hl opt">+</span> <span class="hl kwd">doCompliment</span><span class="hl opt">(</span>c1<span class="hl opt">,</span> c2<span class="hl opt">));</span>
+    <span class="hl opt">}</span>
+
+
+<span class="hl opt">}</span>

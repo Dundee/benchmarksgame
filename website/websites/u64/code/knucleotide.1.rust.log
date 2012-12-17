@@ -1,0 +1,62 @@
+
+Sat, 14 Jul 2012 01:04:31 GMT
+
+MAKE:
+/usr/local/src/rust-0.3/bin/rustc --opt-level=3 knucleotide.rs -o knucleotide.rust_run
+knucleotide.rs:127:0: 187:1 [1;33mwarning:[0m unused variable: `args`
+knucleotide.rs:127 fn main(args: ~[str]) {
+knucleotide.rs:128    let rdr = io::stdin();
+knucleotide.rs:129 
+knucleotide.rs:130    // initialize each sequence sorter
+knucleotide.rs:131    let sizes = ~[1u,2u,3u,4u,6u,12u,18u];
+knucleotide.rs:132    let from_child = vec::map (sizes, |_sz| comm::port() );
+                   ...
+knucleotide.rs:41:23: 41:26 [1;33mwarning:[0m implicitly copying a non-implicitly-copyable value
+knucleotide.rs:41      vec::push(pairs, (key, pct(val, total)));
+                                         ^~~
+knucleotide.rs:45:22: 45:28 [1;33mwarning:[0m instantiating copy type parameter with a not implicitly copyable type
+knucleotide.rs:45    let pairs_sorted = sortKV(pairs);
+                                        ^~~~~~
+knucleotide.rs:50:17: 50:19 [1;33mwarning:[0m implicitly copying a non-implicitly-copyable value
+knucleotide.rs:50      let (k,v) = kv;
+                                   ^~
+knucleotide.rs:136:48: 136:57 [1;33mwarning:[0m implicitly copying a non-implicitly-copyable value
+knucleotide.rs:136        make_sequence_processor(sz, from_parent, to_parent[ii]);
+                                                                   ^~~~~~~~~
+knucleotide.rs:168:25: 168:35 [1;33mwarning:[0m implicitly copying a non-implicitly-copyable value
+knucleotide.rs:168             let mut lb = line_bytes;
+                                            ^~~~~~~~~~
+rm knucleotide.rs
+1.49s to complete and log all make actions
+
+COMMAND LINE:
+./knucleotide.rust_run 0 < knucleotide-input25000000.txt
+
+PROGRAM OUTPUT:
+A 30.295
+T 30.151
+C 19.800
+G 19.754
+
+AA 9.177
+TA 9.132
+AT 9.131
+TT 9.091
+CA 6.002
+AC 6.001
+AG 5.987
+GA 5.984
+CT 5.971
+TC 5.971
+GT 5.957
+TG 5.956
+CC 3.917
+GC 3.911
+CG 3.909
+GG 3.902
+
+1471758	GGT
+446535	GGTA
+47336	GGTATT
+893	GGTATTTTAATT
+893	GGTATTTTAATTTATAGT

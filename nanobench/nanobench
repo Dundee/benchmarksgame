@@ -1,0 +1,16 @@
+# !/bin/bash
+# The Computer Language Benchmarks Game
+# $Id: nanobench,v 1.1 2012/12/17 21:46:45 igouy-guest Exp $
+
+# convenient
+
+nanobench=~/benchmarksgame/nanobench/bin/nanobench
+ini=~/benchmarksgame/nanobench/makefiles/u64q.ini 
+
+if [ $# = 0 ]; then
+    $nanobench --conf $ini
+elif [ $1 = --force ]; then
+    $nanobench --conf $ini --force $2
+fi
+
+

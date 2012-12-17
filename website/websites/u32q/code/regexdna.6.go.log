@@ -1,0 +1,49 @@
+
+Fri, 15 Jun 2012 02:40:32 GMT
+
+MAKE:
+/usr/local/src/go/bin/go tool 8g -o regexdna.go-6.go.8 regexdna.go-6.go && \
+	/usr/local/src/go/bin/go tool 8l -o regexdna.go-6.go_run regexdna.go-6.go.8
+0.34s to complete and log all make actions
+
+COMMAND LINE:
+./regexdna.go-6.go_run 0 < regexdna-input5000000.txt
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+agggtaaa|tttaccct 356
+[cgt]gggtaaa|tttaccc[acg] 1250
+a[act]ggtaaa|tttacc[agt]t 4252
+ag[act]gtaaa|tttac[agt]ct 2894
+agg[act]taaa|ttta[agt]cct 5435
+aggg[acg]aaa|ttt[cgt]ccct 1537
+agggt[cgt]aa|tt[acg]accct 1431
+agggta[cgt]a|t[acg]taccct 1608
+
+runtime: memory allocated by OS (0xb478e000) not in usable range [0x18600000,0x98600000)
+runtime: out of memory: cannot allocate 47710208-byte block (2127953920 in use)
+throw: out of memory
+
+goroutine 12 [running]:
+regexp.(*Regexp).replaceAll(0x19659b40, 0x8c0c0000, 0x3bb33a6, 0x470df8e, 0x80e182c, ...)
+	/usr/local/go/src/pkg/regexp/regexp.go:472 +0x247
+regexp.(*Regexp).ReplaceAll(0x19659b40, 0x8c0c0000, 0x3bb33a6, 0x470df8e, 0x18630e70, ...)
+	/usr/local/go/src/pkg/regexp/regexp.go:528 +0xcb
+main._func_002(0x186204f0, 0x19653580, 0x0)
+	/home/dunham/benchmarksgame/regexdna/tmp/regexdna.go-6.go:86 +0xce
+created by main.main
+	/home/dunham/benchmarksgame/regexdna/tmp/regexdna.go-6.go:89 +0x38e
+
+goroutine 1 [chan receive]:
+main.main()
+	/home/dunham/benchmarksgame/regexdna/tmp/regexdna.go-6.go:92 +0x417
+
+goroutine 2 [syscall]:
+created by runtime.main
+	/tmp/bindist374110409/go/src/pkg/runtime/proc.c:221
+
+goroutine 11 [running]:
+created by main.main
+	/home/dunham/benchmarksgame/regexdna/tmp/regexdna.go-6.go:79 +0x300

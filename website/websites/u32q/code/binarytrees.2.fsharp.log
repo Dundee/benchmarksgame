@@ -1,0 +1,33 @@
+
+Wed, 24 Oct 2012 01:11:04 GMT
+
+MAKE:
+mv binarytrees.fsharp-2.fsharp binarytrees.fsharp-2.fs
+/usr/local/bin/fsharpc --target:exe --platform:x86 -O  -o binarytrees.fsharp-2.fsharp_run.exe binarytrees.fsharp-2.fs
+Microsoft (R) F# 3.0 Compiler version (Mono build)
+Copyright (c) Microsoft Corporation. All Rights Reserved.
+
+/home/dunham/benchmarksgame/binarytrees/tmp/binarytrees.fsharp-2.fs(10,1): warning FS0221: The declarations in this file will be placed in an implicit module 'Binarytrees.fsharp-2' based on the file name 'binarytrees.fsharp-2.fs'. However this is not a valid F# identifier, so the contents will not be accessible from other files. Consider renaming the file or adding a 'module' or 'namespace' declaration at the top of the file.
+rm binarytrees.fsharp-2.fs
+4.40s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/bin/mono --llvm --gc=sgen binarytrees.fsharp-2.fsharp_run.exe 20
+
+PROGRAM OUTPUT:
+stretch tree of depth 21	 check: -1
+2097152	 trees of depth 4	 check: -2097152
+524288	 trees of depth 6	 check: -524288
+131072	 trees of depth 8	 check: -131072
+32768	 trees of depth 10	 check: -32768
+8192	 trees of depth 12	 check: -8192
+2048	 trees of depth 14	 check: -2048
+512	 trees of depth 16	 check: -512
+128	 trees of depth 18	 check: -128
+32	 trees of depth 20	 check: -32
+long lived tree of depth 20	 check: -1
+
+<premain>: CommandLine Error: Argument 'misched' defined more than once!
+<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
+-simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
+-simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

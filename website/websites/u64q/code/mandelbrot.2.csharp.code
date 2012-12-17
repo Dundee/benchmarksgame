@@ -1,0 +1,58 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com"> *    http://shootout.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * Adapted by Antti Lankila from the earlier Isaac Gouy's implementation</span>
+<span class="hl com"> */</span>
+
+<span class="hl kwa">using</span> System<span class="hl opt">;</span>
+<span class="hl kwa">using</span> System<span class="hl opt">.</span>IO<span class="hl opt">;</span>
+
+<span class="hl kwa">class</span> Mandelbrot <span class="hl opt">{</span>
+
+   <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">Main</span><span class="hl opt">(</span>String<span class="hl opt">[]</span> args<span class="hl opt">) {</span>
+
+      <span class="hl kwb">int</span> width <span class="hl opt">=</span> <span class="hl num">100</span><span class="hl opt">;</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>args<span class="hl opt">.</span>Length <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">)</span>
+	 width <span class="hl opt">=</span> Int32<span class="hl opt">.</span><span class="hl kwd">Parse</span><span class="hl opt">(</span>args<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]);</span>
+
+      <span class="hl kwb">int</span> height <span class="hl opt">=</span> width<span class="hl opt">;</span>
+      <span class="hl kwb">int</span> maxiter <span class="hl opt">=</span> <span class="hl num">50</span><span class="hl opt">;</span>
+      <span class="hl kwb">double</span> limit <span class="hl opt">=</span> <span class="hl num">4.0</span><span class="hl opt">;</span>
+
+      Console<span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(</span><span class="hl str">&quot;P4&quot;</span><span class="hl opt">);</span>
+      Console<span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(</span><span class="hl str">&quot;{0} {1}&quot;</span><span class="hl opt">,</span> width<span class="hl opt">,</span>height<span class="hl opt">);</span>
+      Stream s <span class="hl opt">=</span> Console<span class="hl opt">.</span><span class="hl kwd">OpenStandardOutput</span><span class="hl opt">(</span><span class="hl num">1024</span><span class="hl opt">);</span>
+
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> y <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> y <span class="hl opt">&lt;</span> height<span class="hl opt">;</span> y<span class="hl opt">++) {</span>
+	 <span class="hl kwb">int</span> bits <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+	 <span class="hl kwb">int</span> xcounter <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+	 <span class="hl kwb">double</span> Ci <span class="hl opt">=</span> <span class="hl num">2.0</span><span class="hl opt">*</span>y<span class="hl opt">/</span>height <span class="hl opt">-</span> <span class="hl num">1.0</span><span class="hl opt">;</span>
+
+         <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> x <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> x <span class="hl opt">&lt;</span> width<span class="hl opt">;</span> x<span class="hl opt">++){</span>
+	    <span class="hl kwb">double</span> Zr <span class="hl opt">=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+	    <span class="hl kwb">double</span> Zi <span class="hl opt">=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+	    <span class="hl kwb">double</span> Cr <span class="hl opt">=</span> <span class="hl num">2.0</span><span class="hl opt">*</span>x<span class="hl opt">/</span>width <span class="hl opt">-</span> <span class="hl num">1.5</span><span class="hl opt">;</span>
+            <span class="hl kwb">int</span> i <span class="hl opt">=</span> maxiter<span class="hl opt">;</span>
+
+            bits <span class="hl opt">=</span> bits <span class="hl opt">&lt;&lt;</span> <span class="hl num">1</span><span class="hl opt">;</span>
+            <span class="hl kwa">do</span> <span class="hl opt">{</span>
+               <span class="hl kwb">double</span> Tr <span class="hl opt">=</span> Zr<span class="hl opt">*</span>Zr <span class="hl opt">-</span> Zi<span class="hl opt">*</span>Zi <span class="hl opt">+</span> Cr<span class="hl opt">;</span>
+               Zi <span class="hl opt">=</span> <span class="hl num">2.0</span><span class="hl opt">*</span>Zr<span class="hl opt">*</span>Zi <span class="hl opt">+</span> Ci<span class="hl opt">;</span>
+               Zr <span class="hl opt">=</span> Tr<span class="hl opt">;</span>
+               <span class="hl kwa">if</span> <span class="hl opt">(</span>Zr<span class="hl opt">*</span>Zr <span class="hl opt">+</span> Zi<span class="hl opt">*</span>Zi <span class="hl opt">&gt;</span> limit<span class="hl opt">) {</span>
+		  bits |<span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+		  <span class="hl kwa">break</span><span class="hl opt">;</span>
+	       <span class="hl opt">}</span>
+            <span class="hl opt">}</span> <span class="hl kwa">while</span> <span class="hl opt">(--</span>i <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">);</span>
+
+            <span class="hl kwa">if</span> <span class="hl opt">(++</span>xcounter <span class="hl opt">==</span> <span class="hl num">8</span><span class="hl opt">) {</span>
+	       s<span class="hl opt">.</span><span class="hl kwd">WriteByte</span><span class="hl opt">((</span><span class="hl kwb">byte</span><span class="hl opt">) (</span>bits ^ <span class="hl num">0xff</span><span class="hl opt">));</span>
+	       bits <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+	       xcounter <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+         <span class="hl opt">}</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>xcounter <span class="hl opt">!=</span> <span class="hl num">0</span><span class="hl opt">)</span>
+	    s<span class="hl opt">.</span><span class="hl kwd">WriteByte</span><span class="hl opt">((</span><span class="hl kwb">byte</span><span class="hl opt">) ((</span>bits <span class="hl opt">&lt;&lt; (</span><span class="hl num">8</span> <span class="hl opt">-</span> xcounter<span class="hl opt">))</span> ^ <span class="hl num">0xff</span><span class="hl opt">));</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>

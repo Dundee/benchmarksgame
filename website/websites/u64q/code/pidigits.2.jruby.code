@@ -1,0 +1,109 @@
+<span class="hl slc"># The Computer Language Benchmarks Game</span>
+<span class="hl slc"># http://shootout.alioth.debian.org/</span>
+<span class="hl slc">#</span>
+<span class="hl slc"># Use libgmp-ruby_1.0 </span>
+<span class="hl slc">#</span>
+<span class="hl slc"># contributed by Gabriele Renzi</span>
+<span class="hl slc"># modified by Pilho Kim</span>
+
+<span class="hl kwa">require</span> <span class="hl str">'gmp'</span>
+
+<span class="hl kwa">class</span> PiDigitSpigot
+    <span class="hl kwa">def</span> <span class="hl kwd">initialize</span><span class="hl opt">(</span>)
+        <span class="hl kwb">&#64;ZERO</span> <span class="hl opt">=</span> GMP<span class="hl opt">:</span><span class="hl kwc">:Z</span><span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">0</span>)
+        <span class="hl kwb">&#64;ONE</span> <span class="hl opt">=</span> GMP<span class="hl opt">:</span><span class="hl kwc">:Z</span><span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">1</span>)
+        <span class="hl kwb">&#64;THREE</span> <span class="hl opt">=</span> GMP<span class="hl opt">:</span><span class="hl kwc">:Z</span><span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">3</span>)
+        <span class="hl kwb">&#64;FOUR</span> <span class="hl opt">=</span> GMP<span class="hl opt">:</span><span class="hl kwc">:Z</span><span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">4</span>)
+        <span class="hl kwb">&#64;TEN</span> <span class="hl opt">=</span> GMP<span class="hl opt">:</span><span class="hl kwc">:Z</span><span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">10</span>)
+        <span class="hl kwb">&#64;z</span> <span class="hl opt">=</span> Transformation<span class="hl opt">.</span>new <span class="hl kwb">&#64;ONE</span><span class="hl opt">,</span><span class="hl kwb">&#64;ZERO</span><span class="hl opt">,</span><span class="hl kwb">&#64;ZERO</span><span class="hl opt">,</span><span class="hl kwb">&#64;ONE</span>
+        <span class="hl kwb">&#64;x</span> <span class="hl opt">=</span> Transformation<span class="hl opt">.</span>new <span class="hl kwb">&#64;ZERO</span><span class="hl opt">,</span><span class="hl kwb">&#64;ZERO</span><span class="hl opt">,</span><span class="hl kwb">&#64;ZERO</span><span class="hl opt">,</span><span class="hl kwb">&#64;ZERO</span>
+        <span class="hl kwb">&#64;inverse</span> <span class="hl opt">=</span> Transformation<span class="hl opt">.</span>new <span class="hl kwb">&#64;ZERO</span><span class="hl opt">,</span><span class="hl kwb">&#64;ZERO</span><span class="hl opt">,</span><span class="hl kwb">&#64;ZERO</span><span class="hl opt">,</span><span class="hl kwb">&#64;ZERO</span>
+    <span class="hl kwa">end</span>
+
+    <span class="hl kwa">def next</span><span class="hl opt">!</span>
+        <span class="hl kwb">&#64;y</span> <span class="hl opt">=</span> <span class="hl kwb">&#64;z</span><span class="hl opt">.</span><span class="hl kwd">extract</span><span class="hl opt">(</span><span class="hl kwb">&#64;THREE</span>)
+        <span class="hl kwa">if</span> safe<span class="hl opt">?</span> <span class="hl kwb">&#64;y</span>
+            <span class="hl kwb">&#64;z</span> <span class="hl opt">=</span> <span class="hl kwd">produce</span><span class="hl opt">(</span><span class="hl kwb">&#64;y</span>)
+            <span class="hl kwb">&#64;y</span>
+        <span class="hl kwa">else</span>
+            <span class="hl kwb">&#64;z</span> <span class="hl opt">=</span> consume <span class="hl kwb">&#64;x</span><span class="hl opt">.</span><span class="hl kwa">next</span><span class="hl opt">!(</span>)
+            <span class="hl kwa">next</span><span class="hl opt">!(</span>)
+        <span class="hl kwa">end</span>
+    <span class="hl kwa">end</span>
+
+    <span class="hl kwa">def</span> safe<span class="hl opt">?(</span>digit)
+        digit <span class="hl opt">==</span> <span class="hl kwb">&#64;z</span><span class="hl opt">.</span><span class="hl kwd">extract</span><span class="hl opt">(</span><span class="hl kwb">&#64;FOUR</span>)
+    <span class="hl kwa">end</span>
+
+    <span class="hl kwa">def</span> <span class="hl kwd">produce</span><span class="hl opt">(</span>i)
+        <span class="hl kwb">&#64;inverse</span><span class="hl opt">.</span><span class="hl kwd">qrst</span><span class="hl opt">(</span><span class="hl kwb">&#64;TEN</span><span class="hl opt">,-</span><span class="hl kwb">&#64;TEN</span><span class="hl opt">*</span>i<span class="hl opt">,</span><span class="hl kwb">&#64;ZERO</span><span class="hl opt">,</span><span class="hl kwb">&#64;ONE</span>)<span class="hl opt">.</span><span class="hl kwd">compose</span><span class="hl opt">(</span><span class="hl kwb">&#64;z</span>)
+    <span class="hl kwa">end</span>
+
+    <span class="hl kwa">def</span> <span class="hl kwd">consume</span><span class="hl opt">(</span>a)
+        <span class="hl kwb">&#64;z</span><span class="hl opt">.</span><span class="hl kwd">compose</span><span class="hl opt">(</span>a)
+    <span class="hl kwa">end</span>
+<span class="hl kwa">end</span>
+
+
+<span class="hl kwa">class</span> Transformation
+    attr_reader <span class="hl kwc">:q</span><span class="hl opt">,</span> <span class="hl kwc">:r</span><span class="hl opt">,</span> <span class="hl kwc">:s</span><span class="hl opt">,</span> <span class="hl kwc">:t</span>
+    <span class="hl kwa">def</span> <span class="hl kwd">initialize</span> <span class="hl opt">(</span>q<span class="hl opt">,</span> r<span class="hl opt">,</span> s<span class="hl opt">,</span> t)
+        <span class="hl kwb">&#64;ZERO</span> <span class="hl opt">=</span> GMP<span class="hl opt">:</span><span class="hl kwc">:Z</span><span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">0</span>)
+        <span class="hl kwb">&#64;ONE</span> <span class="hl opt">=</span> GMP<span class="hl opt">:</span><span class="hl kwc">:Z</span><span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">1</span>)
+        <span class="hl kwb">&#64;TWO</span> <span class="hl opt">=</span> GMP<span class="hl opt">:</span><span class="hl kwc">:Z</span><span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">2</span>)
+        <span class="hl kwb">&#64;FOUR</span> <span class="hl opt">=</span> GMP<span class="hl opt">:</span><span class="hl kwc">:Z</span><span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">4</span>)
+        <span class="hl kwb">&#64;q</span><span class="hl opt">,</span><span class="hl kwb">&#64;r</span><span class="hl opt">,</span><span class="hl kwb">&#64;s</span><span class="hl opt">,</span><span class="hl kwb">&#64;t</span><span class="hl opt">,</span><span class="hl kwb">&#64;k</span> <span class="hl opt">=</span> q<span class="hl opt">,</span>r<span class="hl opt">,</span>s<span class="hl opt">,</span>t<span class="hl opt">,</span><span class="hl kwb">&#64;ZERO</span>
+    <span class="hl kwa">end</span>
+
+    <span class="hl kwa">def next</span><span class="hl opt">!(</span>)
+        <span class="hl kwb">&#64;q</span> <span class="hl opt">=</span> <span class="hl kwb">&#64;k</span> <span class="hl opt">=</span> <span class="hl kwb">&#64;k</span> <span class="hl opt">+</span> <span class="hl kwb">&#64;ONE</span>
+        <span class="hl kwb">&#64;r</span> <span class="hl opt">=</span> <span class="hl kwb">&#64;FOUR</span> <span class="hl opt">*</span> <span class="hl kwb">&#64;k</span> <span class="hl opt">+</span> <span class="hl kwb">&#64;TWO</span>
+        <span class="hl kwb">&#64;s</span> <span class="hl opt">=</span> <span class="hl kwb">&#64;ZERO</span>
+        <span class="hl kwb">&#64;t</span> <span class="hl opt">=</span> <span class="hl kwb">&#64;TWO</span> <span class="hl opt">*</span> <span class="hl kwb">&#64;k</span> <span class="hl opt">+</span> <span class="hl kwb">&#64;ONE</span>
+        <span class="hl kwa">self</span>
+    <span class="hl kwa">end</span>
+
+    <span class="hl kwa">def</span> <span class="hl kwd">extract</span><span class="hl opt">(</span>j)
+        <span class="hl opt">(</span><span class="hl kwb">&#64;q</span> <span class="hl opt">*</span> j <span class="hl opt">+</span> <span class="hl kwb">&#64;r</span>)<span class="hl opt">.</span><span class="hl kwd">tdiv</span><span class="hl opt">(</span> <span class="hl kwb">&#64;s</span> <span class="hl opt">*</span> j <span class="hl opt">+</span> <span class="hl kwb">&#64;t</span> )
+    <span class="hl kwa">end</span>
+
+    <span class="hl kwa">def</span> <span class="hl kwd">compose</span><span class="hl opt">(</span>a)
+        <span class="hl kwa">self</span><span class="hl opt">.</span><span class="hl kwa">class</span><span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span> <span class="hl kwb">&#64;q</span> <span class="hl opt">*</span> a<span class="hl opt">.</span>q<span class="hl opt">,</span>
+                        <span class="hl kwb">&#64;q</span> <span class="hl opt">*</span> a<span class="hl opt">.</span>r <span class="hl opt">+</span> r <span class="hl opt">*</span> a<span class="hl opt">.</span>t<span class="hl opt">,</span>
+                        <span class="hl kwb">&#64;s</span> <span class="hl opt">*</span> a<span class="hl opt">.</span>q <span class="hl opt">+</span> t <span class="hl opt">*</span> a<span class="hl opt">.</span>s<span class="hl opt">,</span>
+                        <span class="hl kwb">&#64;s</span> <span class="hl opt">*</span> a<span class="hl opt">.</span>r <span class="hl opt">+</span> t <span class="hl opt">*</span> a<span class="hl opt">.</span>t
+                    )
+    <span class="hl kwa">end</span>
+
+    <span class="hl kwa">def</span> qrst <span class="hl opt">*</span>args
+        initialize <span class="hl opt">*</span>args
+        <span class="hl kwa">self</span>
+    <span class="hl kwa">end</span>
+
+<span class="hl kwa">end</span>
+
+
+<span class="hl kwb">&#64;zero</span> <span class="hl opt">=</span> GMP<span class="hl opt">:</span><span class="hl kwc">:Z</span><span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">0</span>)
+<span class="hl kwb">&#64;one</span> <span class="hl opt">=</span> GMP<span class="hl opt">:</span><span class="hl kwc">:Z</span><span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">1</span>)
+<span class="hl kwb">&#64;two</span> <span class="hl opt">=</span> GMP<span class="hl opt">:</span><span class="hl kwc">:Z</span><span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">2</span>)
+<span class="hl kwb">&#64;four</span> <span class="hl opt">=</span> GMP<span class="hl opt">:</span><span class="hl kwc">:Z</span><span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">4</span>)
+<span class="hl kwb">&#64;ten</span> <span class="hl opt">=</span> GMP<span class="hl opt">:</span><span class="hl kwc">:Z</span><span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">10</span>)
+
+WIDTH <span class="hl opt">=</span> <span class="hl num">10</span>
+n <span class="hl opt">=</span> <span class="hl kwd">Integer</span><span class="hl opt">(</span><span class="hl kwc">ARGV</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] ||</span> <span class="hl str">&quot;27&quot;</span>)
+j <span class="hl opt">=</span> <span class="hl num">0</span>
+
+digits <span class="hl opt">=</span> PiDigitSpigot<span class="hl opt">.</span>new
+
+<span class="hl kwa">while</span> n <span class="hl opt">&gt;</span> <span class="hl num">0</span>
+    <span class="hl kwa">if</span> n <span class="hl opt">&gt;=</span> WIDTH
+        WIDTH<span class="hl opt">.</span>times <span class="hl esc">{print digits.next!}</span>
+        j <span class="hl opt">+=</span> WIDTH
+    <span class="hl kwa">else</span>
+        n<span class="hl opt">.</span>times <span class="hl esc">{print digits.next!}</span>
+        <span class="hl opt">(</span>WIDTH-n)<span class="hl opt">.</span>times <span class="hl esc">{print &quot; &quot;}</span>
+        j <span class="hl opt">+=</span> n
+    <span class="hl kwa">end</span>
+    puts <span class="hl str">&quot;\t:&quot;</span><span class="hl opt">+</span>j<span class="hl opt">.</span>to_s
+    n <span class="hl opt">-=</span> WIDTH
+<span class="hl kwa">end</span>

@@ -1,0 +1,129 @@
+<span class="hl opt">#</span>lang racket<span class="hl opt">/</span>base
+
+<span class="hl slc">;;; The Computer Language Benchmarks Game</span>
+<span class="hl slc">;;; http://shootout.alioth.debian.org/</span>
+<span class="hl slc">;;</span>
+<span class="hl slc">;; Very loosely based on the Chicken variant by Anthony Borla, some</span>
+<span class="hl slc">;; optimizations taken from the GCC version by Petr Prokhorenkov, and</span>
+<span class="hl slc">;; additional heavy optimizations by Eli Barzilay (not really related to</span>
+<span class="hl slc">;; the above two now).</span>
+<span class="hl slc">;;</span>
+<span class="hl slc">;; If you use some of these optimizations in other solutions, please</span>
+<span class="hl slc">;; include a proper attribution to this Racket code.</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> <span class="hl opt">+</span>alu<span class="hl opt">+</span>
+  <span class="hl opt">(</span><span class="hl kwa">bytes-append</span> <span class="hl opt">#</span><span class="hl str">&quot;GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG&quot;</span>
+                <span class="hl opt">#</span><span class="hl str">&quot;GAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGAGA&quot;</span>
+                <span class="hl opt">#</span><span class="hl str">&quot;CCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAAT&quot;</span>
+                <span class="hl opt">#</span><span class="hl str">&quot;ACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAATCCCA&quot;</span>
+                <span class="hl opt">#</span><span class="hl str">&quot;GCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTGAACCCGGG&quot;</span>
+                <span class="hl opt">#</span><span class="hl str">&quot;AGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCC&quot;</span>
+                <span class="hl opt">#</span><span class="hl str">&quot;AGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAA&quot;</span><span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> IUB
+  <span class="hl opt">'([#</span><span class="hl esc">\a</span> <span class="hl num">0.27</span><span class="hl opt">] [#</span>\c <span class="hl num">0.12</span><span class="hl opt">] [#</span>\g <span class="hl num">0.12</span><span class="hl opt">] [#</span><span class="hl esc">\t</span> <span class="hl num">0.27</span><span class="hl opt">] [#</span>\B <span class="hl num">0.02</span><span class="hl opt">]</span>
+    <span class="hl opt">[#</span>\D <span class="hl num">0.02</span><span class="hl opt">] [#</span>\H <span class="hl num">0.02</span><span class="hl opt">] [#</span>\K <span class="hl num">0.02</span><span class="hl opt">] [#</span>\M <span class="hl num">0.02</span><span class="hl opt">] [#</span>\N <span class="hl num">0.02</span><span class="hl opt">]</span>
+    <span class="hl opt">[#</span>\R <span class="hl num">0.02</span><span class="hl opt">] [#</span>\S <span class="hl num">0.02</span><span class="hl opt">] [#</span>\V <span class="hl num">0.02</span><span class="hl opt">] [#</span>\W <span class="hl num">0.02</span><span class="hl opt">] [#</span>\Y <span class="hl num">0.02</span><span class="hl opt">]))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> HOMOSAPIEN
+  <span class="hl opt">'([#</span><span class="hl esc">\a</span> <span class="hl num">0.3029549426680</span><span class="hl opt">] [#</span>\c <span class="hl num">0.1979883004921</span><span class="hl opt">]</span>
+    <span class="hl opt">[#</span>\g <span class="hl num">0.1975473066391</span><span class="hl opt">] [#</span><span class="hl esc">\t</span> <span class="hl num">0.3015094502008</span><span class="hl opt">]))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> line-length <span class="hl num">60</span><span class="hl opt">)</span>
+
+<span class="hl slc">;; ----------------------------------------</span>
+
+<span class="hl opt">(</span><span class="hl kwa">require</span> racket<span class="hl opt">/</span>cmdline racket<span class="hl opt">/</span>require <span class="hl opt">(</span><span class="hl kwa">for-syntax</span> racket<span class="hl opt">/</span>base<span class="hl opt">)</span>
+         <span class="hl opt">(</span><span class="hl kwa">filtered-in</span> <span class="hl opt">(</span><span class="hl kwa">lambda</span> <span class="hl opt">(</span><span class="hl kwa">name</span><span class="hl opt">) (</span><span class="hl kwa">regexp-replace</span> <span class="hl opt">#</span>rx<span class="hl str">&quot;unsafe-&quot;</span> name <span class="hl str">&quot;&quot;</span><span class="hl opt">))</span>
+                       racket<span class="hl opt">/</span>unsafe<span class="hl opt">/</span>ops<span class="hl opt">))</span>
+
+<span class="hl slc">;; ----------------------------------------</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> <span class="hl opt">(</span><span class="hl kwa">repeat-fasta</span> header N sequence<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> out <span class="hl opt">(</span><span class="hl kwa">current-output-port</span><span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> len <span class="hl opt">(</span><span class="hl kwa">bytes-length</span> sequence<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> buf <span class="hl opt">(</span><span class="hl kwa">make-bytes</span> <span class="hl opt">(+</span> len line-length<span class="hl opt">)))</span>
+  <span class="hl opt">(</span><span class="hl kwa">bytes-copy</span><span class="hl opt">!</span> buf <span class="hl num">0</span> sequence<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">bytes-copy</span><span class="hl opt">!</span> buf len sequence <span class="hl num">0</span> line-length<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">display</span> header out<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> loop <span class="hl opt">([</span>n N<span class="hl opt">] [</span>start <span class="hl num">0</span><span class="hl opt">])</span>
+    <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">&gt;</span> n <span class="hl num">0</span><span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">([</span>end <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">+</span> start <span class="hl opt">(</span><span class="hl kwa">fxmin</span> n line-length<span class="hl opt">))])</span>
+        <span class="hl opt">(</span><span class="hl kwa">write-bytes</span> buf out start end<span class="hl opt">)</span>
+        <span class="hl opt">(</span><span class="hl kwa">newline</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">(</span><span class="hl kwa">fx-</span> n line-length<span class="hl opt">) (</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">&gt;</span> end len<span class="hl opt">) (</span><span class="hl kwa">fx-</span> end len<span class="hl opt">)</span> end<span class="hl opt">))))))</span>
+
+<span class="hl slc">;; ----------------------------------------</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> IA <span class="hl num">3877</span><span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">define</span> IC <span class="hl num">29573</span><span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">define</span> IM <span class="hl num">139968</span><span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">define</span> IM<span class="hl num">.0</span> <span class="hl opt">(</span><span class="hl kwa">fx-</span><span class="hl opt">&gt;</span>fl IM<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define-syntax-rule</span> <span class="hl opt">(</span><span class="hl kwa">define</span><span class="hl opt">/</span>IM <span class="hl opt">(</span><span class="hl kwa">name</span> id<span class="hl opt">)</span> E<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">begin</span> <span class="hl opt">(</span><span class="hl kwa">define</span> V
+           <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">([</span>v <span class="hl opt">(</span><span class="hl kwa">make-vector</span> IM<span class="hl opt">)])</span>
+             <span class="hl opt">(</span><span class="hl kwa">for</span> <span class="hl opt">([</span>id <span class="hl opt">(</span><span class="hl kwa">in-range</span> IM<span class="hl opt">)]) (</span><span class="hl kwa">vector-set</span><span class="hl opt">!</span> v id E<span class="hl opt">))</span>
+             v<span class="hl opt">))</span>
+         <span class="hl opt">(</span><span class="hl kwa">define-syntax-rule</span> <span class="hl opt">(</span><span class="hl kwa">name</span> id<span class="hl opt">) (</span><span class="hl kwa">vector-ref</span> V id<span class="hl opt">))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span><span class="hl opt">/</span>IM <span class="hl opt">(</span><span class="hl kwa">random-next</span> cur<span class="hl opt">) (</span><span class="hl kwa">fxmodulo</span> <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">+</span> IC <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">*</span> cur IA<span class="hl opt">))</span> IM<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> <span class="hl opt">(</span><span class="hl kwa">make-lookup-table</span> frequency-table<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> v <span class="hl opt">(</span><span class="hl kwa">make-bytes</span> IM<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> loop <span class="hl opt">([</span>t frequency-table<span class="hl opt">] [</span>c <span class="hl num">0</span><span class="hl opt">] [</span>c. <span class="hl num">0.0</span><span class="hl opt">])</span>
+    <span class="hl opt">(</span><span class="hl kwa">unless</span> <span class="hl opt">(</span><span class="hl kwa">null</span>? t<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span><span class="hl opt">* ([</span>c1. <span class="hl opt">(</span><span class="hl kwa">fl</span><span class="hl opt">+</span> c. <span class="hl opt">(</span><span class="hl kwa">fl</span><span class="hl opt">*</span> IM<span class="hl num">.0</span> <span class="hl opt">(</span><span class="hl kwa">cadar</span> t<span class="hl opt">)))]</span>
+             <span class="hl opt">[</span>c1 <span class="hl opt">(</span><span class="hl kwa">inexact-</span><span class="hl opt">&gt;</span>exact <span class="hl opt">(</span><span class="hl kwa">flceiling</span> c1.<span class="hl opt">))]</span>
+             <span class="hl opt">[</span>b <span class="hl opt">(</span><span class="hl kwa">char-</span><span class="hl opt">&gt;</span>integer <span class="hl opt">(</span><span class="hl kwa">caar</span> t<span class="hl opt">))])</span>
+        <span class="hl opt">(</span><span class="hl kwa">for</span> <span class="hl opt">([</span>i <span class="hl opt">(</span><span class="hl kwa">in-range</span> c c1<span class="hl opt">)]) (</span><span class="hl kwa">bytes-set</span><span class="hl opt">!</span> v i b<span class="hl opt">))</span>
+        <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">(</span><span class="hl kwa">cdr</span> t<span class="hl opt">)</span> c1 c1.<span class="hl opt">))))</span>
+  v<span class="hl opt">)</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> <span class="hl opt">(</span><span class="hl kwa">random-fasta</span> header N table R<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> out <span class="hl opt">(</span><span class="hl kwa">current-output-port</span><span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> lookup-byte <span class="hl opt">(</span><span class="hl kwa">make-lookup-table</span> table<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> <span class="hl opt">(</span><span class="hl kwa">n-randoms</span> to R<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> loop <span class="hl opt">([</span>n <span class="hl num">0</span><span class="hl opt">] [</span>R R<span class="hl opt">])</span>
+      <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">&lt;</span> n to<span class="hl opt">)</span>
+        <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">([</span>R <span class="hl opt">(</span><span class="hl kwa">random-next</span> R<span class="hl opt">)])</span>
+          <span class="hl opt">(</span><span class="hl kwa">bytes-set</span><span class="hl opt">!</span> buf n <span class="hl opt">(</span><span class="hl kwa">bytes-ref</span> lookup-byte R<span class="hl opt">))</span>
+          <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">+</span> n <span class="hl num">1</span><span class="hl opt">)</span> R<span class="hl opt">))</span>
+        <span class="hl opt">(</span><span class="hl kwa">begin</span> <span class="hl opt">(</span><span class="hl kwa">write-bytes</span> buf out <span class="hl num">0</span> <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">+</span> to <span class="hl num">1</span><span class="hl opt">))</span> R<span class="hl opt">))))</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> <span class="hl opt">(</span><span class="hl kwa">make-line</span><span class="hl opt">!</span> buf start R<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">([</span>end <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">+</span> start line-length<span class="hl opt">)])</span>
+      <span class="hl opt">(</span><span class="hl kwa">bytes-set</span><span class="hl opt">!</span> buf end LF<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span> loop <span class="hl opt">([</span>n start<span class="hl opt">] [</span>R R<span class="hl opt">])</span>
+        <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">&lt;</span> n end<span class="hl opt">)</span>
+          <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">([</span>R <span class="hl opt">(</span><span class="hl kwa">random-next</span> R<span class="hl opt">)])</span>
+            <span class="hl opt">(</span><span class="hl kwa">bytes-set</span><span class="hl opt">!</span> buf n <span class="hl opt">(</span><span class="hl kwa">bytes-ref</span> lookup-byte R<span class="hl opt">))</span>
+            <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">+</span> n <span class="hl num">1</span><span class="hl opt">)</span> R<span class="hl opt">))</span>
+          R<span class="hl opt">))))</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> LF <span class="hl opt">(</span><span class="hl kwa">char-</span><span class="hl opt">&gt;</span>integer <span class="hl opt">#</span><span class="hl esc">\n</span>ewline<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> buf <span class="hl opt">(</span><span class="hl kwa">make-bytes</span> <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">+</span> line-length <span class="hl num">1</span><span class="hl opt">)))</span>
+  <span class="hl opt">(</span><span class="hl kwa">define-values</span> <span class="hl opt">(</span><span class="hl kwa">full-lines</span> last<span class="hl opt">) (</span><span class="hl kwa">quotient</span><span class="hl opt">/</span>remainder N line-length<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> C
+    <span class="hl opt">(</span><span class="hl kwa">let</span><span class="hl opt">* ([</span>len<span class="hl opt">+</span><span class="hl num">1</span> <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">+</span> line-length <span class="hl num">1</span><span class="hl opt">)]</span>
+           <span class="hl opt">[</span>buflen <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">*</span> len<span class="hl opt">+</span><span class="hl num">1</span> IM<span class="hl opt">)]</span>
+           <span class="hl opt">[</span>buf <span class="hl opt">(</span><span class="hl kwa">make-bytes</span> buflen<span class="hl opt">)])</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span> loop <span class="hl opt">([</span>R R<span class="hl opt">] [</span>i <span class="hl num">0</span><span class="hl opt">])</span>
+        <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">&lt;</span> i buflen<span class="hl opt">)</span>
+          <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">(</span><span class="hl kwa">make-line</span><span class="hl opt">!</span> buf i R<span class="hl opt">) (</span><span class="hl kwa">fx</span><span class="hl opt">+</span> i len<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">))</span>
+          buf<span class="hl opt">))))</span>
+  <span class="hl opt">(</span><span class="hl kwa">bytes-set</span><span class="hl opt">!</span> buf line-length LF<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">display</span> header out<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> loop <span class="hl opt">([</span>i full-lines<span class="hl opt">] [</span>R R<span class="hl opt">])</span>
+    <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">fx</span><span class="hl opt">&gt;</span> i IM<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">begin</span> <span class="hl opt">(</span><span class="hl kwa">display</span> C out<span class="hl opt">) (</span><span class="hl kwa">loop</span> <span class="hl opt">(</span><span class="hl kwa">fx-</span> i IM<span class="hl opt">)</span> R<span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span> loop <span class="hl opt">([</span>i i<span class="hl opt">] [</span>R R<span class="hl opt">])</span>
+        <span class="hl opt">(</span><span class="hl kwa">cond</span> <span class="hl opt">[(</span><span class="hl kwa">fx</span><span class="hl opt">&gt;</span> i <span class="hl num">0</span><span class="hl opt">) (</span><span class="hl kwa">loop</span> <span class="hl opt">(</span><span class="hl kwa">fx-</span> i <span class="hl num">1</span><span class="hl opt">) (</span><span class="hl kwa">n-randoms</span> line-length R<span class="hl opt">))]</span>
+              <span class="hl opt">[(</span><span class="hl kwa">fx</span><span class="hl opt">&gt;</span> last <span class="hl num">0</span><span class="hl opt">) (</span><span class="hl kwa">bytes-set</span><span class="hl opt">!</span> buf last LF<span class="hl opt">) (</span><span class="hl kwa">n-randoms</span> last R<span class="hl opt">)]</span>
+              <span class="hl opt">[</span>else R<span class="hl opt">])))))</span>
+
+<span class="hl slc">;; ----------------------------------------</span>
+
+<span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">([</span>n <span class="hl opt">(</span><span class="hl kwa">command-line</span> <span class="hl opt">#:</span>args <span class="hl opt">(</span><span class="hl kwa">n</span><span class="hl opt">) (</span><span class="hl kwa">string-</span><span class="hl opt">&gt;</span>number n<span class="hl opt">))])</span>
+  <span class="hl opt">(</span><span class="hl kwa">repeat-fasta</span> <span class="hl str">&quot;&gt;ONE Homo sapiens alu</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> <span class="hl opt">(*</span> n <span class="hl num">2</span><span class="hl opt">) +</span>alu<span class="hl opt">+)</span>
+  <span class="hl opt">(</span><span class="hl kwa">random-fasta</span> <span class="hl str">&quot;&gt;THREE Homo sapiens frequency</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> <span class="hl opt">(*</span> n <span class="hl num">5</span><span class="hl opt">)</span> HOMOSAPIEN
+                <span class="hl opt">(</span><span class="hl kwa">random-fasta</span> <span class="hl str">&quot;&gt;TWO IUB ambiguity codes</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> <span class="hl opt">(*</span> n <span class="hl num">3</span><span class="hl opt">)</span> IUB <span class="hl num">42</span><span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">void</span><span class="hl opt">))</span>

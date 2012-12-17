@@ -1,0 +1,122 @@
+<span class="hl com">/* The Computer Benchmarks Game</span>
+<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * contributed by Isaac Gouy</span>
+<span class="hl com"> * modified by Antti Lankila for generics</span>
+<span class="hl com"> */</span>
+
+<span class="hl kwa">using</span> System<span class="hl opt">;</span>
+<span class="hl kwa">using</span> System<span class="hl opt">.</span>IO<span class="hl opt">;</span>
+<span class="hl kwa">using</span> System<span class="hl opt">.</span>Collections<span class="hl opt">.</span>Generic<span class="hl opt">;</span>
+<span class="hl kwa">using</span> System<span class="hl opt">.</span>Text<span class="hl opt">;</span>
+
+<span class="hl kwa">public class</span> program <span class="hl opt">{</span>
+    <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">Main</span><span class="hl opt">(</span><span class="hl kwb">string</span><span class="hl opt">[]</span> args<span class="hl opt">) {</span>
+	<span class="hl kwb">string</span> line<span class="hl opt">;</span>
+	StreamReader source <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">StreamReader</span><span class="hl opt">(</span>Console<span class="hl opt">.</span><span class="hl kwd">OpenStandardInput</span><span class="hl opt">());</span>
+	StringBuilder input <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">StringBuilder</span><span class="hl opt">();</span>
+
+	<span class="hl kwa">while</span> <span class="hl opt">( (</span>line <span class="hl opt">=</span> source<span class="hl opt">.</span><span class="hl kwd">ReadLine</span><span class="hl opt">() ) !=</span> <span class="hl kwa">null</span> <span class="hl opt">) {</span>
+	    <span class="hl kwa">if</span> <span class="hl opt">(</span>line<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] ==</span> <span class="hl str">'&gt;'</span> <span class="hl opt">&amp;&amp;</span> line<span class="hl opt">.</span><span class="hl kwd">Substring</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">5</span><span class="hl opt">) ==</span> <span class="hl str">&quot;THREE&quot;</span><span class="hl opt">)</span>
+		<span class="hl kwa">break</span><span class="hl opt">;</span>
+	<span class="hl opt">}</span>
+	 
+	<span class="hl kwa">while</span> <span class="hl opt">( (</span>line <span class="hl opt">=</span> source<span class="hl opt">.</span><span class="hl kwd">ReadLine</span><span class="hl opt">()) !=</span> <span class="hl kwa">null</span> <span class="hl opt">) {</span>
+            <span class="hl kwb">char</span> c <span class="hl opt">=</span> line<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">];</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>c <span class="hl opt">==</span> <span class="hl str">'&gt;'</span><span class="hl opt">)</span>
+               <span class="hl kwa">break</span><span class="hl opt">;</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>c <span class="hl opt">!=</span> <span class="hl str">';'</span><span class="hl opt">)</span>
+               input<span class="hl opt">.</span><span class="hl kwd">Append</span><span class="hl opt">(</span>line<span class="hl opt">.</span><span class="hl kwd">ToUpper</span><span class="hl opt">());</span>
+	<span class="hl opt">}</span>
+
+	KNucleotide kn <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">KNucleotide</span><span class="hl opt">(</span>input<span class="hl opt">.</span><span class="hl kwd">ToString</span><span class="hl opt">());</span>
+        input <span class="hl opt">=</span> <span class="hl kwa">null</span><span class="hl opt">;</span>
+	kn<span class="hl opt">.</span><span class="hl kwd">WriteFrequencies</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">);</span>
+	kn<span class="hl opt">.</span><span class="hl kwd">WriteFrequencies</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">);</span>
+
+	kn<span class="hl opt">.</span><span class="hl kwd">WriteCount</span><span class="hl opt">(</span><span class="hl str">&quot;GGT&quot;</span><span class="hl opt">);</span>
+	kn<span class="hl opt">.</span><span class="hl kwd">WriteCount</span><span class="hl opt">(</span><span class="hl str">&quot;GGTA&quot;</span><span class="hl opt">);</span>
+	kn<span class="hl opt">.</span><span class="hl kwd">WriteCount</span><span class="hl opt">(</span><span class="hl str">&quot;GGTATT&quot;</span><span class="hl opt">);</span>
+	kn<span class="hl opt">.</span><span class="hl kwd">WriteCount</span><span class="hl opt">(</span><span class="hl str">&quot;GGTATTTTAATT&quot;</span><span class="hl opt">);</span>
+	kn<span class="hl opt">.</span><span class="hl kwd">WriteCount</span><span class="hl opt">(</span><span class="hl str">&quot;GGTATTTTAATTTATAGT&quot;</span><span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">public class</span> KNucleotide <span class="hl opt">{</span>
+    <span class="hl com">/* freq[foo] ++ implies a get and a set. */</span>
+    <span class="hl kwa">internal class</span> Value <span class="hl opt">{</span>
+	<span class="hl kwa">internal</span> <span class="hl kwb">int</span> v<span class="hl opt">;</span>
+
+	<span class="hl kwa">internal</span> <span class="hl kwd">Value</span><span class="hl opt">(</span><span class="hl kwb">int</span> v<span class="hl opt">)</span>
+	<span class="hl opt">{</span>
+	    <span class="hl kwa">this</span><span class="hl opt">.</span>v <span class="hl opt">=</span> v<span class="hl opt">;</span>
+	<span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">private</span> Dictionary<span class="hl opt">&lt;</span><span class="hl kwb">string</span><span class="hl opt">,</span> Value<span class="hl opt">&gt;</span> frequencies <span class="hl opt">=</span> <span class="hl kwa">new</span> Dictionary<span class="hl opt">&lt;</span><span class="hl kwb">string</span><span class="hl opt">,</span> Value<span class="hl opt">&gt;();</span>
+    <span class="hl kwa">private</span> <span class="hl kwb">string</span> sequence<span class="hl opt">;</span>
+
+    <span class="hl kwa">public</span> <span class="hl kwd">KNucleotide</span><span class="hl opt">(</span><span class="hl kwb">string</span> s<span class="hl opt">)</span>
+    <span class="hl opt">{</span>
+	sequence <span class="hl opt">=</span> s<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">WriteFrequencies</span><span class="hl opt">(</span><span class="hl kwb">int</span> nucleotideLength<span class="hl opt">) {</span>
+	<span class="hl kwd">GenerateFrequencies</span><span class="hl opt">(</span>nucleotideLength<span class="hl opt">);</span>
+
+	List<span class="hl opt">&lt;</span>KeyValuePair<span class="hl opt">&lt;</span><span class="hl kwb">string</span><span class="hl opt">,</span> Value<span class="hl opt">&gt;&gt;</span> items <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span>KeyValuePair<span class="hl opt">&lt;</span><span class="hl kwb">string</span><span class="hl opt">,</span> Value<span class="hl opt">&gt;&gt;(</span>frequencies<span class="hl opt">);</span>
+	items<span class="hl opt">.</span><span class="hl kwd">Sort</span><span class="hl opt">(</span>SortByFrequencyAndCode<span class="hl opt">);</span>
+
+	<span class="hl kwb">int</span> sum <span class="hl opt">=</span> sequence<span class="hl opt">.</span>Length <span class="hl opt">-</span> nucleotideLength <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+	<span class="hl kwa">foreach</span> <span class="hl opt">(</span>KeyValuePair<span class="hl opt">&lt;</span><span class="hl kwb">string</span><span class="hl opt">,</span> Value<span class="hl opt">&gt;</span> each <span class="hl kwa">in</span> items<span class="hl opt">) {</span>
+	    <span class="hl kwb">double</span> percent <span class="hl opt">=</span> each<span class="hl opt">.</span>Value<span class="hl opt">.</span>v <span class="hl opt">*</span> <span class="hl num">100.0</span> <span class="hl opt">/</span> sum<span class="hl opt">;</span>
+	    Console<span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(</span><span class="hl str">&quot;{0} {1:f3}&quot;</span><span class="hl opt">,</span> each<span class="hl opt">.</span>Key<span class="hl opt">,</span> percent<span class="hl opt">);</span>
+	<span class="hl opt">}</span>
+	Console<span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(</span><span class="hl str">&quot;&quot;</span><span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">WriteCount</span><span class="hl opt">(</span><span class="hl kwb">string</span> nucleotideFragment<span class="hl opt">) {</span>
+	<span class="hl kwd">GenerateFrequencies</span><span class="hl opt">(</span>nucleotideFragment<span class="hl opt">.</span>Length<span class="hl opt">);</span>
+
+	<span class="hl kwb">int</span> count <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+	<span class="hl kwa">if</span> <span class="hl opt">(</span>frequencies<span class="hl opt">.</span><span class="hl kwd">ContainsKey</span><span class="hl opt">(</span>nucleotideFragment<span class="hl opt">))</span>
+	    count <span class="hl opt">=</span> frequencies<span class="hl opt">[</span>nucleotideFragment<span class="hl opt">].</span>v<span class="hl opt">;</span>
+	Console<span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(</span><span class="hl str">&quot;{0}</span><span class="hl esc">\t</span><span class="hl str">{1}&quot;</span><span class="hl opt">,</span> count<span class="hl opt">,</span> nucleotideFragment<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">private</span> <span class="hl kwb">void</span> <span class="hl kwd">GenerateFrequencies</span><span class="hl opt">(</span><span class="hl kwb">int</span> length<span class="hl opt">) {</span>
+	frequencies<span class="hl opt">.</span><span class="hl kwd">Clear</span><span class="hl opt">();</span>
+	<span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> frame <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> frame <span class="hl opt">&lt;</span> length<span class="hl opt">;</span> frame<span class="hl opt">++)</span>
+	    <span class="hl kwd">KFrequency</span><span class="hl opt">(</span>frame<span class="hl opt">,</span> length<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">private</span> <span class="hl kwb">void</span> <span class="hl kwd">KFrequency</span><span class="hl opt">(</span><span class="hl kwb">int</span> readingFrame<span class="hl opt">,</span> <span class="hl kwb">int</span> k<span class="hl opt">) {</span>
+	<span class="hl kwb">int</span> n <span class="hl opt">=</span> sequence<span class="hl opt">.</span>Length <span class="hl opt">-</span> k <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+	<span class="hl com">/* string.Substring is a malloc monster :( */</span>
+	<span class="hl kwa">if</span> <span class="hl opt">(</span>k <span class="hl opt">&gt;</span> <span class="hl num">6</span><span class="hl opt">) {</span>
+	    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> readingFrame<span class="hl opt">;</span> i <span class="hl opt">&lt;</span> n<span class="hl opt">;</span> i <span class="hl opt">+=</span> k<span class="hl opt">) {</span>
+		<span class="hl kwb">string</span> knucleo <span class="hl opt">=</span> sequence<span class="hl opt">.</span><span class="hl kwd">Substring</span><span class="hl opt">(</span>i<span class="hl opt">,</span> k<span class="hl opt">);</span>
+		<span class="hl kwa">if</span> <span class="hl opt">(</span>frequencies<span class="hl opt">.</span><span class="hl kwd">ContainsKey</span><span class="hl opt">(</span>knucleo<span class="hl opt">))</span>
+		    frequencies<span class="hl opt">[</span>knucleo<span class="hl opt">].</span>v <span class="hl opt">++;</span>
+		<span class="hl kwa">else</span>
+		    frequencies<span class="hl opt">[</span>knucleo<span class="hl opt">] =</span> <span class="hl kwa">new</span> <span class="hl kwd">Value</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">);</span>
+	    <span class="hl opt">}</span>
+	<span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+	    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> readingFrame<span class="hl opt">;</span> i <span class="hl opt">&lt;</span> n<span class="hl opt">;</span> i <span class="hl opt">+=</span> k<span class="hl opt">) {</span>
+		<span class="hl kwb">string</span> knucleo <span class="hl opt">=</span> sequence<span class="hl opt">.</span><span class="hl kwd">Substring</span><span class="hl opt">(</span>i<span class="hl opt">,</span> k<span class="hl opt">);</span>
+		<span class="hl kwa">try</span> <span class="hl opt">{</span>
+		    frequencies<span class="hl opt">[</span>knucleo<span class="hl opt">].</span>v <span class="hl opt">++;</span>
+		<span class="hl opt">}</span>
+		<span class="hl kwa">catch</span> <span class="hl opt">(</span>KeyNotFoundException<span class="hl opt">) {</span>
+		    frequencies<span class="hl opt">[</span>knucleo<span class="hl opt">] =</span> <span class="hl kwa">new</span> <span class="hl kwd">Value</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">);</span>
+		<span class="hl opt">}</span>
+	    <span class="hl opt">}</span>
+	<span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwb">int</span> <span class="hl kwd">SortByFrequencyAndCode</span><span class="hl opt">(</span>KeyValuePair<span class="hl opt">&lt;</span><span class="hl kwb">string</span><span class="hl opt">,</span> Value<span class="hl opt">&gt;</span> item1<span class="hl opt">,</span> KeyValuePair<span class="hl opt">&lt;</span><span class="hl kwb">string</span><span class="hl opt">,</span> Value<span class="hl opt">&gt;</span> item2<span class="hl opt">) {</span>
+	<span class="hl kwb">int</span> comparison <span class="hl opt">=</span> item2<span class="hl opt">.</span>Value<span class="hl opt">.</span>v<span class="hl opt">.</span><span class="hl kwd">CompareTo</span><span class="hl opt">(</span>item1<span class="hl opt">.</span>Value<span class="hl opt">.</span>v<span class="hl opt">);</span>
+	<span class="hl kwa">if</span> <span class="hl opt">(</span>comparison <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl opt">)</span> <span class="hl kwa">return</span> item1<span class="hl opt">.</span>Key<span class="hl opt">.</span><span class="hl kwd">CompareTo</span><span class="hl opt">(</span>item2<span class="hl opt">.</span>Key<span class="hl opt">);</span>
+	<span class="hl kwa">else return</span> comparison<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>

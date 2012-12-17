@@ -1,0 +1,18 @@
+
+Mon, 22 Oct 2012 08:44:02 GMT
+
+MAKE:
+mv mandelbrot.csharp-2.csharp mandelbrot.csharp-2.cs
+/usr/local/bin/mcs  -optimize+ -platform:x64 -out:mandelbrot.csharp-2.csharp_run mandelbrot.csharp-2.cs
+rm mandelbrot.csharp-2.cs
+0.22s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/bin/mono --llvm -O=unsafe mandelbrot.csharp-2.csharp_run 16000
+
+(BINARY) PROGRAM OUTPUT NOT SHOWN
+
+<premain>: CommandLine Error: Argument 'misched' defined more than once!
+<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
+-simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
+-simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

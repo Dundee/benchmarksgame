@@ -1,0 +1,237 @@
+<span class="hl com">/*</span>
+<span class="hl com">   The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com">   Based partially on the single-threaded version by Isaac Gouy with fixes from</span>
+<span class="hl com">   Iulian Dragos and Meiko Rachimow.</span>
+<span class="hl com">   Based on Scala contribution of Rex Kerr</span>
+<span class="hl com">   Based on bit encoding idea of C++ contribution of Andrew Moon</span>
+<span class="hl com">   Contributed by The Anh Tran</span>
+<span class="hl com">   Updated for 2.8 by Rex Kerr</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">import</span> scala<span class="hl opt">.</span>actors<span class="hl opt">.</span>Futures<span class="hl opt">.</span>future
+<span class="hl kwa">import</span> scala<span class="hl opt">.</span>actors<span class="hl opt">.</span>Future
+<span class="hl kwa">import</span> scala<span class="hl opt">.</span>collection<span class="hl opt">.</span>mutable<span class="hl opt">.</span>HashMap
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>io<span class="hl opt">.</span>_
+
+<span class="hl kwa">final</span>
+<span class="hl kwa">object</span> knucleotide
+<span class="hl opt">{</span>
+   <span class="hl kwa">def</span> <span class="hl kwd">main</span><span class="hl opt">(</span>args <span class="hl opt">:</span> Array<span class="hl opt">[</span>String<span class="hl opt">]) =</span>
+   <span class="hl opt">{</span>
+      <span class="hl slc">// read all data from inputstream</span>
+      <span class="hl kwa">val</span> data <span class="hl opt">=</span> Helper<span class="hl opt">.</span>readAll
+
+      <span class="hl slc">// hand out tasks, each task will be picked up by scala threadpool</span>
+      <span class="hl kwa">val</span> tables <span class="hl opt">=</span> <span class="hl kwd">List</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl num">3</span><span class="hl opt">,</span> <span class="hl num">4</span><span class="hl opt">,</span> <span class="hl num">6</span><span class="hl opt">,</span> <span class="hl num">12</span><span class="hl opt">,</span> <span class="hl num">18</span><span class="hl opt">)</span>
+         <span class="hl opt">.</span><span class="hl kwd">map</span><span class="hl opt">(</span> sz <span class="hl opt">=&gt;</span> <span class="hl kwd">queueBuildHashtable</span><span class="hl opt">(</span>data<span class="hl opt">,</span> sz<span class="hl opt">) )</span>
+         <span class="hl opt">.</span><span class="hl kwd">splitAt</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">)</span>
+
+      <span class="hl slc">// print frequency of each nucleotide</span>
+      tables<span class="hl opt">.</span>_1<span class="hl opt">.</span><span class="hl kwd">foreach</span><span class="hl opt">(</span><span class="hl kwd">printFreq</span><span class="hl opt">(</span>_<span class="hl opt">,</span> data<span class="hl opt">.</span>length<span class="hl opt">))</span>
+
+      <span class="hl slc">// print how many times a specific pattern appears in input data</span>
+      <span class="hl kwa">val</span> codeSeq <span class="hl opt">=</span> <span class="hl kwd">List</span><span class="hl opt">(</span><span class="hl str">&quot;GGT&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTA&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATT&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATTTTAATT&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATTTTAATTTATAGT&quot;</span><span class="hl opt">);</span>
+      <span class="hl opt">(</span>tables<span class="hl opt">.</span>_2 zip codeSeq<span class="hl opt">).</span><span class="hl kwd">foreach</span><span class="hl opt">(</span> e <span class="hl opt">=&gt;</span> <span class="hl kwd">printFreq</span><span class="hl opt">(</span>e<span class="hl opt">.</span>_1<span class="hl opt">,</span> e<span class="hl opt">.</span>_2<span class="hl opt">) )</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private</span>
+   <span class="hl kwa">def</span> <span class="hl kwd">printFreq</span><span class="hl opt">(</span>lht<span class="hl opt">:</span> List<span class="hl opt">[</span>Future<span class="hl opt">[</span>KnuHashMap<span class="hl opt">]],</span> data_length <span class="hl opt">:</span> Int<span class="hl opt">) =</span>
+   <span class="hl opt">{</span>
+      <span class="hl slc">// have to merge (whole list of results) into a hashmap</span>
+      <span class="hl kwa">val</span> ht <span class="hl opt">=</span> <span class="hl kwd">mergeTables</span><span class="hl opt">(</span>lht<span class="hl opt">)</span>
+
+      <span class="hl slc">// sort by decending frequencies</span>
+      <span class="hl kwa">val</span> sorted_list <span class="hl opt">=</span> ht<span class="hl opt">.</span>toArray<span class="hl opt">.</span><span class="hl kwd">sortWith</span><span class="hl opt">((</span>a<span class="hl opt">,</span> b<span class="hl opt">) =&gt; !(</span>a<span class="hl opt">.</span>_2 <span class="hl opt">&lt;</span> b<span class="hl opt">.</span>_2<span class="hl opt">) )</span>
+
+      <span class="hl kwa">val</span> total <span class="hl opt">=</span> data_length<span class="hl opt">.</span>toFloat
+
+      sorted_list <span class="hl kwd">foreach</span> <span class="hl opt">(</span> a <span class="hl opt">=&gt;</span>   <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%s %.3f</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span>
+                              a<span class="hl opt">.</span>_1<span class="hl opt">.</span>decode<span class="hl opt">,</span>
+                              <span class="hl opt">(</span>a<span class="hl opt">.</span>_2<span class="hl opt">.</span>toFloat <span class="hl opt">*</span> <span class="hl num">100.0</span>f <span class="hl opt">/</span> total<span class="hl opt">))   )</span>
+
+      println
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private</span>
+   <span class="hl kwa">def</span> <span class="hl kwd">printFreq</span><span class="hl opt">(</span>lht <span class="hl opt">:</span> List<span class="hl opt">[</span>Future<span class="hl opt">[</span>KnuHashMap<span class="hl opt">]],</span> pt <span class="hl opt">:</span> String<span class="hl opt">) =</span>
+   <span class="hl opt">{</span>
+      <span class="hl kwa">val</span> ht <span class="hl opt">=</span> <span class="hl kwd">mergeTables</span><span class="hl opt">(</span>lht<span class="hl opt">)</span>
+
+      <span class="hl kwa">val</span> k <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">KnuKey</span><span class="hl opt">(</span>pt<span class="hl opt">.</span>length<span class="hl opt">)</span>
+      k<span class="hl opt">.</span><span class="hl kwd">encode</span><span class="hl opt">(</span>pt<span class="hl opt">.</span>toCharArray<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">)</span>
+      <span class="hl kwd">assert</span><span class="hl opt">(</span>pt <span class="hl opt">==</span> k<span class="hl opt">.</span>decode<span class="hl opt">)</span>
+
+      <span class="hl kwa">val</span> v <span class="hl opt">=</span> ht<span class="hl opt">.</span><span class="hl kwd">getOrElse</span><span class="hl opt">(</span>k<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">)</span>
+      <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%d</span><span class="hl esc">\t</span><span class="hl str">%s</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> v<span class="hl opt">,</span> pt<span class="hl opt">)</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private</span>
+   <span class="hl kwa">def</span> <span class="hl kwd">queueBuildHashtable</span><span class="hl opt">(</span>data <span class="hl opt">:</span> Array<span class="hl opt">[</span>Char<span class="hl opt">],</span> frameSize <span class="hl opt">:</span> Int<span class="hl opt">) =</span>
+   <span class="hl opt">{</span>
+      <span class="hl slc">// each task will hash whole input data, at a specific offset</span>
+      <span class="hl slc">// with (0 &lt;= offset &lt; frameSize)</span>
+      <span class="hl opt">(</span><span class="hl num">0</span> until frameSize<span class="hl opt">)</span>
+         <span class="hl opt">.</span><span class="hl kwd">map</span><span class="hl opt">(</span> offset <span class="hl opt">=&gt;</span> <span class="hl kwd">future</span><span class="hl opt">(</span><span class="hl kwd">buildHashtable</span><span class="hl opt">(</span>data<span class="hl opt">,</span> frameSize<span class="hl opt">,</span> offset<span class="hl opt">)) )</span>
+         <span class="hl opt">.</span>toList
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private</span>
+   <span class="hl kwa">def</span> <span class="hl kwd">buildHashtable</span><span class="hl opt">(</span>data <span class="hl opt">:</span> Array<span class="hl opt">[</span>Char<span class="hl opt">],</span> frameSize <span class="hl opt">:</span> Int<span class="hl opt">,</span> startOffset <span class="hl opt">:</span> Int<span class="hl opt">) :</span> KnuHashMap <span class="hl opt">=</span>
+   <span class="hl opt">{</span>
+      <span class="hl kwa">val</span> ht <span class="hl opt">=</span> <span class="hl kwa">new</span> KnuHashMap
+      <span class="hl kwa">val</span> key <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">KnuKey</span><span class="hl opt">(</span>frameSize<span class="hl opt">)</span>
+
+      <span class="hl kwa">val</span> i_end <span class="hl opt">=</span> data<span class="hl opt">.</span>length <span class="hl opt">-</span> frameSize <span class="hl opt">+</span> <span class="hl num">1</span>
+      <span class="hl kwa">var</span> i_beg <span class="hl opt">=</span> startOffset
+
+      <span class="hl kwa">while</span> <span class="hl opt">(</span>i_beg <span class="hl opt">&lt;</span> i_end<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+         key<span class="hl opt">.</span><span class="hl kwd">encode</span><span class="hl opt">(</span>data<span class="hl opt">,</span> i_beg<span class="hl opt">)</span>
+         ht<span class="hl opt">.</span><span class="hl kwd">incCounter</span><span class="hl opt">(</span>key<span class="hl opt">)</span>
+
+         i_beg <span class="hl opt">+=</span> frameSize
+      <span class="hl opt">}</span>
+
+      ht
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private</span>
+   <span class="hl kwa">def</span> <span class="hl kwd">mergeTables</span><span class="hl opt">(</span>list_hashtable<span class="hl opt">:</span> List<span class="hl opt">[</span>Future<span class="hl opt">[</span>KnuHashMap<span class="hl opt">]]) =</span>
+      list_hashtable
+         <span class="hl opt">.</span><span class="hl kwd">map</span><span class="hl opt">(</span> <span class="hl kwd">_</span><span class="hl opt">() )</span>
+         <span class="hl opt">.</span><span class="hl kwd">reduceLeft</span><span class="hl opt">( (</span>t1<span class="hl opt">,</span> t2<span class="hl opt">) =&gt; {</span>
+            t2<span class="hl opt">.</span><span class="hl kwd">foreach</span><span class="hl opt">(</span>e <span class="hl opt">=&gt;</span> t1<span class="hl opt">.</span><span class="hl kwd">addCounter</span><span class="hl opt">(</span>e<span class="hl opt">.</span>_1<span class="hl opt">,</span> e<span class="hl opt">.</span>_2<span class="hl opt">))</span>
+            t1
+         <span class="hl opt">})</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">private final</span>
+<span class="hl kwa">class</span> <span class="hl kwd">KnuKey</span><span class="hl opt">(</span><span class="hl kwa">var</span> key <span class="hl opt">:</span> Long<span class="hl opt">,</span> <span class="hl kwa">val</span> hash_length <span class="hl opt">:</span> Int<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+   <span class="hl kwa">def this</span><span class="hl opt">(</span>hlen<span class="hl opt">:</span> Int<span class="hl opt">) =</span> <span class="hl kwa">this</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> hlen<span class="hl opt">)</span>
+
+   <span class="hl kwc">&#64;inline</span>
+   <span class="hl kwa">override def</span> <span class="hl kwd">clone</span><span class="hl opt">() =</span> <span class="hl kwa">new</span> <span class="hl kwd">KnuKey</span><span class="hl opt">(</span>key<span class="hl opt">,</span> hash_length<span class="hl opt">)</span>
+
+   <span class="hl kwc">&#64;inline</span>
+   <span class="hl kwa">override def</span> <span class="hl kwd">hashCode</span><span class="hl opt">() :</span> Int <span class="hl opt">=</span> key<span class="hl opt">.</span>toInt
+
+   <span class="hl kwc">&#64;inline</span>
+   <span class="hl kwa">override def</span> <span class="hl kwd">equals</span><span class="hl opt">(</span>other <span class="hl opt">:</span> Any<span class="hl opt">) =</span> other match <span class="hl opt">{</span>
+      <span class="hl kwa">case</span> that<span class="hl opt">:</span> KnuKey <span class="hl opt">=&gt;</span> <span class="hl kwa">this</span><span class="hl opt">.</span>key <span class="hl opt">==</span> that<span class="hl opt">.</span>key
+      <span class="hl kwa">case</span> _            <span class="hl opt">=&gt;</span> false
+   <span class="hl opt">}</span>
+
+   <span class="hl kwc">&#64;inline</span>
+   <span class="hl kwa">def</span> <span class="hl kwd">encode</span><span class="hl opt">(</span>data <span class="hl opt">:</span> Array<span class="hl opt">[</span>Char<span class="hl opt">],</span> offset <span class="hl opt">:</span> Int<span class="hl opt">) = {</span>
+      <span class="hl kwa">var</span> mkey <span class="hl opt">=</span> <span class="hl num">0L</span>
+      <span class="hl kwa">var</span> index <span class="hl opt">=</span> <span class="hl num">0</span>
+      <span class="hl kwa">var</span> shift <span class="hl opt">=</span> <span class="hl num">0</span>
+
+      <span class="hl kwa">while</span> <span class="hl opt">(</span>index <span class="hl opt">&lt;</span> hash_length<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+         mkey <span class="hl opt">|= (</span><span class="hl kwd">Helper</span><span class="hl opt">(</span><span class="hl kwd">data</span><span class="hl opt">(</span>offset <span class="hl opt">+</span> index<span class="hl opt">)) &lt;&lt;</span> shift<span class="hl opt">)</span>
+
+         shift <span class="hl opt">+=</span> Helper<span class="hl opt">.</span>bit_per_code
+         index <span class="hl opt">+=</span> <span class="hl num">1</span>
+      <span class="hl opt">}</span>
+
+      key <span class="hl opt">=</span> mkey
+      <span class="hl kwa">this</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">def</span> <span class="hl kwd">decode</span><span class="hl opt">() = {</span>
+      <span class="hl kwa">val</span> sb <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">StringBuilder</span><span class="hl opt">(</span>hash_length<span class="hl opt">)</span>
+
+      <span class="hl kwa">var</span> index <span class="hl opt">=</span> <span class="hl num">0</span>
+      <span class="hl kwa">var</span> extract_mask <span class="hl opt">=</span> Helper<span class="hl opt">.</span>bit_mask
+
+      <span class="hl kwa">while</span> <span class="hl opt">(</span>index <span class="hl opt">&lt;</span> hash_length<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+         <span class="hl kwa">val</span> extract_value <span class="hl opt">= ((</span>key <span class="hl opt">&amp;</span> extract_mask<span class="hl opt">) &gt;&gt;&gt; (</span>index <span class="hl opt">*</span> Helper<span class="hl opt">.</span>bit_per_code<span class="hl opt">)).</span>toInt
+         sb <span class="hl kwd">append</span><span class="hl opt">(</span> <span class="hl kwd">Helper</span><span class="hl opt">(</span>extract_value<span class="hl opt">) )</span>
+
+         extract_mask <span class="hl opt">&lt;&lt;=</span> Helper<span class="hl opt">.</span>bit_per_code
+         index <span class="hl opt">+=</span> <span class="hl num">1</span>
+      <span class="hl opt">}</span>
+
+      sb toString
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+
+<span class="hl kwa">private final</span>
+<span class="hl kwa">object</span> Helper <span class="hl opt">{</span>
+   <span class="hl kwa">val</span> bit_mask      <span class="hl opt">=</span> <span class="hl num">3L</span>
+   <span class="hl kwa">val</span> bit_per_code   <span class="hl opt">=</span> <span class="hl num">2</span>
+
+   <span class="hl kwc">&#64;inline</span>
+   <span class="hl kwa">def</span> <span class="hl kwd">apply</span><span class="hl opt">(</span>c <span class="hl opt">:</span> Char<span class="hl opt">) :</span> Long <span class="hl opt">= (</span>c<span class="hl opt">:</span> <span class="hl kwc">&#64;annotation</span><span class="hl opt">.</span><span class="hl kwa">switch</span><span class="hl opt">)</span> match <span class="hl opt">{</span>
+      <span class="hl kwa">case</span> <span class="hl str">'a'</span>   <span class="hl opt">=&gt;</span> <span class="hl num">0</span>
+      <span class="hl kwa">case</span> <span class="hl str">'t'</span>   <span class="hl opt">=&gt;</span> <span class="hl num">1</span>
+      <span class="hl kwa">case</span> <span class="hl str">'c'</span>   <span class="hl opt">=&gt;</span> <span class="hl num">2</span>
+      <span class="hl kwa">case</span> <span class="hl str">'g'</span>   <span class="hl opt">=&gt;</span> <span class="hl num">3</span>
+
+      <span class="hl kwa">case</span> <span class="hl str">'A'</span>   <span class="hl opt">=&gt;</span> <span class="hl num">0</span>
+      <span class="hl kwa">case</span> <span class="hl str">'T'</span>   <span class="hl opt">=&gt;</span> <span class="hl num">1</span>
+      <span class="hl kwa">case</span> <span class="hl str">'C'</span>   <span class="hl opt">=&gt;</span> <span class="hl num">2</span>
+      <span class="hl kwa">case</span> <span class="hl str">'G'</span>   <span class="hl opt">=&gt;</span> <span class="hl num">3</span>
+
+      <span class="hl kwa">case</span> _      <span class="hl opt">=&gt;</span> <span class="hl kwd">assert</span><span class="hl opt">(</span>false<span class="hl opt">); -</span><span class="hl num">1</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private</span>
+   <span class="hl kwa">val</span> Int2Iub <span class="hl opt">=</span> <span class="hl kwd">Array</span><span class="hl opt">(</span><span class="hl str">'A'</span><span class="hl opt">,</span> <span class="hl str">'T'</span><span class="hl opt">,</span> <span class="hl str">'C'</span><span class="hl opt">,</span> <span class="hl str">'G'</span><span class="hl opt">)</span>
+
+   <span class="hl kwc">&#64;inline</span>
+   <span class="hl kwa">def</span> <span class="hl kwd">apply</span><span class="hl opt">(</span>c <span class="hl opt">:</span> Int<span class="hl opt">) :</span> Char <span class="hl opt">=</span> <span class="hl kwd">Int2Iub</span><span class="hl opt">(</span>c<span class="hl opt">)</span>
+
+
+   <span class="hl kwa">def</span> <span class="hl kwd">readAll</span><span class="hl opt">() = {</span>
+      <span class="hl kwa">val</span> reader <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">BufferedReader</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">InputStreamReader</span> <span class="hl opt">(</span>System<span class="hl opt">.</span><span class="hl kwa">in</span><span class="hl opt">,</span> <span class="hl str">&quot;US-ASCII&quot;</span><span class="hl opt">),</span> <span class="hl num">4</span><span class="hl opt">*</span><span class="hl num">1024</span><span class="hl opt">*</span><span class="hl num">1024</span><span class="hl opt">)</span>
+
+      <span class="hl kwa">var</span> line <span class="hl opt">=</span> reader <span class="hl kwd">readLine</span><span class="hl opt">()</span>
+      <span class="hl kwa">while</span> <span class="hl opt">((</span>line <span class="hl opt">!=</span> null<span class="hl opt">) &amp;&amp; ((</span><span class="hl kwd">line</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">) !=</span> <span class="hl str">'&gt;'</span><span class="hl opt">) || (</span>line<span class="hl opt">.</span><span class="hl kwd">startsWith</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;THREE&quot;</span><span class="hl opt">) ==</span> false<span class="hl opt">)))</span>
+         line <span class="hl opt">=</span> reader readLine
+
+      <span class="hl kwa">val</span> sb <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">StringBuilder</span><span class="hl opt">(</span><span class="hl num">32</span><span class="hl opt">*</span><span class="hl num">1024</span><span class="hl opt">*</span><span class="hl num">1024</span><span class="hl opt">)</span>
+
+      line <span class="hl opt">=</span> reader <span class="hl kwd">readLine</span><span class="hl opt">()</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(</span>line <span class="hl opt">!=</span> null<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+         sb append line
+         line <span class="hl opt">=</span> reader readLine
+      <span class="hl opt">}</span>
+
+      <span class="hl slc">// Read a char by &quot;String.charAt(index)&quot; is much slower than &quot;Array(index)&quot;</span>
+      <span class="hl slc">// =&gt; use Array[Char]</span>
+      sb<span class="hl opt">.</span>toString<span class="hl opt">.</span>toCharArray
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+
+<span class="hl kwa">private final</span>
+<span class="hl kwa">class</span> KnuHashMap <span class="hl kwa">extends</span> HashMap<span class="hl opt">[</span>KnuKey<span class="hl opt">,</span> Int<span class="hl opt">]</span>
+<span class="hl opt">{</span>
+   <span class="hl kwc">&#64;inline</span>
+   <span class="hl kwa">def</span> <span class="hl kwd">incCounter</span><span class="hl opt">(</span>key <span class="hl opt">:</span> KnuKey<span class="hl opt">) :</span> Unit <span class="hl opt">=</span> <span class="hl kwd">addCounter</span><span class="hl opt">(</span>key<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">)</span>
+
+   <span class="hl kwc">&#64;inline</span>
+   <span class="hl kwa">def</span> <span class="hl kwd">addCounter</span><span class="hl opt">(</span>key <span class="hl opt">:</span> KnuKey<span class="hl opt">,</span> valToAdd<span class="hl opt">:</span> Int<span class="hl opt">) {</span>
+      <span class="hl slc">// directly look up entry inside hashtable</span>
+      <span class="hl kwa">var</span> e  <span class="hl opt">=</span> <span class="hl kwd">table</span><span class="hl opt">(</span><span class="hl kwd">index</span><span class="hl opt">(</span>key<span class="hl opt">.</span>hashCode<span class="hl opt">)).</span>asInstanceOf<span class="hl opt">[</span>Entry<span class="hl opt">]</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(</span>e <span class="hl opt">!=</span> null<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>e<span class="hl opt">.</span>key <span class="hl opt">==</span> key<span class="hl opt">)</span>
+         <span class="hl opt">{</span>
+            e<span class="hl opt">.</span>value <span class="hl opt">+=</span> valToAdd
+            <span class="hl kwa">return</span>
+         <span class="hl opt">}</span>
+         <span class="hl kwa">else</span>
+            e <span class="hl opt">=</span> e<span class="hl opt">.</span>next
+      <span class="hl opt">}</span>
+
+      <span class="hl kwd">addEntry</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">Entry</span><span class="hl opt">(</span>key<span class="hl opt">.</span>clone<span class="hl opt">,</span> valToAdd<span class="hl opt">))</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>

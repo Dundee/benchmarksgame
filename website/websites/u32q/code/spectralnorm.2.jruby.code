@@ -1,0 +1,146 @@
+<span class="hl slc"># The Computer Language Benchmarks Game</span>
+<span class="hl slc"># http://shootout.alioth.debian.org/</span>
+<span class="hl slc">#</span>
+<span class="hl slc"># contributed by Rick Branson</span>
+
+<span class="hl kwa">require</span> <span class="hl str">&quot;thread&quot;</span>
+
+<span class="hl kwa">def</span> <span class="hl kwd">eval_a</span><span class="hl opt">(</span>i<span class="hl opt">,</span> j)
+  <span class="hl num">1.0</span><span class="hl kwc">/((i+j)*(i+j+1.0)/</span><span class="hl num">2.0</span><span class="hl opt">+</span>i<span class="hl opt">+</span><span class="hl num">1.0</span>)
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">class</span> Barrier  
+  <span class="hl kwa">def</span> <span class="hl kwd">initialize</span><span class="hl opt">(</span>count)
+    <span class="hl kwb">&#64;mutex</span> <span class="hl opt">=</span> Mutex<span class="hl opt">.</span>new
+    <span class="hl kwb">&#64;count</span> <span class="hl opt">=</span> count
+    reset_generation
+  <span class="hl kwa">end</span>
+  
+  <span class="hl kwa">def</span> reset_generation
+    <span class="hl kwb">&#64;generation</span> <span class="hl opt">=</span> <span class="hl esc">{ :waiting =&gt; 0 }</span>    
+  <span class="hl kwa">end</span>
+  
+  <span class="hl kwa">def</span> wait
+    generation <span class="hl opt">=</span> <span class="hl kwa">nil</span>
+    
+    <span class="hl kwb">&#64;mutex</span><span class="hl opt">.</span>synchronize <span class="hl kwa">do</span>
+      generation <span class="hl opt">=</span> <span class="hl kwb">&#64;generation</span>
+    <span class="hl kwa">end</span>
+    
+    <span class="hl kwb">&#64;mutex</span><span class="hl opt">.</span>synchronize <span class="hl kwa">do</span>
+      generation<span class="hl opt">[</span><span class="hl kwc">:waiting</span><span class="hl opt">] +=</span> <span class="hl num">1</span>
+      
+      <span class="hl kwa">if</span> generation<span class="hl opt">[</span><span class="hl kwc">:waiting</span><span class="hl opt">] ==</span> <span class="hl kwb">&#64;count</span>
+        reset_generation
+      <span class="hl kwa">end</span>
+    <span class="hl kwa">end</span>
+    
+    <span class="hl kwa">loop do</span>
+      <span class="hl kwb">&#64;mutex</span><span class="hl opt">.</span>synchronize <span class="hl kwa">do</span>
+        <span class="hl kwa">if</span> generation<span class="hl opt">[</span><span class="hl kwc">:waiting</span><span class="hl opt">] ==</span> <span class="hl kwb">&#64;count</span>
+          <span class="hl kwa">return</span>
+        <span class="hl kwa">end</span>
+      <span class="hl kwa">end</span>
+      
+      Thread<span class="hl opt">.</span>pass
+    <span class="hl kwa">end</span>
+  <span class="hl kwa">end</span>
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">class</span> SpectralNorm
+  <span class="hl kwa">class</span> Worker
+    <span class="hl kwa">def</span> <span class="hl kwd">initialize</span><span class="hl opt">(</span>sn<span class="hl opt">,</span> range)
+      <span class="hl kwb">&#64;u</span><span class="hl opt">,</span> <span class="hl kwb">&#64;v</span><span class="hl opt">,</span> <span class="hl kwb">&#64;mtx</span><span class="hl opt">,</span> <span class="hl kwb">&#64;tmp</span><span class="hl opt">,</span> <span class="hl kwb">&#64;range</span> <span class="hl opt">=</span> sn<span class="hl opt">.</span>u<span class="hl opt">,</span> sn<span class="hl opt">.</span>v<span class="hl opt">,</span> sn<span class="hl opt">.</span>mtx<span class="hl opt">,</span> sn<span class="hl opt">.</span>tmp<span class="hl opt">,</span> range
+
+      <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">.</span><span class="hl num">.10</span>)
+        <span class="hl kwd">multiply_at_av</span><span class="hl opt">(</span><span class="hl kwb">&#64;u</span><span class="hl opt">,</span> <span class="hl kwb">&#64;tmp</span><span class="hl opt">,</span> <span class="hl kwb">&#64;v</span>)
+        <span class="hl kwd">multiply_at_av</span><span class="hl opt">(</span><span class="hl kwb">&#64;v</span><span class="hl opt">,</span> <span class="hl kwb">&#64;tmp</span><span class="hl opt">,</span> <span class="hl kwb">&#64;u</span>)
+      <span class="hl kwa">end</span>
+      
+      <span class="hl kwb">&#64;vBv</span> <span class="hl opt">=</span> <span class="hl num">0</span>
+      <span class="hl kwb">&#64;vv</span>  <span class="hl opt">=</span> <span class="hl num">0</span>
+      
+      <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl kwb">&#64;range</span>
+        <span class="hl kwb">&#64;vBv</span> <span class="hl opt">+=</span> <span class="hl kwb">&#64;u</span><span class="hl opt">[</span>i<span class="hl opt">] *</span> <span class="hl kwb">&#64;v</span><span class="hl opt">[</span>i<span class="hl opt">]</span>
+        <span class="hl kwb">&#64;vv</span>  <span class="hl opt">+=</span> <span class="hl kwb">&#64;v</span><span class="hl opt">[</span>i<span class="hl opt">] *</span> <span class="hl kwb">&#64;v</span><span class="hl opt">[</span>i<span class="hl opt">]</span>
+      <span class="hl kwa">end</span>
+    <span class="hl kwa">end</span>
+
+    <span class="hl kwa">def</span> values
+      <span class="hl opt">[</span> <span class="hl kwb">&#64;vBv</span><span class="hl opt">,</span> <span class="hl kwb">&#64;vv</span> <span class="hl opt">]</span>
+    <span class="hl kwa">end</span>
+    
+    private
+    
+    <span class="hl kwa">def</span> <span class="hl kwd">multiply_atv</span><span class="hl opt">(</span>v<span class="hl opt">,</span> atv)
+      <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl kwb">&#64;range</span>
+        sum <span class="hl opt">=</span> <span class="hl num">0.0</span>
+        
+        <span class="hl kwa">for</span> j <span class="hl kwa">in</span> <span class="hl opt">(</span><span class="hl num">0</span> <span class="hl opt">.. (</span>v<span class="hl opt">.</span>size <span class="hl opt">-</span> <span class="hl num">1</span>))
+          sum <span class="hl opt">+=</span> <span class="hl kwd">eval_a</span><span class="hl opt">(</span>j<span class="hl opt">,</span> i) <span class="hl opt">*</span> v<span class="hl opt">[</span>j<span class="hl opt">]</span>
+        <span class="hl kwa">end</span>
+        
+        atv<span class="hl opt">[</span>i<span class="hl opt">] =</span> sum
+      <span class="hl kwa">end</span>      
+    <span class="hl kwa">end</span>
+    
+    <span class="hl kwa">def</span> <span class="hl kwd">multiply_av</span><span class="hl opt">(</span>v<span class="hl opt">,</span> av)
+      <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl kwb">&#64;range</span>
+        sum <span class="hl opt">=</span> <span class="hl num">0.0</span>
+        
+        <span class="hl kwa">for</span> j <span class="hl kwa">in</span> <span class="hl opt">(</span><span class="hl num">0</span> <span class="hl opt">.. (</span>v<span class="hl opt">.</span>size <span class="hl opt">-</span> <span class="hl num">1</span>))
+          sum <span class="hl opt">+=</span> <span class="hl kwd">eval_a</span><span class="hl opt">(</span>i<span class="hl opt">,</span> j) <span class="hl opt">*</span> v<span class="hl opt">[</span>j<span class="hl opt">]</span>
+        <span class="hl kwa">end</span>
+        
+        av<span class="hl opt">[</span>i<span class="hl opt">] =</span> sum
+      <span class="hl kwa">end</span>
+    <span class="hl kwa">end</span>
+    
+    <span class="hl kwa">def</span> <span class="hl kwd">multiply_at_av</span><span class="hl opt">(</span>v<span class="hl opt">,</span> tmp<span class="hl opt">,</span> at_av)
+      <span class="hl kwd">multiply_av</span><span class="hl opt">(</span>v<span class="hl opt">,</span> tmp)
+      <span class="hl kwb">&#64;mtx</span><span class="hl opt">.</span>wait
+      <span class="hl kwd">multiply_atv</span><span class="hl opt">(</span>tmp<span class="hl opt">,</span> at_av)
+      <span class="hl kwb">&#64;mtx</span><span class="hl opt">.</span>wait
+    <span class="hl kwa">end</span>
+  <span class="hl kwa">end</span>
+  
+  attr_reader <span class="hl kwc">:u</span>
+  attr_reader <span class="hl kwc">:v</span>
+  attr_reader <span class="hl kwc">:tmp</span>
+  attr_reader <span class="hl kwc">:mtx</span>
+
+  <span class="hl kwa">def</span> <span class="hl kwd">initialize</span><span class="hl opt">(</span>n<span class="hl opt">,</span> threads <span class="hl opt">=</span> <span class="hl num">4</span>)
+    <span class="hl kwb">&#64;n</span>        <span class="hl opt">=</span> n
+    <span class="hl kwb">&#64;u</span>        <span class="hl opt">= [</span><span class="hl num">1.0</span><span class="hl opt">] *</span> n
+    <span class="hl kwb">&#64;v</span>        <span class="hl opt">=</span> Array<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span>n)
+    <span class="hl kwb">&#64;tmp</span>      <span class="hl opt">=</span> Array<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span>n)
+    <span class="hl kwb">&#64;threads</span>  <span class="hl opt">=</span> threads
+    <span class="hl kwb">&#64;mtx</span>      <span class="hl opt">=</span> Barrier<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span>threads)
+  <span class="hl kwa">end</span>
+  
+  <span class="hl kwa">def</span> run
+    vBv <span class="hl opt">=</span> <span class="hl num">0</span>
+    vv  <span class="hl opt">=</span> <span class="hl num">0</span>
+    ths <span class="hl opt">= []</span>
+    chk <span class="hl opt">=</span> <span class="hl kwb">&#64;n</span> <span class="hl opt">/</span> <span class="hl kwb">&#64;threads</span>
+    
+    <span class="hl kwb">&#64;threads</span><span class="hl opt">.</span>times <span class="hl kwa">do</span> <span class="hl opt">|</span>i<span class="hl opt">|</span>
+      r <span class="hl opt">= ((</span>i <span class="hl opt">*</span> chk) <span class="hl opt">.. ((</span>i <span class="hl opt">&lt; (</span><span class="hl kwb">&#64;threads</span> <span class="hl opt">-</span> <span class="hl num">1</span>) <span class="hl opt">? (</span>i <span class="hl opt">*</span> chk) <span class="hl opt">+</span> chk <span class="hl opt">:</span> <span class="hl kwb">&#64;n</span>) <span class="hl opt">-</span> <span class="hl num">1</span>))
+
+      ths <span class="hl opt">&lt;&lt;</span> Thread<span class="hl opt">.</span>new <span class="hl kwa">do</span>
+        Thread<span class="hl opt">.</span>current<span class="hl opt">[</span><span class="hl kwc">:worker</span><span class="hl opt">] =</span> Worker<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl kwa">self</span><span class="hl opt">,</span> r)
+      <span class="hl kwa">end</span>
+    <span class="hl kwa">end</span>
+    
+    ths<span class="hl opt">.</span>each <span class="hl kwa">do</span> <span class="hl opt">|</span>t<span class="hl opt">|</span>
+      t<span class="hl opt">.</span>join
+      t_vBv<span class="hl opt">,</span> t_vv <span class="hl opt">=</span> t<span class="hl opt">[</span><span class="hl kwc">:worker</span><span class="hl opt">].</span>values
+      vBv <span class="hl opt">+=</span> t_vBv
+      vv  <span class="hl opt">+=</span> t_vv
+    <span class="hl kwa">end</span>
+    
+    Math<span class="hl opt">.</span><span class="hl kwd">sqrt</span><span class="hl opt">(</span>vBv <span class="hl opt">/</span> vv)
+  <span class="hl kwa">end</span>
+<span class="hl kwa">end</span>
+
+print <span class="hl str">&quot;%0.9f&quot;</span> <span class="hl opt">%</span> SpectralNorm<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl kwc">ARGV</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>to_i)<span class="hl opt">.</span>run<span class="hl opt">,</span> <span class="hl str">&quot;\n&quot;</span>

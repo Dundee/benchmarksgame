@@ -1,0 +1,83 @@
+<span class="hl slc">! The Great Computer Language Shootout</span>
+<span class="hl slc">!   http://shootout.alioth.debian.org/</span>
+<span class="hl slc">!</span>
+<span class="hl slc">! contributed by Steve Decker based on the version by Simon Geard</span>
+<span class="hl slc">! compilation:</span>
+<span class="hl slc">!   g95 -O1 -fomit-frame-pointer -funroll-loops spectral_norm.f90</span>
+<span class="hl slc">!   ifort -ipo -O3 -static spectral_norm.f90</span>
+<span class="hl kwa">module</span> norm_subs
+  <span class="hl kwa">implicit none</span>
+
+  <span class="hl kwa">integer</span><span class="hl opt">,</span> <span class="hl kwa">parameter</span> <span class="hl opt">::</span> dp <span class="hl opt">=</span> <span class="hl kwd">selected_real_kind</span><span class="hl opt">(</span><span class="hl num">12</span><span class="hl opt">)</span>
+
+<span class="hl kwa">contains</span>
+
+  <span class="hl slc">! Return element i,j of infinite matrix A</span>
+  pure <span class="hl kwa">real</span><span class="hl opt">(</span>dp<span class="hl opt">)</span> <span class="hl kwa">function</span> <span class="hl kwd">A</span><span class="hl opt">(</span>i<span class="hl opt">,</span> j<span class="hl opt">)</span>
+    <span class="hl kwa">integer</span><span class="hl opt">,</span> <span class="hl kwd">intent</span><span class="hl opt">(</span>in<span class="hl opt">) ::</span> i<span class="hl opt">,</span> j
+
+    a <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">.</span>d0 <span class="hl opt">/ ((</span>i<span class="hl opt">+</span>j<span class="hl opt">-</span><span class="hl num">2</span><span class="hl opt">) * (</span>i<span class="hl opt">+</span>j<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)/</span><span class="hl num">2</span> <span class="hl opt">+</span> i<span class="hl opt">)</span>
+  <span class="hl kwa">end function</span> A
+
+  <span class="hl slc">! Multiply v by A</span>
+  pure <span class="hl kwa">function</span> <span class="hl kwd">MultiplyAv</span><span class="hl opt">(</span>v<span class="hl opt">)</span> <span class="hl kwd">result</span> <span class="hl opt">(</span>Av<span class="hl opt">)</span>
+    <span class="hl kwa">real</span><span class="hl opt">(</span>dp<span class="hl opt">),</span> <span class="hl kwa">dimension</span><span class="hl opt">(:),</span> <span class="hl kwd">intent</span><span class="hl opt">(</span>in<span class="hl opt">) ::</span> v
+    <span class="hl kwa">real</span><span class="hl opt">(</span>dp<span class="hl opt">),</span> <span class="hl kwa">dimension</span><span class="hl opt">(</span><span class="hl kwd">size</span><span class="hl opt">(</span>v<span class="hl opt">))       ::</span> Av
+    
+    <span class="hl kwa">integer</span> <span class="hl opt">::</span> n<span class="hl opt">,</span> i<span class="hl opt">,</span> j
+
+    n <span class="hl opt">=</span> <span class="hl kwd">size</span><span class="hl opt">(</span>v<span class="hl opt">)</span>
+    Av <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">.</span>d0
+    <span class="hl kwa">do</span> i <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">,</span> n
+       <span class="hl kwa">do</span> j <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">,</span> n
+          <span class="hl kwd">Av</span><span class="hl opt">(</span>i<span class="hl opt">) =</span> <span class="hl kwd">Av</span><span class="hl opt">(</span>i<span class="hl opt">) +</span> <span class="hl kwd">A</span><span class="hl opt">(</span>i<span class="hl opt">,</span>j<span class="hl opt">) *</span> <span class="hl kwd">v</span><span class="hl opt">(</span>j<span class="hl opt">)</span>
+       <span class="hl kwa">end do</span>
+    <span class="hl kwa">end do</span>
+  <span class="hl kwa">end function</span> MultiplyAv
+       
+  <span class="hl slc">! Multiply v by A transpose</span>
+  pure <span class="hl kwa">function</span> <span class="hl kwd">MultiplyAtv</span><span class="hl opt">(</span>v<span class="hl opt">)</span> <span class="hl kwd">result</span> <span class="hl opt">(</span>Atv<span class="hl opt">)</span>
+    <span class="hl kwa">real</span><span class="hl opt">(</span>dp<span class="hl opt">),</span> <span class="hl kwa">dimension</span><span class="hl opt">(:),</span> <span class="hl kwd">intent</span><span class="hl opt">(</span>in<span class="hl opt">) ::</span> v
+    <span class="hl kwa">real</span><span class="hl opt">(</span>dp<span class="hl opt">),</span> <span class="hl kwa">dimension</span><span class="hl opt">(</span><span class="hl kwd">size</span><span class="hl opt">(</span>v<span class="hl opt">))       ::</span> Atv
+
+    <span class="hl kwa">integer</span> <span class="hl opt">::</span> n<span class="hl opt">,</span> i<span class="hl opt">,</span> j
+
+    n <span class="hl opt">=</span> <span class="hl kwd">size</span><span class="hl opt">(</span>v<span class="hl opt">)</span>
+    Atv <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">.</span>d0
+    <span class="hl kwa">do</span> i <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">,</span> n
+       <span class="hl kwa">do</span> j <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">,</span> n
+          <span class="hl kwd">Atv</span><span class="hl opt">(</span>i<span class="hl opt">) =</span> <span class="hl kwd">Atv</span><span class="hl opt">(</span>i<span class="hl opt">) +</span> <span class="hl kwd">A</span><span class="hl opt">(</span>j<span class="hl opt">,</span>i<span class="hl opt">) *</span> <span class="hl kwd">v</span><span class="hl opt">(</span>j<span class="hl opt">)</span>
+       <span class="hl kwa">end do</span>
+    <span class="hl kwa">end do</span>
+  <span class="hl kwa">end function</span> MultiplyAtv
+
+  <span class="hl slc">! Multiply v by A and then by A transpose</span>
+  pure <span class="hl kwa">function</span> <span class="hl kwd">MultiplyAtAv</span><span class="hl opt">(</span>v<span class="hl opt">)</span> <span class="hl kwd">result</span> <span class="hl opt">(</span>AtAv<span class="hl opt">)</span>
+    <span class="hl kwa">real</span><span class="hl opt">(</span>dp<span class="hl opt">),</span> <span class="hl kwa">dimension</span><span class="hl opt">(:),</span> <span class="hl kwd">intent</span><span class="hl opt">(</span>in<span class="hl opt">) ::</span> v
+    <span class="hl kwa">real</span><span class="hl opt">(</span>dp<span class="hl opt">),</span> <span class="hl kwa">dimension</span><span class="hl opt">(</span><span class="hl kwd">size</span><span class="hl opt">(</span>v<span class="hl opt">))       ::</span> AtAv
+    
+    AtAv <span class="hl opt">=</span> <span class="hl kwd">MultiplyAtv</span><span class="hl opt">(</span><span class="hl kwd">MultiplyAv</span><span class="hl opt">(</span>v<span class="hl opt">))</span>
+  <span class="hl kwa">end function</span> MultiplyAtAv
+<span class="hl kwa">end module</span> norm_subs
+
+<span class="hl kwa">program</span> spectral_norm
+  <span class="hl kwa">use</span> norm_subs
+  <span class="hl kwa">implicit none</span>
+
+  <span class="hl kwa">real</span><span class="hl opt">(</span>dp<span class="hl opt">),</span> <span class="hl kwa">dimension</span><span class="hl opt">(:),</span> allocatable <span class="hl opt">::</span> u<span class="hl opt">,</span> v
+  <span class="hl kwa">integer</span>          <span class="hl opt">::</span> i<span class="hl opt">,</span> n
+  <span class="hl kwa">character</span><span class="hl opt">(</span>len<span class="hl opt">=</span><span class="hl num">6</span><span class="hl opt">) ::</span> argv
+
+  <span class="hl kwa">call</span> <span class="hl kwd">get_command_argument</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span> argv<span class="hl opt">)</span>
+  <span class="hl kwa">read</span><span class="hl opt">(</span>argv<span class="hl opt">, *)</span> n
+
+  <span class="hl kwd">allocate</span><span class="hl opt">(</span><span class="hl kwd">u</span><span class="hl opt">(</span>n<span class="hl opt">),</span> <span class="hl kwd">v</span><span class="hl opt">(</span>n<span class="hl opt">))</span>
+  u <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">.</span>d0
+  <span class="hl kwa">do</span> i <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">10</span>
+     v <span class="hl opt">=</span> <span class="hl kwd">MultiplyAtAv</span><span class="hl opt">(</span>u<span class="hl opt">)</span>
+     u <span class="hl opt">=</span> <span class="hl kwd">MultiplyAtAv</span><span class="hl opt">(</span>v<span class="hl opt">)</span>
+  <span class="hl kwa">end do</span>
+
+  <span class="hl kwa">write</span><span class="hl opt">(*,</span> <span class="hl str">&quot;(f0.9)&quot;</span><span class="hl opt">)</span> <span class="hl kwd">sqrt</span><span class="hl opt">(</span><span class="hl kwd">dot_product</span><span class="hl opt">(</span>u<span class="hl opt">,</span>v<span class="hl opt">) /</span> <span class="hl kwd">dot_product</span><span class="hl opt">(</span>v<span class="hl opt">,</span>v<span class="hl opt">))</span>
+  <span class="hl kwd">deallocate</span><span class="hl opt">(</span>u<span class="hl opt">,</span> v<span class="hl opt">)</span>
+<span class="hl kwa">end program</span> spectral_norm

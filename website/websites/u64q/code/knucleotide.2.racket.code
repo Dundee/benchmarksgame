@@ -1,0 +1,79 @@
+<span class="hl opt">#</span>lang racket<span class="hl opt">/</span>base
+
+<span class="hl slc">;;   The Computer Language Shootout</span>
+<span class="hl slc">;;   http://shootout.alioth.debian.org/</span>
+<span class="hl opt">(</span><span class="hl kwa">require</span> racket<span class="hl opt">/</span>future racket<span class="hl opt">/</span>require <span class="hl opt">(</span><span class="hl kwa">for-syntax</span> racket<span class="hl opt">/</span>base<span class="hl opt">)</span> racket<span class="hl opt">/</span>port
+         racket<span class="hl opt">/</span>place
+         <span class="hl opt">(</span><span class="hl kwa">filtered-in</span> <span class="hl opt">(</span>λ <span class="hl opt">(</span><span class="hl kwa">name</span><span class="hl opt">) (</span><span class="hl kwa">regexp-replace</span> <span class="hl opt">#</span>rx<span class="hl str">&quot;unsafe-&quot;</span> name <span class="hl str">&quot;&quot;</span><span class="hl opt">))</span>
+                      racket<span class="hl opt">/</span>unsafe<span class="hl opt">/</span>ops<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> <span class="hl opt">(</span><span class="hl kwa">all-counts</span> len dna<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> table <span class="hl opt">(</span><span class="hl kwa">make-hasheq</span><span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> seq <span class="hl opt">(</span><span class="hl kwa">make-bytes</span> len<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">for</span> <span class="hl opt">([</span>s <span class="hl opt">(</span><span class="hl kwa">in-range</span> <span class="hl opt">(</span><span class="hl kwa">-</span> <span class="hl opt">(</span><span class="hl kwa">bytes-length</span> dna<span class="hl opt">)</span> len<span class="hl opt">)</span> -<span class="hl num">1</span> -<span class="hl num">1</span><span class="hl opt">)])</span>
+    <span class="hl opt">(</span><span class="hl kwa">bytes-copy</span><span class="hl opt">!</span> seq <span class="hl num">0</span> dna s <span class="hl opt">(+</span> s len<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">define</span> key <span class="hl opt">(</span><span class="hl kwa">string-</span><span class="hl opt">&gt;</span>symbol <span class="hl opt">(</span><span class="hl kwa">bytes-</span><span class="hl opt">&gt;</span>string<span class="hl opt">/</span>utf-8 seq<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">define</span> cnt <span class="hl opt">(</span><span class="hl kwa">hash-ref</span> table key <span class="hl num">0</span><span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">hash-set</span><span class="hl opt">!</span> table key <span class="hl opt">(</span><span class="hl kwa">add1</span> cnt<span class="hl opt">)))</span>
+  table<span class="hl opt">)</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> <span class="hl opt">(</span><span class="hl kwa">write-freqs</span> table port<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> content <span class="hl opt">(</span><span class="hl kwa">hash-map</span> table cons<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> total <span class="hl opt">(</span><span class="hl kwa">exact-</span><span class="hl opt">&gt;</span>inexact <span class="hl opt">(</span><span class="hl kwa">apply</span> <span class="hl opt">+ (</span><span class="hl kwa">map</span> cdr content<span class="hl opt">))))</span>
+  <span class="hl opt">(</span><span class="hl kwa">for</span> <span class="hl opt">([</span>a <span class="hl opt">(</span><span class="hl kwa">sort</span> content <span class="hl opt">&gt; #:</span>key cdr<span class="hl opt">)])</span>
+    <span class="hl opt">(</span><span class="hl kwa">fprintf</span> port <span class="hl str">&quot;~a ~a</span><span class="hl esc">\n</span><span class="hl str">&quot;</span>
+             <span class="hl opt">(</span><span class="hl kwa">car</span> a<span class="hl opt">)</span>
+             <span class="hl opt">(</span><span class="hl kwa">real-</span><span class="hl opt">&gt;</span>decimal-string <span class="hl opt">(</span><span class="hl kwa">fl</span><span class="hl opt">*</span> <span class="hl num">100</span>. <span class="hl opt">(</span><span class="hl kwa">fl</span><span class="hl opt">/ (</span><span class="hl kwa">fx-</span><span class="hl opt">&gt;</span>fl <span class="hl opt">(</span><span class="hl kwa">cdr</span> a<span class="hl opt">))</span> total<span class="hl opt">))</span> <span class="hl num">3</span><span class="hl opt">))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> <span class="hl opt">(</span><span class="hl kwa">write-one-freq</span> table key port<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> cnt <span class="hl opt">(</span><span class="hl kwa">hash-ref</span> table key <span class="hl num">0</span><span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">fprintf</span> port <span class="hl str">&quot;~a</span><span class="hl esc">\t</span><span class="hl str">~a</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> cnt key<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define-syntax-rule</span> <span class="hl opt">(</span><span class="hl kwa">at-place</span> <span class="hl opt">(</span><span class="hl kwa">var</span> ...<span class="hl opt">)</span> body ...<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">()</span>
+    <span class="hl opt">(</span><span class="hl kwa">define</span> p <span class="hl opt">(</span><span class="hl kwa">place</span> ch
+                     <span class="hl opt">(</span><span class="hl kwa">define</span> var <span class="hl opt">(</span><span class="hl kwa">place-channel-get</span> ch<span class="hl opt">))</span> ...
+                     <span class="hl opt">(</span><span class="hl kwa">place-channel-put</span> ch <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">()</span> body ...<span class="hl opt">))))</span>
+    <span class="hl opt">(</span><span class="hl kwa">place-channel-put</span> p var<span class="hl opt">)</span> ...
+    p<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> <span class="hl opt">(</span><span class="hl kwa">main</span> . _<span class="hl opt">)</span>    
+  <span class="hl opt">(</span><span class="hl kwa">define</span> dna-shared
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">()</span>
+      <span class="hl opt">(</span><span class="hl kwa">define</span> in <span class="hl opt">(</span><span class="hl kwa">current-input-port</span><span class="hl opt">))</span>
+      <span class="hl slc">;; Skip to &quot;&gt;THREE ...&quot;          </span>
+      <span class="hl opt">(</span><span class="hl kwa">regexp-match</span> <span class="hl opt">#</span>rx<span class="hl opt">#</span><span class="hl str">&quot;(?m:^&gt;THREE.*$)&quot;</span> in<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">define</span> s <span class="hl opt">(</span><span class="hl kwa">open-output-bytes</span><span class="hl opt">))</span>
+      <span class="hl slc">;; Copy everything but newlines to s:            </span>
+      <span class="hl opt">(</span><span class="hl kwa">for</span> <span class="hl opt">([</span>l <span class="hl opt">(</span><span class="hl kwa">in-bytes-lines</span> in<span class="hl opt">)])</span>
+        <span class="hl opt">(</span><span class="hl kwa">write-bytes</span> l s<span class="hl opt">))</span>
+      <span class="hl slc">;; Extract the bytes from s:            </span>
+      <span class="hl opt">(</span><span class="hl kwa">define</span> dna <span class="hl opt">(</span><span class="hl kwa">get-output-bytes</span> s<span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">define</span> sb <span class="hl opt">(</span><span class="hl kwa">make-shared-bytes</span> <span class="hl opt">(</span><span class="hl kwa">bytes-length</span> dna<span class="hl opt">)))</span>
+      <span class="hl opt">(</span><span class="hl kwa">for</span> <span class="hl opt">([</span>i <span class="hl opt">(</span><span class="hl kwa">in-range</span> <span class="hl opt">(</span><span class="hl kwa">bytes-length</span> dna<span class="hl opt">))])</span>
+        <span class="hl opt">(</span><span class="hl kwa">bytes-set</span><span class="hl opt">!</span> sb i <span class="hl opt">(</span><span class="hl kwa">fx-</span> <span class="hl opt">(</span><span class="hl kwa">bytes-ref</span> dna i<span class="hl opt">)</span> <span class="hl num">32</span><span class="hl opt">)))</span>
+      sb<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">define</span> l
+    <span class="hl opt">(</span><span class="hl kwa">append</span>
+     <span class="hl slc">;; 1/2-nucleotide counts:   </span>
+     <span class="hl opt">(</span><span class="hl kwa">for</span><span class="hl opt">/</span>list <span class="hl opt">([</span>i <span class="hl opt">'(</span><span class="hl kwa">1</span> <span class="hl num">2</span><span class="hl opt">)])</span>
+       <span class="hl opt">(</span><span class="hl kwa">at-place</span> <span class="hl opt">(</span><span class="hl kwa">i</span> dna-shared<span class="hl opt">)</span>
+         <span class="hl opt">(</span><span class="hl kwa">define</span> pr <span class="hl opt">(</span><span class="hl kwa">open-output-bytes</span><span class="hl opt">))</span>
+         <span class="hl opt">(</span><span class="hl kwa">write-freqs</span> <span class="hl opt">(</span><span class="hl kwa">all-counts</span> i dna-shared<span class="hl opt">)</span> pr<span class="hl opt">)</span>
+         <span class="hl opt">(</span><span class="hl kwa">newline</span> pr<span class="hl opt">)</span>
+         <span class="hl opt">(</span><span class="hl kwa">get-output-bytes</span> pr<span class="hl opt">)))</span>
+     
+     <span class="hl slc">;; Specific sequences:</span>
+     <span class="hl opt">(</span><span class="hl kwa">for</span><span class="hl opt">/</span>list <span class="hl opt">([</span>seq <span class="hl opt">'(</span><span class="hl str">&quot;GGT&quot;</span> <span class="hl str">&quot;GGTA&quot;</span> <span class="hl str">&quot;GGTATT&quot;</span> <span class="hl str">&quot;GGTATTTTAATT&quot;</span> <span class="hl str">&quot;GGTATTTTAATTTATAGT&quot;</span><span class="hl opt">)])</span>
+       <span class="hl opt">(</span><span class="hl kwa">at-place</span> <span class="hl opt">(</span><span class="hl kwa">seq</span> dna-shared<span class="hl opt">)</span>
+         <span class="hl opt">(</span><span class="hl kwa">define</span> pr <span class="hl opt">(</span><span class="hl kwa">open-output-bytes</span><span class="hl opt">))</span>
+         <span class="hl opt">(</span><span class="hl kwa">write-one-freq</span> <span class="hl opt">(</span><span class="hl kwa">all-counts</span> <span class="hl opt">(</span><span class="hl kwa">string-length</span> seq<span class="hl opt">)</span> dna-shared<span class="hl opt">)</span>
+                         <span class="hl opt">(</span><span class="hl kwa">string-</span><span class="hl opt">&gt;</span>symbol seq<span class="hl opt">)</span> pr<span class="hl opt">)</span>
+         <span class="hl opt">(</span><span class="hl kwa">get-output-bytes</span> pr<span class="hl opt">)))))</span>
+
+  <span class="hl opt">(</span><span class="hl kwa">for</span> <span class="hl opt">([</span>p l<span class="hl opt">]) (</span><span class="hl kwa">write-bytes</span> <span class="hl opt">(</span><span class="hl kwa">place-channel-get</span> p<span class="hl opt">))))</span>
+<span class="hl opt">(</span><span class="hl kwa">provide</span> main<span class="hl opt">)</span>
+
+
+
+

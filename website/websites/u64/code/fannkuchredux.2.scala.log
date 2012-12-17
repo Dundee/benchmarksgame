@@ -1,0 +1,16 @@
+
+Fri, 15 Jun 2012 21:30:36 GMT
+
+MAKE:
+mv fannkuchredux.scala-2.scala fannkuchredux.scala
+/usr/local/src/scala-2.9.2/bin/scalac fannkuchredux.scala
+warning: there were 1 deprecation warnings; re-run with -deprecation for details
+one warning found
+7.28s to complete and log all make actions
+
+COMMAND LINE:
+ /usr/local/src/jdk1.7.0_05/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.9.2/lib/scala-library.jar fannkuchredux 12
+
+PROGRAM OUTPUT:
+3968050
+Pfannkuchen(12) = 65

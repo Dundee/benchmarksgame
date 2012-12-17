@@ -1,0 +1,74 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Jos Hirth</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">var</span> line<span class="hl opt">,</span> out<span class="hl opt">,</span> reverseFormat<span class="hl opt">,</span> complement<span class="hl opt">;</span>
+
+complement <span class="hl opt">= {</span>
+   y<span class="hl opt">:</span> <span class="hl str">'R'</span><span class="hl opt">,</span>
+   v<span class="hl opt">:</span> <span class="hl str">'B'</span><span class="hl opt">,</span>
+   w<span class="hl opt">:</span> <span class="hl str">'W'</span><span class="hl opt">,</span>
+   t<span class="hl opt">:</span> <span class="hl str">'A'</span><span class="hl opt">,</span>
+   u<span class="hl opt">:</span> <span class="hl str">'A'</span><span class="hl opt">,</span>
+   r<span class="hl opt">:</span> <span class="hl str">'Y'</span><span class="hl opt">,</span>
+   s<span class="hl opt">:</span> <span class="hl str">'S'</span><span class="hl opt">,</span>
+   n<span class="hl opt">:</span> <span class="hl str">'N'</span><span class="hl opt">,</span>
+   m<span class="hl opt">:</span> <span class="hl str">'K'</span><span class="hl opt">,</span>
+   k<span class="hl opt">:</span> <span class="hl str">'M'</span><span class="hl opt">,</span>
+   h<span class="hl opt">:</span> <span class="hl str">'D'</span><span class="hl opt">,</span>
+   g<span class="hl opt">:</span> <span class="hl str">'C'</span><span class="hl opt">,</span>
+   d<span class="hl opt">:</span> <span class="hl str">'H'</span><span class="hl opt">,</span>
+   b<span class="hl opt">:</span> <span class="hl str">'V'</span><span class="hl opt">,</span>
+   c<span class="hl opt">:</span> <span class="hl str">'G'</span><span class="hl opt">,</span>
+   a<span class="hl opt">:</span> <span class="hl str">'T'</span><span class="hl opt">,</span>
+   Y<span class="hl opt">:</span> <span class="hl str">'R'</span><span class="hl opt">,</span>
+   V<span class="hl opt">:</span> <span class="hl str">'B'</span><span class="hl opt">,</span>
+   W<span class="hl opt">:</span> <span class="hl str">'W'</span><span class="hl opt">,</span>
+   T<span class="hl opt">:</span> <span class="hl str">'A'</span><span class="hl opt">,</span>
+   U<span class="hl opt">:</span> <span class="hl str">'A'</span><span class="hl opt">,</span>
+   R<span class="hl opt">:</span> <span class="hl str">'Y'</span><span class="hl opt">,</span>
+   S<span class="hl opt">:</span> <span class="hl str">'S'</span><span class="hl opt">,</span>
+   N<span class="hl opt">:</span> <span class="hl str">'N'</span><span class="hl opt">,</span>
+   M<span class="hl opt">:</span> <span class="hl str">'K'</span><span class="hl opt">,</span>
+   K<span class="hl opt">:</span> <span class="hl str">'M'</span><span class="hl opt">,</span>
+   H<span class="hl opt">:</span> <span class="hl str">'D'</span><span class="hl opt">,</span>
+   G<span class="hl opt">:</span> <span class="hl str">'C'</span><span class="hl opt">,</span>
+   D<span class="hl opt">:</span> <span class="hl str">'H'</span><span class="hl opt">,</span>
+   B<span class="hl opt">:</span> <span class="hl str">'V'</span><span class="hl opt">,</span>
+   C<span class="hl opt">:</span> <span class="hl str">'G'</span><span class="hl opt">,</span>
+   A<span class="hl opt">:</span> <span class="hl str">'T'</span>
+<span class="hl opt">};</span>
+
+reverseFormat <span class="hl opt">=</span> <span class="hl kwa">function</span> <span class="hl opt">(</span>a<span class="hl opt">,</span> complement<span class="hl opt">) {</span>
+   <span class="hl kwa">var</span> i<span class="hl opt">,</span> l<span class="hl opt">,</span> line<span class="hl opt">,</span> c <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">,</span> out<span class="hl opt">;</span>
+   out <span class="hl opt">=</span> <span class="hl str">''</span><span class="hl opt">;</span>
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>l <span class="hl opt">=</span> a<span class="hl opt">.</span>length<span class="hl opt">;</span> l<span class="hl opt">--;) {</span>
+      line <span class="hl opt">=</span> a<span class="hl kwc">[l]</span><span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> line<span class="hl opt">.</span>length<span class="hl opt">;</span> i<span class="hl opt">--;</span> c<span class="hl opt">++) {</span>
+         out <span class="hl opt">+=</span> complement<span class="hl opt">[</span>line<span class="hl kwc">[i]</span><span class="hl opt">];</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>c <span class="hl opt">===</span> <span class="hl num">60</span><span class="hl opt">) {</span>
+            <span class="hl kwd">print</span><span class="hl opt">(</span>out<span class="hl opt">);</span>
+            out <span class="hl opt">=</span> <span class="hl str">''</span><span class="hl opt">;</span>
+            c <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">if</span> <span class="hl opt">(</span>out<span class="hl opt">.</span>length<span class="hl opt">) {</span>
+      <span class="hl kwd">print</span><span class="hl opt">(</span>out<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">};</span>
+
+out <span class="hl opt">= [];</span>
+<span class="hl kwa">while</span> <span class="hl opt">((</span>line <span class="hl opt">=</span> <span class="hl kwd">readline</span><span class="hl opt">())) {</span>
+   <span class="hl kwa">if</span> <span class="hl opt">(</span>line<span class="hl kwc">[0]</span> <span class="hl opt">!==</span> <span class="hl str">'&gt;'</span><span class="hl opt">) {</span>
+      out<span class="hl opt">.</span><span class="hl kwd">push</span><span class="hl opt">(</span>line<span class="hl opt">);</span>
+   <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+      <span class="hl kwd">reverseFormat</span><span class="hl opt">(</span>out<span class="hl opt">,</span> complement<span class="hl opt">);</span>
+      out <span class="hl opt">= [];</span>
+      <span class="hl kwd">print</span><span class="hl opt">(</span>line<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwd">reverseFormat</span><span class="hl opt">(</span>out<span class="hl opt">,</span> complement<span class="hl opt">);</span>

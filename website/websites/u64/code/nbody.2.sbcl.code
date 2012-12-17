@@ -1,0 +1,145 @@
+<span class="hl slc">;;   The Computer Language Benchmarks Game</span>
+<span class="hl slc">;;   http://shootout.alioth.debian.org/</span>
+<span class="hl slc">;;;</span>
+<span class="hl slc">;;; contributed by Patrick Frankenberger</span>
+<span class="hl slc">;;; modified by Juho Snellman 2005-11-18</span>
+<span class="hl slc">;;;   * About 40% speedup on SBCL, 90% speedup on CMUCL</span>
+<span class="hl slc">;;;   * Represent a body as a DEFSTRUCT with (:TYPE VECTOR DOUBLE-FLOAT), a</span>
+<span class="hl slc">;;;     not as a structure that contains vectors</span>
+<span class="hl slc">;;;   * Inline APPLYFORCES</span>
+<span class="hl slc">;;;   * Replace (/ DT DISTANCE DISTANCE DISTANCE) with</span>
+<span class="hl slc">;;;     (/ DT (* DISTANCE DISTANCE DISTANCE)), as is done in the other</span>
+<span class="hl slc">;;;     implementations of this test.</span>
+<span class="hl slc">;;;   * Add a couple of declarations</span>
+<span class="hl slc">;;;   * Heavily rewritten for style (represent system as a list instead of</span>
+<span class="hl slc">;;;     an array to make the nested iterations over it less clumsy, use</span>
+<span class="hl slc">;;;     INCF/DECF where appropriate, break very long lines, etc)</span>
+<span class="hl slc">;;; modified by Marko Kocic </span>
+<span class="hl slc">;;;   * add optimization declarations</span>
+
+<span class="hl opt">(</span><span class="hl kwa">declaim</span> <span class="hl opt">(</span><span class="hl kwa">optimize</span> <span class="hl opt">(</span><span class="hl kwa">speed</span> <span class="hl num">3</span><span class="hl opt">)(</span><span class="hl kwa">safety</span> <span class="hl num">0</span><span class="hl opt">)(</span><span class="hl kwa">space</span> <span class="hl num">0</span><span class="hl opt">)(</span><span class="hl kwa">debug</span> <span class="hl num">0</span><span class="hl opt">)))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defconstant</span> <span class="hl opt">+</span>days-per-year<span class="hl opt">+</span> <span class="hl num">365.24</span>d0<span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">defconstant</span> <span class="hl opt">+</span>solar-mass<span class="hl opt">+ (*</span> <span class="hl num">4</span>d0 pi pi<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defstruct</span> <span class="hl opt">(</span><span class="hl kwa">body</span> <span class="hl opt">(:</span>type <span class="hl opt">(</span><span class="hl kwa">vector</span> double-float<span class="hl opt">))</span>
+                 <span class="hl opt">(:</span>conc-name nil<span class="hl opt">)</span>
+                 <span class="hl opt">(:</span>constructor make-body <span class="hl opt">(</span><span class="hl kwa">x</span> y z vx vy vz mass<span class="hl opt">)))</span>
+  x y z
+  vx vy vz
+  mass<span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">deftype</span> body <span class="hl opt">() '(</span><span class="hl kwa">vector</span> double-float <span class="hl num">7</span><span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defparameter</span> <span class="hl opt">*</span>jupiter<span class="hl opt">*</span>
+  <span class="hl opt">(</span><span class="hl kwa">make-body</span> <span class="hl num">4.84143144246472090</span>d0
+             -<span class="hl num">1.16032004402742839</span>d0
+             -<span class="hl num">1.03622044471123109</span>d-1
+             <span class="hl opt">(*</span> <span class="hl num">1.66007664274403694</span>d-3 <span class="hl opt">+</span>days-per-year<span class="hl opt">+)</span>
+             <span class="hl opt">(*</span> <span class="hl num">7.69901118419740425</span>d-3 <span class="hl opt">+</span>days-per-year<span class="hl opt">+)</span>
+             <span class="hl opt">(*</span> -<span class="hl num">6.90460016972063023</span>d-5  <span class="hl opt">+</span>days-per-year<span class="hl opt">+)</span>
+             <span class="hl opt">(*</span> <span class="hl num">9.54791938424326609</span>d-4 <span class="hl opt">+</span>solar-mass<span class="hl opt">+)))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defparameter</span> <span class="hl opt">*</span>saturn<span class="hl opt">*</span>
+  <span class="hl opt">(</span><span class="hl kwa">make-body</span> <span class="hl num">8.34336671824457987</span>d0
+             <span class="hl num">4.12479856412430479</span>d0
+             -<span class="hl num">4.03523417114321381</span>d-1
+             <span class="hl opt">(*</span> -<span class="hl num">2.76742510726862411</span>d-3 <span class="hl opt">+</span>days-per-year<span class="hl opt">+)</span>
+             <span class="hl opt">(*</span> <span class="hl num">4.99852801234917238</span>d-3 <span class="hl opt">+</span>days-per-year<span class="hl opt">+)</span>
+             <span class="hl opt">(*</span> <span class="hl num">2.30417297573763929</span>d-5 <span class="hl opt">+</span>days-per-year<span class="hl opt">+)</span>
+             <span class="hl opt">(*</span> <span class="hl num">2.85885980666130812</span>d-4 <span class="hl opt">+</span>solar-mass<span class="hl opt">+)))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defparameter</span> <span class="hl opt">*</span>uranus<span class="hl opt">*</span>
+  <span class="hl opt">(</span><span class="hl kwa">make-body</span> <span class="hl num">1.28943695621391310</span>d1
+             -<span class="hl num">1.51111514016986312</span>d1
+             -<span class="hl num">2.23307578892655734</span>d-1
+             <span class="hl opt">(*</span> <span class="hl num">2.96460137564761618</span>d-03 <span class="hl opt">+</span>days-per-year<span class="hl opt">+)</span>
+             <span class="hl opt">(*</span> <span class="hl num">2.37847173959480950</span>d-03 <span class="hl opt">+</span>days-per-year<span class="hl opt">+)</span>
+             <span class="hl opt">(*</span> -<span class="hl num">2.96589568540237556</span>d-05 <span class="hl opt">+</span>days-per-year<span class="hl opt">+)</span>
+             <span class="hl opt">(*</span> <span class="hl num">4.36624404335156298</span>d-05 <span class="hl opt">+</span>solar-mass<span class="hl opt">+)))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defparameter</span> <span class="hl opt">*</span>neptune<span class="hl opt">*</span>
+  <span class="hl opt">(</span><span class="hl kwa">make-body</span> <span class="hl num">1.53796971148509165</span>d<span class="hl opt">+</span><span class="hl num">01</span>
+             -<span class="hl num">2.59193146099879641</span>d<span class="hl opt">+</span><span class="hl num">01</span>
+             <span class="hl num">1.79258772950371181</span>d-01
+             <span class="hl opt">(*</span> <span class="hl num">2.68067772490389322</span>d-03 <span class="hl opt">+</span>days-per-year<span class="hl opt">+)</span>
+             <span class="hl opt">(*</span> <span class="hl num">1.62824170038242295</span>d-03 <span class="hl opt">+</span>days-per-year<span class="hl opt">+)</span>
+             <span class="hl opt">(*</span> -<span class="hl num">9.51592254519715870</span>d-05 <span class="hl opt">+</span>days-per-year<span class="hl opt">+)</span>
+             <span class="hl opt">(*</span> <span class="hl num">5.15138902046611451</span>d-05 <span class="hl opt">+</span>solar-mass<span class="hl opt">+)))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defparameter</span> <span class="hl opt">*</span>sun<span class="hl opt">*</span>
+  <span class="hl opt">(</span><span class="hl kwa">make-body</span> <span class="hl num">0.0</span>d0 <span class="hl num">0.0</span>d0 <span class="hl num">0.0</span>d0 <span class="hl num">0.0</span>d0 <span class="hl num">0.0</span>d0 <span class="hl num">0.0</span>d0 <span class="hl opt">+</span>solar-mass<span class="hl opt">+))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">declaim</span> <span class="hl opt">(</span><span class="hl kwa">inline</span> applyforces<span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">defun</span> applyforces <span class="hl opt">(</span><span class="hl kwa">a</span> b dt<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">type</span> body a b<span class="hl opt">) (</span><span class="hl kwa">type</span> double-float dt<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span><span class="hl opt">* ((</span><span class="hl kwa">dx</span> <span class="hl opt">(</span><span class="hl kwa">-</span> <span class="hl opt">(</span><span class="hl kwa">x</span> a<span class="hl opt">) (</span><span class="hl kwa">x</span> b<span class="hl opt">)))</span>
+         <span class="hl opt">(</span><span class="hl kwa">dy</span> <span class="hl opt">(</span><span class="hl kwa">-</span> <span class="hl opt">(</span><span class="hl kwa">y</span> a<span class="hl opt">) (</span><span class="hl kwa">y</span> b<span class="hl opt">)))</span>
+         <span class="hl opt">(</span><span class="hl kwa">dz</span> <span class="hl opt">(</span><span class="hl kwa">-</span> <span class="hl opt">(</span><span class="hl kwa">z</span> a<span class="hl opt">) (</span><span class="hl kwa">z</span> b<span class="hl opt">)))</span>
+	 <span class="hl opt">(</span><span class="hl kwa">distance</span> <span class="hl opt">(</span><span class="hl kwa">sqrt</span> <span class="hl opt">(+ (*</span> dx dx<span class="hl opt">) (*</span> dy dy<span class="hl opt">) (*</span> dz dz<span class="hl opt">))))</span>
+	 <span class="hl opt">(</span><span class="hl kwa">mag</span> <span class="hl opt">(/</span> dt <span class="hl opt">(*</span> distance distance distance<span class="hl opt">)))</span>
+         <span class="hl opt">(</span><span class="hl kwa">dxmag</span> <span class="hl opt">(*</span> dx mag<span class="hl opt">))</span>
+         <span class="hl opt">(</span><span class="hl kwa">dymag</span> <span class="hl opt">(*</span> dy mag<span class="hl opt">))</span>
+         <span class="hl opt">(</span><span class="hl kwa">dzmag</span> <span class="hl opt">(*</span> dz mag<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">decf</span> <span class="hl opt">(</span><span class="hl kwa">vx</span> a<span class="hl opt">) (*</span> dxmag <span class="hl opt">(</span><span class="hl kwa">mass</span> b<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">decf</span> <span class="hl opt">(</span><span class="hl kwa">vy</span> a<span class="hl opt">) (*</span> dymag <span class="hl opt">(</span><span class="hl kwa">mass</span> b<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">decf</span> <span class="hl opt">(</span><span class="hl kwa">vz</span> a<span class="hl opt">) (*</span> dzmag <span class="hl opt">(</span><span class="hl kwa">mass</span> b<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">incf</span> <span class="hl opt">(</span><span class="hl kwa">vx</span> b<span class="hl opt">) (*</span> dxmag <span class="hl opt">(</span><span class="hl kwa">mass</span> a<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">incf</span> <span class="hl opt">(</span><span class="hl kwa">vy</span> b<span class="hl opt">) (*</span> dymag <span class="hl opt">(</span><span class="hl kwa">mass</span> a<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">incf</span> <span class="hl opt">(</span><span class="hl kwa">vz</span> b<span class="hl opt">) (*</span> dzmag <span class="hl opt">(</span><span class="hl kwa">mass</span> a<span class="hl opt">))))</span>
+  nil<span class="hl opt">)</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> advance <span class="hl opt">(</span><span class="hl kwa">system</span> dt<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">double-float</span> dt<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">loop</span> for <span class="hl opt">(</span><span class="hl kwa">a</span> . rest<span class="hl opt">)</span> on system do
+        <span class="hl opt">(</span><span class="hl kwa">dolist</span> <span class="hl opt">(</span><span class="hl kwa">b</span> rest<span class="hl opt">)</span>
+          <span class="hl opt">(</span><span class="hl kwa">applyforces</span> a b dt<span class="hl opt">)))</span>
+  <span class="hl opt">(</span><span class="hl kwa">dolist</span> <span class="hl opt">(</span><span class="hl kwa">b</span> system<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">incf</span> <span class="hl opt">(</span><span class="hl kwa">x</span> b<span class="hl opt">) (*</span> dt <span class="hl opt">(</span><span class="hl kwa">vx</span> b<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">incf</span> <span class="hl opt">(</span><span class="hl kwa">y</span> b<span class="hl opt">) (*</span> dt <span class="hl opt">(</span><span class="hl kwa">vy</span> b<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">incf</span> <span class="hl opt">(</span><span class="hl kwa">z</span> b<span class="hl opt">) (*</span> dt <span class="hl opt">(</span><span class="hl kwa">vz</span> b<span class="hl opt">))))</span>
+  nil<span class="hl opt">)</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> energy <span class="hl opt">(</span><span class="hl kwa">system</span><span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">e</span> <span class="hl num">0.0</span>d0<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">double-float</span> e<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">loop</span> for <span class="hl opt">(</span><span class="hl kwa">a</span> . rest<span class="hl opt">)</span> on system do
+          <span class="hl opt">(</span><span class="hl kwa">incf</span> e <span class="hl opt">(*</span> <span class="hl num">0.5</span>d0
+                     <span class="hl opt">(</span><span class="hl kwa">mass</span> a<span class="hl opt">)</span>
+                     <span class="hl opt">(+ (* (</span><span class="hl kwa">vx</span> a<span class="hl opt">) (</span><span class="hl kwa">vx</span> a<span class="hl opt">))</span>
+                        <span class="hl opt">(* (</span><span class="hl kwa">vy</span> a<span class="hl opt">) (</span><span class="hl kwa">vy</span> a<span class="hl opt">))</span>
+                        <span class="hl opt">(* (</span><span class="hl kwa">vz</span> a<span class="hl opt">) (</span><span class="hl kwa">vz</span> a<span class="hl opt">)))))</span>
+          <span class="hl opt">(</span><span class="hl kwa">dolist</span> <span class="hl opt">(</span><span class="hl kwa">b</span> rest<span class="hl opt">)</span>
+            <span class="hl opt">(</span><span class="hl kwa">let</span><span class="hl opt">* ((</span><span class="hl kwa">dx</span> <span class="hl opt">(</span><span class="hl kwa">-</span> <span class="hl opt">(</span><span class="hl kwa">x</span> a<span class="hl opt">) (</span><span class="hl kwa">x</span> b<span class="hl opt">)))</span>
+                   <span class="hl opt">(</span><span class="hl kwa">dy</span> <span class="hl opt">(</span><span class="hl kwa">-</span> <span class="hl opt">(</span><span class="hl kwa">y</span> a<span class="hl opt">) (</span><span class="hl kwa">y</span> b<span class="hl opt">)))</span>
+                   <span class="hl opt">(</span><span class="hl kwa">dz</span> <span class="hl opt">(</span><span class="hl kwa">-</span> <span class="hl opt">(</span><span class="hl kwa">z</span> a<span class="hl opt">) (</span><span class="hl kwa">z</span> b<span class="hl opt">)))</span>
+                   <span class="hl opt">(</span><span class="hl kwa">dist</span> <span class="hl opt">(</span><span class="hl kwa">sqrt</span> <span class="hl opt">(+ (*</span> dx dx<span class="hl opt">) (*</span> dy dy<span class="hl opt">) (*</span> dz dz<span class="hl opt">)))))</span>
+              <span class="hl opt">(</span><span class="hl kwa">decf</span> e <span class="hl opt">(/ (* (</span><span class="hl kwa">mass</span> a<span class="hl opt">) (</span><span class="hl kwa">mass</span> b<span class="hl opt">))</span> dist<span class="hl opt">)))))</span>
+    e<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> offset-momentum <span class="hl opt">(</span><span class="hl kwa">system</span><span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">px</span> <span class="hl num">0.0</span>d0<span class="hl opt">)</span>
+	<span class="hl opt">(</span><span class="hl kwa">py</span> <span class="hl num">0.0</span>d0<span class="hl opt">)</span>
+	<span class="hl opt">(</span><span class="hl kwa">pz</span> <span class="hl num">0.0</span>d0<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">dolist</span> <span class="hl opt">(</span><span class="hl kwa">p</span> system<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">incf</span> px <span class="hl opt">(* (</span><span class="hl kwa">vx</span> p<span class="hl opt">) (</span><span class="hl kwa">mass</span> p<span class="hl opt">)))</span>
+      <span class="hl opt">(</span><span class="hl kwa">incf</span> py <span class="hl opt">(* (</span><span class="hl kwa">vy</span> p<span class="hl opt">) (</span><span class="hl kwa">mass</span> p<span class="hl opt">)))</span>
+      <span class="hl opt">(</span><span class="hl kwa">incf</span> pz <span class="hl opt">(* (</span><span class="hl kwa">vz</span> p<span class="hl opt">) (</span><span class="hl kwa">mass</span> p<span class="hl opt">))))</span>
+    <span class="hl opt">(</span><span class="hl kwa">setf</span> <span class="hl opt">(</span><span class="hl kwa">vx</span> <span class="hl opt">(</span><span class="hl kwa">car</span> system<span class="hl opt">)) (/ (</span><span class="hl kwa">-</span> px<span class="hl opt">) +</span>solar-mass<span class="hl opt">+)</span>
+          <span class="hl opt">(</span><span class="hl kwa">vy</span> <span class="hl opt">(</span><span class="hl kwa">car</span> system<span class="hl opt">)) (/ (</span><span class="hl kwa">-</span> py<span class="hl opt">) +</span>solar-mass<span class="hl opt">+)</span>
+          <span class="hl opt">(</span><span class="hl kwa">vz</span> <span class="hl opt">(</span><span class="hl kwa">car</span> system<span class="hl opt">)) (/ (</span><span class="hl kwa">-</span> pz<span class="hl opt">) +</span>solar-mass<span class="hl opt">+))</span>
+    nil<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> nbody <span class="hl opt">(</span><span class="hl kwa">n</span><span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">fixnum</span> n<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">system</span> <span class="hl opt">(</span><span class="hl kwa">list</span> <span class="hl opt">*</span>sun<span class="hl opt">* *</span>jupiter<span class="hl opt">* *</span>saturn<span class="hl opt">* *</span>uranus<span class="hl opt">* *</span>neptune<span class="hl opt">*)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">offset-momentum</span> system<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">format</span> t <span class="hl str">&quot;~,9F~%&quot;</span> <span class="hl opt">(</span><span class="hl kwa">energy</span> system<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">dotimes</span> <span class="hl opt">(</span><span class="hl kwa">i</span> n<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">advance</span> system <span class="hl num">0.01</span>d0<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">format</span> t <span class="hl str">&quot;~,9F~%&quot;</span> <span class="hl opt">(</span><span class="hl kwa">energy</span> system<span class="hl opt">))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> main <span class="hl opt">()</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">n</span> <span class="hl opt">(</span><span class="hl kwa">parse-integer</span> <span class="hl opt">(</span><span class="hl kwa">or</span> <span class="hl opt">(</span><span class="hl kwa">car</span> <span class="hl opt">(</span><span class="hl kwa">last</span> <span class="hl opt">#+</span>sbcl sb-ext<span class="hl opt">:*</span>posix-argv<span class="hl opt">*</span>
+                                         <span class="hl opt">#+</span>cmu  extensions<span class="hl opt">:*</span>command-line-strings<span class="hl opt">*</span>
+					 <span class="hl opt">#+</span>gcl  si<span class="hl opt">::*</span>command-args<span class="hl opt">*))</span> <span class="hl str">&quot;1&quot;</span><span class="hl opt">))))</span>
+    <span class="hl opt">(</span><span class="hl kwa">nbody</span> n<span class="hl opt">)))</span>

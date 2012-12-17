@@ -1,0 +1,76 @@
+<span class="hl slc">;; The Computer Language Benchmarks Game</span>
+<span class="hl slc">;; http://shootout.alioth.debian.org/</span>
+<span class="hl slc">;;</span>
+<span class="hl slc">;; contributed by Jesse Rosenstock</span>
+<span class="hl slc">;; modified by Jim Kannampuzha</span>
+
+<span class="hl opt">(</span><span class="hl kwa">ns</span> spectralnorm
+  <span class="hl opt">(:</span>gen-class<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">set</span><span class="hl opt">! *</span>warn-on-reflection<span class="hl opt">*</span> true<span class="hl opt">)</span>
+
+<span class="hl opt">(</span><span class="hl kwa">def</span> chunks <span class="hl opt">(</span><span class="hl kwa">atom</span> <span class="hl opt">()))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">def</span> num-threads <span class="hl opt">(</span>.availableProcessors <span class="hl opt">(</span><span class="hl kwa">Runtime</span><span class="hl opt">/</span>getRuntime<span class="hl opt">)))</span>
+<span class="hl opt">(</span><span class="hl kwa">def</span> workers <span class="hl opt">(</span><span class="hl kwa">vec</span> <span class="hl opt">(</span><span class="hl kwa">repeatedly</span> num-threads <span class="hl opt">#(</span><span class="hl kwa">agent</span> <span class="hl opt">()))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> eval-a <span class="hl opt">[</span>ii jj<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>i <span class="hl opt">(</span><span class="hl kwa">int</span> ii<span class="hl opt">)</span>
+        j <span class="hl opt">(</span><span class="hl kwa">int</span> jj<span class="hl opt">)</span>
+        n <span class="hl opt">(</span><span class="hl kwa">unchecked-add</span> i j<span class="hl opt">)</span>
+        n<span class="hl opt">+</span><span class="hl num">1</span> <span class="hl opt">(</span><span class="hl kwa">unchecked-inc</span> n<span class="hl opt">)]</span>
+     <span class="hl opt">(/ (</span><span class="hl kwa">double</span> <span class="hl num">1.0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span><span class="hl kwa">unchecked-add</span> <span class="hl opt">(</span><span class="hl kwa">bit-shift-right</span> <span class="hl opt">(</span><span class="hl kwa">unchecked-multiply</span> n n<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">) (</span><span class="hl kwa">int</span> <span class="hl num">1</span><span class="hl opt">))</span>
+                       <span class="hl opt">(</span><span class="hl kwa">unchecked-inc</span> i<span class="hl opt">)))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> multiply-a-v <span class="hl opt">[</span>agent
+                    ^doubles v
+                    ^doubles av
+                    chunk<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">doseq</span> <span class="hl opt">[</span>i chunk<span class="hl opt">]</span>
+    <span class="hl opt">(</span><span class="hl kwa">aset</span> av i <span class="hl opt">(</span><span class="hl kwa">double</span> <span class="hl opt">(</span><span class="hl kwa">areduce</span> v j sum <span class="hl opt">(</span><span class="hl kwa">double</span> <span class="hl num">0</span><span class="hl opt">)</span> 
+                                <span class="hl opt">(+</span> sum <span class="hl opt">(* (</span><span class="hl kwa">double</span> <span class="hl opt">(</span><span class="hl kwa">eval-a</span> i j<span class="hl opt">)) (</span><span class="hl kwa">aget</span> v j<span class="hl opt">))))))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> multiply-at-v <span class="hl opt">[</span>agent
+                     ^doubles v
+                     ^doubles atv
+                     chunk<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">doseq</span> <span class="hl opt">[</span>i chunk<span class="hl opt">]</span>
+    <span class="hl opt">(</span><span class="hl kwa">aset</span> atv i <span class="hl opt">(</span><span class="hl kwa">double</span> <span class="hl opt">(</span><span class="hl kwa">areduce</span> v j sum <span class="hl opt">(</span><span class="hl kwa">double</span> <span class="hl num">0</span><span class="hl opt">)</span> 
+                                 <span class="hl opt">(+</span> sum <span class="hl opt">(* (</span><span class="hl kwa">double</span> <span class="hl opt">(</span><span class="hl kwa">eval-a</span> j i<span class="hl opt">)) (</span><span class="hl kwa">aget</span> v j<span class="hl opt">))))))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> multiply-at-a-v <span class="hl opt">[</span>^doubles v
+                       ^doubles tmp
+                       ^doubles at-av<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">dotimes</span> <span class="hl opt">[</span>i num-threads<span class="hl opt">]</span>
+    <span class="hl opt">(</span><span class="hl kwa">send</span> <span class="hl opt">(</span><span class="hl kwa">nth</span> workers i<span class="hl opt">)</span> multiply-a-v v tmp <span class="hl opt">(</span><span class="hl kwa">nth</span> <span class="hl opt">&#64;</span>chunks i<span class="hl opt">)))</span>
+  <span class="hl opt">(</span><span class="hl kwa">apply</span> await workers<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">dotimes</span> <span class="hl opt">[</span>i num-threads<span class="hl opt">]</span>
+    <span class="hl opt">(</span><span class="hl kwa">send</span> <span class="hl opt">(</span><span class="hl kwa">nth</span> workers i<span class="hl opt">)</span> multiply-at-v tmp at-av <span class="hl opt">(</span><span class="hl kwa">nth</span> <span class="hl opt">&#64;</span>chunks i<span class="hl opt">)))</span>
+  <span class="hl opt">(</span><span class="hl kwa">apply</span> await workers<span class="hl opt">))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> dot-product <span class="hl opt">[</span>^doubles u ^doubles v<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">areduce</span> u i sum <span class="hl opt">(</span><span class="hl kwa">double</span> <span class="hl num">0</span><span class="hl opt">) (+</span> sum <span class="hl opt">(* (</span><span class="hl kwa">aget</span> u i<span class="hl opt">) (</span><span class="hl kwa">aget</span> v i<span class="hl opt">)))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> run-game <span class="hl opt">[</span>size<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">reset</span><span class="hl opt">!</span> chunks <span class="hl opt">(</span><span class="hl kwa">map</span> int-array 
+                      <span class="hl opt">(</span><span class="hl kwa">partition-all</span> <span class="hl opt">(</span><span class="hl kwa">Math</span><span class="hl opt">/</span>ceil <span class="hl opt">(</span><span class="hl kwa">double</span> <span class="hl opt">(/</span> size num-threads<span class="hl opt">)))</span> 
+                                     <span class="hl opt">(</span><span class="hl kwa">range</span> size<span class="hl opt">))))</span>
+   <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>u <span class="hl opt">(</span><span class="hl kwa">double-array</span> size <span class="hl num">1.0</span><span class="hl opt">)</span>
+        tmp <span class="hl opt">(</span><span class="hl kwa">double-array</span> size <span class="hl num">0.0</span><span class="hl opt">)</span>
+        v <span class="hl opt">(</span><span class="hl kwa">double-array</span> size <span class="hl num">0.0</span><span class="hl opt">)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">dotimes</span> <span class="hl opt">[</span>_ <span class="hl num">10</span><span class="hl opt">]</span>
+      <span class="hl opt">(</span><span class="hl kwa">multiply-at-a-v</span> u tmp v<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">multiply-at-a-v</span> v tmp u<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>vbv <span class="hl opt">(</span><span class="hl kwa">dot-product</span> u v<span class="hl opt">)</span>
+          vv <span class="hl opt">(</span><span class="hl kwa">dot-product</span> v v<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">Math</span><span class="hl opt">/</span>sqrt <span class="hl opt">(/</span> vbv vv<span class="hl opt">)))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> -main <span class="hl opt">[&amp;</span> args<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>n <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">empty</span>? args<span class="hl opt">)</span>
+            <span class="hl num">2500</span>
+            <span class="hl opt">(</span><span class="hl kwa">Integer</span><span class="hl opt">/</span>valueOf ^String <span class="hl opt">(</span><span class="hl kwa">first</span> args<span class="hl opt">)))]</span>
+    <span class="hl opt">(</span><span class="hl kwa">println</span> <span class="hl opt">(</span><span class="hl kwa">format</span> <span class="hl str">&quot;%.9f&quot;</span> <span class="hl opt">(</span><span class="hl kwa">run-game</span> n<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">shutdown-agents</span><span class="hl opt">)))</span>
+

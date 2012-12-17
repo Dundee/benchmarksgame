@@ -1,0 +1,103 @@
+<span class="hl slc">;;    The Computer Language Benchmarks Game</span>
+<span class="hl slc">;;    http://shootout.alioth.debian.org/</span>
+<span class="hl slc">;;</span>
+<span class="hl slc">;;    Adapted from the C (gcc) code by Sebastien Loisel</span>
+<span class="hl slc">;;</span>
+<span class="hl slc">;;    Contributed by Christopher Neufeld</span>
+<span class="hl slc">;;    Modified by Juho Snellman 2005-10-26</span>
+<span class="hl slc">;;      * Use SIMPLE-ARRAY instead of ARRAY in declarations</span>
+<span class="hl slc">;;      * Use TRUNCATE instead of / for fixnum division</span>
+<span class="hl slc">;;      * Rearrange EVAL-A to make it more readable and a bit faster</span>
+<span class="hl slc">;;    Modified by Andy Hefner 2008-09-18</span>
+<span class="hl slc">;;      * Eliminate array consing</span>
+<span class="hl slc">;;      * Clean up type declarations in eval-A</span>
+<span class="hl slc">;;      * Distribute work across multiple cores on SBCL</span>
+<span class="hl slc">;;    Modified by Witali Kusnezow 2008-12-02</span>
+<span class="hl slc">;;      * use right shift instead of truncate for division in eval-A</span>
+<span class="hl slc">;;      * redefine eval-A as a macro</span>
+<span class="hl slc">;;    Modified by Lorenzo Bolla 2010-12-06</span>
+<span class="hl slc">;;      * added declaim at top of file</span>
+
+
+<span class="hl slc">;; This is our most expensive function.  Optimized with the knowledge</span>
+<span class="hl slc">;; that 'n' will never be &quot;huge&quot;.  This will break if 'n' exceeds</span>
+<span class="hl slc">;; approximately half of the square root of the largest fixnum</span>
+<span class="hl slc">;; supported by the implementation.  On 32-bit sbcl,</span>
+<span class="hl slc">;; 'most-positive-fixnum' is 536870911, and we can support values of</span>
+<span class="hl slc">;; 'n' above 11000.</span>
+
+<span class="hl opt">(</span><span class="hl kwa">declaim</span> <span class="hl opt">(</span><span class="hl kwa">optimize</span> <span class="hl opt">(</span><span class="hl kwa">speed</span> <span class="hl num">3</span><span class="hl opt">) (</span><span class="hl kwa">safety</span> <span class="hl num">0</span><span class="hl opt">) (</span><span class="hl kwa">space</span> <span class="hl num">0</span><span class="hl opt">)))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defmacro</span> eval-A <span class="hl opt">(</span><span class="hl kwa">i</span> j<span class="hl opt">)</span>
+  <span class="hl opt">`(</span><span class="hl kwa">let</span><span class="hl opt">* ((</span><span class="hl kwa">n</span> <span class="hl opt">(+ ,</span>i <span class="hl opt">,</span>j<span class="hl opt">))</span>
+          <span class="hl opt">(</span><span class="hl kwa">n</span><span class="hl opt">+</span><span class="hl num">1</span> <span class="hl opt">(</span><span class="hl kwa">1</span><span class="hl opt">+</span> n<span class="hl opt">)))</span>
+     <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">type</span> <span class="hl opt">(</span><span class="hl kwa">integer</span> <span class="hl num">0 22000</span><span class="hl opt">)</span> n n<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">))</span>
+     <span class="hl opt">(/ (</span><span class="hl kwa">float</span> <span class="hl opt">(+ (</span><span class="hl kwa">ash</span> <span class="hl opt">(*</span> n n<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span> -<span class="hl num">1</span><span class="hl opt">) ,</span>i <span class="hl num">1</span><span class="hl opt">)</span> <span class="hl num">0</span>d0<span class="hl opt">))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> eval-At-times-u <span class="hl opt">(</span><span class="hl kwa">u</span> n Au start end<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">type</span> fixnum n start end<span class="hl opt">)</span>
+           <span class="hl opt">(</span><span class="hl kwa">type</span> <span class="hl opt">(</span><span class="hl kwa">simple-array</span> double-float<span class="hl opt">)</span> u Au<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">loop</span> for i from start below end do
+        <span class="hl opt">(</span><span class="hl kwa">setf</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> Au i<span class="hl opt">)</span>
+              <span class="hl opt">(</span><span class="hl kwa">loop</span> for j below n
+                    summing <span class="hl opt">(* (</span><span class="hl kwa">aref</span> u j<span class="hl opt">) (</span><span class="hl kwa">eval-A</span> j i<span class="hl opt">))</span>
+                    of-type double-float<span class="hl opt">))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> eval-A-times-u <span class="hl opt">(</span><span class="hl kwa">u</span> n Au start end<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">type</span> fixnum n start end<span class="hl opt">)</span>
+           <span class="hl opt">(</span><span class="hl kwa">type</span> <span class="hl opt">(</span><span class="hl kwa">simple-array</span> double-float<span class="hl opt">)</span> u Au<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">loop</span> for i from start below end do
+        <span class="hl opt">(</span><span class="hl kwa">setf</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> Au i<span class="hl opt">)</span>
+              <span class="hl opt">(</span><span class="hl kwa">loop</span> for j below n
+                    summing <span class="hl opt">(* (</span><span class="hl kwa">aref</span> u j<span class="hl opt">) (</span><span class="hl kwa">eval-A</span> i j<span class="hl opt">))</span>
+                    of-type double-float<span class="hl opt">))))</span>
+
+<span class="hl opt">#+</span>sb-thread
+<span class="hl opt">(</span><span class="hl kwa">defun</span> execute-parallel <span class="hl opt">(</span><span class="hl kwa">start</span> end function<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">optimize</span> <span class="hl opt">(</span><span class="hl kwa">speed</span> <span class="hl num">0</span><span class="hl opt">)))</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span><span class="hl opt">* ((</span><span class="hl kwa">num-threads</span> <span class="hl num">4</span><span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">loop</span> with step <span class="hl opt">= (</span><span class="hl kwa">truncate</span> <span class="hl opt">(</span><span class="hl kwa">-</span> end start<span class="hl opt">)</span> num-threads<span class="hl opt">)</span>
+          for index from start below end by step
+          collecting <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">start</span> index<span class="hl opt">)</span>
+                           <span class="hl opt">(</span><span class="hl kwa">end</span> <span class="hl opt">(</span><span class="hl kwa">min</span> end <span class="hl opt">(+</span> index step<span class="hl opt">))))</span>
+                       <span class="hl opt">(</span><span class="hl kwa">sb-thread</span><span class="hl opt">:</span>make-thread
+                        <span class="hl opt">(</span><span class="hl kwa">lambda</span> <span class="hl opt">() (</span><span class="hl kwa">funcall</span> function start end<span class="hl opt">))))</span>
+          into threads
+          finally <span class="hl opt">(</span><span class="hl kwa">mapcar</span> <span class="hl opt">#'</span>sb-thread<span class="hl opt">:</span>join-thread threads<span class="hl opt">))))</span>
+
+<span class="hl opt">#</span>-sb-thread
+<span class="hl opt">(</span><span class="hl kwa">defun</span> execute-parallel <span class="hl opt">(</span><span class="hl kwa">start</span> end function <span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">funcall</span> function start end<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> eval-AtA-times-u <span class="hl opt">(</span><span class="hl kwa">u</span> AtAu v n start end<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">execute-parallel</span> start end
+    <span class="hl opt">(</span><span class="hl kwa">lambda</span> <span class="hl opt">(</span><span class="hl kwa">start</span> end<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">eval-A-times-u</span> u n v start end<span class="hl opt">)))</span>
+  <span class="hl opt">(</span><span class="hl kwa">execute-parallel</span> start end
+    <span class="hl opt">(</span><span class="hl kwa">lambda</span> <span class="hl opt">(</span><span class="hl kwa">start</span> end<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">eval-At-times-u</span> v n AtAu start end<span class="hl opt">))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> main <span class="hl opt">(&amp;</span>optional n-supplied<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">n</span> <span class="hl opt">(</span><span class="hl kwa">or</span> n-supplied
+               <span class="hl opt">(</span><span class="hl kwa">parse-integer</span> <span class="hl opt">(</span><span class="hl kwa">or</span> <span class="hl opt">(</span><span class="hl kwa">car</span> <span class="hl opt">(</span><span class="hl kwa">last</span> <span class="hl opt">#+</span>sbcl sb-ext<span class="hl opt">:*</span>posix-argv<span class="hl opt">*</span>
+                                             <span class="hl opt">#+</span>clisp ext<span class="hl opt">:*</span>args<span class="hl opt">*</span>
+                                             <span class="hl opt">#+</span>cmu extensions<span class="hl opt">:*</span>command-line-strings<span class="hl opt">*</span>
+                                             <span class="hl opt">#+</span>gcl  si<span class="hl opt">::*</span>command-args<span class="hl opt">*))</span>
+                                  <span class="hl str">&quot;2000&quot;</span><span class="hl opt">)))))</span>
+    <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">type</span> fixnum n<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">or</span> <span class="hl opt">(</span><span class="hl kwa">typep</span> <span class="hl opt">(* (</span><span class="hl kwa">-</span> <span class="hl opt">(*</span> <span class="hl num">2</span> n<span class="hl opt">)</span> <span class="hl num">1</span><span class="hl opt">) (</span><span class="hl kwa">-</span> <span class="hl opt">(*</span> <span class="hl num">2</span> n<span class="hl opt">)</span> <span class="hl num">2</span><span class="hl opt">)) '</span>fixnum<span class="hl opt">)</span>
+        <span class="hl opt">(</span><span class="hl kwa">error</span> <span class="hl str">&quot;The supplied value of 'n' breaks the optimizations in EVAL-A&quot;</span><span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">u</span> <span class="hl opt">(</span><span class="hl kwa">make-array</span> n <span class="hl opt">:</span>element-type <span class="hl opt">'</span>double-float <span class="hl opt">:</span>initial-element <span class="hl num">1.0</span>d0<span class="hl opt">))</span>
+          <span class="hl opt">(</span><span class="hl kwa">v</span> <span class="hl opt">(</span><span class="hl kwa">make-array</span> n <span class="hl opt">:</span>element-type <span class="hl opt">'</span>double-float<span class="hl opt">))</span>
+          <span class="hl opt">(</span><span class="hl kwa">tmp</span> <span class="hl opt">(</span><span class="hl kwa">make-array</span> n <span class="hl opt">:</span>element-type <span class="hl opt">'</span>double-float<span class="hl opt">)))</span>
+      <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">type</span> <span class="hl opt">(</span><span class="hl kwa">simple-array</span> double-float<span class="hl opt">)</span> U V<span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">dotimes</span> <span class="hl opt">(</span><span class="hl kwa">i</span> <span class="hl num">10</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span><span class="hl kwa">eval-AtA-times-u</span> u v tmp n <span class="hl num">0</span> n<span class="hl opt">)</span>
+        <span class="hl opt">(</span><span class="hl kwa">eval-AtA-times-u</span> v u tmp n <span class="hl num">0</span> n<span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">vBv</span> <span class="hl num">0.0</span>d0<span class="hl opt">)</span>
+            <span class="hl opt">(</span><span class="hl kwa">vv</span> <span class="hl num">0.0</span>d0<span class="hl opt">))</span>
+        <span class="hl opt">(</span><span class="hl kwa">dotimes</span> <span class="hl opt">(</span><span class="hl kwa">i</span> n<span class="hl opt">)</span>
+          <span class="hl opt">(</span><span class="hl kwa">incf</span> vBv <span class="hl opt">(* (</span><span class="hl kwa">aref</span> u i<span class="hl opt">) (</span><span class="hl kwa">aref</span> v i<span class="hl opt">)))</span>
+          <span class="hl opt">(</span><span class="hl kwa">incf</span> vv <span class="hl opt">(* (</span><span class="hl kwa">aref</span> v i<span class="hl opt">) (</span><span class="hl kwa">aref</span> v i<span class="hl opt">))))</span>
+        <span class="hl opt">(</span><span class="hl kwa">format</span> t <span class="hl str">&quot;~11,9F~%&quot;</span> <span class="hl opt">(</span><span class="hl kwa">sqrt</span> <span class="hl opt">(</span><span class="hl kwa">the</span> <span class="hl opt">(</span><span class="hl kwa">double-float</span> <span class="hl num">0</span>d0<span class="hl opt">) (/</span> vBv vv<span class="hl opt">))))))))</span>
+

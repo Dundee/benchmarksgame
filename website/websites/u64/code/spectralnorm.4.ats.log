@@ -1,0 +1,79 @@
+
+Thu, 27 Sep 2012 18:11:28 GMT
+
+MAKE:
+/usr/local/src/ats-lang-anairiats-0.2.8/bin/atscc -D_GNU_SOURCE -D_ATS_MULTITHREAD -lpthread -pipe -Wall -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse2 spectralnorm.dats -o spectralnorm.ats-4.ats_run -lm
+/usr/local/src/ats-lang-anairiats-0.2.8/bin/atsopt --output spectralnorm_dats.c --dynamic spectralnorm.dats
+In file included from spectralnorm_dats.c:19:0:
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/basics.cats: In function ‘atspre_fprint_newline’:
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/basics.cats:271:11: warning: variable ‘n2’ set but not used [-Wunused-but-set-variable]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/basics.cats:271:7: warning: variable ‘n1’ set but not used [-Wunused-but-set-variable]
+spectralnorm_dats.c: In function ‘eval_A_0_0’:
+spectralnorm_dats.c:330:1: warning: label ‘__ats_lab_eval_A_0_0’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘eval_A_1_1’:
+spectralnorm_dats.c:379:1: warning: label ‘__ats_lab_eval_A_1_1’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘fwork_2’:
+spectralnorm_dats.c:417:1: warning: label ‘__ats_lab_fwork_2’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘loop1__7’:
+spectralnorm_dats.c:681:1: warning: label ‘__ats_lab_loop1__7’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘__ats_fun_9’:
+spectralnorm_dats.c:724:1: warning: label ‘__ats_lab___ats_fun_9’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘DEQUEptrnxt_01904_ats_clo_ptr_type’:
+spectralnorm_dats.c:779:1: warning: label ‘__ats_lab_DEQUEptrnxt_01904_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘deque_insert_end_01885_ats_clo_ptr_type’:
+spectralnorm_dats.c:808:1: warning: label ‘__ats_lab_deque_insert_end_01885_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘queue_insert_01862_ats_clo_ptr_type’:
+spectralnorm_dats.c:829:1: warning: label ‘__ats_lab_queue_insert_01862_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘workshop_insert_work_01841_ats_clo_ptr_type’:
+spectralnorm_dats.c:892:1: warning: label ‘__ats_lab_workshop_insert_work_01841_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘eval_A_times_u_3’:
+spectralnorm_dats.c:983:1: warning: label ‘__ats_lab_eval_A_times_u_3’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘eval_AtA_times_u_15’:
+spectralnorm_dats.c:1010:1: warning: label ‘__ats_lab_eval_AtA_times_u_15’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘_2home_2dunham_2benchmarksgame_onecore_2spectralnorm_2tmp_2spectralnorm_2edats__ncore_get’:
+spectralnorm_dats.c:1063:1: warning: label ‘__ats_lab_1’ defined but not used [-Wunused-label]
+spectralnorm_dats.c:1060:1: warning: label ‘__ats_lab_2’ defined but not used [-Wunused-label]
+spectralnorm_dats.c:1037:1: warning: label ‘__ats_lab__2home_2dunham_2benchmarksgame_onecore_2spectralnorm_2tmp_2spectralnorm_2edats__ncore_get’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘workshop_make_01834_ats_clo_ptr_type’:
+spectralnorm_dats.c:1077:1: warning: label ‘__ats_lab_workshop_make_01834_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘deque_remove_beg_01888_ats_clo_ptr_type’:
+spectralnorm_dats.c:1097:1: warning: label ‘__ats_lab_deque_remove_beg_01888_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘queue_remove_01864_ats_clo_ptr_type’:
+spectralnorm_dats.c:1119:1: warning: label ‘__ats_lab_queue_remove_01864_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘workshop_remove_work_01842_ats_clo_ptr_type’:
+spectralnorm_dats.c:1197:1: warning: label ‘__ats_lab_workshop_remove_work_01842_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘worker_22’:
+spectralnorm_dats.c:1296:1: warning: label ‘__ats_lab_5_0’ defined but not used [-Wunused-label]
+spectralnorm_dats.c:1262:1: warning: label ‘__ats_lab_4_0’ defined but not used [-Wunused-label]
+spectralnorm_dats.c:1254:1: warning: label ‘__ats_lab_3_1’ defined but not used [-Wunused-label]
+spectralnorm_dats.c:1253:1: warning: label ‘__ats_lab_3_0’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘workshop_add_worker_01839_ats_clo_ptr_type’:
+spectralnorm_dats.c:1340:1: warning: label ‘__ats_lab_workshop_add_worker_01839_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘workshop_add_nworker_01840_ats_clo_ptr_type’:
+spectralnorm_dats.c:1393:1: warning: label ‘__ats_lab_workshop_add_nworker_01840_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: In function ‘mainats’:
+spectralnorm_dats.c:1532:1: warning: label ‘__ats_lab_13’ defined but not used [-Wunused-label]
+spectralnorm_dats.c:1517:1: warning: label ‘__ats_lab_10’ defined but not used [-Wunused-label]
+spectralnorm_dats.c:1514:1: warning: label ‘__ats_lab_11’ defined but not used [-Wunused-label]
+spectralnorm_dats.c:1495:1: warning: label ‘__ats_lab_7’ defined but not used [-Wunused-label]
+spectralnorm_dats.c:1492:1: warning: label ‘__ats_lab_8’ defined but not used [-Wunused-label]
+spectralnorm_dats.c:1456:1: warning: label ‘__ats_lab_mainats’ defined but not used [-Wunused-label]
+spectralnorm_dats.c: At top level:
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/pointer.cats:52:14: warning: ‘atspre_null_ptr’ defined but not used [-Wunused-variable]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/printf.cats:57:1: warning: ‘atspre_fprintf_err’ defined but not used [-Wunused-function]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/printf.cats:69:1: warning: ‘atspre_fprintf_exn’ defined but not used [-Wunused-function]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/printf.cats:105:1: warning: ‘atspre_prerrf_exn’ defined but not used [-Wunused-function]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/string.cats:351:14: warning: ‘atspre_stropt_none’ defined but not used [-Wunused-variable]
+spectralnorm_dats.c:490:1: warning: ‘loop2_0_4_closure_make’ defined but not used [-Wunused-function]
+spectralnorm_dats.c:554:1: warning: ‘loop2_1_5_closure_make’ defined but not used [-Wunused-function]
+spectralnorm_dats.c:666:1: warning: ‘loop1_6_closure_make’ defined but not used [-Wunused-function]
+spectralnorm_dats.c:709:1: warning: ‘loop1__7_closure_make’ defined but not used [-Wunused-function]
+spectralnorm_dats.c:956:1: warning: ‘split_8_closure_make’ defined but not used [-Wunused-function]
+gcc -I/usr/local/src/ats-lang-anairiats-0.2.8/ -I/usr/local/src/ats-lang-anairiats-0.2.8/ccomp/runtime/ -L/usr/local/src/ats-lang-anairiats-0.2.8/ccomp/lib64/ /usr/local/src/ats-lang-anairiats-0.2.8/ccomp/runtime/ats_prelude.c -D_GNU_SOURCE -D_ATS_MULTITHREAD -lpthread -pipe -Wall -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse2 spectralnorm_dats.c -o spectralnorm.ats-4.ats_run -lm -lats_mt -lats 
+0.57s to complete and log all make actions
+
+COMMAND LINE:
+./spectralnorm.ats-4.ats_run 5500
+
+PROGRAM OUTPUT:
+1.274224153

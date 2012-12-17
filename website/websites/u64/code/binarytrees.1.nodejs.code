@@ -1,0 +1,54 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Isaac Gouy </span>
+<span class="hl com">   transliterated for nodejs</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">TreeNode</span><span class="hl opt">(</span>left<span class="hl opt">,</span>right<span class="hl opt">,</span>item<span class="hl opt">){</span>
+   <span class="hl kwa">this</span><span class="hl opt">.</span>left <span class="hl opt">=</span> left<span class="hl opt">;</span>
+   <span class="hl kwa">this</span><span class="hl opt">.</span>right <span class="hl opt">=</span> right<span class="hl opt">;</span>
+   <span class="hl kwa">this</span><span class="hl opt">.</span>item <span class="hl opt">=</span> item<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+TreeNode<span class="hl opt">.</span><span class="hl kwa">prototype</span><span class="hl opt">.</span>itemCheck <span class="hl opt">=</span> <span class="hl kwa">function</span><span class="hl opt">(){</span>
+   <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">this</span><span class="hl opt">.</span>left<span class="hl opt">==</span><span class="hl kwa">null</span><span class="hl opt">)</span> <span class="hl kwa">return this</span><span class="hl opt">.</span>item<span class="hl opt">;</span>
+   <span class="hl kwa">else return this</span><span class="hl opt">.</span>item <span class="hl opt">+</span> <span class="hl kwa">this</span><span class="hl opt">.</span>left<span class="hl opt">.</span><span class="hl kwd">itemCheck</span><span class="hl opt">() -</span> <span class="hl kwa">this</span><span class="hl opt">.</span>right<span class="hl opt">.</span><span class="hl kwd">itemCheck</span><span class="hl opt">();</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span>item<span class="hl opt">,</span>depth<span class="hl opt">){</span>
+   <span class="hl kwa">if</span> <span class="hl opt">(</span>depth<span class="hl opt">&gt;</span><span class="hl num">0</span><span class="hl opt">){</span>
+      <span class="hl kwa">return new</span> <span class="hl kwd">TreeNode</span><span class="hl opt">(</span>
+          <span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">*</span>item<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">,</span> depth<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span>
+         <span class="hl opt">,</span><span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">*</span>item<span class="hl opt">,</span> depth<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span>
+         <span class="hl opt">,</span>item
+      <span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">else</span> <span class="hl opt">{</span>
+      <span class="hl kwa">return new</span> <span class="hl kwd">TreeNode</span><span class="hl opt">(</span><span class="hl kwa">null</span><span class="hl opt">,</span><span class="hl kwa">null</span><span class="hl opt">,</span>item<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+
+<span class="hl kwa">var</span> minDepth <span class="hl opt">=</span> <span class="hl num">4</span><span class="hl opt">;</span>
+<span class="hl kwa">var</span> n <span class="hl opt">=</span> process<span class="hl opt">.</span>argv<span class="hl kwc">[2]</span><span class="hl opt">;</span>
+<span class="hl kwa">var</span> maxDepth <span class="hl opt">=</span> Math<span class="hl opt">.</span><span class="hl kwd">max</span><span class="hl opt">(</span>minDepth <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">,</span> n<span class="hl opt">);</span>
+<span class="hl kwa">var</span> stretchDepth <span class="hl opt">=</span> maxDepth <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+
+<span class="hl kwa">var</span> check <span class="hl opt">=</span> <span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span>stretchDepth<span class="hl opt">).</span><span class="hl kwd">itemCheck</span><span class="hl opt">();</span>
+console<span class="hl opt">.</span><span class="hl kwd">log</span><span class="hl opt">(</span><span class="hl str">&quot;stretch tree of depth &quot;</span> <span class="hl opt">+</span> stretchDepth <span class="hl opt">+</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">check: &quot;</span> <span class="hl opt">+</span> check<span class="hl opt">);</span>
+
+<span class="hl kwa">var</span> longLivedTree <span class="hl opt">=</span> <span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span>maxDepth<span class="hl opt">);</span>
+<span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwa">var</span> depth<span class="hl opt">=</span>minDepth<span class="hl opt">;</span> depth<span class="hl opt">&lt;=</span>maxDepth<span class="hl opt">;</span> depth<span class="hl opt">+=</span><span class="hl num">2</span><span class="hl opt">){</span>
+   <span class="hl kwa">var</span> iterations <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl opt">&lt;&lt; (</span>maxDepth <span class="hl opt">-</span> depth <span class="hl opt">+</span> minDepth<span class="hl opt">);</span>
+
+   check <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwa">var</span> i<span class="hl opt">=</span><span class="hl num">1</span><span class="hl opt">;</span> i<span class="hl opt">&lt;=</span>iterations<span class="hl opt">;</span> i<span class="hl opt">++){</span>
+      check <span class="hl opt">+=</span> <span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span>i<span class="hl opt">,</span>depth<span class="hl opt">).</span><span class="hl kwd">itemCheck</span><span class="hl opt">();</span>
+      check <span class="hl opt">+=</span> <span class="hl kwd">bottomUpTree</span><span class="hl opt">(-</span>i<span class="hl opt">,</span>depth<span class="hl opt">).</span><span class="hl kwd">itemCheck</span><span class="hl opt">();</span>
+   <span class="hl opt">}</span>
+   console<span class="hl opt">.</span><span class="hl kwd">log</span><span class="hl opt">(</span>iterations<span class="hl opt">*</span><span class="hl num">2</span> <span class="hl opt">+</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">trees of depth &quot;</span> <span class="hl opt">+</span> depth <span class="hl opt">+</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">check: &quot;</span> <span class="hl opt">+</span> check<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+console<span class="hl opt">.</span><span class="hl kwd">log</span><span class="hl opt">(</span><span class="hl str">&quot;long lived tree of depth &quot;</span> <span class="hl opt">+</span> maxDepth <span class="hl opt">+</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">check: &quot;</span> 
+   <span class="hl opt">+</span> longLivedTree<span class="hl opt">.</span><span class="hl kwd">itemCheck</span><span class="hl opt">());</span>

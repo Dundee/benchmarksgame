@@ -1,0 +1,92 @@
+<span class="hl slc">%% The Computer Language Benchmarks Game</span>
+<span class="hl slc">%% http://shootout.alioth.debian.org/</span>
+<span class="hl slc">%% contributed by Fredrik Svahn based on an earlier submission</span>
+<span class="hl slc">%%             by Kenneth Johansson, Vlad Dumitrescu and Ulf Wiger</span>
+
+<span class="hl opt">-</span><span class="hl kwd">module</span><span class="hl opt">(</span>knucleotide<span class="hl opt">).</span>
+<span class="hl opt">-</span><span class="hl kwd">export</span><span class="hl opt">([</span>main<span class="hl opt">/</span><span class="hl num">1</span><span class="hl opt">]).</span>
+
+<span class="hl kwd">to_upper</span><span class="hl opt">(&lt;&lt;</span>C<span class="hl opt">,</span> Cs<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">&gt;&gt;,</span> Acc<span class="hl opt">)</span> <span class="hl kwa">when</span> C <span class="hl opt">&gt;=</span> $a<span class="hl opt">,</span> C <span class="hl opt">=&lt;</span> $z <span class="hl opt">-&gt;</span>
+    <span class="hl kwd">to_upper</span><span class="hl opt">(</span>Cs<span class="hl opt">, [</span>C<span class="hl opt">-(</span>$a<span class="hl opt">-</span>$A<span class="hl opt">)</span>| Acc<span class="hl opt">]);</span>
+<span class="hl kwd">to_upper</span><span class="hl opt">(&lt;&lt;</span>$<span class="hl esc">\n</span><span class="hl opt">,</span> Cs<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">&gt;&gt;,</span> Acc<span class="hl opt">) -&gt;</span> <span class="hl kwd">to_upper</span><span class="hl opt">(</span>Cs<span class="hl opt">,</span> Acc<span class="hl opt">);</span>
+<span class="hl kwd">to_upper</span><span class="hl opt">(&lt;&lt;</span>C<span class="hl opt">,</span> Cs<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">&gt;&gt;,</span> Acc<span class="hl opt">) -&gt;</span> <span class="hl kwd">to_upper</span><span class="hl opt">(</span>Cs<span class="hl opt">, [</span>C | Acc<span class="hl opt">]);</span>
+<span class="hl kwd">to_upper</span><span class="hl opt">(&lt;&lt;&gt;&gt;,</span> Acc<span class="hl opt">) -&gt;</span> <span class="hl kwb">list_to_binary</span><span class="hl opt">(</span><span class="hl kwc">lists</span><span class="hl opt">:</span><span class="hl kwd">reverse</span><span class="hl opt">(</span>Acc<span class="hl opt">)).</span>
+
+<span class="hl slc">%% Read and discard until start of third segment</span>
+<span class="hl kwd">seek_three</span><span class="hl opt">() -&gt;</span>
+    <span class="hl kwa">case</span> <span class="hl kwc">io</span><span class="hl opt">:</span><span class="hl kwd">get_line</span><span class="hl opt">(</span><span class="hl str">''</span><span class="hl opt">)</span> <span class="hl kwa">of</span>
+	<span class="hl opt">&lt;&lt;</span><span class="hl str">&quot;&gt;TH&quot;</span><span class="hl opt">,</span> _<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">&gt;&gt; -&gt;</span> done<span class="hl opt">;</span>
+	eof        <span class="hl opt">-&gt;</span> <span class="hl kwc">erlang</span><span class="hl opt">:</span><span class="hl kwd">error</span><span class="hl opt">(</span>eof<span class="hl opt">);</span>
+	_          <span class="hl opt">-&gt;</span> <span class="hl kwd">seek_three</span><span class="hl opt">()</span>
+    <span class="hl kwa">end</span><span class="hl opt">.</span>
+
+<span class="hl slc">%% Read third segment</span>
+<span class="hl kwd">get_seq_three</span><span class="hl opt">(</span>Seq<span class="hl opt">) -&gt;</span>
+    <span class="hl kwa">case</span> <span class="hl kwc">io</span><span class="hl opt">:</span><span class="hl kwd">get_line</span><span class="hl opt">(</span><span class="hl str">''</span><span class="hl opt">)</span> <span class="hl kwa">of</span>
+	eof <span class="hl opt">-&gt;</span> <span class="hl kwd">iolist_to_binary</span><span class="hl opt">(</span><span class="hl kwc">lists</span><span class="hl opt">:</span><span class="hl kwd">reverse</span><span class="hl opt">(</span>Seq<span class="hl opt">));</span>
+	Str <span class="hl opt">-&gt;</span> <span class="hl kwd">get_seq_three</span><span class="hl opt">([</span><span class="hl kwd">to_upper</span><span class="hl opt">(</span>Str<span class="hl opt">, [])</span>|Seq<span class="hl opt">])</span>
+    <span class="hl kwa">end</span><span class="hl opt">.</span>
+
+<span class="hl slc">%% Generate frequency hash table</span>
+<span class="hl kwd">gen_freq_table</span><span class="hl opt">(</span>FreqT<span class="hl opt">,</span> Seq<span class="hl opt">,</span> Len<span class="hl opt">) -&gt;</span>
+    <span class="hl kwd">gen_freq_table</span><span class="hl opt">(</span>Seq<span class="hl opt">,</span> Len<span class="hl opt">,</span> FreqT<span class="hl opt">,</span> <span class="hl kwb">size</span><span class="hl opt">(</span>Seq<span class="hl opt">)-</span>Len<span class="hl opt">).</span>
+
+<span class="hl kwd">gen_freq_table</span><span class="hl opt">(</span>_<span class="hl opt">,</span> _<span class="hl opt">,</span> _<span class="hl opt">, -</span><span class="hl num">1</span><span class="hl opt">) -&gt;</span> done<span class="hl opt">;</span>
+<span class="hl kwd">gen_freq_table</span><span class="hl opt">(</span>Seq<span class="hl opt">,</span> Len<span class="hl opt">,</span> FreqT<span class="hl opt">,</span> Dec<span class="hl opt">) -&gt;</span>
+    <span class="hl opt">&lt;&lt;</span><span class="hl kwc">_</span><span class="hl opt">:</span>Dec<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> <span class="hl kwc">Key</span><span class="hl opt">:</span>Len<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">,</span> _<span class="hl opt">/</span><span class="hl kwb">binary</span><span class="hl opt">&gt;&gt; =</span> Seq<span class="hl opt">,</span>
+    <span class="hl kwd">update_counter</span><span class="hl opt">(</span>Key<span class="hl opt">,</span> FreqT<span class="hl opt">),</span>
+    <span class="hl kwd">gen_freq_table</span><span class="hl opt">(</span>Seq<span class="hl opt">,</span> Len<span class="hl opt">,</span> FreqT<span class="hl opt">,</span> Dec<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">).</span>
+
+<span class="hl slc">%% Update hash table counter for already existing pattern or insert new</span>
+<span class="hl kwd">update_counter</span><span class="hl opt">(</span>Key<span class="hl opt">,</span> FreqT<span class="hl opt">) -&gt;</span>
+    try <span class="hl kwc">ets</span><span class="hl opt">:</span><span class="hl kwd">update_counter</span><span class="hl opt">(</span>FreqT<span class="hl opt">,</span> Key<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">)</span> <span class="hl kwa">of</span> _ <span class="hl opt">-&gt;</span> ok
+    <span class="hl kwa">catch</span> <span class="hl kwc">error</span><span class="hl opt">:</span>badarg <span class="hl opt">-&gt;</span> <span class="hl kwc">ets</span><span class="hl opt">:</span><span class="hl kwd">insert</span><span class="hl opt">(</span>FreqT<span class="hl opt">, {</span>Key<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">})</span>
+    <span class="hl kwa">end</span><span class="hl opt">.</span>
+
+<span class="hl slc">%% Print the frequency table in the right order</span>
+<span class="hl kwd">print_freq_table</span><span class="hl opt">(</span>FreqT<span class="hl opt">) -&gt;</span>
+    FreqList <span class="hl opt">=</span> <span class="hl kwc">lists</span><span class="hl opt">:</span><span class="hl kwd">reverse</span><span class="hl opt">(</span><span class="hl kwc">lists</span><span class="hl opt">:</span><span class="hl kwd">keysort</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">,</span> <span class="hl kwc">ets</span><span class="hl opt">:</span><span class="hl kwd">tab2list</span><span class="hl opt">(</span>FreqT<span class="hl opt">))),</span>
+    Tot <span class="hl opt">=</span> <span class="hl kwc">lists</span><span class="hl opt">:</span><span class="hl kwd">foldr</span><span class="hl opt">(</span><span class="hl kwa">fun</span><span class="hl opt">({</span>_<span class="hl opt">,</span> Cnt<span class="hl opt">},</span> Acc<span class="hl opt">)-&gt;</span> Acc <span class="hl opt">+</span> Cnt <span class="hl kwa">end</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> FreqList<span class="hl opt">),</span>
+    <span class="hl kwc">lists</span><span class="hl opt">:</span><span class="hl kwd">foreach</span><span class="hl opt">(</span><span class="hl kwa">fun</span><span class="hl opt">({</span>Nucleoid<span class="hl opt">,</span> Cnt<span class="hl opt">})-&gt;</span>
+			  <span class="hl kwc">io</span><span class="hl opt">:</span><span class="hl kwd">fwrite</span><span class="hl opt">(</span><span class="hl str">&quot;~s ~.3f</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,[</span>Nucleoid<span class="hl opt">,</span> Cnt<span class="hl opt">*</span><span class="hl num">100</span><span class="hl opt">/</span>Tot<span class="hl opt">])</span>
+		  <span class="hl kwa">end</span><span class="hl opt">,</span> FreqList<span class="hl opt">),</span>
+    <span class="hl kwc">io</span><span class="hl opt">:</span><span class="hl kwd">fwrite</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">).</span>
+
+<span class="hl slc">%% Print number of occurrences for a specific pattern</span>
+<span class="hl kwd">print_count</span><span class="hl opt">(</span>FreqT<span class="hl opt">,</span> Pattern<span class="hl opt">) -&gt;</span>
+    <span class="hl kwa">case</span> <span class="hl kwc">ets</span><span class="hl opt">:</span><span class="hl kwd">lookup</span><span class="hl opt">(</span>FreqT<span class="hl opt">,</span> Pattern<span class="hl opt">)</span> <span class="hl kwa">of</span>
+	<span class="hl opt">[{</span>_<span class="hl opt">,</span> Value<span class="hl opt">}] -&gt;</span> <span class="hl kwc">io</span><span class="hl opt">:</span><span class="hl kwd">fwrite</span><span class="hl opt">(</span><span class="hl str">&quot;~w</span><span class="hl esc">\t</span><span class="hl str">~s</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,[</span>Value<span class="hl opt">,</span> Pattern<span class="hl opt">]);</span>
+	<span class="hl opt">[] -&gt;</span> <span class="hl kwc">io</span><span class="hl opt">:</span><span class="hl kwd">fwrite</span><span class="hl opt">(</span><span class="hl str">&quot;~w</span><span class="hl esc">\t</span><span class="hl str">~s</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,[</span><span class="hl num">0</span><span class="hl opt">,</span> Pattern<span class="hl opt">])</span>
+    <span class="hl kwa">end</span><span class="hl opt">.</span>
+
+<span class="hl slc">%% Spawn a worker process with its own hash table</span>
+<span class="hl kwd">do</span><span class="hl opt">({</span>PrintFun<span class="hl opt">,</span> Pattern<span class="hl opt">},</span> Seq<span class="hl opt">) -&gt;</span>
+    <span class="hl kwb">spawn</span><span class="hl opt">(</span> <span class="hl kwa">fun</span><span class="hl opt">()-&gt;</span>
+		   FreqT <span class="hl opt">=</span> <span class="hl kwc">ets</span><span class="hl opt">:</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl kwb">hash</span><span class="hl opt">, [</span>set<span class="hl opt">]),</span>
+		   <span class="hl kwd">gen_freq_table</span><span class="hl opt">(</span>FreqT<span class="hl opt">,</span> Seq<span class="hl opt">,</span> <span class="hl kwb">size</span><span class="hl opt">(</span>Pattern<span class="hl opt">)),</span>
+		   <span class="hl slc">%Work is done, wait for token and print</span>
+		   <span class="hl kwa">receive</span> Pids <span class="hl opt">-&gt;</span>
+			   <span class="hl kwd">PrintFun</span><span class="hl opt">(</span>FreqT<span class="hl opt">,</span> Pattern<span class="hl opt">),</span>
+			   <span class="hl kwb">hd</span><span class="hl opt">(</span>Pids<span class="hl opt">) !</span> <span class="hl kwb">tl</span><span class="hl opt">(</span>Pids<span class="hl opt">)</span>
+		   <span class="hl kwa">end</span><span class="hl opt">,</span>
+		   <span class="hl kwc">ets</span><span class="hl opt">:</span><span class="hl kwd">delete</span><span class="hl opt">(</span>FreqT<span class="hl opt">)</span>
+	   <span class="hl kwa">end</span> <span class="hl opt">).</span>
+
+<span class="hl kwd">main</span><span class="hl opt">(</span>_Arg<span class="hl opt">) -&gt;</span>
+    <span class="hl kwc">io</span><span class="hl opt">:</span><span class="hl kwd">setopts</span><span class="hl opt">(</span>standard_io<span class="hl opt">, [</span><span class="hl kwb">binary</span><span class="hl opt">]),</span>
+    <span class="hl kwd">seek_three</span><span class="hl opt">(),</span>
+    Seq <span class="hl opt">=</span> <span class="hl kwd">get_seq_three</span><span class="hl opt">([]),</span>
+    PrintFreq <span class="hl opt">=</span> <span class="hl kwa">fun</span><span class="hl opt">(</span>Res<span class="hl opt">,</span> _Pattern<span class="hl opt">)-&gt;</span> <span class="hl kwd">print_freq_table</span><span class="hl opt">(</span>Res<span class="hl opt">)</span> <span class="hl kwa">end</span><span class="hl opt">,</span>
+    PrintCount <span class="hl opt">=</span> <span class="hl kwa">fun</span><span class="hl opt">(</span>Res<span class="hl opt">,</span> Pattern<span class="hl opt">)-&gt;</span> <span class="hl kwd">print_count</span><span class="hl opt">(</span>Res<span class="hl opt">,</span> Pattern<span class="hl opt">)</span> <span class="hl kwa">end</span><span class="hl opt">,</span>
+    Actions <span class="hl opt">= [{</span>PrintFreq<span class="hl opt">,  &lt;&lt;</span><span class="hl str">&quot;?&quot;</span><span class="hl opt">&gt;&gt;},</span>
+	       <span class="hl opt">{</span>PrintFreq<span class="hl opt">,  &lt;&lt;</span><span class="hl str">&quot;??&quot;</span><span class="hl opt">&gt;&gt;},</span>
+	       <span class="hl opt">{</span>PrintCount<span class="hl opt">, &lt;&lt;</span><span class="hl str">&quot;GGT&quot;</span><span class="hl opt">&gt;&gt;},</span>
+	       <span class="hl opt">{</span>PrintCount<span class="hl opt">, &lt;&lt;</span><span class="hl str">&quot;GGTA&quot;</span><span class="hl opt">&gt;&gt;},</span>
+	       <span class="hl opt">{</span>PrintCount<span class="hl opt">, &lt;&lt;</span><span class="hl str">&quot;GGTATT&quot;</span><span class="hl opt">&gt;&gt;},</span>
+	       <span class="hl opt">{</span>PrintCount<span class="hl opt">, &lt;&lt;</span><span class="hl str">&quot;GGTATTTTAATT&quot;</span><span class="hl opt">&gt;&gt;},</span>
+	       <span class="hl opt">{</span>PrintCount<span class="hl opt">, &lt;&lt;</span><span class="hl str">&quot;GGTATTTTAATTTATAGT&quot;</span><span class="hl opt">&gt;&gt;}],</span>
+
+    Pids <span class="hl opt">= [</span> <span class="hl kwd">do</span><span class="hl opt">(</span>Action<span class="hl opt">,</span> Seq<span class="hl opt">)</span> || Action <span class="hl opt">&lt;-</span> Actions <span class="hl opt">],</span>
+    <span class="hl slc">%Pass token to print in right order</span>
+    <span class="hl kwb">hd</span><span class="hl opt">(</span>Pids<span class="hl opt">) !</span> <span class="hl kwb">tl</span><span class="hl opt">(</span>Pids<span class="hl opt">) ++ [</span><span class="hl kwb">self</span><span class="hl opt">()],</span>
+    <span class="hl kwa">receive</span> _Pid <span class="hl opt">-&gt;</span> <span class="hl kwb">halt</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">)</span> <span class="hl kwa">end</span><span class="hl opt">.</span>

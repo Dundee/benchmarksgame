@@ -1,0 +1,21 @@
+
+Fri, 18 May 2012 01:39:50 GMT
+
+MAKE:
+/usr/bin/gnatchop -r -w spectralnorm.gnat
+splitting spectralnorm.gnat into:
+   spectral_utils.ads
+   spectral_utils.adb
+   spectralnorm.adb
+/usr/bin/gnatmake -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp -f spectralnorm.adb -o spectralnorm.gnat_run 
+gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp spectralnorm.adb
+gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp spectral_utils.adb
+gnatbind -x spectralnorm.ali
+gnatlink spectralnorm.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o spectralnorm.gnat_run
+0.55s to complete and log all make actions
+
+COMMAND LINE:
+./spectralnorm.gnat_run 5500
+
+PROGRAM OUTPUT:
+1.274224153

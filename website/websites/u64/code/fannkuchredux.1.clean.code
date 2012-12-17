@@ -1,0 +1,52 @@
+<span class="hl com">/* The Computer Language Shootout</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Isaac Gouy</span>
+<span class="hl com">   transliterated from Miha Vučkovič's Haskell program</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">module</span> fannkuchredux
+
+<span class="hl kwa">import</span> StdEnv<span class="hl opt">,</span>LanguageShootout
+
+flop <span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">,</span>x1<span class="hl opt">:</span>t<span class="hl opt">] = [</span>x1<span class="hl opt">,</span><span class="hl num">2</span><span class="hl opt">:</span>t<span class="hl opt">]</span>
+flop <span class="hl opt">[</span><span class="hl num">3</span><span class="hl opt">,</span>x1<span class="hl opt">,</span>x2<span class="hl opt">:</span>t<span class="hl opt">] = [</span>x2<span class="hl opt">,</span>x1<span class="hl opt">,</span><span class="hl num">3</span><span class="hl opt">:</span>t<span class="hl opt">]</span>
+flop <span class="hl opt">[</span><span class="hl num">4</span><span class="hl opt">,</span>x1<span class="hl opt">,</span>x2<span class="hl opt">,</span>x3<span class="hl opt">:</span>t<span class="hl opt">] = [</span>x3<span class="hl opt">,</span>x2<span class="hl opt">,</span>x1<span class="hl opt">,</span><span class="hl num">4</span><span class="hl opt">:</span>t<span class="hl opt">]</span>
+flop <span class="hl opt">[</span><span class="hl num">5</span><span class="hl opt">,</span>x1<span class="hl opt">,</span>x2<span class="hl opt">,</span>x3<span class="hl opt">,</span>x4<span class="hl opt">:</span>t<span class="hl opt">] = [</span>x4<span class="hl opt">,</span>x3<span class="hl opt">,</span>x2<span class="hl opt">,</span>x1<span class="hl opt">,</span><span class="hl num">5</span><span class="hl opt">:</span>t<span class="hl opt">]</span>
+flop <span class="hl opt">[</span><span class="hl num">6</span><span class="hl opt">,</span>x1<span class="hl opt">,</span>x2<span class="hl opt">,</span>x3<span class="hl opt">,</span>x4<span class="hl opt">,</span>x5<span class="hl opt">:</span>t<span class="hl opt">] = [</span>x5<span class="hl opt">,</span>x4<span class="hl opt">,</span>x3<span class="hl opt">,</span>x2<span class="hl opt">,</span>x1<span class="hl opt">,</span><span class="hl num">6</span><span class="hl opt">:</span>t<span class="hl opt">]</span>
+flop <span class="hl opt">[</span><span class="hl num">7</span><span class="hl opt">,</span>x1<span class="hl opt">,</span>x2<span class="hl opt">,</span>x3<span class="hl opt">,</span>x4<span class="hl opt">,</span>x5<span class="hl opt">,</span>x6<span class="hl opt">:</span>t<span class="hl opt">] = [</span>x6<span class="hl opt">,</span>x5<span class="hl opt">,</span>x4<span class="hl opt">,</span>x3<span class="hl opt">,</span>x2<span class="hl opt">,</span>x1<span class="hl opt">,</span><span class="hl num">7</span><span class="hl opt">:</span>t<span class="hl opt">]</span>
+
+flop lst<span class="hl opt">=:[</span>h<span class="hl opt">:</span>_<span class="hl opt">] =</span> r <span class="hl kwa">where</span>
+   <span class="hl opt">(</span>t<span class="hl opt">,</span> r<span class="hl opt">) =</span> flop2 h <span class="hl opt">(</span>lst<span class="hl opt">,</span> t<span class="hl opt">)</span>
+   flop2 <span class="hl num">0</span> <span class="hl opt">(</span>t<span class="hl opt">,</span> r<span class="hl opt">) = (</span>t<span class="hl opt">,</span> r<span class="hl opt">)</span>
+   flop2 n <span class="hl opt">([</span>h<span class="hl opt">:</span>t<span class="hl opt">],</span> r<span class="hl opt">) =</span> flop2 <span class="hl opt">(</span>n<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">) (</span>t<span class="hl opt">, [</span>h<span class="hl opt">:</span>r<span class="hl opt">])</span>
+	
+flopS <span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">:</span>_<span class="hl opt">] =</span> <span class="hl num">0</span>
+flopS lst <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl opt">+</span> flopS <span class="hl opt">(</span>flop lst<span class="hl opt">)</span>	
+
+rotate n <span class="hl opt">[</span>h<span class="hl opt">:</span>t<span class="hl opt">] =</span> rotate2 <span class="hl opt">(</span>n<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span> t <span class="hl kwa">where</span>
+   rotate2 <span class="hl num">0</span> l <span class="hl opt">= [</span>h<span class="hl opt">:</span>l<span class="hl opt">]</span>
+   rotate2 n <span class="hl opt">[</span>f<span class="hl opt">:</span>t<span class="hl opt">] = [</span>f<span class="hl opt">:(</span>rotate2 <span class="hl opt">(</span>n<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span> t<span class="hl opt">)]</span>
+	
+checksum i f
+   | i rem <span class="hl num">2</span> <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl opt">=</span> f
+                  <span class="hl opt">=</span> ~f    
+                                 
+pfold r <span class="hl opt">[] =</span> r
+pfold <span class="hl opt">(</span>ac<span class="hl opt">,</span> af<span class="hl opt">) [(</span>c<span class="hl opt">,</span> f<span class="hl opt">):</span>t<span class="hl opt">]</span>
+   <span class="hl opt">#!</span> sc <span class="hl opt">=</span> ac<span class="hl opt">+</span>c
+   <span class="hl opt">#!</span> sf <span class="hl opt">=</span> max af f  
+   <span class="hl opt">=</span> pfold <span class="hl opt">(</span>sc<span class="hl opt">,</span> sf<span class="hl opt">)</span> t 
+	                                  
+permut n <span class="hl opt">=</span> foldr perm <span class="hl opt">[[</span><span class="hl num">1</span><span class="hl opt">..</span>n<span class="hl opt">]] [</span><span class="hl num">2</span><span class="hl opt">..</span>n<span class="hl opt">]</span> <span class="hl kwa">where</span>
+   perm x lst <span class="hl opt">=</span> flatten <span class="hl opt">[</span>take x <span class="hl opt">(</span>iterate <span class="hl opt">(</span>rotate x<span class="hl opt">)</span> l<span class="hl opt">)</span> <span class="hl esc">\\</span> l <span class="hl opt">&lt;-</span> lst<span class="hl opt">]</span>   
+		
+Start world
+   <span class="hl opt">#</span> n <span class="hl opt">=</span> argi 
+     <span class="hl opt">(</span>chksm<span class="hl opt">,</span> mflops<span class="hl opt">) =</span> pfold <span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">) (</span>map 
+        <span class="hl opt">(\(</span>i<span class="hl opt">,</span> p<span class="hl opt">) =</span> <span class="hl kwa">let</span> flops <span class="hl opt">=</span> flopS p <span class="hl kwa">in</span> <span class="hl opt">(</span>checksum i flops<span class="hl opt">,</span> flops<span class="hl opt">))</span> 
+           <span class="hl opt">(</span>zip2 <span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">..] (</span>permut n<span class="hl opt">)) )</span>  
+               
+   <span class="hl opt">=</span> toString chksm <span class="hl opt">+++</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> <span class="hl opt">+++</span> 
+     <span class="hl str">&quot;Pfannkuchen(&quot;</span> <span class="hl opt">+++</span> toString n <span class="hl opt">+++</span> <span class="hl str">&quot;) = &quot;</span> <span class="hl opt">+++</span> toString mflops <span class="hl opt">+++</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span>	  
+

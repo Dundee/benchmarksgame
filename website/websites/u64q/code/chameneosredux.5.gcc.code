@@ -1,0 +1,458 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">http://shootout.alioth.debian.org/</span>
+<span class="hl com">Contributed by Dmitry Vyukov</span>
+<span class="hl com"></span>
+<span class="hl com">Kernel thread is created for each chameneous.</span>
+<span class="hl com">Atomic compare-and-swap primitive is used </span>
+<span class="hl com">for meeting place state manipulation.</span>
+<span class="hl com">*/</span>
+
+<span class="hl ppc">#define _GNU_SOURCE</span>
+<span class="hl ppc">#include &lt;stdlib.h&gt;</span>
+<span class="hl ppc">#include &lt;malloc.h&gt;</span>
+<span class="hl ppc">#include &lt;string.h&gt;</span>
+<span class="hl ppc">#include &lt;assert.h&gt;</span>
+<span class="hl ppc">#include &lt;stdio.h&gt;</span>
+<span class="hl ppc">#include &lt;stdint.h&gt;</span>
+<span class="hl ppc">#include &lt;sys/time.h&gt;</span>
+<span class="hl ppc">#include &lt;pthread.h&gt;</span>
+<span class="hl ppc">#include &lt;sched.h&gt;</span>
+
+<span class="hl ppc">#define CPUINFO_FILENAME</span> <span class="hl pps">&quot;/proc/cpuinfo&quot;</span><span class="hl ppc"></span>
+
+<span class="hl ppc">#define CL_SIZE 64</span>
+
+<span class="hl kwb">void</span><span class="hl opt">*</span> <span class="hl kwd">cache_aligned_malloc</span><span class="hl opt">(</span><span class="hl kwb">size_t</span> sz<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+    <span class="hl kwb">char</span><span class="hl opt">*</span>                       mem<span class="hl opt">;</span>
+    <span class="hl kwb">char</span><span class="hl opt">*</span>                       res<span class="hl opt">;</span>
+    <span class="hl kwb">void</span><span class="hl opt">**</span>                      pos<span class="hl opt">;</span>
+
+    mem <span class="hl opt">= (</span><span class="hl kwb">char</span><span class="hl opt">*)</span><span class="hl kwd">malloc</span><span class="hl opt">(</span>sz <span class="hl opt">+</span> <span class="hl num">2</span> <span class="hl opt">*</span> CL_SIZE<span class="hl opt">);</span>
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>mem <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl kwd">exit</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">);</span>
+    res <span class="hl opt">= (</span><span class="hl kwb">char</span><span class="hl opt">*)((</span><span class="hl kwb">uintptr_t</span><span class="hl opt">)(</span>mem <span class="hl opt">+</span> CL_SIZE<span class="hl opt">) &amp; ~(</span>CL_SIZE <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">));</span>
+    pos <span class="hl opt">= (</span><span class="hl kwb">void</span><span class="hl opt">**)(</span>res <span class="hl opt">-</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span><span class="hl kwb">void</span><span class="hl opt">*));</span>
+    pos<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] =</span> mem<span class="hl opt">;</span>
+    <span class="hl kwa">return</span> res<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">cache_aligned_free</span><span class="hl opt">(</span><span class="hl kwb">void</span><span class="hl opt">*</span> res<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+    <span class="hl kwb">void</span><span class="hl opt">*</span>                       mem<span class="hl opt">;</span>
+    <span class="hl kwb">void</span><span class="hl opt">**</span>                      pos<span class="hl opt">;</span>
+
+    <span class="hl kwa">assert</span><span class="hl opt">(((</span><span class="hl kwb">uintptr_t</span><span class="hl opt">)</span>res <span class="hl opt">&amp; (</span>CL_SIZE <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">)) ==</span> <span class="hl num">0</span><span class="hl opt">);</span>
+    pos <span class="hl opt">= (</span><span class="hl kwb">void</span><span class="hl opt">**)((</span><span class="hl kwb">char</span><span class="hl opt">*)</span>res <span class="hl opt">-</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span><span class="hl kwb">void</span><span class="hl opt">*));</span>
+    mem <span class="hl opt">=</span> pos<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">];</span>
+    <span class="hl kwd">free</span><span class="hl opt">(</span>mem<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">enum</span> color_t
+<span class="hl opt">{</span>
+    color_blue<span class="hl opt">,</span>
+    color_red<span class="hl opt">,</span>
+    color_yellow<span class="hl opt">,</span>
+<span class="hl opt">};</span>
+
+<span class="hl kwb">char const</span><span class="hl opt">*</span> color_names<span class="hl opt">[] = {</span><span class="hl str">&quot;blue&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;red&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;yellow&quot;</span><span class="hl opt">};</span>
+
+<span class="hl kwb">enum</span> color_t <span class="hl kwd">color_complement</span><span class="hl opt">(</span><span class="hl kwb">enum</span> color_t c1<span class="hl opt">,</span> <span class="hl kwb">enum</span> color_t c2<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+   <span class="hl kwa">switch</span> <span class="hl opt">(</span>c1<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+   <span class="hl kwa">case</span> color_blue<span class="hl opt">:</span>
+      <span class="hl kwa">switch</span> <span class="hl opt">(</span>c2<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+      <span class="hl kwa">case</span> color_blue<span class="hl opt">:</span>      <span class="hl kwa">return</span> color_blue<span class="hl opt">;</span>
+      <span class="hl kwa">case</span> color_red<span class="hl opt">:</span>       <span class="hl kwa">return</span> color_yellow<span class="hl opt">;</span>
+      <span class="hl kwa">case</span> color_yellow<span class="hl opt">:</span>    <span class="hl kwa">return</span> color_red<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl kwa">case</span> color_red<span class="hl opt">:</span>
+      <span class="hl kwa">switch</span> <span class="hl opt">(</span>c2<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+      <span class="hl kwa">case</span> color_blue<span class="hl opt">:</span>      <span class="hl kwa">return</span> color_yellow<span class="hl opt">;</span>
+      <span class="hl kwa">case</span> color_red<span class="hl opt">:</span>       <span class="hl kwa">return</span> color_red<span class="hl opt">;</span>
+      <span class="hl kwa">case</span> color_yellow<span class="hl opt">:</span>    <span class="hl kwa">return</span> color_blue<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl kwa">case</span> color_yellow<span class="hl opt">:</span>
+      <span class="hl kwa">switch</span> <span class="hl opt">(</span>c2<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+      <span class="hl kwa">case</span> color_blue<span class="hl opt">:</span>      <span class="hl kwa">return</span> color_red<span class="hl opt">;</span>
+      <span class="hl kwa">case</span> color_red<span class="hl opt">:</span>       <span class="hl kwa">return</span> color_blue<span class="hl opt">;</span>
+      <span class="hl kwa">case</span> color_yellow<span class="hl opt">:</span>    <span class="hl kwa">return</span> color_yellow<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">assert</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
+   <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">print_colors</span><span class="hl opt">()</span>
+<span class="hl opt">{</span>
+    <span class="hl kwb">enum</span> color_t                c1<span class="hl opt">;</span>
+    <span class="hl kwb">enum</span> color_t                c2<span class="hl opt">;</span>
+    <span class="hl kwb">enum</span> color_t                c3<span class="hl opt">;</span>
+
+    <span class="hl kwa">for</span> <span class="hl opt">(</span>c1 <span class="hl opt">=</span> color_blue<span class="hl opt">;</span> c1 <span class="hl opt">&lt;=</span> color_yellow<span class="hl opt">;</span> c1 <span class="hl opt">+=</span> <span class="hl num">1</span><span class="hl opt">)</span>
+    <span class="hl opt">{</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span>c2 <span class="hl opt">=</span> color_blue<span class="hl opt">;</span> c2 <span class="hl opt">&lt;=</span> color_yellow<span class="hl opt">;</span> c2 <span class="hl opt">+=</span> <span class="hl num">1</span><span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            c3 <span class="hl opt">=</span> <span class="hl kwd">color_complement</span><span class="hl opt">(</span>c1<span class="hl opt">,</span> c2<span class="hl opt">);</span>
+            <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%s + %s -&gt; %s</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span>
+                color_names<span class="hl opt">[</span>c1<span class="hl opt">],</span> color_names<span class="hl opt">[</span>c2<span class="hl opt">],</span> color_names<span class="hl opt">[</span>c3<span class="hl opt">]);</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">char const</span><span class="hl opt">*</span> <span class="hl kwd">spell_number</span><span class="hl opt">(</span><span class="hl kwb">size_t</span> n<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+    <span class="hl kwb">static char</span>                 buf <span class="hl opt">[</span><span class="hl num">128</span><span class="hl opt">];</span>
+    <span class="hl kwb">static char const</span><span class="hl opt">*</span>          numbers <span class="hl opt">[] = {</span>
+        <span class="hl str">&quot; zero&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot; one&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot; two&quot;</span><span class="hl opt">,</span>   <span class="hl str">&quot; three&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot; four&quot;</span><span class="hl opt">,</span>
+        <span class="hl str">&quot; five&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot; six&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot; seven&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot; eight&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot; nine&quot;</span><span class="hl opt">};</span>
+
+    <span class="hl kwb">size_t</span>                      tokens <span class="hl opt">[</span><span class="hl num">32</span><span class="hl opt">];</span>
+    <span class="hl kwb">size_t</span>                      token_count<span class="hl opt">;</span>
+    <span class="hl kwb">char const</span><span class="hl opt">*</span>                 tok<span class="hl opt">;</span>
+    <span class="hl kwb">char</span><span class="hl opt">*</span>                       pos<span class="hl opt">;</span>
+
+    token_count <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">do</span>
+    <span class="hl opt">{</span>
+        tokens<span class="hl opt">[</span>token_count<span class="hl opt">] =</span> n <span class="hl opt">%</span> <span class="hl num">10</span><span class="hl opt">;</span>
+        token_count <span class="hl opt">+=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+        n <span class="hl opt">/=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwa">while</span> <span class="hl opt">(</span>n<span class="hl opt">);</span>
+
+    pos <span class="hl opt">=</span> buf<span class="hl opt">;</span>
+    <span class="hl kwa">while</span> <span class="hl opt">(</span>token_count<span class="hl opt">)</span>
+    <span class="hl opt">{</span>
+        token_count <span class="hl opt">-=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+        tok <span class="hl opt">=</span> numbers<span class="hl opt">[</span>tokens<span class="hl opt">[</span>token_count<span class="hl opt">]];</span>
+        <span class="hl kwa">while</span> <span class="hl opt">(</span>tok<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">])</span>
+            pos<span class="hl opt">++[</span><span class="hl num">0</span><span class="hl opt">] =</span> tok<span class="hl opt">++[</span><span class="hl num">0</span><span class="hl opt">];</span>
+    <span class="hl opt">}</span>
+    pos<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] =</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">return</span> buf<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">struct</span> meeting_place_t
+<span class="hl opt">{</span>
+    <span class="hl kwb">uintptr_t</span> <span class="hl kwc">volatile</span>          state<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+<span class="hl ppc">#define CHAMENEOS_IDX_MASK      0xFF</span>
+<span class="hl ppc">#define MEET_COUNT_SHIFT        8</span>
+
+<span class="hl kwb">struct</span> chameneos_t
+<span class="hl opt">{</span>
+    <span class="hl kwb">enum</span> color_t                color<span class="hl opt">;</span>
+    <span class="hl kwb">size_t</span>                      meet_count<span class="hl opt">;</span>
+    <span class="hl kwb">size_t</span>                      meet_same_count<span class="hl opt">;</span>
+    <span class="hl kwb">int</span> <span class="hl kwc">volatile</span>                meeting_completed<span class="hl opt">;</span>
+    <span class="hl kwb">struct</span> meeting_place_t<span class="hl opt">*</span>     place<span class="hl opt">;</span>
+    <span class="hl kwb">struct</span> chameneos_t<span class="hl opt">**</span>        chameneos<span class="hl opt">;</span>
+    <span class="hl kwb">size_t</span>                      id<span class="hl opt">;</span>
+    <span class="hl kwb">int</span>                         is_smp<span class="hl opt">;</span>
+    pthread_t                   thread<span class="hl opt">;</span>
+    pthread_attr_t              thread_attr<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+<span class="hl kwb">void</span><span class="hl opt">*</span> <span class="hl kwd">chameneos_func</span><span class="hl opt">(</span><span class="hl kwb">void</span><span class="hl opt">*</span> ctx<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+    <span class="hl kwb">struct</span> chameneos_t<span class="hl opt">*</span>         chameneos<span class="hl opt">;</span>
+    <span class="hl kwb">struct</span> chameneos_t<span class="hl opt">**</span>        chameneoses<span class="hl opt">;</span>
+    <span class="hl kwb">struct</span> chameneos_t<span class="hl opt">*</span>         peer<span class="hl opt">;</span>
+    <span class="hl kwb">size_t</span>                      my_id<span class="hl opt">;</span>
+    <span class="hl kwb">size_t</span>                      is_same<span class="hl opt">;</span>
+    <span class="hl kwb">size_t</span>                      spin_count<span class="hl opt">;</span>
+    <span class="hl kwb">uintptr_t</span> <span class="hl kwc">volatile</span><span class="hl opt">*</span>         state_p<span class="hl opt">;</span>
+    <span class="hl kwb">uintptr_t</span>                   state<span class="hl opt">;</span>
+    <span class="hl kwb">uintptr_t</span>                   peer_idx<span class="hl opt">;</span>
+    <span class="hl kwb">uintptr_t</span>                   xchg<span class="hl opt">;</span>
+    <span class="hl kwb">uintptr_t</span>                   prev<span class="hl opt">;</span>
+    <span class="hl kwb">enum</span> color_t                new_color<span class="hl opt">;</span>
+    <span class="hl kwb">int</span>                         is_smp<span class="hl opt">;</span>
+
+    chameneos <span class="hl opt">= (</span><span class="hl kwb">struct</span> chameneos_t<span class="hl opt">*)</span>ctx<span class="hl opt">;</span>
+    chameneoses <span class="hl opt">=</span> chameneos<span class="hl opt">-&gt;</span>chameneos<span class="hl opt">;</span>
+    state_p <span class="hl opt">= &amp;</span>chameneos<span class="hl opt">-&gt;</span>place<span class="hl opt">-&gt;</span>state<span class="hl opt">;</span>
+    my_id <span class="hl opt">=</span> chameneos<span class="hl opt">-&gt;</span>id<span class="hl opt">;</span>
+    is_smp <span class="hl opt">=</span> chameneos<span class="hl opt">-&gt;</span>is_smp<span class="hl opt">;</span>
+
+    state <span class="hl opt">=</span> state_p<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">];</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(;;)</span>
+    <span class="hl opt">{</span>
+        peer_idx <span class="hl opt">=</span> state <span class="hl opt">&amp;</span> CHAMENEOS_IDX_MASK<span class="hl opt">;</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>peer_idx<span class="hl opt">)</span>
+            xchg <span class="hl opt">=</span> state <span class="hl opt">-</span> peer_idx <span class="hl opt">- (</span><span class="hl num">1</span> <span class="hl opt">&lt;&lt;</span> MEET_COUNT_SHIFT<span class="hl opt">);</span>
+        <span class="hl kwa">else if</span> <span class="hl opt">(</span>state<span class="hl opt">)</span>
+            xchg <span class="hl opt">=</span> state <span class="hl opt">|</span> my_id<span class="hl opt">;</span>
+        <span class="hl kwa">else</span>
+            <span class="hl kwa">break</span><span class="hl opt">;</span>
+        prev <span class="hl opt">=</span> <span class="hl kwd">__sync_val_compare_and_swap</span><span class="hl opt">(</span>state_p<span class="hl opt">,</span> state<span class="hl opt">,</span> xchg<span class="hl opt">);</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>prev <span class="hl opt">==</span> state<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>peer_idx<span class="hl opt">)</span>
+            <span class="hl opt">{</span>
+                is_same <span class="hl opt">= (</span>peer_idx <span class="hl opt">==</span> my_id<span class="hl opt">);</span>
+                peer <span class="hl opt">=</span> chameneoses<span class="hl opt">[</span>peer_idx <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">];</span>
+                new_color <span class="hl opt">=</span> <span class="hl kwd">color_complement</span><span class="hl opt">(</span>chameneos<span class="hl opt">-&gt;</span>color<span class="hl opt">,</span> peer<span class="hl opt">-&gt;</span>color<span class="hl opt">);</span>
+                peer<span class="hl opt">-&gt;</span>color <span class="hl opt">=</span> new_color<span class="hl opt">;</span>
+                peer<span class="hl opt">-&gt;</span>meet_count <span class="hl opt">+=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+                peer<span class="hl opt">-&gt;</span>meet_same_count <span class="hl opt">+=</span> is_same<span class="hl opt">;</span>
+                peer<span class="hl opt">-&gt;</span>meeting_completed <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+                chameneos<span class="hl opt">-&gt;</span>color <span class="hl opt">=</span> new_color<span class="hl opt">;</span>
+                chameneos<span class="hl opt">-&gt;</span>meet_count <span class="hl opt">+=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+                chameneos<span class="hl opt">-&gt;</span>meet_same_count <span class="hl opt">+=</span> is_same<span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+            <span class="hl kwa">else</span>
+            <span class="hl opt">{</span>
+                <span class="hl kwa">if</span> <span class="hl opt">(</span>is_smp<span class="hl opt">)</span>
+                <span class="hl opt">{</span>
+                    spin_count <span class="hl opt">=</span> <span class="hl num">20000</span><span class="hl opt">;</span>
+                    <span class="hl kwa">while</span> <span class="hl opt">(</span>chameneos<span class="hl opt">-&gt;</span>meeting_completed <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl opt">)</span>
+                    <span class="hl opt">{</span>
+                        <span class="hl kwa">if</span> <span class="hl opt">(</span>spin_count<span class="hl opt">)</span>
+                            spin_count <span class="hl opt">-=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+                        <span class="hl kwa">else</span>
+                            <span class="hl kwd">sched_yield</span><span class="hl opt">();</span>
+                    <span class="hl opt">}</span>
+                <span class="hl opt">}</span>
+                <span class="hl kwa">else</span>
+                <span class="hl opt">{</span>
+                    <span class="hl kwa">while</span> <span class="hl opt">(</span>chameneos<span class="hl opt">-&gt;</span>meeting_completed <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl opt">)</span>
+                    <span class="hl opt">{</span>
+                        <span class="hl kwd">sched_yield</span><span class="hl opt">();</span>
+                    <span class="hl opt">}</span>
+                <span class="hl opt">}</span>
+                chameneos<span class="hl opt">-&gt;</span>meeting_completed <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+                state <span class="hl opt">=</span> state_p<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">];</span>
+            <span class="hl opt">}</span>
+        <span class="hl opt">}</span>
+        <span class="hl kwa">else</span>
+        <span class="hl opt">{</span>
+            state <span class="hl opt">=</span> prev<span class="hl opt">;</span>
+
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">get_affinity</span><span class="hl opt">(</span><span class="hl kwb">int</span><span class="hl opt">*</span> is_smp<span class="hl opt">,</span> cpu_set_t<span class="hl opt">*</span> affinity1<span class="hl opt">,</span> cpu_set_t<span class="hl opt">*</span> affinity2<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+    cpu_set_t                   active_cpus<span class="hl opt">;</span>
+    <span class="hl kwb">FILE</span><span class="hl opt">*</span>                       f<span class="hl opt">;</span>
+    <span class="hl kwb">char</span>                        buf <span class="hl opt">[</span><span class="hl num">2048</span><span class="hl opt">];</span>
+    <span class="hl kwb">char const</span><span class="hl opt">*</span>                 pos<span class="hl opt">;</span>
+    <span class="hl kwb">int</span>                         cpu_idx<span class="hl opt">;</span>
+    <span class="hl kwb">int</span>                         physical_id<span class="hl opt">;</span>
+    <span class="hl kwb">int</span>                         core_id<span class="hl opt">;</span>
+    <span class="hl kwb">int</span>                         cpu_cores<span class="hl opt">;</span>
+    <span class="hl kwb">int</span>                         apic_id<span class="hl opt">;</span>
+    <span class="hl kwb">size_t</span>                      cpu_count<span class="hl opt">;</span>
+    <span class="hl kwb">size_t</span>                      i<span class="hl opt">;</span>
+
+    <span class="hl kwb">char const</span><span class="hl opt">*</span>                 processor_str       <span class="hl opt">=</span> <span class="hl str">&quot;processor&quot;</span><span class="hl opt">;</span>
+    <span class="hl kwb">size_t</span>                      processor_str_len   <span class="hl opt">=</span> <span class="hl kwd">strlen</span><span class="hl opt">(</span>processor_str<span class="hl opt">);</span>
+    <span class="hl kwb">char const</span><span class="hl opt">*</span>                 physical_id_str     <span class="hl opt">=</span> <span class="hl str">&quot;physical id&quot;</span><span class="hl opt">;</span>
+    <span class="hl kwb">size_t</span>                      physical_id_str_len <span class="hl opt">=</span> <span class="hl kwd">strlen</span><span class="hl opt">(</span>physical_id_str<span class="hl opt">);</span>
+    <span class="hl kwb">char const</span><span class="hl opt">*</span>                 core_id_str         <span class="hl opt">=</span> <span class="hl str">&quot;core id&quot;</span><span class="hl opt">;</span>
+    <span class="hl kwb">size_t</span>                      core_id_str_len     <span class="hl opt">=</span> <span class="hl kwd">strlen</span><span class="hl opt">(</span>core_id_str<span class="hl opt">);</span>
+    <span class="hl kwb">char const</span><span class="hl opt">*</span>                 cpu_cores_str       <span class="hl opt">=</span> <span class="hl str">&quot;cpu cores&quot;</span><span class="hl opt">;</span>
+    <span class="hl kwb">size_t</span>                      cpu_cores_str_len   <span class="hl opt">=</span> <span class="hl kwd">strlen</span><span class="hl opt">(</span>cpu_cores_str<span class="hl opt">);</span>
+    
+    <span class="hl kwd">CPU_ZERO</span><span class="hl opt">(&amp;</span>active_cpus<span class="hl opt">);</span>
+    <span class="hl kwd">sched_getaffinity</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span>active_cpus<span class="hl opt">), &amp;</span>active_cpus<span class="hl opt">);</span>
+    cpu_count <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">!=</span> CPU_SETSIZE<span class="hl opt">;</span> i <span class="hl opt">+=</span> <span class="hl num">1</span><span class="hl opt">)</span>
+    <span class="hl opt">{</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwd">CPU_ISSET</span><span class="hl opt">(</span>i<span class="hl opt">, &amp;</span>active_cpus<span class="hl opt">))</span>
+        <span class="hl opt">{</span>
+            cpu_count <span class="hl opt">+=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>cpu_count <span class="hl opt">==</span> <span class="hl num">1</span><span class="hl opt">)</span>
+    <span class="hl opt">{</span>
+        is_smp<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] =</span> <span class="hl num">0</span><span class="hl opt">;</span>
+        <span class="hl kwa">return</span><span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+
+    is_smp<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] =</span> <span class="hl num">1</span><span class="hl opt">;</span>
+    <span class="hl kwd">CPU_ZERO</span><span class="hl opt">(</span>affinity1<span class="hl opt">);</span>
+    <span class="hl kwd">CPU_ZERO</span><span class="hl opt">(</span>affinity2<span class="hl opt">);</span>
+
+    f <span class="hl opt">=</span> <span class="hl kwd">fopen</span><span class="hl opt">(</span>CPUINFO_FILENAME<span class="hl opt">,</span> <span class="hl str">&quot;r&quot;</span><span class="hl opt">);</span>
+
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>cpu_count <span class="hl opt">&lt;</span> <span class="hl num">4</span> <span class="hl opt">||</span> f <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl opt">)</span>
+    <span class="hl opt">{</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">!=</span> CPU_SETSIZE<span class="hl opt">;</span> i <span class="hl opt">+=</span> <span class="hl num">1</span><span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwd">CPU_ISSET</span><span class="hl opt">(</span>i<span class="hl opt">, &amp;</span>active_cpus<span class="hl opt">))</span>
+            <span class="hl opt">{</span>
+                <span class="hl kwd">CPU_SET</span><span class="hl opt">(</span>i<span class="hl opt">,</span> affinity1<span class="hl opt">);</span>
+                <span class="hl kwd">CPU_SET</span><span class="hl opt">(</span>i<span class="hl opt">,</span> affinity2<span class="hl opt">);</span>
+            <span class="hl opt">}</span>
+        <span class="hl opt">}</span>
+        <span class="hl kwa">return</span><span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+
+    cpu_idx <span class="hl opt">=</span> physical_id <span class="hl opt">=</span> core_id <span class="hl opt">=</span> cpu_cores <span class="hl opt">= -</span><span class="hl num">1</span><span class="hl opt">;</span>
+    <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl kwd">fgets</span><span class="hl opt">(</span>buf<span class="hl opt">,</span> <span class="hl num">2048</span><span class="hl opt">,</span> f<span class="hl opt">))</span>
+    <span class="hl opt">{</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl num">0</span> <span class="hl opt">==</span> <span class="hl kwd">strncmp</span><span class="hl opt">(</span>buf<span class="hl opt">,</span> processor_str<span class="hl opt">,</span> processor_str_len<span class="hl opt">))</span>
+        <span class="hl opt">{</span>
+            pos <span class="hl opt">=</span> <span class="hl kwd">strchr</span><span class="hl opt">(</span>buf <span class="hl opt">+</span> processor_str_len<span class="hl opt">,</span> <span class="hl str">':'</span><span class="hl opt">);</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>pos<span class="hl opt">)</span>
+                cpu_idx <span class="hl opt">=</span> <span class="hl kwd">atoi</span><span class="hl opt">(</span>pos <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+        <span class="hl kwa">else if</span> <span class="hl opt">(</span><span class="hl num">0</span> <span class="hl opt">==</span> <span class="hl kwd">strncmp</span><span class="hl opt">(</span>buf<span class="hl opt">,</span> physical_id_str<span class="hl opt">,</span> physical_id_str_len<span class="hl opt">))</span>
+        <span class="hl opt">{</span>
+            pos <span class="hl opt">=</span> <span class="hl kwd">strchr</span><span class="hl opt">(</span>buf <span class="hl opt">+</span> physical_id_str_len<span class="hl opt">,</span> <span class="hl str">':'</span><span class="hl opt">);</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>pos<span class="hl opt">)</span>
+                physical_id <span class="hl opt">=</span> <span class="hl kwd">atoi</span><span class="hl opt">(</span>pos <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+        <span class="hl kwa">else if</span> <span class="hl opt">(</span><span class="hl num">0</span> <span class="hl opt">==</span> <span class="hl kwd">strncmp</span><span class="hl opt">(</span>buf<span class="hl opt">,</span> core_id_str<span class="hl opt">,</span> core_id_str_len<span class="hl opt">))</span>
+        <span class="hl opt">{</span>
+            pos <span class="hl opt">=</span> <span class="hl kwd">strchr</span><span class="hl opt">(</span>buf <span class="hl opt">+</span> core_id_str_len<span class="hl opt">,</span> <span class="hl str">':'</span><span class="hl opt">);</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>pos<span class="hl opt">)</span>
+                core_id <span class="hl opt">=</span> <span class="hl kwd">atoi</span><span class="hl opt">(</span>pos <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+        <span class="hl kwa">else if</span> <span class="hl opt">(</span><span class="hl num">0</span> <span class="hl opt">==</span> <span class="hl kwd">strncmp</span><span class="hl opt">(</span>buf<span class="hl opt">,</span> cpu_cores_str<span class="hl opt">,</span> cpu_cores_str_len<span class="hl opt">))</span>
+        <span class="hl opt">{</span>
+            pos <span class="hl opt">=</span> <span class="hl kwd">strchr</span><span class="hl opt">(</span>buf <span class="hl opt">+</span> cpu_cores_str_len<span class="hl opt">,</span> <span class="hl str">':'</span><span class="hl opt">);</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>pos<span class="hl opt">)</span>
+                cpu_cores <span class="hl opt">=</span> <span class="hl kwd">atoi</span><span class="hl opt">(</span>pos <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>cpu_idx <span class="hl opt">&gt;=</span> <span class="hl num">0</span> <span class="hl opt">&amp;&amp;</span> physical_id <span class="hl opt">&gt;=</span> <span class="hl num">0</span> <span class="hl opt">&amp;&amp;</span> core_id <span class="hl opt">&gt;=</span> <span class="hl num">0</span> <span class="hl opt">&amp;&amp;</span> cpu_cores <span class="hl opt">&gt;=</span> <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            apic_id <span class="hl opt">=</span> physical_id <span class="hl opt">*</span> cpu_cores <span class="hl opt">+</span> core_id<span class="hl opt">;</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>apic_id <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl opt">||</span> apic_id <span class="hl opt">==</span> <span class="hl num">1</span><span class="hl opt">)</span>
+                <span class="hl kwd">CPU_SET</span><span class="hl opt">(</span>cpu_idx<span class="hl opt">,</span> affinity1<span class="hl opt">);</span>
+            <span class="hl kwa">else if</span> <span class="hl opt">(</span>apic_id <span class="hl opt">==</span> <span class="hl num">2</span> <span class="hl opt">||</span> apic_id <span class="hl opt">==</span> <span class="hl num">3</span><span class="hl opt">)</span>
+                <span class="hl kwd">CPU_SET</span><span class="hl opt">(</span>cpu_idx<span class="hl opt">,</span> affinity2<span class="hl opt">);</span>
+            cpu_idx <span class="hl opt">=</span> physical_id <span class="hl opt">=</span> core_id <span class="hl opt">=</span> cpu_cores <span class="hl opt">= -</span><span class="hl num">1</span><span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwd">fclose</span><span class="hl opt">(</span>f<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">init_and_start</span><span class="hl opt">(</span><span class="hl kwb">enum</span> color_t<span class="hl opt">*</span> initial_colors<span class="hl opt">,</span> <span class="hl kwb">size_t</span> chameneos_count<span class="hl opt">,</span>
+    <span class="hl kwb">struct</span> meeting_place_t<span class="hl opt">**</span> place<span class="hl opt">,</span> <span class="hl kwb">struct</span> chameneos_t<span class="hl opt">***</span> chameneos<span class="hl opt">,</span>
+    <span class="hl kwb">size_t</span> meet_count<span class="hl opt">,</span> <span class="hl kwb">int</span> is_smp<span class="hl opt">,</span> cpu_set_t<span class="hl opt">*</span> affinity<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+    <span class="hl kwb">size_t</span>                      i<span class="hl opt">;</span>
+
+    place<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] = (</span><span class="hl kwb">struct</span> meeting_place_t<span class="hl opt">*)</span>
+        <span class="hl kwd">cache_aligned_malloc</span><span class="hl opt">(</span><span class="hl kwa">sizeof</span><span class="hl opt">(</span><span class="hl kwb">struct</span> meeting_place_t<span class="hl opt">));</span>
+    place<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]-&gt;</span>state <span class="hl opt">=</span> meet_count <span class="hl opt">&lt;&lt;</span> MEET_COUNT_SHIFT<span class="hl opt">;</span>
+    chameneos<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] = (</span><span class="hl kwb">struct</span> chameneos_t<span class="hl opt">**)</span>
+        <span class="hl kwd">cache_aligned_malloc</span><span class="hl opt">(</span>chameneos_count <span class="hl opt">*</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span><span class="hl kwb">struct</span> chameneos_t<span class="hl opt">*));</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">!=</span> chameneos_count<span class="hl opt">;</span> i <span class="hl opt">+=</span> <span class="hl num">1</span><span class="hl opt">)</span>
+    <span class="hl opt">{</span>
+        chameneos<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span>i<span class="hl opt">] = (</span><span class="hl kwb">struct</span> chameneos_t<span class="hl opt">*)</span>
+            <span class="hl kwd">cache_aligned_malloc</span><span class="hl opt">(</span><span class="hl kwa">sizeof</span><span class="hl opt">(</span><span class="hl kwb">struct</span> chameneos_t<span class="hl opt">));</span>
+        chameneos<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span>i<span class="hl opt">]-&gt;</span>place <span class="hl opt">=</span> place<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">];</span>
+        chameneos<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span>i<span class="hl opt">]-&gt;</span>chameneos <span class="hl opt">=</span> chameneos<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">];</span>
+        chameneos<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span>i<span class="hl opt">]-&gt;</span>id <span class="hl opt">=</span> i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+        chameneos<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span>i<span class="hl opt">]-&gt;</span>is_smp <span class="hl opt">=</span> is_smp<span class="hl opt">;</span>
+        chameneos<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span>i<span class="hl opt">]-&gt;</span>meet_count <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+        chameneos<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span>i<span class="hl opt">]-&gt;</span>meet_same_count <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+        chameneos<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span>i<span class="hl opt">]-&gt;</span>color <span class="hl opt">=</span> initial_colors<span class="hl opt">[</span>i<span class="hl opt">];</span>
+        chameneos<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span>i<span class="hl opt">]-&gt;</span>meeting_completed <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwd">pthread_attr_init</span><span class="hl opt">(&amp;</span>chameneos<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span>i<span class="hl opt">]-&gt;</span>thread_attr<span class="hl opt">))</span>
+            <span class="hl kwd">exit</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">);</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>is_smp<span class="hl opt">)</span>
+            <span class="hl kwd">pthread_attr_setaffinity_np</span><span class="hl opt">(&amp;</span>chameneos<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span>i<span class="hl opt">]-&gt;</span>thread_attr<span class="hl opt">,</span>
+                <span class="hl kwa">sizeof</span><span class="hl opt">(</span>cpu_set_t<span class="hl opt">),</span> affinity<span class="hl opt">);</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwd">pthread_create</span><span class="hl opt">(&amp;</span>chameneos<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span>i<span class="hl opt">]-&gt;</span>thread<span class="hl opt">,</span>
+            <span class="hl opt">&amp;</span>chameneos<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span>i<span class="hl opt">]-&gt;</span>thread_attr<span class="hl opt">,</span> chameneos_func<span class="hl opt">,</span> chameneos<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span>i<span class="hl opt">]))</span>
+            <span class="hl kwd">exit</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">join_and_output</span><span class="hl opt">(</span><span class="hl kwb">enum</span> color_t<span class="hl opt">*</span> initial_colors<span class="hl opt">,</span> <span class="hl kwb">size_t</span> chameneos_count<span class="hl opt">,</span>
+    <span class="hl kwb">struct</span> meeting_place_t<span class="hl opt">*</span> place<span class="hl opt">,</span> <span class="hl kwb">struct</span> chameneos_t<span class="hl opt">**</span> chameneos<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+    <span class="hl kwb">size_t</span>                      total_meet_count<span class="hl opt">;</span>
+    <span class="hl kwb">size_t</span>                      i<span class="hl opt">;</span>
+
+    <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">!=</span> chameneos_count<span class="hl opt">;</span> i <span class="hl opt">+=</span> <span class="hl num">1</span><span class="hl opt">)</span>
+        <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot; %s&quot;</span><span class="hl opt">,</span> color_names<span class="hl opt">[</span>initial_colors<span class="hl opt">[</span>i<span class="hl opt">]]);</span>
+    <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">);</span>
+
+    <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">!=</span> chameneos_count<span class="hl opt">;</span> i <span class="hl opt">+=</span> <span class="hl num">1</span><span class="hl opt">)</span>
+    <span class="hl opt">{</span>
+        <span class="hl kwd">pthread_join</span><span class="hl opt">(</span>chameneos<span class="hl opt">[</span>i<span class="hl opt">]-&gt;</span>thread<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+        <span class="hl kwd">pthread_attr_destroy</span><span class="hl opt">(&amp;</span>chameneos<span class="hl opt">[</span>i<span class="hl opt">]-&gt;</span>thread_attr<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+
+    total_meet_count <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">!=</span> chameneos_count<span class="hl opt">;</span> i <span class="hl opt">+=</span> <span class="hl num">1</span><span class="hl opt">)</span>
+    <span class="hl opt">{</span>
+        total_meet_count <span class="hl opt">+=</span> chameneos<span class="hl opt">[</span>i<span class="hl opt">]-&gt;</span>meet_count<span class="hl opt">;</span>
+        <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%u%s</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> chameneos<span class="hl opt">[</span>i<span class="hl opt">]-&gt;</span>meet_count<span class="hl opt">,</span>
+            <span class="hl kwd">spell_number</span><span class="hl opt">(</span>chameneos<span class="hl opt">[</span>i<span class="hl opt">]-&gt;</span>meet_same_count<span class="hl opt">));</span>
+        <span class="hl kwd">cache_aligned_free</span><span class="hl opt">(</span>chameneos<span class="hl opt">[</span>i<span class="hl opt">]);</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%s</span><span class="hl esc">\n\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> <span class="hl kwd">spell_number</span><span class="hl opt">(</span>total_meet_count<span class="hl opt">));</span>
+
+    <span class="hl kwd">cache_aligned_free</span><span class="hl opt">(</span>chameneos<span class="hl opt">);</span>
+    <span class="hl kwd">cache_aligned_free</span><span class="hl opt">(</span>place<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">int</span> <span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">int</span> argc<span class="hl opt">,</span> <span class="hl kwb">char</span><span class="hl opt">**</span> argv<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+    <span class="hl kwb">enum</span> color_t                initial_colors1 <span class="hl opt">[] =</span> 
+        <span class="hl opt">{</span>color_blue<span class="hl opt">,</span> color_red<span class="hl opt">,</span> color_yellow<span class="hl opt">};</span>
+
+    <span class="hl kwb">enum</span> color_t                initial_colors2 <span class="hl opt">[] =</span> 
+        <span class="hl opt">{</span>color_blue<span class="hl opt">,</span> color_red<span class="hl opt">,</span> color_yellow<span class="hl opt">,</span> color_red<span class="hl opt">,</span> color_yellow<span class="hl opt">,</span>
+        color_blue<span class="hl opt">,</span> color_red<span class="hl opt">,</span> color_yellow<span class="hl opt">,</span> color_red<span class="hl opt">,</span> color_blue<span class="hl opt">};</span>
+
+    <span class="hl kwb">struct</span> meeting_place_t<span class="hl opt">*</span>     place1<span class="hl opt">;</span>
+    <span class="hl kwb">struct</span> chameneos_t<span class="hl opt">**</span>        chameneos1<span class="hl opt">;</span>
+    <span class="hl kwb">size_t</span>                      chameneos_count1<span class="hl opt">;</span>
+
+    <span class="hl kwb">struct</span> meeting_place_t<span class="hl opt">*</span>     place2<span class="hl opt">;</span>
+    <span class="hl kwb">struct</span> chameneos_t<span class="hl opt">**</span>        chameneos2<span class="hl opt">;</span>
+    <span class="hl kwb">size_t</span>                      chameneos_count2<span class="hl opt">;</span>
+
+    <span class="hl kwb">int</span>                         is_smp<span class="hl opt">;</span>
+    cpu_set_t                   affinity1<span class="hl opt">;</span>
+    cpu_set_t                   affinity2<span class="hl opt">;</span>
+    <span class="hl kwb">size_t</span>                      meet_count<span class="hl opt">;</span>
+
+    meet_count <span class="hl opt">=</span> <span class="hl num">6000000</span><span class="hl opt">;</span>
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>argc <span class="hl opt">&gt;</span> <span class="hl num">1</span> <span class="hl opt">&amp;&amp;</span> <span class="hl kwd">atoi</span><span class="hl opt">(</span>argv<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]) &gt;</span> <span class="hl num">0</span><span class="hl opt">)</span>
+        meet_count <span class="hl opt">=</span> <span class="hl kwd">atoi</span><span class="hl opt">(</span>argv<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]);</span>
+
+    <span class="hl kwd">print_colors</span><span class="hl opt">();</span>
+
+    <span class="hl kwd">get_affinity</span><span class="hl opt">(&amp;</span>is_smp<span class="hl opt">, &amp;</span>affinity1<span class="hl opt">, &amp;</span>affinity2<span class="hl opt">);</span>
+
+    chameneos_count1 <span class="hl opt">=</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span>initial_colors1<span class="hl opt">)/</span><span class="hl kwa">sizeof</span><span class="hl opt">(</span>initial_colors1<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]);</span>
+    chameneos_count2 <span class="hl opt">=</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span>initial_colors2<span class="hl opt">)/</span><span class="hl kwa">sizeof</span><span class="hl opt">(</span>initial_colors2<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]);</span>
+
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>is_smp<span class="hl opt">)</span>
+    <span class="hl opt">{</span>
+        <span class="hl kwd">init_and_start</span><span class="hl opt">(</span>initial_colors1<span class="hl opt">,</span> chameneos_count1<span class="hl opt">, &amp;</span>place1<span class="hl opt">, &amp;</span>chameneos1<span class="hl opt">,</span> meet_count<span class="hl opt">,</span> is_smp<span class="hl opt">, &amp;</span>affinity1<span class="hl opt">);</span>
+        <span class="hl kwd">init_and_start</span><span class="hl opt">(</span>initial_colors2<span class="hl opt">,</span> chameneos_count2<span class="hl opt">, &amp;</span>place2<span class="hl opt">, &amp;</span>chameneos2<span class="hl opt">,</span> meet_count<span class="hl opt">,</span> is_smp<span class="hl opt">, &amp;</span>affinity2<span class="hl opt">);</span>
+        <span class="hl kwd">join_and_output</span><span class="hl opt">(</span>initial_colors1<span class="hl opt">,</span> chameneos_count1<span class="hl opt">,</span> place1<span class="hl opt">,</span> chameneos1<span class="hl opt">);</span>
+        <span class="hl kwd">join_and_output</span><span class="hl opt">(</span>initial_colors2<span class="hl opt">,</span> chameneos_count2<span class="hl opt">,</span> place2<span class="hl opt">,</span> chameneos2<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwa">else</span>
+    <span class="hl opt">{</span>
+        <span class="hl kwd">init_and_start</span><span class="hl opt">(</span>initial_colors1<span class="hl opt">,</span> chameneos_count1<span class="hl opt">, &amp;</span>place1<span class="hl opt">, &amp;</span>chameneos1<span class="hl opt">,</span> meet_count<span class="hl opt">,</span> is_smp<span class="hl opt">, &amp;</span>affinity1<span class="hl opt">);</span>
+        <span class="hl kwd">join_and_output</span><span class="hl opt">(</span>initial_colors1<span class="hl opt">,</span> chameneos_count1<span class="hl opt">,</span> place1<span class="hl opt">,</span> chameneos1<span class="hl opt">);</span>
+        <span class="hl kwd">init_and_start</span><span class="hl opt">(</span>initial_colors2<span class="hl opt">,</span> chameneos_count2<span class="hl opt">, &amp;</span>place2<span class="hl opt">, &amp;</span>chameneos2<span class="hl opt">,</span> meet_count<span class="hl opt">,</span> is_smp<span class="hl opt">, &amp;</span>affinity2<span class="hl opt">);</span>
+        <span class="hl kwd">join_and_output</span><span class="hl opt">(</span>initial_colors2<span class="hl opt">,</span> chameneos_count2<span class="hl opt">,</span> place2<span class="hl opt">,</span> chameneos2<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+

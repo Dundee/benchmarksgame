@@ -1,0 +1,129 @@
+<span class="hl slc">! The Computer Language Benchmarks Game</span>
+<span class="hl slc">! http://shootout.alioth.debian.org/</span>
+<span class="hl slc">!</span>
+<span class="hl slc">! Code by A. Jirnyi. Modified from contributions by</span>
+<span class="hl slc">!   Jason Blevins, Greg Bucholz, Simon Geard</span>
+<span class="hl slc">!   and George R. Gonzalez</span>
+<span class="hl slc">!</span>
+<span class="hl slc">! Compilation:</span>
+<span class="hl slc">!  1 Core: ifort -fast mandelbrot.f90</span>
+<span class="hl slc">!  2+Core: ifort -fast -openmp mandelbrot.f90</span>
+
+<span class="hl kwa">program</span> mandelbrot
+  <span class="hl kwa">use</span> iso_fortran_env
+  <span class="hl kwa">implicit none</span>
+  <span class="hl kwa">integer</span><span class="hl opt">,</span> <span class="hl kwa">parameter</span> <span class="hl opt">::</span> dp <span class="hl opt">=</span> <span class="hl kwd">kind</span><span class="hl opt">(</span><span class="hl num">1.0d0</span><span class="hl opt">)</span> 
+  <span class="hl kwa">integer</span><span class="hl opt">,</span> <span class="hl kwa">parameter</span> <span class="hl opt">::</span> bsize <span class="hl opt">=</span> <span class="hl num">8</span>
+  <span class="hl kwa">integer</span><span class="hl opt">,</span> <span class="hl kwa">parameter</span> <span class="hl opt">::</span> i8 <span class="hl opt">=</span> <span class="hl kwd">selected_int_kind</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">)</span>
+  <span class="hl kwa">integer</span><span class="hl opt">,</span> <span class="hl kwa">parameter</span> <span class="hl opt">::</span> iter <span class="hl opt">=</span> <span class="hl num">50</span>
+  <span class="hl kwa">real</span><span class="hl opt">(</span>dp<span class="hl opt">),</span> <span class="hl kwa">parameter</span>  <span class="hl opt">::</span> limit2 <span class="hl opt">=</span> <span class="hl num">4.0</span>_dp
+  <span class="hl kwa">integer</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">),</span> <span class="hl kwa">parameter</span> <span class="hl opt">::</span> EOL <span class="hl opt">=</span> <span class="hl num">10</span>
+
+  <span class="hl kwa">real</span><span class="hl opt">(</span>dp<span class="hl opt">),</span> <span class="hl kwa">parameter</span><span class="hl opt">::</span> xmin <span class="hl opt">= -</span><span class="hl num">1.5</span><span class="hl opt">,</span> xmax <span class="hl opt">=</span> <span class="hl num">0.5</span><span class="hl opt">,</span> ymin <span class="hl opt">= -</span><span class="hl num">1</span><span class="hl opt">,</span> ymax <span class="hl opt">=</span> <span class="hl num">1</span>
+
+  <span class="hl kwa">character</span><span class="hl opt">(</span>len<span class="hl opt">=</span><span class="hl num">8</span><span class="hl opt">)</span> argv
+  <span class="hl kwa">character</span><span class="hl opt">(</span>len<span class="hl opt">=</span><span class="hl num">20</span><span class="hl opt">)</span> line1<span class="hl opt">,</span>line2
+
+  <span class="hl kwa">integer</span> <span class="hl opt">::</span> w<span class="hl opt">,</span> h<span class="hl opt">,</span> i<span class="hl opt">,</span> ix<span class="hl opt">,</span> iy
+  <span class="hl kwa">integer</span><span class="hl opt">(</span>i8<span class="hl opt">),</span> <span class="hl kwa">dimension</span><span class="hl opt">(:,:),</span> allocatable <span class="hl opt">::</span> buf
+  <span class="hl kwa">real</span><span class="hl opt">(</span>dp<span class="hl opt">),</span> <span class="hl kwa">dimension</span><span class="hl opt">(:),</span> allocatable<span class="hl opt">::</span> xgrid
+  <span class="hl kwa">real</span><span class="hl opt">(</span>dp<span class="hl opt">) ::</span> dx<span class="hl opt">,</span> dy<span class="hl opt">,</span> Ci
+  <span class="hl kwa">real</span><span class="hl opt">(</span>dp<span class="hl opt">),</span> <span class="hl kwa">dimension</span><span class="hl opt">(</span>bsize<span class="hl opt">) ::</span> Zr<span class="hl opt">,</span>Zi<span class="hl opt">,</span>Tr<span class="hl opt">,</span>Ti<span class="hl opt">,</span>Cr
+
+  <span class="hl slc">! Just a fancy way to say &quot;integer(2)&quot; :)</span>
+  <span class="hl slc">!  int(1) will also work, but with a warning.</span>
+  <span class="hl slc">!  it may also be (very) slightly slower, or slightly faster,</span>
+  <span class="hl slc">!  depending on the machine and compiler version...</span>
+  <span class="hl kwa">integer</span><span class="hl opt">,</span> <span class="hl kwa">parameter</span> <span class="hl opt">::</span> i16 <span class="hl opt">= &amp;</span>
+       <span class="hl kwd">selected_int_kind</span><span class="hl opt">(</span><span class="hl kwd">ceiling</span><span class="hl opt">(</span><span class="hl kwd">log10</span><span class="hl opt">(</span><span class="hl kwa">real</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">**(</span>bsize<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)-</span><span class="hl num">1</span><span class="hl opt">))))</span>
+  <span class="hl kwa">integer</span><span class="hl opt">(</span>i16<span class="hl opt">),</span> <span class="hl kwa">parameter</span><span class="hl opt">,</span> <span class="hl kwa">dimension</span><span class="hl opt">(</span>bsize<span class="hl opt">) :: &amp;</span>
+       shifter <span class="hl opt">= [(</span><span class="hl num">2</span><span class="hl opt">**(</span>bsize<span class="hl opt">-</span>i<span class="hl opt">),</span>i<span class="hl opt">=</span><span class="hl num">1</span><span class="hl opt">,</span>bsize<span class="hl opt">)]</span> 
+  <span class="hl kwa">integer</span><span class="hl opt">(</span>i8<span class="hl opt">),</span> <span class="hl kwa">dimension</span><span class="hl opt">(</span>bsize<span class="hl opt">) ::</span> in_m  
+
+  <span class="hl kwa">logical</span> <span class="hl opt">::</span> checknext <span class="hl opt">= .</span>true<span class="hl opt">.</span>
+
+  <span class="hl kwa">call</span> <span class="hl kwd">getarg</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span>argv<span class="hl opt">)</span>
+  <span class="hl kwa">read</span><span class="hl opt">(</span>argv<span class="hl opt">,*)</span> w
+  h <span class="hl opt">=</span> w
+  <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwd">mod</span><span class="hl opt">(</span>w<span class="hl opt">,</span>bsize<span class="hl opt">) /=</span> <span class="hl num">0</span><span class="hl opt">)</span> <span class="hl kwa">then</span>
+     <span class="hl kwa">write</span><span class="hl opt">(</span>error_unit<span class="hl opt">,</span><span class="hl str">'(a,i2)'</span><span class="hl opt">)</span> <span class="hl str">'Sorry, grid size must be a multiple of'</span><span class="hl opt">,</span>bsize
+     <span class="hl kwa">stop</span>
+  <span class="hl kwa">end if</span>
+
+  <span class="hl slc">! not very portable, but about 1 sec. faster with ifort...</span>
+  <span class="hl kwa">close</span><span class="hl opt">(</span>output_unit<span class="hl opt">)</span>
+  <span class="hl kwa">open</span><span class="hl opt">(</span>unit<span class="hl opt">=</span>output_unit<span class="hl opt">,</span> access<span class="hl opt">=</span><span class="hl str">'stream'</span><span class="hl opt">,</span>form<span class="hl opt">=</span><span class="hl str">'unformatted'</span><span class="hl opt">,</span>buffered<span class="hl opt">=</span><span class="hl str">'yes'</span><span class="hl opt">)</span>
+
+  <span class="hl kwd">allocate</span><span class="hl opt">(</span><span class="hl kwd">buf</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">:</span><span class="hl kwd">ceiling</span><span class="hl opt">(</span>w<span class="hl opt">/</span><span class="hl kwd">dble</span><span class="hl opt">(</span>bsize<span class="hl opt">))-</span><span class="hl num">1</span><span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">:</span>h<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">))</span>
+  <span class="hl kwd">allocate</span><span class="hl opt">(</span><span class="hl kwd">xgrid</span><span class="hl opt">(</span>w<span class="hl opt">))</span>
+
+  dx <span class="hl opt">= (</span>xmax <span class="hl opt">-</span> xmin<span class="hl opt">) /</span> w
+  dy <span class="hl opt">= (</span>ymax <span class="hl opt">-</span> ymin<span class="hl opt">) /</span> h
+
+  <span class="hl slc">! grid over x</span>
+  <span class="hl kwa">do</span> ix <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">,</span>w
+     <span class="hl kwd">xgrid</span><span class="hl opt">(</span>ix<span class="hl opt">) =</span> dx <span class="hl opt">* (</span>ix<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">) +</span> xmin
+  <span class="hl kwa">end do</span>
+
+  <span class="hl slc">!$omp parallel do default(shared) private(i,iy,ix,Ci,Cr,Zi,Zr,Ti,Tr,in_m,checknext) schedule(static,1)</span>
+  <span class="hl kwa">do</span> iy <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span>h<span class="hl opt">-</span><span class="hl num">1</span>
+
+     Ci <span class="hl opt">=</span> dy <span class="hl opt">*</span> iy <span class="hl opt">+</span> ymin
+     checknext <span class="hl opt">= .</span>true<span class="hl opt">.</span>
+     
+     <span class="hl kwa">do</span> ix <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span>w<span class="hl opt">-</span>bsize<span class="hl opt">,</span>bsize
+
+        Cr <span class="hl opt">=</span> <span class="hl kwd">xgrid</span><span class="hl opt">(</span>ix<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">:</span>ix<span class="hl opt">+</span>bsize<span class="hl opt">);</span> 
+        Zi <span class="hl opt">=</span> <span class="hl num">0.0</span>_dp<span class="hl opt">;</span> Zr <span class="hl opt">=</span> <span class="hl num">0.0</span>_dp<span class="hl opt">;</span> 
+        Ti <span class="hl opt">=</span> <span class="hl num">0.0</span>_dp<span class="hl opt">;</span> Tr <span class="hl opt">=</span> <span class="hl num">0.0</span>_dp<span class="hl opt">;</span> 
+        in_m <span class="hl opt">=</span> <span class="hl num">1</span>
+
+        <span class="hl kwa">if</span><span class="hl opt">(</span>checknext<span class="hl opt">)</span> <span class="hl kwa">then</span>
+
+           <span class="hl slc">! likely OUT: iterate with checking</span>
+           <span class="hl kwa">do</span> i <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">,</span> iter
+              <span class="hl kwa">call</span> update
+              <span class="hl kwd">where</span> <span class="hl opt">( (</span>Tr<span class="hl opt">+</span>Ti<span class="hl opt">) &gt;</span> limit2 <span class="hl opt">)</span> in_m <span class="hl opt">=</span> <span class="hl num">0</span>          
+              <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwd">sum</span><span class="hl opt">(</span>in_m<span class="hl opt">)==</span><span class="hl num">0</span><span class="hl opt">)</span> exit
+           <span class="hl kwa">end do</span>
+           
+           checknext <span class="hl opt">=</span> <span class="hl kwd">sum</span><span class="hl opt">(</span>in_m<span class="hl opt">) /=</span> bsize
+
+        <span class="hl kwa">else</span>
+
+           <span class="hl slc">! likely IN: iterate without checking</span>
+           <span class="hl kwa">do</span> i <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">,</span> iter
+              <span class="hl kwa">call</span> update
+           <span class="hl kwa">end do</span>
+
+           Tr <span class="hl opt">=</span> Tr<span class="hl opt">+</span>Ti
+
+           <span class="hl slc">! overflow can occur, so check for that</span>
+           <span class="hl kwd">where</span> <span class="hl opt">(</span> <span class="hl kwd">isnan</span><span class="hl opt">(</span>Tr<span class="hl opt">) .</span>or<span class="hl opt">. (</span>Tr <span class="hl opt">&gt;</span> limit2<span class="hl opt">) )</span> in_m <span class="hl opt">=</span> <span class="hl num">0</span>          
+           checknext <span class="hl opt">=</span> <span class="hl kwd">sum</span><span class="hl opt">(</span>in_m<span class="hl opt">) &lt;</span> bsize  
+
+        <span class="hl kwa">end if</span>
+
+        <span class="hl kwd">buf</span><span class="hl opt">(</span>ix<span class="hl opt">/</span>bsize<span class="hl opt">,</span>iy<span class="hl opt">) =</span> <span class="hl kwd">dot_product</span><span class="hl opt">(</span>shifter<span class="hl opt">,</span> in_m<span class="hl opt">)</span> 
+
+     <span class="hl kwa">end do</span>
+  <span class="hl kwa">end do</span>
+  <span class="hl slc">!$omp end parallel do </span>
+  
+  <span class="hl kwa">write</span><span class="hl opt">(</span>line1<span class="hl opt">,</span><span class="hl str">'(a)'</span><span class="hl opt">)</span> <span class="hl str">'P4'</span>
+  <span class="hl kwa">write</span><span class="hl opt">(</span>line2<span class="hl opt">,</span><span class="hl str">'(i0,a,i0)'</span><span class="hl opt">)</span> w<span class="hl opt">,</span><span class="hl str">' '</span><span class="hl opt">,</span>h
+  <span class="hl kwa">write</span><span class="hl opt">(</span>output_unit<span class="hl opt">)</span> <span class="hl kwd">trim</span><span class="hl opt">(</span>line1<span class="hl opt">),</span>EOL<span class="hl opt">,</span><span class="hl kwd">trim</span><span class="hl opt">(</span>line2<span class="hl opt">),</span>EOL<span class="hl opt">,</span>buf
+
+  <span class="hl kwd">deallocate</span><span class="hl opt">(</span>buf<span class="hl opt">)</span>
+  <span class="hl kwd">deallocate</span><span class="hl opt">(</span>xgrid<span class="hl opt">)</span>
+
+<span class="hl kwa">contains</span>
+
+  <span class="hl kwa">subroutine</span> update
+    Zi <span class="hl opt">=</span> <span class="hl num">2.0</span> <span class="hl opt">*</span> Zr <span class="hl opt">*</span> Zi <span class="hl opt">+</span> Ci
+    Zr <span class="hl opt">=</span> Tr <span class="hl opt">-</span> Ti <span class="hl opt">+</span> Cr
+    Ti <span class="hl opt">=</span> Zi <span class="hl opt">*</span> Zi
+    Tr <span class="hl opt">=</span> Zr <span class="hl opt">*</span> Zr
+  <span class="hl kwa">end subroutine</span> update
+
+<span class="hl kwa">end program</span> mandelbrot

@@ -1,0 +1,173 @@
+<span class="hl slc">;;   The Computer Language Benchmarks Game</span>
+<span class="hl slc">;;   http://shootout.alioth.debian.org/</span>
+
+<span class="hl slc">;; contributed by Andy Fingerhut.  </span>
+<span class="hl slc">;; Speed improvements contributed by Stuart Halloway.</span>
+
+<span class="hl opt">(</span><span class="hl kwa">ns</span> fannkuchredux
+  <span class="hl opt">(:</span>require clojure.string<span class="hl opt">)</span>
+  <span class="hl opt">(:</span>gen-class<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">set</span><span class="hl opt">! *</span>warn-on-reflection<span class="hl opt">*</span> true<span class="hl opt">)</span>
+
+
+<span class="hl slc">;; This macro assumes that 1 &lt;= n &lt;= (alength a), where a is a Java</span>
+<span class="hl slc">;; array of ints.  No guarantees are made of its correctness if this</span>
+<span class="hl slc">;; condition is violated.  It does this merely to avoid checking a few</span>
+<span class="hl slc">;; conditions, and thus perhaps be a bit faster.</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defmacro</span> reverse-first-n<span class="hl opt">! [</span>n <span class="hl opt">#</span>^ints a<span class="hl opt">]</span>
+  <span class="hl opt">`(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>n<span class="hl opt"># (</span><span class="hl kwa">int</span> ~n<span class="hl opt">)</span>
+         n-1<span class="hl opt"># (</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">dec</span> n<span class="hl opt">#))]</span>
+     <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>i<span class="hl opt"># (</span><span class="hl kwa">int</span> <span class="hl num">0</span><span class="hl opt">)</span>
+            j<span class="hl opt"># (</span><span class="hl kwa">int</span> n-1<span class="hl opt">#)]</span>
+       <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(&lt;</span> i<span class="hl opt">#</span> j<span class="hl opt">#)</span>
+         <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>temp<span class="hl opt"># (</span><span class="hl kwa">aget</span> ~a i<span class="hl opt">#)]</span>
+           <span class="hl opt">(</span><span class="hl kwa">aset</span> ~a i<span class="hl opt"># (</span><span class="hl kwa">aget</span> ~a j<span class="hl opt">#))</span>
+           <span class="hl opt">(</span><span class="hl kwa">aset</span> ~a j<span class="hl opt">#</span> temp<span class="hl opt">#))</span>
+         <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> i<span class="hl opt">#) (</span><span class="hl kwa">dec</span> j<span class="hl opt">#))))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defmacro</span> rotate-left-first-n<span class="hl opt">! [</span>n <span class="hl opt">#</span>^ints a<span class="hl opt">]</span>
+  <span class="hl opt">`(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>n<span class="hl opt"># (</span><span class="hl kwa">int</span> ~n<span class="hl opt">)</span>
+	 n-1<span class="hl opt"># (</span><span class="hl kwa">dec</span> n<span class="hl opt">#)</span>
+	 a0<span class="hl opt"># (</span><span class="hl kwa">aget</span> ~a <span class="hl num">0</span><span class="hl opt">)]</span>
+     <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>i<span class="hl opt"># (</span><span class="hl kwa">int</span> <span class="hl num">0</span><span class="hl opt">)]</span>
+       <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(==</span> i<span class="hl opt">#</span> n-1<span class="hl opt">#)</span>
+	 <span class="hl opt">(</span><span class="hl kwa">aset</span> ~a n-1<span class="hl opt">#</span> a0<span class="hl opt">#)</span>
+	 <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt"># (</span><span class="hl kwa">inc</span> i<span class="hl opt">#)]</span>
+	   <span class="hl opt">(</span><span class="hl kwa">aset</span> ~a i<span class="hl opt"># (</span><span class="hl kwa">aget</span> ~a i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">#))</span>
+	   <span class="hl opt">(</span><span class="hl kwa">recur</span> i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">#))))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> fannkuch-of-permutation <span class="hl opt">[#</span>^ints p<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(== (</span><span class="hl kwa">int</span> <span class="hl num">1</span><span class="hl opt">) (</span><span class="hl kwa">aget</span> p <span class="hl num">0</span><span class="hl opt">))</span>
+    <span class="hl slc">;; Handle this special case without bothering to create a Java</span>
+    <span class="hl slc">;; array.</span>
+    <span class="hl num">0</span>
+    <span class="hl slc">;; Using aclone instead of copy-java-int-array was a big</span>
+    <span class="hl slc">;; improvement.</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[#</span>^ints p2 <span class="hl opt">(</span><span class="hl kwa">aclone</span> p<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>flips <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">0</span><span class="hl opt">)]</span>
+        <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>first-num <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">aget</span> p2 <span class="hl num">0</span><span class="hl opt">))]</span>
+          <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(== (</span><span class="hl kwa">int</span> <span class="hl num">1</span><span class="hl opt">)</span> first-num<span class="hl opt">)</span>
+            flips
+            <span class="hl opt">(</span><span class="hl kwa">do</span>
+              <span class="hl opt">(</span><span class="hl kwa">reverse-first-n</span><span class="hl opt">!</span> first-num p2<span class="hl opt">)</span>
+              <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> flips<span class="hl opt">)))))))))</span>
+
+
+<span class="hl slc">;; initialize the permutation generation algorithm.  The permutations</span>
+<span class="hl slc">;; need to be generated in a particular order so that the checksum may</span>
+<span class="hl slc">;; be computed correctly (or if you can determine some way to</span>
+<span class="hl slc">;; calculate the sign from an arbitrary permutation, then you can</span>
+<span class="hl slc">;; generate the permutations in any order you wish).</span>
+
+<span class="hl slc">;; With the particular order of generating permutations used in this</span>
+<span class="hl slc">;; program, it turns out that each of the n consecutive &quot;groups&quot; of</span>
+<span class="hl slc">;; (n-1)!  permutations begin with these permutations (example given</span>
+<span class="hl slc">;; for n=6):</span>
+
+<span class="hl slc">;;   1st permutation: 1 2 3 4 5 6    sign: 1  count vals: 1 2 3 4 5 6</span>
+<span class="hl slc">;; 121st permutation: 2 3 4 5 6 1    sign: 1  count vals: 1 2 3 4 5 5</span>
+<span class="hl slc">;; 241st permutation: 3 4 5 6 1 2    sign: 1  count vals: 1 2 3 4 5 4</span>
+<span class="hl slc">;; 361st permutation: 4 5 6 1 2 3    sign: 1  count vals: 1 2 3 4 5 3</span>
+<span class="hl slc">;; 481st permutation: 5 6 1 2 3 4    sign: 1  count vals: 1 2 3 4 5 2</span>
+<span class="hl slc">;; 601st permutation: 6 1 2 3 4 5    sign: 1  count vals: 1 2 3 4 5 1</span>
+
+<span class="hl slc">;; This makes it very easy to divide the work into n parallel tasks</span>
+<span class="hl slc">;; that each start at one of the permutations above, and generate only</span>
+<span class="hl slc">;; (n-1)! permutations each.  Then combine the checksum and maxflips</span>
+<span class="hl slc">;; values of each thread and print.</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> init-permutations <span class="hl opt">[</span>n<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>n-1 <span class="hl opt">(</span><span class="hl kwa">dec</span> n<span class="hl opt">)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>i <span class="hl num">1</span>
+           p <span class="hl opt">(</span><span class="hl kwa">int-array</span> <span class="hl opt">(</span><span class="hl kwa">range</span> <span class="hl num">1</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> n<span class="hl opt">)))</span>
+           sign <span class="hl num">1</span>
+           c <span class="hl opt">(</span><span class="hl kwa">int-array</span> <span class="hl opt">(</span><span class="hl kwa">range</span> <span class="hl num">1</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> n<span class="hl opt">)))</span>
+           tasks <span class="hl opt">[{:</span>perm p <span class="hl opt">:</span>sign sign <span class="hl opt">:</span>counts c<span class="hl opt">}]]</span>
+      <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(==</span> i n<span class="hl opt">)</span>
+        tasks
+        <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>p2 <span class="hl opt">(</span><span class="hl kwa">aclone</span> p<span class="hl opt">)</span>
+              c2 <span class="hl opt">(</span><span class="hl kwa">aclone</span> c<span class="hl opt">)]</span>
+          <span class="hl opt">(</span><span class="hl kwa">rotate-left-first-n</span><span class="hl opt">!</span> n p2<span class="hl opt">)</span>
+          <span class="hl opt">(</span><span class="hl kwa">aset</span> c2 n-1 <span class="hl opt">(</span><span class="hl kwa">dec</span> <span class="hl opt">(</span><span class="hl kwa">aget</span> c2 n-1<span class="hl opt">)))</span>
+          <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> i<span class="hl opt">)</span> p2 sign c2
+                 <span class="hl opt">(</span><span class="hl kwa">conj</span> tasks <span class="hl opt">{:</span>perm p2 <span class="hl opt">:</span>sign sign <span class="hl opt">:</span>counts c2<span class="hl opt">})))))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defmacro</span> swap-array-elems<span class="hl opt">! [</span>a i j<span class="hl opt">]</span>
+  <span class="hl opt">`(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>temp<span class="hl opt"># (</span><span class="hl kwa">aget</span> ~a ~i<span class="hl opt">)]</span>
+     <span class="hl opt">(</span><span class="hl kwa">aset</span> ~a ~i <span class="hl opt">(</span><span class="hl kwa">aget</span> ~a ~j<span class="hl opt">))</span>
+     <span class="hl opt">(</span><span class="hl kwa">aset</span> ~a ~j temp<span class="hl opt">#)))</span>
+
+
+<span class="hl slc">;; Modify the passed Java arrays p (a permutation) and c (count</span>
+<span class="hl slc">;; values) in place.  Let caller negate the sign themselves.</span>
+
+<span class="hl slc">;; Return true if the final value of p is a new permutation, false if</span>
+<span class="hl slc">;; there are no more permutations and the caller should not use the</span>
+<span class="hl slc">;; value of p for anything.</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> next-permutation<span class="hl opt">! [</span>N <span class="hl opt">#</span>^ints p sign <span class="hl opt">#</span>^ints c<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">neg</span>? sign<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>N <span class="hl opt">(</span><span class="hl kwa">int</span> N<span class="hl opt">)</span>
+	  N-1 <span class="hl opt">(</span><span class="hl kwa">dec</span> N<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">swap-array-elems</span><span class="hl opt">!</span> p <span class="hl num">1 2</span><span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>i <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">2</span><span class="hl opt">)]</span>
+	<span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(==</span> i N<span class="hl opt">)</span>
+	  true<span class="hl opt">)</span>
+	<span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>cx <span class="hl opt">(</span><span class="hl kwa">aget</span> c i<span class="hl opt">)</span>
+	      i<span class="hl opt">+</span><span class="hl num">1</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> i<span class="hl opt">)]</span>
+	  <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">not</span><span class="hl opt">=</span> cx <span class="hl num">1</span><span class="hl opt">)</span>
+	    <span class="hl opt">(</span><span class="hl kwa">do</span>
+	      <span class="hl opt">(</span><span class="hl kwa">aset</span> c i <span class="hl opt">(</span><span class="hl kwa">dec</span> cx<span class="hl opt">))</span>
+	      true<span class="hl opt">)</span>
+	    <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(==</span> i N-1<span class="hl opt">)</span>
+	      false
+	      <span class="hl opt">(</span><span class="hl kwa">do</span>
+		<span class="hl opt">(</span><span class="hl kwa">aset</span> c i i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+		<span class="hl opt">(</span><span class="hl kwa">rotate-left-first-n</span><span class="hl opt">! (</span><span class="hl kwa">inc</span> i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span> p<span class="hl opt">)</span>
+		<span class="hl opt">(</span><span class="hl kwa">recur</span> i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)))))))</span>
+    <span class="hl slc">;; else sign is +1</span>
+    <span class="hl opt">(</span><span class="hl kwa">swap-array-elems</span><span class="hl opt">!</span> p <span class="hl num">0 1</span><span class="hl opt">)))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> partial-fannkuch <span class="hl opt">[</span>num-perms <span class="hl opt">#</span>^ints p-arg first-sign <span class="hl opt">#</span>^ints c-arg<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[#</span>^ints p <span class="hl opt">(</span><span class="hl kwa">aclone</span> p-arg<span class="hl opt">)</span>
+        <span class="hl opt">#</span>^ints c <span class="hl opt">(</span><span class="hl kwa">aclone</span> c-arg<span class="hl opt">)</span>
+        N <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">count</span> p<span class="hl opt">))]</span>
+    <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>i <span class="hl opt">(</span><span class="hl kwa">int</span> num-perms<span class="hl opt">)</span>
+           sign <span class="hl opt">(</span><span class="hl kwa">int</span> first-sign<span class="hl opt">)</span>
+	   maxflips <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">0</span><span class="hl opt">)</span>
+	   checksum <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">0</span><span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">zero</span>? i<span class="hl opt">)</span>
+        <span class="hl opt">[</span>checksum maxflips<span class="hl opt">]</span>
+        <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>curflips <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">fannkuch-of-permutation</span> p<span class="hl opt">))]</span>
+          <span class="hl opt">(</span><span class="hl kwa">next-permutation</span><span class="hl opt">!</span> N p sign c<span class="hl opt">)</span>
+          <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">dec</span> i<span class="hl opt">) (</span><span class="hl kwa">-</span> sign<span class="hl opt">) (</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">max</span> maxflips curflips<span class="hl opt">))</span>
+                 <span class="hl opt">(+</span> checksum <span class="hl opt">(*</span> sign curflips<span class="hl opt">))))))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> fannkuch <span class="hl opt">[</span>N<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>init-perms <span class="hl opt">(</span><span class="hl kwa">init-permutations</span> N<span class="hl opt">)</span>
+        N-1-factorial <span class="hl opt">(</span><span class="hl kwa">reduce</span> <span class="hl opt">* (</span><span class="hl kwa">range</span> <span class="hl num">1</span> N<span class="hl opt">))</span>
+        partial-results <span class="hl opt">(</span><span class="hl kwa">pmap</span> <span class="hl opt">(</span><span class="hl kwa">fn</span> <span class="hl opt">[{</span>p <span class="hl opt">:</span>perm<span class="hl opt">,</span> s <span class="hl opt">:</span>sign<span class="hl opt">,</span> c <span class="hl opt">:</span>counts<span class="hl opt">}]</span>
+                                <span class="hl opt">(</span><span class="hl kwa">partial-fannkuch</span> N-1-factorial p s c<span class="hl opt">))</span>
+                              init-perms<span class="hl opt">)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">reduce</span> <span class="hl opt">(</span><span class="hl kwa">fn</span> <span class="hl opt">[[</span>checksum1 maxflips1<span class="hl opt">] [</span>checksum2 maxflips2<span class="hl opt">]]</span>
+              <span class="hl opt">[(+</span> checksum1 checksum2<span class="hl opt">) (</span><span class="hl kwa">max</span> maxflips1 maxflips2<span class="hl opt">)])</span>
+            partial-results<span class="hl opt">)))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> -main <span class="hl opt">[&amp;</span> args<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>N <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">and</span> <span class="hl opt">(&gt;= (</span><span class="hl kwa">count</span> args<span class="hl opt">)</span> <span class="hl num">1</span><span class="hl opt">)</span>
+		   <span class="hl opt">(</span><span class="hl kwa">re-matches</span> <span class="hl opt">#</span><span class="hl str">&quot;^\d+$&quot;</span> <span class="hl opt">(</span><span class="hl kwa">nth</span> args <span class="hl num">0</span><span class="hl opt">)))</span>
+	    <span class="hl opt">(</span>. Integer valueOf <span class="hl opt">(</span><span class="hl kwa">nth</span> args <span class="hl num">0</span><span class="hl opt">)</span> <span class="hl num">10</span><span class="hl opt">)</span>
+	    <span class="hl num">10</span><span class="hl opt">)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[[</span>checksum maxflips<span class="hl opt">] (</span><span class="hl kwa">fannkuch</span> N<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">printf</span> <span class="hl str">&quot;%d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> checksum<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">printf</span> <span class="hl str">&quot;Pfannkuchen(%d) = %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> N maxflips<span class="hl opt">)))</span>
+  <span class="hl opt">(</span><span class="hl kwa">flush</span><span class="hl opt">)</span>
+  <span class="hl opt">(</span>. System <span class="hl opt">(</span><span class="hl kwa">exit</span> <span class="hl num">0</span><span class="hl opt">)))</span>

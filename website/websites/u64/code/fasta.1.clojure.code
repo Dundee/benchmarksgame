@@ -1,0 +1,159 @@
+<span class="hl slc">;;   The Computer Language Benchmarks Game</span>
+<span class="hl slc">;;   http://shootout.alioth.debian.org/</span>
+
+<span class="hl slc">;; contributed by Andy Fingerhut</span>
+
+<span class="hl opt">(</span><span class="hl kwa">ns</span> fasta
+  <span class="hl opt">(:</span>gen-class<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">set</span><span class="hl opt">! *</span>warn-on-reflection<span class="hl opt">*</span> true<span class="hl opt">)</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> make-repeat-fasta <span class="hl opt">[#</span>^java.io.BufferedWriter wrtr
+                         line-length id desc s n<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>descstr <span class="hl opt">(</span><span class="hl kwa">str</span> <span class="hl str">&quot;&gt;&quot;</span> id <span class="hl str">&quot; &quot;</span> desc <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">)]</span>
+    <span class="hl opt">(</span>.write wrtr descstr<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>s-len <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">count</span> s<span class="hl opt">))</span>
+        line-length <span class="hl opt">(</span><span class="hl kwa">int</span> line-length<span class="hl opt">)</span>
+        min-buf-len <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(+</span> s-len line-length<span class="hl opt">))</span>
+        repeat-count <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> <span class="hl opt">(</span><span class="hl kwa">quot</span> min-buf-len s-len<span class="hl opt">)))</span>
+        buf <span class="hl opt">(</span><span class="hl kwa">apply</span> str <span class="hl opt">(</span><span class="hl kwa">repeat</span> repeat-count s<span class="hl opt">))</span>
+        <span class="hl slc">;; Precompute all strings that we might want to print, one at</span>
+        <span class="hl slc">;; each possible offset in the string s to be repeated.</span>
+        line-strings <span class="hl opt">(</span><span class="hl kwa">vec</span> <span class="hl opt">(</span><span class="hl kwa">map</span> <span class="hl opt">(</span><span class="hl kwa">fn</span> <span class="hl opt">[</span>i<span class="hl opt">]</span>
+                                 <span class="hl opt">(</span><span class="hl kwa">str</span> <span class="hl opt">(</span><span class="hl kwa">subs</span> buf i <span class="hl opt">(+</span> i line-length<span class="hl opt">))</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">))</span>
+                               <span class="hl opt">(</span><span class="hl kwa">range</span> <span class="hl num">0</span> s-len<span class="hl opt">)))</span>
+        num-full-lines <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">quot</span> n line-length<span class="hl opt">))]</span>
+    <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>j <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">0</span><span class="hl opt">)</span>
+           s-offset <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">0</span><span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(==</span> j num-full-lines<span class="hl opt">)</span>
+        <span class="hl slc">;; Write out the left over part of length n, if any.</span>
+        <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(</span><span class="hl kwa">not</span><span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl opt">(</span><span class="hl kwa">rem</span> n line-length<span class="hl opt">))</span>
+          <span class="hl opt">(</span>.write wrtr <span class="hl opt">(</span><span class="hl kwa">str</span> <span class="hl opt">(</span><span class="hl kwa">subs</span> buf s-offset <span class="hl opt">(+</span> s-offset <span class="hl opt">(</span><span class="hl kwa">rem</span> n line-length<span class="hl opt">)))</span>
+                            <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">)))</span>
+        <span class="hl opt">(</span><span class="hl kwa">do</span>
+          <span class="hl opt">(</span>.write wrtr <span class="hl opt">#</span>^String <span class="hl opt">(</span><span class="hl kwa">line-strings</span> s-offset<span class="hl opt">))</span>
+          <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> j<span class="hl opt">) (</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">rem</span> <span class="hl opt">(+</span> s-offset line-length<span class="hl opt">)</span> s-len<span class="hl opt">))))))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">definterface</span> IPRNG
+  <span class="hl opt">(</span><span class="hl kwa">gen_random_BANG_</span> <span class="hl opt">[</span>^double max-val<span class="hl opt">]))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">deftype</span> PRNG <span class="hl opt">[</span>^<span class="hl opt">{:</span>unsynchronized-mutable true <span class="hl opt">:</span>tag int<span class="hl opt">}</span> rand-state<span class="hl opt">]</span>
+  IPRNG
+  <span class="hl opt">(</span><span class="hl kwa">gen-random</span><span class="hl opt">! [</span>this max-val<span class="hl opt">]</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>IM <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">139968</span><span class="hl opt">)</span>
+          IA <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">3877</span><span class="hl opt">)</span>
+          IC <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">29573</span><span class="hl opt">)</span>
+          max <span class="hl opt">(</span><span class="hl kwa">double</span> max-val<span class="hl opt">)</span>
+          last-state <span class="hl opt">(</span><span class="hl kwa">int</span> rand-state<span class="hl opt">)</span>
+          next-state <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">rem</span> <span class="hl opt">(+ (*</span> last-state IA<span class="hl opt">)</span> IC<span class="hl opt">)</span> IM<span class="hl opt">))]</span>
+      <span class="hl opt">(</span><span class="hl kwa">set</span><span class="hl opt">!</span> rand-state next-state<span class="hl opt">)</span>
+      <span class="hl opt">(/ (*</span> max next-state<span class="hl opt">)</span> IM<span class="hl opt">))))</span>
+
+
+<span class="hl slc">;; Find desired gene from cdf using binary search.</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defmacro</span> lookup-gene <span class="hl opt">[</span>n gene-chars gene-cdf rand-frac<span class="hl opt">]</span>
+  <span class="hl opt">`(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>x<span class="hl opt"># (</span><span class="hl kwa">double</span> ~rand-frac<span class="hl opt">)]</span>
+     <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>lo<span class="hl opt"># (</span><span class="hl kwa">int</span> -<span class="hl num">1</span><span class="hl opt">)</span>
+            hi<span class="hl opt"># (</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">dec</span> ~n<span class="hl opt">))]</span>
+       <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(== (</span><span class="hl kwa">inc</span> lo<span class="hl opt">#)</span> hi<span class="hl opt">#)</span>
+         <span class="hl opt">(</span><span class="hl kwa">aget</span> ~gene-chars hi<span class="hl opt">#)</span>
+         <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>mid<span class="hl opt"># (</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">quot</span> <span class="hl opt">(+</span> lo<span class="hl opt">#</span> hi<span class="hl opt">#)</span> <span class="hl num">2</span><span class="hl opt">))]</span>
+           <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(&lt;</span> x<span class="hl opt"># (</span><span class="hl kwa">aget</span> ~gene-cdf mid<span class="hl opt">#))</span>
+             <span class="hl opt">(</span><span class="hl kwa">recur</span> lo<span class="hl opt">#</span> mid<span class="hl opt">#)</span>
+             <span class="hl opt">(</span><span class="hl kwa">recur</span> mid<span class="hl opt">#</span> hi<span class="hl opt">#)))))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>my-prng <span class="hl opt">(</span><span class="hl kwa">PRNG</span>. <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">42</span><span class="hl opt">))]</span>
+  <span class="hl opt">(</span><span class="hl kwa">defn</span> fill-random<span class="hl opt">! [#</span>^chars gene-chars <span class="hl opt">#</span>^doubles gene-cdf n <span class="hl opt">#</span>^chars buf<span class="hl opt">]</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>num-genes <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">alength</span> gene-cdf<span class="hl opt">))]</span>
+      <span class="hl opt">(</span><span class="hl kwa">dotimes</span> <span class="hl opt">[</span>i n<span class="hl opt">]</span>
+        <span class="hl opt">(</span><span class="hl kwa">aset</span> buf i <span class="hl opt">(</span><span class="hl kwa">char</span> <span class="hl opt">(</span><span class="hl kwa">lookup-gene</span> num-genes gene-chars gene-cdf
+                                       <span class="hl opt">(</span>.gen-random<span class="hl opt">!</span> my-prng <span class="hl num">1.0</span><span class="hl opt">))))))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> make-random-fasta <span class="hl opt">[#</span>^java.io.BufferedWriter wrtr
+                         line-length id desc n gene-chars gene-cdf<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>descstr <span class="hl opt">(</span><span class="hl kwa">str</span> <span class="hl str">&quot;&gt;&quot;</span> id <span class="hl str">&quot; &quot;</span> desc <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">)]</span>
+    <span class="hl opt">(</span>.write wrtr descstr<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>line-length <span class="hl opt">(</span><span class="hl kwa">int</span> line-length<span class="hl opt">)</span>
+        len-with-newline <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> line-length<span class="hl opt">))</span>
+        num-full-lines <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">quot</span> n line-length<span class="hl opt">))</span>
+        line-buf <span class="hl opt">(</span><span class="hl kwa">char-array</span> len-with-newline<span class="hl opt">)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">aset</span> line-buf line-length <span class="hl esc">\n</span>ewline<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">dotimes</span> <span class="hl opt">[</span>i num-full-lines<span class="hl opt">]</span>
+      <span class="hl opt">(</span><span class="hl kwa">fill-random</span><span class="hl opt">!</span> gene-chars gene-cdf line-length line-buf<span class="hl opt">)</span>
+      <span class="hl opt">(</span>.write wrtr line-buf <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">0</span><span class="hl opt">)</span> len-with-newline<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>remaining-len <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">rem</span> n line-length<span class="hl opt">))]</span>
+      <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(</span><span class="hl kwa">not</span><span class="hl opt">=</span> <span class="hl num">0</span> remaining-len<span class="hl opt">)</span>
+        <span class="hl opt">(</span><span class="hl kwa">fill-random</span><span class="hl opt">!</span> gene-chars gene-cdf remaining-len line-buf<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.write wrtr line-buf <span class="hl num">0</span> remaining-len<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.write wrtr <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">)))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">def</span> alu <span class="hl opt">(</span><span class="hl kwa">str</span> <span class="hl str">&quot;GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG&quot;</span>
+              <span class="hl str">&quot;GAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGAGA&quot;</span>
+              <span class="hl str">&quot;CCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAAT&quot;</span>
+              <span class="hl str">&quot;ACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAATCCCA&quot;</span>
+              <span class="hl str">&quot;GCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTGAACCCGGG&quot;</span>
+              <span class="hl str">&quot;AGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCC&quot;</span>
+              <span class="hl str">&quot;AGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAA&quot;</span><span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">def</span> iub <span class="hl opt">[[</span><span class="hl esc">\a</span> <span class="hl num">0.27</span><span class="hl opt">]</span>
+          <span class="hl opt">[</span>\c <span class="hl num">0.12</span><span class="hl opt">]</span>
+          <span class="hl opt">[</span>\g <span class="hl num">0.12</span><span class="hl opt">]</span>
+          <span class="hl opt">[</span><span class="hl esc">\t</span> <span class="hl num">0.27</span><span class="hl opt">]</span>
+          <span class="hl opt">[</span>\B <span class="hl num">0.02</span><span class="hl opt">]</span>
+          <span class="hl opt">[</span>\D <span class="hl num">0.02</span><span class="hl opt">]</span>
+          <span class="hl opt">[</span>\H <span class="hl num">0.02</span><span class="hl opt">]</span>
+          <span class="hl opt">[</span>\K <span class="hl num">0.02</span><span class="hl opt">]</span>
+          <span class="hl opt">[</span>\M <span class="hl num">0.02</span><span class="hl opt">]</span>
+          <span class="hl opt">[</span>\N <span class="hl num">0.02</span><span class="hl opt">]</span>
+          <span class="hl opt">[</span>\R <span class="hl num">0.02</span><span class="hl opt">]</span>
+          <span class="hl opt">[</span>\S <span class="hl num">0.02</span><span class="hl opt">]</span>
+          <span class="hl opt">[</span>\V <span class="hl num">0.02</span><span class="hl opt">]</span>
+          <span class="hl opt">[</span>\W <span class="hl num">0.02</span><span class="hl opt">]</span>
+          <span class="hl opt">[</span>\Y <span class="hl num">0.02</span><span class="hl opt">]])</span>
+
+<span class="hl opt">(</span><span class="hl kwa">def</span> homosapiens <span class="hl opt">[[</span><span class="hl esc">\a</span> <span class="hl num">0.3029549426680</span><span class="hl opt">]</span>
+                  <span class="hl opt">[</span>\c <span class="hl num">0.1979883004921</span><span class="hl opt">]</span>
+                  <span class="hl opt">[</span>\g <span class="hl num">0.1975473066391</span><span class="hl opt">]</span>
+                  <span class="hl opt">[</span><span class="hl esc">\t</span> <span class="hl num">0.3015094502008</span><span class="hl opt">]])</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> prefix-sums-helper <span class="hl opt">[</span>x coll<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">lazy-seq</span>
+   <span class="hl opt">(</span><span class="hl kwa">when-let</span> <span class="hl opt">[</span>s <span class="hl opt">(</span><span class="hl kwa">seq</span> coll<span class="hl opt">)]</span>
+     <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>sum <span class="hl opt">(+</span> x <span class="hl opt">(</span><span class="hl kwa">first</span> s<span class="hl opt">))]</span>
+       <span class="hl opt">(</span><span class="hl kwa">cons</span> sum <span class="hl opt">(</span><span class="hl kwa">prefix-sums-helper</span> sum <span class="hl opt">(</span><span class="hl kwa">rest</span> s<span class="hl opt">)))))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> prefix-sums <span class="hl opt">[</span>coll<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">prefix-sums-helper</span> <span class="hl num">0</span> coll<span class="hl opt">))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> make-genelist <span class="hl opt">[</span>pdf-map<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>n <span class="hl opt">(</span><span class="hl kwa">count</span> pdf-map<span class="hl opt">)</span>
+        chars <span class="hl opt">(</span><span class="hl kwa">char-array</span> n <span class="hl opt">(</span><span class="hl kwa">map</span> first pdf-map<span class="hl opt">))</span>
+        cdf <span class="hl opt">(</span><span class="hl kwa">double-array</span> n <span class="hl opt">(</span><span class="hl kwa">prefix-sums</span> <span class="hl opt">(</span><span class="hl kwa">map</span> <span class="hl opt">#(</span><span class="hl kwa">nth</span> % <span class="hl num">1</span><span class="hl opt">)</span> pdf-map<span class="hl opt">)))]</span>
+    <span class="hl opt">[</span>chars cdf<span class="hl opt">]))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> -main <span class="hl opt">[&amp;</span> args<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>n <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">and</span> <span class="hl opt">(&gt;= (</span><span class="hl kwa">count</span> args<span class="hl opt">)</span> <span class="hl num">1</span><span class="hl opt">)</span>
+                   <span class="hl opt">(</span><span class="hl kwa">re-matches</span> <span class="hl opt">#</span><span class="hl str">&quot;^\d+$&quot;</span> <span class="hl opt">(</span><span class="hl kwa">nth</span> args <span class="hl num">0</span><span class="hl opt">)))</span>
+            <span class="hl opt">(</span>. Integer valueOf <span class="hl opt">(</span><span class="hl kwa">nth</span> args <span class="hl num">0</span><span class="hl opt">)</span> <span class="hl num">10</span><span class="hl opt">))</span>
+        line-length <span class="hl num">60</span>
+        wrtr <span class="hl opt">(</span><span class="hl kwa">java</span>.io.BufferedWriter. <span class="hl opt">*</span>out<span class="hl opt">*)</span>
+        <span class="hl opt">[</span>iub-chars iub-cdf<span class="hl opt">] (</span><span class="hl kwa">make-genelist</span> iub<span class="hl opt">)</span>
+        <span class="hl opt">[</span>homosapiens-chars homosapiens-cdf<span class="hl opt">] (</span><span class="hl kwa">make-genelist</span> homosapiens<span class="hl opt">)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">make-repeat-fasta</span> wrtr line-length <span class="hl str">&quot;ONE&quot;</span> <span class="hl str">&quot;Homo sapiens alu&quot;</span> alu <span class="hl opt">(*</span> <span class="hl num">2</span> n<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">make-random-fasta</span> wrtr line-length <span class="hl str">&quot;TWO&quot;</span> <span class="hl str">&quot;IUB ambiguity codes&quot;</span>
+                       <span class="hl opt">(*</span> <span class="hl num">3</span> n<span class="hl opt">)</span> iub-chars iub-cdf<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">make-random-fasta</span> wrtr line-length <span class="hl str">&quot;THREE&quot;</span> <span class="hl str">&quot;Homo sapiens frequency&quot;</span>
+                       <span class="hl opt">(*</span> <span class="hl num">5</span> n<span class="hl opt">)</span> homosapiens-chars homosapiens-cdf<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.flush wrtr<span class="hl opt">))</span>
+  <span class="hl opt">(</span>. System <span class="hl opt">(</span><span class="hl kwa">exit</span> <span class="hl num">0</span><span class="hl opt">)))</span>

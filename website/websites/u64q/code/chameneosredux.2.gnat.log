@@ -1,0 +1,70 @@
+
+Mon, 21 May 2012 19:22:38 GMT
+
+MAKE:
+/usr/bin/gnatchop -r -w chameneosredux.gnat-2.gnat
+splitting chameneosredux.gnat-2.gnat into:
+   chameneosredux.adb
+   chameneos.ads
+   chameneos-creatures.ads
+   chameneos-games.ads
+   chameneos-meetings.ads
+   cache_aligned_storage_pools.ads
+   chameneos-countdown.ads
+   chameneos-processors.ads
+   x86_atomic_swap_utils.ads
+   chameneos.adb
+   chameneos-creatures.adb
+   chameneos-games.adb
+   chameneos-meetings.adb
+   chameneos-countdown.adb
+   cache_aligned_storage_pools.adb
+   chameneos-processors.adb
+   x86_atomic_swap_utils.adb
+/usr/bin/gnatmake -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp -f chameneosredux.adb -o chameneosredux.gnat-2.gnat_run 
+gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp chameneosredux.adb
+gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp chameneos.adb
+gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp chameneos-games.adb
+gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp chameneos-processors.adb
+gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp cache_aligned_storage_pools.adb
+gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp chameneos-countdown.adb
+gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp chameneos-creatures.adb
+gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp chameneos-meetings.adb
+gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp x86_atomic_swap_utils.adb
+gnatbind -x chameneosredux.ali
+gnatlink chameneosredux.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o chameneosredux.gnat-2.gnat_run
+1.70s to complete and log all make actions
+
+COMMAND LINE:
+./chameneosredux.gnat-2.gnat_run 6000000
+
+PROGRAM OUTPUT:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
+ blue red yellow
+5999527 zero
+3178542 zero
+2821931 zero
+ one two zero zero zero zero zero zero
+
+ blue red yellow red yellow blue red yellow red blue
+1220684 zero
+1822278 zero
+1188420 zero
+1255904 zero
+1102156 zero
+1174504 zero
+1053171 zero
+1125512 zero
+1113378 zero
+943993 zero
+ one two zero zero zero zero zero zero
+

@@ -1,0 +1,69 @@
+<span class="hl slc">;;   The Computer Language Benchmarks Game</span>
+<span class="hl slc">;;   http://shootout.alioth.debian.org/</span>
+<span class="hl slc">;;;</span>
+<span class="hl slc">;;; By Jon Smith</span>
+<span class="hl slc">;;; Tranlated from OCaml implementation by ?, who translated it from</span>
+<span class="hl slc">;;; the Scala implementation by Otto Bommer.</span>
+<span class="hl slc">;;; </span>
+<span class="hl slc">;;; This is a single core implementation.</span>
+<span class="hl slc">;;; I am sure that this program can be improved upon quite a lot.</span>
+<span class="hl slc">;;; Most likely it will involve knowing how sbcl does its optimizations.</span>
+<span class="hl slc">;;; As you can see, I simply used fixnums everywhere. There may be a better choice.</span>
+<span class="hl slc">;;;</span>
+<span class="hl slc">;;; To compile</span>
+<span class="hl slc">;;; sbcl --load fannkuch.lisp --eval &quot;(save-lisp-and-die \&quot;fannkuch.core\&quot; :purify t :toplevel (lambda () (main) (quit)))&quot;</span>
+<span class="hl slc">;;; To run</span>
+<span class="hl slc">;;; sbcl --noinform --core fannkuch.core %A</span>
+
+<span class="hl opt">(</span><span class="hl kwa">declaim</span> <span class="hl opt">(</span><span class="hl kwa">optimize</span> <span class="hl opt">(</span><span class="hl kwa">speed</span> <span class="hl num">3</span><span class="hl opt">) (</span><span class="hl kwa">safety</span> <span class="hl num">0</span><span class="hl opt">) (</span><span class="hl kwa">space</span> <span class="hl num">1</span><span class="hl opt">) (</span><span class="hl kwa">debug</span> <span class="hl num">0</span><span class="hl opt">)))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> fannkuch <span class="hl opt">(</span><span class="hl kwa">n</span><span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">type</span> fixnum n<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">csum</span> <span class="hl num">0</span><span class="hl opt">)</span>
+	<span class="hl opt">(</span><span class="hl kwa">fmax</span> <span class="hl num">0</span><span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">type</span> fixnum fmax<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">perm</span> <span class="hl opt">(</span><span class="hl kwa">make-array</span> n <span class="hl opt">:</span>element-type <span class="hl opt">'</span>fixnum<span class="hl opt">))</span>
+	  <span class="hl opt">(</span><span class="hl kwa">copy</span> <span class="hl opt">(</span><span class="hl kwa">make-array</span> n <span class="hl opt">:</span>element-type <span class="hl opt">'</span>fixnum<span class="hl opt">))</span>
+	  <span class="hl opt">(</span><span class="hl kwa">num</span> <span class="hl num">0</span><span class="hl opt">))</span> 
+
+      <span class="hl opt">(</span><span class="hl kwa">loop</span> for i from <span class="hl num">0</span> to <span class="hl opt">(</span><span class="hl kwa">-</span> n <span class="hl num">1</span><span class="hl opt">)</span> do <span class="hl opt">(</span><span class="hl kwa">setf</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> perm i<span class="hl opt">)</span> i<span class="hl opt">))</span>
+
+      <span class="hl opt">(</span><span class="hl kwa">labels</span> <span class="hl opt">((</span><span class="hl kwa">do-iter</span> <span class="hl opt">(</span><span class="hl kwa">ht</span><span class="hl opt">)</span>
+		 
+		 <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">type</span> fixnum ht<span class="hl opt">))</span>
+		 
+		 <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(=</span> ht <span class="hl num">1</span><span class="hl opt">)</span>
+		     <span class="hl opt">(</span><span class="hl kwa">progn</span>
+		       <span class="hl opt">(</span><span class="hl kwa">loop</span> for i from <span class="hl num">0</span> to <span class="hl opt">(</span><span class="hl kwa">-</span> n <span class="hl num">1</span><span class="hl opt">)</span> do <span class="hl opt">(</span><span class="hl kwa">setf</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> copy i<span class="hl opt">) (</span><span class="hl kwa">aref</span> perm i<span class="hl opt">)))</span>
+		       <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">c</span> <span class="hl num">0</span><span class="hl opt">))</span>
+			 <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">type</span> fixnum c<span class="hl opt">))</span>
+			 <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">z</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> copy <span class="hl num">0</span><span class="hl opt">)))</span>
+			   <span class="hl opt">(</span><span class="hl kwa">loop</span> until <span class="hl opt">(=</span> z <span class="hl num">0</span><span class="hl opt">)</span> do
+				<span class="hl opt">(</span><span class="hl kwa">progn</span>
+				  <span class="hl opt">(</span><span class="hl kwa">loop</span> for i from <span class="hl num">0</span> to <span class="hl opt">(</span><span class="hl kwa">ash</span> z -<span class="hl num">1</span><span class="hl opt">)</span>
+				     do <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">temp</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> copy i<span class="hl opt">))</span>
+					      <span class="hl opt">(</span><span class="hl kwa">k</span> <span class="hl opt">(</span><span class="hl kwa">-</span> z i<span class="hl opt">)))</span>
+					  <span class="hl opt">(</span><span class="hl kwa">setf</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> copy i<span class="hl opt">) (</span><span class="hl kwa">aref</span> copy k<span class="hl opt">))</span>
+					  <span class="hl opt">(</span><span class="hl kwa">setf</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> copy k<span class="hl opt">)</span> temp<span class="hl opt">)))</span>
+				  <span class="hl opt">(</span><span class="hl kwa">incf</span> c<span class="hl opt">)</span>
+				  <span class="hl opt">(</span><span class="hl kwa">setf</span> z <span class="hl opt">(</span><span class="hl kwa">aref</span> copy <span class="hl num">0</span><span class="hl opt">)))))</span>
+			 <span class="hl opt">(</span><span class="hl kwa">setf</span> csum <span class="hl opt">(+</span> csum  <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">evenp</span> num<span class="hl opt">)</span> c <span class="hl opt">(</span><span class="hl kwa">-</span> c<span class="hl opt">))))</span>
+			 <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(&gt;</span> c fmax<span class="hl opt">)</span>
+			   <span class="hl opt">(</span><span class="hl kwa">setf</span> fmax c<span class="hl opt">)))</span>
+		       <span class="hl opt">(</span><span class="hl kwa">incf</span> num<span class="hl opt">))</span>
+		     <span class="hl opt">(</span><span class="hl kwa">loop</span> for i from <span class="hl num">1</span> to ht do
+			  <span class="hl opt">(</span><span class="hl kwa">progn</span> <span class="hl opt">(</span><span class="hl kwa">do-iter</span> <span class="hl opt">(</span><span class="hl kwa">-</span> ht <span class="hl num">1</span><span class="hl opt">))</span>
+				 <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">temp</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> perm <span class="hl num">0</span><span class="hl opt">))</span>
+				       <span class="hl opt">(</span><span class="hl kwa">m</span> <span class="hl opt">(</span><span class="hl kwa">-</span> ht <span class="hl num">1</span><span class="hl opt">)))</span>
+				   <span class="hl opt">(</span><span class="hl kwa">loop</span> for i from <span class="hl num">1</span> to m do
+					<span class="hl opt">(</span><span class="hl kwa">setf</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> perm <span class="hl opt">(</span><span class="hl kwa">-</span> i <span class="hl num">1</span><span class="hl opt">)) (</span><span class="hl kwa">aref</span> perm i<span class="hl opt">)))</span>
+				   <span class="hl opt">(</span><span class="hl kwa">setf</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> perm m<span class="hl opt">)</span> temp<span class="hl opt">)))))))</span>
+
+	<span class="hl opt">(</span><span class="hl kwa">do-iter</span> n<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">format</span> t <span class="hl str">&quot;~s~%Pfannkuchen(~s) = ~s~%&quot;</span> csum n fmax<span class="hl opt">)))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> main <span class="hl opt">()</span>  
+  <span class="hl opt">(</span><span class="hl kwa">let</span><span class="hl opt">* ((</span><span class="hl kwa">args</span> <span class="hl opt">(</span><span class="hl kwa">cdr</span> sb-ext<span class="hl opt">:*</span>posix-argv<span class="hl opt">*))</span>
+         <span class="hl opt">(</span><span class="hl kwa">n</span> <span class="hl opt">(</span><span class="hl kwa">parse-integer</span> <span class="hl opt">(</span><span class="hl kwa">car</span> args<span class="hl opt">))))</span>
+    <span class="hl opt">(</span><span class="hl kwa">fannkuch</span> n<span class="hl opt">)))</span>

@@ -1,0 +1,47 @@
+
+Sat, 14 Jul 2012 00:39:39 GMT
+
+MAKE:
+/usr/local/src/rust-0.3/bin/rustc --opt-level=3 chameneosredux.rs -o chameneosredux.rust_run
+chameneosredux.rs:193:6: 193:10 [1;33mwarning:[0m implicitly copying a non-implicitly-copyable value
+chameneosredux.rs:193       args
+                            ^~~~
+rm chameneosredux.rs
+0.90s to complete and log all make actions
+
+COMMAND LINE:
+./chameneosredux.rust_run 60000
+
+UNEXPECTED OUTPUT 
+
+first file is short
+
+PROGRAM OUTPUT:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
+ blue red yellow
+40001 zero
+40000 zero
+39999 zero
+one two zero zero zero zero 
+
+ blue red yellow red yellow blue red yellow red blue
+11768 zero
+12104 zero
+12104 zero
+12104 zero
+12104 zero
+12104 zero
+11753 zero
+12103 zero
+12103 zero
+11753 zero
+one two zero zero zero zero 

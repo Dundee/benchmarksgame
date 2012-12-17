@@ -1,0 +1,550 @@
+<span class="hl slc">--  The Computer Language Benchmarks Game</span>
+<span class="hl slc">--  http://shootout.alioth.debian.org/</span>
+<span class="hl slc">--</span>
+<span class="hl slc">--  Contributed by Jim Rogers</span>
+<span class="hl slc">--  Modified by Georg Bauhaus</span>
+<span class="hl slc">--  Updated by Georg Bauhaus in July 2012</span>
+<span class="hl slc">--</span>
+<span class="hl slc">--  Some ideas are from Fancois Fabien's program</span>
+<span class="hl slc">--  This version uses the GNAT Spitbol Pattern matching libraries</span>
+<span class="hl slc">--  rather than the more commonly used Unix-style regex libraries</span>
+
+<span class="hl kwa">with</span> GNAT<span class="hl opt">.</span>Spitbol<span class="hl opt">.</span>Patterns<span class="hl opt">;</span>     <span class="hl kwa">use</span> GNAT<span class="hl opt">.</span>Spitbol<span class="hl opt">.</span>Patterns<span class="hl opt">,</span>
+                                    GNAT<span class="hl opt">.</span>Spitbol<span class="hl opt">;</span>
+
+<span class="hl kwa">package</span> DNA <span class="hl kwa">is</span>
+
+   <span class="hl kwa">subtype</span> Variant_Index <span class="hl kwa">is</span> <span class="hl kwb">Positive</span> <span class="hl kwa">range</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">9</span><span class="hl opt">;</span>
+   Variant_Labels <span class="hl opt">:</span> <span class="hl kwa">constant array</span> <span class="hl opt">(</span>Variant_Index<span class="hl opt">)</span> <span class="hl kwa">of</span> VString <span class="hl opt">:= (</span>
+      V <span class="hl opt">(</span><span class="hl str">&quot;agggtaaa|tttaccct&quot;</span><span class="hl opt">),</span>
+      V <span class="hl opt">(</span><span class="hl str">&quot;[cgt]gggtaaa|tttaccc[acg]&quot;</span><span class="hl opt">),</span>
+      V <span class="hl opt">(</span><span class="hl str">&quot;a[act]ggtaaa|tttacc[agt]t&quot;</span><span class="hl opt">),</span>
+      V <span class="hl opt">(</span><span class="hl str">&quot;ag[act]gtaaa|tttac[agt]ct&quot;</span><span class="hl opt">),</span>
+      V <span class="hl opt">(</span><span class="hl str">&quot;agg[act]taaa|ttta[agt]cct&quot;</span><span class="hl opt">),</span>
+      V <span class="hl opt">(</span><span class="hl str">&quot;aggg[acg]aaa|ttt[cgt]ccct&quot;</span><span class="hl opt">),</span>
+      V <span class="hl opt">(</span><span class="hl str">&quot;agggt[cgt]aa|tt[acg]accct&quot;</span><span class="hl opt">),</span>
+      V <span class="hl opt">(</span><span class="hl str">&quot;agggta[cgt]a|t[acg]taccct&quot;</span><span class="hl opt">),</span>
+      V <span class="hl opt">(</span><span class="hl str">&quot;agggtaa[cgt]|[acg]ttaccct&quot;</span><span class="hl opt">));</span>
+
+   Variant_Patterns <span class="hl opt">:</span> <span class="hl kwa">constant array</span> <span class="hl opt">(</span>Variant_Index<span class="hl opt">)</span> <span class="hl kwa">of</span> Pattern <span class="hl opt">:=</span>
+     <span class="hl opt">(</span> <span class="hl slc">--  corresponding alternations in SPITBOL notation</span>
+       <span class="hl num">1</span> <span class="hl opt">=&gt; ((</span>BreakX <span class="hl opt">(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;agggtaaa&quot;</span><span class="hl opt">)</span> <span class="hl kwa">or</span>
+             <span class="hl opt">(</span>BreakX <span class="hl opt">(</span><span class="hl str">&quot;t&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;tttaccct&quot;</span><span class="hl opt">)</span> <span class="hl kwa">or</span>
+             Cancel<span class="hl opt">),</span>
+       <span class="hl num">2</span> <span class="hl opt">=&gt; ((</span>BreakX <span class="hl opt">(</span><span class="hl str">&quot;cgt&quot;</span><span class="hl opt">) &amp;</span> Any <span class="hl opt">(</span><span class="hl str">&quot;cgt&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;gggtaaa&quot;</span><span class="hl opt">)</span> <span class="hl kwa">or</span>
+             <span class="hl opt">(</span>BreakX <span class="hl opt">(</span><span class="hl str">&quot;t&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;tttaccc&quot;</span> <span class="hl opt">&amp;</span> Any <span class="hl opt">(</span><span class="hl str">&quot;acg&quot;</span><span class="hl opt">))</span> <span class="hl kwa">or</span>
+             Cancel<span class="hl opt">),</span>
+       <span class="hl num">3</span> <span class="hl opt">=&gt; ((</span>BreakX <span class="hl opt">(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;a&quot;</span> <span class="hl opt">&amp;</span> Any <span class="hl opt">(</span><span class="hl str">&quot;act&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;ggtaaa&quot;</span><span class="hl opt">)</span> <span class="hl kwa">or</span>
+             <span class="hl opt">(</span>BreakX <span class="hl opt">(</span><span class="hl str">&quot;t&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;tttacc&quot;</span> <span class="hl opt">&amp;</span> Any <span class="hl opt">(</span><span class="hl str">&quot;agt&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;t&quot;</span><span class="hl opt">)</span> <span class="hl kwa">or</span>
+             Cancel<span class="hl opt">),</span>
+       <span class="hl num">4</span> <span class="hl opt">=&gt; ((</span>BreakX <span class="hl opt">(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;ag&quot;</span> <span class="hl opt">&amp;</span> Any <span class="hl opt">(</span><span class="hl str">&quot;act&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;gtaaa&quot;</span><span class="hl opt">)</span> <span class="hl kwa">or</span>
+             <span class="hl opt">(</span>BreakX <span class="hl opt">(</span><span class="hl str">&quot;t&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;tttac&quot;</span> <span class="hl opt">&amp;</span> Any <span class="hl opt">(</span><span class="hl str">&quot;agt&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;ct&quot;</span><span class="hl opt">)</span> <span class="hl kwa">or</span>
+             Cancel<span class="hl opt">),</span>
+       <span class="hl num">5</span> <span class="hl opt">=&gt; ((</span>BreakX <span class="hl opt">(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;agg&quot;</span> <span class="hl opt">&amp;</span> Any <span class="hl opt">(</span><span class="hl str">&quot;act&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;taaa&quot;</span><span class="hl opt">)</span> <span class="hl kwa">or</span>
+             <span class="hl opt">(</span>BreakX <span class="hl opt">(</span><span class="hl str">&quot;t&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;ttta&quot;</span> <span class="hl opt">&amp;</span> Any <span class="hl opt">(</span><span class="hl str">&quot;agt&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;cct&quot;</span><span class="hl opt">)</span> <span class="hl kwa">or</span>
+             Cancel<span class="hl opt">),</span>
+       <span class="hl num">6</span> <span class="hl opt">=&gt; ((</span>BreakX <span class="hl opt">(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;aggg&quot;</span> <span class="hl opt">&amp;</span> Any <span class="hl opt">(</span><span class="hl str">&quot;acg&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;aaa&quot;</span><span class="hl opt">)</span> <span class="hl kwa">or</span>
+             <span class="hl opt">(</span>BreakX <span class="hl opt">(</span><span class="hl str">&quot;t&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;ttt&quot;</span> <span class="hl opt">&amp;</span> Any <span class="hl opt">(</span><span class="hl str">&quot;cgt&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;ccct&quot;</span><span class="hl opt">)</span> <span class="hl kwa">or</span>
+             Cancel<span class="hl opt">),</span>
+       <span class="hl num">7</span> <span class="hl opt">=&gt; ((</span>BreakX <span class="hl opt">(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;agggt&quot;</span> <span class="hl opt">&amp;</span> Any <span class="hl opt">(</span><span class="hl str">&quot;cgt&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;aa&quot;</span><span class="hl opt">)</span> <span class="hl kwa">or</span>
+             <span class="hl opt">(</span>BreakX <span class="hl opt">(</span><span class="hl str">&quot;t&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;tt&quot;</span> <span class="hl opt">&amp;</span> Any <span class="hl opt">(</span><span class="hl str">&quot;acg&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;accct&quot;</span><span class="hl opt">)</span> <span class="hl kwa">or</span>
+             Cancel<span class="hl opt">),</span>
+       <span class="hl num">8</span> <span class="hl opt">=&gt; ((</span>BreakX <span class="hl opt">(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;agggta&quot;</span> <span class="hl opt">&amp;</span> Any <span class="hl opt">(</span><span class="hl str">&quot;cgt&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;a&quot;</span><span class="hl opt">)</span> <span class="hl kwa">or</span>
+             <span class="hl opt">(</span>BreakX <span class="hl opt">(</span><span class="hl str">&quot;t&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;t&quot;</span> <span class="hl opt">&amp;</span> Any <span class="hl opt">(</span><span class="hl str">&quot;acg&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;taccct&quot;</span><span class="hl opt">)</span> <span class="hl kwa">or</span>
+             Cancel<span class="hl opt">),</span>
+       <span class="hl num">9</span> <span class="hl opt">=&gt; ((</span>BreakX <span class="hl opt">(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;agggtaa&quot;</span> <span class="hl opt">&amp;</span> Any <span class="hl opt">(</span><span class="hl str">&quot;cgt&quot;</span><span class="hl opt">))</span> <span class="hl kwa">or</span>
+             <span class="hl opt">(</span>BreakX <span class="hl opt">(</span><span class="hl str">&quot;acg&quot;</span><span class="hl opt">) &amp;</span> Any <span class="hl opt">(</span><span class="hl str">&quot;acg&quot;</span><span class="hl opt">) &amp;</span> <span class="hl str">&quot;ttaccct&quot;</span><span class="hl opt">)</span> <span class="hl kwa">or</span>
+             Cancel<span class="hl opt">));</span>
+
+   <span class="hl kwa">type</span> Iub <span class="hl kwa">is</span>
+      <span class="hl kwa">record</span>
+         Code         <span class="hl opt">:</span> <span class="hl kwb">Character</span><span class="hl opt">;</span>
+         Alternatives <span class="hl opt">:</span> VString<span class="hl opt">;</span>
+         Size         <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span>
+      <span class="hl kwa">end record</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> Codes_Index <span class="hl kwa">is</span>
+     <span class="hl opt">(</span><span class="hl str">'B'</span><span class="hl opt">,</span> <span class="hl str">'D'</span><span class="hl opt">,</span> <span class="hl str">'H'</span><span class="hl opt">,</span> <span class="hl str">'K'</span><span class="hl opt">,</span> <span class="hl str">'M'</span><span class="hl opt">,</span> <span class="hl str">'N'</span><span class="hl opt">,</span> <span class="hl str">'R'</span><span class="hl opt">,</span> <span class="hl str">'S'</span><span class="hl opt">,</span> <span class="hl str">'V'</span><span class="hl opt">,</span> <span class="hl str">'W'</span><span class="hl opt">,</span> <span class="hl str">'Y'</span><span class="hl opt">);</span>
+   <span class="hl kwa">for</span> Codes_Index<span class="hl kwd">'Size</span> <span class="hl kwa">use</span> <span class="hl kwb">Character</span><span class="hl kwd">'Size</span><span class="hl opt">;</span>
+   <span class="hl kwa">for</span> Codes_Index <span class="hl kwa">use</span>
+     <span class="hl opt">(</span><span class="hl kwb">Character</span><span class="hl kwd">'Pos</span> <span class="hl opt">(</span><span class="hl str">'B'</span><span class="hl opt">),</span>
+      <span class="hl kwb">Character</span><span class="hl kwd">'Pos</span> <span class="hl opt">(</span><span class="hl str">'D'</span><span class="hl opt">),</span>
+      <span class="hl kwb">Character</span><span class="hl kwd">'Pos</span> <span class="hl opt">(</span><span class="hl str">'H'</span><span class="hl opt">),</span>
+      <span class="hl kwb">Character</span><span class="hl kwd">'Pos</span> <span class="hl opt">(</span><span class="hl str">'K'</span><span class="hl opt">),</span>
+      <span class="hl kwb">Character</span><span class="hl kwd">'Pos</span> <span class="hl opt">(</span><span class="hl str">'M'</span><span class="hl opt">),</span>
+      <span class="hl kwb">Character</span><span class="hl kwd">'Pos</span> <span class="hl opt">(</span><span class="hl str">'N'</span><span class="hl opt">),</span>
+      <span class="hl kwb">Character</span><span class="hl kwd">'Pos</span> <span class="hl opt">(</span><span class="hl str">'R'</span><span class="hl opt">),</span>
+      <span class="hl kwb">Character</span><span class="hl kwd">'Pos</span> <span class="hl opt">(</span><span class="hl str">'S'</span><span class="hl opt">),</span>
+      <span class="hl kwb">Character</span><span class="hl kwd">'Pos</span> <span class="hl opt">(</span><span class="hl str">'V'</span><span class="hl opt">),</span>
+      <span class="hl kwb">Character</span><span class="hl kwd">'Pos</span> <span class="hl opt">(</span><span class="hl str">'W'</span><span class="hl opt">),</span>
+      <span class="hl kwb">Character</span><span class="hl kwd">'Pos</span> <span class="hl opt">(</span><span class="hl str">'Y'</span><span class="hl opt">));</span>
+   <span class="hl kwa">type</span> Codes_Array <span class="hl kwa">is array</span> <span class="hl opt">(</span>Codes_Index<span class="hl opt">)</span> <span class="hl kwa">of</span> Iub<span class="hl opt">;</span>
+   Codes <span class="hl opt">:</span> <span class="hl kwa">constant</span> Codes_Array <span class="hl opt">:= (</span>
+      <span class="hl opt">(</span><span class="hl str">'B'</span><span class="hl opt">,</span> V <span class="hl opt">(</span><span class="hl str">&quot;(c|g|t)&quot;</span><span class="hl opt">),</span> <span class="hl num">7</span><span class="hl opt">),</span>
+      <span class="hl opt">(</span><span class="hl str">'D'</span><span class="hl opt">,</span> V <span class="hl opt">(</span><span class="hl str">&quot;(a|g|t)&quot;</span><span class="hl opt">),</span> <span class="hl num">7</span><span class="hl opt">),</span>
+      <span class="hl opt">(</span><span class="hl str">'H'</span><span class="hl opt">,</span> V <span class="hl opt">(</span><span class="hl str">&quot;(a|c|t)&quot;</span><span class="hl opt">),</span> <span class="hl num">7</span><span class="hl opt">),</span>
+      <span class="hl opt">(</span><span class="hl str">'K'</span><span class="hl opt">,</span> V <span class="hl opt">(</span><span class="hl str">&quot;(g|t)&quot;</span><span class="hl opt">),</span> <span class="hl num">5</span><span class="hl opt">),</span>
+      <span class="hl opt">(</span><span class="hl str">'M'</span><span class="hl opt">,</span> V <span class="hl opt">(</span><span class="hl str">&quot;(a|c)&quot;</span><span class="hl opt">),</span> <span class="hl num">5</span><span class="hl opt">),</span>
+      <span class="hl opt">(</span><span class="hl str">'N'</span><span class="hl opt">,</span> V <span class="hl opt">(</span><span class="hl str">&quot;(a|c|g|t)&quot;</span><span class="hl opt">),</span> <span class="hl num">9</span><span class="hl opt">),</span>
+      <span class="hl opt">(</span><span class="hl str">'R'</span><span class="hl opt">,</span> V <span class="hl opt">(</span><span class="hl str">&quot;(a|g)&quot;</span><span class="hl opt">),</span> <span class="hl num">5</span><span class="hl opt">),</span>
+      <span class="hl opt">(</span><span class="hl str">'S'</span><span class="hl opt">,</span> V <span class="hl opt">(</span><span class="hl str">&quot;(c|g)&quot;</span><span class="hl opt">),</span> <span class="hl num">5</span><span class="hl opt">),</span>
+      <span class="hl opt">(</span><span class="hl str">'V'</span><span class="hl opt">,</span> V <span class="hl opt">(</span><span class="hl str">&quot;(a|c|g)&quot;</span><span class="hl opt">),</span> <span class="hl num">7</span><span class="hl opt">),</span>
+      <span class="hl opt">(</span><span class="hl str">'W'</span><span class="hl opt">,</span> V <span class="hl opt">(</span><span class="hl str">&quot;(a|t)&quot;</span><span class="hl opt">),</span> <span class="hl num">5</span><span class="hl opt">),</span>
+      <span class="hl opt">(</span><span class="hl str">'Y'</span><span class="hl opt">,</span> V <span class="hl opt">(</span><span class="hl str">&quot;(c|t)&quot;</span><span class="hl opt">),</span> <span class="hl num">5</span><span class="hl opt">));</span>
+
+<span class="hl kwa">end</span> DNA<span class="hl opt">;</span>
+
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>          <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Integer_Text_IO<span class="hl opt">;</span>  <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Integer_Text_IO<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Strings<span class="hl opt">.</span>Unbounded<span class="hl opt">;</span>
+<span class="hl kwa">with</span> GNAT<span class="hl opt">.</span>Spitbol<span class="hl opt">;</span>         <span class="hl kwa">use</span> GNAT<span class="hl opt">.</span>Spitbol<span class="hl opt">;</span>
+
+<span class="hl kwa">with</span> DNA<span class="hl opt">.</span>Aux<span class="hl opt">;</span>
+<span class="hl kwa">with</span> DNA<span class="hl opt">.</span>Matching<span class="hl opt">;</span>
+<span class="hl kwa">with</span> DNA<span class="hl opt">.</span>Replacing<span class="hl opt">;</span>        <span class="hl kwa">use</span> DNA<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Block_Input<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Preprocessing<span class="hl opt">;</span>        <span class="hl kwa">use</span> Preprocessing<span class="hl opt">;</span>
+
+<span class="hl kwa">procedure</span> Regexdna <span class="hl kwa">is</span>
+
+   <span class="hl kwa">package</span> U <span class="hl kwa">renames</span> Ada<span class="hl opt">.</span>Strings<span class="hl opt">.</span>Unbounded<span class="hl opt">;</span>
+
+   <span class="hl kwa">function</span> Length <span class="hl opt">(</span>Item <span class="hl opt">:</span> Aux<span class="hl opt">.</span>Lines<span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+   <span class="hl slc">--  length after replacements have been done</span>
+
+   Max_Size <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">Positive</span> <span class="hl opt">:=</span> <span class="hl num">51</span>_000_000<span class="hl opt">;</span>
+
+   Initial_Length <span class="hl opt">:</span> <span class="hl kwb">Natural</span> <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   Code_Length <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+   Num_Lines <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+   Input_Text <span class="hl opt">:</span> String_Access<span class="hl opt">;</span>
+   Sequence <span class="hl opt">:</span> String_Access<span class="hl opt">;</span>
+
+   <span class="hl kwa">function</span> Length <span class="hl opt">(</span>Item <span class="hl opt">:</span> Aux<span class="hl opt">.</span>Lines<span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Natural</span> <span class="hl kwa">is</span>
+      Sum <span class="hl opt">:</span> <span class="hl kwb">Natural</span> <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">for</span> I <span class="hl kwa">in</span> Item<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+         Sum <span class="hl opt">:=</span> Sum <span class="hl opt">+</span> Item <span class="hl opt">(</span>I<span class="hl opt">).</span>Last<span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      <span class="hl kwa">return</span> Sum<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Length<span class="hl opt">;</span>
+
+<span class="hl kwa">begin</span>  <span class="hl slc">-- Regexdna</span>
+   Input_Text <span class="hl opt">:=</span> <span class="hl kwa">new</span> <span class="hl kwb">String</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Max_Size<span class="hl opt">);</span>
+
+   <span class="hl slc">--  Read FASTA Sequence</span>
+   Block_Input<span class="hl opt">.</span>Open_Stdin<span class="hl opt">;</span>
+   Block_Input<span class="hl opt">.</span>Read <span class="hl opt">(</span>Input_Text<span class="hl opt">.</span><span class="hl kwa">all</span><span class="hl opt">,</span> Last <span class="hl opt">=&gt;</span> Initial_Length<span class="hl opt">);</span>
+   Block_Input<span class="hl opt">.</span>Close_Stdin<span class="hl opt">;</span>
+
+   Sequence <span class="hl opt">:=</span> <span class="hl kwa">new</span> <span class="hl kwb">String</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Initial_Length<span class="hl opt">);</span>
+
+   <span class="hl slc">--  remove unwanted elements</span>
+   Removal<span class="hl opt">.</span>Run <span class="hl opt">(</span>Raw <span class="hl opt">=&gt;</span> Aux<span class="hl opt">.</span>Read_Only_String <span class="hl opt">(</span>Input_Text<span class="hl opt">),</span>
+                Clean <span class="hl opt">=&gt;</span> Sequence<span class="hl opt">,</span>
+                Last <span class="hl opt">=&gt;</span> Initial_Length<span class="hl opt">);</span>
+   Removal<span class="hl opt">.</span>Done <span class="hl opt">(</span>Last <span class="hl opt">=&gt;</span> Code_Length<span class="hl opt">);</span>
+
+   U<span class="hl opt">.</span>Free <span class="hl opt">(</span>Input_Text<span class="hl opt">);</span>
+
+   Matching_Part <span class="hl opt">:</span>
+   <span class="hl kwa">declare</span>
+      Worker <span class="hl opt">:</span> <span class="hl kwa">array</span> <span class="hl opt">(</span>Variant_Index<span class="hl opt">)</span> <span class="hl kwa">of</span> Matching<span class="hl opt">.</span>Service
+        <span class="hl opt">(</span>Sequence <span class="hl opt">=&gt;</span> Aux<span class="hl opt">.</span>Read_Only_String <span class="hl opt">(</span>Sequence<span class="hl opt">));</span>
+      Count  <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl slc">--  assign tasks</span>
+      <span class="hl kwa">for</span> Variant <span class="hl kwa">in</span> Variant_Index <span class="hl kwa">loop</span>
+         Worker <span class="hl opt">(</span>Variant<span class="hl opt">).</span>Match_Variant <span class="hl opt">(</span>Variant<span class="hl opt">);</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+
+      <span class="hl slc">--  print counts for patterns</span>
+      <span class="hl kwa">for</span> Variant <span class="hl kwa">in</span> Variant_Index <span class="hl kwa">loop</span>
+         Worker <span class="hl opt">(</span>Variant<span class="hl opt">).</span>Done <span class="hl opt">(</span>Count<span class="hl opt">);</span>
+         Put <span class="hl opt">(</span>S <span class="hl opt">(</span>Variant_Labels <span class="hl opt">(</span>Variant<span class="hl opt">)) &amp;</span> <span class="hl str">&quot; &quot;</span><span class="hl opt">);</span>
+         Put <span class="hl opt">(</span>Item <span class="hl opt">=&gt;</span> Count<span class="hl opt">,</span> Width <span class="hl opt">=&gt;</span> <span class="hl num">1</span><span class="hl opt">);</span>
+         New_Line<span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Matching_Part<span class="hl opt">;</span>
+
+   <span class="hl slc">--  regex substitution</span>
+
+   Num_Lines <span class="hl opt">:=</span> Code_Length <span class="hl opt">/</span> Aux<span class="hl opt">.</span>Split_Length<span class="hl opt">;</span>
+   <span class="hl kwa">if</span> Code_Length <span class="hl kwa">mod</span> Aux<span class="hl opt">.</span>Split_Length <span class="hl opt">&gt;</span> <span class="hl num">1</span> <span class="hl kwa">then</span>
+      Num_Lines <span class="hl opt">:=</span> Num_Lines <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+   <span class="hl kwa">end if</span><span class="hl opt">;</span>
+
+   Replacing_Part <span class="hl opt">:</span>
+   <span class="hl kwa">declare</span>
+      Number_Of_Cores <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">Positive</span> <span class="hl opt">:=</span> Replacing<span class="hl opt">.</span>Number_Of_Tasks<span class="hl opt">;</span>
+      <span class="hl kwa">type</span> Sequence_Lines_Access <span class="hl kwa">is access</span> Aux<span class="hl opt">.</span>Lines<span class="hl opt">;</span>
+      Sequence_Lines_Pointer <span class="hl opt">:</span> <span class="hl kwa">constant</span> Sequence_Lines_Access <span class="hl opt">:=</span>
+        <span class="hl kwa">new</span> Aux<span class="hl opt">.</span>Lines <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Num_Lines<span class="hl opt">);</span>
+      Sequence_Lines <span class="hl opt">:</span> Aux<span class="hl opt">.</span>Lines <span class="hl kwa">renames</span> Sequence_Lines_Pointer<span class="hl opt">.</span><span class="hl kwa">all</span><span class="hl opt">;</span>
+      Worker <span class="hl opt">:</span> <span class="hl kwa">array</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Number_Of_Cores<span class="hl opt">)</span> <span class="hl kwa">of</span> Replacing<span class="hl opt">.</span>Service
+        <span class="hl opt">(</span>Sequence_Lines <span class="hl opt">=&gt;</span> Sequence_Lines_Pointer<span class="hl opt">);</span>
+
+      <span class="hl kwa">procedure</span> Distribute_Sequence<span class="hl opt">;</span>
+      <span class="hl slc">--  places subsequences for Worker tasks in Sequence_Lines</span>
+
+      <span class="hl kwa">procedure</span> Distribute_Sequence <span class="hl kwa">is</span>
+         Low<span class="hl opt">,</span> Sub_Len <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+      <span class="hl kwa">begin</span>
+         Low <span class="hl opt">:=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+         Sub_Len <span class="hl opt">:=</span> Aux<span class="hl opt">.</span>Split_Length<span class="hl opt">;</span>
+         <span class="hl kwa">for</span> I <span class="hl kwa">in</span> Sequence_Lines<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+            <span class="hl kwa">declare</span>
+               S <span class="hl opt">:</span> Aux<span class="hl opt">.</span>String_Pointer <span class="hl kwa">renames</span> Sequence_Lines <span class="hl opt">(</span>I<span class="hl opt">);</span>
+            <span class="hl kwa">begin</span>
+               <span class="hl kwa">if</span> Low <span class="hl opt">+</span> Sub_Len <span class="hl opt">&gt;</span> Code_Length <span class="hl kwa">then</span>
+                  Sub_Len <span class="hl opt">:=</span> Code_Length <span class="hl opt">-</span> Low <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+               <span class="hl kwa">end if</span><span class="hl opt">;</span>
+               S<span class="hl opt">.</span>Data <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Sub_Len<span class="hl opt">) :=</span> Sequence <span class="hl opt">(</span>Low <span class="hl opt">..</span> Low <span class="hl opt">+</span> Sub_Len <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span>
+               S<span class="hl opt">.</span>Last <span class="hl opt">:=</span> Sub_Len<span class="hl opt">;</span>
+               Low <span class="hl opt">:=</span> Low <span class="hl opt">+</span> Sub_Len<span class="hl opt">;</span>
+            <span class="hl kwa">end</span><span class="hl opt">;</span>
+         <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+         U<span class="hl opt">.</span>Free <span class="hl opt">(</span>Sequence<span class="hl opt">);</span>
+      <span class="hl kwa">end</span> Distribute_Sequence<span class="hl opt">;</span>
+
+   <span class="hl kwa">begin</span>
+      Distribute_Sequence<span class="hl opt">;</span>
+
+      <span class="hl slc">--  assign tasks</span>
+      <span class="hl kwa">for</span> X <span class="hl kwa">in</span> Worker<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+         Worker <span class="hl opt">(</span>X<span class="hl opt">).</span>Replace
+           <span class="hl opt">(</span>First <span class="hl opt">=&gt;</span> X<span class="hl opt">,</span>
+            Step <span class="hl opt">=&gt;</span> Worker<span class="hl kwd">'Length</span><span class="hl opt">);</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+
+      <span class="hl slc">--  wait for results and report</span>
+      <span class="hl kwa">for</span> X <span class="hl kwa">in</span> Worker<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+         Worker <span class="hl opt">(</span>X<span class="hl opt">).</span>Done<span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      New_Line<span class="hl opt">;</span>
+      Put <span class="hl opt">(</span>Item <span class="hl opt">=&gt;</span> Initial_Length<span class="hl opt">,</span> Width <span class="hl opt">=&gt;</span> <span class="hl num">1</span><span class="hl opt">);</span>
+      New_Line<span class="hl opt">;</span>
+      Put <span class="hl opt">(</span>Item <span class="hl opt">=&gt;</span> Code_Length<span class="hl opt">,</span> Width <span class="hl opt">=&gt;</span> <span class="hl num">1</span><span class="hl opt">);</span>
+      New_Line<span class="hl opt">;</span>
+      Put <span class="hl opt">(</span>Item <span class="hl opt">=&gt;</span> Length <span class="hl opt">(</span>Sequence_Lines<span class="hl opt">),</span> Width <span class="hl opt">=&gt;</span> <span class="hl num">1</span><span class="hl opt">);</span>
+      New_Line<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Replacing_Part<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> Regexdna<span class="hl opt">;</span>
+
+<span class="hl kwa">package</span> DNA<span class="hl opt">.</span>Aux <span class="hl kwa">is</span>
+
+   <span class="hl kwa">type</span> Read_Only_String <span class="hl kwa">is access constant</span> <span class="hl kwb">String</span><span class="hl opt">;</span>
+
+   Split_Length <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">40000</span><span class="hl opt">;</span>
+   Max_Length <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">2</span> <span class="hl opt">*</span> Split_Length <span class="hl opt">+</span> Split_Length <span class="hl opt">/</span> <span class="hl num">2</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> String_Pointer <span class="hl kwa">is limited</span>
+     <span class="hl kwa">record</span>
+        Data <span class="hl opt">:</span> <span class="hl kwb">String</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Max_Length<span class="hl opt">);</span>
+        Last <span class="hl opt">:</span> <span class="hl kwb">Natural</span> <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+     <span class="hl kwa">end record</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> Lines <span class="hl kwa">is array</span> <span class="hl opt">(</span><span class="hl kwb">Positive</span> <span class="hl kwa">range</span> <span class="hl opt">&lt;&gt;)</span> <span class="hl kwa">of</span> String_Pointer<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> DNA<span class="hl opt">.</span>Aux<span class="hl opt">;</span>
+
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Strings<span class="hl opt">.</span>Unbounded<span class="hl opt">;</span>
+<span class="hl kwa">with</span> DNA<span class="hl opt">.</span>Aux<span class="hl opt">;</span>
+<span class="hl kwa">package</span> Preprocessing <span class="hl kwa">is</span>
+
+   <span class="hl slc">--  removal of line feeds and FASTA sequence descriptions</span>
+
+   <span class="hl kwa">subtype</span> String_Access <span class="hl kwa">is</span> Ada<span class="hl opt">.</span>Strings<span class="hl opt">.</span>Unbounded<span class="hl opt">.</span>String_Access<span class="hl opt">;</span>
+
+   Separator  <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">String</span> <span class="hl opt">:= (</span><span class="hl num">1</span> <span class="hl opt">=&gt;</span> ASCII<span class="hl opt">.</span>LF<span class="hl opt">);</span>
+
+   <span class="hl kwa">task</span> Removal <span class="hl kwa">is</span>
+      <span class="hl kwa">pragma</span> Storage_Size <span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">**</span><span class="hl num">16</span><span class="hl opt">);</span>
+      <span class="hl kwa">entry</span> Run <span class="hl opt">(</span>Raw   <span class="hl opt">:</span> DNA<span class="hl opt">.</span>Aux<span class="hl opt">.</span>Read_Only_String<span class="hl opt">;</span>
+                 Clean <span class="hl opt">:</span> String_Access<span class="hl opt">;</span>
+                 Last  <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">);</span>
+      <span class="hl kwa">entry</span> Done <span class="hl opt">(</span>Last <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Natural</span><span class="hl opt">);</span>
+      <span class="hl slc">--  number of characters after removal</span>
+   <span class="hl kwa">end</span> Removal<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> Preprocessing<span class="hl opt">;</span>
+
+<span class="hl kwa">with</span> GNAT<span class="hl opt">.</span>Spitbol<span class="hl opt">.</span>Patterns<span class="hl opt">;</span>    <span class="hl kwa">use</span> GNAT<span class="hl opt">.</span>Spitbol<span class="hl opt">.</span>Patterns<span class="hl opt">;</span>
+
+<span class="hl kwa">package body</span> Preprocessing <span class="hl kwa">is</span>
+
+   <span class="hl kwa">task body</span> Removal <span class="hl kwa">is</span>
+
+      <span class="hl kwa">function</span> Transfer <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span><span class="hl opt">;</span>
+      <span class="hl slc">--  transfers &quot;good&quot; substrings to the resulting sequence</span>
+
+      Input_Text <span class="hl opt">:</span> DNA<span class="hl opt">.</span>Aux<span class="hl opt">.</span>Read_Only_String<span class="hl opt">;</span>
+      Sequence   <span class="hl opt">:</span> String_Access<span class="hl opt">;</span>
+      Start<span class="hl opt">,</span> Stop <span class="hl opt">:</span> <span class="hl kwa">aliased</span> <span class="hl kwb">Natural</span> <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      Last <span class="hl opt">:</span> <span class="hl kwb">Natural</span> <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      Tail <span class="hl opt">:</span> <span class="hl kwb">Natural</span> <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl slc">--  Tail is also the value for Removal.Done.Last</span>
+      Limit <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+
+      <span class="hl kwa">function</span> Transfer <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span> <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         <span class="hl kwa">if</span> Start <span class="hl opt">&gt;</span> Last <span class="hl kwa">then</span>
+            Sequence <span class="hl opt">(</span>Tail <span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl opt">..</span>
+                      Tail <span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl opt">+ (</span>Start <span class="hl opt">-</span> Last<span class="hl opt">) -</span> <span class="hl num">1</span><span class="hl opt">) :=</span>
+              Input_Text <span class="hl opt">(</span>Last <span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl opt">..</span> Start<span class="hl opt">);</span>
+            Tail <span class="hl opt">:=</span> Tail <span class="hl opt">+ (</span>Start <span class="hl opt">-</span> Last<span class="hl opt">);</span>
+         <span class="hl kwa">end if</span><span class="hl opt">;</span>
+         Last <span class="hl opt">:=</span> Stop<span class="hl opt">;</span>
+         <span class="hl kwa">return</span> Stop <span class="hl opt">&gt;=</span> Limit<span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Transfer<span class="hl opt">;</span>
+
+      Unwanted <span class="hl opt">:</span> <span class="hl kwa">constant</span> Pattern <span class="hl opt">:=</span>
+        Setcur <span class="hl opt">(</span>Start<span class="hl kwd">'Access</span><span class="hl opt">)</span>
+        <span class="hl opt">&amp; ((</span><span class="hl str">'&gt;'</span> <span class="hl opt">&amp;</span> Break <span class="hl opt">(</span>Separator<span class="hl opt">))</span> <span class="hl kwa">or</span> Separator<span class="hl opt">)</span>
+        <span class="hl opt">&amp;</span> Setcur <span class="hl opt">(</span>Stop<span class="hl kwd">'Access</span><span class="hl opt">)</span>
+        <span class="hl opt">&amp; (+</span>Transfer<span class="hl kwd">'Unrestricted_Access</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">accept</span> Run
+        <span class="hl opt">(</span>Raw   <span class="hl opt">:</span> DNA<span class="hl opt">.</span>Aux<span class="hl opt">.</span>Read_Only_String<span class="hl opt">;</span>
+         Clean <span class="hl opt">:</span> String_Access<span class="hl opt">;</span>
+         Last  <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">)</span>
+      <span class="hl kwa">do</span>
+         Input_Text <span class="hl opt">:=</span> Raw<span class="hl opt">;</span>
+         Sequence <span class="hl opt">:=</span> Clean<span class="hl opt">;</span>
+         Limit <span class="hl opt">:=</span> Last<span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Run<span class="hl opt">;</span>
+
+      Match <span class="hl opt">(</span>Subject <span class="hl opt">=&gt;</span> Input_Text <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Limit<span class="hl opt">),</span>
+             Pat <span class="hl opt">=&gt;</span> Unwanted<span class="hl opt">);</span>
+
+      <span class="hl kwa">accept</span> Done <span class="hl opt">(</span>Last <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Natural</span><span class="hl opt">)</span> <span class="hl kwa">do</span>
+         Last <span class="hl opt">:=</span> Tail<span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Done<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Removal<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> Preprocessing<span class="hl opt">;</span>
+
+<span class="hl kwa">with</span> DNA<span class="hl opt">.</span>Aux<span class="hl opt">;</span>
+
+<span class="hl kwa">package</span> DNA<span class="hl opt">.</span>Matching <span class="hl kwa">is</span>
+
+   <span class="hl kwa">task type</span> Service <span class="hl opt">(</span>Sequence <span class="hl opt">:</span> Aux<span class="hl opt">.</span>Read_Only_String<span class="hl opt">)</span> <span class="hl kwa">is</span>
+      <span class="hl slc">--  perform matching one pattern concurrently</span>
+
+      <span class="hl kwa">entry</span> Match_Variant <span class="hl opt">(</span>Variant <span class="hl opt">:</span> Variant_Index<span class="hl opt">);</span>
+      <span class="hl kwa">entry</span> Done <span class="hl opt">(</span>Count <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Natural</span><span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Service<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> DNA<span class="hl opt">.</span>Matching<span class="hl opt">;</span>
+
+<span class="hl kwa">package body</span> DNA<span class="hl opt">.</span>Matching <span class="hl kwa">is</span>
+
+   <span class="hl kwa">task body</span> Service <span class="hl kwa">is</span>
+
+      <span class="hl kwa">function</span> Inc_Count <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span><span class="hl opt">;</span>
+      <span class="hl slc">--  count another occurrence of a pattern</span>
+
+      Count <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+
+      <span class="hl kwa">function</span> Inc_Count <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span> <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         Count <span class="hl opt">:=</span> Count <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+         <span class="hl kwa">return</span> <span class="hl kwd">False</span><span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Inc_Count<span class="hl opt">;</span>
+
+      Variant <span class="hl opt">:</span> Variant_Index<span class="hl opt">;</span>
+
+   <span class="hl kwa">begin</span>  <span class="hl slc">--  Service</span>
+      <span class="hl kwa">accept</span> Match_Variant <span class="hl opt">(</span>Variant <span class="hl opt">:</span> Variant_Index<span class="hl opt">)</span> <span class="hl kwa">do</span>
+         Service<span class="hl opt">.</span>Variant <span class="hl opt">:=</span> Variant<span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Match_Variant<span class="hl opt">;</span>
+
+      Count <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      Match <span class="hl opt">(</span>Subject <span class="hl opt">=&gt;</span> Sequence<span class="hl opt">.</span><span class="hl kwa">all</span><span class="hl opt">,</span>
+             Pat <span class="hl opt">=&gt; (</span>Variant_Patterns <span class="hl opt">(</span>Variant<span class="hl opt">)</span>
+                     <span class="hl opt">&amp; (+</span>Inc_Count<span class="hl kwd">'Unrestricted_Access</span><span class="hl opt">)));</span>
+
+      <span class="hl kwa">accept</span> Done <span class="hl opt">(</span>Count <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Natural</span><span class="hl opt">)</span> <span class="hl kwa">do</span>
+         Done<span class="hl opt">.</span>Count <span class="hl opt">:=</span> Service<span class="hl opt">.</span>Count<span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Done<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Service<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> DNA<span class="hl opt">.</span>Matching<span class="hl opt">;</span>
+
+<span class="hl kwa">with</span> DNA<span class="hl opt">.</span>Aux<span class="hl opt">;</span>
+<span class="hl kwa">package</span> DNA<span class="hl opt">.</span>Replacing <span class="hl kwa">is</span>
+
+   <span class="hl kwa">task type</span> Service <span class="hl opt">(</span>Sequence_Lines <span class="hl opt">:</span> <span class="hl kwa">access</span> Aux<span class="hl opt">.</span>Lines<span class="hl opt">)</span> <span class="hl kwa">is</span>
+      <span class="hl slc">--  replace in one bunch of lines</span>
+
+      <span class="hl kwa">entry</span> Replace <span class="hl opt">(</span>First<span class="hl opt">,</span> Step <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">);</span>
+      <span class="hl kwa">entry</span> Done<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Service<span class="hl opt">;</span>
+
+   Number_Of_Tasks <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">4</span><span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> DNA<span class="hl opt">.</span>Replacing<span class="hl opt">;</span>
+
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Strings<span class="hl opt">.</span>Unbounded<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Unchecked_Conversion<span class="hl opt">;</span>
+
+<span class="hl kwa">package body</span> DNA<span class="hl opt">.</span>Replacing <span class="hl kwa">is</span>
+
+   <span class="hl kwa">function</span> To_Code <span class="hl kwa">is new</span> Ada<span class="hl opt">.</span>Unchecked_Conversion
+     <span class="hl opt">(</span>Source <span class="hl opt">=&gt;</span> <span class="hl kwb">Character</span><span class="hl opt">,</span>
+      Target <span class="hl opt">=&gt;</span> Codes_Index<span class="hl opt">);</span>
+
+   <span class="hl kwa">function</span> Code_Set <span class="hl kwa">return</span> <span class="hl kwb">String</span><span class="hl opt">;</span>
+   <span class="hl slc">--  &quot;BDHKMNRSVWY&quot;, made from the actual Codes table</span>
+
+   <span class="hl kwa">function</span> Code_Set <span class="hl kwa">return</span> <span class="hl kwb">String</span> <span class="hl kwa">is</span>
+      Result <span class="hl opt">:</span> <span class="hl kwb">String</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Codes_Index<span class="hl kwd">'Pos</span> <span class="hl opt">(</span>Codes<span class="hl kwd">'Last</span><span class="hl opt">) +</span> <span class="hl num">1</span><span class="hl opt">);</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">for</span> C <span class="hl kwa">in</span> Codes<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+         Result <span class="hl opt">(</span>Codes_Index<span class="hl kwd">'Pos</span> <span class="hl opt">(</span>C<span class="hl opt">) +</span> <span class="hl num">1</span><span class="hl opt">) :=</span> Codes <span class="hl opt">(</span>C<span class="hl opt">).</span>Code<span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      <span class="hl kwa">return</span> Result<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Code_Set<span class="hl opt">;</span>
+
+   <span class="hl kwa">task body</span> Service <span class="hl kwa">is</span>
+
+      <span class="hl kwa">function</span> Next_Replacement <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span><span class="hl opt">;</span>
+      <span class="hl slc">--  transfers the replacement text for the next match</span>
+
+      <span class="hl kwa">function</span> Final_Replacement <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span><span class="hl opt">;</span>
+      <span class="hl slc">--  transfers remaining text after the last match</span>
+
+      <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Strings<span class="hl opt">.</span>Unbounded<span class="hl opt">;</span>
+
+      Tail        <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span>
+      Start<span class="hl opt">,</span> Stop <span class="hl opt">:</span> <span class="hl kwa">aliased</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+      Substitute  <span class="hl opt">:</span> <span class="hl kwa">constant</span> String_Access <span class="hl opt">:=</span> <span class="hl kwa">new</span> <span class="hl kwb">String</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Aux<span class="hl opt">.</span>Max_Length<span class="hl opt">);</span>
+      I <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span>
+      First<span class="hl opt">,</span> Step <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span>
+
+      <span class="hl kwa">function</span> Next_Replacement <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span>
+      <span class="hl kwa">is</span>
+         C <span class="hl opt">:</span> <span class="hl kwa">constant</span> Codes_Index <span class="hl opt">:=</span> To_Code <span class="hl opt">(</span>Sequence_Lines <span class="hl opt">(</span>I<span class="hl opt">).</span>Data <span class="hl opt">(</span>Stop<span class="hl opt">));</span>
+         L <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">Positive</span> <span class="hl opt">:=</span> Codes <span class="hl opt">(</span>C<span class="hl opt">).</span>Size<span class="hl opt">;</span>
+      <span class="hl kwa">begin</span>
+         Substitute <span class="hl opt">(</span>Tail <span class="hl opt">..</span> Tail <span class="hl opt">+ (</span>Stop <span class="hl opt">-</span> <span class="hl num">1</span> <span class="hl opt">-</span> Start<span class="hl opt">) -</span> <span class="hl num">1</span><span class="hl opt">) :=</span>
+           Sequence_Lines <span class="hl opt">(</span>I<span class="hl opt">).</span>Data <span class="hl opt">(</span>Start <span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl opt">..</span> Stop <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span>
+         Tail  <span class="hl opt">:=</span> Tail <span class="hl opt">+ (</span>Stop <span class="hl opt">-</span> <span class="hl num">1</span> <span class="hl opt">-</span> Start<span class="hl opt">);</span>
+
+         Substitute <span class="hl opt">(</span>Tail <span class="hl opt">..</span> Tail <span class="hl opt">+</span> L <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">) :=</span> S <span class="hl opt">(</span>Codes <span class="hl opt">(</span>C<span class="hl opt">).</span>Alternatives<span class="hl opt">);</span>
+         Tail  <span class="hl opt">:=</span> Tail <span class="hl opt">+</span> L<span class="hl opt">;</span>
+         Start <span class="hl opt">:=</span> Stop<span class="hl opt">;</span>
+
+         <span class="hl kwa">return</span> <span class="hl kwd">False</span><span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Next_Replacement<span class="hl opt">;</span>
+
+      <span class="hl kwa">function</span> Final_Replacement <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span> <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         Substitute <span class="hl opt">(</span>Tail <span class="hl opt">..</span> Tail <span class="hl opt">+ (</span>Stop <span class="hl opt">-</span> Start<span class="hl opt">) -</span> <span class="hl num">1</span><span class="hl opt">) :=</span>
+           Sequence_Lines <span class="hl opt">(</span>I<span class="hl opt">).</span>Data <span class="hl opt">(</span>Start <span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl opt">..</span> Stop<span class="hl opt">);</span>
+         Tail <span class="hl opt">:=</span> Tail <span class="hl opt">+ (</span>Stop <span class="hl opt">-</span> Start<span class="hl opt">);</span>
+         <span class="hl kwa">return</span> <span class="hl kwd">True</span><span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Final_Replacement<span class="hl opt">;</span>
+
+      Suffix <span class="hl opt">:</span> <span class="hl kwa">constant</span> Pattern <span class="hl opt">:=</span>
+        Rest
+        <span class="hl opt">&amp;</span> Setcur <span class="hl opt">(</span>Stop<span class="hl kwd">'Access</span><span class="hl opt">)</span>
+        <span class="hl opt">&amp; (+</span>Final_Replacement<span class="hl kwd">'Unrestricted_Access</span><span class="hl opt">);</span>
+
+      Code <span class="hl opt">:</span> <span class="hl kwa">constant</span> Pattern <span class="hl opt">:=</span>
+        <span class="hl opt">(</span>BreakX <span class="hl opt">(</span>Code_Set<span class="hl opt">)</span>
+         <span class="hl opt">&amp;</span> Len <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)</span>
+         <span class="hl opt">&amp;</span> Setcur <span class="hl opt">(</span>Stop<span class="hl kwd">'Access</span><span class="hl opt">)</span>
+         <span class="hl opt">&amp; (+</span>Next_Replacement<span class="hl kwd">'Unrestricted_Access</span><span class="hl opt">))</span> <span class="hl kwa">or</span> <span class="hl opt">(</span>Suffix <span class="hl opt">&amp;</span> Cancel<span class="hl opt">);</span>
+
+   <span class="hl kwa">begin</span>  <span class="hl slc">-- Service</span>
+      <span class="hl kwa">accept</span> Replace <span class="hl opt">(</span>First<span class="hl opt">,</span> Step <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">)</span> <span class="hl kwa">do</span>
+         Service<span class="hl opt">.</span>First <span class="hl opt">:=</span> First<span class="hl opt">;</span>
+         Service<span class="hl opt">.</span>Step <span class="hl opt">:=</span> Step<span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Replace<span class="hl opt">;</span>
+
+      I <span class="hl opt">:=</span> First<span class="hl opt">;</span>
+      <span class="hl kwa">while</span> I <span class="hl opt">&lt;=</span> Sequence_Lines<span class="hl kwd">'Last</span> <span class="hl kwa">loop</span>
+         <span class="hl kwa">declare</span>
+            S <span class="hl opt">:</span> Aux<span class="hl opt">.</span>String_Pointer <span class="hl kwa">renames</span> Sequence_Lines <span class="hl opt">(</span>I<span class="hl opt">);</span>
+         <span class="hl kwa">begin</span>
+            Tail <span class="hl opt">:=</span> Substitute<span class="hl kwd">'First</span><span class="hl opt">;</span>
+            Start <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+            Stop <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+            Match <span class="hl opt">(</span>Subject <span class="hl opt">=&gt;</span> S<span class="hl opt">.</span>Data <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> S<span class="hl opt">.</span>Last<span class="hl opt">),</span> Pat <span class="hl opt">=&gt;</span> Code<span class="hl opt">);</span>
+            S<span class="hl opt">.</span>Data <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Tail <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">) :=</span> Substitute <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Tail <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span>
+            S<span class="hl opt">.</span>Last <span class="hl opt">:=</span> Tail <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+            I <span class="hl opt">:=</span> I <span class="hl opt">+</span> Step<span class="hl opt">;</span>
+         <span class="hl kwa">end</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+
+      <span class="hl kwa">accept</span> Done<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Service<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> DNA<span class="hl opt">.</span>Replacing<span class="hl opt">;</span>
+
+<span class="hl kwa">package</span> Block_Input <span class="hl kwa">is</span>
+
+   <span class="hl kwa">procedure</span> Read <span class="hl opt">(</span>Item <span class="hl opt">:</span> <span class="hl kwa">in out</span> <span class="hl kwb">String</span><span class="hl opt">;</span> Last <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Natural</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">procedure</span> Open_Stdin<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Close_Stdin<span class="hl opt">;</span>
+
+   <span class="hl kwa">pragma</span> Inline <span class="hl opt">(</span>Read<span class="hl opt">);</span>
+
+<span class="hl kwa">end</span> Block_Input<span class="hl opt">;</span>
+
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Streams<span class="hl opt">.</span>Stream_IO<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Unchecked_Conversion<span class="hl opt">;</span>
+
+<span class="hl kwa">package body</span> Block_Input <span class="hl kwa">is</span>
+
+   <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Streams<span class="hl opt">;</span>
+
+   Stdin <span class="hl opt">:</span> Stream_IO<span class="hl opt">.</span>File_Type<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Read <span class="hl opt">(</span>Item <span class="hl opt">:</span> <span class="hl kwa">in out</span> <span class="hl kwb">String</span><span class="hl opt">;</span> Last <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Natural</span><span class="hl opt">)</span> <span class="hl kwa">is</span>
+
+      Block_Size <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">16</span> <span class="hl opt">*</span> <span class="hl num">1024</span><span class="hl opt">;</span>
+
+      <span class="hl kwa">subtype</span> Index <span class="hl kwa">is</span> Stream_Element_Offset <span class="hl kwa">range</span>
+        Stream_Element_Offset <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) ..</span> Stream_Element_Offset <span class="hl opt">(</span>Block_Size<span class="hl opt">);</span>
+      <span class="hl kwa">subtype</span> XString <span class="hl kwa">is</span> <span class="hl kwb">String</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Block_Size<span class="hl opt">);</span>
+      <span class="hl kwa">subtype</span> XBytes <span class="hl kwa">is</span> Stream_Element_Array <span class="hl opt">(</span>Index<span class="hl opt">);</span>
+      <span class="hl kwa">function</span> To_String <span class="hl kwa">is new</span> Unchecked_Conversion <span class="hl opt">(</span>
+                                                      Source <span class="hl opt">=&gt;</span> XBytes<span class="hl opt">,</span>
+                                                      Target <span class="hl opt">=&gt;</span> XString<span class="hl opt">);</span>
+
+      One_Block <span class="hl opt">:</span> XBytes<span class="hl opt">;</span>
+      Str_Block <span class="hl opt">:</span> XString<span class="hl opt">;</span>
+      Final     <span class="hl opt">:</span> Stream_Element_Offset<span class="hl opt">;</span>
+      Start     <span class="hl opt">:</span> <span class="hl kwb">Natural</span> <span class="hl opt">:=</span> Item<span class="hl kwd">'First</span><span class="hl opt">;</span>
+      Stop      <span class="hl opt">:</span> <span class="hl kwb">Natural</span> <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">while not</span> Stream_IO<span class="hl opt">.</span>End_Of_File <span class="hl opt">(</span>Stdin<span class="hl opt">)</span> <span class="hl kwa">loop</span>
+         Stream_IO<span class="hl opt">.</span>Read <span class="hl opt">(</span>Stdin<span class="hl opt">,</span> One_Block<span class="hl opt">,</span> Final<span class="hl opt">);</span>
+         Str_Block            <span class="hl opt">:=</span> To_String <span class="hl opt">(</span>One_Block<span class="hl opt">);</span>
+         Stop                 <span class="hl opt">:=</span> Start <span class="hl opt">+</span> <span class="hl kwb">Natural</span> <span class="hl opt">(</span>Final<span class="hl opt">) -</span> <span class="hl num">1</span><span class="hl opt">;</span>
+         Item <span class="hl opt">(</span>Start <span class="hl opt">..</span> Stop<span class="hl opt">) :=</span> Str_Block <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl kwb">Natural</span> <span class="hl opt">(</span>Final<span class="hl opt">));</span>
+         Start                <span class="hl opt">:=</span> Stop <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      Last <span class="hl opt">:=</span> Stop<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Read<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Open_Stdin <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      Stream_IO<span class="hl opt">.</span>Open
+        <span class="hl opt">(</span>File <span class="hl opt">=&gt;</span> Stdin<span class="hl opt">,</span>
+         Mode <span class="hl opt">=&gt;</span> Stream_IO<span class="hl opt">.</span>In_File<span class="hl opt">,</span>
+         Name <span class="hl opt">=&gt;</span> <span class="hl str">&quot;/dev/stdin&quot;</span><span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Open_Stdin<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Close_Stdin <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      Stream_IO<span class="hl opt">.</span>Close <span class="hl opt">(</span>Stdin<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Close_Stdin<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> Block_Input<span class="hl opt">;</span>

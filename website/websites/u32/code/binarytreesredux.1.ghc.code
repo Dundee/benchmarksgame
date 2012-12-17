@@ -1,0 +1,66 @@
+<span class="hl slc">--</span>
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://shootout.alioth.debian.org/</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- Contributed by Don Stewart</span>
+<span class="hl slc">--</span>
+
+<span class="hl kwd">import</span> System<span class="hl opt">.</span>Environment
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span>Bits
+<span class="hl kwd">import</span> Text<span class="hl opt">.</span>Printf
+
+<span class="hl slc">--</span>
+<span class="hl slc">-- an artificially strict tree. </span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- normally you would ensure the branches are lazy, but this benchmark</span>
+<span class="hl slc">-- requires strict allocation.</span>
+<span class="hl slc">--</span>
+<span class="hl kwd">data</span> Tree <span class="hl opt">=</span> Nil | Node <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">!</span>Tree <span class="hl opt">!</span>Tree
+
+minN <span class="hl opt">=</span> <span class="hl num">4</span>
+
+io s n t <span class="hl opt">=</span> printf <span class="hl str">&quot;%s of depth %d</span><span class="hl esc">\t</span> <span class="hl str">check: %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> s n t
+
+main <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    n <span class="hl opt">&lt;-</span> <span class="hl kwc">getArgs</span> <span class="hl opt">&gt;&gt;=</span> <span class="hl kwc">readIO</span> <span class="hl opt">.</span> <span class="hl kwc">head</span>
+    <span class="hl kwd">let</span> maxN     <span class="hl opt">=</span> <span class="hl kwc">max</span> <span class="hl opt">(</span>minN <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">)</span> n
+        stretchN <span class="hl opt">=</span> maxN <span class="hl opt">+</span> <span class="hl num">1</span>
+
+    <span class="hl slc">-- stretch memory tree</span>
+    <span class="hl kwd">let</span> c <span class="hl opt">=</span> check <span class="hl opt">(</span>make <span class="hl num">0</span> stretchN<span class="hl opt">)</span>
+    io <span class="hl str">&quot;stretch tree&quot;</span> stretchN c
+
+    <span class="hl slc">-- allocate a long lived tree</span>
+    <span class="hl kwd">let</span> <span class="hl opt">!</span>long    <span class="hl opt">=</span> make <span class="hl num">0</span> maxN
+
+    <span class="hl slc">-- allocate, walk, and deallocate many bottom-up binary trees</span>
+    <span class="hl kwd">let</span> vs <span class="hl opt">=</span> depth minN maxN
+    <span class="hl kwc">mapM_</span> <span class="hl opt">(\((</span>m<span class="hl opt">,</span>d<span class="hl opt">,</span>i<span class="hl opt">)) -&gt;</span> io <span class="hl opt">(</span><span class="hl kwc">show</span> m <span class="hl opt">++</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">trees&quot;</span><span class="hl opt">)</span> d i<span class="hl opt">)</span> vs
+
+    <span class="hl slc">-- confirm the the long-lived binary tree still exists</span>
+    io <span class="hl str">&quot;long lived tree&quot;</span> maxN <span class="hl opt">(</span>check long<span class="hl opt">)</span>
+
+<span class="hl slc">-- generate many trees</span>
+depth <span class="hl opt">::</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt; [(</span><span class="hl kwb">Int</span><span class="hl opt">,</span><span class="hl kwb">Int</span><span class="hl opt">,</span><span class="hl kwb">Int</span><span class="hl opt">)]</span>
+depth d m
+    | d <span class="hl opt">&lt;=</span> m    <span class="hl opt">= (</span><span class="hl num">2</span><span class="hl opt">*</span>n<span class="hl opt">,</span>d<span class="hl opt">,</span>sumT d n <span class="hl num">0</span><span class="hl opt">) :</span> depth <span class="hl opt">(</span>d<span class="hl opt">+</span><span class="hl num">2</span><span class="hl opt">)</span> m
+    | <span class="hl kwc">otherwise</span> <span class="hl opt">= []</span>
+  <span class="hl kwd">where</span> n <span class="hl opt">=</span> <span class="hl num">1</span> `shiftL` <span class="hl opt">(</span>m <span class="hl opt">-</span> d <span class="hl opt">+</span> minN<span class="hl opt">)</span>
+
+<span class="hl slc">-- allocate and check lots of trees</span>
+sumT <span class="hl opt">::</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span>
+sumT d <span class="hl num">0</span> t <span class="hl opt">=</span> t
+sumT  d i t <span class="hl opt">=</span> sumT d <span class="hl opt">(</span>i<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">) (</span>t <span class="hl opt">+</span> a <span class="hl opt">+</span> b<span class="hl opt">)</span>
+  <span class="hl kwd">where</span> a <span class="hl opt">=</span> check <span class="hl opt">(</span>make i    d<span class="hl opt">)</span>
+        b <span class="hl opt">=</span> check <span class="hl opt">(</span>make <span class="hl opt">(-</span>i<span class="hl opt">)</span> d<span class="hl opt">)</span>
+
+<span class="hl slc">-- traverse the tree, counting up the nodes</span>
+check <span class="hl opt">::</span> Tree <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span>
+check Nil          <span class="hl opt">=</span> <span class="hl num">0</span>
+check <span class="hl opt">(</span>Node i l r<span class="hl opt">) =</span> i <span class="hl opt">+</span> check l <span class="hl opt">-</span> check r
+
+<span class="hl slc">-- build a tree</span>
+make <span class="hl opt">::</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> Tree
+make i <span class="hl num">0</span> <span class="hl opt">=</span> Node i Nil Nil
+make i d <span class="hl opt">=</span> Node i <span class="hl opt">(</span>make <span class="hl opt">(</span>i2<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span> d2<span class="hl opt">) (</span>make i2 d2<span class="hl opt">)</span>
+  <span class="hl kwd">where</span> i2 <span class="hl opt">=</span> <span class="hl num">2</span><span class="hl opt">*</span>i<span class="hl opt">;</span> d2 <span class="hl opt">=</span> d<span class="hl opt">-</span><span class="hl num">1</span>

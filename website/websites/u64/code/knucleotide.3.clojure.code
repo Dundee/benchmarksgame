@@ -1,0 +1,241 @@
+<span class="hl slc">;;   The Computer Language Benchmarks Game</span>
+<span class="hl slc">;;   http://shootout.alioth.debian.org/</span>
+
+<span class="hl slc">;; contributed by Andy Fingerhut</span>
+
+<span class="hl opt">(</span><span class="hl kwa">ns</span> knucleotide
+  <span class="hl opt">(:</span>gen-class<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">set</span><span class="hl opt">! *</span>warn-on-reflection<span class="hl opt">*</span> true<span class="hl opt">)</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">definterface</span> ITallyCounter
+  <span class="hl opt">(</span>^int get_count <span class="hl opt">[])</span>
+  <span class="hl opt">(</span><span class="hl kwa">inc_BANG_</span> <span class="hl opt">[]))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">deftype</span> TallyCounter <span class="hl opt">[</span>^<span class="hl opt">{:</span>unsynchronized-mutable true <span class="hl opt">:</span>tag int<span class="hl opt">}</span> cnt<span class="hl opt">]</span>
+  ITallyCounter
+  <span class="hl opt">(</span><span class="hl kwa">get-count</span> <span class="hl opt">[</span>this<span class="hl opt">]</span> cnt<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">inc</span><span class="hl opt">! [</span>this<span class="hl opt">]</span>
+    <span class="hl opt">(</span><span class="hl kwa">set</span><span class="hl opt">!</span> cnt <span class="hl opt">(</span><span class="hl kwa">unchecked-inc</span> cnt<span class="hl opt">))))</span>
+
+ 
+<span class="hl opt">(</span><span class="hl kwa">defn</span> my-lazy-map <span class="hl opt">[</span>f coll<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">lazy-seq</span>
+    <span class="hl opt">(</span><span class="hl kwa">when-let</span> <span class="hl opt">[</span>s <span class="hl opt">(</span><span class="hl kwa">seq</span> coll<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">cons</span> <span class="hl opt">(</span><span class="hl kwa">f</span> <span class="hl opt">(</span><span class="hl kwa">first</span> s<span class="hl opt">)) (</span><span class="hl kwa">my-lazy-map</span> f <span class="hl opt">(</span><span class="hl kwa">rest</span> s<span class="hl opt">))))))</span>
+
+
+<span class="hl slc">;; modified-pmap is like pmap from Clojure 1.1, but with only as much</span>
+<span class="hl slc">;; parallelism as specified by the parameter num-threads.  Uses</span>
+<span class="hl slc">;; my-lazy-map instead of map from core.clj, since that version of map</span>
+<span class="hl slc">;; can use unwanted additional parallelism for chunked collections,</span>
+<span class="hl slc">;; like ranges.</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> modified-pmap
+  <span class="hl opt">([</span>num-threads f coll<span class="hl opt">]</span>
+     <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(==</span> num-threads <span class="hl num">1</span><span class="hl opt">)</span>
+       <span class="hl opt">(</span><span class="hl kwa">map</span> f coll<span class="hl opt">)</span>
+       <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>n <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(&gt;=</span> num-threads <span class="hl num">2</span><span class="hl opt">) (</span><span class="hl kwa">dec</span> num-threads<span class="hl opt">)</span> <span class="hl num">1</span><span class="hl opt">)</span>
+             rets <span class="hl opt">(</span><span class="hl kwa">my-lazy-map</span> <span class="hl opt">#(</span><span class="hl kwa">future</span> <span class="hl opt">(</span><span class="hl kwa">f</span> %<span class="hl opt">))</span> coll<span class="hl opt">)</span>
+             step <span class="hl opt">(</span><span class="hl kwa">fn</span> step <span class="hl opt">[[</span>x <span class="hl opt">&amp;</span> xs <span class="hl opt">:</span>as vs<span class="hl opt">]</span> fs<span class="hl opt">]</span>
+                    <span class="hl opt">(</span><span class="hl kwa">lazy-seq</span>
+                      <span class="hl opt">(</span><span class="hl kwa">if-let</span> <span class="hl opt">[</span>s <span class="hl opt">(</span><span class="hl kwa">seq</span> fs<span class="hl opt">)]</span>
+                        <span class="hl opt">(</span><span class="hl kwa">cons</span> <span class="hl opt">(</span><span class="hl kwa">deref</span> x<span class="hl opt">) (</span><span class="hl kwa">step</span> xs <span class="hl opt">(</span><span class="hl kwa">rest</span> s<span class="hl opt">)))</span>
+                        <span class="hl opt">(</span><span class="hl kwa">map</span> deref vs<span class="hl opt">))))]</span>
+         <span class="hl opt">(</span><span class="hl kwa">step</span> rets <span class="hl opt">(</span><span class="hl kwa">drop</span> n rets<span class="hl opt">)))))</span>
+  <span class="hl opt">([</span>num-threads f coll <span class="hl opt">&amp;</span> colls<span class="hl opt">]</span>
+     <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>step <span class="hl opt">(</span><span class="hl kwa">fn</span> step <span class="hl opt">[</span>cs<span class="hl opt">]</span>
+                  <span class="hl opt">(</span><span class="hl kwa">lazy-seq</span>
+                    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>ss <span class="hl opt">(</span><span class="hl kwa">my-lazy-map</span> seq cs<span class="hl opt">)]</span>
+                      <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(</span><span class="hl kwa">every</span>? identity ss<span class="hl opt">)</span>
+                        <span class="hl opt">(</span><span class="hl kwa">cons</span> <span class="hl opt">(</span><span class="hl kwa">my-lazy-map</span> first ss<span class="hl opt">)</span>
+			      <span class="hl opt">(</span><span class="hl kwa">step</span> <span class="hl opt">(</span><span class="hl kwa">my-lazy-map</span> rest ss<span class="hl opt">)))))))]</span>
+       <span class="hl opt">(</span><span class="hl kwa">modified-pmap</span> num-threads <span class="hl opt">#(</span><span class="hl kwa">apply</span> f %<span class="hl opt">) (</span><span class="hl kwa">step</span> <span class="hl opt">(</span><span class="hl kwa">cons</span> coll colls<span class="hl opt">))))))</span>
+
+
+<span class="hl slc">;; Return true when the line l is a FASTA description line</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> fasta-description-line <span class="hl opt">[</span>l<span class="hl opt">]</span>
+  <span class="hl opt">(=</span> \<span class="hl opt">&gt; (</span><span class="hl kwa">first</span> <span class="hl opt">(</span><span class="hl kwa">seq</span> l<span class="hl opt">))))</span>
+
+
+<span class="hl slc">;; Return true when the line l is a FASTA description line that begins</span>
+<span class="hl slc">;; with the string desc-str.</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> fasta-description-line-beginning <span class="hl opt">[</span>desc-str l<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">and</span> <span class="hl opt">(</span><span class="hl kwa">fasta-description-line</span> l<span class="hl opt">)</span>
+       <span class="hl opt">(=</span> desc-str <span class="hl opt">(</span><span class="hl kwa">subs</span> l <span class="hl num">1</span> <span class="hl opt">(</span><span class="hl kwa">min</span> <span class="hl opt">(</span><span class="hl kwa">count</span> l<span class="hl opt">) (</span><span class="hl kwa">inc</span> <span class="hl opt">(</span><span class="hl kwa">count</span> desc-str<span class="hl opt">)))))))</span>
+
+
+<span class="hl slc">;; Take a sequence of lines from a FASTA format file, and a string</span>
+<span class="hl slc">;; desc-str.  Look for a FASTA record with a description that begins</span>
+<span class="hl slc">;; with desc-str, and if one is found, return its DNA sequence as a</span>
+<span class="hl slc">;; single (potentially quite long) string.  If input file is big,</span>
+<span class="hl slc">;; you'll save lots of memory if you call this function in a with-open</span>
+<span class="hl slc">;; for the file, and don't hold on to the head of the lines parameter.</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> fasta-dna-str-with-desc-beginning <span class="hl opt">[</span>desc-str lines<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">when-let</span> <span class="hl opt">[</span>x <span class="hl opt">(</span><span class="hl kwa">drop-while</span>
+		<span class="hl opt">(</span><span class="hl kwa">fn</span> <span class="hl opt">[</span>l<span class="hl opt">] (</span><span class="hl kwa">not</span> <span class="hl opt">(</span><span class="hl kwa">fasta-description-line-beginning</span> desc-str l<span class="hl opt">)))</span>
+		lines<span class="hl opt">)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">when-let</span> <span class="hl opt">[</span>x <span class="hl opt">(</span><span class="hl kwa">seq</span> x<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>y <span class="hl opt">(</span><span class="hl kwa">take-while</span> <span class="hl opt">(</span><span class="hl kwa">fn</span> <span class="hl opt">[</span>l<span class="hl opt">] (</span><span class="hl kwa">not</span> <span class="hl opt">(</span><span class="hl kwa">fasta-description-line</span> l<span class="hl opt">)))</span>
+                          <span class="hl opt">(</span><span class="hl kwa">map</span> <span class="hl opt">(</span><span class="hl kwa">fn</span> <span class="hl opt">[#</span>^java.lang.String s<span class="hl opt">] (</span>.toUpperCase s<span class="hl opt">))</span>
+                               <span class="hl opt">(</span><span class="hl kwa">rest</span> x<span class="hl opt">)))]</span>
+        <span class="hl opt">(</span><span class="hl kwa">apply</span> str y<span class="hl opt">)))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">def</span> dna-char-to-code-val <span class="hl opt">{</span>\A <span class="hl num">0</span><span class="hl opt">,</span> \C <span class="hl num">1</span><span class="hl opt">,</span> \T <span class="hl num">2</span><span class="hl opt">,</span> \G <span class="hl num">3</span><span class="hl opt">})</span>
+<span class="hl opt">(</span><span class="hl kwa">def</span> code-val-to-dna-char <span class="hl opt">{</span><span class="hl num">0</span> \A<span class="hl opt">,</span> <span class="hl num">1</span> \C<span class="hl opt">,</span> <span class="hl num">2</span> \T<span class="hl opt">,</span> <span class="hl num">3</span> \G<span class="hl opt">})</span>
+
+
+<span class="hl slc">;; In the hash map 'tally' in tally-dna-subs-with-len, it is more</span>
+<span class="hl slc">;; straightforward to use a Clojure string (same as a Java string) as</span>
+<span class="hl slc">;; the key, but such a key is significantly bigger than it needs to</span>
+<span class="hl slc">;; be, increasing memory and time required to hash the value.  By</span>
+<span class="hl slc">;; converting a string of A, C, T, and G characters down to an integer</span>
+<span class="hl slc">;; that contains only 2 bits for each character, we make a value that</span>
+<span class="hl slc">;; is significantly smaller and faster to use as a key in the map.</span>
+
+<span class="hl slc">;;    most                 least</span>
+<span class="hl slc">;; significant          significant</span>
+<span class="hl slc">;; bits of int          bits of int</span>
+<span class="hl slc">;;  |                         |</span>
+<span class="hl slc">;;  V                         V</span>
+<span class="hl slc">;; code code code ....  code code</span>
+<span class="hl slc">;;  ^                         ^</span>
+<span class="hl slc">;;  |                         |</span>
+<span class="hl slc">;; code for               code for</span>
+<span class="hl slc">;; *latest*               *earliest*</span>
+<span class="hl slc">;; char in                char in</span>
+<span class="hl slc">;; sequence               sequence</span>
+
+<span class="hl slc">;; Note: Given Clojure 1.2's implementation of bit-shift-left/right</span>
+<span class="hl slc">;; operations, when the value being shifted is larger than a 32-bit</span>
+<span class="hl slc">;; int, they are faster when the shift amount is a compile time</span>
+<span class="hl slc">;; constant.</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> dna-str-to-key <span class="hl opt">[</span>s<span class="hl opt">]</span>
+  <span class="hl slc">;; Accessing a local let binding is much faster than accessing a var</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>dna-char-to-code-val dna-char-to-code-val<span class="hl opt">]</span>
+    <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>key <span class="hl num">0</span>
+	   offset <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">dec</span> <span class="hl opt">(</span><span class="hl kwa">count</span> s<span class="hl opt">)))]</span>
+      <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">neg</span>? offset<span class="hl opt">)</span>
+	key
+	<span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>c <span class="hl opt">(</span><span class="hl kwa">nth</span> s offset<span class="hl opt">)</span>
+              code <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">dna-char-to-code-val</span> c<span class="hl opt">))</span>
+	      new-key <span class="hl opt">(+ (</span><span class="hl kwa">bit-shift-left</span> key <span class="hl num">2</span><span class="hl opt">)</span> code<span class="hl opt">)]</span>
+	  <span class="hl opt">(</span><span class="hl kwa">recur</span> new-key <span class="hl opt">(</span><span class="hl kwa">dec</span> offset<span class="hl opt">)))))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> key-to-dna-str <span class="hl opt">[</span>k len<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">apply</span> str <span class="hl opt">(</span><span class="hl kwa">map</span> code-val-to-dna-char
+		  <span class="hl opt">(</span><span class="hl kwa">map</span> <span class="hl opt">(</span><span class="hl kwa">fn</span> <span class="hl opt">[</span>pos<span class="hl opt">] (</span><span class="hl kwa">bit-and</span> <span class="hl num">3</span> <span class="hl opt">(</span><span class="hl kwa">bit-shift-right</span> k pos<span class="hl opt">)))</span>
+		       <span class="hl opt">(</span><span class="hl kwa">range</span> <span class="hl num">0</span> <span class="hl opt">(*</span> <span class="hl num">2</span> len<span class="hl opt">)</span> <span class="hl num">2</span><span class="hl opt">)))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> tally-dna-subs-with-len <span class="hl opt">[</span>len dna-str<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>mask-width <span class="hl opt">(*</span> <span class="hl num">2</span> len<span class="hl opt">)</span>
+	mask <span class="hl opt">(</span><span class="hl kwa">dec</span> <span class="hl opt">(</span><span class="hl kwa">bit-shift-left</span> <span class="hl num">1</span> mask-width<span class="hl opt">))</span>
+	dna-char-to-code-val dna-char-to-code-val<span class="hl opt">]</span>
+    <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>offset <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">-</span> <span class="hl opt">(</span><span class="hl kwa">count</span> dna-str<span class="hl opt">)</span> len<span class="hl opt">))</span>
+	   key <span class="hl opt">(</span><span class="hl kwa">dna-str-to-key</span> <span class="hl opt">(</span><span class="hl kwa">subs</span> dna-str offset <span class="hl opt">(+</span> offset len<span class="hl opt">)))</span>
+           tally <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>h <span class="hl opt">(</span><span class="hl kwa">java</span>.util.HashMap.<span class="hl opt">)</span>
+                       one <span class="hl opt">(</span><span class="hl kwa">TallyCounter</span>. <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">1</span><span class="hl opt">))]</span>
+                   <span class="hl opt">(</span>.put h key one<span class="hl opt">)</span>
+                   h<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">zero</span>? offset<span class="hl opt">)</span>
+        tally
+	<span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>new-offset <span class="hl opt">(</span><span class="hl kwa">dec</span> offset<span class="hl opt">)</span>
+	      new-first-char-code <span class="hl opt">(</span><span class="hl kwa">dna-char-to-code-val</span>
+                                   <span class="hl opt">(</span><span class="hl kwa">nth</span> dna-str new-offset<span class="hl opt">))</span>
+	      new-key <span class="hl opt">(</span><span class="hl kwa">bit-and</span> mask <span class="hl opt">(+ (</span><span class="hl kwa">bit-shift-left</span> key <span class="hl num">2</span><span class="hl opt">)</span>
+                                       new-first-char-code<span class="hl opt">))]</span>
+          <span class="hl opt">(</span><span class="hl kwa">if-let</span> <span class="hl opt">[</span>^TallyCounter cur-count <span class="hl opt">(</span><span class="hl kwa">get</span> tally new-key<span class="hl opt">)]</span>
+            <span class="hl opt">(</span>.inc<span class="hl opt">!</span> cur-count<span class="hl opt">)</span>
+            <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>one <span class="hl opt">(</span><span class="hl kwa">TallyCounter</span>. <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">1</span><span class="hl opt">))]</span>
+              <span class="hl opt">(</span>.put tally new-key one<span class="hl opt">)))</span>
+	  <span class="hl opt">(</span><span class="hl kwa">recur</span> new-offset new-key tally<span class="hl opt">))))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> getcnt <span class="hl opt">[</span>^TallyCounter tc<span class="hl opt">]</span>
+  <span class="hl opt">(</span>.get-count tc<span class="hl opt">))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> all-tally-to-str <span class="hl opt">[</span>tally fn-key-to-str<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">with-out-str</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>total <span class="hl opt">(</span><span class="hl kwa">reduce</span> <span class="hl opt">+ (</span><span class="hl kwa">map</span> getcnt <span class="hl opt">(</span><span class="hl kwa">vals</span> tally<span class="hl opt">)))</span>
+          cmp-keys <span class="hl opt">(</span><span class="hl kwa">fn</span> <span class="hl opt">[</span>k1 k2<span class="hl opt">]</span>
+                     <span class="hl slc">;; Return negative integer if k1 should come earlier</span>
+                     <span class="hl slc">;; in the sort order than k2, 0 if they are equal,</span>
+                     <span class="hl slc">;; otherwise a positive integer.</span>
+                     <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>cnt1 <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">getcnt</span> <span class="hl opt">(</span><span class="hl kwa">get</span> tally k1<span class="hl opt">)))</span>
+                           cnt2 <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">getcnt</span> <span class="hl opt">(</span><span class="hl kwa">get</span> tally k2<span class="hl opt">)))]</span>
+                       <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">not</span><span class="hl opt">=</span> cnt1 cnt2<span class="hl opt">)</span>
+                         <span class="hl opt">(</span><span class="hl kwa">-</span> cnt2 cnt1<span class="hl opt">)</span>
+                         <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>^String s1 <span class="hl opt">(</span><span class="hl kwa">fn-key-to-str</span> k1<span class="hl opt">)</span>
+                               ^String s2 <span class="hl opt">(</span><span class="hl kwa">fn-key-to-str</span> k2<span class="hl opt">)]</span>
+                           <span class="hl opt">(</span>.compareTo s1 s2<span class="hl opt">)))))]</span>
+      <span class="hl opt">(</span><span class="hl kwa">doseq</span> <span class="hl opt">[</span>k <span class="hl opt">(</span><span class="hl kwa">sort</span> cmp-keys <span class="hl opt">(</span><span class="hl kwa">keys</span> tally<span class="hl opt">))]</span>
+        <span class="hl opt">(</span><span class="hl kwa">printf</span> <span class="hl str">&quot;%s %.3f</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> <span class="hl opt">(</span><span class="hl kwa">fn-key-to-str</span> k<span class="hl opt">)</span>
+                <span class="hl opt">(</span><span class="hl kwa">double</span> <span class="hl opt">(*</span> <span class="hl num">100</span> <span class="hl opt">(/ (</span><span class="hl kwa">getcnt</span> <span class="hl opt">(</span><span class="hl kwa">get</span> tally k<span class="hl opt">))</span> total<span class="hl opt">))))))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> one-tally-to-str <span class="hl opt">[</span>dna-str tally<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>zerotc <span class="hl opt">(</span><span class="hl kwa">TallyCounter</span>. <span class="hl num">0</span><span class="hl opt">)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">format</span> <span class="hl str">&quot;%d</span><span class="hl esc">\t</span><span class="hl str">%s&quot;</span> <span class="hl opt">(</span><span class="hl kwa">getcnt</span> <span class="hl opt">(</span><span class="hl kwa">get</span> tally <span class="hl opt">(</span><span class="hl kwa">dna-str-to-key</span> dna-str<span class="hl opt">)</span> zerotc<span class="hl opt">))</span>
+            dna-str<span class="hl opt">)))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> compute-one-part <span class="hl opt">[</span>dna-str part<span class="hl opt">]</span>
+  <span class="hl opt">[</span>part
+   <span class="hl opt">(</span><span class="hl kwa">condp</span> <span class="hl opt">=</span> part
+       <span class="hl num">0</span> <span class="hl opt">(</span><span class="hl kwa">all-tally-to-str</span> <span class="hl opt">(</span><span class="hl kwa">tally-dna-subs-with-len</span> <span class="hl num">1</span> dna-str<span class="hl opt">)</span>
+                           <span class="hl opt">(</span><span class="hl kwa">fn</span> <span class="hl opt">[</span>k<span class="hl opt">] (</span><span class="hl kwa">key-to-dna-str</span> k <span class="hl num">1</span><span class="hl opt">)))</span>
+       <span class="hl num">1</span> <span class="hl opt">(</span><span class="hl kwa">all-tally-to-str</span> <span class="hl opt">(</span><span class="hl kwa">tally-dna-subs-with-len</span> <span class="hl num">2</span> dna-str<span class="hl opt">)</span>
+                           <span class="hl opt">(</span><span class="hl kwa">fn</span> <span class="hl opt">[</span>k<span class="hl opt">] (</span><span class="hl kwa">key-to-dna-str</span> k <span class="hl num">2</span><span class="hl opt">)))</span>
+       <span class="hl num">2</span> <span class="hl opt">(</span><span class="hl kwa">one-tally-to-str</span> <span class="hl str">&quot;GGT&quot;</span>
+                           <span class="hl opt">(</span><span class="hl kwa">tally-dna-subs-with-len</span> <span class="hl num">3</span> dna-str<span class="hl opt">))</span>
+       <span class="hl num">3</span> <span class="hl opt">(</span><span class="hl kwa">one-tally-to-str</span> <span class="hl str">&quot;GGTA&quot;</span>
+                           <span class="hl opt">(</span><span class="hl kwa">tally-dna-subs-with-len</span> <span class="hl num">4</span> dna-str<span class="hl opt">))</span>
+       <span class="hl num">4</span> <span class="hl opt">(</span><span class="hl kwa">one-tally-to-str</span> <span class="hl str">&quot;GGTATT&quot;</span>
+                           <span class="hl opt">(</span><span class="hl kwa">tally-dna-subs-with-len</span> <span class="hl num">6</span> dna-str<span class="hl opt">))</span>
+       <span class="hl num">5</span> <span class="hl opt">(</span><span class="hl kwa">one-tally-to-str</span> <span class="hl str">&quot;GGTATTTTAATT&quot;</span>
+                           <span class="hl opt">(</span><span class="hl kwa">tally-dna-subs-with-len</span> <span class="hl num">12</span> dna-str<span class="hl opt">))</span>
+       <span class="hl num">6</span> <span class="hl opt">(</span><span class="hl kwa">one-tally-to-str</span> <span class="hl str">&quot;GGTATTTTAATTTATAGT&quot;</span>
+                           <span class="hl opt">(</span><span class="hl kwa">tally-dna-subs-with-len</span> <span class="hl num">18</span> dna-str<span class="hl opt">)))])</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">def</span> <span class="hl opt">*</span>default-modified-pmap-num-threads<span class="hl opt">*</span>
+     <span class="hl opt">(+</span> <span class="hl num">2</span> <span class="hl opt">(</span>.. Runtime getRuntime availableProcessors<span class="hl opt">)))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> -main <span class="hl opt">[&amp;</span> args<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">def</span> num-threads
+       <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">and</span> <span class="hl opt">(&gt;= (</span><span class="hl kwa">count</span> args<span class="hl opt">)</span> <span class="hl num">1</span><span class="hl opt">)</span>
+		<span class="hl opt">(</span><span class="hl kwa">re-matches</span> <span class="hl opt">#</span><span class="hl str">&quot;^\d+$&quot;</span> <span class="hl opt">(</span><span class="hl kwa">nth</span> args <span class="hl num">0</span><span class="hl opt">)))</span>
+	 <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>n <span class="hl opt">(</span>. Integer valueOf <span class="hl opt">(</span><span class="hl kwa">nth</span> args <span class="hl num">0</span><span class="hl opt">)</span> <span class="hl num">10</span><span class="hl opt">)]</span>
+	   <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(==</span> n <span class="hl num">0</span><span class="hl opt">)</span>
+	     <span class="hl opt">*</span>default-modified-pmap-num-threads<span class="hl opt">*</span>
+	     n<span class="hl opt">))</span>
+         <span class="hl opt">*</span>default-modified-pmap-num-threads<span class="hl opt">*))</span>
+  <span class="hl opt">(</span><span class="hl kwa">with-open</span> <span class="hl opt">[</span>br <span class="hl opt">(</span><span class="hl kwa">java</span>.io.BufferedReader. <span class="hl opt">*</span>in<span class="hl opt">*)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>dna-str <span class="hl opt">(</span><span class="hl kwa">fasta-dna-str-with-desc-beginning</span> <span class="hl str">&quot;THREE&quot;</span> <span class="hl opt">(</span><span class="hl kwa">line-seq</span> br<span class="hl opt">))</span>
+          <span class="hl slc">;; Select the order of computing parts such that it is</span>
+          <span class="hl slc">;; unlikely that parts 5 and 6 will be computed concurrently.</span>
+          <span class="hl slc">;; Those are the two that take the most memory.  It would be</span>
+          <span class="hl slc">;; nice if we could specify a DAG for which jobs should finish</span>
+          <span class="hl slc">;; before others begin -- then we could prevent those two</span>
+          <span class="hl slc">;; parts from running simultaneously.</span>
+          results <span class="hl opt">(</span><span class="hl kwa">map</span> second
+                       <span class="hl opt">(</span><span class="hl kwa">sort</span> <span class="hl opt">#(&lt; (</span><span class="hl kwa">first</span> %<span class="hl num">1</span><span class="hl opt">) (</span><span class="hl kwa">first</span> %<span class="hl num">2</span><span class="hl opt">))</span>
+                             <span class="hl opt">(</span><span class="hl kwa">modified-pmap</span> num-threads
+                                            <span class="hl opt">#(</span><span class="hl kwa">compute-one-part</span> dna-str %<span class="hl opt">)</span>
+                                            <span class="hl opt">'(</span><span class="hl kwa">0</span> <span class="hl num">5 6 1 2 3 4</span><span class="hl opt">)</span>
+					    <span class="hl opt">)))]</span>
+      <span class="hl opt">(</span><span class="hl kwa">doseq</span> <span class="hl opt">[</span>r results<span class="hl opt">]</span>
+        <span class="hl opt">(</span><span class="hl kwa">println</span> r<span class="hl opt">)</span>
+        <span class="hl opt">(</span><span class="hl kwa">flush</span><span class="hl opt">))))</span>
+  <span class="hl opt">(</span><span class="hl kwa">shutdown-agents</span><span class="hl opt">))</span>

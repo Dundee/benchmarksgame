@@ -1,0 +1,87 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"> * </span>
+<span class="hl com"> * contributed by Stefan Krause</span>
+<span class="hl com"> * slightly modified by Chad Whipkey</span>
+<span class="hl com"> * parallelized by Colin D Bennett 2008-10-04</span>
+<span class="hl com"> * reduce synchronization cost by The Anh Tran</span>
+<span class="hl com"> * optimizations and refactoring by Enotus 2010-11-11</span>
+<span class="hl com"> */</span>
+ 
+
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>io<span class="hl opt">.*;</span>
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>concurrent<span class="hl opt">.</span>atomic<span class="hl opt">.</span>AtomicInteger<span class="hl opt">;</span>
+
+<span class="hl kwa">public final class</span> mandelbrot <span class="hl opt">{</span>
+    <span class="hl kwa">static</span> <span class="hl kwb">byte</span><span class="hl opt">[][]</span> out<span class="hl opt">;</span>
+    <span class="hl kwa">static</span> AtomicInteger yCt<span class="hl opt">;</span>
+    <span class="hl kwa">static</span> <span class="hl kwb">double</span><span class="hl opt">[]</span> Crb<span class="hl opt">;</span>
+    <span class="hl kwa">static</span> <span class="hl kwb">double</span><span class="hl opt">[]</span> Cib<span class="hl opt">;</span>
+
+    <span class="hl kwa">static</span> <span class="hl kwb">int</span> <span class="hl kwd">getByte</span><span class="hl opt">(</span><span class="hl kwb">int</span> x<span class="hl opt">,</span> <span class="hl kwb">int</span> y<span class="hl opt">){</span>
+        <span class="hl kwb">double</span> Ci<span class="hl opt">=</span>Cib<span class="hl opt">[</span>y<span class="hl opt">];</span>
+        <span class="hl kwb">int</span> res<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span>
+        <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span>i<span class="hl opt">&lt;</span><span class="hl num">8</span><span class="hl opt">;</span>i<span class="hl opt">+=</span><span class="hl num">2</span><span class="hl opt">){</span>
+            <span class="hl kwb">double</span> Zr1<span class="hl opt">=</span>Crb<span class="hl opt">[</span>x<span class="hl opt">+</span>i<span class="hl opt">];</span>
+            <span class="hl kwb">double</span> Zi1<span class="hl opt">=</span>Cib<span class="hl opt">[</span>y<span class="hl opt">];</span>
+
+            <span class="hl kwb">double</span> Zr2<span class="hl opt">=</span>Crb<span class="hl opt">[</span>x<span class="hl opt">+</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">];</span>
+            <span class="hl kwb">double</span> Zi2<span class="hl opt">=</span>Cib<span class="hl opt">[</span>y<span class="hl opt">];</span>
+
+            <span class="hl kwb">int</span> b<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span>
+            <span class="hl kwb">int</span> j<span class="hl opt">=</span><span class="hl num">49</span><span class="hl opt">;</span><span class="hl kwa">do</span><span class="hl opt">{</span>
+                <span class="hl kwb">double</span> nZr1<span class="hl opt">=</span>Zr1<span class="hl opt">*</span>Zr1<span class="hl opt">-</span>Zi1<span class="hl opt">*</span>Zi1<span class="hl opt">+</span>Crb<span class="hl opt">[</span>x<span class="hl opt">+</span>i<span class="hl opt">];</span>
+                <span class="hl kwb">double</span> nZi1<span class="hl opt">=</span>Zr1<span class="hl opt">*</span>Zi1<span class="hl opt">+</span>Zr1<span class="hl opt">*</span>Zi1<span class="hl opt">+</span>Cib<span class="hl opt">[</span>y<span class="hl opt">];</span>
+                Zr1<span class="hl opt">=</span>nZr1<span class="hl opt">;</span>Zi1<span class="hl opt">=</span>nZi1<span class="hl opt">;</span>
+
+                <span class="hl kwb">double</span> nZr2<span class="hl opt">=</span>Zr2<span class="hl opt">*</span>Zr2<span class="hl opt">-</span>Zi2<span class="hl opt">*</span>Zi2<span class="hl opt">+</span>Crb<span class="hl opt">[</span>x<span class="hl opt">+</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">];</span>
+                <span class="hl kwb">double</span> nZi2<span class="hl opt">=</span>Zr2<span class="hl opt">*</span>Zi2<span class="hl opt">+</span>Zr2<span class="hl opt">*</span>Zi2<span class="hl opt">+</span>Cib<span class="hl opt">[</span>y<span class="hl opt">];</span>
+                Zr2<span class="hl opt">=</span>nZr2<span class="hl opt">;</span>Zi2<span class="hl opt">=</span>nZi2<span class="hl opt">;</span>
+
+                <span class="hl kwa">if</span><span class="hl opt">(</span>Zr1<span class="hl opt">*</span>Zr1<span class="hl opt">+</span>Zi1<span class="hl opt">*</span>Zi1<span class="hl opt">&gt;</span><span class="hl num">4</span><span class="hl opt">)</span> b<span class="hl opt">|=</span><span class="hl num">2</span><span class="hl opt">;</span>
+                <span class="hl kwa">if</span><span class="hl opt">(</span>Zr2<span class="hl opt">*</span>Zr2<span class="hl opt">+</span>Zi2<span class="hl opt">*</span>Zi2<span class="hl opt">&gt;</span><span class="hl num">4</span><span class="hl opt">)</span> b<span class="hl opt">|=</span><span class="hl num">1</span><span class="hl opt">;</span>
+                <span class="hl kwa">if</span><span class="hl opt">(</span>b<span class="hl opt">==</span><span class="hl num">3</span><span class="hl opt">)</span> <span class="hl kwa">break</span><span class="hl opt">;</span>
+            <span class="hl opt">}</span><span class="hl kwa">while</span><span class="hl opt">(--</span>j<span class="hl opt">&gt;</span><span class="hl num">0</span><span class="hl opt">);</span>
+            res<span class="hl opt">=(</span>res<span class="hl opt">&lt;&lt;</span><span class="hl num">2</span><span class="hl opt">)+</span>b<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+        <span class="hl kwa">return</span> res^<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+    
+    <span class="hl kwa">static</span> <span class="hl kwb">void</span> <span class="hl kwd">putLine</span><span class="hl opt">(</span><span class="hl kwb">int</span> y<span class="hl opt">,</span> <span class="hl kwb">byte</span><span class="hl opt">[]</span> line<span class="hl opt">){</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> xb<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> xb<span class="hl opt">&lt;</span>line<span class="hl opt">.</span>length<span class="hl opt">;</span> xb<span class="hl opt">++)</span>
+            line<span class="hl opt">[</span>xb<span class="hl opt">]=(</span><span class="hl kwb">byte</span><span class="hl opt">)</span><span class="hl kwd">getByte</span><span class="hl opt">(</span>xb<span class="hl opt">*</span><span class="hl num">8</span><span class="hl opt">,</span>y<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">main</span><span class="hl opt">(</span>String<span class="hl opt">[]</span> args<span class="hl opt">)</span> <span class="hl kwa">throws</span> Exception <span class="hl opt">{</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">&lt;</span><span class="hl num">65</span><span class="hl opt">; ++</span>i<span class="hl opt">)</span> mandelbrot<span class="hl opt">.</span><span class="hl kwd">program_main</span><span class="hl opt">(</span>args<span class="hl opt">,</span>false<span class="hl opt">);</span>
+        mandelbrot<span class="hl opt">.</span><span class="hl kwd">program_main</span><span class="hl opt">(</span>args<span class="hl opt">,</span>true<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+ 
+    <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">program_main</span><span class="hl opt">(</span>String<span class="hl opt">[]</span> args<span class="hl opt">,</span> <span class="hl kwb">boolean</span> isWarm<span class="hl opt">)</span> <span class="hl kwa">throws</span> Exception <span class="hl opt">{</span>
+        <span class="hl kwb">int</span> N<span class="hl opt">=</span><span class="hl num">6000</span><span class="hl opt">;</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>args<span class="hl opt">.</span>length<span class="hl opt">&gt;=</span><span class="hl num">1</span><span class="hl opt">)</span> N<span class="hl opt">=</span>Integer<span class="hl opt">.</span><span class="hl kwd">parseInt</span><span class="hl opt">(</span>args<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]);</span>
+
+        Crb<span class="hl opt">=</span><span class="hl kwa">new</span> <span class="hl kwb">double</span><span class="hl opt">[</span>N<span class="hl opt">+</span><span class="hl num">7</span><span class="hl opt">];</span> Cib<span class="hl opt">=</span><span class="hl kwa">new</span> <span class="hl kwb">double</span><span class="hl opt">[</span>N<span class="hl opt">+</span><span class="hl num">7</span><span class="hl opt">];</span>
+        <span class="hl kwb">double</span> invN<span class="hl opt">=</span><span class="hl num">2.0</span><span class="hl opt">/</span>N<span class="hl opt">;</span> <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span>i<span class="hl opt">&lt;</span>N<span class="hl opt">;</span>i<span class="hl opt">++){</span> Cib<span class="hl opt">[</span>i<span class="hl opt">]=</span>i<span class="hl opt">*</span>invN<span class="hl opt">-</span><span class="hl num">1.0</span><span class="hl opt">;</span> Crb<span class="hl opt">[</span>i<span class="hl opt">]=</span>i<span class="hl opt">*</span>invN<span class="hl opt">-</span><span class="hl num">1.5</span><span class="hl opt">; }</span>
+        yCt<span class="hl opt">=</span><span class="hl kwa">new</span> <span class="hl kwd">AtomicInteger</span><span class="hl opt">();</span>
+        out<span class="hl opt">=</span><span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>N<span class="hl opt">][(</span>N<span class="hl opt">+</span><span class="hl num">7</span><span class="hl opt">)/</span><span class="hl num">8</span><span class="hl opt">];</span>
+
+        Thread<span class="hl opt">[]</span> pool<span class="hl opt">=</span><span class="hl kwa">new</span> Thread<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">*</span>Runtime<span class="hl opt">.</span><span class="hl kwd">getRuntime</span><span class="hl opt">().</span><span class="hl kwd">availableProcessors</span><span class="hl opt">()];</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span>i<span class="hl opt">&lt;</span>pool<span class="hl opt">.</span>length<span class="hl opt">;</span>i<span class="hl opt">++)</span>
+            pool<span class="hl opt">[</span>i<span class="hl opt">]=</span><span class="hl kwa">new</span> <span class="hl kwd">Thread</span><span class="hl opt">(){</span>
+                <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">run</span><span class="hl opt">() {</span>
+                     <span class="hl kwb">int</span> y<span class="hl opt">;</span> <span class="hl kwa">while</span><span class="hl opt">((</span>y<span class="hl opt">=</span>yCt<span class="hl opt">.</span><span class="hl kwd">getAndIncrement</span><span class="hl opt">())&lt;</span>out<span class="hl opt">.</span>length<span class="hl opt">)</span> <span class="hl kwd">putLine</span><span class="hl opt">(</span>y<span class="hl opt">,</span>out<span class="hl opt">[</span>y<span class="hl opt">]);</span>
+                <span class="hl opt">}</span>
+            <span class="hl opt">};</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span>Thread t<span class="hl opt">:</span>pool<span class="hl opt">)</span> t<span class="hl opt">.</span><span class="hl kwd">start</span><span class="hl opt">();</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span>Thread t<span class="hl opt">:</span>pool<span class="hl opt">)</span> t<span class="hl opt">.</span><span class="hl kwd">join</span><span class="hl opt">();</span>
+
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>isWarm<span class="hl opt">){</span>
+           OutputStream stream <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">BufferedOutputStream</span><span class="hl opt">(</span>System<span class="hl opt">.</span>out<span class="hl opt">);</span>
+           stream<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">((</span><span class="hl str">&quot;P4</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">+</span>N<span class="hl opt">+</span><span class="hl str">&quot; &quot;</span><span class="hl opt">+</span>N<span class="hl opt">+</span><span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">).</span><span class="hl kwd">getBytes</span><span class="hl opt">());</span>
+           <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span>i<span class="hl opt">&lt;</span>N<span class="hl opt">;</span>i<span class="hl opt">++)</span> stream<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span>out<span class="hl opt">[</span>i<span class="hl opt">]);</span>
+           stream<span class="hl opt">.</span><span class="hl kwd">close</span><span class="hl opt">();</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+

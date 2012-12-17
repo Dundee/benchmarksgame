@@ -1,0 +1,580 @@
+<span class="hl com">&quot;* The Computer Language Benchmarks Game</span>
+<span class="hl com">    http://shootout.alioth.debian.org/</span>
+<span class="hl com">    contributed by Nicolas Cellier *&quot;</span><span class="hl opt">!</span>
+
+
+<span class="hl kwc">Smalltalk</span> <span class="hl kwb">defineClass:</span> <span class="hl kwd">#MeteorPiece</span>
+    <span class="hl kwb">superclass:</span> <span class="hl opt">#{</span><span class="hl kwc">Core</span><span class="hl opt">.</span><span class="hl kwc">Object</span><span class="hl opt">}</span>
+    <span class="hl kwb">indexedType:</span> <span class="hl kwd">#none</span>
+    <span class="hl kwb">private:</span> <span class="hl kwa">false</span>
+    <span class="hl kwb">instanceVariableNames:</span> <span class="hl str">'mask row '</span>
+    <span class="hl kwb">classInstanceVariableNames:</span> <span class="hl str">''</span>
+    <span class="hl kwb">imports:</span> <span class="hl str">''</span>
+    <span class="hl kwb">category:</span> <span class="hl str">''</span><span class="hl opt">!</span>
+
+<span class="hl kwc">Smalltalk</span> <span class="hl kwb">defineClass:</span> <span class="hl kwd">#MeteorPieceWithIsland</span>
+    <span class="hl kwb">superclass:</span> <span class="hl opt">#{</span><span class="hl kwc">Smalltalk</span><span class="hl opt">.</span><span class="hl kwc">MeteorPiece</span><span class="hl opt">}</span>
+    <span class="hl kwb">indexedType:</span> <span class="hl kwd">#none</span>
+    <span class="hl kwb">private:</span> <span class="hl kwa">false</span>
+    <span class="hl kwb">instanceVariableNames:</span> <span class="hl str">'islands aPieceCouldFitIntoIsland '</span>
+    <span class="hl kwb">classInstanceVariableNames:</span> <span class="hl str">''</span>
+    <span class="hl kwb">imports:</span> <span class="hl str">''</span>
+    <span class="hl kwb">category:</span> <span class="hl str">''</span><span class="hl opt">!</span>
+
+<span class="hl kwc">Smalltalk</span> <span class="hl kwb">defineClass:</span> <span class="hl kwd">#MeteorBoard</span>
+    <span class="hl kwb">superclass:</span> <span class="hl opt">#{</span><span class="hl kwc">Core</span><span class="hl opt">.</span><span class="hl kwc">Object</span><span class="hl opt">}</span>
+    <span class="hl kwb">indexedType:</span> <span class="hl kwd">#none</span>
+    <span class="hl kwb">private:</span> <span class="hl kwa">false</span>
+    <span class="hl kwb">instanceVariableNames:</span> <span class="hl str">'pieces ncol ncell twoRows sixRows oddRowsMask evenRowsMask southEdge eastEdge westEdge</span>
+<span class="hl str">        southToNorthMasks eastToWestMasks northWestMask northEastMask southWestMask southEastMask positionsPerPiece loopCount fillMask '</span>
+    <span class="hl kwb">classInstanceVariableNames:</span> <span class="hl str">''</span>
+    <span class="hl kwb">imports:</span> <span class="hl str">''</span>
+    <span class="hl kwb">category:</span> <span class="hl str">''</span><span class="hl opt">!</span>
+
+<span class="hl opt">!</span><span class="hl kwc">MeteorPiece</span> <span class="hl kwb">class methodsFor:</span> <span class="hl str">'instance creation'</span><span class="hl opt">!</span>
+
+<span class="hl kwb">mask:</span> p <span class="hl kwb">islands:</span> i
+    <span class="hl opt">^</span>i <span class="hl kwb">=</span> <span class="hl num">0</span>
+        <span class="hl kwb">ifTrue:</span> <span class="hl opt">[</span><span class="hl kwc">MeteorPiece</span> <span class="hl kwb">new mask:</span> p<span class="hl opt">]</span>
+        <span class="hl kwb">ifFalse:</span> <span class="hl opt">[</span><span class="hl kwc">MeteorPieceWithIsland</span> <span class="hl kwb">new mask:</span> p<span class="hl opt">;</span> <span class="hl kwb">islands:</span> i<span class="hl opt">]! !</span>
+
+
+<span class="hl opt">!</span><span class="hl kwc">MeteorPiece</span> <span class="hl kwb">methodsFor:</span> <span class="hl str">'accessing'</span><span class="hl opt">!</span>
+
+<span class="hl kwb">mask</span>
+    <span class="hl opt">^</span>mask<span class="hl opt">!</span>
+
+<span class="hl kwb">fillSolution:</span> aString <span class="hl kwb">ncol:</span> ncol <span class="hl kwb">withColor:</span> c 
+    <span class="hl kwd">| offset |</span>
+    offset <span class="hl opt">:</span><span class="hl kwb">=</span> row <span class="hl kwb">*</span> ncol<span class="hl opt">.</span>
+    mask <span class="hl kwb">bitsDo:</span> <span class="hl opt">[</span><span class="hl kwd">:k</span> | aString <span class="hl kwb">at:</span> offset <span class="hl kwb">+</span> k <span class="hl kwb">put:</span> c<span class="hl opt">]! !</span>
+
+<span class="hl opt">!</span><span class="hl kwc">MeteorPiece</span> <span class="hl kwb">methodsFor:</span> <span class="hl str">'testing'</span><span class="hl opt">!</span>
+
+<span class="hl kwb">fitOnBoard:</span> aBoardMask
+    <span class="hl opt">^</span><span class="hl num">0</span> <span class="hl kwb">==</span> <span class="hl opt">(</span>aBoardMask <span class="hl kwb">bitAnd:</span> mask<span class="hl opt">)! !</span>
+
+<span class="hl opt">!</span><span class="hl kwc">MeteorPiece</span> <span class="hl kwb">methodsFor:</span> <span class="hl str">'initialize-release'</span><span class="hl opt">!</span>
+
+<span class="hl kwb">forRow:</span> rowOffset
+    row <span class="hl opt">:</span><span class="hl kwb">=</span> rowOffset<span class="hl opt">!</span>
+
+<span class="hl kwb">mask:</span> aPieceMask
+    mask <span class="hl opt">:</span><span class="hl kwb">=</span> aPieceMask<span class="hl opt">! !</span>
+
+
+<span class="hl opt">!</span><span class="hl kwc">MeteorBoard</span> <span class="hl kwb">class methodsFor:</span> <span class="hl str">'instance creation'</span><span class="hl opt">!</span>
+
+<span class="hl kwb">default</span>
+    <span class="hl opt">^</span><span class="hl kwa">self</span> <span class="hl kwb">basicNew fromString:</span>
+<span class="hl str">'0 0 0 0 1 </span>
+<span class="hl str"> 2 2 2 0 1 </span>
+<span class="hl str">2 6 6 1 1 </span>
+<span class="hl str"> 2 6 1 5 5 </span>
+<span class="hl str">8 6 5 5 5 </span>
+<span class="hl str"> 8 6 3 3 3 </span>
+<span class="hl str">4 8 8 9 3 </span>
+<span class="hl str"> 4 4 8 9 3 </span>
+<span class="hl str">4 7 4 7 9 </span>
+<span class="hl str"> 7 7 7 9 9'</span><span class="hl opt">! !</span>
+
+
+<span class="hl opt">!</span><span class="hl kwc">MeteorBoard</span> <span class="hl kwb">methodsFor:</span> <span class="hl str">'islands'</span><span class="hl opt">!</span>
+
+<span class="hl kwb">hasEastOrWestIsland:</span> aMask
+    <span class="hl opt">^ (</span><span class="hl kwa">self</span> <span class="hl kwb">hasInsetZero:</span> southEdge <span class="hl kwb">*</span> <span class="hl opt">(</span>eastEdge <span class="hl kwb">bitAnd:</span> aMask<span class="hl opt">))</span>
+        <span class="hl kwb">or:</span> <span class="hl opt">[(</span><span class="hl kwa">self</span> <span class="hl kwb">hasInsetZero:</span> southEdge <span class="hl kwb">*</span> <span class="hl opt">(</span>westEdge <span class="hl kwb">bitAnd:</span> aMask<span class="hl opt">))</span>
+            <span class="hl kwb">or:</span> <span class="hl opt">[(</span>aMask <span class="hl kwb">bitAnd:</span> eastEdge<span class="hl opt">)</span> &gt; <span class="hl num">0</span> <span class="hl kwb">and:</span> <span class="hl opt">[(</span>aMask <span class="hl kwb">bitAnd:</span> westEdge<span class="hl opt">)</span> &gt; <span class="hl num">0</span> <span class="hl kwb">and:</span> <span class="hl opt">[(</span><span class="hl kwa">self</span> <span class="hl kwb">findIsland:</span> aMask<span class="hl opt">)</span> <span class="hl kwb">bitCount</span> <span class="hl esc">\\</span> <span class="hl num">5</span> &gt; <span class="hl num">0</span><span class="hl opt">]]]]!</span>
+
+<span class="hl kwb">hasNorthIsland:</span> aPieceMask <span class="hl kwb">row:</span> iRow
+    <span class="hl kwd">| bitReverse |</span>
+    bitReverse <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl opt">(#(</span><span class="hl kwb">-</span><span class="hl num">1</span> <span class="hl kwb">-</span><span class="hl num">1 6 4 2</span><span class="hl opt">)</span> <span class="hl kwb">at:</span> iRow<span class="hl opt">)</span> <span class="hl kwb">*</span> ncol<span class="hl opt">.</span>
+    <span class="hl opt">^</span><span class="hl kwa">self</span> <span class="hl kwb">hasSouthIsland:</span> <span class="hl opt">(</span>aPieceMask <span class="hl kwb">bitReverse:</span> bitReverse<span class="hl opt">)!</span>
+
+<span class="hl kwb">hasInsetZero:</span> aMask
+    <span class="hl kwd">| allOnes |</span>
+    allOnes <span class="hl opt">:</span><span class="hl kwb">=</span> aMask <span class="hl kwb">bitOr:</span> aMask <span class="hl kwb">-</span> <span class="hl num">1</span><span class="hl opt">.</span>
+    <span class="hl opt">^(</span>allOnes <span class="hl kwb">bitAnd:</span> allOnes <span class="hl kwb">+</span> <span class="hl num">1</span><span class="hl opt">)</span> &gt; <span class="hl num">0</span><span class="hl opt">!</span>
+
+<span class="hl kwb">findIsland:</span> aMask
+    <span class="hl kwd">| nextFreeCellMask open |</span>
+    nextFreeCellMask <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl num">1</span> <span class="hl kwb">+</span> aMask <span class="hl kwb">bitAnd: -</span><span class="hl num">1</span> <span class="hl kwb">-</span> aMask<span class="hl opt">.</span>
+    fillMask <span class="hl opt">:</span><span class="hl kwb">=</span>  aMask<span class="hl opt">.</span>
+    open <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">false</span><span class="hl opt">.</span>
+    <span class="hl kwa">self</span> <span class="hl kwb">fillMaskStartingAt:</span> nextFreeCellMask <span class="hl kwb">stoppingAbove:</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl kwb">bitShift:</span> fillMask <span class="hl kwb">highBit -</span> <span class="hl num">1</span> <span class="hl kwb">//</span> ncol <span class="hl kwb">*</span> ncol <span class="hl kwb">-</span> <span class="hl num">1</span><span class="hl opt">)</span> <span class="hl kwb">ifFoundEnough:</span> <span class="hl opt">[</span>open <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">true</span><span class="hl opt">].</span>
+    <span class="hl opt">^</span>open
+        <span class="hl kwb">ifTrue:</span> <span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]</span>
+        <span class="hl kwb">ifFalse:</span> <span class="hl opt">[</span>fillMask <span class="hl kwb">-</span> aMask<span class="hl opt">]!</span>
+
+<span class="hl kwb">hasSouthIsland:</span> aMask
+    <span class="hl opt">^(</span><span class="hl kwa">self</span> <span class="hl kwb">findIsland:</span> aMask<span class="hl opt">)</span> <span class="hl kwb">bitCount</span> <span class="hl esc">\\</span> <span class="hl num">5</span> &gt; <span class="hl num">0</span>
+        <span class="hl kwb">or:</span> <span class="hl opt">[(</span><span class="hl kwa">self</span> <span class="hl kwb">findIsland:</span> fillMask<span class="hl opt">)</span> <span class="hl kwb">bitCount</span> <span class="hl esc">\\</span> <span class="hl num">5</span> &gt; <span class="hl num">0</span><span class="hl opt">]!</span>
+
+<span class="hl kwb">islandsFor:</span> aPieceMask
+    <span class="hl kwd">| islands aMask nextFreeCellMask open top |</span>
+    islands <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl num">0</span><span class="hl opt">.</span>
+    fillMask <span class="hl opt">:</span><span class="hl kwb">=</span> aPieceMask<span class="hl opt">.</span>
+    top <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl num">1</span> <span class="hl kwb">bitShift:</span> <span class="hl opt">(</span>fillMask <span class="hl kwb">highBit -</span> <span class="hl num">1</span> <span class="hl kwb">//</span> ncol <span class="hl kwb">*</span> ncol <span class="hl kwb">-</span> <span class="hl num">1</span><span class="hl opt">).</span>
+    <span class="hl opt">[(</span>nextFreeCellMask <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl num">1</span> <span class="hl kwb">+</span> fillMask <span class="hl kwb">bitAnd: -</span><span class="hl num">1</span> <span class="hl kwb">-</span> fillMask<span class="hl opt">)</span> <span class="hl kwb">&lt;=</span> top<span class="hl opt">]</span>
+        <span class="hl kwb">whileTrue:</span>
+            <span class="hl opt">[</span>open <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">false</span><span class="hl opt">.</span>
+            aMask <span class="hl opt">:</span><span class="hl kwb">=</span> fillMask<span class="hl opt">.</span>
+            <span class="hl kwa">self</span> <span class="hl kwb">fillMaskStartingAt:</span> nextFreeCellMask <span class="hl kwb">stoppingAbove:</span> top <span class="hl kwb">ifFoundEnough:</span> <span class="hl opt">[</span>open <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">true</span><span class="hl opt">].</span>
+            open <span class="hl kwb">ifFalse:</span> <span class="hl opt">[</span>islands <span class="hl opt">:</span><span class="hl kwb">=</span> islands <span class="hl kwb">+</span> <span class="hl opt">(</span>fillMask <span class="hl kwb">-</span> aMask<span class="hl opt">)]].</span>
+    <span class="hl opt">^</span>islands<span class="hl opt">!</span>
+
+<span class="hl kwb">fillMaskStartingAt:</span> pos <span class="hl kwb">stoppingAbove:</span> maxCell <span class="hl kwb">ifFoundEnough:</span> exitBlock
+    <span class="hl opt">(</span>fillMask <span class="hl kwb">bitAnd:</span> pos<span class="hl opt">)</span> <span class="hl kwb">=</span> <span class="hl num">0</span> <span class="hl kwb">ifFalse:</span> <span class="hl opt">[^</span><span class="hl kwa">self</span><span class="hl opt">].</span>
+    <span class="hl opt">(</span>pos &gt; <span class="hl kwb">maxCell</span><span class="hl opt">)</span> <span class="hl kwb">ifTrue:</span> <span class="hl opt">[^</span>exitBlock <span class="hl kwb">value</span><span class="hl opt">].</span>
+    fillMask <span class="hl opt">:</span><span class="hl kwb">=</span> fillMask <span class="hl kwb">+</span> pos<span class="hl opt">.</span>
+    <span class="hl opt">(</span><span class="hl kwa">self</span> <span class="hl kwb">canShiftE:</span> pos<span class="hl opt">)</span> <span class="hl kwb">ifTrue:</span> <span class="hl opt">[</span><span class="hl kwa">self</span> <span class="hl kwb">fillMaskStartingAt:</span> <span class="hl opt">(</span><span class="hl kwa">self</span> <span class="hl kwb">shiftE:</span> pos<span class="hl opt">)</span> <span class="hl kwb">stoppingAbove:</span> maxCell <span class="hl kwb">ifFoundEnough:</span> exitBlock<span class="hl opt">].</span>
+    <span class="hl opt">(</span><span class="hl kwa">self</span> <span class="hl kwb">canShiftNE:</span> pos<span class="hl opt">)</span> <span class="hl kwb">ifTrue:</span> <span class="hl opt">[</span><span class="hl kwa">self</span> <span class="hl kwb">fillMaskStartingAt:</span> <span class="hl opt">(</span><span class="hl kwa">self</span> <span class="hl kwb">shiftNE:</span> pos<span class="hl opt">)</span> <span class="hl kwb">stoppingAbove:</span> maxCell <span class="hl kwb">ifFoundEnough:</span> exitBlock<span class="hl opt">].</span>
+    <span class="hl opt">(</span><span class="hl kwa">self</span> <span class="hl kwb">canShiftNW:</span> pos<span class="hl opt">)</span> <span class="hl kwb">ifTrue:</span> <span class="hl opt">[</span><span class="hl kwa">self</span> <span class="hl kwb">fillMaskStartingAt:</span> <span class="hl opt">(</span><span class="hl kwa">self</span> <span class="hl kwb">shiftNW:</span> pos<span class="hl opt">)</span> <span class="hl kwb">stoppingAbove:</span> maxCell <span class="hl kwb">ifFoundEnough:</span> exitBlock<span class="hl opt">].</span>
+    <span class="hl opt">(</span><span class="hl kwa">self</span> <span class="hl kwb">canShiftW:</span> pos<span class="hl opt">)</span> <span class="hl kwb">ifTrue:</span> <span class="hl opt">[</span><span class="hl kwa">self</span> <span class="hl kwb">fillMaskStartingAt:</span> <span class="hl opt">(</span><span class="hl kwa">self</span> <span class="hl kwb">shiftW:</span> pos<span class="hl opt">)</span> <span class="hl kwb">stoppingAbove:</span> maxCell <span class="hl kwb">ifFoundEnough:</span> exitBlock<span class="hl opt">].</span>
+    <span class="hl opt">^</span><span class="hl kwa">self</span><span class="hl opt">!</span>
+
+<span class="hl kwb">northIslandsFor:</span> aPieceMask <span class="hl kwb">row:</span> iRow
+    <span class="hl kwd">| filled isleSEW bitReverse isleNE isleNW |</span>
+    bitReverse <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl opt">(#(</span><span class="hl kwb">-</span><span class="hl num">1</span> <span class="hl kwb">-</span><span class="hl num">1 6 4 2</span><span class="hl opt">)</span> <span class="hl kwb">at:</span> iRow<span class="hl opt">)</span> <span class="hl kwb">*</span> ncol<span class="hl opt">.</span>
+    filled <span class="hl opt">:</span><span class="hl kwb">=</span> aPieceMask <span class="hl kwb">bitOr:</span> aPieceMask <span class="hl kwb">-</span> <span class="hl num">1</span><span class="hl opt">.</span>
+    isleSEW <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span> <span class="hl kwb">islandsFor:</span> filled<span class="hl opt">.</span>
+    <span class="hl opt">(</span>aPieceMask <span class="hl kwb">bitAnd:</span> <span class="hl opt">(</span>eastEdge <span class="hl kwb">bitOr:</span> westEdge<span class="hl opt">))</span> <span class="hl kwb">=</span> <span class="hl num">0</span> <span class="hl kwb">ifFalse:</span> <span class="hl opt">[^</span>isleSEW<span class="hl opt">].</span>
+    <span class="hl opt">(</span>isleSEW <span class="hl kwb">bitAnd:</span> <span class="hl opt">(</span>eastEdge <span class="hl kwb">bitOr:</span> westEdge<span class="hl opt">))</span> <span class="hl kwb">=</span> <span class="hl num">0</span> <span class="hl kwb">ifFalse:</span> <span class="hl opt">[^</span>isleSEW<span class="hl opt">].</span>
+    <span class="hl opt">(</span>southEdge <span class="hl kwb">bitAnd:</span> aPieceMask<span class="hl opt">)</span> <span class="hl kwb">=</span> <span class="hl num">0</span>
+        <span class="hl kwb">ifTrue:</span> <span class="hl opt">[</span>filled <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl opt">(</span>filled <span class="hl kwb">bitShift:</span> <span class="hl num">0</span> <span class="hl kwb">-</span> ncol<span class="hl opt">)</span> <span class="hl kwb">bitShift:</span> ncol<span class="hl opt">].</span>
+    isleNE <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl opt">((</span><span class="hl kwa">self</span> <span class="hl kwb">islandsFor:</span> <span class="hl opt">(</span>filled <span class="hl kwb">bitReverse:</span> bitReverse<span class="hl opt">))</span> <span class="hl kwb">bitReverse:</span> bitReverse<span class="hl opt">)</span> <span class="hl kwb">bitOr:</span> isleSEW<span class="hl opt">.</span>
+    isleNW <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl opt">((</span><span class="hl num">1</span> <span class="hl kwb">bitShift:</span> bitReverse<span class="hl opt">)</span> <span class="hl kwb">-</span> <span class="hl num">1</span> <span class="hl kwb">-</span> <span class="hl opt">(</span>isleNE <span class="hl kwb">bitOr:</span> <span class="hl opt">(</span>aPieceMask <span class="hl kwb">bitOr:</span> aPieceMask <span class="hl kwb">-</span> <span class="hl num">1</span><span class="hl opt">)))</span> <span class="hl kwb">bitOr:</span> isleSEW<span class="hl opt">.</span>
+    <span class="hl opt">^</span>isleNW <span class="hl kwb">bitCount</span> &lt; <span class="hl kwb">isleNE bitCount</span>
+        <span class="hl kwb">ifTrue:</span> <span class="hl opt">[</span>isleNW<span class="hl opt">]</span>
+        <span class="hl kwb">ifFalse:</span> <span class="hl opt">[</span>isleNE<span class="hl opt">]! !</span>
+
+<span class="hl opt">!</span><span class="hl kwc">MeteorBoard</span> <span class="hl kwb">methodsFor:</span> <span class="hl str">'generating'</span><span class="hl opt">!</span>
+
+<span class="hl kwb">shiftE:</span> aPieceMask
+    <span class="hl opt">^</span>aPieceMask <span class="hl kwb">bitShift: -</span><span class="hl num">1</span><span class="hl opt">!</span>
+
+<span class="hl kwb">placesFor:</span> aPieceMask <span class="hl kwb">do:</span> aBlock
+    <span class="hl kwd">| westMask eastMask |</span>
+    eastMask <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span> <span class="hl kwb">shiftSEmost:</span> aPieceMask<span class="hl opt">.</span>
+    
+    <span class="hl opt">[[</span>westMask <span class="hl opt">:</span><span class="hl kwb">=</span> eastMask<span class="hl opt">.</span>
+    <span class="hl opt">[</span>westMask <span class="hl kwb">lowBit</span> &gt; <span class="hl kwb">twoRows ifTrue:</span> <span class="hl opt">[^</span><span class="hl kwa">self</span><span class="hl opt">].</span>
+    <span class="hl opt">(</span><span class="hl kwa">self</span> <span class="hl kwb">hasEastOrWestIsland:</span> westMask<span class="hl opt">)</span> <span class="hl kwb">ifFalse:</span> <span class="hl opt">[</span>aBlock <span class="hl kwb">value:</span> westMask<span class="hl opt">].</span>
+    <span class="hl kwa">self</span> <span class="hl kwb">canShiftW:</span> westMask<span class="hl opt">]</span> <span class="hl kwb">whileTrue:</span> <span class="hl opt">[</span>westMask <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span> <span class="hl kwb">shiftW:</span> westMask<span class="hl opt">].</span>
+    <span class="hl kwa">self</span> <span class="hl kwb">canShiftNE:</span> eastMask<span class="hl opt">]</span> <span class="hl kwb">whileTrue:</span> <span class="hl opt">[</span>eastMask <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span> <span class="hl kwb">shiftNE:</span> eastMask<span class="hl opt">].</span>
+    <span class="hl kwa">self</span> <span class="hl kwb">canShiftNW:</span> eastMask<span class="hl opt">]</span> <span class="hl kwb">whileTrue:</span> <span class="hl opt">[</span>eastMask <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span> <span class="hl kwb">shiftNW:</span> eastMask<span class="hl opt">]!</span>
+
+<span class="hl kwb">flip:</span> aPieceMask
+    <span class="hl opt">^</span><span class="hl kwa">self</span> <span class="hl kwb">shiftSEmost:</span> <span class="hl opt">((</span>southToNorthMasks
+        <span class="hl kwb">inject:</span> <span class="hl num">0</span> <span class="hl kwb">into:</span> <span class="hl opt">[</span><span class="hl kwd">:mask :rowMask</span> |
+            <span class="hl opt">(</span>mask <span class="hl kwb">bitShift:</span>  ncol<span class="hl opt">)</span> <span class="hl kwb">+</span> <span class="hl opt">((</span>rowMask <span class="hl kwb">bitAnd:</span> aPieceMask<span class="hl opt">)</span> <span class="hl kwb">bitShift:</span> <span class="hl num">1</span> <span class="hl kwb">-</span> rowMask <span class="hl kwb">lowBit</span><span class="hl opt">)])</span>
+                <span class="hl kwb">bitShift:</span> <span class="hl num">0</span> <span class="hl kwb">-</span> ncol<span class="hl opt">)!</span>
+
+<span class="hl kwb">possiblePositionsOnTwoRows</span>
+    <span class="hl opt">^</span>pieces <span class="hl kwb">collect:</span> <span class="hl opt">[</span><span class="hl kwd">:aPieceMask</span> |
+        <span class="hl kwd">| possible iRot |</span>
+        possible <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl opt">(</span><span class="hl kwc">Array</span> <span class="hl kwb">new:</span> twoRows<span class="hl opt">)</span> <span class="hl kwb">collect:</span> <span class="hl opt">[</span><span class="hl kwd">:freeCell</span> | <span class="hl kwc">Array</span> <span class="hl kwb">new:</span> <span class="hl num">12</span> <span class="hl kwb">withAll:</span> <span class="hl opt">(</span><span class="hl kwc">MeteorPiece</span> <span class="hl kwb">new mask:</span> <span class="hl num">0</span><span class="hl opt">)].</span>
+        iRot <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl num">0</span><span class="hl opt">.</span>
+        <span class="hl kwa">self</span> <span class="hl kwb">rotationsOf:</span> aPieceMask <span class="hl kwb">do:</span> <span class="hl opt">[</span><span class="hl kwd">:rotated</span> |
+            iRot <span class="hl opt">:</span><span class="hl kwb">=</span> iRot <span class="hl kwb">+</span> <span class="hl num">1</span><span class="hl opt">.</span>
+            <span class="hl kwa">self</span> <span class="hl kwb">placesFor:</span> rotated <span class="hl kwb">do:</span> <span class="hl opt">[</span><span class="hl kwd">:shifted</span> |
+                <span class="hl opt">(</span>possible <span class="hl kwb">at:</span> shifted <span class="hl kwb">lowBit</span><span class="hl opt">)</span> <span class="hl kwb">at:</span> iRot <span class="hl kwb">put:</span> <span class="hl opt">(</span><span class="hl kwc">MeteorPiece</span>
+                    <span class="hl kwb">mask:</span> <span class="hl opt">((</span><span class="hl kwa">self</span> <span class="hl kwb">hasEastOrWestIsland:</span> shifted<span class="hl opt">)</span> <span class="hl kwb">ifTrue:</span> <span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]</span> <span class="hl kwb">ifFalse:</span> <span class="hl opt">[</span>shifted<span class="hl opt">])</span>
+                    <span class="hl kwb">islands:</span> <span class="hl opt">(</span><span class="hl kwa">self</span> <span class="hl kwb">islandsFor:</span> <span class="hl opt">(</span>shifted <span class="hl kwb">bitOr:</span> shifted <span class="hl kwb">-</span> <span class="hl num">1</span><span class="hl opt">)))]].</span>
+        possible<span class="hl opt">]!</span>
+
+<span class="hl kwb">shiftNE:</span> aPieceMask
+    <span class="hl kwd">| evens odds |</span>
+    odds <span class="hl opt">:</span><span class="hl kwb">=</span> oddRowsMask <span class="hl kwb">bitAnd:</span> aPieceMask<span class="hl opt">.</span>
+    evens <span class="hl opt">:</span><span class="hl kwb">=</span> evenRowsMask <span class="hl kwb">bitAnd:</span> aPieceMask<span class="hl opt">.</span>
+    <span class="hl opt">^(</span>odds <span class="hl kwb">bitShift: -</span><span class="hl num">1</span><span class="hl opt">)</span> <span class="hl kwb">+</span> evens <span class="hl kwb">bitShift:</span> ncol<span class="hl opt">!</span>
+
+<span class="hl kwb">shiftNW:</span> aPieceMask
+    <span class="hl kwd">| evens odds |</span>
+    odds <span class="hl opt">:</span><span class="hl kwb">=</span> oddRowsMask <span class="hl kwb">bitAnd:</span> aPieceMask<span class="hl opt">.</span>
+    evens <span class="hl opt">:</span><span class="hl kwb">=</span> evenRowsMask <span class="hl kwb">bitAnd:</span> aPieceMask<span class="hl opt">.</span>
+    <span class="hl opt">^(</span>evens <span class="hl kwb">bitShift:</span> <span class="hl num">1</span><span class="hl opt">)</span> <span class="hl kwb">+</span> odds <span class="hl kwb">bitShift:</span> ncol<span class="hl opt">!</span>
+
+<span class="hl kwb">shiftW:</span> aPieceMask
+    <span class="hl opt">^</span>aPieceMask <span class="hl kwb">bitShift:</span> <span class="hl num">1</span><span class="hl opt">!</span>
+
+<span class="hl kwb">canShiftSW:</span> aPieceMask
+    <span class="hl opt">^(</span>southEastMask <span class="hl kwb">bitAnd:</span> aPieceMask<span class="hl opt">)</span> <span class="hl kwb">=</span> <span class="hl num">0</span><span class="hl opt">!</span>
+
+<span class="hl kwb">shiftSE:</span> aPieceMask
+    <span class="hl kwd">| evens odds |</span>
+    odds <span class="hl opt">:</span><span class="hl kwb">=</span> oddRowsMask <span class="hl kwb">bitAnd:</span> aPieceMask<span class="hl opt">.</span>
+    evens <span class="hl opt">:</span><span class="hl kwb">=</span> evenRowsMask <span class="hl kwb">bitAnd:</span> aPieceMask<span class="hl opt">.</span>
+    <span class="hl opt">^(</span>odds <span class="hl kwb">bitShift: -</span><span class="hl num">1</span><span class="hl opt">)</span> <span class="hl kwb">+</span> evens <span class="hl kwb">bitShift:</span> <span class="hl num">0</span> <span class="hl kwb">-</span> ncol<span class="hl opt">!</span>
+
+<span class="hl kwb">shiftSEmost:</span> aPieceMask
+    <span class="hl kwd">| mostSEMask eastColumn lowBit |</span>
+    aPieceMask <span class="hl kwb">odd ifTrue:</span> <span class="hl opt">[^</span>aPieceMask<span class="hl opt">].</span>
+    lowBit <span class="hl opt">:</span><span class="hl kwb">=</span> aPieceMask <span class="hl kwb">lowBit</span><span class="hl opt">.</span>
+    mostSEMask <span class="hl opt">:</span><span class="hl kwb">=</span> aPieceMask <span class="hl kwb">bitShift:</span> <span class="hl num">0</span> <span class="hl kwb">-</span>  <span class="hl opt">(</span>lowBit <span class="hl kwb">-</span> <span class="hl num">1</span> <span class="hl kwb">//</span> twoRows <span class="hl kwb">*</span> twoRows<span class="hl opt">).</span>
+    <span class="hl opt">(</span>mostSEMask <span class="hl kwb">bitAnd:</span> southEdge<span class="hl opt">)</span> <span class="hl kwb">=</span> <span class="hl num">0</span>
+        <span class="hl kwb">ifTrue:</span> <span class="hl opt">[</span>mostSEMask <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl opt">(</span><span class="hl kwa">self</span> <span class="hl kwb">canShiftSE:</span> mostSEMask<span class="hl opt">)</span>
+            <span class="hl kwb">ifTrue:</span> <span class="hl opt">[</span><span class="hl kwa">self</span> <span class="hl kwb">shiftSE:</span> mostSEMask<span class="hl opt">]</span>
+            <span class="hl kwb">ifFalse:</span> <span class="hl opt">[</span><span class="hl kwa">self</span> <span class="hl kwb">shiftSW:</span> mostSEMask<span class="hl opt">]].</span>
+    eastColumn <span class="hl opt">:</span><span class="hl kwb">=</span> eastToWestMasks <span class="hl kwb">findFirst:</span> <span class="hl opt">[</span><span class="hl kwd">:e</span> | <span class="hl opt">(</span>e <span class="hl kwb">bitAnd:</span> mostSEMask<span class="hl opt">)</span> &gt; <span class="hl num">0</span><span class="hl opt">].</span>
+    <span class="hl opt">^</span>mostSEMask <span class="hl kwb">bitShift:</span> <span class="hl num">1</span> <span class="hl kwb">-</span> eastColumn<span class="hl opt">!</span>
+
+<span class="hl kwb">canShiftNE:</span> aPieceMask
+    <span class="hl opt">^(</span>northEastMask <span class="hl kwb">bitAnd:</span> aPieceMask<span class="hl opt">)</span> <span class="hl kwb">=</span> <span class="hl num">0</span><span class="hl opt">!</span>
+
+<span class="hl kwb">canShiftSE:</span> aPieceMask
+    <span class="hl opt">^(</span>southEastMask <span class="hl kwb">bitAnd:</span> aPieceMask<span class="hl opt">)</span> <span class="hl kwb">=</span> <span class="hl num">0</span><span class="hl opt">!</span>
+
+<span class="hl kwb">canShiftW:</span> aPieceMask
+    <span class="hl opt">^(</span>westEdge <span class="hl kwb">bitAnd:</span> aPieceMask<span class="hl opt">)</span> <span class="hl kwb">=</span> <span class="hl num">0</span><span class="hl opt">!</span>
+
+<span class="hl kwb">rotate:</span> aPieceMask
+    <span class="hl kwd">| rotatedMask pivot rotatedPivot irow row |</span>
+    rotatedMask <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl num">0</span><span class="hl opt">.</span>
+    irow <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl num">1</span><span class="hl opt">.</span>
+    row <span class="hl opt">:</span><span class="hl kwb">=</span> aPieceMask <span class="hl kwb">bitAnd:</span> <span class="hl opt">(</span>southToNorthMasks <span class="hl kwb">at:</span> irow<span class="hl opt">).</span>
+    rotatedPivot <span class="hl opt">:</span><span class="hl kwb">=</span> pivot <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl num">1</span> <span class="hl kwb">bitShift:</span> row <span class="hl kwb">highBit -</span> <span class="hl num">1</span><span class="hl opt">.</span>
+    
+    <span class="hl opt">[</span>rotatedMask <span class="hl opt">:</span><span class="hl kwb">=</span> rotatedMask <span class="hl kwb">+</span> rotatedPivot<span class="hl opt">.</span>
+    <span class="hl opt">[(</span>row <span class="hl kwb">bitAnd:</span> pivot <span class="hl kwb">-</span> <span class="hl num">1</span><span class="hl opt">)</span> <span class="hl kwb">=</span> <span class="hl num">0</span><span class="hl opt">]</span>
+        <span class="hl kwb">whileFalse:</span>
+            <span class="hl opt">[</span>pivot <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span> <span class="hl kwb">shiftE:</span> pivot<span class="hl opt">.</span>
+            rotatedPivot <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span> <span class="hl kwb">shiftNE:</span> rotatedPivot<span class="hl opt">.</span>
+            <span class="hl opt">(</span>row <span class="hl kwb">bitAnd:</span> pivot<span class="hl opt">)</span> <span class="hl kwb">=</span> <span class="hl num">0</span>
+                <span class="hl kwb">ifFalse:</span>
+                    <span class="hl opt">[</span>rotatedMask <span class="hl opt">:</span><span class="hl kwb">=</span> rotatedMask <span class="hl kwb">+</span> rotatedPivot<span class="hl opt">]].</span>
+    <span class="hl opt">(</span>row <span class="hl opt">:</span><span class="hl kwb">=</span> aPieceMask <span class="hl kwb">bitAnd:</span> <span class="hl opt">(</span>southToNorthMasks <span class="hl kwb">at:</span> <span class="hl opt">(</span>irow <span class="hl opt">:</span><span class="hl kwb">=</span> irow <span class="hl kwb">+</span> <span class="hl num">1</span><span class="hl opt">)))</span> <span class="hl kwb">=</span> <span class="hl num">0</span><span class="hl opt">]</span>
+        <span class="hl kwb">whileFalse:</span>
+            <span class="hl opt">[(</span><span class="hl kwa">self</span> <span class="hl kwb">canShiftNE:</span> pivot<span class="hl opt">)</span>
+                <span class="hl kwb">ifTrue:</span>
+                    <span class="hl opt">[</span>pivot <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span> <span class="hl kwb">shiftNE:</span> pivot<span class="hl opt">.</span>
+                    rotatedPivot <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span> <span class="hl kwb">shiftNW:</span> rotatedPivot<span class="hl opt">]</span>
+                <span class="hl kwb">ifFalse:</span>
+                    <span class="hl opt">[</span>pivot <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span> <span class="hl kwb">shiftNW:</span> pivot<span class="hl opt">.</span>
+                    rotatedPivot <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span> <span class="hl kwb">shiftW:</span> rotatedPivot<span class="hl opt">].</span>
+            <span class="hl opt">[</span>row <span class="hl kwb">&gt;=</span> <span class="hl opt">(</span>pivot <span class="hl kwb">bitShift:</span> <span class="hl num">1</span><span class="hl opt">)]</span>
+                <span class="hl kwb">whileTrue:</span>
+                    <span class="hl opt">[</span>pivot <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span> <span class="hl kwb">shiftW:</span> pivot<span class="hl opt">.</span>
+                    <span class="hl opt">(</span><span class="hl kwa">self</span> <span class="hl kwb">canShiftSW:</span> rotatedPivot<span class="hl opt">)</span>
+                        <span class="hl kwb">ifFalse:</span>
+                            <span class="hl opt">[</span>rotatedPivot <span class="hl opt">:</span><span class="hl kwb">=</span> rotatedPivot <span class="hl kwb">bitShift:</span> twoRows<span class="hl opt">.</span>
+                            rotatedMask <span class="hl opt">:</span><span class="hl kwb">=</span> rotatedMask <span class="hl kwb">bitShift:</span> twoRows<span class="hl opt">.].</span>
+                    rotatedPivot <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span> <span class="hl kwb">shiftSW:</span> rotatedPivot<span class="hl opt">]].</span>
+    <span class="hl opt">^</span><span class="hl kwa">self</span> <span class="hl kwb">shiftSEmost:</span> rotatedMask<span class="hl opt">!</span>
+
+<span class="hl kwb">canShiftE:</span> aPieceMask
+    <span class="hl opt">^(</span>eastEdge <span class="hl kwb">bitAnd:</span> aPieceMask<span class="hl opt">)</span> <span class="hl kwb">=</span> <span class="hl num">0</span><span class="hl opt">!</span>
+
+<span class="hl kwb">canShiftNW:</span> aPieceMask
+    <span class="hl opt">^(</span>northWestMask <span class="hl kwb">bitAnd:</span> aPieceMask<span class="hl opt">)</span> <span class="hl kwb">=</span> <span class="hl num">0</span><span class="hl opt">!</span>
+
+<span class="hl kwb">shiftSW:</span> aPieceMask
+    <span class="hl kwd">| evens odds |</span>
+    odds <span class="hl opt">:</span><span class="hl kwb">=</span> oddRowsMask <span class="hl kwb">bitAnd:</span> aPieceMask<span class="hl opt">.</span>
+    evens <span class="hl opt">:</span><span class="hl kwb">=</span> evenRowsMask <span class="hl kwb">bitAnd:</span> aPieceMask<span class="hl opt">.</span>
+    <span class="hl opt">^(</span>evens <span class="hl kwb">bitShift:</span> <span class="hl num">1</span><span class="hl opt">)</span> <span class="hl kwb">+</span> odds <span class="hl kwb">bitShift:</span> <span class="hl num">0</span> <span class="hl kwb">-</span> ncol<span class="hl opt">!</span>
+
+<span class="hl kwb">rotationsOf:</span> aPieceMask <span class="hl kwb">do:</span> aBlock
+    <span class="hl kwd">| next |</span>
+    aBlock <span class="hl kwb">value:</span> <span class="hl opt">(</span>next <span class="hl opt">:</span><span class="hl kwb">=</span> aPieceMask<span class="hl opt">);</span> <span class="hl kwb">value:</span> <span class="hl opt">(</span><span class="hl kwa">self</span> <span class="hl kwb">flip:</span> next<span class="hl opt">).</span>
+    <span class="hl num">5</span> <span class="hl kwb">timesRepeat:</span>  <span class="hl opt">[</span>aBlock <span class="hl kwb">value:</span> <span class="hl opt">(</span>next <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span> <span class="hl kwb">rotate:</span> next<span class="hl opt">);</span> <span class="hl kwb">value:</span> <span class="hl opt">(</span><span class="hl kwa">self</span> <span class="hl kwb">flip:</span> next<span class="hl opt">)]! !</span>
+
+<span class="hl opt">!</span><span class="hl kwc">MeteorBoard</span> <span class="hl kwb">methodsFor:</span> <span class="hl str">'initialize-release'</span><span class="hl opt">!</span>
+
+<span class="hl kwb">initializePossiblePositions</span>
+    <span class="hl kwd">| positionsPerPiecePerCell thePieceWhichBreakSymmetry |</span>
+    positionsPerPiecePerCell <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span> <span class="hl kwb">possiblePositionsOnTwoRows</span><span class="hl opt">.</span>
+    thePieceWhichBreakSymmetry <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl num">6</span><span class="hl opt">.</span>
+    positionsPerPiece <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl kwb">to:</span> <span class="hl num">5</span><span class="hl opt">)</span> <span class="hl kwb">collect:</span> <span class="hl opt">[</span><span class="hl kwd">:iRow</span> |
+        <span class="hl kwd">| maxMaskForRow northRow |</span>
+        maxMaskForRow <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl kwb">bitShift:</span> <span class="hl opt">(#(</span><span class="hl num">6 6 6 4 2</span><span class="hl opt">)</span> <span class="hl kwb">at:</span> iRow<span class="hl opt">)</span> <span class="hl kwb">*</span> ncol<span class="hl opt">)</span> <span class="hl kwb">-</span> <span class="hl num">1</span><span class="hl opt">.</span>
+        northRow <span class="hl opt">:</span><span class="hl kwb">=</span>  southEdge <span class="hl kwb">bitShift:</span> <span class="hl opt">((#(</span><span class="hl kwb">-</span><span class="hl num">1</span> <span class="hl kwb">-</span><span class="hl num">1 6 4 2</span><span class="hl opt">)</span> <span class="hl kwb">at:</span> iRow<span class="hl opt">)</span> <span class="hl kwb">-</span> <span class="hl num">1</span> <span class="hl kwb">*</span> ncol<span class="hl opt">).</span>
+        <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl kwb">to:</span> twoRows<span class="hl opt">)</span> <span class="hl kwb">collect:</span> <span class="hl opt">[</span><span class="hl kwd">:cellNumber</span> |
+            <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl kwb">to:</span> pieces <span class="hl kwb">size</span><span class="hl opt">)</span> <span class="hl kwb">collect:</span> <span class="hl opt">[</span><span class="hl kwd">:pieceNumber</span> |
+                <span class="hl kwd">| orientations n str |</span>
+                orientations <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl opt">(</span>positionsPerPiecePerCell <span class="hl kwb">at:</span> pieceNumber<span class="hl opt">)</span> <span class="hl kwb">at:</span> cellNumber<span class="hl opt">.</span>
+                n <span class="hl opt">:</span><span class="hl kwb">=</span> pieceNumber <span class="hl kwb">=</span> thePieceWhichBreakSymmetry <span class="hl kwb">ifTrue:</span> <span class="hl opt">[</span><span class="hl num">6</span><span class="hl opt">]</span> <span class="hl kwb">ifFalse:</span> <span class="hl opt">[</span><span class="hl num">12</span><span class="hl opt">].</span>
+                str <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl opt">(</span><span class="hl kwc">Array</span> <span class="hl kwb">new:</span> n<span class="hl opt">)</span> <span class="hl kwb">writeStream</span><span class="hl opt">.</span>
+                <span class="hl num">1</span> <span class="hl kwb">to:</span> n <span class="hl kwb">do:</span> <span class="hl opt">[</span><span class="hl kwd">:i</span> |
+                    <span class="hl kwd">| aPiece |</span>
+                    aPiece <span class="hl opt">:</span><span class="hl kwb">=</span> orientations <span class="hl kwb">at:</span> i<span class="hl opt">.</span>
+                    <span class="hl opt">(</span>aPiece <span class="hl kwb">mask</span> &gt; <span class="hl num">0</span> <span class="hl kwb">and:</span> <span class="hl opt">[</span>aPiece <span class="hl kwb">mask &lt;=</span> maxMaskForRow<span class="hl opt">])</span>
+                        <span class="hl kwb">ifTrue:</span>
+                            <span class="hl opt">[(</span>iRow <span class="hl kwb">=</span> <span class="hl num">1</span> <span class="hl kwb">and:</span> <span class="hl opt">[</span>cellNumber <span class="hl kwb">&lt;=</span> ncol<span class="hl opt">])</span>
+                                <span class="hl kwb">ifTrue:</span> <span class="hl opt">[(</span><span class="hl kwa">self</span> <span class="hl kwb">hasSouthIsland:</span> aPiece <span class="hl kwb">mask</span><span class="hl opt">)</span>
+                                    <span class="hl kwb">ifFalse:</span> <span class="hl opt">[</span>str <span class="hl kwb">nextPut:</span> <span class="hl opt">(</span><span class="hl kwc">MeteorPiece</span> <span class="hl kwb">mask:</span> aPiece <span class="hl kwb">mask islands:</span> <span class="hl num">0</span><span class="hl opt">)]]</span>
+                                <span class="hl kwb">ifFalse:</span> <span class="hl opt">[(</span>aPiece <span class="hl kwb">mask bitAnd:</span> northRow<span class="hl opt">)</span> &gt; <span class="hl num">0</span>
+                                    <span class="hl kwb">ifTrue:</span> <span class="hl opt">[(</span><span class="hl kwa">self</span> <span class="hl kwb">hasNorthIsland:</span> aPiece <span class="hl kwb">mask row:</span> iRow<span class="hl opt">)</span>
+                                        <span class="hl kwb">ifFalse:</span>
+                                            <span class="hl opt">[</span><span class="hl kwd">| isle |</span>
+                                            isle <span class="hl opt">:</span><span class="hl kwb">=</span> iRow <span class="hl kwb">=</span> <span class="hl num">5</span>
+                                                <span class="hl kwb">ifTrue:</span> <span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]</span>
+                                                <span class="hl kwb">ifFalse:</span> <span class="hl opt">[</span><span class="hl kwa">self</span> <span class="hl kwb">northIslandsFor:</span> aPiece <span class="hl kwb">mask row:</span> iRow<span class="hl opt">].</span>
+                                            str <span class="hl kwb">nextPut:</span> <span class="hl opt">(</span><span class="hl kwc">MeteorPiece</span> <span class="hl kwb">mask:</span> aPiece <span class="hl kwb">mask islands:</span> isle<span class="hl opt">)]]</span>
+                                    <span class="hl kwb">ifFalse:</span> <span class="hl opt">[</span>str <span class="hl kwb">nextPut:</span> aPiece<span class="hl opt">]]]].</span>
+                str <span class="hl kwb">contents</span><span class="hl opt">]]]!</span>
+
+<span class="hl kwb">initializeRowColMasks</span>
+    southEdge <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl kwb">bitShift:</span> ncol<span class="hl opt">)</span> <span class="hl kwb">-</span> <span class="hl num">1</span><span class="hl opt">.</span>
+    southToNorthMasks <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl opt">(</span><span class="hl num">0</span> <span class="hl kwb">to:</span> <span class="hl num">5</span><span class="hl opt">)</span> <span class="hl kwb">collect:</span> <span class="hl opt">[</span><span class="hl kwd">:i</span> | southEdge <span class="hl kwb">bitShift:</span> ncol <span class="hl kwb">*</span> i<span class="hl opt">].</span>
+    eastEdge <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl kwb">bitShift:</span> sixRows<span class="hl opt">)</span><span class="hl kwb">-</span><span class="hl num">1</span><span class="hl kwb">/</span>southEdge<span class="hl opt">.</span>
+    eastToWestMasks <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl opt">(</span><span class="hl num">0</span> <span class="hl kwb">to:</span> ncol <span class="hl kwb">-</span> <span class="hl num">1</span><span class="hl opt">)</span> <span class="hl kwb">collect:</span> <span class="hl opt">[</span><span class="hl kwd">:i</span> | eastEdge <span class="hl kwb">bitShift:</span> i<span class="hl opt">].</span>
+    westEdge <span class="hl opt">:</span><span class="hl kwb">=</span> eastToWestMasks <span class="hl kwb">last</span><span class="hl opt">.</span>
+    oddRowsMask <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl kwb">bitShift:</span> sixRows<span class="hl opt">)</span><span class="hl kwb">-</span><span class="hl num">1</span><span class="hl kwb">/</span><span class="hl opt">((</span><span class="hl num">1</span> <span class="hl kwb">bitShift:</span> twoRows<span class="hl opt">)</span><span class="hl kwb">-</span><span class="hl num">1</span><span class="hl opt">)</span><span class="hl kwb">*</span>southEdge<span class="hl opt">.</span>
+    evenRowsMask <span class="hl opt">:</span><span class="hl kwb">=</span> oddRowsMask <span class="hl kwb">bitShift:</span> ncol<span class="hl opt">.</span>
+    northWestMask <span class="hl opt">:</span><span class="hl kwb">=</span> westEdge <span class="hl kwb">bitAnd:</span> evenRowsMask<span class="hl opt">.</span>
+    northEastMask <span class="hl opt">:</span><span class="hl kwb">=</span> eastEdge <span class="hl kwb">bitAnd:</span> oddRowsMask<span class="hl opt">.</span>
+    southWestMask <span class="hl opt">:</span><span class="hl kwb">=</span> southEdge <span class="hl kwb">bitOr:</span> <span class="hl opt">(</span>westEdge <span class="hl kwb">bitAnd:</span> evenRowsMask<span class="hl opt">).</span>
+    southEastMask <span class="hl opt">:</span><span class="hl kwb">=</span> southEdge <span class="hl kwb">bitOr:</span> <span class="hl opt">(</span>eastEdge <span class="hl kwb">bitAnd:</span> oddRowsMask<span class="hl opt">).!</span>
+
+<span class="hl kwb">fromString:</span> aString
+    <span class="hl kwd">| rawString |</span>
+    rawString <span class="hl opt">:</span><span class="hl kwb">=</span> aString <span class="hl kwb">reject:</span> <span class="hl opt">[</span><span class="hl kwd">:e</span> | e <span class="hl kwb">isSeparator</span><span class="hl opt">].</span>
+    ncell <span class="hl opt">:</span><span class="hl kwb">=</span> rawString <span class="hl kwb">size</span><span class="hl opt">.</span>
+    ncol <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl num">0</span><span class="hl opt">.</span>
+    <span class="hl opt">(</span>aString <span class="hl kwb">readStream upTo:</span> <span class="hl kwc">Character</span> <span class="hl kwb">cr</span><span class="hl opt">)</span> <span class="hl kwb">do:</span> <span class="hl opt">[</span><span class="hl kwd">:e</span> | e <span class="hl kwb">isSeparator ifFalse:</span> <span class="hl opt">[</span>ncol <span class="hl opt">:</span><span class="hl kwb">=</span> ncol <span class="hl kwb">+</span> <span class="hl num">1</span><span class="hl opt">]].</span>
+    twoRows <span class="hl opt">:</span><span class="hl kwb">=</span> ncol <span class="hl kwb">*</span> <span class="hl num">2</span><span class="hl opt">.</span>
+    sixRows <span class="hl opt">:</span><span class="hl kwb">=</span> ncol <span class="hl kwb">*</span> <span class="hl num">6</span><span class="hl opt">.</span>
+    <span class="hl kwa">self</span> <span class="hl kwb">initializeRowColMasks</span><span class="hl opt">.</span>
+    pieces <span class="hl opt">:</span><span class="hl kwb">=</span> rawString <span class="hl kwb">asSet sorted collect:</span> <span class="hl opt">[</span><span class="hl kwd">:char</span> |
+        <span class="hl kwa">self</span> <span class="hl kwb">shiftSEmost:</span>
+            <span class="hl opt">(</span>rawString <span class="hl kwb">inject:</span> <span class="hl num">0</span> <span class="hl kwb">into:</span> <span class="hl opt">[</span><span class="hl kwd">:pmask :c</span> | pmask <span class="hl kwb">*</span> <span class="hl num">2</span> <span class="hl kwb">+</span> <span class="hl opt">(</span>c <span class="hl kwb">=</span> char <span class="hl kwb">ifTrue:</span> <span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]</span> <span class="hl kwb">ifFalse:</span> <span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">])])].</span>
+    <span class="hl kwa">self</span> <span class="hl kwb">initializePossiblePositions</span><span class="hl opt">! !</span>
+
+<span class="hl opt">!</span><span class="hl kwc">MeteorBoard</span> <span class="hl kwb">methodsFor:</span> <span class="hl str">'printing'</span><span class="hl opt">!</span>
+
+<span class="hl kwb">printSolution:</span> aString <span class="hl kwb">on:</span> aStream
+    <span class="hl kwd">| src i odd |</span>
+    src <span class="hl opt">:</span><span class="hl kwb">=</span> aString <span class="hl kwb">readStream</span><span class="hl opt">.</span>
+    i <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl num">0</span><span class="hl opt">.</span> odd <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">true</span><span class="hl opt">.</span>
+    <span class="hl opt">[</span>src <span class="hl kwb">atEnd</span><span class="hl opt">]</span>
+        <span class="hl kwb">whileFalse:</span>
+            <span class="hl opt">[</span>aStream <span class="hl kwb">nextPut:</span> src <span class="hl kwb">next</span><span class="hl opt">;</span> <span class="hl kwb">space</span><span class="hl opt">.</span>
+            <span class="hl opt">(</span>i <span class="hl opt">:</span><span class="hl kwb">=</span> i <span class="hl kwb">+</span> <span class="hl num">1</span> <span class="hl esc">\\</span> <span class="hl kwb">ncol</span><span class="hl opt">)</span> <span class="hl kwb">=</span> <span class="hl num">0</span>
+                <span class="hl kwb">ifTrue:</span>
+                    <span class="hl opt">[</span>aStream <span class="hl kwb">nl</span><span class="hl opt">.</span>
+                    <span class="hl opt">(</span>odd <span class="hl opt">:</span><span class="hl kwb">=</span> odd <span class="hl kwb">not</span><span class="hl opt">)</span>  <span class="hl kwb">ifFalse:</span> <span class="hl opt">[</span>aStream <span class="hl kwb">space</span><span class="hl opt">]]]! !</span>
+
+<span class="hl opt">!</span><span class="hl kwc">MeteorBoard</span> <span class="hl kwb">methodsFor:</span> <span class="hl str">'solving'</span><span class="hl opt">!</span>
+
+<span class="hl kwb">solvedPuzzleDo:</span> solutionBlock
+    loopCount <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl num">0</span><span class="hl opt">.</span>
+    <span class="hl kwa">self</span>
+        <span class="hl kwb">searchPuzzlesWithColorMask:</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl kwb">bitShift:</span> pieces <span class="hl kwb">size</span><span class="hl opt">)</span> <span class="hl kwb">-</span> <span class="hl num">1</span>
+        <span class="hl kwb">boardMask:</span> <span class="hl num">0</span>
+        <span class="hl kwb">rowOffset:</span> <span class="hl num">0</span>
+        <span class="hl kwb">pieces:</span> pieces <span class="hl kwb">copy</span>
+        <span class="hl kwb">ifFound:</span> <span class="hl opt">[</span><span class="hl kwd">:solution</span> |
+            solutionBlock <span class="hl kwb">value:</span> solution<span class="hl opt">;</span> <span class="hl kwb">value:</span> solution <span class="hl kwb">reverse</span><span class="hl opt">].</span>
+    <span class="hl opt">^</span>loopCount<span class="hl opt">!</span>
+
+<span class="hl kwb">boardStringWithPieces:</span> pArray
+    <span class="hl kwd">| board |</span>
+    board <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwc">String</span> <span class="hl kwb">new:</span> ncell<span class="hl opt">.</span>
+    <span class="hl num">1</span> <span class="hl kwb">to:</span> pArray <span class="hl kwb">size do:</span> <span class="hl opt">[</span><span class="hl kwd">:i</span> | <span class="hl kwd">| c |</span>
+        c <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl str">'0123456789*'</span> <span class="hl kwb">at:</span> i<span class="hl opt">.</span>
+        <span class="hl opt">(</span>pArray <span class="hl kwb">at:</span> i<span class="hl opt">)</span> <span class="hl kwb">fillSolution:</span> board <span class="hl kwb">ncol:</span> ncol <span class="hl kwb">withColor:</span> c<span class="hl opt">].</span>
+    <span class="hl opt">^</span>board<span class="hl opt">!</span>
+
+<span class="hl kwb">searchPuzzlesWithColorMask:</span> colorMask <span class="hl kwb">boardMask:</span> bMask <span class="hl kwb">rowOffset:</span> rowOff <span class="hl kwb">pieces:</span> pArray <span class="hl kwb">ifFound:</span> solutionBlock
+    <span class="hl kwd">| nextFreeCell possibles colorBit iRow boardMask |</span>
+    colorMask <span class="hl kwb">=</span> <span class="hl num">0</span> <span class="hl kwb">ifTrue:</span> <span class="hl opt">[ ^</span>solutionBlock <span class="hl kwb">value:</span> <span class="hl opt">(</span><span class="hl kwa">self</span> <span class="hl kwb">boardStringWithPieces:</span> pieces<span class="hl opt">) ].</span>
+    loopCount <span class="hl opt">:</span><span class="hl kwb">=</span> loopCount <span class="hl kwb">+</span> <span class="hl num">1</span><span class="hl opt">.</span>
+    boardMask <span class="hl opt">:</span><span class="hl kwb">=</span> bMask<span class="hl opt">.</span>
+    iRow <span class="hl opt">:</span><span class="hl kwb">=</span> rowOff<span class="hl opt">.</span>
+    <span class="hl opt">[(</span>nextFreeCell <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl opt">(</span>boardMask <span class="hl kwb">+</span> <span class="hl num">1</span><span class="hl opt">)</span> <span class="hl kwb">lowBit</span><span class="hl opt">)</span> &gt; <span class="hl kwb">twoRows</span><span class="hl opt">]</span>
+        <span class="hl kwb">whileTrue:</span>
+            <span class="hl opt">[</span> iRow <span class="hl opt">:</span><span class="hl kwb">=</span> iRow <span class="hl kwb">+</span> <span class="hl num">2</span><span class="hl opt">.</span>
+            boardMask <span class="hl opt">:</span><span class="hl kwb">=</span> boardMask <span class="hl kwb">bitShift:</span> <span class="hl num">0</span> <span class="hl kwb">-</span> twoRows <span class="hl opt">].</span>
+    possibles <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl opt">(</span>positionsPerPiece <span class="hl kwb">at:</span> iRow <span class="hl kwb">//</span> <span class="hl num">2</span> <span class="hl kwb">+</span> <span class="hl num">1</span><span class="hl opt">)</span> <span class="hl kwb">at:</span> nextFreeCell<span class="hl opt">.</span>
+    colorBit <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl num">1</span><span class="hl opt">.</span>
+    <span class="hl num">1</span> <span class="hl kwb">to:</span> pieces <span class="hl kwb">size do:</span> <span class="hl opt">[</span><span class="hl kwd">:pieceNumber</span> |
+        <span class="hl opt">(</span>colorMask <span class="hl kwb">bitAnd:</span> colorBit<span class="hl opt">)</span> <span class="hl kwb">=</span> <span class="hl num">0</span>
+            <span class="hl kwb">ifFalse:</span>
+                <span class="hl opt">[</span> <span class="hl kwd">| positions |</span>
+                positions <span class="hl opt">:</span><span class="hl kwb">=</span> possibles <span class="hl kwb">at:</span> pieceNumber<span class="hl opt">.</span>
+                <span class="hl num">1</span> <span class="hl kwb">to:</span> positions <span class="hl kwb">size do:</span> <span class="hl opt">[</span><span class="hl kwd">:i</span> |
+                    <span class="hl kwd">| aPiece |</span>
+                    <span class="hl opt">((</span>aPiece <span class="hl opt">:</span><span class="hl kwb">=</span> positions <span class="hl kwb">at:</span> i<span class="hl opt">)</span> <span class="hl kwb">fitOnBoard:</span> boardMask<span class="hl opt">)</span>
+                        <span class="hl kwb">ifTrue:</span>
+                            <span class="hl opt">[</span>pieces <span class="hl kwb">at:</span> pieceNumber <span class="hl kwb">put:</span> <span class="hl opt">(</span>aPiece <span class="hl kwb">forRow:</span> iRow<span class="hl opt">).</span>
+                            <span class="hl kwa">self</span>
+                                <span class="hl kwb">searchPuzzlesWithColorMask:</span> colorMask <span class="hl kwb">-</span> colorBit
+                                <span class="hl kwb">boardMask:</span> boardMask <span class="hl kwb">+</span> aPiece <span class="hl kwb">mask</span>
+                                <span class="hl kwb">rowOffset:</span> iRow
+                                <span class="hl kwb">pieces:</span> pArray
+                                <span class="hl kwb">ifFound:</span> solutionBlock<span class="hl opt">]]].</span>
+        colorBit <span class="hl opt">:</span><span class="hl kwb">=</span> colorBit <span class="hl kwb">*</span> <span class="hl num">2</span><span class="hl opt">].</span>
+    <span class="hl opt">^</span><span class="hl kwa">nil</span><span class="hl opt">! !</span>
+
+
+<span class="hl opt">!</span><span class="hl kwc">MeteorPieceWithIsland</span> <span class="hl kwb">methodsFor:</span> <span class="hl str">'testing'</span><span class="hl opt">!</span>
+
+<span class="hl kwb">fitOnBoard:</span> aBoardMask
+    <span class="hl kwd">| occupied |</span>
+    <span class="hl opt">^</span><span class="hl num">0</span> <span class="hl kwb">==</span> <span class="hl opt">(</span>aBoardMask <span class="hl kwb">bitAnd:</span> mask<span class="hl opt">)</span> <span class="hl kwb">and:</span>
+        <span class="hl opt">[(</span>occupied <span class="hl opt">:</span><span class="hl kwb">=</span> aBoardMask <span class="hl kwb">bitAnd:</span> islands<span class="hl opt">)</span> <span class="hl kwb">=</span> islands
+            <span class="hl kwb">or:</span> <span class="hl opt">[</span>aPieceCouldFitIntoIsland <span class="hl kwb">and:</span> <span class="hl opt">[(</span>islands <span class="hl kwb">-</span> occupied<span class="hl opt">)</span> <span class="hl kwb">bitCount =</span> <span class="hl num">5</span><span class="hl opt">]]]! !</span>
+
+<span class="hl opt">!</span><span class="hl kwc">MeteorPieceWithIsland</span> <span class="hl kwb">methodsFor:</span> <span class="hl str">'initialize-release'</span><span class="hl opt">!</span>
+
+<span class="hl kwb">islands:</span> islandMask
+    islands <span class="hl opt">:</span><span class="hl kwb">=</span> islandMask<span class="hl opt">.</span>
+    aPieceCouldFitIntoIsland <span class="hl opt">:</span><span class="hl kwb">=</span> islands <span class="hl kwb">bitCount &gt;=</span> <span class="hl num">5</span><span class="hl opt">! !</span>
+
+
+<span class="hl opt">!</span><span class="hl kwc">Tests</span> <span class="hl kwb">class methodsFor:</span> <span class="hl str">'benchmark scripts'</span><span class="hl opt">!</span>
+
+<span class="hl kwb">meteor</span>
+    <span class="hl kwa">self</span> <span class="hl kwb">meteor:</span> <span class="hl kwa">self</span> <span class="hl kwb">arg to:</span> <span class="hl kwa">self</span> <span class="hl kwb">stdout</span><span class="hl opt">.</span>
+    <span class="hl opt">^</span><span class="hl str">''</span><span class="hl opt">! !</span>
+
+<span class="hl opt">!</span><span class="hl kwc">Tests</span> <span class="hl kwb">class methodsFor:</span> <span class="hl str">'benchmarking'</span><span class="hl opt">!</span>
+
+<span class="hl kwb">meteor:</span> nMax <span class="hl kwb">to:</span> outputStream
+    <span class="hl kwd">| board count minSolution maxSolution |</span>
+    count <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl num">0</span><span class="hl opt">.</span>
+    minSolution <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwc">String</span> <span class="hl kwb">new:</span> <span class="hl num">50</span> <span class="hl kwb">withAll:</span> <span class="hl num">$9</span><span class="hl opt">.</span>
+    maxSolution <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwc">String</span> <span class="hl kwb">new:</span> <span class="hl num">50</span> <span class="hl kwb">withAll:</span> <span class="hl num">$0</span><span class="hl opt">.</span>
+    <span class="hl opt">(</span>board <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwc">MeteorBoard</span> <span class="hl kwb">default</span><span class="hl opt">)</span> <span class="hl kwb">solvedPuzzleDo:</span>
+        <span class="hl opt">[</span><span class="hl kwd">:aString</span> |
+            count <span class="hl opt">:</span><span class="hl kwb">=</span> count <span class="hl kwb">+</span> <span class="hl num">1</span><span class="hl opt">.</span>
+            aString &lt; <span class="hl kwb">minSolution ifTrue:</span> <span class="hl opt">[</span>minSolution <span class="hl opt">:</span><span class="hl kwb">=</span> aString<span class="hl opt">].</span>
+            aString &gt; <span class="hl kwb">maxSolution ifTrue:</span> <span class="hl opt">[</span>maxSolution <span class="hl opt">:</span><span class="hl kwb">=</span> aString<span class="hl opt">]].</span> 
+    outputStream <span class="hl kwb">print:</span> count<span class="hl opt">;</span> <span class="hl kwb">nextPutAll:</span> <span class="hl str">' solutions found'</span><span class="hl opt">;</span> <span class="hl kwb">nl</span><span class="hl opt">;</span> <span class="hl kwb">nl</span><span class="hl opt">.</span>
+    board <span class="hl kwb">printSolution:</span> minSolution <span class="hl kwb">on:</span> outputStream<span class="hl opt">.</span>
+    outputStream <span class="hl kwb">nl</span><span class="hl opt">.</span>
+    board <span class="hl kwb">printSolution:</span> maxSolution <span class="hl kwb">on:</span> outputStream<span class="hl opt">.</span>
+    outputStream <span class="hl kwb">nl</span><span class="hl opt">.! !</span>
+
+
+<span class="hl opt">!</span><span class="hl kwc">Core</span><span class="hl opt">.</span><span class="hl kwc">Integer</span> <span class="hl kwb">methodsFor:</span> <span class="hl str">'bit manipulation'</span><span class="hl opt">!</span>
+
+<span class="hl kwb">bitCount</span>
+    <span class="hl kwd">| count remainder |</span>
+    count <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl num">0</span><span class="hl opt">.</span>
+    remainder <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span><span class="hl opt">.</span>
+    <span class="hl opt">[</span>count <span class="hl opt">:</span><span class="hl kwb">=</span> count <span class="hl kwb">+</span> <span class="hl opt">(</span>remainder <span class="hl kwb">bitAnd:</span> <span class="hl num">255</span><span class="hl opt">)</span> <span class="hl kwb">bitCountOfByte</span><span class="hl opt">.</span>
+    remainder &gt; <span class="hl num">255</span><span class="hl opt">]</span>
+        <span class="hl kwb">whileTrue:</span>
+            <span class="hl opt">[</span>remainder <span class="hl opt">:</span><span class="hl kwb">=</span> remainder <span class="hl kwb">bitShift: -</span><span class="hl num">8</span><span class="hl opt">].</span>
+    <span class="hl opt">^</span>count<span class="hl opt">!</span>
+
+<span class="hl kwb">bitReverse:</span> highBit 
+    <span class="hl kwd">| v r s |</span>
+    highBit &lt; <span class="hl kwa">self</span> <span class="hl kwb">highBit ifTrue:</span> <span class="hl opt">[</span> <span class="hl kwa">self</span> <span class="hl kwb">error:</span> <span class="hl str">'Not enough bits.'</span> <span class="hl opt">].</span>
+    v <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span><span class="hl opt">.</span>
+    r <span class="hl opt">:</span><span class="hl kwb">=</span> v <span class="hl kwb">bitAnd:</span> <span class="hl num">1</span><span class="hl opt">.</span>
+    s <span class="hl opt">:</span><span class="hl kwb">=</span> highBit <span class="hl kwb">-</span> <span class="hl num">1</span><span class="hl opt">.</span>
+    <span class="hl opt">[</span> v <span class="hl opt">:</span><span class="hl kwb">=</span> v <span class="hl kwb">bitShift: -</span><span class="hl num">1</span><span class="hl opt">.</span>
+    v <span class="hl kwb">=</span> <span class="hl num">0</span> <span class="hl opt">]</span> <span class="hl kwb">whileFalse:</span>
+        <span class="hl opt">[</span> r <span class="hl opt">:</span><span class="hl kwb">=</span> r <span class="hl kwb">bitShift:</span> <span class="hl num">1</span><span class="hl opt">.</span>
+        r <span class="hl opt">:</span><span class="hl kwb">=</span> r <span class="hl kwb">bitOr:</span> <span class="hl opt">(</span>v <span class="hl kwb">bitAnd:</span> <span class="hl num">1</span><span class="hl opt">).</span>
+        s <span class="hl opt">:</span><span class="hl kwb">=</span> s <span class="hl kwb">-</span> <span class="hl num">1</span> <span class="hl opt">].</span>
+    <span class="hl opt">^</span> <span class="hl kwb">r bitShift:</span> s<span class="hl opt">!</span>
+
+<span class="hl kwb">bitsDo:</span> aBlock
+    <span class="hl kwd">| mask |</span>
+    <span class="hl kwa">self</span> &lt; <span class="hl num">0</span> <span class="hl kwb">ifTrue:</span> <span class="hl opt">[^</span><span class="hl kwa">self</span> <span class="hl kwb">error:</span> <span class="hl str">'Cannot enumerate bits of a negative integer'</span><span class="hl opt">].</span>
+    mask <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span><span class="hl opt">.</span>
+    <span class="hl opt">[</span>mask <span class="hl kwb">=</span> <span class="hl num">0</span><span class="hl opt">]</span>
+        <span class="hl kwb">whileFalse:</span>
+            <span class="hl opt">[</span>aBlock <span class="hl kwb">value:</span> mask <span class="hl kwb">lowBit</span><span class="hl opt">.</span>
+            mask <span class="hl opt">:</span><span class="hl kwb">=</span> mask <span class="hl kwb">bitAnd:</span> mask <span class="hl kwb">-</span> <span class="hl num">1</span><span class="hl opt">]! !</span>
+
+
+<span class="hl opt">!</span><span class="hl kwc">Core</span><span class="hl opt">.</span><span class="hl kwc">SmallInteger</span> <span class="hl kwb">methodsFor:</span> <span class="hl str">'bit manipulation'</span><span class="hl opt">!</span>
+
+<span class="hl kwb">bitCountOfByte</span>
+    <span class="hl com">&quot;Count the number of bits set to 1 in a byte.&quot;</span>
+
+    <span class="hl opt">^#[</span><span class="hl num">0 1 1 2 1 2 2 3 1 2 2 3 2 3 3 4</span>
+       <span class="hl num">1 2 2 3 2 3 3 4 2 3 3 4 3 4 4 5</span>
+       <span class="hl num">1 2 2 3 2 3 3 4 2 3 3 4 3 4 4 5</span>
+       <span class="hl num">2 3 3 4 3 4 4 5 3 4 4 5 4 5 5 6</span>
+       <span class="hl num">1 2 2 3 2 3 3 4 2 3 3 4 3 4 4 5</span>
+       <span class="hl num">2 3 3 4 3 4 4 5 3 4 4 5 4 5 5 6</span>
+       <span class="hl num">2 3 3 4 3 4 4 5 3 4 4 5 4 5 5 6</span>
+       <span class="hl num">3 4 4 5 4 5 5 6 4 5 5 6 5 6 6 7</span>
+       <span class="hl num">1 2 2 3 2 3 3 4 2 3 3 4 3 4 4 5</span>
+       <span class="hl num">2 3 3 4 3 4 4 5 3 4 4 5 4 5 5 6</span>
+       <span class="hl num">2 3 3 4 3 4 4 5 3 4 4 5 4 5 5 6</span>
+       <span class="hl num">3 4 4 5 4 5 5 6 4 5 5 6 5 6 6 7</span>
+       <span class="hl num">2 3 3 4 3 4 4 5 3 4 4 5 4 5 5 6</span>
+       <span class="hl num">3 4 4 5 4 5 5 6 4 5 5 6 5 6 6 7</span>
+       <span class="hl num">3 4 4 5 4 5 5 6 4 5 5 6 5 6 6 7</span>
+       <span class="hl num">4 5 5 6 5 6 6 7 5 6 6 7 6 7 7 8</span><span class="hl opt">]</span> <span class="hl kwb">at:</span> <span class="hl kwa">self</span> <span class="hl kwb">+</span> <span class="hl num">1</span>
+
+    <span class="hl com">&quot;Evaluate this expression to form above byte array:</span>
+<span class="hl com">    ((0 to: 255)</span>
+<span class="hl com">        collect: [:i | </span>
+<span class="hl com">            | bitCount n |</span>
+<span class="hl com">            n := i.</span>
+<span class="hl com">            bitCount := 0.</span>
+<span class="hl com">            [n = 0]</span>
+<span class="hl com">                whileFalse:</span>
+<span class="hl com">                    [bitCount := bitCount + 1.</span>
+<span class="hl com">                    n := n bitAnd: n - 1].</span>
+<span class="hl com">            bitCount]</span>
+<span class="hl com">        as: ByteArray)&quot;</span><span class="hl opt">!</span>
+
+<span class="hl kwb">byteReversed</span>
+    <span class="hl com">&quot;Answer the receiver with bits reversed in a byte.</span>
+<span class="hl com">    The receiver must be between 0 and 255.</span>
+<span class="hl com">    The constant has been obtained by this snippet:</span>
+<span class="hl com">    (0 to: 255) collect: [:e |</span>
+<span class="hl com">        | r |</span>
+<span class="hl com">        r := ((e bitAnd: 2r11110000) bitShift: -4) + ((e bitAnd: 2r00001111) bitShift: 4).</span>
+<span class="hl com">        r := ((r bitAnd: 2r11001100) bitShift: -2) + ((r bitAnd: 2r00110011) bitShift: 2).</span>
+<span class="hl com">        ((r bitAnd: 2r10101010) bitShift: -1) + ((r bitAnd: 2r01010101) bitShift: 1).] as: ByteArray&quot;</span>
+    
+    <span class="hl opt">^#[</span>  <span class="hl num">0 128  64 192  32 160  96 224  16 144  80 208  48 176 112 240</span>
+         <span class="hl num">8 136  72 200  40 168 104 232  24 152  88 216  56 184 120 248</span>
+         <span class="hl num">4 132  68 196  36 164 100 228  20 148  84 212  52 180 116 244</span>
+        <span class="hl num">12 140  76 204  44 172 108 236  28 156  92 220  60 188 124 252</span>
+         <span class="hl num">2 130  66 194  34 162  98 226  18 146  82 210  50 178 114 242</span>
+        <span class="hl num">10 138  74 202  42 170 106 234  26 154  90 218  58 186 122 250</span>
+         <span class="hl num">6 134  70 198  38 166 102 230  22 150  86 214  54 182 118 246</span>
+        <span class="hl num">14 142  78 206  46 174 110 238  30 158  94 222  62 190 126 254</span>
+         <span class="hl num">1 129  65 193  33 161  97 225  17 145  81 209  49 177 113 241</span>
+         <span class="hl num">9 137  73 201  41 169 105 233  25 153  89 217  57 185 121 249</span>
+         <span class="hl num">5 133  69 197  37 165 101 229  21 149  85 213  53 181 117 245</span>
+        <span class="hl num">13 141  77 205  45 173 109 237  29 157  93 221  61 189 125 253</span>
+         <span class="hl num">3 131  67 195  35 163  99 227  19 147  83 211  51 179 115 243</span>
+        <span class="hl num">11 139  75 203  43 171 107 235  27 155  91 219  59 187 123 251</span>
+         <span class="hl num">7 135  71 199  39 167 103 231  23 151  87 215  55 183 119 247</span>
+        <span class="hl num">15 143  79 207  47 175 111 239  31 159  95 223  63 191 127 255</span><span class="hl opt">]</span> <span class="hl kwb">at:</span> <span class="hl num">1</span> <span class="hl kwb">+</span> <span class="hl kwa">self</span><span class="hl opt">! !</span>
+
+
+<span class="hl opt">!</span><span class="hl kwc">Core</span><span class="hl opt">.</span><span class="hl kwc">LargePositiveInteger</span> <span class="hl kwb">methodsFor:</span> <span class="hl str">'bit manipulation'</span><span class="hl opt">!</span>
+
+<span class="hl kwb">bitReverse:</span> highBit 
+    <span class="hl com">&quot;This implementation is faster than super&quot;</span>
+    
+    <span class="hl kwd">| digitSize reversed |</span>
+    highBit &lt; <span class="hl kwa">self</span> <span class="hl kwb">highBit ifTrue:</span> <span class="hl opt">[</span> <span class="hl kwa">self</span> <span class="hl kwb">error:</span> <span class="hl str">'Not enough bits.'</span> <span class="hl opt">].</span>
+    digitSize <span class="hl opt">:</span><span class="hl kwb">=</span> highBit <span class="hl kwb">+</span> <span class="hl num">7</span> <span class="hl kwb">//</span> <span class="hl num">8</span><span class="hl opt">.</span>
+    reversed <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span> <span class="hl kwb">class basicNew:</span> digitSize<span class="hl opt">.</span>
+    <span class="hl num">1</span> <span class="hl kwb">to:</span> <span class="hl kwa">self</span> <span class="hl kwb">digitLength do:</span> <span class="hl opt">[</span><span class="hl kwd">:i</span> |
+        reversed <span class="hl kwb">digitAt:</span> digitSize <span class="hl kwb">+</span> <span class="hl num">1</span> <span class="hl kwb">-</span> i <span class="hl kwb">put:</span> <span class="hl opt">(</span><span class="hl kwa">self</span> <span class="hl kwb">digitAt:</span> i<span class="hl opt">)</span> <span class="hl kwb">byteReversed</span><span class="hl opt">].</span>
+    <span class="hl opt">^</span>reversed <span class="hl kwb">bitShift:</span> highBit <span class="hl kwb">-</span> <span class="hl opt">(</span>digitSize <span class="hl kwb">*</span> <span class="hl num">8</span><span class="hl opt">)!</span>
+
+<span class="hl kwb">bitsDo:</span> aBlock
+    <span class="hl kwd">| mask offset |</span>
+    <span class="hl num">1</span> <span class="hl kwb">to:</span> <span class="hl kwa">self</span> <span class="hl kwb">digitLength do:</span> <span class="hl opt">[</span><span class="hl kwd">:iByte</span> |
+        offset <span class="hl opt">:</span><span class="hl kwb">=</span> iByte <span class="hl kwb">-</span> <span class="hl num">1</span> <span class="hl kwb">bitShift:</span> <span class="hl num">3</span><span class="hl opt">.</span>
+        mask <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl kwa">self</span> <span class="hl kwb">digitAt:</span> iByte<span class="hl opt">.</span>
+        <span class="hl opt">[</span>mask <span class="hl kwb">=</span> <span class="hl num">0</span><span class="hl opt">]</span>
+            <span class="hl kwb">whileFalse:</span>
+                <span class="hl opt">[</span>aBlock <span class="hl kwb">value:</span> mask <span class="hl kwb">lowBit +</span> offset<span class="hl opt">.</span>
+                mask <span class="hl opt">:</span><span class="hl kwb">=</span> mask <span class="hl kwb">bitAnd:</span> mask <span class="hl kwb">-</span> <span class="hl num">1</span><span class="hl opt">]]!</span>
+
+<span class="hl kwb">bitCount</span>
+    <span class="hl com">&quot;Count the number of bits set to 1 in self&quot;</span>
+
+    <span class="hl kwd">| bitCount |</span>
+    bitCount <span class="hl opt">:</span><span class="hl kwb">=</span> <span class="hl num">0</span><span class="hl opt">.</span>
+    <span class="hl num">1</span> <span class="hl kwb">to:</span> <span class="hl kwa">self</span> <span class="hl kwb">digitLength do:</span> <span class="hl opt">[</span><span class="hl kwd">:i</span> |
+        bitCount <span class="hl opt">:</span><span class="hl kwb">=</span> bitCount <span class="hl kwb">+</span> <span class="hl opt">(</span><span class="hl kwa">self</span> <span class="hl kwb">digitAt:</span> i<span class="hl opt">)</span> <span class="hl kwb">bitCountOfByte</span><span class="hl opt">].</span>
+    <span class="hl opt">^</span>bitCount<span class="hl opt">! !</span>
+

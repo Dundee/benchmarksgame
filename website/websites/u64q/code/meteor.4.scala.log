@@ -1,0 +1,22 @@
+
+Wed, 12 Dec 2012 19:15:15 GMT
+
+MAKE:
+mv meteor.scala-4.scala meteor.scala
+/usr/local/src/scala-2.10.0-RC5/bin/scalac -optimise meteor.scala
+meteor.scala:157: error: value findIndexOf is not a member of Array[BoardCell]
+   def firstEmptyCellIndex() = cells.findIndexOf(c => c.isEmpty)
+                                     ^
+one error found
+make: [meteor.scala-4.scala_run] Error 1 (ignored)
+4.65s to complete and log all make actions
+
+COMMAND LINE:
+ /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0-RC5/lib/scala-library.jar meteor 2098
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Error: Could not find or load main class meteor

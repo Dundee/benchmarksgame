@@ -1,0 +1,206 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * contributed by Brian Anderson</span>
+<span class="hl com"> */</span>
+
+import io<span class="hl opt">::</span>reader_util<span class="hl opt">;</span>
+
+use std<span class="hl opt">;</span>
+import std<span class="hl opt">::</span>map<span class="hl opt">;</span>
+import std<span class="hl opt">::</span>map<span class="hl opt">::</span>hashmap<span class="hl opt">;</span>
+import std<span class="hl opt">::</span>sort<span class="hl opt">;</span>
+
+fn <span class="hl kwd">print_complements</span><span class="hl opt">() {</span>
+   let all <span class="hl opt">= ~[</span>Blue<span class="hl opt">,</span> Red<span class="hl opt">,</span> Yellow<span class="hl opt">];</span>
+   <span class="hl kwa">for</span> vec<span class="hl opt">::</span><span class="hl kwd">each</span><span class="hl opt">(</span>all<span class="hl opt">) |</span>aa<span class="hl opt">| {</span>
+      <span class="hl kwa">for</span> vec<span class="hl opt">::</span><span class="hl kwd">each</span><span class="hl opt">(</span>all<span class="hl opt">) |</span>bb<span class="hl opt">| {</span>
+         io<span class="hl opt">::</span><span class="hl kwd">println</span><span class="hl opt">(</span><span class="hl kwd">show_color</span><span class="hl opt">(</span>aa<span class="hl opt">) +</span> <span class="hl str">&quot; + &quot;</span> <span class="hl opt">+</span> <span class="hl kwd">show_color</span><span class="hl opt">(</span>bb<span class="hl opt">) +</span>
+            <span class="hl str">&quot; -&gt; &quot;</span> <span class="hl opt">+</span> <span class="hl kwd">show_color</span><span class="hl opt">(</span><span class="hl kwd">transform</span><span class="hl opt">(</span>aa<span class="hl opt">,</span>bb<span class="hl opt">)));</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">enum</span> color <span class="hl opt">{</span> Red<span class="hl opt">,</span> Yellow<span class="hl opt">,</span> Blue <span class="hl opt">}</span>
+
+type creature_info <span class="hl opt">= {</span> name<span class="hl opt">:</span> uint<span class="hl opt">,</span> color<span class="hl opt">:</span> color <span class="hl opt">};</span>
+
+fn <span class="hl kwd">show_color</span><span class="hl opt">(</span>cc<span class="hl opt">:</span> color<span class="hl opt">) -&gt;</span> str <span class="hl opt">{</span>
+   <span class="hl kwd">alt</span> <span class="hl opt">(</span>cc<span class="hl opt">) {</span>
+      Red <span class="hl opt">{</span><span class="hl str">&quot;red&quot;</span><span class="hl opt">}</span>
+      Yellow <span class="hl opt">{</span><span class="hl str">&quot;yellow&quot;</span><span class="hl opt">}</span>
+      Blue <span class="hl opt">{</span><span class="hl str">&quot;blue&quot;</span><span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+fn <span class="hl kwd">show_color_list</span><span class="hl opt">(</span>set<span class="hl opt">: ~[</span>color<span class="hl opt">]) -&gt;</span> str <span class="hl opt">{</span>
+   let mut out <span class="hl opt">=</span> <span class="hl str">&quot;&quot;</span><span class="hl opt">;</span>
+   <span class="hl kwa">for</span> vec<span class="hl opt">::</span><span class="hl kwd">eachi</span><span class="hl opt">(</span>set<span class="hl opt">) |</span>_ii<span class="hl opt">,</span> col<span class="hl opt">| {</span>
+      out <span class="hl opt">+=</span> <span class="hl str">&quot; &quot;</span><span class="hl opt">;</span>
+      out <span class="hl opt">+=</span> <span class="hl kwd">show_color</span><span class="hl opt">(</span>col<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+   ret out<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+fn <span class="hl kwd">show_digit</span><span class="hl opt">(</span>nn<span class="hl opt">:</span> uint<span class="hl opt">) -&gt;</span> str <span class="hl opt">{</span>
+   <span class="hl kwd">alt</span> <span class="hl opt">(</span>nn<span class="hl opt">) {</span>
+      <span class="hl num">0</span> <span class="hl opt">{</span><span class="hl str">&quot;zero&quot;</span><span class="hl opt">}</span>
+      <span class="hl num">1</span> <span class="hl opt">{</span><span class="hl str">&quot;one&quot;</span><span class="hl opt">}</span>
+      <span class="hl num">2</span> <span class="hl opt">{</span><span class="hl str">&quot;two&quot;</span><span class="hl opt">}</span>
+      <span class="hl num">3</span> <span class="hl opt">{</span><span class="hl str">&quot;three&quot;</span><span class="hl opt">}</span>
+      <span class="hl num">4</span> <span class="hl opt">{</span><span class="hl str">&quot;four&quot;</span><span class="hl opt">}</span>
+      <span class="hl num">5</span> <span class="hl opt">{</span><span class="hl str">&quot;five&quot;</span><span class="hl opt">}</span>
+      <span class="hl num">6</span> <span class="hl opt">{</span><span class="hl str">&quot;six&quot;</span><span class="hl opt">}</span>
+      <span class="hl num">7</span> <span class="hl opt">{</span><span class="hl str">&quot;seven&quot;</span><span class="hl opt">}</span>
+      <span class="hl num">8</span> <span class="hl opt">{</span><span class="hl str">&quot;eight&quot;</span><span class="hl opt">}</span>
+      <span class="hl num">9</span> <span class="hl opt">{</span><span class="hl str">&quot;nine&quot;</span><span class="hl opt">}</span>
+      _ <span class="hl opt">{</span>fail <span class="hl str">&quot;expected digits from 0 to 9...&quot;</span><span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+fn <span class="hl kwd">show_number</span><span class="hl opt">(</span>nn<span class="hl opt">:</span> uint<span class="hl opt">) -&gt;</span> str <span class="hl opt">{</span>
+   let mut out <span class="hl opt">=</span> <span class="hl str">&quot;&quot;</span><span class="hl opt">;</span>
+   let mut num <span class="hl opt">=</span> nn<span class="hl opt">;</span>
+   let mut dig<span class="hl opt">;</span>
+
+   <span class="hl kwa">if</span> num <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl opt">{</span> out <span class="hl opt">=</span> <span class="hl kwd">show_digit</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">) };</span>
+
+   <span class="hl kwa">while</span> num <span class="hl opt">!=</span> <span class="hl num">0</span> <span class="hl opt">{</span>
+      dig <span class="hl opt">=</span> num <span class="hl opt">%</span> <span class="hl num">10</span><span class="hl opt">;</span>
+      num <span class="hl opt">=</span> num <span class="hl opt">/</span> <span class="hl num">10</span><span class="hl opt">;</span>
+      out <span class="hl opt">=</span> <span class="hl kwd">show_digit</span><span class="hl opt">(</span>dig<span class="hl opt">) +</span> <span class="hl str">&quot; &quot;</span> <span class="hl opt">+</span> out<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   ret out<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+fn <span class="hl kwd">transform</span><span class="hl opt">(</span>aa<span class="hl opt">:</span> color<span class="hl opt">,</span> bb<span class="hl opt">:</span> color<span class="hl opt">) -&gt;</span> color <span class="hl opt">{</span>
+   <span class="hl kwd">alt</span> <span class="hl opt">(</span>aa<span class="hl opt">,</span> bb<span class="hl opt">) {</span>
+      <span class="hl opt">(</span>Red<span class="hl opt">,</span> Red <span class="hl opt">) {</span> Red <span class="hl opt">}</span>
+      <span class="hl opt">(</span>Red<span class="hl opt">,</span> Yellow<span class="hl opt">) {</span> Blue <span class="hl opt">}</span>
+      <span class="hl opt">(</span>Red<span class="hl opt">,</span> Blue <span class="hl opt">) {</span> Yellow <span class="hl opt">}</span>
+      <span class="hl opt">(</span>Yellow<span class="hl opt">,</span> Red <span class="hl opt">) {</span> Blue <span class="hl opt">}</span>
+      <span class="hl opt">(</span>Yellow<span class="hl opt">,</span> Yellow<span class="hl opt">) {</span> Yellow <span class="hl opt">}</span>
+      <span class="hl opt">(</span>Yellow<span class="hl opt">,</span> Blue <span class="hl opt">) {</span> Red <span class="hl opt">}</span>
+      <span class="hl opt">(</span>Blue<span class="hl opt">,</span> Red <span class="hl opt">) {</span> Yellow <span class="hl opt">}</span>
+      <span class="hl opt">(</span>Blue<span class="hl opt">,</span> Yellow<span class="hl opt">) {</span> Red <span class="hl opt">}</span>
+      <span class="hl opt">(</span>Blue<span class="hl opt">,</span> Blue <span class="hl opt">) {</span> Blue <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+fn <span class="hl kwd">creature</span><span class="hl opt">(</span>
+   name<span class="hl opt">:</span> uint<span class="hl opt">,</span>
+   color<span class="hl opt">:</span> color<span class="hl opt">,</span>
+   from_rendezvous<span class="hl opt">:</span> comm<span class="hl opt">::</span>port<span class="hl opt">&lt;</span>option<span class="hl opt">&lt;</span>creature_info<span class="hl opt">&gt;&gt;,</span>
+   to_rendezvous<span class="hl opt">:</span> comm<span class="hl opt">::</span>chan<span class="hl opt">&lt;</span>creature_info<span class="hl opt">&gt;,</span>
+   to_rendezvous_log<span class="hl opt">:</span> comm<span class="hl opt">::</span>chan<span class="hl opt">&lt;</span>str<span class="hl opt">&gt;</span>
+<span class="hl opt">) {</span>
+   let mut color <span class="hl opt">=</span> color<span class="hl opt">;</span>
+   let mut creatures_met <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   let mut evil_clones_met <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+   loop <span class="hl opt">{</span>
+      <span class="hl slc">// ask for a pairing</span>
+      comm<span class="hl opt">::</span><span class="hl kwd">send</span><span class="hl opt">(</span>to_rendezvous<span class="hl opt">, {</span>name<span class="hl opt">:</span> name<span class="hl opt">,</span> color<span class="hl opt">:</span> color<span class="hl opt">});</span>
+      let resp <span class="hl opt">=</span> comm<span class="hl opt">::</span><span class="hl kwd">recv</span><span class="hl opt">(</span>from_rendezvous<span class="hl opt">);</span>
+
+      <span class="hl slc">// log and change, or print and quit</span>
+      alt resp <span class="hl opt">{</span>
+         option<span class="hl opt">::</span><span class="hl kwd">some</span><span class="hl opt">(</span>other_creature<span class="hl opt">) {</span>
+            color <span class="hl opt">=</span> <span class="hl kwd">transform</span><span class="hl opt">(</span>color<span class="hl opt">,</span> other_creature<span class="hl opt">.</span>color<span class="hl opt">);</span>
+
+            <span class="hl slc">// track some statistics</span>
+            creatures_met <span class="hl opt">+=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+            <span class="hl kwa">if</span> other_creature<span class="hl opt">.</span>name <span class="hl opt">==</span> name <span class="hl opt">{</span>
+               evil_clones_met <span class="hl opt">+=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+         <span class="hl opt">}</span>
+         option<span class="hl opt">::</span>none <span class="hl opt">{</span>
+            <span class="hl slc">// log creatures met and evil clones of self</span>
+            let report <span class="hl opt">=</span> <span class="hl ppc">#fmt(</span><span class="hl pps">&quot;%u&quot;</span><span class="hl ppc">, creatures_met) +</span> <span class="hl pps">&quot; &quot;</span><span class="hl ppc"> +</span>
+                      <span class="hl kwd">show_number</span><span class="hl opt">(</span>evil_clones_met<span class="hl opt">);</span>
+            comm<span class="hl opt">::</span><span class="hl kwd">send</span><span class="hl opt">(</span>to_rendezvous_log<span class="hl opt">,</span> report<span class="hl opt">);</span>
+            <span class="hl kwa">break</span><span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+fn <span class="hl kwd">rendezvous</span><span class="hl opt">(</span>nn<span class="hl opt">:</span> uint<span class="hl opt">,</span> set<span class="hl opt">: ~[</span>color<span class="hl opt">]) {</span>
+   <span class="hl slc">// these ports will allow us to hear from the creatures</span>
+   let from_creatures<span class="hl opt">:</span> comm<span class="hl opt">::</span>port<span class="hl opt">&lt;</span>creature_info<span class="hl opt">&gt; =</span> comm<span class="hl opt">::</span><span class="hl kwd">port</span><span class="hl opt">();</span>
+   let from_creatures_log<span class="hl opt">:</span> comm<span class="hl opt">::</span>port<span class="hl opt">&lt;</span>str<span class="hl opt">&gt; =</span> comm<span class="hl opt">::</span><span class="hl kwd">port</span><span class="hl opt">();</span>
+
+   <span class="hl slc">// these channels will be passed to the creatures so they can talk to us</span>
+   let to_rendezvous <span class="hl opt">=</span> comm<span class="hl opt">::</span><span class="hl kwd">chan</span><span class="hl opt">(</span>from_creatures<span class="hl opt">);</span>
+   let to_rendezvous_log <span class="hl opt">=</span> comm<span class="hl opt">::</span><span class="hl kwd">chan</span><span class="hl opt">(</span>from_creatures_log<span class="hl opt">);</span>
+
+   <span class="hl slc">// these channels will allow us to talk to each creature by 'name'/index</span>
+   let to_creature<span class="hl opt">: ~[</span>comm<span class="hl opt">::</span>chan<span class="hl opt">&lt;</span>option<span class="hl opt">&lt;</span>creature_info<span class="hl opt">&gt;&gt;] =</span>
+      vec<span class="hl opt">::</span><span class="hl kwd">mapi</span><span class="hl opt">(</span>set<span class="hl opt">,</span>
+         fn&#64;<span class="hl opt">(</span>ii<span class="hl opt">:</span> uint<span class="hl opt">,</span> col<span class="hl opt">:</span> color<span class="hl opt">) -&gt;</span> comm<span class="hl opt">::</span>chan<span class="hl opt">&lt;</span>option<span class="hl opt">&lt;</span>creature_info<span class="hl opt">&gt;&gt; {</span>
+            <span class="hl slc">// create each creature as a listener with a port, and</span>
+            <span class="hl slc">// give us a channel to talk to each</span>
+            ret <span class="hl kwa">do</span> task<span class="hl opt">::</span>spawn_listener <span class="hl opt">|</span>from_rendezvous<span class="hl opt">| {</span>
+               <span class="hl kwd">creature</span><span class="hl opt">(</span>ii<span class="hl opt">,</span> col<span class="hl opt">,</span> from_rendezvous<span class="hl opt">,</span> to_rendezvous<span class="hl opt">,</span>
+                      to_rendezvous_log<span class="hl opt">);</span>
+            <span class="hl opt">};</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">);</span>
+
+   let mut creatures_met <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+   <span class="hl slc">// set up meetings...</span>
+   <span class="hl kwa">for</span> nn<span class="hl opt">.</span>times <span class="hl opt">{</span>
+      let fst_creature<span class="hl opt">:</span> creature_info <span class="hl opt">=</span> comm<span class="hl opt">::</span><span class="hl kwd">recv</span><span class="hl opt">(</span>from_creatures<span class="hl opt">);</span>
+      let snd_creature<span class="hl opt">:</span> creature_info <span class="hl opt">=</span> comm<span class="hl opt">::</span><span class="hl kwd">recv</span><span class="hl opt">(</span>from_creatures<span class="hl opt">);</span>
+
+      creatures_met <span class="hl opt">+=</span> <span class="hl num">2</span><span class="hl opt">;</span>
+
+      comm<span class="hl opt">::</span><span class="hl kwd">send</span><span class="hl opt">(</span>to_creature<span class="hl opt">[</span>fst_creature<span class="hl opt">.</span>name<span class="hl opt">],</span> <span class="hl kwd">some</span><span class="hl opt">(</span>snd_creature<span class="hl opt">));</span>
+      comm<span class="hl opt">::</span><span class="hl kwd">send</span><span class="hl opt">(</span>to_creature<span class="hl opt">[</span>snd_creature<span class="hl opt">.</span>name<span class="hl opt">],</span> <span class="hl kwd">some</span><span class="hl opt">(</span>fst_creature<span class="hl opt">));</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl slc">// tell each creature to stop</span>
+   <span class="hl kwa">for</span> vec<span class="hl opt">::</span><span class="hl kwd">eachi</span><span class="hl opt">(</span>to_creature<span class="hl opt">) |</span>_ii<span class="hl opt">,</span> to_one<span class="hl opt">| {</span>
+      comm<span class="hl opt">::</span><span class="hl kwd">send</span><span class="hl opt">(</span>to_one<span class="hl opt">,</span> none<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl slc">// save each creature's meeting stats</span>
+   let mut report <span class="hl opt">= ~[];</span>
+   <span class="hl kwa">for</span> vec<span class="hl opt">::</span><span class="hl kwd">each</span><span class="hl opt">(</span>to_creature<span class="hl opt">) |</span>_to_one<span class="hl opt">| {</span>
+      vec<span class="hl opt">::</span><span class="hl kwd">push</span><span class="hl opt">(</span>report<span class="hl opt">,</span> comm<span class="hl opt">::</span><span class="hl kwd">recv</span><span class="hl opt">(</span>from_creatures_log<span class="hl opt">));</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl slc">// print each color in the set</span>
+   io<span class="hl opt">::</span><span class="hl kwd">println</span><span class="hl opt">(</span><span class="hl kwd">show_color_list</span><span class="hl opt">(</span>set<span class="hl opt">));</span>
+
+   <span class="hl slc">// print each creature's stats</span>
+   <span class="hl kwa">for</span> vec<span class="hl opt">::</span><span class="hl kwd">each</span><span class="hl opt">(</span>report<span class="hl opt">) |</span>rep<span class="hl opt">| {</span>
+      io<span class="hl opt">::</span><span class="hl kwd">println</span><span class="hl opt">(</span>rep<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl slc">// print the total number of creatures met</span>
+   io<span class="hl opt">::</span><span class="hl kwd">println</span><span class="hl opt">(</span><span class="hl kwd">show_number</span><span class="hl opt">(</span>creatures_met<span class="hl opt">));</span>
+<span class="hl opt">}</span>
+
+fn <span class="hl kwd">main</span><span class="hl opt">(</span>args<span class="hl opt">: ~[</span>str<span class="hl opt">]) {</span>
+   let args <span class="hl opt">=</span> <span class="hl kwa">if</span> os<span class="hl opt">::</span><span class="hl kwd">getenv</span><span class="hl opt">(</span><span class="hl str">&quot;RUST_BENCH&quot;</span><span class="hl opt">).</span><span class="hl kwd">is_some</span><span class="hl opt">() {</span>
+      <span class="hl opt">~[</span><span class="hl str">&quot;&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;200000&quot;</span><span class="hl opt">]</span>
+   <span class="hl opt">}</span> <span class="hl kwa">else if</span> args<span class="hl opt">.</span><span class="hl kwd">len</span><span class="hl opt">() &lt;=</span> <span class="hl num">1u</span> <span class="hl opt">{</span>
+      <span class="hl opt">~[</span><span class="hl str">&quot;&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;600&quot;</span><span class="hl opt">]</span>
+   <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+      args
+   <span class="hl opt">};</span>
+
+   let nn <span class="hl opt">=</span> uint<span class="hl opt">::</span><span class="hl kwd">from_str</span><span class="hl opt">(</span>args<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]).</span><span class="hl kwd">get</span><span class="hl opt">();</span>
+
+   <span class="hl kwd">print_complements</span><span class="hl opt">();</span>
+   io<span class="hl opt">::</span><span class="hl kwd">println</span><span class="hl opt">(</span><span class="hl str">&quot;&quot;</span><span class="hl opt">);</span>
+
+   <span class="hl kwd">rendezvous</span><span class="hl opt">(</span>nn<span class="hl opt">, ~[</span>Blue<span class="hl opt">,</span> Red<span class="hl opt">,</span> Yellow<span class="hl opt">]);</span>
+   io<span class="hl opt">::</span><span class="hl kwd">println</span><span class="hl opt">(</span><span class="hl str">&quot;&quot;</span><span class="hl opt">);</span>
+
+   <span class="hl kwd">rendezvous</span><span class="hl opt">(</span>nn<span class="hl opt">,</span>
+      <span class="hl opt">~[</span>Blue<span class="hl opt">,</span> Red<span class="hl opt">,</span> Yellow<span class="hl opt">,</span> Red<span class="hl opt">,</span> Yellow<span class="hl opt">,</span> Blue<span class="hl opt">,</span> Red<span class="hl opt">,</span> Yellow<span class="hl opt">,</span> Red<span class="hl opt">,</span> Blue<span class="hl opt">]);</span>
+<span class="hl opt">}</span>

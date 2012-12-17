@@ -1,0 +1,103 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * contributed by Brian Anderson</span>
+<span class="hl com"> */</span>
+
+use std<span class="hl opt">;</span>
+import vec<span class="hl opt">;</span>
+import uint<span class="hl opt">;</span>
+import <span class="hl kwb">int</span><span class="hl opt">;</span>
+import str<span class="hl opt">;</span>
+import io<span class="hl opt">::</span>writer_util<span class="hl opt">;</span>
+
+fn <span class="hl kwd">LINE_LENGTH</span><span class="hl opt">() -&gt;</span> uint <span class="hl opt">{</span> ret <span class="hl num">60u</span><span class="hl opt">; }</span>
+
+type myrandom <span class="hl opt">=</span> &#64;<span class="hl opt">{</span>mut last<span class="hl opt">:</span> u32<span class="hl opt">};</span>
+
+fn <span class="hl kwd">myrandom_next</span><span class="hl opt">(</span>r<span class="hl opt">:</span> myrandom<span class="hl opt">,</span> mx<span class="hl opt">:</span> u32<span class="hl opt">) -&gt;</span> u32 <span class="hl opt">{</span>
+   r<span class="hl opt">.</span>last <span class="hl opt">= (</span>r<span class="hl opt">.</span>last <span class="hl opt">*</span> <span class="hl num">3877u32</span> <span class="hl opt">+</span> <span class="hl num">29573u32</span><span class="hl opt">) %</span> <span class="hl num">139968u32</span><span class="hl opt">;</span>
+   mx <span class="hl opt">*</span> r<span class="hl opt">.</span>last <span class="hl opt">/</span> <span class="hl num">139968u32</span>
+<span class="hl opt">}</span>
+
+type aminoacids <span class="hl opt">= {</span>ch<span class="hl opt">:</span> <span class="hl kwb">char</span><span class="hl opt">,</span> prob<span class="hl opt">:</span> u32<span class="hl opt">};</span>
+
+fn <span class="hl kwd">make_cumulative</span><span class="hl opt">(</span>aa<span class="hl opt">: ~[</span>aminoacids<span class="hl opt">]) -&gt; ~[</span>aminoacids<span class="hl opt">] {</span>
+   let mut cp<span class="hl opt">:</span> u32 <span class="hl opt">=</span> <span class="hl num">0u32</span><span class="hl opt">;</span>
+   let mut ans<span class="hl opt">: ~[</span>aminoacids<span class="hl opt">] = ~[];</span>
+   <span class="hl kwa">for</span> aa<span class="hl opt">.</span>each <span class="hl opt">|</span>a<span class="hl opt">| {</span> cp <span class="hl opt">+=</span> a<span class="hl opt">.</span>prob<span class="hl opt">;</span> ans <span class="hl opt">+= ~[{</span>ch<span class="hl opt">:</span> a<span class="hl opt">.</span>ch<span class="hl opt">,</span> prob<span class="hl opt">:</span> cp<span class="hl opt">}]; }</span>
+   ret ans<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+fn <span class="hl kwd">select_random</span><span class="hl opt">(</span>r<span class="hl opt">:</span> u32<span class="hl opt">,</span> genelist<span class="hl opt">: ~[</span>aminoacids<span class="hl opt">]) -&gt;</span> <span class="hl kwb">char</span> <span class="hl opt">{</span>
+   <span class="hl kwa">if</span> r <span class="hl opt">&lt;</span> genelist<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>prob <span class="hl opt">{</span> ret genelist<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>ch<span class="hl opt">; }</span>
+   fn <span class="hl kwd">bisect</span><span class="hl opt">(</span>v<span class="hl opt">: ~[</span>aminoacids<span class="hl opt">],</span> lo<span class="hl opt">:</span> uint<span class="hl opt">,</span> hi<span class="hl opt">:</span> uint<span class="hl opt">,</span> target<span class="hl opt">:</span> u32<span class="hl opt">) -&gt;</span> <span class="hl kwb">char</span> <span class="hl opt">{</span>
+      <span class="hl kwa">if</span> hi <span class="hl opt">&gt;</span> lo <span class="hl opt">+</span> <span class="hl num">1u</span> <span class="hl opt">{</span>
+         let mid<span class="hl opt">:</span> uint <span class="hl opt">=</span> lo <span class="hl opt">+ (</span>hi <span class="hl opt">-</span> lo<span class="hl opt">) /</span> <span class="hl num">2u</span><span class="hl opt">;</span>
+         <span class="hl kwa">if</span> target <span class="hl opt">&lt;</span> v<span class="hl opt">[</span>mid<span class="hl opt">].</span>prob <span class="hl opt">{</span>
+            ret <span class="hl kwd">bisect</span><span class="hl opt">(</span>v<span class="hl opt">,</span> lo<span class="hl opt">,</span> mid<span class="hl opt">,</span> target<span class="hl opt">);</span>
+         <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span> ret <span class="hl kwd">bisect</span><span class="hl opt">(</span>v<span class="hl opt">,</span> mid<span class="hl opt">,</span> hi<span class="hl opt">,</span> target<span class="hl opt">); }</span>
+      <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span> ret v<span class="hl opt">[</span>hi<span class="hl opt">].</span>ch<span class="hl opt">; }</span>
+   <span class="hl opt">}</span>
+   ret <span class="hl kwd">bisect</span><span class="hl opt">(</span>genelist<span class="hl opt">,</span> <span class="hl num">0u</span><span class="hl opt">,</span> vec<span class="hl opt">::</span>len<span class="hl opt">::&lt;</span>aminoacids<span class="hl opt">&gt;(</span>genelist<span class="hl opt">) -</span> <span class="hl num">1u</span><span class="hl opt">,</span> r<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+fn <span class="hl kwd">make_random_fasta</span><span class="hl opt">(</span>wr<span class="hl opt">:</span> io<span class="hl opt">::</span>writer<span class="hl opt">,</span> id<span class="hl opt">:</span> str<span class="hl opt">,</span> desc<span class="hl opt">:</span> str<span class="hl opt">,</span> genelist<span class="hl opt">: ~[</span>aminoacids<span class="hl opt">],</span> n<span class="hl opt">:</span> <span class="hl kwb">int</span><span class="hl opt">) {</span>
+   wr<span class="hl opt">.</span><span class="hl kwd">write_line</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;&quot;</span> <span class="hl opt">+</span> id <span class="hl opt">+</span> <span class="hl str">&quot; &quot;</span> <span class="hl opt">+</span> desc<span class="hl opt">);</span>
+   let rng <span class="hl opt">=</span> &#64;<span class="hl opt">{</span>mut last<span class="hl opt">:</span> rand<span class="hl opt">::</span><span class="hl kwd">rng</span><span class="hl opt">().</span><span class="hl kwd">next</span><span class="hl opt">()};</span>
+   let mut op<span class="hl opt">:</span> str <span class="hl opt">=</span> <span class="hl str">&quot;&quot;</span><span class="hl opt">;</span>
+   <span class="hl kwa">for</span> uint<span class="hl opt">::</span><span class="hl kwd">range</span><span class="hl opt">(</span><span class="hl num">0u</span><span class="hl opt">,</span> n as uint<span class="hl opt">) |</span>_i<span class="hl opt">| {</span>
+      str<span class="hl opt">::</span><span class="hl kwd">push_char</span><span class="hl opt">(</span>op<span class="hl opt">,</span> <span class="hl kwd">select_random</span><span class="hl opt">(</span><span class="hl kwd">myrandom_next</span><span class="hl opt">(</span>rng<span class="hl opt">,</span> <span class="hl num">100u32</span><span class="hl opt">),</span>
+                               genelist<span class="hl opt">));</span>
+      <span class="hl kwa">if</span> str<span class="hl opt">::</span><span class="hl kwd">len</span><span class="hl opt">(</span>op<span class="hl opt">) &gt;=</span> <span class="hl kwd">LINE_LENGTH</span><span class="hl opt">() {</span>
+         wr<span class="hl opt">.</span><span class="hl kwd">write_line</span><span class="hl opt">(</span>op<span class="hl opt">);</span>
+         op <span class="hl opt">=</span> <span class="hl str">&quot;&quot;</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">if</span> str<span class="hl opt">::</span><span class="hl kwd">len</span><span class="hl opt">(</span>op<span class="hl opt">) &gt;</span> <span class="hl num">0u</span> <span class="hl opt">{</span> wr<span class="hl opt">.</span><span class="hl kwd">write_line</span><span class="hl opt">(</span>op<span class="hl opt">); }</span>
+<span class="hl opt">}</span>
+
+fn <span class="hl kwd">make_repeat_fasta</span><span class="hl opt">(</span>wr<span class="hl opt">:</span> io<span class="hl opt">::</span>writer<span class="hl opt">,</span> id<span class="hl opt">:</span> str<span class="hl opt">,</span> desc<span class="hl opt">:</span> str<span class="hl opt">,</span> s<span class="hl opt">:</span> str<span class="hl opt">,</span> n<span class="hl opt">:</span> <span class="hl kwb">int</span><span class="hl opt">)</span> unsafe <span class="hl opt">{</span>
+   wr<span class="hl opt">.</span><span class="hl kwd">write_line</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;&quot;</span> <span class="hl opt">+</span> id <span class="hl opt">+</span> <span class="hl str">&quot; &quot;</span> <span class="hl opt">+</span> desc<span class="hl opt">);</span>
+   let mut op<span class="hl opt">:</span> str <span class="hl opt">=</span> <span class="hl str">&quot;&quot;</span><span class="hl opt">;</span>
+   let sl<span class="hl opt">:</span> uint <span class="hl opt">=</span> str<span class="hl opt">::</span><span class="hl kwd">len</span><span class="hl opt">(</span>s<span class="hl opt">);</span>
+   <span class="hl kwa">for</span> uint<span class="hl opt">::</span><span class="hl kwd">range</span><span class="hl opt">(</span><span class="hl num">0u</span><span class="hl opt">,</span> n as uint<span class="hl opt">) |</span>i<span class="hl opt">| {</span>
+      str<span class="hl opt">::</span>unsafe<span class="hl opt">::</span><span class="hl kwd">push_byte</span><span class="hl opt">(</span>op<span class="hl opt">,</span> s<span class="hl opt">[</span>i <span class="hl opt">%</span> sl<span class="hl opt">]);</span>
+      <span class="hl kwa">if</span> str<span class="hl opt">::</span><span class="hl kwd">len</span><span class="hl opt">(</span>op<span class="hl opt">) &gt;=</span> <span class="hl kwd">LINE_LENGTH</span><span class="hl opt">() {</span>
+         wr<span class="hl opt">.</span><span class="hl kwd">write_line</span><span class="hl opt">(</span>op<span class="hl opt">);</span>
+         op <span class="hl opt">=</span> <span class="hl str">&quot;&quot;</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">if</span> str<span class="hl opt">::</span><span class="hl kwd">len</span><span class="hl opt">(</span>op<span class="hl opt">) &gt;</span> <span class="hl num">0u</span> <span class="hl opt">{</span> wr<span class="hl opt">.</span><span class="hl kwd">write_line</span><span class="hl opt">(</span>op<span class="hl opt">); }</span>
+<span class="hl opt">}</span>
+
+fn <span class="hl kwd">acid</span><span class="hl opt">(</span>ch<span class="hl opt">:</span> <span class="hl kwb">char</span><span class="hl opt">,</span> prob<span class="hl opt">:</span> u32<span class="hl opt">) -&gt;</span> aminoacids <span class="hl opt">{</span> ret <span class="hl opt">{</span>ch<span class="hl opt">:</span> ch<span class="hl opt">,</span> prob<span class="hl opt">:</span> prob<span class="hl opt">}; }</span>
+
+fn <span class="hl kwd">main</span><span class="hl opt">(</span>args<span class="hl opt">: ~[</span>str<span class="hl opt">]) {</span>
+   let writer <span class="hl opt">=</span> io<span class="hl opt">::</span><span class="hl kwd">stdout</span><span class="hl opt">();</span>
+   let n <span class="hl opt">=</span> <span class="hl kwb">int</span><span class="hl opt">::</span><span class="hl kwd">from_str</span><span class="hl opt">(</span>args<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]).</span><span class="hl kwd">get</span><span class="hl opt">();</span>
+
+   let iub<span class="hl opt">: ~[</span>aminoacids<span class="hl opt">] =</span>
+      <span class="hl kwd">make_cumulative</span><span class="hl opt">(~[</span><span class="hl kwd">acid</span><span class="hl opt">(</span><span class="hl str">'a'</span><span class="hl opt">,</span> <span class="hl num">27u32</span><span class="hl opt">),</span> <span class="hl kwd">acid</span><span class="hl opt">(</span><span class="hl str">'c'</span><span class="hl opt">,</span> <span class="hl num">12u32</span><span class="hl opt">),</span> <span class="hl kwd">acid</span><span class="hl opt">(</span><span class="hl str">'g'</span><span class="hl opt">,</span> <span class="hl num">12u32</span><span class="hl opt">),</span>
+                   <span class="hl kwd">acid</span><span class="hl opt">(</span><span class="hl str">'t'</span><span class="hl opt">,</span> <span class="hl num">27u32</span><span class="hl opt">),</span> <span class="hl kwd">acid</span><span class="hl opt">(</span><span class="hl str">'B'</span><span class="hl opt">,</span> <span class="hl num">2u32</span><span class="hl opt">),</span> <span class="hl kwd">acid</span><span class="hl opt">(</span><span class="hl str">'D'</span><span class="hl opt">,</span> <span class="hl num">2u32</span><span class="hl opt">),</span>
+                   <span class="hl kwd">acid</span><span class="hl opt">(</span><span class="hl str">'H'</span><span class="hl opt">,</span> <span class="hl num">2u32</span><span class="hl opt">),</span> <span class="hl kwd">acid</span><span class="hl opt">(</span><span class="hl str">'K'</span><span class="hl opt">,</span> <span class="hl num">2u32</span><span class="hl opt">),</span> <span class="hl kwd">acid</span><span class="hl opt">(</span><span class="hl str">'M'</span><span class="hl opt">,</span> <span class="hl num">2u32</span><span class="hl opt">),</span>
+                   <span class="hl kwd">acid</span><span class="hl opt">(</span><span class="hl str">'N'</span><span class="hl opt">,</span> <span class="hl num">2u32</span><span class="hl opt">),</span> <span class="hl kwd">acid</span><span class="hl opt">(</span><span class="hl str">'R'</span><span class="hl opt">,</span> <span class="hl num">2u32</span><span class="hl opt">),</span> <span class="hl kwd">acid</span><span class="hl opt">(</span><span class="hl str">'S'</span><span class="hl opt">,</span> <span class="hl num">2u32</span><span class="hl opt">),</span>
+                   <span class="hl kwd">acid</span><span class="hl opt">(</span><span class="hl str">'V'</span><span class="hl opt">,</span> <span class="hl num">2u32</span><span class="hl opt">),</span> <span class="hl kwd">acid</span><span class="hl opt">(</span><span class="hl str">'W'</span><span class="hl opt">,</span> <span class="hl num">2u32</span><span class="hl opt">),</span> <span class="hl kwd">acid</span><span class="hl opt">(</span><span class="hl str">'Y'</span><span class="hl opt">,</span> <span class="hl num">2u32</span><span class="hl opt">)]);</span>
+   let homosapiens<span class="hl opt">: ~[</span>aminoacids<span class="hl opt">] =</span>
+      <span class="hl kwd">make_cumulative</span><span class="hl opt">(~[</span><span class="hl kwd">acid</span><span class="hl opt">(</span><span class="hl str">'a'</span><span class="hl opt">,</span> <span class="hl num">30u32</span><span class="hl opt">),</span> <span class="hl kwd">acid</span><span class="hl opt">(</span><span class="hl str">'c'</span><span class="hl opt">,</span> <span class="hl num">20u32</span><span class="hl opt">),</span> <span class="hl kwd">acid</span><span class="hl opt">(</span><span class="hl str">'g'</span><span class="hl opt">,</span> <span class="hl num">20u32</span><span class="hl opt">),</span>
+                   <span class="hl kwd">acid</span><span class="hl opt">(</span><span class="hl str">'t'</span><span class="hl opt">,</span> <span class="hl num">30u32</span><span class="hl opt">)]);</span>
+
+   let alu<span class="hl opt">:</span> str <span class="hl opt">=</span>
+      <span class="hl str">&quot;GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG&quot;</span> <span class="hl opt">+</span>
+         <span class="hl str">&quot;GAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGAGA&quot;</span> <span class="hl opt">+</span>
+         <span class="hl str">&quot;CCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAAT&quot;</span> <span class="hl opt">+</span>
+         <span class="hl str">&quot;ACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAATCCCA&quot;</span> <span class="hl opt">+</span>
+         <span class="hl str">&quot;GCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTGAACCCGGG&quot;</span> <span class="hl opt">+</span>
+         <span class="hl str">&quot;AGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCC&quot;</span> <span class="hl opt">+</span>
+         <span class="hl str">&quot;AGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAA&quot;</span><span class="hl opt">;</span>
+
+   <span class="hl kwd">make_repeat_fasta</span><span class="hl opt">(</span>writer<span class="hl opt">,</span> <span class="hl str">&quot;ONE&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Homo sapiens alu&quot;</span><span class="hl opt">,</span> alu<span class="hl opt">,</span> n <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">);</span>
+   <span class="hl kwd">make_random_fasta</span><span class="hl opt">(</span>writer<span class="hl opt">,</span> <span class="hl str">&quot;TWO&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;IUB ambiguity codes&quot;</span><span class="hl opt">,</span> iub<span class="hl opt">,</span> n <span class="hl opt">*</span> <span class="hl num">3</span><span class="hl opt">);</span>
+   <span class="hl kwd">make_random_fasta</span><span class="hl opt">(</span>writer<span class="hl opt">,</span> <span class="hl str">&quot;THREE&quot;</span><span class="hl opt">,</span>
+                 <span class="hl str">&quot;Homo sapiens frequency&quot;</span><span class="hl opt">,</span> homosapiens<span class="hl opt">,</span> n <span class="hl opt">*</span> <span class="hl num">5</span><span class="hl opt">);</span>
+<span class="hl opt">}</span>

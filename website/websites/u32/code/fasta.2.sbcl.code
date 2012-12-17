@@ -1,0 +1,186 @@
+<span class="hl slc">;;   The Computer Language Benchmarks Game</span>
+<span class="hl slc">;;   http://shootout.alioth.debian.org/</span>
+<span class="hl slc">;;; Contributed by Gustavo Henrique Milaré</span>
+
+<span class="hl slc">;;; This file was fetched from http://shootout.alioth.debian.org/ and modified.</span>
+<span class="hl slc">;;; These are the original creators:</span>
+
+<span class="hl slc">;;; contributed by Ralph Richard Cook</span>
+<span class="hl slc">;;; Optimizations by Nicolas Neuss</span>
+<span class="hl slc">;;; Includes code from the 'random' benchmark</span>
+<span class="hl slc">;;; Credits from the 'random' benchmark:</span>
+<span class="hl slc">;;; Chih-Chung Chang contributed better declarations to improve performance</span>
+<span class="hl slc">;;; Multi-lisp modifications by Brent Fulgham</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defconstant</span> <span class="hl opt">+</span>im<span class="hl opt">+</span>     <span class="hl num">139968</span><span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">defconstant</span> <span class="hl opt">+</span>ia<span class="hl opt">+</span>       <span class="hl num">3877</span><span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">defconstant</span> <span class="hl opt">+</span>ic<span class="hl opt">+</span>     <span class="hl num">29573</span><span class="hl opt">)</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defparameter</span> <span class="hl opt">*</span>last-random<span class="hl opt">*</span> <span class="hl num">42</span><span class="hl opt">)</span>
+
+<span class="hl opt">(</span><span class="hl kwa">declaim</span> <span class="hl opt">(</span><span class="hl kwa">inline</span> gen-random<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> gen-random <span class="hl opt">(</span><span class="hl kwa">max</span><span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">type</span> <span class="hl opt">(</span><span class="hl kwa">unsigned-byte</span> <span class="hl num">30</span><span class="hl opt">) *</span>last-random<span class="hl opt">*))</span>
+  <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">double-float</span> max<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">setq</span> <span class="hl opt">*</span>last-random<span class="hl opt">* (</span><span class="hl kwa">mod</span> <span class="hl opt">(+ (</span><span class="hl kwa">the</span> <span class="hl opt">(</span><span class="hl kwa">unsigned-byte</span> <span class="hl num">31</span><span class="hl opt">)</span>
+				<span class="hl opt">(* *</span>last-random<span class="hl opt">* +</span>ia<span class="hl opt">+))</span>
+			      <span class="hl opt">+</span>ic<span class="hl opt">+)</span>
+			   <span class="hl opt">+</span>im<span class="hl opt">+))</span>
+  <span class="hl opt">(/ (*</span> max <span class="hl opt">*</span>last-random<span class="hl opt">*) +</span>im<span class="hl opt">+))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defconstant</span> <span class="hl opt">+</span>line-length<span class="hl opt">+</span> <span class="hl num">60</span><span class="hl opt">)</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defstruct</span> <span class="hl opt">(</span><span class="hl kwa">freq</span> <span class="hl opt">(:</span>predicate freqp<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">c</span> <span class="hl opt">#</span>\x <span class="hl opt">:</span>type base-char<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">p</span> <span class="hl num">0.0</span>d0 <span class="hl opt">:</span>type double-float<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">declaim</span> <span class="hl opt">(</span><span class="hl kwa">base-string</span> <span class="hl opt">*</span>alu<span class="hl opt">*))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defparameter</span> <span class="hl opt">*</span>alu<span class="hl opt">* (</span><span class="hl kwa">concatenate</span> <span class="hl opt">'</span>base-string
+  <span class="hl str">&quot;GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG&quot;</span>
+  <span class="hl str">&quot;GAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGAGA&quot;</span>
+  <span class="hl str">&quot;CCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAAT&quot;</span>
+  <span class="hl str">&quot;ACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAATCCCA&quot;</span>
+  <span class="hl str">&quot;GCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTGAACCCGGG&quot;</span>
+  <span class="hl str">&quot;AGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCC&quot;</span>
+  <span class="hl str">&quot;AGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAA&quot;</span><span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">declaim</span> <span class="hl opt">(</span><span class="hl kwa">simple-vector</span> <span class="hl opt">*</span>iub<span class="hl opt">* *</span>homo-sapiens<span class="hl opt">*))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defparameter</span> <span class="hl opt">*</span>iub<span class="hl opt">*</span>
+  <span class="hl opt">(</span><span class="hl kwa">vector</span>
+   <span class="hl opt">(</span><span class="hl kwa">make-freq</span> <span class="hl opt">:</span>c <span class="hl opt">#</span><span class="hl esc">\a</span> <span class="hl opt">:</span>p <span class="hl num">0.27</span>d0<span class="hl opt">)</span>
+   <span class="hl opt">(</span><span class="hl kwa">make-freq</span> <span class="hl opt">:</span>c <span class="hl opt">#</span>\c <span class="hl opt">:</span>p <span class="hl num">0.12</span>d0<span class="hl opt">)</span>
+   <span class="hl opt">(</span><span class="hl kwa">make-freq</span> <span class="hl opt">:</span>c <span class="hl opt">#</span>\g <span class="hl opt">:</span>p <span class="hl num">0.12</span>d0<span class="hl opt">)</span>
+   <span class="hl opt">(</span><span class="hl kwa">make-freq</span> <span class="hl opt">:</span>c <span class="hl opt">#</span><span class="hl esc">\t</span> <span class="hl opt">:</span>p <span class="hl num">0.27</span>d0<span class="hl opt">)</span>
+
+   <span class="hl opt">(</span><span class="hl kwa">make-freq</span> <span class="hl opt">:</span>c <span class="hl opt">#</span>\B <span class="hl opt">:</span>p <span class="hl num">0.02</span>d0<span class="hl opt">)</span>
+   <span class="hl opt">(</span><span class="hl kwa">make-freq</span> <span class="hl opt">:</span>c <span class="hl opt">#</span>\D <span class="hl opt">:</span>p <span class="hl num">0.02</span>d0<span class="hl opt">)</span>
+   <span class="hl opt">(</span><span class="hl kwa">make-freq</span> <span class="hl opt">:</span>c <span class="hl opt">#</span>\H <span class="hl opt">:</span>p <span class="hl num">0.02</span>d0<span class="hl opt">)</span>
+   <span class="hl opt">(</span><span class="hl kwa">make-freq</span> <span class="hl opt">:</span>c <span class="hl opt">#</span>\K <span class="hl opt">:</span>p <span class="hl num">0.02</span>d0<span class="hl opt">)</span>
+   <span class="hl opt">(</span><span class="hl kwa">make-freq</span> <span class="hl opt">:</span>c <span class="hl opt">#</span>\M <span class="hl opt">:</span>p <span class="hl num">0.02</span>d0<span class="hl opt">)</span>
+   <span class="hl opt">(</span><span class="hl kwa">make-freq</span> <span class="hl opt">:</span>c <span class="hl opt">#</span>\N <span class="hl opt">:</span>p <span class="hl num">0.02</span>d0<span class="hl opt">)</span>
+   <span class="hl opt">(</span><span class="hl kwa">make-freq</span> <span class="hl opt">:</span>c <span class="hl opt">#</span>\R <span class="hl opt">:</span>p <span class="hl num">0.02</span>d0<span class="hl opt">)</span>
+   <span class="hl opt">(</span><span class="hl kwa">make-freq</span> <span class="hl opt">:</span>c <span class="hl opt">#</span>\S <span class="hl opt">:</span>p <span class="hl num">0.02</span>d0<span class="hl opt">)</span>
+   <span class="hl opt">(</span><span class="hl kwa">make-freq</span> <span class="hl opt">:</span>c <span class="hl opt">#</span>\V <span class="hl opt">:</span>p <span class="hl num">0.02</span>d0<span class="hl opt">)</span>
+   <span class="hl opt">(</span><span class="hl kwa">make-freq</span> <span class="hl opt">:</span>c <span class="hl opt">#</span>\W <span class="hl opt">:</span>p <span class="hl num">0.02</span>d0<span class="hl opt">)</span>
+   <span class="hl opt">(</span><span class="hl kwa">make-freq</span> <span class="hl opt">:</span>c <span class="hl opt">#</span>\Y <span class="hl opt">:</span>p <span class="hl num">0.02</span>d0<span class="hl opt">)))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defparameter</span> <span class="hl opt">*</span>homo-sapiens<span class="hl opt">*</span>
+  <span class="hl opt">(</span><span class="hl kwa">vector</span>
+   <span class="hl opt">(</span><span class="hl kwa">make-freq</span> <span class="hl opt">:</span>c <span class="hl opt">#</span><span class="hl esc">\a</span> <span class="hl opt">:</span>p <span class="hl num">0.3029549426680</span>d0<span class="hl opt">)</span>
+   <span class="hl opt">(</span><span class="hl kwa">make-freq</span> <span class="hl opt">:</span>c <span class="hl opt">#</span>\c <span class="hl opt">:</span>p <span class="hl num">0.1979883004921</span>d0<span class="hl opt">)</span>
+   <span class="hl opt">(</span><span class="hl kwa">make-freq</span> <span class="hl opt">:</span>c <span class="hl opt">#</span>\g <span class="hl opt">:</span>p <span class="hl num">0.1975473066391</span>d0<span class="hl opt">)</span>
+   <span class="hl opt">(</span><span class="hl kwa">make-freq</span> <span class="hl opt">:</span>c <span class="hl opt">#</span><span class="hl esc">\t</span> <span class="hl opt">:</span>p <span class="hl num">0.3015094502008</span>d0<span class="hl opt">)))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> make-cumulative <span class="hl opt">(</span><span class="hl kwa">freqs</span><span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">cp</span> <span class="hl num">0.0</span>d0<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">double-float</span> cp<span class="hl opt">)</span>
+	     <span class="hl opt">(</span><span class="hl kwa">simple-vector</span> freqs<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">dotimes</span> <span class="hl opt">(</span><span class="hl kwa">i</span> <span class="hl opt">(</span><span class="hl kwa">length</span> freqs<span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">incf</span> cp <span class="hl opt">(</span><span class="hl kwa">freq-p</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> freqs i<span class="hl opt">)))</span>
+      <span class="hl opt">(</span><span class="hl kwa">setf</span> <span class="hl opt">(</span><span class="hl kwa">freq-p</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> freqs i<span class="hl opt">))</span> cp<span class="hl opt">))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">declaim</span> <span class="hl opt">(</span><span class="hl kwa">inline</span> select-random<span class="hl opt">))</span>
+
+<span class="hl opt">#+</span>nil
+<span class="hl opt">(</span><span class="hl kwa">defun</span> select-random <span class="hl opt">(</span><span class="hl kwa">freqs</span> len<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">fixnum</span> len<span class="hl opt">) (</span><span class="hl kwa">simple-vector</span> freqs<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">r</span> <span class="hl opt">(</span><span class="hl kwa">gen-random</span> <span class="hl num">1.0</span>d0<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">double-float</span> r<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">dotimes</span> <span class="hl opt">(</span><span class="hl kwa">i</span> len<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(&lt;</span> r <span class="hl opt">(</span><span class="hl kwa">freq-p</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> freqs i<span class="hl opt">)))</span>
+        <span class="hl opt">(</span><span class="hl kwa">return-from</span> select-random <span class="hl opt">(</span><span class="hl kwa">freq-c</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> freqs i<span class="hl opt">)))))</span>
+    <span class="hl opt">(</span><span class="hl kwa">freq-c</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> freqs <span class="hl opt">(</span><span class="hl kwa">1-</span> len<span class="hl opt">)))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> select-random <span class="hl opt">(</span><span class="hl kwa">freqs</span> len<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">fixnum</span> len<span class="hl opt">) (</span><span class="hl kwa">simple-vector</span> freqs<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">r</span> <span class="hl opt">(</span><span class="hl kwa">gen-random</span> <span class="hl num">1.0</span>d0<span class="hl opt">))</span>
+	<span class="hl opt">(</span><span class="hl kwa">first</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> freqs <span class="hl num">0</span><span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">double-float</span> r<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(&lt;</span> r <span class="hl opt">(</span><span class="hl kwa">freq-p</span> first<span class="hl opt">))</span>
+	<span class="hl opt">(</span><span class="hl kwa">freq-c</span> first<span class="hl opt">)</span>
+	<span class="hl opt">(</span><span class="hl kwa">do</span><span class="hl opt">* ((</span><span class="hl kwa">lo</span> <span class="hl num">0</span><span class="hl opt">)</span>
+	      <span class="hl opt">(</span><span class="hl kwa">hi</span> <span class="hl opt">(</span><span class="hl kwa">1-</span> len<span class="hl opt">))</span>
+	      <span class="hl opt">(</span><span class="hl kwa">mid</span> <span class="hl opt">(</span><span class="hl kwa">truncate</span> <span class="hl opt">(+</span> lo hi<span class="hl opt">)</span> <span class="hl num">2</span><span class="hl opt">) (</span><span class="hl kwa">truncate</span> <span class="hl opt">(+</span> lo hi<span class="hl opt">)</span> <span class="hl num">2</span><span class="hl opt">))</span>
+	      <span class="hl opt">(</span><span class="hl kwa">freq</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> freqs mid<span class="hl opt">) (</span><span class="hl kwa">aref</span> freqs mid<span class="hl opt">)))</span>
+	     <span class="hl opt">((&gt;=</span> lo mid<span class="hl opt">) (</span><span class="hl kwa">freq-c</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> freqs hi<span class="hl opt">)))</span>
+	  <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">fixnum</span> lo hi mid<span class="hl opt">))</span>
+	  <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(&lt;</span> r <span class="hl opt">(</span><span class="hl kwa">freq-p</span> freq<span class="hl opt">))</span>
+	      <span class="hl opt">(</span><span class="hl kwa">setf</span> hi mid<span class="hl opt">)</span>
+	      <span class="hl opt">(</span><span class="hl kwa">setf</span> lo mid<span class="hl opt">))))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defconstant</span> <span class="hl opt">+</span>buffer-size<span class="hl opt">+</span> <span class="hl num">30000</span><span class="hl opt">)</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> make-random-fasta <span class="hl opt">(</span><span class="hl kwa">id</span> desc freqs freqs-length n line-length<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">fixnum</span> freqs-length n line-length<span class="hl opt">)</span>
+	   <span class="hl opt">(</span><span class="hl kwa">string</span> id desc<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">buf</span> <span class="hl opt">(</span><span class="hl kwa">make-string</span> <span class="hl opt">+</span>buffer-size<span class="hl opt">+ :</span>element-type <span class="hl opt">'</span>base-char <span class="hl opt">:</span>initial-element <span class="hl opt">#</span>\Space<span class="hl opt">))</span>
+        <span class="hl opt">(</span><span class="hl kwa">index</span> <span class="hl num">0</span><span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">fixnum</span> index<span class="hl opt">)</span>
+	     <span class="hl opt">(</span><span class="hl kwa">base-string</span> buf<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">format</span> t <span class="hl str">&quot;&gt;~a ~a~%&quot;</span> id desc<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">do</span><span class="hl opt">* ((</span><span class="hl kwa">chars-remaining</span> n <span class="hl opt">(</span><span class="hl kwa">-</span> chars-remaining current-line-length<span class="hl opt">))</span>
+          <span class="hl opt">(</span><span class="hl kwa">current-line-length</span> <span class="hl num">0</span><span class="hl opt">))</span>
+         <span class="hl opt">((&lt;=</span> chars-remaining <span class="hl num">0</span><span class="hl opt">)</span> nil<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">fixnum</span> chars-remaining current-line-length<span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">setf</span> current-line-length <span class="hl opt">(</span><span class="hl kwa">min</span> chars-remaining line-length<span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(&lt; (</span><span class="hl kwa">-</span> <span class="hl opt">+</span>buffer-size<span class="hl opt">+</span> index<span class="hl opt">)</span> current-line-length<span class="hl opt">)</span>
+        <span class="hl opt">(</span><span class="hl kwa">write-sequence</span> buf <span class="hl opt">*</span>standard-output<span class="hl opt">* :</span>end index<span class="hl opt">)</span>
+        <span class="hl opt">(</span><span class="hl kwa">setf</span> index <span class="hl num">0</span><span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">dotimes</span> <span class="hl opt">(</span><span class="hl kwa">i</span> current-line-length<span class="hl opt">)</span>
+        <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">fixnum</span> i<span class="hl opt">))</span>
+        <span class="hl opt">(</span><span class="hl kwa">setf</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> buf index<span class="hl opt">) (</span><span class="hl kwa">select-random</span> freqs freqs-length<span class="hl opt">))</span>
+        <span class="hl opt">(</span><span class="hl kwa">incf</span> index<span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">setf</span> <span class="hl opt">(</span><span class="hl kwa">aref</span> buf index<span class="hl opt">) #</span>\Newline<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">incf</span> index<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(&gt;</span> index <span class="hl num">0</span><span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">write-sequence</span> buf <span class="hl opt">*</span>standard-output<span class="hl opt">* :</span>end index<span class="hl opt">))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> make-repeat-fasta <span class="hl opt">(</span><span class="hl kwa">id</span> desc s n line-length<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">fixnum</span> n line-length<span class="hl opt">)</span>
+	   <span class="hl opt">(</span><span class="hl kwa">string</span> id desc s<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">s-start</span> <span class="hl num">0</span><span class="hl opt">)</span>               <span class="hl slc">; this won't change</span>
+        <span class="hl opt">(</span><span class="hl kwa">s-end</span> <span class="hl opt">(</span><span class="hl kwa">length</span> s<span class="hl opt">))</span>        <span class="hl slc">; this won't change</span>
+        <span class="hl opt">(</span><span class="hl kwa">w-start</span> <span class="hl num">0</span><span class="hl opt">)</span>               <span class="hl slc">; this will cycle around</span>
+        <span class="hl opt">(</span><span class="hl kwa">w-end</span> <span class="hl num">0</span><span class="hl opt">)</span>                 <span class="hl slc">; this will cycle around</span>
+        <span class="hl opt">(</span><span class="hl kwa">current-line-length</span> <span class="hl num">0</span><span class="hl opt">))</span>  <span class="hl slc">; line-length or less for the last line</span>
+    <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">fixnum</span> s-start s-end w-start w-end current-line-length<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">format</span> t <span class="hl str">&quot;&gt;~a ~a~%&quot;</span> id desc<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">do</span> <span class="hl opt">((</span><span class="hl kwa">chars-remaining</span> n <span class="hl opt">(</span><span class="hl kwa">-</span> chars-remaining current-line-length<span class="hl opt">)))</span>
+        <span class="hl opt">((&lt;=</span> chars-remaining <span class="hl num">0</span><span class="hl opt">)</span> nil<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">fixnum</span> chars-remaining<span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">setf</span> current-line-length <span class="hl opt">(</span><span class="hl kwa">min</span> chars-remaining line-length<span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">setf</span> w-end <span class="hl opt">(+</span> w-start current-line-length<span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(&gt;</span> w-end s-end<span class="hl opt">)</span>
+	<span class="hl opt">(</span><span class="hl kwa">decf</span> w-end s-end<span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(&gt;</span> w-end w-start<span class="hl opt">)</span>
+          <span class="hl opt">(</span><span class="hl kwa">write-sequence</span> s <span class="hl opt">*</span>standard-output<span class="hl opt">* :</span>start w-start <span class="hl opt">:</span>end w-end<span class="hl opt">)</span>
+	<span class="hl opt">(</span><span class="hl kwa">progn</span>
+	  <span class="hl opt">(</span><span class="hl kwa">write-sequence</span> s <span class="hl opt">*</span>standard-output<span class="hl opt">* :</span>start w-start <span class="hl opt">:</span>end s-end<span class="hl opt">)</span>
+	  <span class="hl opt">(</span><span class="hl kwa">write-sequence</span> s <span class="hl opt">*</span>standard-output<span class="hl opt">* :</span>start s-start <span class="hl opt">:</span>end w-end<span class="hl opt">)))</span>
+      <span class="hl opt">(</span><span class="hl kwa">write-char</span> <span class="hl opt">#</span>\Newline<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">setf</span> w-start w-end<span class="hl opt">))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> main <span class="hl opt">()</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">n</span> <span class="hl opt">(</span><span class="hl kwa">or</span> <span class="hl opt">(</span><span class="hl kwa">ignore-errors</span>
+		 <span class="hl opt">(</span><span class="hl kwa">parse-integer</span> <span class="hl opt">(</span><span class="hl kwa">car</span> <span class="hl opt">(</span><span class="hl kwa">last</span> <span class="hl opt">#+</span>sbcl sb-ext<span class="hl opt">:*</span>posix-argv<span class="hl opt">*</span>
+					   <span class="hl opt">#+</span>cmu  extensions<span class="hl opt">:*</span>command-line-strings<span class="hl opt">*</span>
+					   <span class="hl opt">#+</span>gcl  si<span class="hl opt">::*</span>command-args<span class="hl opt">*</span>
+					   <span class="hl opt">#+</span>clisp nil<span class="hl opt">))))</span>
+	       <span class="hl num">1000</span><span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">fixnum</span> n<span class="hl opt">))</span>
+
+    <span class="hl opt">(</span><span class="hl kwa">make-cumulative</span> <span class="hl opt">*</span>iub<span class="hl opt">*)</span>
+    <span class="hl opt">(</span><span class="hl kwa">make-cumulative</span> <span class="hl opt">*</span>homo-sapiens<span class="hl opt">*)</span>
+
+    <span class="hl opt">(</span><span class="hl kwa">make-repeat-fasta</span> <span class="hl str">&quot;ONE&quot;</span> <span class="hl str">&quot;Homo sapiens alu&quot;</span>
+		       <span class="hl opt">*</span>alu<span class="hl opt">* (</span><span class="hl kwa">the</span> fixnum <span class="hl opt">(*</span> n <span class="hl num">2</span><span class="hl opt">)) +</span>line-length<span class="hl opt">+)</span>
+    <span class="hl opt">(</span><span class="hl kwa">make-random-fasta</span> <span class="hl str">&quot;TWO&quot;</span> <span class="hl str">&quot;IUB ambiguity codes&quot;</span>
+		       <span class="hl opt">*</span>iub<span class="hl opt">* (</span><span class="hl kwa">length</span> <span class="hl opt">*</span>iub<span class="hl opt">*) (</span><span class="hl kwa">the</span> fixnum <span class="hl opt">(*</span> n <span class="hl num">3</span><span class="hl opt">)) +</span>line-length<span class="hl opt">+)</span>
+    <span class="hl opt">(</span><span class="hl kwa">make-random-fasta</span> <span class="hl str">&quot;THREE&quot;</span>  <span class="hl str">&quot;Homo sapiens frequency&quot;</span>
+		       <span class="hl opt">*</span>homo-sapiens<span class="hl opt">* (</span><span class="hl kwa">length</span> <span class="hl opt">*</span>homo-sapiens<span class="hl opt">*)</span>
+		       <span class="hl opt">(</span><span class="hl kwa">the</span> fixnum <span class="hl opt">(*</span> n <span class="hl num">5</span><span class="hl opt">)) +</span>line-length<span class="hl opt">+)))</span>

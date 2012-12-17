@@ -1,0 +1,386 @@
+<span class="hl slc">#!/usr/bin/env ruby</span>
+<span class="hl slc">#</span>
+<span class="hl slc"># The Computer Language Shootout</span>
+<span class="hl slc">#   http://shootout.alioth.debian.org</span>
+<span class="hl slc">#   contributed by Kevin Barnes (Ruby novice)</span>
+
+<span class="hl kwa">def</span> blank_board
+  <span class="hl num">0b111111100000100000100000100000100000100000100000100000100000100000</span>
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">def</span> <span class="hl kwd">is_even</span><span class="hl opt">(</span> location)
+  <span class="hl opt">(</span>location <span class="hl opt">%</span> <span class="hl num">12</span>) <span class="hl opt">&lt;</span> <span class="hl num">6</span>
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">def</span> create_collector_support
+    odd_map <span class="hl opt">= [</span><span class="hl num">0b11</span><span class="hl opt">,</span> <span class="hl num">0b110</span><span class="hl opt">,</span> <span class="hl num">0b1100</span><span class="hl opt">,</span> <span class="hl num">0b11000</span><span class="hl opt">,</span> <span class="hl num">0b10000</span><span class="hl opt">]</span> 
+    even_map <span class="hl opt">= [</span><span class="hl num">0b1</span><span class="hl opt">,</span> <span class="hl num">0b11</span><span class="hl opt">,</span> <span class="hl num">0b110</span><span class="hl opt">,</span> <span class="hl num">0b1100</span><span class="hl opt">,</span> <span class="hl num">0b11000</span><span class="hl opt">]</span> 
+    
+    all_odds <span class="hl opt">=</span> Array<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">0b100000</span>)
+    all_evens <span class="hl opt">=</span> Array<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">0b100000</span>)
+    bit_counts <span class="hl opt">=</span> Array<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">0b100000</span>)
+    new_regions <span class="hl opt">=</span> Array<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">0b100000</span>)
+    <span class="hl num">0</span><span class="hl opt">.</span><span class="hl kwd">upto</span><span class="hl opt">(</span><span class="hl num">0b11111</span>) <span class="hl kwa">do</span> <span class="hl opt">|</span> i <span class="hl opt">|</span>
+      bit_count <span class="hl opt">=</span> odd <span class="hl opt">=</span> even <span class="hl opt">=</span> <span class="hl num">0</span>
+      <span class="hl num">0</span><span class="hl opt">.</span><span class="hl kwd">upto</span><span class="hl opt">(</span><span class="hl num">4</span>) <span class="hl kwa">do</span> <span class="hl opt">|</span> bit <span class="hl opt">|</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>i<span class="hl opt">[</span>bit<span class="hl opt">] ==</span> <span class="hl num">1</span>) <span class="hl kwa">then</span>
+          bit_count <span class="hl opt">+=</span> <span class="hl num">1</span>
+          odd <span class="hl opt">|=</span> odd_map<span class="hl opt">[</span>bit<span class="hl opt">]</span>
+          even <span class="hl opt">|=</span> even_map<span class="hl opt">[</span>bit<span class="hl opt">]</span>
+        <span class="hl kwa">end</span>
+      <span class="hl kwa">end</span>
+      all_odds<span class="hl opt">[</span>i<span class="hl opt">] =</span> odd
+      all_evens<span class="hl opt">[</span>i<span class="hl opt">] =</span> even
+      bit_counts<span class="hl opt">[</span>i<span class="hl opt">] =</span> bit_count
+      new_regions<span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl kwd">create_regions</span><span class="hl opt">(</span> i)
+    <span class="hl kwa">end</span>
+
+    &#64;<span class="hl kwb">&#64;converter</span> <span class="hl opt">= []</span>
+    <span class="hl num">10</span><span class="hl opt">.</span>times <span class="hl esc">{ | row | &#64;&#64;converter.push((row % 2 == 0) ? all_evens : all_odds) }</span>
+    &#64;<span class="hl kwb">&#64;bit_counts</span> <span class="hl opt">=</span> bit_counts
+    &#64;<span class="hl kwb">&#64;regions</span> <span class="hl opt">=</span> new_regions<span class="hl opt">.</span>collect <span class="hl esc">{ | set | set.collect { | value | [ value, bit_counts[value], value] }</span> <span class="hl opt">}</span>
+
+  <span class="hl kwa">end</span>
+  
+<span class="hl kwa">def</span> <span class="hl kwd">prunable</span><span class="hl opt">(</span> board<span class="hl opt">,</span> location<span class="hl opt">,</span> slotting <span class="hl opt">=</span> <span class="hl kwa">false</span>)
+  collectors <span class="hl opt">= []</span>
+  <span class="hl opt">(</span>location <span class="hl opt">/</span> <span class="hl num">6</span>)<span class="hl opt">.</span>to_i<span class="hl opt">.</span><span class="hl kwd">upto</span><span class="hl opt">(</span><span class="hl num">9</span>) <span class="hl kwa">do</span> <span class="hl opt">|</span> row_on <span class="hl opt">|</span> 
+    regions <span class="hl opt">=</span> &#64;<span class="hl kwb">&#64;regions</span><span class="hl opt">[(</span>board <span class="hl opt">&gt;&gt; (</span>row_on <span class="hl opt">*</span> <span class="hl num">6</span>)) <span class="hl opt">&amp;</span> <span class="hl num">0b11111</span> ^ <span class="hl num">0b11111</span><span class="hl opt">]</span>
+    converter <span class="hl opt">=</span> &#64;<span class="hl kwb">&#64;converter</span><span class="hl opt">[</span>row_on<span class="hl opt">]</span>
+    initial_collector_count <span class="hl opt">=</span> collectors<span class="hl opt">.</span>length
+    regions<span class="hl opt">.</span>each <span class="hl kwa">do</span> <span class="hl opt">|</span> region <span class="hl opt">|</span>
+      collector_found <span class="hl opt">=</span> <span class="hl kwa">nil</span>
+      region_mask <span class="hl opt">=</span> region<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]</span>
+      initial_collector_count<span class="hl opt">.</span>times <span class="hl kwa">do</span> <span class="hl opt">|</span> collector_num <span class="hl opt">|</span>
+        collector <span class="hl opt">=</span> collectors<span class="hl opt">[</span>collector_num<span class="hl opt">]</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>collector) <span class="hl kwa">then</span>
+          collector_mask <span class="hl opt">=</span> collector<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]</span>
+          <span class="hl kwa">if</span> <span class="hl opt">(</span>collector_mask <span class="hl opt">&amp;</span> region_mask <span class="hl opt">!=</span> <span class="hl num">0</span>) <span class="hl kwa">then</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>collector_found) <span class="hl kwa">then</span>
+              collector_found<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] |=</span> collector_mask
+              collector_found<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] +=</span> collector<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]</span>
+              collector_found<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">] |=</span> collector<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">]</span>
+              collectors<span class="hl opt">[</span>collector_num<span class="hl opt">] =</span> <span class="hl kwa">nil</span>
+            <span class="hl kwa">else</span>
+              collector_found <span class="hl opt">=</span> collector
+              collector<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] +=</span> region<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]</span>
+              collector<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">] |=</span> region_mask
+            <span class="hl kwa">end</span>
+          <span class="hl kwa">end</span>
+        <span class="hl kwa">end</span>
+      <span class="hl kwa">end</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>collector_found <span class="hl opt">==</span> <span class="hl kwa">nil</span>) <span class="hl kwa">then</span>
+        collectors<span class="hl opt">.</span><span class="hl kwd">push</span><span class="hl opt">(</span>Array<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span>region))
+      <span class="hl kwa">end</span>
+    <span class="hl kwa">end</span>
+    collectors<span class="hl opt">.</span>length<span class="hl opt">.</span>times <span class="hl kwa">do</span> <span class="hl opt">|</span> collector_num <span class="hl opt">|</span>
+      collector <span class="hl opt">=</span> collectors<span class="hl opt">[</span>collector_num<span class="hl opt">]</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>collector) <span class="hl kwa">then</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>collector<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">] ==</span> <span class="hl num">0</span>) <span class="hl kwa">then</span>
+          <span class="hl kwa">return true if</span> <span class="hl opt">(</span>collector<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] %</span> <span class="hl num">5</span> <span class="hl opt">!=</span> <span class="hl num">0</span>)
+          collectors<span class="hl opt">[</span>collector_num<span class="hl opt">] =</span> <span class="hl kwa">nil</span>
+        <span class="hl kwa">else</span>
+          <span class="hl kwa">return false if</span> <span class="hl opt">(</span>collector<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">] ==</span> <span class="hl num">0b11111</span> <span class="hl opt">&amp;&amp; !</span>slotting)
+          collector<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] =</span> converter<span class="hl opt">[</span>collector<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">]]</span>
+          collector<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">] =</span> <span class="hl num">0</span>
+        <span class="hl kwa">end</span>
+      <span class="hl kwa">end</span>
+    <span class="hl kwa">end</span>
+    collectors<span class="hl opt">.</span>compact<span class="hl opt">!</span>
+  <span class="hl kwa">end</span>
+  <span class="hl kwa">return false if</span> <span class="hl opt">(</span>collectors<span class="hl opt">.</span>length <span class="hl opt">&lt;=</span> <span class="hl num">1</span>) 
+  collectors<span class="hl opt">.</span>any<span class="hl opt">?</span> <span class="hl esc">{ | collector | (collector[1] % 5) != 0 }</span>
+<span class="hl kwa">end</span>
+  
+<span class="hl kwa">def</span> <span class="hl kwd">as_binary</span><span class="hl opt">(</span> value)
+  rtn <span class="hl opt">=</span> <span class="hl str">&quot;&quot;</span>
+  <span class="hl num">5</span><span class="hl opt">.</span>times <span class="hl kwa">do</span> <span class="hl opt">|</span> i <span class="hl opt">|</span>
+    rtn <span class="hl opt">+=</span> <span class="hl str">&quot;</span><span class="hl esc">#{value[i]}</span><span class="hl str">&quot;</span>
+  <span class="hl kwa">end</span>
+  rtn
+<span class="hl kwa">end</span>
+  
+<span class="hl kwa">def</span> <span class="hl kwd">create_regions</span><span class="hl opt">(</span> value )
+  regions <span class="hl opt">= []</span>
+  cur_region <span class="hl opt">=</span> <span class="hl num">0</span>
+  <span class="hl num">5</span><span class="hl opt">.</span>times <span class="hl kwa">do</span> <span class="hl opt">|</span> bit <span class="hl opt">|</span>
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>value<span class="hl opt">[</span>bit<span class="hl opt">] ==</span> <span class="hl num">1</span>) <span class="hl kwa">then</span>
+      cur_region <span class="hl opt">|=</span> <span class="hl num">1</span> <span class="hl opt">&lt;&lt;</span> bit
+    <span class="hl kwa">else</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>cur_region <span class="hl opt">!=</span><span class="hl num">0</span> ) <span class="hl kwa">then</span>
+        regions<span class="hl opt">.</span><span class="hl kwd">push</span><span class="hl opt">(</span> cur_region)
+        cur_region <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">end</span>
+    <span class="hl kwa">end</span>
+  <span class="hl kwa">end</span>
+  regions<span class="hl opt">.</span><span class="hl kwd">push</span><span class="hl opt">(</span>cur_region) <span class="hl kwa">if</span> <span class="hl opt">(</span>cur_region <span class="hl opt">!=</span> <span class="hl num">0</span>)
+  regions
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">def</span> <span class="hl kwd">print_board</span><span class="hl opt">(</span> board<span class="hl opt">,</span> padding <span class="hl opt">=</span> <span class="hl str">&quot;&quot;</span><span class="hl opt">,</span> rows <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">,</span> row_offset <span class="hl opt">=</span> <span class="hl num">0</span>)
+  rows<span class="hl opt">.</span>times <span class="hl kwa">do</span> <span class="hl opt">|</span> row <span class="hl opt">|</span>
+    rtn <span class="hl opt">=</span> padding
+    rtn <span class="hl opt">=</span> <span class="hl str">&quot;</span><span class="hl esc">#{rtn}</span> <span class="hl str">&quot;</span> <span class="hl kwa">if</span> <span class="hl opt">((</span>row <span class="hl opt">+</span> row_offset) <span class="hl opt">%</span> <span class="hl num">2</span>) <span class="hl opt">==</span> <span class="hl num">1</span> 
+    <span class="hl num">6</span><span class="hl opt">.</span>times <span class="hl kwa">do</span> <span class="hl opt">|</span> col <span class="hl opt">|</span> 
+      rtn <span class="hl opt">=</span> <span class="hl str">&quot;</span><span class="hl esc">#{rtn}</span><span class="hl str"></span><span class="hl esc">#{board[row*6+col]}</span> <span class="hl str">&quot;</span> 
+    <span class="hl kwa">end</span>
+    print <span class="hl str">&quot;</span><span class="hl esc">#{rtn}</span><span class="hl str">\n&quot;</span>
+  <span class="hl kwa">end</span>
+<span class="hl kwa">end</span>  
+
+<span class="hl kwa">class</span> Rotation
+  attr_reader <span class="hl kwc">:start_masks</span>
+  
+  &#64;<span class="hl kwb">&#64;rotation_even_adder</span> <span class="hl opt">=</span> <span class="hl esc">{ :west =&gt; -1, :east =&gt; 1, :nw =&gt; -7, :ne =&gt; -6, :sw =&gt; 5, :se =&gt; 6 }</span>
+  &#64;<span class="hl kwb">&#64;rotation_odd_adder</span> <span class="hl opt">=</span> <span class="hl esc">{ :west =&gt; -1, :east =&gt; 1, :nw =&gt; -6, :ne =&gt; -5, :sw =&gt; 6, :se =&gt; 7 }</span>
+  
+  <span class="hl kwa">def</span> <span class="hl kwd">initialize</span><span class="hl opt">(</span> directions )
+    values<span class="hl opt">,</span> min <span class="hl opt">=</span> <span class="hl kwd">get_values</span><span class="hl opt">(</span> directions )
+    <span class="hl kwb">&#64;even_offsets</span><span class="hl opt">,</span> <span class="hl kwb">&#64;odd_offsets</span> <span class="hl opt">=</span> <span class="hl kwd">normalize_offsets</span><span class="hl opt">(</span> values<span class="hl opt">,</span> min)
+      
+    <span class="hl kwb">&#64;even_mask</span> <span class="hl opt">=</span> <span class="hl kwd">mask_for_offsets</span><span class="hl opt">(</span> <span class="hl kwb">&#64;even_offsets</span>)
+    <span class="hl kwb">&#64;odd_mask</span> <span class="hl opt">=</span> <span class="hl kwd">mask_for_offsets</span><span class="hl opt">(</span> <span class="hl kwb">&#64;odd_offsets</span>)
+
+    <span class="hl kwb">&#64;start_masks</span> <span class="hl opt">=</span> Array<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">60</span>)
+    
+    <span class="hl num">0</span><span class="hl opt">.</span><span class="hl kwd">upto</span><span class="hl opt">(</span><span class="hl num">59</span>) <span class="hl kwa">do</span> <span class="hl opt">|</span> offset <span class="hl opt">|</span>
+      mask <span class="hl opt">=</span> <span class="hl kwd">is_even</span><span class="hl opt">(</span>offset) <span class="hl opt">? (</span><span class="hl kwb">&#64;even_mask</span> <span class="hl opt">&lt;&lt;</span> offset) <span class="hl opt">: (</span><span class="hl kwb">&#64;odd_mask</span> <span class="hl opt">&lt;&lt;</span> offset)
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>blank_board <span class="hl opt">&amp;</span> mask <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl opt">&amp;&amp; !</span><span class="hl kwd">prunable</span><span class="hl opt">(</span>blank_board <span class="hl opt">|</span> mask<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwa">true</span>)) <span class="hl kwa">then</span>
+        <span class="hl kwb">&#64;start_masks</span><span class="hl opt">[</span>offset<span class="hl opt">] =</span> mask
+      <span class="hl kwa">else</span>
+        <span class="hl kwb">&#64;start_masks</span><span class="hl opt">[</span>offset<span class="hl opt">] =</span> <span class="hl kwa">false</span> 
+      <span class="hl kwa">end</span>
+    <span class="hl kwa">end</span>
+  <span class="hl kwa">end</span>
+  
+  <span class="hl kwa">def</span> <span class="hl kwd">offsets</span><span class="hl opt">(</span> location)
+    <span class="hl kwa">if</span> <span class="hl kwd">is_even</span><span class="hl opt">(</span> location) <span class="hl kwa">then</span>
+      <span class="hl kwb">&#64;even_offsets</span><span class="hl opt">.</span>collect <span class="hl esc">{ | value | value + location }</span>
+    <span class="hl kwa">else</span>
+      <span class="hl kwb">&#64;odd_offsets</span><span class="hl opt">.</span>collect <span class="hl esc">{ | value | value + location }</span>
+    <span class="hl kwa">end</span>
+  <span class="hl kwa">end</span>
+  
+  <span class="hl kwa">def</span> <span class="hl kwd">normalize_offsets</span><span class="hl opt">(</span> values<span class="hl opt">,</span> min)
+    even_min <span class="hl opt">=</span> <span class="hl kwd">is_even</span><span class="hl opt">(</span>min)
+    other_min <span class="hl opt">=</span> even_min <span class="hl opt">?</span> min <span class="hl opt">+</span> <span class="hl num">6</span> <span class="hl opt">:</span> min <span class="hl opt">+</span> <span class="hl num">7</span>
+    other_values <span class="hl opt">=</span> values<span class="hl opt">.</span>collect <span class="hl kwa">do</span> <span class="hl opt">|</span> value <span class="hl opt">|</span> 
+      <span class="hl kwa">if</span> <span class="hl kwd">is_even</span><span class="hl opt">(</span>value) <span class="hl kwa">then</span> 
+        value <span class="hl opt">+</span> <span class="hl num">6</span> <span class="hl opt">-</span> other_min 
+      <span class="hl kwa">else</span> 
+        value <span class="hl opt">+</span> <span class="hl num">7</span> <span class="hl opt">-</span> other_min 
+      <span class="hl kwa">end</span>
+    <span class="hl kwa">end</span>
+    values<span class="hl opt">.</span>collect<span class="hl opt">!</span> <span class="hl esc">{ | value | value - min }</span>
+    
+    <span class="hl kwa">if</span> even_min <span class="hl kwa">then</span>
+      <span class="hl opt">[</span>values<span class="hl opt">,</span> other_values<span class="hl opt">]</span>
+    <span class="hl kwa">else</span>
+      <span class="hl opt">[</span>other_values<span class="hl opt">,</span> values<span class="hl opt">]</span>
+    <span class="hl kwa">end</span>
+  <span class="hl kwa">end</span>
+  
+  <span class="hl kwa">def</span> <span class="hl kwd">mask_for_offsets</span><span class="hl opt">(</span> offsets )
+    mask <span class="hl opt">=</span> <span class="hl num">0</span>
+    offsets<span class="hl opt">.</span>each <span class="hl esc">{ | value | mask = mask + ( 1 &lt;&lt; value ) }</span>
+    mask
+  <span class="hl kwa">end</span>
+
+  <span class="hl kwa">def</span> <span class="hl kwd">start_adjust</span><span class="hl opt">(</span> directions )
+    south <span class="hl opt">=</span> east <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    directions<span class="hl opt">.</span>each <span class="hl kwa">do</span> <span class="hl opt">|</span> direction <span class="hl opt">|</span>
+      east <span class="hl opt">+=</span> <span class="hl num">1</span> <span class="hl kwa">if</span> <span class="hl opt">(</span> direction <span class="hl opt">==</span> <span class="hl kwc">:sw</span> <span class="hl opt">||</span> direction <span class="hl opt">==</span> <span class="hl kwc">:nw</span> <span class="hl opt">||</span> direction <span class="hl opt">==</span> <span class="hl kwc">:west</span> )
+      south <span class="hl opt">+=</span> <span class="hl num">1</span> <span class="hl kwa">if</span> <span class="hl opt">(</span> direction <span class="hl opt">==</span> <span class="hl kwc">:nw</span> <span class="hl opt">||</span> direction <span class="hl opt">==</span> <span class="hl kwc">:ne</span> )   
+    <span class="hl kwa">end</span>
+    <span class="hl opt">[</span>south<span class="hl opt">,</span> east<span class="hl opt">]</span>
+  <span class="hl kwa">end</span>
+
+  <span class="hl kwa">def</span> <span class="hl kwd">get_values</span> <span class="hl opt">(</span> directions )
+    south<span class="hl opt">,</span> east <span class="hl opt">=</span> <span class="hl kwd">start_adjust</span><span class="hl opt">(</span>directions)
+    min <span class="hl opt">=</span> start <span class="hl opt">=</span> south <span class="hl opt">*</span> <span class="hl num">6</span> <span class="hl opt">+</span> east
+    values <span class="hl opt">= [</span> start <span class="hl opt">]</span>
+    directions<span class="hl opt">.</span>each <span class="hl kwa">do</span> <span class="hl opt">|</span> direction <span class="hl opt">|</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>start <span class="hl opt">%</span> <span class="hl num">12</span> <span class="hl opt">&gt;=</span> <span class="hl num">6</span>) <span class="hl kwa">then</span> 
+        start <span class="hl opt">+=</span> &#64;<span class="hl kwb">&#64;rotation_odd_adder</span><span class="hl opt">[</span>direction<span class="hl opt">]</span>
+      <span class="hl kwa">else</span> 
+        start <span class="hl opt">+=</span> &#64;<span class="hl kwb">&#64;rotation_even_adder</span><span class="hl opt">[</span>direction<span class="hl opt">]</span>
+      <span class="hl kwa">end</span>
+      min <span class="hl opt">=</span> start <span class="hl kwa">if</span> <span class="hl opt">(</span>start <span class="hl opt">&lt;</span> min)
+      values <span class="hl opt">+= [</span> start <span class="hl opt">]</span>
+    <span class="hl kwa">end</span>
+    
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>values<span class="hl opt">.</span>length <span class="hl opt">!=</span> <span class="hl num">5</span>)
+      values<span class="hl opt">.</span>uniq<span class="hl opt">!</span>
+    <span class="hl kwa">end</span>
+    
+    <span class="hl opt">[</span> values<span class="hl opt">,</span> min <span class="hl opt">]</span>
+  <span class="hl kwa">end</span>
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">class</span> Piece
+  attr_reader <span class="hl kwc">:rotations</span><span class="hl opt">,</span> <span class="hl kwc">:type</span><span class="hl opt">,</span> <span class="hl kwc">:masks</span>
+  attr_accessor <span class="hl kwc">:placed</span>
+  
+  &#64;<span class="hl kwb">&#64;flip_converter</span> <span class="hl opt">=</span> <span class="hl esc">{ :west =&gt; :west, :east =&gt; :east, :nw =&gt; :sw, :ne =&gt; :se, :sw =&gt; :nw, :se =&gt; :ne }</span>
+  &#64;<span class="hl kwb">&#64;rotate_converter</span> <span class="hl opt">=</span> <span class="hl esc">{ :west =&gt; :nw, :east =&gt; :se, :nw =&gt; :ne, :ne =&gt; :east, :sw =&gt; :west, :se =&gt; :sw }</span>
+  
+  <span class="hl kwa">def</span> <span class="hl kwd">initialize</span><span class="hl opt">(</span> directions<span class="hl opt">,</span> type )
+    <span class="hl kwb">&#64;type</span> <span class="hl opt">=</span> type
+    <span class="hl kwb">&#64;rotations</span> <span class="hl opt">=</span> Array<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span>)<span class="hl opt">;</span>
+    <span class="hl kwb">&#64;map</span> <span class="hl opt">=</span> <span class="hl esc">{}</span>
+    <span class="hl kwd">generate_rotations</span><span class="hl opt">(</span> directions )
+    directions<span class="hl opt">.</span>collect<span class="hl opt">!</span> <span class="hl esc">{ | value | &#64;&#64;flip_converter[value] }</span>
+    <span class="hl kwd">generate_rotations</span><span class="hl opt">(</span> directions )
+    
+    <span class="hl kwb">&#64;masks</span> <span class="hl opt">=</span> Array<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span>)<span class="hl opt">;</span>
+    <span class="hl num">0</span><span class="hl opt">.</span><span class="hl kwd">upto</span><span class="hl opt">(</span><span class="hl num">59</span>) <span class="hl kwa">do</span> <span class="hl opt">|</span> i <span class="hl opt">|</span>
+      <span class="hl kwb">&#64;masks</span><span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl kwb">&#64;rotations</span><span class="hl opt">.</span>collect <span class="hl kwa">do</span> <span class="hl opt">|</span> rotation <span class="hl opt">|</span> 
+        mask <span class="hl opt">=</span> rotation<span class="hl opt">.</span>start_masks<span class="hl opt">[</span>i<span class="hl opt">]</span>
+        <span class="hl kwb">&#64;map</span><span class="hl opt">[</span>mask<span class="hl opt">] = [</span> i<span class="hl opt">,</span> rotation <span class="hl opt">]</span> <span class="hl kwa">if</span> <span class="hl opt">(</span>mask) 
+        mask <span class="hl opt">||</span> <span class="hl kwa">nil</span>
+      <span class="hl kwa">end</span>
+      <span class="hl kwb">&#64;masks</span><span class="hl opt">[</span>i<span class="hl opt">].</span>compact<span class="hl opt">!</span>
+    <span class="hl kwa">end</span>
+  <span class="hl kwa">end</span>
+  
+  <span class="hl kwa">def</span> <span class="hl kwd">generate_rotations</span><span class="hl opt">(</span> directions ) 
+    <span class="hl num">6</span><span class="hl opt">.</span>times <span class="hl kwa">do</span>
+      rotations<span class="hl opt">.</span><span class="hl kwd">push</span><span class="hl opt">(</span> Rotation<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span>directions))
+      directions<span class="hl opt">.</span>collect<span class="hl opt">!</span> <span class="hl esc">{ | value | &#64;&#64;rotate_converter[value] }</span>
+    <span class="hl kwa">end</span>
+  <span class="hl kwa">end</span>
+  
+  <span class="hl kwa">def</span> <span class="hl kwd">fill_array</span><span class="hl opt">(</span> board_array)
+    location<span class="hl opt">,</span> rotation <span class="hl opt">=</span> <span class="hl kwb">&#64;map</span><span class="hl opt">[</span><span class="hl kwb">&#64;placed</span><span class="hl opt">]</span>
+    rotation<span class="hl opt">.</span><span class="hl kwd">offsets</span><span class="hl opt">(</span>location)<span class="hl opt">.</span>each <span class="hl kwa">do</span> <span class="hl opt">|</span> offset <span class="hl opt">|</span>
+      row<span class="hl opt">,</span> col <span class="hl opt">=</span> offset<span class="hl opt">.</span><span class="hl kwd">divmod</span><span class="hl opt">(</span><span class="hl num">6</span>)
+      board_array<span class="hl opt">[</span> row<span class="hl opt">*</span><span class="hl num">5</span> <span class="hl opt">+</span> col <span class="hl opt">] =</span> <span class="hl kwb">&#64;type</span><span class="hl opt">.</span>to_s
+    <span class="hl kwa">end</span>
+  <span class="hl kwa">end</span>
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">class</span> Processor 
+  attr <span class="hl kwc">:pieces</span><span class="hl opt">,</span> <span class="hl kwc">:board</span>
+  
+  <span class="hl kwa">def</span> <span class="hl kwd">initialize</span><span class="hl opt">(</span>) 
+    create_collector_support
+    <span class="hl kwb">&#64;pieces</span> <span class="hl opt">= [</span> 
+      Piece<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">( [</span> <span class="hl kwc">:east</span><span class="hl opt">,</span> <span class="hl kwc">:east</span><span class="hl opt">,</span> <span class="hl kwc">:east</span><span class="hl opt">,</span> <span class="hl kwc">:se</span> <span class="hl opt">],</span> <span class="hl num">0</span>)<span class="hl opt">,</span>
+      Piece<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">( [</span> <span class="hl kwc">:ne</span><span class="hl opt">,</span> <span class="hl kwc">:east</span><span class="hl opt">,</span> <span class="hl kwc">:ne</span><span class="hl opt">,</span> <span class="hl kwc">:nw</span> <span class="hl opt">],</span> <span class="hl num">1</span>)<span class="hl opt">,</span>
+      Piece<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">( [</span> <span class="hl kwc">:nw</span><span class="hl opt">,</span> <span class="hl kwc">:ne</span><span class="hl opt">,</span> <span class="hl kwc">:east</span><span class="hl opt">,</span> <span class="hl kwc">:east</span> <span class="hl opt">],</span> <span class="hl num">2</span>)<span class="hl opt">,</span>
+      Piece<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">( [</span> <span class="hl kwc">:east</span><span class="hl opt">,</span> <span class="hl kwc">:east</span><span class="hl opt">,</span> <span class="hl kwc">:sw</span><span class="hl opt">,</span> <span class="hl kwc">:se</span> <span class="hl opt">],</span> <span class="hl num">3</span>)<span class="hl opt">,</span>
+      Piece<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">( [</span> <span class="hl kwc">:ne</span><span class="hl opt">,</span> <span class="hl kwc">:nw</span><span class="hl opt">,</span> <span class="hl kwc">:se</span><span class="hl opt">,</span> <span class="hl kwc">:east</span><span class="hl opt">,</span> <span class="hl kwc">:se</span> <span class="hl opt">],</span> <span class="hl num">4</span>)<span class="hl opt">,</span>
+      Piece<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">( [</span> <span class="hl kwc">:east</span><span class="hl opt">,</span> <span class="hl kwc">:ne</span><span class="hl opt">,</span> <span class="hl kwc">:se</span><span class="hl opt">,</span> <span class="hl kwc">:ne</span> <span class="hl opt">],</span> <span class="hl num">5</span>)<span class="hl opt">,</span>
+      Piece<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">( [</span> <span class="hl kwc">:east</span><span class="hl opt">,</span> <span class="hl kwc">:sw</span><span class="hl opt">,</span> <span class="hl kwc">:sw</span><span class="hl opt">,</span> <span class="hl kwc">:se</span> <span class="hl opt">],</span> <span class="hl num">6</span>)<span class="hl opt">,</span>
+      Piece<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">( [</span> <span class="hl kwc">:ne</span><span class="hl opt">,</span> <span class="hl kwc">:se</span><span class="hl opt">,</span> <span class="hl kwc">:east</span><span class="hl opt">,</span> <span class="hl kwc">:ne</span> <span class="hl opt">],</span> <span class="hl num">7</span>)<span class="hl opt">,</span>
+      Piece<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">( [</span> <span class="hl kwc">:se</span><span class="hl opt">,</span> <span class="hl kwc">:se</span><span class="hl opt">,</span> <span class="hl kwc">:east</span><span class="hl opt">,</span> <span class="hl kwc">:se</span> <span class="hl opt">],</span> <span class="hl num">8</span>)<span class="hl opt">,</span>
+      Piece<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">( [</span> <span class="hl kwc">:se</span><span class="hl opt">,</span> <span class="hl kwc">:se</span><span class="hl opt">,</span> <span class="hl kwc">:se</span><span class="hl opt">,</span> <span class="hl kwc">:west</span> <span class="hl opt">],</span> <span class="hl num">9</span>) <span class="hl opt">];</span>
+      
+    <span class="hl kwb">&#64;all_pieces</span> <span class="hl opt">=</span> Array<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span> <span class="hl kwb">&#64;pieces</span>)
+
+    <span class="hl kwb">&#64;min_board</span> <span class="hl opt">=</span> <span class="hl str">&quot;99999999999999999999999999999999999999999999999999&quot;</span>
+    <span class="hl kwb">&#64;max_board</span> <span class="hl opt">=</span> <span class="hl str">&quot;00000000000000000000000000000000000000000000000000&quot;</span>
+    <span class="hl kwb">&#64;stop_count</span> <span class="hl opt">=</span> <span class="hl kwc">ARGV</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>to_i <span class="hl opt">||</span> <span class="hl num">2089</span>
+    <span class="hl kwb">&#64;all_boards</span> <span class="hl opt">=</span> <span class="hl esc">{}</span>
+    <span class="hl kwb">&#64;boards_found</span> <span class="hl opt">=</span> <span class="hl num">0</span>
+  <span class="hl kwa">end</span>
+  
+  <span class="hl kwa">def</span> find_all
+    <span class="hl kwd">find_top</span><span class="hl opt">(</span> <span class="hl num">0</span>)
+    <span class="hl kwd">find_top</span><span class="hl opt">(</span> <span class="hl num">1</span>)
+    print_results
+  <span class="hl kwa">end</span>
+
+  <span class="hl kwa">def</span> print_results
+    print <span class="hl str">&quot;</span><span class="hl esc">#{&#64;boards_found}</span> <span class="hl str">solutions found\n\n&quot;</span>
+    <span class="hl kwd">print_full_board</span><span class="hl opt">(</span> <span class="hl kwb">&#64;min_board</span>)
+    print <span class="hl str">&quot;\n&quot;</span>
+    <span class="hl kwd">print_full_board</span><span class="hl opt">(</span> <span class="hl kwb">&#64;max_board</span>)
+    print <span class="hl str">&quot;\n&quot;</span>
+  <span class="hl kwa">end</span>
+
+  <span class="hl kwa">def</span> <span class="hl kwd">find_top</span><span class="hl opt">(</span> rotation_skip) 
+    board <span class="hl opt">=</span> blank_board
+    <span class="hl kwb">&#64;pieces</span><span class="hl opt">.</span>length<span class="hl opt">.</span>times <span class="hl kwa">do</span>
+      piece <span class="hl opt">=</span> <span class="hl kwb">&#64;pieces</span><span class="hl opt">.</span>shift
+      piece<span class="hl opt">.</span>masks<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>each <span class="hl kwa">do</span> <span class="hl opt">|</span> mask <span class="hl opt">|</span>
+        <span class="hl kwa">if</span> <span class="hl opt">((</span>rotation_skip <span class="hl opt">+=</span> <span class="hl num">1</span>) <span class="hl opt">%</span> <span class="hl num">2</span> <span class="hl opt">==</span> <span class="hl num">0</span>) <span class="hl kwa">then</span>
+          piece<span class="hl opt">.</span>placed <span class="hl opt">=</span> mask
+          <span class="hl kwd">find</span><span class="hl opt">(</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> board <span class="hl opt">|</span> mask) 
+        <span class="hl kwa">end</span>
+      <span class="hl kwa">end</span>
+      <span class="hl kwb">&#64;pieces</span><span class="hl opt">.</span><span class="hl kwd">push</span><span class="hl opt">(</span>piece)
+    <span class="hl kwa">end</span>
+  <span class="hl kwa">end</span>
+
+  <span class="hl kwa">def</span> <span class="hl kwd">find</span><span class="hl opt">(</span> start_location<span class="hl opt">,</span> placed<span class="hl opt">,</span> board) 
+    <span class="hl kwa">while</span> board<span class="hl opt">[</span>start_location<span class="hl opt">] ==</span> <span class="hl num">1</span>
+      start_location <span class="hl opt">+=</span> <span class="hl num">1</span> 
+    <span class="hl kwa">end</span>
+
+    <span class="hl kwa">return if</span> <span class="hl opt">(</span>start_location <span class="hl opt">&lt;</span> <span class="hl num">28</span> <span class="hl opt">&amp;&amp;</span> <span class="hl kwd">prunable</span><span class="hl opt">(</span> board<span class="hl opt">,</span> start_location))
+    
+    <span class="hl kwb">&#64;pieces</span><span class="hl opt">.</span>length<span class="hl opt">.</span>times <span class="hl kwa">do</span>
+      piece <span class="hl opt">=</span> <span class="hl kwb">&#64;pieces</span><span class="hl opt">.</span>shift
+      piece<span class="hl opt">.</span>masks<span class="hl opt">[</span>start_location<span class="hl opt">].</span>each <span class="hl kwa">do</span> <span class="hl opt">|</span> mask <span class="hl opt">|</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>mask <span class="hl opt">&amp;</span> board <span class="hl opt">==</span> <span class="hl num">0</span>) <span class="hl kwa">then</span>
+          piece<span class="hl opt">.</span>placed <span class="hl opt">=</span> mask
+          <span class="hl kwa">if</span> <span class="hl opt">(</span>placed <span class="hl opt">==</span> <span class="hl num">9</span>) <span class="hl kwa">then</span>
+            add_board
+          <span class="hl kwa">else</span>
+            <span class="hl kwd">find</span><span class="hl opt">(</span> start_location <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">,</span> placed <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">,</span> board <span class="hl opt">|</span> mask) 
+          <span class="hl kwa">end</span>
+        <span class="hl kwa">end</span>
+      <span class="hl kwa">end</span>
+      <span class="hl kwb">&#64;pieces</span><span class="hl opt">.</span><span class="hl kwd">push</span><span class="hl opt">(</span>piece)
+    <span class="hl kwa">end</span>
+  <span class="hl kwa">end</span>
+  
+  <span class="hl kwa">def</span> <span class="hl kwd">print_full_board</span><span class="hl opt">(</span> board_string)
+    <span class="hl num">10</span><span class="hl opt">.</span>times <span class="hl kwa">do</span> <span class="hl opt">|</span> row <span class="hl opt">|</span>
+      print <span class="hl str">&quot; &quot;</span> <span class="hl kwa">if</span> <span class="hl opt">(</span>row <span class="hl opt">%</span> <span class="hl num">2</span> <span class="hl opt">==</span> <span class="hl num">1</span>) 
+      <span class="hl num">5</span><span class="hl opt">.</span>times <span class="hl kwa">do</span> <span class="hl opt">|</span> col <span class="hl opt">|</span>
+        print <span class="hl str">&quot;</span><span class="hl esc">#{board_string[row*5 + col,1]}</span> <span class="hl str">&quot;</span>
+      <span class="hl kwa">end</span>
+      print <span class="hl str">&quot;\n&quot;</span>
+    <span class="hl kwa">end</span>
+  <span class="hl kwa">end</span>
+  
+  <span class="hl kwa">def</span> add_board
+    board_array <span class="hl opt">=</span> Array<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">50</span>)
+    <span class="hl kwb">&#64;all_pieces</span><span class="hl opt">.</span>each <span class="hl kwa">do</span> <span class="hl opt">|</span> piece <span class="hl opt">|</span>
+      piece<span class="hl opt">.</span><span class="hl kwd">fill_array</span><span class="hl opt">(</span> board_array )
+    <span class="hl kwa">end</span>
+    start_board <span class="hl opt">=</span> board_string <span class="hl opt">=</span> board_array<span class="hl opt">.</span><span class="hl kwd">join</span><span class="hl opt">(</span><span class="hl str">&quot;&quot;</span>)
+    <span class="hl kwd">save</span><span class="hl opt">(</span> board_string)
+    board_string <span class="hl opt">=</span> <span class="hl kwd">flip</span><span class="hl opt">(</span> board_string)
+    <span class="hl kwd">save</span><span class="hl opt">(</span> board_string)
+  <span class="hl kwa">end</span>
+
+  <span class="hl kwa">def</span> <span class="hl kwd">flip</span><span class="hl opt">(</span> board_string)
+    new_string <span class="hl opt">=</span> <span class="hl str">&quot;&quot;</span>
+    <span class="hl num">50</span><span class="hl opt">.</span>times <span class="hl kwa">do</span> <span class="hl opt">|</span> i <span class="hl opt">|</span>
+      row<span class="hl opt">,</span> col <span class="hl opt">=</span> i<span class="hl opt">.</span><span class="hl kwd">divmod</span><span class="hl opt">(</span><span class="hl num">5</span>)
+      new_string <span class="hl opt">+=</span> board_string<span class="hl opt">[((</span><span class="hl num">9</span> <span class="hl opt">-</span> row) <span class="hl opt">*</span> <span class="hl num">5</span>) <span class="hl opt">+ (</span><span class="hl num">4</span> <span class="hl opt">-</span> col)<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">]</span>
+    <span class="hl kwa">end</span>
+    new_string
+  <span class="hl kwa">end</span>
+      
+  <span class="hl kwa">def</span> <span class="hl kwd">save</span><span class="hl opt">(</span> board_string)
+    <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwb">&#64;all_boards</span><span class="hl opt">[</span>board_string<span class="hl opt">] ==</span> <span class="hl kwa">nil</span>) <span class="hl kwa">then</span>
+      <span class="hl kwb">&#64;min_board</span> <span class="hl opt">=</span> board_string <span class="hl kwa">if</span> <span class="hl opt">(</span>board_string <span class="hl opt">&lt;</span> <span class="hl kwb">&#64;min_board</span>)
+      <span class="hl kwb">&#64;max_board</span> <span class="hl opt">=</span> board_string <span class="hl kwa">if</span> <span class="hl opt">(</span>board_string <span class="hl opt">&gt;</span> <span class="hl kwb">&#64;max_board</span>)
+      <span class="hl kwb">&#64;all_boards</span><span class="hl opt">.</span><span class="hl kwd">store</span><span class="hl opt">(</span>board_string<span class="hl opt">,</span><span class="hl kwa">true</span>)
+      <span class="hl kwb">&#64;boards_found</span> <span class="hl opt">+=</span> <span class="hl num">1</span>
+
+      <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwb">&#64;boards_found</span> <span class="hl opt">==</span> <span class="hl kwb">&#64;stop_count</span>) <span class="hl kwa">then</span>
+        print_results
+        <span class="hl kwd">exit</span><span class="hl opt">(</span><span class="hl num">0</span>)
+      <span class="hl kwa">end</span>
+    <span class="hl kwa">end</span>
+  <span class="hl kwa">end</span>
+  
+<span class="hl kwa">end</span>
+
+proc <span class="hl opt">=</span> Processor<span class="hl opt">.</span>new<span class="hl opt">.</span>find_all
+

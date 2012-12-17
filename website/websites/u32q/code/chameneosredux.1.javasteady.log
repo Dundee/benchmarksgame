@@ -1,0 +1,41 @@
+
+Sat, 07 Jan 2012 06:27:56 GMT
+
+MAKE:
+mv chameneosredux.javasteady chameneosredux.java
+/usr/local/src/jdk1.7.0_02/bin/javac chameneosredux.java
+0.57s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/src/jdk1.7.0_02/bin/java  -Xms512m -Xmx512m -server -XX:+TieredCompilation -XX:+AggressiveOpts chameneosredux 6000000
+
+PROGRAM OUTPUT:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
+ blue red yellow
+4111486 zero
+3953981 zero
+3934533 zero
+ one two zero zero zero zero zero zero
+
+ blue red yellow red yellow blue red yellow red blue
+1183507 zero
+1216923 zero
+1198514 zero
+1360682 zero
+1266026 zero
+1027065 zero
+1242065 zero
+1204982 zero
+1119379 zero
+1180857 zero
+ one two zero zero zero zero zero zero
+

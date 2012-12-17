@@ -1,0 +1,26 @@
+
+Fri, 07 Sep 2012 18:51:59 GMT
+
+MAKE:
+mv binarytrees.ghc-2.ghc binarytrees.ghc-2.hs
+/usr/local/src/ghc-7.6.1/bin/ghc --make -fllvm -O2 -XBangPatterns -rtsopts -funbox-strict-fields binarytrees.ghc-2.hs -o binarytrees.ghc-2.ghc_run
+[1 of 1] Compiling Main             ( binarytrees.ghc-2.hs, binarytrees.ghc-2.o )
+Linking binarytrees.ghc-2.ghc_run ...
+rm binarytrees.ghc-2.hs
+1.50s to complete and log all make actions
+
+COMMAND LINE:
+./binarytrees.ghc-2.ghc_run +RTS -K128M -H -RTS 20
+
+PROGRAM OUTPUT:
+stretch tree of depth 21	 check: -1
+2097152	 trees of depth 4	 check: -2097152
+524288	 trees of depth 6	 check: -524288
+131072	 trees of depth 8	 check: -131072
+32768	 trees of depth 10	 check: -32768
+8192	 trees of depth 12	 check: -8192
+2048	 trees of depth 14	 check: -2048
+512	 trees of depth 16	 check: -512
+128	 trees of depth 18	 check: -128
+32	 trees of depth 20	 check: -32
+long lived tree of depth 20	 check: -1

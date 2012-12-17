@@ -1,0 +1,43 @@
+
+Wed, 12 Dec 2012 18:29:31 GMT
+
+MAKE:
+mv chameneosredux.java chameneosredux.java
+mv: `chameneosredux.java' and `chameneosredux.java' are the same file
+make: [chameneosredux.java_run] Error 1 (ignored)
+/usr/local/src/jdk1.7.0_10/bin/javac chameneosredux.java
+0.81s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/src/jdk1.7.0_10/bin/java  -server -XX:+TieredCompilation -XX:+AggressiveOpts chameneosredux 6000000
+
+PROGRAM OUTPUT:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
+ blue red yellow
+4004849 zero
+3937966 zero
+4057185 zero
+ one two zero zero zero zero zero zero
+
+ blue red yellow red yellow blue red yellow red blue
+1151766 zero
+1245694 zero
+1184133 zero
+1233036 zero
+1130047 zero
+1252060 zero
+1155469 zero
+1244367 zero
+1151082 zero
+1252346 zero
+ one two zero zero zero zero zero zero
+

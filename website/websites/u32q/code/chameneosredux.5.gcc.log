@@ -1,0 +1,41 @@
+
+Sat, 28 Apr 2012 16:48:09 GMT
+
+MAKE:
+/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread chameneosredux.gcc-5.c -o chameneosredux.gcc-5.gcc_run 
+rm chameneosredux.gcc-5.c
+0.25s to complete and log all make actions
+
+COMMAND LINE:
+./chameneosredux.gcc-5.gcc_run 6000000
+
+PROGRAM OUTPUT:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
+ blue red yellow
+5235643 zero
+3730555 zero
+3033802 zero
+ one two zero zero zero zero zero zero
+
+ blue red yellow red yellow blue red yellow red blue
+1016036 zero
+2883285 zero
+1026972 zero
+857330 zero
+1149433 zero
+879641 zero
+1260397 zero
+939716 zero
+1057100 zero
+930090 zero
+ one two zero zero zero zero zero zero
+

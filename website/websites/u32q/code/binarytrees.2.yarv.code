@@ -1,0 +1,52 @@
+<span class="hl slc"># The Computer Language Benchmarks Game</span>
+<span class="hl slc"># http://shootout.alioth.debian.org</span>
+<span class="hl slc">#</span>
+<span class="hl slc"># contributed by Jesse Millikan</span>
+<span class="hl slc"># Modified by Wesley Moxam and Michael Klaus</span>
+
+
+<span class="hl kwa">def</span> <span class="hl kwd">item_check</span><span class="hl opt">(</span>left<span class="hl opt">,</span> item<span class="hl opt">,</span> right)
+  <span class="hl kwa">return</span> item <span class="hl kwa">if</span> left<span class="hl opt">.</span><span class="hl kwa">nil</span><span class="hl opt">?</span>
+  item <span class="hl opt">+</span> <span class="hl kwd">item_check</span><span class="hl opt">(*</span>left) <span class="hl opt">-</span> <span class="hl kwd">item_check</span><span class="hl opt">(*</span>right)
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">def</span> <span class="hl kwd">bottom_up_tree</span><span class="hl opt">(</span>item<span class="hl opt">,</span> depth)
+  <span class="hl kwa">return</span> <span class="hl opt">[</span><span class="hl kwa">nil</span><span class="hl opt">,</span> item<span class="hl opt">,</span> <span class="hl kwa">nil</span><span class="hl opt">]</span> <span class="hl kwa">if</span> depth <span class="hl opt">==</span> <span class="hl num">0</span>
+  item_item <span class="hl opt">=</span> <span class="hl num">2</span> <span class="hl opt">*</span> item
+  depth <span class="hl opt">-=</span> <span class="hl num">1</span>
+  <span class="hl opt">[</span><span class="hl kwd">bottom_up_tree</span><span class="hl opt">(</span>item_item <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">,</span> depth)<span class="hl opt">,</span> item<span class="hl opt">,</span> <span class="hl kwd">bottom_up_tree</span><span class="hl opt">(</span>item_item<span class="hl opt">,</span> depth)<span class="hl opt">]</span>
+<span class="hl kwa">end</span>
+
+max_depth <span class="hl opt">=</span> <span class="hl kwc">ARGV</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>to_i
+min_depth <span class="hl opt">=</span> <span class="hl num">4</span>
+
+max_depth <span class="hl opt">= [</span>min_depth <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">,</span> max_depth<span class="hl opt">].</span>max
+
+stretch_depth <span class="hl opt">=</span> max_depth <span class="hl opt">+</span> <span class="hl num">1</span>
+stretch_tree <span class="hl opt">=</span> <span class="hl kwd">bottom_up_tree</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> stretch_depth)
+
+puts <span class="hl str">&quot;stretch tree of depth</span> <span class="hl esc">#{stretch_depth}</span><span class="hl str">\t check:</span> <span class="hl esc">#{item_check(*stretch_tree)}</span><span class="hl str">&quot;</span>
+stretch_tree <span class="hl opt">=</span> <span class="hl kwa">nil</span>
+
+long_lived_tree <span class="hl opt">=</span> <span class="hl kwd">bottom_up_tree</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> max_depth)
+
+base_depth <span class="hl opt">=</span> max_depth <span class="hl opt">+</span> min_depth
+min_depth<span class="hl opt">.</span><span class="hl kwd">step</span><span class="hl opt">(</span>max_depth <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">2</span>) <span class="hl kwa">do</span> <span class="hl opt">|</span>depth<span class="hl opt">|</span>
+  iterations <span class="hl opt">=</span> <span class="hl num">2</span> <span class="hl opt">** (</span>base_depth <span class="hl opt">-</span> depth)
+
+  check <span class="hl opt">=</span> <span class="hl num">0</span>
+
+  <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl num">1</span><span class="hl opt">..</span>iterations
+    temp_tree <span class="hl opt">=</span> <span class="hl kwd">bottom_up_tree</span><span class="hl opt">(</span>i<span class="hl opt">,</span> depth)
+    check <span class="hl opt">+=</span> <span class="hl kwd">item_check</span><span class="hl opt">(*</span>temp_tree)
+
+    temp_tree <span class="hl opt">=</span> <span class="hl kwd">bottom_up_tree</span><span class="hl opt">(-</span>i<span class="hl opt">,</span> depth)
+    check <span class="hl opt">+=</span> <span class="hl kwd">item_check</span><span class="hl opt">(*</span>temp_tree)
+  <span class="hl kwa">end</span>
+
+  puts <span class="hl str">&quot;</span><span class="hl esc">#{iterations * 2}</span><span class="hl str">\t trees of depth</span> <span class="hl esc">#{depth}</span><span class="hl str">\t check:</span> <span class="hl esc">#{check}</span><span class="hl str">&quot;</span>
+<span class="hl kwa">end</span>
+
+puts <span class="hl str">&quot;long lived tree of depth</span> <span class="hl esc">#{max_depth}</span><span class="hl str">\t check:</span> <span class="hl esc">#{item_check(*long_lived_tree)}</span><span class="hl str">&quot;</span>
+
+

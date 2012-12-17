@@ -1,0 +1,335 @@
+<span class="hl com">(*</span>
+<span class="hl com">** The Computer Language Benchmarks Game</span>
+<span class="hl com">** http://shootout.alioth.debian.org/</span>
+<span class="hl com">** </span>
+<span class="hl com">** Author: Hongwei Xi</span>
+<span class="hl com">** Author: Zhiqiang Ren</span>
+<span class="hl com">**</span>
+<span class="hl com">** compilation command:</span>
+<span class="hl com">**   atscc -O3 fasta4.dats -msse2 -mfpmath=sse -o fasta4</span>
+<span class="hl com">*)</span>
+
+<span class="hl com">(* ****** ****** *)</span>
+
+<span class="hl opt">%{^</span>
+<span class="hl ppc">#define likely(x) __builtin_expect((x), 1)</span>
+<span class="hl ppc">#define unlikely(x) __builtin_expect((x), 0)</span>
+<span class="hl opt">%}</span> <span class="hl slc">// end of [{%^]</span>
+<span class="hl kwa">extern fun</span> unlikely0 <span class="hl opt">(</span>x<span class="hl opt">:</span> <span class="hl kwb">bool</span><span class="hl opt">):</span> <span class="hl kwb">bool</span> <span class="hl opt">=</span> <span class="hl str">&quot;mac#unlikely&quot;</span>
+
+<span class="hl com">(* ****** ****** *)</span>
+
+<span class="hl kwa">staload</span> <span class="hl str">&quot;libc/SATS/stdio.sats&quot;</span>
+  
+<span class="hl com">(* ****** ****** *)</span>
+
+<span class="hl kwa">macdef</span> <span class="hl kwd">IM</span> <span class="hl opt">=</span> <span class="hl num">139968U</span>
+<span class="hl kwa">macdef</span> <span class="hl kwd">IA</span> <span class="hl opt">=</span> <span class="hl num">3877U</span>
+<span class="hl kwa">macdef</span> <span class="hl kwd">IC</span> <span class="hl opt">=</span> <span class="hl num">29573U</span>
+
+<span class="hl ppc">#define BUFLEN 60</span>
+<span class="hl ppc">#define LOOKUP_SIZE 4096</span>
+<span class="hl kwa">macdef</span> <span class="hl kwd">LOOKUP_SCALE</span> <span class="hl opt">= (</span>float_of<span class="hl opt">)(</span><span class="hl kwd">LOOKUP_SIZE</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">)</span>
+
+<span class="hl com">(* ****** ****** *)</span>
+
+<span class="hl kwa">typedef</span> random_t <span class="hl opt">=</span> uint <span class="hl slc">// unsigned int</span>
+<span class="hl kwa">extern typedef</span> <span class="hl str">&quot;random_t&quot;</span> <span class="hl opt">=</span> random_t
+
+<span class="hl kwa">extern fun</span> random_init
+  <span class="hl opt">(</span>seed<span class="hl opt">: &amp;</span>random_t? <span class="hl opt">&gt;&gt;</span> random_t<span class="hl opt">):&lt;&gt;</span> void <span class="hl opt">=</span> <span class="hl str">&quot;random_init&quot;</span>
+
+<span class="hl kwa">implement</span> random_init <span class="hl opt">(</span>seed<span class="hl opt">) =</span> seed <span class="hl opt">:=</span> <span class="hl num">42U</span>
+
+fn random_next_lookup
+  <span class="hl opt">(</span>seed<span class="hl opt">: &amp;</span>random_t<span class="hl opt">):</span> <span class="hl kwb">float</span> <span class="hl opt">=</span> <span class="hl kwa">let</span>
+  <span class="hl kwa">val</span> <span class="hl opt">() =</span> seed <span class="hl opt">:= (</span>seed <span class="hl opt">*</span> <span class="hl kwd">IA</span> <span class="hl opt">+</span> <span class="hl kwd">IC</span><span class="hl opt">)</span> <span class="hl kwa">mod</span> <span class="hl kwd">IM</span>
+<span class="hl kwa">in</span>
+  <span class="hl opt">(</span>float_of<span class="hl opt">)</span>seed <span class="hl opt">* (</span><span class="hl kwd">LOOKUP_SCALE</span> / <span class="hl opt">(</span>float_of<span class="hl opt">)</span><span class="hl kwd">IM</span><span class="hl opt">)</span>
+<span class="hl kwa">end</span> <span class="hl slc">// end of [random_next_lookup]</span>
+
+<span class="hl com">(* ****** ****** *)</span>
+
+<span class="hl kwa">typedef</span> amino_acid <span class="hl opt">=</span>
+  $extype_struct <span class="hl str">&quot;amino_acid&quot;</span> <span class="hl kwa">of</span> <span class="hl opt">{</span>
+  sym<span class="hl opt">=</span> char<span class="hl opt">,</span> prob<span class="hl opt">=</span> <span class="hl kwb">float</span><span class="hl opt">,</span> cprob_lookup<span class="hl opt">=</span> <span class="hl kwb">float</span>
+<span class="hl opt">}</span> <span class="hl slc">// end of [amino_acid]</span>
+
+<span class="hl kwa">typedef</span> aminoarr <span class="hl opt">(</span>n<span class="hl opt">:</span><span class="hl kwb">int</span><span class="hl opt">) =</span> &#64;<span class="hl opt">[</span>amino_acid<span class="hl opt">][</span>n<span class="hl opt">]</span>
+
+<span class="hl com">(* ****** ****** *)</span>
+
+<span class="hl kwa">extern fun</span> fwrite_substring <span class="hl opt">{</span>m<span class="hl opt">,</span>p<span class="hl opt">,</span>n<span class="hl opt">:</span>nat | p <span class="hl opt">+</span> n <span class="hl opt">&lt;=</span> m<span class="hl opt">}</span>
+  <span class="hl opt">(</span>str<span class="hl opt">:</span> <span class="hl kwb">string</span> m<span class="hl opt">,</span> beg<span class="hl opt">:</span> size_t p<span class="hl opt">,</span> n<span class="hl opt">:</span> size_t n<span class="hl opt">,</span> out<span class="hl opt">:</span> <span class="hl kwd">FILEref</span><span class="hl opt">):</span> void
+  <span class="hl opt">=</span> <span class="hl str">&quot;fwrite_substring&quot;</span>
+
+<span class="hl kwa">extern</span>
+<span class="hl kwa">fun</span> repeat_fasta <span class="hl opt">{</span>len<span class="hl opt">:</span>nat<span class="hl opt">} {</span>n<span class="hl opt">:</span>nat<span class="hl opt">}</span>
+  <span class="hl opt">(</span>out<span class="hl opt">:</span> <span class="hl kwd">FILEref</span><span class="hl opt">,</span> str<span class="hl opt">:</span> <span class="hl kwb">string</span> len<span class="hl opt">,</span> n<span class="hl opt">:</span> size_t n<span class="hl opt">):</span> void
+  <span class="hl opt">=</span> <span class="hl str">&quot;repeat_fasta&quot;</span>
+  
+<span class="hl kwa">implement</span> repeat_fasta
+  <span class="hl opt">{</span>len<span class="hl opt">} {</span>n<span class="hl opt">} (</span>out<span class="hl opt">,</span> str<span class="hl opt">,</span> n<span class="hl opt">):</span> void <span class="hl opt">=</span> <span class="hl kwa">let</span>
+  <span class="hl kwa">macdef</span> <span class="hl kwd">BUFLEN_sz</span> <span class="hl opt">=</span> size1_of_int1 <span class="hl opt">(</span><span class="hl kwd">BUFLEN</span><span class="hl opt">)</span>
+  <span class="hl kwa">val</span> len <span class="hl opt">=</span> string1_length str
+  <span class="hl kwa">val</span> <span class="hl opt">() =</span> <span class="hl kwa">assert</span> <span class="hl opt">(</span>len <span class="hl opt">&gt;=</span> <span class="hl kwd">BUFLEN_sz</span><span class="hl opt">)</span>
+  <span class="hl kwa">fun</span> loop <span class="hl opt">{</span>n<span class="hl opt">,</span>pos<span class="hl opt">:</span>nat | pos <span class="hl opt">&lt;=</span> len<span class="hl opt">}</span>
+    <span class="hl opt">(</span>out<span class="hl opt">:</span> <span class="hl kwd">FILEref</span><span class="hl opt">,</span> n<span class="hl opt">:</span> size_t n<span class="hl opt">,</span> pos<span class="hl opt">:</span> size_t pos<span class="hl opt">):&lt;</span>cloref1<span class="hl opt">&gt;</span> void <span class="hl opt">=</span>
+    <span class="hl kwa">if</span> n <span class="hl opt">&gt;</span> <span class="hl kwd">BUFLEN_sz</span> <span class="hl kwa">then let</span>
+      <span class="hl kwa">val</span> left <span class="hl opt">=</span> len <span class="hl opt">-</span> pos <span class="hl kwa">in</span>
+      <span class="hl kwa">if</span> left <span class="hl opt">&gt;=</span> <span class="hl kwd">BUFLEN_sz</span> <span class="hl kwa">then let</span>
+        <span class="hl kwa">val</span> <span class="hl opt">() =</span> fwrite_substring <span class="hl opt">(</span>str<span class="hl opt">,</span> pos<span class="hl opt">,</span> <span class="hl kwd">BUFLEN_sz</span><span class="hl opt">,</span> out<span class="hl opt">)</span>
+        <span class="hl kwa">val</span> _err <span class="hl opt">=</span> fputc_err <span class="hl opt">(</span><span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">,</span> out<span class="hl opt">)</span>
+      <span class="hl kwa">in</span>
+        loop <span class="hl opt">(</span>out<span class="hl opt">,</span> n <span class="hl opt">-</span> <span class="hl kwd">BUFLEN_sz</span><span class="hl opt">,</span> pos <span class="hl opt">+</span> <span class="hl kwd">BUFLEN_sz</span><span class="hl opt">)</span>
+      <span class="hl kwa">end else let</span>
+        <span class="hl kwa">val</span> <span class="hl opt">() =</span> fwrite_substring <span class="hl opt">(</span>str<span class="hl opt">,</span> pos<span class="hl opt">,</span> left<span class="hl opt">,</span> out<span class="hl opt">)</span>
+        <span class="hl kwa">val</span> <span class="hl opt">() =</span> fwrite_substring <span class="hl opt">(</span>str<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwd">BUFLEN_sz</span> <span class="hl opt">-</span> left<span class="hl opt">,</span> out<span class="hl opt">)</span>
+        <span class="hl kwa">val</span> _err <span class="hl opt">=</span> fputc_err <span class="hl opt">(</span><span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">,</span> out<span class="hl opt">)</span>
+      <span class="hl kwa">in</span>
+        loop <span class="hl opt">(</span>out<span class="hl opt">,</span> n <span class="hl opt">-</span> <span class="hl kwd">BUFLEN_sz</span><span class="hl opt">,</span> <span class="hl kwd">BUFLEN_sz</span> <span class="hl opt">-</span> left<span class="hl opt">)</span>
+      <span class="hl kwa">end</span> <span class="hl slc">// end of [if]</span>
+    <span class="hl kwa">end else let</span>
+      <span class="hl kwa">val</span> left <span class="hl opt">=</span> len <span class="hl opt">-</span> pos <span class="hl kwa">in</span>
+      <span class="hl kwa">if</span> left <span class="hl opt">&gt;=</span> n <span class="hl kwa">then let</span>
+        <span class="hl kwa">val</span> <span class="hl opt">() =</span> fwrite_substring <span class="hl opt">(</span>str<span class="hl opt">,</span> pos<span class="hl opt">,</span> n<span class="hl opt">,</span> out<span class="hl opt">)</span>
+        <span class="hl kwa">val</span> _err <span class="hl opt">=</span> fputc_err <span class="hl opt">(</span><span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">,</span> out<span class="hl opt">)</span>
+      <span class="hl kwa">in</span>
+        <span class="hl slc">// nothing</span>
+      <span class="hl kwa">end else let</span>
+        <span class="hl kwa">val</span> <span class="hl opt">() =</span> fwrite_substring <span class="hl opt">(</span>str<span class="hl opt">,</span> pos<span class="hl opt">,</span> left<span class="hl opt">,</span> out<span class="hl opt">)</span>
+        <span class="hl kwa">val</span> <span class="hl opt">() =</span> fwrite_substring <span class="hl opt">(</span>str<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> n<span class="hl opt">-</span>left<span class="hl opt">,</span> out<span class="hl opt">)</span>
+        <span class="hl kwa">val</span> _err <span class="hl opt">=</span> fputc_err <span class="hl opt">(</span><span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">,</span> out<span class="hl opt">)</span>
+      <span class="hl kwa">in</span>
+        <span class="hl slc">// nothing</span>
+      <span class="hl kwa">end</span> <span class="hl slc">// end of [if]</span>
+    <span class="hl kwa">end</span> <span class="hl com">(* end of [if] *)</span>
+  <span class="hl slc">// end of [loop]</span>
+<span class="hl kwa">in</span>
+  loop <span class="hl opt">(</span>out<span class="hl opt">,</span> n<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">)</span>
+<span class="hl kwa">end</span> <span class="hl slc">// end of [repeat_fasta]</span>
+
+<span class="hl com">(* ****** ****** *)</span>
+
+<span class="hl kwa">fun</span> fill_lookuparr <span class="hl opt">{</span>n0<span class="hl opt">:</span>pos<span class="hl opt">} (</span>
+    lookuparr<span class="hl opt">: &amp;(</span>&#64;<span class="hl opt">[</span>ptr?<span class="hl opt">][</span><span class="hl kwd">LOOKUP_SIZE</span><span class="hl opt">]) &gt;&gt;</span> &#64;<span class="hl opt">[</span>ptr<span class="hl opt">][</span><span class="hl kwd">LOOKUP_SIZE</span><span class="hl opt">]</span>
+  <span class="hl opt">,</span> aminoarr<span class="hl opt">: &amp;</span>aminoarr<span class="hl opt">(</span>n0<span class="hl opt">),</span> n0<span class="hl opt">:</span> size_t n0
+  <span class="hl opt">) :</span> void <span class="hl opt">=</span> <span class="hl kwa">let</span>
+  <span class="hl kwa">typedef</span> <span class="hl kwd">T</span> <span class="hl opt">=</span> amino_acid
+  <span class="hl kwa">fun</span> loop1 <span class="hl opt">{</span>n<span class="hl opt">:</span>nat<span class="hl opt">} {</span>l<span class="hl opt">:</span>addr<span class="hl opt">} .&lt;</span>n<span class="hl opt">&gt;.</span>
+    <span class="hl opt">(</span>pf<span class="hl opt">: !</span>array_v <span class="hl opt">(</span><span class="hl kwd">T</span><span class="hl opt">,</span> n<span class="hl opt">,</span> l<span class="hl opt">)</span> | p<span class="hl opt">:</span> ptr l<span class="hl opt">,</span> n<span class="hl opt">:</span> size_t n<span class="hl opt">,</span> acc<span class="hl opt">:</span> <span class="hl kwb">float</span><span class="hl opt">):&lt;&gt;</span> void <span class="hl opt">=</span>
+    <span class="hl kwa">if</span> n <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl kwa">then let</span>
+      prval <span class="hl opt">(</span>pf1<span class="hl opt">,</span> pf2<span class="hl opt">) =</span> array_v_uncons <span class="hl opt">{</span><span class="hl kwd">T</span><span class="hl opt">} (</span>pf<span class="hl opt">)</span>
+      <span class="hl kwa">val</span> acc <span class="hl opt">=</span> acc <span class="hl opt">+</span> p<span class="hl opt">-&gt;</span>prob
+      <span class="hl kwa">val</span> <span class="hl opt">() =</span> p<span class="hl opt">-&gt;</span>cprob_lookup <span class="hl opt">:=</span> acc <span class="hl opt">*</span> <span class="hl kwd">LOOKUP_SCALE</span>
+      <span class="hl kwa">val</span> <span class="hl opt">() =</span> loop1 <span class="hl opt">(</span>pf2 | p <span class="hl opt">+</span> sizeof<span class="hl opt">&lt;</span><span class="hl kwd">T</span><span class="hl opt">&gt;,</span> n<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">,</span>  acc<span class="hl opt">)</span>
+      prval <span class="hl opt">() =</span> pf <span class="hl opt">:=</span> array_v_cons <span class="hl opt">{</span><span class="hl kwd">T</span><span class="hl opt">} (</span>pf1<span class="hl opt">,</span> pf2<span class="hl opt">)</span>
+    <span class="hl kwa">in</span>
+      <span class="hl slc">// nothing</span>
+    <span class="hl kwa">end</span> <span class="hl slc">// end of [if]</span>
+  <span class="hl slc">// end of [loop1]</span>
+  <span class="hl kwa">val</span> <span class="hl opt">() =</span> loop1 <span class="hl opt">(</span>view&#64; aminoarr | <span class="hl opt">&amp;</span>aminoarr<span class="hl opt">,</span> n0<span class="hl opt">, (</span>float_of<span class="hl opt">)</span><span class="hl num">0.0</span><span class="hl opt">)</span>
+  <span class="hl kwa">val</span> <span class="hl opt">() =</span> aminoarr<span class="hl opt">.[</span>n0<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">].</span>cprob_lookup <span class="hl opt">:=</span> <span class="hl kwd">LOOKUP_SCALE</span>
+  <span class="hl kwa">fun</span> loop2 <span class="hl opt">{</span>n<span class="hl opt">:</span>nat<span class="hl opt">} {</span>l<span class="hl opt">:</span>addr<span class="hl opt">} .&lt;</span>n<span class="hl opt">&gt;. (</span>
+      pf<span class="hl opt">: !</span>array_v <span class="hl opt">(</span>ptr?<span class="hl opt">,</span> n<span class="hl opt">,</span> l<span class="hl opt">) &gt;&gt;</span> array_v <span class="hl opt">(</span>ptr<span class="hl opt">,</span> n<span class="hl opt">,</span> l<span class="hl opt">)</span>
+    | aminoarr<span class="hl opt">: &amp;(</span>&#64;<span class="hl opt">[</span><span class="hl kwd">T</span><span class="hl opt">][</span>n0<span class="hl opt">]),</span> p<span class="hl opt">:</span> ptr l<span class="hl opt">,</span> n<span class="hl opt">:</span> size_t n<span class="hl opt">,</span> fi<span class="hl opt">:</span> <span class="hl kwb">float</span><span class="hl opt">,</span> j0<span class="hl opt">:</span> natLt n0
+    <span class="hl opt">) :</span> void <span class="hl opt">=</span>
+    <span class="hl kwa">if</span> n <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl kwa">then let</span>
+      var j<span class="hl opt">:</span> natLt n0 <span class="hl opt">=</span> j0
+      <span class="hl kwa">val</span> <span class="hl opt">() =</span> <span class="hl kwa">while</span><span class="hl opt">*</span>
+        <span class="hl opt">{</span>j<span class="hl opt">:</span>nat | j <span class="hl opt">&lt;</span> n0<span class="hl opt">} (</span>j<span class="hl opt">:</span> <span class="hl kwb">int</span> j<span class="hl opt">): (</span>j<span class="hl opt">:</span> natLt n0<span class="hl opt">) =&gt;</span>
+        <span class="hl opt">(</span>aminoarr<span class="hl opt">.[</span>j<span class="hl opt">].</span>cprob_lookup <span class="hl opt">&lt;</span> fi<span class="hl opt">)</span> <span class="hl kwa">let</span>
+        prval <span class="hl opt">() =</span> _meta_info <span class="hl opt">()</span> where <span class="hl opt">{</span>
+          <span class="hl kwa">extern</span> praxi _meta_info <span class="hl opt">(): [</span>j<span class="hl opt">+</span><span class="hl num">1</span> <span class="hl opt">&lt;</span> n0<span class="hl opt">]</span> void
+        <span class="hl opt">}</span> <span class="hl slc">// end of [prval]</span>
+      <span class="hl kwa">in</span>
+        j <span class="hl opt">:=</span> j <span class="hl opt">+</span> <span class="hl num">1</span>
+      <span class="hl kwa">end</span> <span class="hl slc">// end of [val]</span>
+      prval <span class="hl opt">(</span>pf1<span class="hl opt">,</span> pf2<span class="hl opt">) =</span> array_v_uncons <span class="hl opt">{</span>ptr?<span class="hl opt">} (</span>pf<span class="hl opt">)</span>
+      <span class="hl kwa">val</span> <span class="hl opt">() = !</span>p <span class="hl opt">:= &amp;</span>aminoarr<span class="hl opt">.[</span>j<span class="hl opt">]</span>
+      <span class="hl kwa">val</span> <span class="hl opt">() =</span> loop2 <span class="hl opt">(</span>pf2 | aminoarr<span class="hl opt">,</span> p<span class="hl opt">+</span>sizeof<span class="hl opt">&lt;</span>ptr<span class="hl opt">&gt;,</span> n<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">,</span> fi<span class="hl opt">+(</span>float_of<span class="hl opt">)</span><span class="hl num">1</span><span class="hl opt">,</span> j<span class="hl opt">)</span>
+    <span class="hl kwa">in</span>
+      pf <span class="hl opt">:=</span> array_v_cons <span class="hl opt">{</span>ptr<span class="hl opt">} (</span>pf1<span class="hl opt">,</span> pf2<span class="hl opt">)</span>
+    <span class="hl kwa">end else let</span>
+      prval <span class="hl opt">() =</span> array_v_unnil <span class="hl opt">{</span>ptr?<span class="hl opt">}</span> pf
+      prval <span class="hl opt">() =</span> pf <span class="hl opt">:=</span> array_v_nil <span class="hl opt">{</span>ptr<span class="hl opt">} ()</span>
+    <span class="hl kwa">in</span>
+      <span class="hl slc">// nothing</span>
+    <span class="hl kwa">end</span> <span class="hl slc">// end of [if]</span>
+  <span class="hl slc">// end of [loop2]</span>
+  <span class="hl kwa">val</span> <span class="hl opt">() =</span> loop2 <span class="hl opt">(</span>view&#64; lookuparr | aminoarr<span class="hl opt">, &amp;</span>lookuparr<span class="hl opt">,</span> <span class="hl kwd">LOOKUP_SIZE</span><span class="hl opt">, (</span>float_of<span class="hl opt">)</span><span class="hl num">0.0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">)</span>
+<span class="hl kwa">in</span>
+  <span class="hl slc">// nothing</span>
+<span class="hl kwa">end</span> <span class="hl slc">// end of [fill_lookuparr]</span>
+
+<span class="hl com">(* ****** ****** *)</span>
+
+<span class="hl kwa">typedef</span> lookuparr <span class="hl opt">=</span> &#64;<span class="hl opt">[</span>ptr<span class="hl opt">][</span><span class="hl kwd">LOOKUP_SIZE</span><span class="hl opt">]</span>
+
+<span class="hl com">(* ****** ****** *)</span>
+
+<span class="hl kwa">extern</span>
+<span class="hl kwa">fun</span> randomize <span class="hl opt">{</span>n0<span class="hl opt">:</span>pos<span class="hl opt">} {</span>n<span class="hl opt">:</span>nat<span class="hl opt">} (</span>
+    aminoarr<span class="hl opt">: &amp;</span>aminoarr<span class="hl opt">(</span>n0<span class="hl opt">),</span> n0<span class="hl opt">:</span> size_t n0<span class="hl opt">,</span> n<span class="hl opt">:</span> <span class="hl kwb">int</span> n<span class="hl opt">,</span> seed<span class="hl opt">: &amp;</span>random_t
+  <span class="hl opt">) :</span> void
+  <span class="hl opt">=</span> <span class="hl str">&quot;randomize&quot;</span>
+ 
+<span class="hl kwa">implement</span> randomize
+  <span class="hl opt">(</span>aminoarr<span class="hl opt">,</span> n0<span class="hl opt">,</span> n<span class="hl opt">,</span> seed<span class="hl opt">) = ()</span> where <span class="hl opt">{</span>
+<span class="hl slc">//</span>
+  <span class="hl kwa">extern fun</span> fwrite_byte
+    <span class="hl opt">(</span>buf<span class="hl opt">:</span> ptr<span class="hl opt">,</span> n<span class="hl opt">:</span> <span class="hl kwb">int</span><span class="hl opt">,</span> out<span class="hl opt">:</span> <span class="hl kwd">FILEref</span><span class="hl opt">):&lt;&gt;</span> void <span class="hl opt">=</span> <span class="hl str">&quot;fwrite_byte&quot;</span>
+  <span class="hl slc">// end of [fwrite_byte]</span>
+<span class="hl slc">//</span>
+  var <span class="hl opt">!</span>p_lookuparr <span class="hl kwa">with</span> pf_lookuparr <span class="hl opt">=</span> &#64;<span class="hl opt">[</span>ptr<span class="hl opt">][</span><span class="hl kwd">LOOKUP_SIZE</span><span class="hl opt">]()</span>
+  var <span class="hl opt">!</span>p_buf <span class="hl kwa">with</span> pf_buf <span class="hl opt">=</span> &#64;<span class="hl opt">[</span>char?<span class="hl opt">][</span><span class="hl kwd">BUFLEN</span><span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">]()</span>
+  <span class="hl kwa">val</span> <span class="hl opt">() =</span> p_buf<span class="hl opt">-&gt;[</span><span class="hl kwd">BUFLEN</span><span class="hl opt">] :=</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span>
+  <span class="hl kwa">val</span> <span class="hl opt">() =</span> fill_lookuparr <span class="hl opt">(!</span>p_lookuparr<span class="hl opt">,</span> aminoarr<span class="hl opt">,</span> n0<span class="hl opt">)</span>
+  var i<span class="hl opt">:</span> <span class="hl kwd">Nat</span> <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl kwa">and</span> j<span class="hl opt">:</span> natLte <span class="hl opt">(</span><span class="hl kwd">BUFLEN</span><span class="hl opt">) =</span> <span class="hl num">0</span>
+  <span class="hl kwa">val</span> <span class="hl opt">() =</span> <span class="hl kwa">while</span> <span class="hl opt">(</span>i <span class="hl opt">&lt;</span> n<span class="hl opt">)</span> <span class="hl kwa">let</span>
+    <span class="hl kwa">val</span> <span class="hl opt">() =</span> <span class="hl kwa">if</span> <span class="hl opt">:(</span>j<span class="hl opt">:</span> natLt <span class="hl opt">(</span><span class="hl kwd">BUFLEN</span><span class="hl opt">)) =&gt;</span>
+      <span class="hl opt">(</span>j <span class="hl opt">=</span> <span class="hl kwd">BUFLEN</span><span class="hl opt">)</span> <span class="hl kwa">then</span>
+      <span class="hl opt">(</span>fwrite_byte <span class="hl opt">(</span>p_buf<span class="hl opt">,</span> <span class="hl kwd">BUFLEN</span><span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">,</span> stdout_ref<span class="hl opt">);</span> j <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">)</span>
+    <span class="hl slc">// end of [if]</span>
+<span class="hl slc">//</span>
+    <span class="hl kwa">val</span> r <span class="hl opt">=</span> random_next_lookup <span class="hl opt">(</span>seed<span class="hl opt">)</span>
+    <span class="hl kwa">val</span> ri <span class="hl opt">=</span> int_of_float <span class="hl opt">(</span>r<span class="hl opt">)</span>
+    <span class="hl kwa">val</span> <span class="hl opt">[</span>ri<span class="hl opt">:</span><span class="hl kwb">int</span><span class="hl opt">]</span> ri <span class="hl opt">=</span> int1_of_int <span class="hl opt">(</span>ri<span class="hl opt">)</span>
+    prval <span class="hl opt">() =</span> _meta_info <span class="hl opt">()</span> where <span class="hl opt">{</span>
+      <span class="hl kwa">extern</span> praxi _meta_info <span class="hl opt">(): [</span><span class="hl num">0</span> <span class="hl opt">&lt;=</span> ri <span class="hl opt">&amp;&amp;</span> ri <span class="hl opt">&lt;</span> <span class="hl kwd">LOOKUP_SIZE</span><span class="hl opt">]</span> void
+    <span class="hl opt">}</span> <span class="hl slc">// end of [prval]</span>
+<span class="hl slc">//</span>
+    <span class="hl kwa">typedef</span> <span class="hl kwd">T</span> <span class="hl opt">=</span> amino_acid
+    var u<span class="hl opt">:</span> ptr <span class="hl opt">=</span> p_lookuparr<span class="hl opt">-&gt;[</span>ri<span class="hl opt">]</span>
+<span class="hl slc">//</span>
+    <span class="hl kwa">extern</span> castfn __cast <span class="hl opt">(</span>u<span class="hl opt">:</span> ptr<span class="hl opt">)</span>
+      <span class="hl opt">:&lt;&gt; [</span>l<span class="hl opt">:</span>addr<span class="hl opt">] (</span><span class="hl kwd">T</span> &#64; l<span class="hl opt">,</span> <span class="hl kwd">T</span> &#64; l <span class="hl opt">-&lt;</span>lin<span class="hl opt">,</span>prf<span class="hl opt">&gt;</span> void | ptr l<span class="hl opt">)</span>
+    <span class="hl kwa">val</span> <span class="hl opt">() =</span> <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl kwa">true</span><span class="hl opt">)</span> <span class="hl kwa">let</span>
+      <span class="hl kwa">val</span> <span class="hl opt">(</span>pf<span class="hl opt">,</span> fpf | u1<span class="hl opt">) =</span> __cast <span class="hl opt">(</span>u<span class="hl opt">)</span>
+      <span class="hl kwa">val</span> r1 <span class="hl opt">=</span> u1<span class="hl opt">-&gt;</span>cprob_lookup
+      prval <span class="hl opt">() =</span> fpf <span class="hl opt">(</span>pf<span class="hl opt">)</span>
+    <span class="hl kwa">in</span>
+      <span class="hl kwa">if</span> unlikely0<span class="hl opt">(</span>r1 <span class="hl opt">&lt;</span> r<span class="hl opt">)</span> <span class="hl kwa">then</span> u <span class="hl opt">:=</span> u <span class="hl opt">+</span> sizeof<span class="hl opt">&lt;</span><span class="hl kwd">T</span><span class="hl opt">&gt;</span> <span class="hl kwa">else</span> break
+    <span class="hl kwa">end</span> <span class="hl slc">// end of [val]</span>
+<span class="hl slc">//</span>
+    <span class="hl kwa">val</span> <span class="hl opt">(</span>pf<span class="hl opt">,</span> fpf | u1<span class="hl opt">) =</span> __cast <span class="hl opt">(</span>u<span class="hl opt">)</span>
+    <span class="hl kwa">val</span> <span class="hl opt">() =</span> p_buf<span class="hl opt">-&gt;[</span>j<span class="hl opt">] :=</span> u1<span class="hl opt">-&gt;</span>sym
+    prval <span class="hl opt">() =</span> fpf <span class="hl opt">(</span>pf<span class="hl opt">)</span>
+<span class="hl slc">//</span>
+  <span class="hl kwa">in</span>
+    i <span class="hl opt">:=</span> i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span> j <span class="hl opt">:=</span> j <span class="hl opt">+</span> <span class="hl num">1</span>
+  <span class="hl kwa">end</span> <span class="hl slc">// end of [while]</span>
+  <span class="hl kwa">val</span> <span class="hl opt">() =</span> p_buf<span class="hl opt">-&gt;[</span>j<span class="hl opt">] :=</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span>
+  <span class="hl kwa">val</span> <span class="hl opt">() =</span> fwrite_byte <span class="hl opt">(</span>p_buf<span class="hl opt">,</span> j<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">,</span> stdout_ref<span class="hl opt">)</span>
+<span class="hl opt">}</span> <span class="hl slc">// end of [randomize]</span>
+
+<span class="hl com">(* ****** ****** *)</span>
+
+<span class="hl kwa">implement</span> main_dummy <span class="hl opt">() = ()</span>
+
+<span class="hl com">(* ****** ****** *)</span>
+
+<span class="hl opt">%{</span>$
+
+<span class="hl ppc">#define ARRAY_SIZE(a) (sizeof(a)/sizeof(a[0]))</span>
+
+ats_void_type
+mainats <span class="hl opt">(</span>
+  ats_int_type argc<span class="hl opt">,</span> ats_ptr_type argv0
+<span class="hl opt">) {</span>
+  char <span class="hl opt">**</span>argv <span class="hl opt">= (</span>char<span class="hl opt">*</span>*)argv0 <span class="hl opt">;</span>
+  <span class="hl kwb">int</span> n <span class="hl opt">=</span> argc <span class="hl opt">&gt;</span> <span class="hl num">1</span> ? atoi<span class="hl opt">(</span> argv<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] ) :</span> <span class="hl num">512</span><span class="hl opt">;</span>
+  random_t rand<span class="hl opt">;</span>
+  random_init<span class="hl opt">(&amp;</span>rand<span class="hl opt">);</span>
+<span class="hl slc">//</span>
+  fprintf<span class="hl opt">(</span>stdout<span class="hl opt">,</span> <span class="hl str">&quot;&gt;ONE Homo sapiens alu</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">);</span>
+  repeat_fasta<span class="hl opt">((</span>ats_ref_type<span class="hl opt">)</span>stdout<span class="hl opt">, (</span>ats_ptr_type<span class="hl opt">)</span>alu<span class="hl opt">,</span> n<span class="hl opt">*</span><span class="hl num">2</span><span class="hl opt">);</span>
+<span class="hl slc">//</span>
+  fprintf<span class="hl opt">(</span>stdout<span class="hl opt">,</span> <span class="hl str">&quot;&gt;TWO IUB ambiguity codes</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">);</span>
+  randomize<span class="hl opt">(</span>aminoacids<span class="hl opt">,</span> <span class="hl kwd">ARRAY_SIZE</span><span class="hl opt">(</span>aminoacids<span class="hl opt">),</span> n<span class="hl opt">*</span><span class="hl num">3</span><span class="hl opt">, &amp;</span>rand<span class="hl opt">);</span>
+<span class="hl slc">//</span>
+  fprintf<span class="hl opt">(</span>stdout<span class="hl opt">,</span> <span class="hl str">&quot;&gt;THREE Homo sapiens frequency</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">);</span>
+  randomize<span class="hl opt">(</span>homosapiens<span class="hl opt">,</span> <span class="hl kwd">ARRAY_SIZE</span><span class="hl opt">(</span>homosapiens<span class="hl opt">),</span> n<span class="hl opt">*</span><span class="hl num">5</span><span class="hl opt">, &amp;</span>rand<span class="hl opt">);</span>
+<span class="hl slc">//</span>
+  <span class="hl kwa">return</span><span class="hl opt">;</span>
+<span class="hl opt">}</span> <span class="hl slc">// end of [mainats]</span>
+                                                    
+<span class="hl opt">%}</span>
+
+<span class="hl com">(* ****** ****** *)</span>
+
+<span class="hl opt">%{^</span>
+
+<span class="hl kwa">typedef</span>
+<span class="hl kwa">struct</span> _amino_acid <span class="hl opt">{</span>
+  char sym<span class="hl opt">;</span>
+  <span class="hl kwb">float</span> prob<span class="hl opt">;</span>
+  <span class="hl kwb">float</span> cprob_lookup<span class="hl opt">;</span>
+<span class="hl opt">}</span> amino_acid <span class="hl opt">;</span>
+
+<span class="hl slc">//</span>
+<span class="hl slc">// let us do initialization in C to avoid many hassels</span>
+<span class="hl slc">//</span>
+         
+amino_acid aminoacids<span class="hl opt">[] = {</span>
+   <span class="hl opt">{</span> <span class="hl kwb">'a'</span><span class="hl opt">,</span> <span class="hl num">0.27</span> <span class="hl opt">},</span>
+   <span class="hl opt">{</span> <span class="hl kwb">'c'</span><span class="hl opt">,</span> <span class="hl num">0.12</span> <span class="hl opt">},</span>
+   <span class="hl opt">{</span> <span class="hl kwb">'g'</span><span class="hl opt">,</span> <span class="hl num">0.12</span> <span class="hl opt">},</span>
+   <span class="hl opt">{</span> <span class="hl kwb">'t'</span><span class="hl opt">,</span> <span class="hl num">0.27</span> <span class="hl opt">},</span>
+<span class="hl slc">//            </span>
+   <span class="hl opt">{</span> <span class="hl kwb">'B'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+   <span class="hl opt">{</span> <span class="hl kwb">'D'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+   <span class="hl opt">{</span> <span class="hl kwb">'H'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+   <span class="hl opt">{</span> <span class="hl kwb">'K'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+   <span class="hl opt">{</span> <span class="hl kwb">'M'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+   <span class="hl opt">{</span> <span class="hl kwb">'N'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+   <span class="hl opt">{</span> <span class="hl kwb">'R'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+   <span class="hl opt">{</span> <span class="hl kwb">'S'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+   <span class="hl opt">{</span> <span class="hl kwb">'V'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+   <span class="hl opt">{</span> <span class="hl kwb">'W'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+   <span class="hl opt">{</span> <span class="hl kwb">'Y'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">},</span>
+<span class="hl opt">} ;</span>
+                                             
+amino_acid homosapiens<span class="hl opt">[] = {</span>
+  <span class="hl opt">{</span> <span class="hl kwb">'a'</span><span class="hl opt">,</span> <span class="hl num">0.3029549426680</span> <span class="hl opt">},</span>
+  <span class="hl opt">{</span> <span class="hl kwb">'c'</span><span class="hl opt">,</span> <span class="hl num">0.1979883004921</span> <span class="hl opt">},</span>
+  <span class="hl opt">{</span> <span class="hl kwb">'g'</span><span class="hl opt">,</span> <span class="hl num">0.1975473066391</span> <span class="hl opt">},</span>
+  <span class="hl opt">{</span> <span class="hl kwb">'t'</span><span class="hl opt">,</span> <span class="hl num">0.3015094502008</span> <span class="hl opt">},</span>
+<span class="hl opt">} ;</span>
+                                                         
+<span class="hl kwa">static</span> const char alu<span class="hl opt">[] =</span>
+<span class="hl str">&quot;GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTG&quot;</span>
+<span class="hl str">&quot;GGAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGA&quot;</span>
+<span class="hl str">&quot;GACCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAA&quot;</span>
+<span class="hl str">&quot;AATACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAAT&quot;</span>
+<span class="hl str">&quot;CCCAGCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTGAAC&quot;</span>
+<span class="hl str">&quot;CCGGGAGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTG&quot;</span>
+<span class="hl str">&quot;CACTCCAGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAA&quot;</span><span class="hl opt">;</span>
+
+<span class="hl slc">//</span>
+
+ats_void_type
+fwrite_substring <span class="hl opt">(</span>
+  ats_ptr_type str<span class="hl opt">,</span> ats_size_type beg
+<span class="hl opt">,</span> ats_size_type len<span class="hl opt">,</span> ats_ptr_type out
+<span class="hl opt">) {</span>
+  fwrite_unlocked<span class="hl opt">(((</span>char*)str<span class="hl opt">)+</span>beg<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> len<span class="hl opt">, (</span><span class="hl kwd">FILE</span>*)out<span class="hl opt">) ;</span> <span class="hl kwa">return</span> <span class="hl opt">;</span>
+<span class="hl opt">}</span> <span class="hl slc">// end of [fwrite_substring]</span>
+
+ats_void_type
+fwrite_byte
+  <span class="hl opt">(</span>ats_ptr_type buf<span class="hl opt">,</span> ats_int_type n<span class="hl opt">,</span> ats_ptr_type fil<span class="hl opt">) {</span>
+   fwrite_unlocked <span class="hl opt">((</span>void*)buf<span class="hl opt">, (</span>size_t<span class="hl opt">)</span><span class="hl num">1</span><span class="hl opt">, (</span>size_t<span class="hl opt">)</span>n<span class="hl opt">, (</span><span class="hl kwd">FILE</span>*)fil<span class="hl opt">) ;</span>
+   <span class="hl kwa">return</span> <span class="hl opt">;</span>
+<span class="hl opt">}</span> <span class="hl slc">// end of [fasta_fwrite_byte]</span>
+                                                                              
+<span class="hl slc">//</span>
+
+<span class="hl kwa">static</span> ats_void_type
+  mainats <span class="hl opt">(</span>ats_int_type argc<span class="hl opt">,</span> ats_ptr_type argv<span class="hl opt">) ;</span>
+
+<span class="hl opt">%}</span> <span class="hl slc">// end of [%{^]</span>
+
+<span class="hl com">(* ****** ****** *)</span>
+
+<span class="hl com">(* end of [fasta4.dats] *)</span>

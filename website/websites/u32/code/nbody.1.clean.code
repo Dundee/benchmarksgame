@@ -1,0 +1,114 @@
+<span class="hl com">/*</span>
+<span class="hl com">   The Great Computer Language Shootout</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Diederik van Arkel</span>
+<span class="hl com">   modified by John van Groningen</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">module</span> nbody
+
+<span class="hl kwa">import</span> StdEnv<span class="hl opt">,</span>LanguageShootout
+
+Start world
+	<span class="hl opt">#</span> n <span class="hl opt">=</span> argi
+	<span class="hl opt"># (</span>nbodies<span class="hl opt">,</span>bodies<span class="hl opt">) =</span> ini_bodies
+	<span class="hl opt">#</span> bodies <span class="hl opt">=</span> offset_momentum bodies
+	<span class="hl opt"># (</span>io<span class="hl opt">,</span>world<span class="hl opt">) =</span> stdio world
+	<span class="hl opt">#!</span> e <span class="hl opt">=</span> energy nbodies bodies
+	<span class="hl opt">#!</span> io <span class="hl opt">=</span> io <span class="hl opt">&lt;&lt;&lt;</span> toStringWith <span class="hl num">9</span> e <span class="hl opt">&lt;&lt;&lt;</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span>
+	<span class="hl opt">#!</span> e <span class="hl opt">=</span> energy nbodies <span class="hl opt">(</span>advance <span class="hl num">0</span> n nbodies <span class="hl num">0.01</span> bodies<span class="hl opt">)</span>
+	<span class="hl opt">=</span> snd <span class="hl opt">(</span>fclose <span class="hl opt">(</span>io <span class="hl opt">&lt;&lt;&lt;</span> toStringWith <span class="hl num">9</span> e <span class="hl opt">&lt;&lt;&lt;</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">)</span> world<span class="hl opt">)</span>
+
+days_per_year <span class="hl opt">:==</span> <span class="hl num">365.24</span>
+pi            <span class="hl opt">:==</span> <span class="hl num">3.141592653589793</span>
+solar_mass    <span class="hl opt">=:</span> <span class="hl num">4.0</span> <span class="hl opt">*</span> pi <span class="hl opt">*</span> pi
+
+<span class="hl opt">::</span> Bodies <span class="hl opt">:== (!.{#</span><span class="hl kwb">Real</span><span class="hl opt">},!.{#</span><span class="hl kwb">Real</span><span class="hl opt">},!.{#</span><span class="hl kwb">Real</span><span class="hl opt">},!.{#</span><span class="hl kwb">Real</span><span class="hl opt">},!.{#</span><span class="hl kwb">Real</span><span class="hl opt">},!.{#</span><span class="hl kwb">Real</span><span class="hl opt">},!.{#</span><span class="hl kwb">Real</span><span class="hl opt">})</span>
+
+advance <span class="hl opt">:: !</span><span class="hl kwb">Int</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">!</span><span class="hl kwb">Real</span> <span class="hl opt">!*</span>Bodies <span class="hl opt">-&gt; .</span>Bodies
+advance i n nbodies dt bodies
+	| i <span class="hl opt">==</span> n <span class="hl opt">=</span> bodies
+	<span class="hl opt">#</span> bodies <span class="hl opt">=</span> advance1 <span class="hl num">0 1</span> dt nbodies bodies
+	<span class="hl opt">#</span> bodies <span class="hl opt">=</span> advance2 <span class="hl num">0</span> dt nbodies bodies
+	<span class="hl opt">=</span> advance <span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span> n nbodies dt bodies
+<span class="hl kwa">where</span>
+	advance1 <span class="hl opt">:: !</span><span class="hl kwb">Int</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">!</span><span class="hl kwb">Real</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">!*</span>Bodies <span class="hl opt">-&gt; *</span>Bodies
+	advance1 i j dt nbodies <span class="hl opt">(</span>xa<span class="hl opt">,</span>ya<span class="hl opt">,</span>za<span class="hl opt">,</span>vxa<span class="hl opt">,</span>vya<span class="hl opt">,</span>vza<span class="hl opt">,</span>massa<span class="hl opt">)</span>
+		| j<span class="hl opt">==</span>nbodies
+		    <span class="hl opt">#</span> j <span class="hl opt">=</span> i<span class="hl opt">+</span><span class="hl num">2</span>
+			| j<span class="hl opt">==</span>nbodies
+				<span class="hl opt">= (</span>xa<span class="hl opt">,</span>ya<span class="hl opt">,</span>za<span class="hl opt">,</span>vxa<span class="hl opt">,</span>vya<span class="hl opt">,</span>vza<span class="hl opt">,</span>massa<span class="hl opt">)</span>
+				<span class="hl opt">=</span> advance1 <span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span> j dt nbodies <span class="hl opt">(</span>xa<span class="hl opt">,</span>ya<span class="hl opt">,</span>za<span class="hl opt">,</span>vxa<span class="hl opt">,</span>vya<span class="hl opt">,</span>vza<span class="hl opt">,</span>massa<span class="hl opt">)</span>
+		<span class="hl opt">#!</span> dx <span class="hl opt">=</span> xa<span class="hl opt">.[</span>i<span class="hl opt">] -</span> xa<span class="hl opt">.[</span>j<span class="hl opt">]</span>
+		   dy <span class="hl opt">=</span> ya<span class="hl opt">.[</span>i<span class="hl opt">] -</span> ya<span class="hl opt">.[</span>j<span class="hl opt">]</span>
+           dz <span class="hl opt">=</span> za<span class="hl opt">.[</span>i<span class="hl opt">] -</span> za<span class="hl opt">.[</span>j<span class="hl opt">]</span>
+		<span class="hl opt">#</span> distance2 <span class="hl opt">=</span> dx <span class="hl opt">*</span> dx <span class="hl opt">+</span> dy <span class="hl opt">*</span> dy <span class="hl opt">+</span> dz <span class="hl opt">*</span> dz
+		  distance <span class="hl opt">=</span> sqrt distance2
+		  mag <span class="hl opt">=</span> dt <span class="hl opt">/ (</span>distance <span class="hl opt">*</span> distance2<span class="hl opt">)</span>
+        <span class="hl opt">#!</span> mm2 <span class="hl opt">=</span> massa<span class="hl opt">.[</span>j<span class="hl opt">] *</span> mag
+		   vx1 <span class="hl opt">=</span> vxa<span class="hl opt">.[</span>i<span class="hl opt">];</span> vy1 <span class="hl opt">=</span> vya<span class="hl opt">.[</span>i<span class="hl opt">];</span> vz1 <span class="hl opt">=</span> vza<span class="hl opt">.[</span>i<span class="hl opt">]</span>
+		<span class="hl opt">#</span> vxa <span class="hl opt">= {</span>vxa <span class="hl opt">&amp; [</span>i<span class="hl opt">]=</span>vx1<span class="hl opt">-</span>dx<span class="hl opt">*</span>mm2<span class="hl opt">}</span>
+		  vya <span class="hl opt">= {</span>vya <span class="hl opt">&amp; [</span>i<span class="hl opt">]=</span>vy1<span class="hl opt">-</span>dy<span class="hl opt">*</span>mm2<span class="hl opt">}</span>
+		  vza <span class="hl opt">= {</span>vza <span class="hl opt">&amp; [</span>i<span class="hl opt">]=</span>vz1<span class="hl opt">-</span>dz<span class="hl opt">*</span>mm2<span class="hl opt">}</span>
+		<span class="hl opt">#!</span> mm1 <span class="hl opt">=</span> massa<span class="hl opt">.[</span>i<span class="hl opt">] *</span> mag
+		   vx2 <span class="hl opt">=</span> vxa<span class="hl opt">.[</span>j<span class="hl opt">];</span> vy2 <span class="hl opt">=</span> vya<span class="hl opt">.[</span>j<span class="hl opt">];</span> vz2 <span class="hl opt">=</span> vza<span class="hl opt">.[</span>j<span class="hl opt">]</span>
+        <span class="hl opt">#</span> vxa <span class="hl opt">= {</span>vxa <span class="hl opt">&amp; [</span>j<span class="hl opt">]=</span>vx2<span class="hl opt">+</span>dx<span class="hl opt">*</span>mm1<span class="hl opt">}</span>
+          vya <span class="hl opt">= {</span>vya <span class="hl opt">&amp; [</span>j<span class="hl opt">]=</span>vy2<span class="hl opt">+</span>dy<span class="hl opt">*</span>mm1<span class="hl opt">}</span>
+          vza <span class="hl opt">= {</span>vza <span class="hl opt">&amp; [</span>j<span class="hl opt">]=</span>vz2<span class="hl opt">+</span>dz<span class="hl opt">*</span>mm1<span class="hl opt">}</span>
+		<span class="hl opt">=</span> advance1 i <span class="hl opt">(</span>j<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span> dt nbodies <span class="hl opt">(</span>xa<span class="hl opt">,</span>ya<span class="hl opt">,</span>za<span class="hl opt">,</span>vxa<span class="hl opt">,</span>vya<span class="hl opt">,</span>vza<span class="hl opt">,</span>massa<span class="hl opt">)</span>
+
+	advance2 <span class="hl opt">:: !</span><span class="hl kwb">Int</span> <span class="hl opt">!</span><span class="hl kwb">Real</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">*</span>Bodies <span class="hl opt">-&gt;  *</span>Bodies
+	advance2 i dt nbodies <span class="hl opt">(</span>xa<span class="hl opt">,</span>ya<span class="hl opt">,</span>za<span class="hl opt">,</span>vxa<span class="hl opt">,</span>vya<span class="hl opt">,</span>vza<span class="hl opt">,</span>massa<span class="hl opt">)</span>
+		| i <span class="hl opt">==</span> nbodies <span class="hl opt">= (</span>xa<span class="hl opt">,</span>ya<span class="hl opt">,</span>za<span class="hl opt">,</span>vxa<span class="hl opt">,</span>vya<span class="hl opt">,</span>vza<span class="hl opt">,</span>massa<span class="hl opt">)</span>
+		<span class="hl opt">#!</span> x<span class="hl opt">=</span>xa<span class="hl opt">.[</span>i<span class="hl opt">];</span>   y<span class="hl opt">=</span>ya<span class="hl opt">.[</span>i<span class="hl opt">];</span>   z<span class="hl opt">=</span>za<span class="hl opt">.[</span>i<span class="hl opt">]</span>
+		   vx<span class="hl opt">=</span>vxa<span class="hl opt">.[</span>i<span class="hl opt">];</span> vy<span class="hl opt">=</span>vya<span class="hl opt">.[</span>i<span class="hl opt">];</span> vz<span class="hl opt">=</span>vza<span class="hl opt">.[</span>i<span class="hl opt">]</span>
+		<span class="hl opt">#</span>  xa<span class="hl opt">={</span>xa <span class="hl opt">&amp; [</span>i<span class="hl opt">]=</span>x <span class="hl opt">+</span> dt<span class="hl opt">*</span>vx<span class="hl opt">}</span>
+		   ya<span class="hl opt">={</span>ya <span class="hl opt">&amp; [</span>i<span class="hl opt">]=</span>y <span class="hl opt">+</span> dt<span class="hl opt">*</span>vy<span class="hl opt">}</span>
+		   za<span class="hl opt">={</span>za <span class="hl opt">&amp; [</span>i<span class="hl opt">]=</span>z <span class="hl opt">+</span> dt<span class="hl opt">*</span>vz<span class="hl opt">}</span>
+		<span class="hl opt">=</span> advance2 <span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span> dt nbodies <span class="hl opt">(</span>xa<span class="hl opt">,</span>ya<span class="hl opt">,</span>za<span class="hl opt">,</span>vxa<span class="hl opt">,</span>vya<span class="hl opt">,</span>vza<span class="hl opt">,</span>massa<span class="hl opt">)</span>
+
+energy <span class="hl opt">:: !</span><span class="hl kwb">Int</span> <span class="hl opt">!</span>Bodies <span class="hl opt">-&gt;</span> <span class="hl kwb">Real</span>
+energy nbodies <span class="hl opt">(</span>xa<span class="hl opt">,</span>ya<span class="hl opt">,</span>za<span class="hl opt">,</span>vxa<span class="hl opt">,</span>vya<span class="hl opt">,</span>vza<span class="hl opt">,</span>massa<span class="hl opt">) =</span> seq <span class="hl opt">[</span>energy1 i nbodies <span class="hl esc">\\</span> i <span class="hl opt">&lt;- [</span><span class="hl num">0</span><span class="hl opt">..</span>nbodies<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">]]</span> <span class="hl num">0.0</span> <span class="hl kwa">where</span>
+	energy1 i nbodies e
+		<span class="hl opt">#!</span> e <span class="hl opt">=</span> e <span class="hl opt">+</span> <span class="hl num">0.5</span> <span class="hl opt">*</span> massa<span class="hl opt">.[</span>i<span class="hl opt">] * (</span>vxa<span class="hl opt">.[</span>i<span class="hl opt">]*</span>vxa<span class="hl opt">.[</span>i<span class="hl opt">] +</span> vya<span class="hl opt">.[</span>i<span class="hl opt">]*</span>vya<span class="hl opt">.[</span>i<span class="hl opt">] +</span> vza<span class="hl opt">.[</span>i<span class="hl opt">]*</span>vza<span class="hl opt">.[</span>i<span class="hl opt">])</span>
+		<span class="hl opt">=</span> seq <span class="hl opt">[</span>energy2 i j <span class="hl esc">\\</span> j <span class="hl opt">&lt;- [</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">..</span>nbodies<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">]]</span> e
+
+	energy2 i j e
+	    <span class="hl opt">#</span> dx <span class="hl opt">=</span> xa<span class="hl opt">.[</span>i<span class="hl opt">] -</span> xa<span class="hl opt">.[</span>j<span class="hl opt">];</span> dy <span class="hl opt">=</span> ya<span class="hl opt">.[</span>i<span class="hl opt">] -</span> ya<span class="hl opt">.[</span>j<span class="hl opt">];</span> dz <span class="hl opt">=</span> za<span class="hl opt">.[</span>i<span class="hl opt">] -</span> za<span class="hl opt">.[</span>j<span class="hl opt">]</span>
+	      distance  <span class="hl opt">=</span> sqrt <span class="hl opt">(</span>dx <span class="hl opt">*</span> dx <span class="hl opt">+</span> dy <span class="hl opt">*</span> dy <span class="hl opt">+</span> dz <span class="hl opt">*</span> dz<span class="hl opt">)</span>
+	    <span class="hl opt">=</span> e <span class="hl opt">- (</span>massa<span class="hl opt">.[</span>i<span class="hl opt">] *</span> massa<span class="hl opt">.[</span>j<span class="hl opt">]) /</span> distance
+
+offset_momentum <span class="hl opt">(</span>xa<span class="hl opt">,</span>ya<span class="hl opt">,</span>za<span class="hl opt">,</span>vxa<span class="hl opt">,</span>vya<span class="hl opt">,</span>vza<span class="hl opt">,</span>massa<span class="hl opt">)</span>
+	<span class="hl opt">#!</span> px <span class="hl opt">=</span> ~ <span class="hl opt">(</span>sum <span class="hl opt">[</span>vx <span class="hl opt">*</span> mass <span class="hl esc">\\</span> vx<span class="hl opt">&lt;-:</span>vxa <span class="hl opt">&amp;</span> mass<span class="hl opt">&lt;-:</span>massa<span class="hl opt">] /</span> solar_mass<span class="hl opt">)</span>
+	   py <span class="hl opt">=</span> ~ <span class="hl opt">(</span>sum <span class="hl opt">[</span>vy <span class="hl opt">*</span> mass <span class="hl esc">\\</span> vy<span class="hl opt">&lt;-:</span>vya <span class="hl opt">&amp;</span> mass<span class="hl opt">&lt;-:</span>massa<span class="hl opt">] /</span> solar_mass<span class="hl opt">)</span>
+	   pz <span class="hl opt">=</span> ~ <span class="hl opt">(</span>sum <span class="hl opt">[</span>vz <span class="hl opt">*</span> mass <span class="hl esc">\\</span> vz<span class="hl opt">&lt;-:</span>vza <span class="hl opt">&amp;</span> mass<span class="hl opt">&lt;-:</span>massa<span class="hl opt">] /</span> solar_mass<span class="hl opt">)</span>
+	<span class="hl opt">= (</span>	xa<span class="hl opt">,</span>ya<span class="hl opt">,</span>za<span class="hl opt">,{</span>vxa <span class="hl opt">&amp; [</span><span class="hl num">0</span><span class="hl opt">]=</span>px<span class="hl opt">},{</span>vya <span class="hl opt">&amp; [</span><span class="hl num">0</span><span class="hl opt">]=</span>py<span class="hl opt">},{</span>vza <span class="hl opt">&amp; [</span><span class="hl num">0</span><span class="hl opt">]=</span>pz<span class="hl opt">},</span>massa<span class="hl opt">)</span>
+
+ini_bodies <span class="hl opt">:: (!</span><span class="hl kwb">Int</span><span class="hl opt">,!.</span>Bodies<span class="hl opt">)</span>
+ini_bodies
+	<span class="hl opt">#</span> nbodies<span class="hl opt">=</span><span class="hl num">5</span><span class="hl opt">;</span>
+	  bodies <span class="hl opt">= (</span>a<span class="hl opt">,</span>a<span class="hl opt">,</span>a<span class="hl opt">,</span>a<span class="hl opt">,</span>a<span class="hl opt">,</span>a<span class="hl opt">,</span>a<span class="hl opt">)</span> <span class="hl kwa">with</span> a<span class="hl opt">=&gt;</span>createArray nbodies <span class="hl num">0.0</span>
+	  bodies <span class="hl opt">=</span> add_body bodies <span class="hl num">0 0.0 0.0 0.0 0.0 0.0 0.0 1.0</span> <span class="hl slc">// sun</span>
+	  bodies <span class="hl opt">=</span> add_body bodies <span class="hl num">1</span>
+		 <span class="hl num">4.84143144246472090E+00</span> <span class="hl opt">-</span><span class="hl num">1.16032004402742839E+00</span> <span class="hl opt">-</span><span class="hl num">1.03622044471123109E-01</span>
+		 <span class="hl num">1.66007664274403694E-03  7.69901118419740425E-03</span> <span class="hl opt">-</span><span class="hl num">6.90460016972063023E-05</span>
+		 <span class="hl num">9.54791938424326609E-04</span> <span class="hl slc">// jupiter</span>
+	  bodies <span class="hl opt">=</span> add_body bodies <span class="hl num">2</span>
+		 <span class="hl num">8.34336671824457987E+00  4.12479856412430479E+00</span> <span class="hl opt">-</span><span class="hl num">4.03523417114321381E-01</span>
+		<span class="hl opt">-</span><span class="hl num">2.76742510726862411E-03  4.99852801234917238E-03  2.30417297573763929E-05</span>
+		 <span class="hl num">2.85885980666130812E-04</span> <span class="hl slc">// saturn</span>
+	  bodies <span class="hl opt">=</span> add_body bodies <span class="hl num">3</span>
+		 <span class="hl num">1.28943695621391310E+01</span> <span class="hl opt">-</span><span class="hl num">1.51111514016986312E+01</span> <span class="hl opt">-</span><span class="hl num">2.23307578892655734E-01</span>
+		 <span class="hl num">2.96460137564761618E-03  2.37847173959480950E-03</span> <span class="hl opt">-</span><span class="hl num">2.96589568540237556E-05</span>
+		 <span class="hl num">4.36624404335156298E-05</span> <span class="hl slc">// uranus</span>
+	  bodies <span class="hl opt">=</span> add_body bodies <span class="hl num">4</span>
+		 <span class="hl num">1.53796971148509165E+01</span> <span class="hl opt">-</span><span class="hl num">2.59193146099879641E+01  1.79258772950371181E-01</span>
+		 <span class="hl num">2.68067772490389322E-03  1.62824170038242295E-03</span> <span class="hl opt">-</span><span class="hl num">9.51592254519715870E-05</span>
+		 <span class="hl num">5.15138902046611451E-05</span> <span class="hl slc">// neptune</span>
+	<span class="hl opt">= (</span>nbodies<span class="hl opt">,</span>bodies<span class="hl opt">)</span> <span class="hl kwa">where</span>
+
+	add_body <span class="hl opt">(</span>xa<span class="hl opt">,</span>ya<span class="hl opt">,</span>za<span class="hl opt">,</span>vxa<span class="hl opt">,</span>vya<span class="hl opt">,</span>vza<span class="hl opt">,</span>massa<span class="hl opt">)</span> i x y z vx vy vz mass
+		<span class="hl opt">= ( {</span>xa <span class="hl opt">&amp; [</span>i<span class="hl opt">]=</span>x<span class="hl opt">}, {</span>ya <span class="hl opt">&amp; [</span>i<span class="hl opt">]=</span>y<span class="hl opt">}, {</span>za <span class="hl opt">&amp; [</span>i<span class="hl opt">]=</span>z<span class="hl opt">},</span>
+			<span class="hl opt">{</span>vxa <span class="hl opt">&amp; [</span>i<span class="hl opt">]=</span>vx <span class="hl opt">*</span> days_per_year<span class="hl opt">}, {</span>vya <span class="hl opt">&amp; [</span>i<span class="hl opt">]=</span>vy <span class="hl opt">*</span> days_per_year<span class="hl opt">},</span>
+			<span class="hl opt">{</span>vza <span class="hl opt">&amp; [</span>i<span class="hl opt">]=</span>vz <span class="hl opt">*</span> days_per_year<span class="hl opt">}, {</span>massa <span class="hl opt">&amp; [</span>i<span class="hl opt">]=</span>mass <span class="hl opt">*</span> solar_mass<span class="hl opt">} )</span>

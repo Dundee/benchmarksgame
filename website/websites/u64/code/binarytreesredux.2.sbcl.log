@@ -1,0 +1,112 @@
+
+Tue, 09 Oct 2012 04:40:24 GMT
+
+MAKE:
+cp: `binarytreesredux.sbcl-2.sbcl' and `./binarytreesredux.sbcl-2.sbcl' are the same file
+SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load "binarytreesredux.sbcl-2.sbcl_compile")'
+### START binarytreesredux.sbcl-2.sbcl_compile
+(handler-bind ((sb-ext:defconstant-uneql      (lambda (c) (abort c))))      (load (compile-file "binarytreesredux.sbcl-2.sbcl" ))) (save-lisp-and-die "sbcl.core" :purify t)
+### END binarytreesredux.sbcl-2.sbcl_compile
+
+
+; compiling file "/home/dunham/shootout/bench/binarytreesredux/binarytreesredux.sbcl-2.sbcl" (written 18 FEB 2011 09:46:01 AM):
+; compiling (DECLAIM (OPTIMIZE # ...))
+; compiling (DEFUN BUILD-BTREE ...)
+; compiling (DEFUN CHECK-NODE ...)
+; compiling (DEFUN LOOP-DEPTHS ...)
+; file: /home/dunham/shootout/bench/binarytreesredux/binarytreesredux.sbcl-2.sbcl
+; in: DEFUN LOOP-DEPTHS
+;     (+ MAX-DEPTH MIN-DEPTH (- D))
+; ==>
+;   (+ (+ MAX-DEPTH MIN-DEPTH) (- D))
+; 
+; note: forced to do GENERIC-+ (cost 10)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (INTEGER -9223372036854775808 9223372036854775806), not a FIXNUM.
+;       The second argument is a (INTEGER -4611686018427387903
+;                                 4611686018427387904), not a FIXNUM.
+;       The result is a (VALUES
+;                        (INTEGER -13835058055282163711 13835058055282163710)
+;                        &OPTIONAL), not a (VALUES FIXNUM &REST T).
+;       unable to do inline (signed-byte 64) arithmetic (cost 5) because:
+;       The result is a (VALUES
+;                        (INTEGER -13835058055282163711 13835058055282163710)
+;                        &OPTIONAL), not a (VALUES (SIGNED-BYTE 64) &REST T).
+;       etc.
+
+;     (ASH 1 (+ MAX-DEPTH MIN-DEPTH (- D)))
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 3) because:
+;       The second argument is a (INTEGER -13835058055282163711
+;                                 13835058055282163710), not a (UNSIGNED-BYTE 62).
+;       unable to do inline ASH (cost 3) because:
+;       The second argument is a (INTEGER -13835058055282163711
+;                                 13835058055282163710), not a (UNSIGNED-BYTE 62).
+;       etc.
+
+;     (+ MAX-DEPTH MIN-DEPTH (- D))
+; ==>
+;   (+ (+ MAX-DEPTH MIN-DEPTH) (- D))
+; 
+; note: doing signed word to integer coercion (cost 20), for:
+;       the first argument of GENERIC-+
+; 
+; note: doing signed word to integer coercion (cost 20), for:
+;       the second argument of GENERIC-+
+
+; compiling (DEFUN MAIN ...); 
+; compilation unit finished
+;   printed 4 notes
+
+
+; /home/dunham/benchmarksgame_onecore/binarytreesredux/tmp/binarytreesredux.sbcl-2.fasl written
+; compilation finished in 0:00:00.027
+[undoing binding stack and other enclosing state... done]
+[saving current Lisp image into sbcl.core:
+writing 5952 bytes from the read-only space at 0x20000000
+writing 4000 bytes from the static space at 0x20100000
+writing 43122688 bytes from the dynamic space at 0x1000000000
+done]
+### START binarytreesredux.sbcl-2.sbcl_run
+(main) (quit)
+### END binarytreesredux.sbcl-2.sbcl_run
+
+0.40s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/bin/sbcl --dynamic-space-size 464 --noinform --core sbcl.core --userinit /dev/null --load binarytreesredux.sbcl-2.sbcl_run 20
+
+TIMED OUT after 600s
+
+
+PROGRAM OUTPUT:
+stretch tree of depth 21	 check: -1
+2097152	 trees of depth 4	 check: -2097152
+524288	 trees of depth 6	 check: -524288
+131072	 trees of depth 8	 check: -131072
+32768	 trees of depth 10	 check: -32768
+8192	 trees of depth 12	 check: -8192
+2048	 trees of depth 14	 check: -2048
+512	 trees of depth 16	 check: -512
+128	 trees of depth 18	 check: -128
+Welcome to LDB, a low-level debugger for the Lisp runtime environment.
+ldb> 
+Heap exhausted during garbage collection: 0 bytes available, 16 requested.
+ Gen StaPg UbSta LaSta LUbSt Boxed Unboxed LB   LUB  !move  Alloc  Waste   Trig    WP  GCs Mem-age
+   0: 13494     0     0     0  1483     0     0     0     0 48562192 32752 29244800    0   1  0.0000
+   1: 14847     0     0     0  4135     0     0     0    29 135364464 131216  4865392 2957   0  1.0806
+   2: 13972     0     0     0  3619     0     0     0    31 118510960 76432  4865392 3588   0  0.5311
+   3:     0     0     0     0     0     0     0     0     0        0     0  4865392    0   0  0.0000
+   4: 10511     0     0     0  4295     0     0     0    35 140678704 59856  2000000 4260   0  0.0000
+   5:     0     0     0     0     0     0     0     0     0        0     0  2000000    0   0  0.0000
+   6:     0     0     0     0  1155   161     0     0     0 43122688     0  2000000 1142   0  0.0000
+   Total bytes allocated    = 486239008
+   Dynamic-space-size bytes = 486539264
+GC control variables:
+   *GC-INHIBIT* = true
+   *GC-PENDING* = in progress
+   *STOP-FOR-GC-PENDING* = false
+fatal error encountered in SBCL pid 2626(tid 140737353971456):
+Heap exhausted, game over.
+

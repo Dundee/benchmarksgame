@@ -1,0 +1,60 @@
+<span class="hl slc"># The Computer Language Benchmarks Game</span>
+<span class="hl slc"># http://shootout.alioth.debian.org/</span>
+<span class="hl slc">#</span>
+<span class="hl slc"># contributed by anon</span>
+<span class="hl slc"># modified by Pilho Kim (first GMP version)</span>
+<span class="hl slc"># modified by 2to3 and Daniel Nanz</span>
+
+<span class="hl kwa">import</span> sys
+<span class="hl kwa">from</span> itertools <span class="hl kwa">import</span> islice
+<span class="hl kwa">from</span> gmpy <span class="hl kwa">import</span> mpz
+
+ 
+<span class="hl opt">(</span>MPZ0<span class="hl opt">,</span> MPZ1<span class="hl opt">,</span> MPZ2<span class="hl opt">,</span> MPZ3<span class="hl opt">,</span> MPZ4<span class="hl opt">,</span> MPZ10<span class="hl opt">) = (</span><span class="hl kwd">mpz</span><span class="hl opt">(</span>i<span class="hl opt">)</span> <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl num">3</span><span class="hl opt">,</span> <span class="hl num">4</span><span class="hl opt">,</span> <span class="hl num">10</span><span class="hl opt">))</span>
+
+
+<span class="hl kwa">def</span> <span class="hl kwd">gen_x</span><span class="hl opt">(</span>zero<span class="hl opt">=</span>MPZ0<span class="hl opt">,</span> one<span class="hl opt">=</span>MPZ1<span class="hl opt">,</span> two<span class="hl opt">=</span>MPZ2<span class="hl opt">,</span> four<span class="hl opt">=</span>MPZ4<span class="hl opt">):</span>
+
+    a<span class="hl opt">,</span> b<span class="hl opt">,</span> d <span class="hl opt">=</span> zero<span class="hl opt">,</span> two<span class="hl opt">,</span> one
+    <span class="hl kwa">while True</span><span class="hl opt">:</span>
+        a <span class="hl opt">+=</span> one
+        b <span class="hl opt">+=</span> four
+        d <span class="hl opt">+=</span> two
+        <span class="hl kwa">yield</span> <span class="hl opt">(</span>a<span class="hl opt">,</span> b<span class="hl opt">,</span> zero<span class="hl opt">,</span> d<span class="hl opt">)</span>
+
+
+<span class="hl kwa">def</span> <span class="hl kwd">compose</span><span class="hl opt">(</span>q1<span class="hl opt">,</span> q2<span class="hl opt">):</span>
+
+    a<span class="hl opt">,</span> b<span class="hl opt">,</span> c<span class="hl opt">,</span> d <span class="hl opt">=</span> q1
+    e<span class="hl opt">,</span> f<span class="hl opt">,</span> g<span class="hl opt">,</span> h <span class="hl opt">=</span> q2
+    <span class="hl kwa">return</span> <span class="hl opt">(</span>a <span class="hl opt">*</span> e<span class="hl opt">,</span>  a <span class="hl opt">*</span> f <span class="hl opt">+</span> b <span class="hl opt">*</span> h<span class="hl opt">,</span>  c <span class="hl opt">*</span> e <span class="hl opt">+</span> d <span class="hl opt">*</span> g<span class="hl opt">,</span>  c <span class="hl opt">*</span> f <span class="hl opt">+</span> d <span class="hl opt">*</span> h<span class="hl opt">)</span>
+
+
+<span class="hl kwa">def</span> <span class="hl kwd">extract</span><span class="hl opt">(</span>q<span class="hl opt">,</span> j<span class="hl opt">):</span>
+    
+    a<span class="hl opt">,</span> b<span class="hl opt">,</span> c<span class="hl opt">,</span> d <span class="hl opt">=</span> q
+    <span class="hl kwa">return</span> <span class="hl opt">(</span>a <span class="hl opt">*</span> j <span class="hl opt">+</span> b<span class="hl opt">) // (</span>c <span class="hl opt">*</span> j <span class="hl opt">+</span> d<span class="hl opt">)</span>
+
+
+<span class="hl kwa">def</span> <span class="hl kwd">pi_digits</span><span class="hl opt">(</span>x<span class="hl opt">=</span><span class="hl kwd">gen_x</span><span class="hl opt">(),</span> extr<span class="hl opt">=</span>extract<span class="hl opt">,</span> comp<span class="hl opt">=</span>compose<span class="hl opt">,</span> zero<span class="hl opt">=</span>MPZ0<span class="hl opt">,</span> 
+              one<span class="hl opt">=</span>MPZ1<span class="hl opt">,</span> three<span class="hl opt">=</span>MPZ3<span class="hl opt">,</span> four<span class="hl opt">=</span>MPZ4<span class="hl opt">,</span> ten<span class="hl opt">=</span>MPZ10<span class="hl opt">,</span> mten<span class="hl opt">=-</span>MPZ10<span class="hl opt">):</span>
+
+    z <span class="hl opt">= (</span>one<span class="hl opt">,</span> zero<span class="hl opt">,</span> zero<span class="hl opt">,</span> one<span class="hl opt">)</span>
+    <span class="hl kwa">while True</span><span class="hl opt">:</span>
+        y <span class="hl opt">=</span> <span class="hl kwd">extr</span><span class="hl opt">(</span>z<span class="hl opt">,</span> three<span class="hl opt">)</span>
+        <span class="hl kwa">while</span> y <span class="hl opt">!=</span> <span class="hl kwd">extr</span><span class="hl opt">(</span>z<span class="hl opt">,</span> four<span class="hl opt">):</span>
+            z <span class="hl opt">=</span> <span class="hl kwd">comp</span><span class="hl opt">(</span>z<span class="hl opt">,</span> <span class="hl kwd">next</span><span class="hl opt">(</span>x<span class="hl opt">))</span>
+            y <span class="hl opt">=</span> <span class="hl kwd">extr</span><span class="hl opt">(</span>z<span class="hl opt">,</span> three<span class="hl opt">)</span>
+        z <span class="hl opt">=</span> <span class="hl kwd">comp</span><span class="hl opt">((</span>ten<span class="hl opt">,</span> mten <span class="hl opt">*</span> y<span class="hl opt">,</span> zero<span class="hl opt">,</span> one<span class="hl opt">),</span> z<span class="hl opt">)</span>
+        <span class="hl kwa">yield</span> <span class="hl kwb">str</span><span class="hl opt">(</span>y<span class="hl opt">)</span>
+
+
+<span class="hl kwa">def</span> <span class="hl kwd">main</span><span class="hl opt">(</span>n<span class="hl opt">,</span> digits<span class="hl opt">=</span><span class="hl kwd">pi_digits</span><span class="hl opt">(),</span> width<span class="hl opt">=</span><span class="hl num">10</span><span class="hl opt">,</span> line<span class="hl opt">=</span><span class="hl str">'{}</span><span class="hl esc">\t</span><span class="hl str">:{}'</span><span class="hl opt">):</span>
+
+    <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl kwb">range</span><span class="hl opt">(</span>width<span class="hl opt">,</span> n<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">,</span> width<span class="hl opt">):</span>
+        <span class="hl kwa">print</span><span class="hl opt">(</span>line<span class="hl opt">.</span><span class="hl kwd">format</span><span class="hl opt">(</span><span class="hl str">''</span><span class="hl opt">.</span><span class="hl kwd">join</span><span class="hl opt">(</span><span class="hl kwd">islice</span><span class="hl opt">(</span>digits<span class="hl opt">,</span> width<span class="hl opt">)),</span> i<span class="hl opt">))</span>
+    <span class="hl kwa">if</span> n <span class="hl opt">%</span> width <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">:</span>
+        <span class="hl kwa">print</span><span class="hl opt">(</span>line<span class="hl opt">.</span><span class="hl kwd">format</span><span class="hl opt">(</span><span class="hl str">''</span><span class="hl opt">.</span><span class="hl kwd">join</span><span class="hl opt">(</span><span class="hl kwd">islice</span><span class="hl opt">(</span>digits<span class="hl opt">,</span> n <span class="hl opt">%</span> width<span class="hl opt">)).</span><span class="hl kwd">ljust</span><span class="hl opt">(</span>width<span class="hl opt">),</span> n<span class="hl opt">))</span>
+
+
+<span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">int</span><span class="hl opt">(</span>sys<span class="hl opt">.</span>argv<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]))</span>

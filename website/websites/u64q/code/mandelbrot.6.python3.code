@@ -1,0 +1,275 @@
+<span class="hl slc"># The Computer Language Benchmarks Game</span>
+<span class="hl slc"># http://shootout.alioth.debian.org/</span>
+
+<span class="hl slc"># contributed by Dieter Weber</span>
+
+<span class="hl kwa">import</span> numpy <span class="hl kwa">as</span> np
+<span class="hl kwa">import</span> sys
+<span class="hl kwa">import</span> os
+<span class="hl kwa">import</span> multiprocessing
+<span class="hl kwa">import</span> ctypes
+
+<span class="hl slc"># set HALF=True to get twice the speed</span>
+HALF <span class="hl opt">=</span> <span class="hl kwa">False</span>
+
+<span class="hl slc"># We knowingly produce overflows, therefore</span>
+<span class="hl slc"># ignore warning</span>
+np<span class="hl opt">.</span><span class="hl kwd">seterr</span><span class="hl opt">(</span>all<span class="hl opt">=</span><span class="hl str">'ignore'</span><span class="hl opt">)</span>
+
+size <span class="hl opt">=</span> <span class="hl kwb">int</span><span class="hl opt">(</span>sys<span class="hl opt">.</span>argv<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">])</span>
+<span class="hl kwa">if</span> HALF<span class="hl opt">:</span>
+    <span class="hl slc"># we only calculate the upper half, but calculated area is always asymmetric</span>
+    <span class="hl slc"># by one line, so always one more line necessary</span>
+    calcsize <span class="hl opt">=</span> size <span class="hl opt">//</span> <span class="hl num">2</span> <span class="hl opt">+</span> <span class="hl num">1</span>
+<span class="hl kwa">else</span><span class="hl opt">:</span>
+    calcsize <span class="hl opt">=</span> size
+<span class="hl slc"># boundaries of the calculated area</span>
+remin <span class="hl opt">= -</span><span class="hl num">1.5</span>
+remax <span class="hl opt">=</span> <span class="hl num">0.5</span>
+<span class="hl slc"># if we break the symmetry here, we have to fix the &quot;calculate half&quot; aspect</span>
+<span class="hl slc"># of the code!</span>
+imin <span class="hl opt">= -</span><span class="hl num">1</span><span class="hl opt">.</span>
+imax <span class="hl opt">= -</span>imin
+
+<span class="hl slc"># there are apparently a few differences in handling strings and byte arrays...</span>
+V3 <span class="hl opt">=</span> sys<span class="hl opt">.</span>version_info <span class="hl opt">&gt;= (</span><span class="hl num">3</span><span class="hl opt">, )</span>
+
+<span class="hl slc"># maximum number of points calculated in parallel to avoid</span>
+<span class="hl slc"># excessive memory use</span>
+<span class="hl slc"># this seems to be the optimum on my machine, fairly low value imho</span>
+maxchunk <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">&lt;&lt;</span><span class="hl num">14</span>
+
+<span class="hl slc"># fixed to match reference output</span>
+<span class="hl slc"># iterations = 49</span>
+
+<span class="hl slc"># List of iteration steps, supplied by hand as number of iterations is fixed</span>
+<span class="hl slc"># optimized for speed, ignoring overflows</span>
+<span class="hl slc"># this is apparently a good tradeoff between the cost of making a new array</span>
+<span class="hl slc"># and the cost of calculating more points</span>
+iteration_steps <span class="hl opt">= [</span><span class="hl num">9</span><span class="hl opt">] + [</span><span class="hl num">10</span><span class="hl opt">]*</span><span class="hl num">4</span>
+
+<span class="hl slc"># distance between points in real direction</span>
+restep <span class="hl opt">= (</span>remax <span class="hl opt">-</span> remin<span class="hl opt">)/</span>size
+<span class="hl slc"># distance between points in imaginary direction</span>
+imstep <span class="hl opt">= (</span>imax <span class="hl opt">-</span> imin<span class="hl opt">)/</span>size
+
+<span class="hl slc"># number of bits</span>
+<span class="hl slc"># remainder of experiments with long long int for bit shifting,</span>
+<span class="hl slc"># but no advantage, therefore byte boundary of lines not implemented for</span>
+<span class="hl slc"># other types than unsigned byte</span>
+<span class="hl opt">(</span>bits<span class="hl opt">,</span> calctype<span class="hl opt">) = (</span><span class="hl num">8</span><span class="hl opt">,</span> <span class="hl str">'u1'</span><span class="hl opt">)</span>
+bytesize <span class="hl opt">=</span> <span class="hl num">8</span>
+
+<span class="hl slc"># precalculate real part of one line  and reuse later</span>
+reline <span class="hl opt">=</span> np<span class="hl opt">.</span><span class="hl kwd">linspace</span><span class="hl opt">(</span>remin<span class="hl opt">,</span> remax <span class="hl opt">-</span> restep<span class="hl opt">,</span> size<span class="hl opt">)</span>
+<span class="hl slc"># precalculate imaginary parts and reuse later</span>
+<span class="hl kwa">if</span> HALF<span class="hl opt">:</span>
+    imline <span class="hl opt">=</span> <span class="hl num">1</span>j<span class="hl opt">*</span>np<span class="hl opt">.</span><span class="hl kwd">linspace</span><span class="hl opt">(</span>imin<span class="hl opt">,</span> <span class="hl num">0</span> <span class="hl opt">-</span> imstep<span class="hl opt">*(</span>size<span class="hl opt">%</span><span class="hl num">2</span><span class="hl opt">)*</span><span class="hl num">0.5</span><span class="hl opt">,</span> calcsize<span class="hl opt">)</span>
+<span class="hl kwa">else</span><span class="hl opt">:</span>
+    imline <span class="hl opt">=</span> <span class="hl num">1</span>j<span class="hl opt">*</span>np<span class="hl opt">.</span><span class="hl kwd">linspace</span><span class="hl opt">(</span>imin<span class="hl opt">,</span> imax <span class="hl opt">-</span> imstep<span class="hl opt">,</span> calcsize<span class="hl opt">)</span>
+
+<span class="hl slc"># padding to start new line at byte boundary following pbm format</span>
+<span class="hl slc"># size in [1,8] -&gt; 1 byte per line ; size in [9,16]-&gt; 2 bytes per line etc.</span>
+linesize <span class="hl opt">= (</span>size <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">)//</span>bytesize <span class="hl opt">+</span> <span class="hl num">1</span>
+
+<span class="hl slc"># PBM header, important to calculate buffer size</span>
+header <span class="hl opt">=</span> <span class="hl str">&quot;P4</span><span class="hl esc">\n</span><span class="hl str">{0} {0}</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">.</span><span class="hl kwd">format</span><span class="hl opt">(</span>size<span class="hl opt">)</span>
+<span class="hl kwa">if</span> V3<span class="hl opt">:</span>
+    header <span class="hl opt">=</span> <span class="hl kwd">bytes</span><span class="hl opt">(</span>header<span class="hl opt">,</span> <span class="hl str">'ascii'</span><span class="hl opt">)</span>
+header_offset <span class="hl opt">=</span> <span class="hl kwb">len</span><span class="hl opt">(</span>header<span class="hl opt">)</span>
+
+bufferlen <span class="hl opt">=</span> <span class="hl kwb">len</span><span class="hl opt">(</span>header<span class="hl opt">) +</span> linesize <span class="hl opt">*</span> size
+
+<span class="hl slc"># creates ctypes array in shared memory</span>
+<span class="hl slc"># REMARK: mmap.mmap can do almost the same here, but by the benchmark's specs</span>
+<span class="hl slc"># we have to write to stdout anyway.</span>
+<span class="hl slc"># if there are memory size issues, we can</span>
+<span class="hl slc"># mmap a temporary file here and also adjust maxchunk above,</span>
+<span class="hl slc"># but 16000x16000 only uses approx. 32 MB, no problem on todays machines</span>
+<span class="hl slc"># if we wanted bigger than about 50000x50000, or minimize memory usage, it could</span>
+<span class="hl slc"># however be a good idea to implement the mmap version.</span>
+sharedbitmap <span class="hl opt">=</span> multiprocessing<span class="hl opt">.</span><span class="hl kwd">Array</span><span class="hl opt">(</span>ctypes<span class="hl opt">.</span>c_char<span class="hl opt">,</span> bufferlen<span class="hl opt">,</span> lock<span class="hl opt">=</span><span class="hl kwa">False</span><span class="hl opt">)</span>
+sharedbitmap<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">:</span><span class="hl kwb">len</span><span class="hl opt">(</span>header<span class="hl opt">)] =</span> header
+
+<span class="hl slc"># not more to avoid task switching overhead and surplus memory usage</span>
+<span class="hl slc"># one process already puts one core to 100%, no waiting, locking etc. :-)</span>
+<span class="hl slc"># may not be portable, but no worries on standard Linux</span>
+workers <span class="hl opt">=</span> multiprocessing<span class="hl opt">.</span><span class="hl kwd">cpu_count</span><span class="hl opt">()</span>
+
+<span class="hl slc"># calculate line package size, either divide fairly per cpu or limit</span>
+<span class="hl slc"># by memory use</span>
+maxlines <span class="hl opt">=</span> maxchunk <span class="hl opt">//</span> size
+<span class="hl slc"># make sure we calculate at least one line per package</span>
+
+<span class="hl slc"># we only calculate the upper half of the set and exploit it's symmetry!</span>
+lines_per_chunk <span class="hl opt">=</span> <span class="hl kwb">max</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span> <span class="hl kwb">min</span><span class="hl opt">(</span>calcsize<span class="hl opt">//</span>workers<span class="hl opt">,</span>  maxlines<span class="hl opt">))</span>
+
+<span class="hl slc"># number of tasks, only upper half of the set!</span>
+packages <span class="hl opt">=</span> <span class="hl kwb">max</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span> calcsize <span class="hl opt">//</span> lines_per_chunk<span class="hl opt">)</span>
+<span class="hl slc"># hehe, we could have many processors...</span>
+<span class="hl kwa">if</span> workers <span class="hl opt">&lt;=</span> calcsize<span class="hl opt">:</span>
+<span class="hl slc"># make sure it's dividable by number of processors to have all working</span>
+<span class="hl slc"># There's a small imbalance at the very end of the program run because</span>
+<span class="hl slc"># different chunks have different calculation time</span>
+    packages <span class="hl opt">+=</span> packages<span class="hl opt">%</span>workers
+<span class="hl kwa">else</span><span class="hl opt">:</span>
+    <span class="hl slc"># one line per package</span>
+    packages <span class="hl opt">=</span> calcsize
+<span class="hl slc"># To make sure we can calculate very small sets on machines with lots of</span>
+<span class="hl slc"># processors: max(1, ...)</span>
+lines_per_chunk <span class="hl opt">=</span> <span class="hl kwb">max</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span> calcsize <span class="hl opt">//</span> packages<span class="hl opt">)</span>
+    
+tasks <span class="hl opt">= []</span>
+<span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl kwb">range</span><span class="hl opt">(</span>packages<span class="hl opt">):</span>
+    tasks<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">((</span>i<span class="hl opt">*</span>lines_per_chunk<span class="hl opt">,</span> lines_per_chunk<span class="hl opt">))</span>
+
+<span class="hl slc"># see what lines are not covered yet, distribute them among the tasks</span>
+<span class="hl opt">(</span>last_offset<span class="hl opt">,</span> last_lines<span class="hl opt">) =</span> tasks<span class="hl opt">[-</span><span class="hl num">1</span><span class="hl opt">]</span>
+missing_lines <span class="hl opt">=</span> calcsize <span class="hl opt">- (</span>last_offset<span class="hl opt">+</span>last_lines<span class="hl opt">)</span>
+<span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl kwb">range</span><span class="hl opt">(</span>missing_lines<span class="hl opt">):</span>
+    index <span class="hl opt">= -(</span>missing_lines<span class="hl opt">-</span>i<span class="hl opt">)</span>
+    <span class="hl opt">(</span>offset<span class="hl opt">,</span> lines<span class="hl opt">) =</span> tasks<span class="hl opt">[</span>index<span class="hl opt">]</span>
+    tasks<span class="hl opt">[</span>index<span class="hl opt">] = (</span>offset <span class="hl opt">+</span> i<span class="hl opt">,</span> lines <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)</span>
+
+<span class="hl slc"># modifies z! call by reference!</span>
+<span class="hl slc"># iterate z according to formula, set all elements</span>
+<span class="hl slc"># in the set to 0</span>
+<span class="hl kwa">def</span> <span class="hl kwd">mandeliterations</span><span class="hl opt">(</span>z<span class="hl opt">):</span>
+    <span class="hl slc"># calculate subsequently shorter lists and keep track of indices</span>
+    indexlist <span class="hl opt">= []</span>
+    calcc <span class="hl opt">=</span> z<span class="hl opt">.</span><span class="hl kwd">copy</span><span class="hl opt">()</span>
+    calcz <span class="hl opt">=</span> z
+    <span class="hl slc"># filtering the list is expensive,</span>
+    <span class="hl slc"># calculate several iterations before filtering</span>
+    <span class="hl kwa">for</span> iterations <span class="hl kwa">in</span> iteration_steps<span class="hl opt">:</span>
+        <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl kwb">range</span><span class="hl opt">(</span>iterations<span class="hl opt">):</span>
+            calcz <span class="hl opt">**=</span> <span class="hl num">2</span>
+            calcz <span class="hl opt">+=</span> calcc
+        indices <span class="hl opt">=</span> np<span class="hl opt">.</span><span class="hl kwd">nonzero</span><span class="hl opt">(</span><span class="hl kwb">abs</span><span class="hl opt">(</span>calcz<span class="hl opt">) &lt;</span> <span class="hl num">2</span><span class="hl opt">)</span>
+        <span class="hl slc"># I guess that continuous arrays are better for fast iterating,</span>
+        <span class="hl slc"># therefore create new arrays</span>
+        calcz <span class="hl opt">=</span> calcz<span class="hl opt">[</span>indices<span class="hl opt">]</span>
+        calcc <span class="hl opt">=</span> calcc<span class="hl opt">[</span>indices<span class="hl opt">]</span>
+        indexlist<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span>indices<span class="hl opt">)</span>
+    <span class="hl slc"># &quot;collapes&quot; the index list from the bottom to get the elements</span>
+    <span class="hl slc"># remaining in the set</span>
+    mandelbrot <span class="hl opt">=</span> indexlist<span class="hl opt">.</span><span class="hl kwd">pop</span><span class="hl opt">()</span>
+    <span class="hl slc"># a bit messy because of the index format that numpy uses</span>
+    <span class="hl kwa">for</span> indices <span class="hl kwa">in</span> <span class="hl kwb">reversed</span><span class="hl opt">(</span>indexlist<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">:]):</span>
+        mandelbrot <span class="hl opt">=</span> indices<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span>mandelbrot<span class="hl opt">]</span>
+    mandelbrot <span class="hl opt">= (</span>indexlist<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span><span class="hl num">0</span><span class="hl opt">][</span>mandelbrot<span class="hl opt">],</span> indexlist<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span><span class="hl num">1</span><span class="hl opt">][</span>mandelbrot<span class="hl opt">])</span>
+    <span class="hl slc"># finally, set everything in the set = 0</span>
+    <span class="hl slc"># maybe the index list could be used to set bitmap directly?</span>
+    <span class="hl slc"># But this seems cleaner in terms of code structure: only floats here,</span>
+    <span class="hl slc"># keep bitmap business in pbmline()</span>
+    z<span class="hl opt">[</span>mandelbrot<span class="hl opt">] =</span> <span class="hl num">0</span>
+
+<span class="hl slc"># generate/allocate block of complex numbers for subsequent iteration</span>
+<span class="hl kwa">def</span> <span class="hl kwd">mandelblock</span><span class="hl opt">(</span>line_offset<span class="hl opt">,</span> lines<span class="hl opt">):</span>
+    <span class="hl slc"># maybe numpy.mgrid or another method would be faster, but not tried yet...</span>
+    <span class="hl opt">(</span>re<span class="hl opt">,</span> im<span class="hl opt">) =</span> np<span class="hl opt">.</span><span class="hl kwd">meshgrid</span><span class="hl opt">(</span>reline<span class="hl opt">,</span> imline<span class="hl opt">[</span>line_offset<span class="hl opt">:</span>line_offset<span class="hl opt">+</span>lines<span class="hl opt">])</span>
+    <span class="hl slc"># reuse memory</span>
+    im <span class="hl opt">+=</span> re
+    <span class="hl kwa">return</span> im
+
+<span class="hl slc"># convert data array into &quot;compressed&quot; bitmap to be written to binary pbm file</span>
+<span class="hl kwa">def</span> <span class="hl kwd">pbmline</span><span class="hl opt">(</span>points<span class="hl opt">,</span> lines<span class="hl opt">):</span>
+    <span class="hl slc"># each point is in [0, 1] now, 8 bit unsigned int</span>
+    bitmap <span class="hl opt">=</span> np<span class="hl opt">.</span><span class="hl kwd">zeros</span><span class="hl opt">((</span>lines<span class="hl opt">,</span> linesize<span class="hl opt">*</span>bits<span class="hl opt">),</span> dtype<span class="hl opt">=</span>calctype<span class="hl opt">)</span>
+    <span class="hl slc"># respect  the &quot;padding&quot; bits at the end of</span>
+    <span class="hl slc"># the line to get byte boundaries</span>
+    bitmap<span class="hl opt">[:,:</span>size<span class="hl opt">] =</span> points<span class="hl opt">==</span><span class="hl num">0</span>
+    <span class="hl slc"># make blocks with 8 bits</span>
+    bitmap <span class="hl opt">=</span> bitmap<span class="hl opt">.</span><span class="hl kwd">reshape</span><span class="hl opt">((</span>linesize<span class="hl opt">*</span>lines<span class="hl opt">,</span> bits<span class="hl opt">))</span>
+    <span class="hl slc"># shift bits, accumulate in highest bit</span>
+    <span class="hl kwa">for</span> bit <span class="hl kwa">in</span> <span class="hl kwb">range</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span>bits<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">):</span>
+        <span class="hl slc"># fix bit order here</span>
+        bitmap<span class="hl opt">[:,</span>bit<span class="hl opt">] &lt;&lt;= (</span>bits<span class="hl opt">-</span>bit<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span>
+        bitmap<span class="hl opt">[:,</span>bits<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">] +=</span> bitmap<span class="hl opt">[:,</span>bit<span class="hl opt">]</span>
+    <span class="hl slc"># return accumulator</span>
+    result <span class="hl opt">=</span> bitmap<span class="hl opt">[:,</span>bits<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">]</span>
+    <span class="hl kwa">return</span> result
+
+<span class="hl kwa">if</span> V3<span class="hl opt">:</span>
+    <span class="hl kwa">def</span> <span class="hl kwd">tobytes</span><span class="hl opt">(</span>a<span class="hl opt">):</span>
+        <span class="hl kwa">return</span> <span class="hl kwd">bytes</span><span class="hl opt">(</span><span class="hl kwb">iter</span><span class="hl opt">(</span>a<span class="hl opt">))</span>
+<span class="hl kwa">else</span><span class="hl opt">:</span>
+    <span class="hl kwa">def</span> <span class="hl kwd">tobytes</span><span class="hl opt">(</span>a<span class="hl opt">):</span>
+        <span class="hl kwa">return</span> a<span class="hl opt">.</span><span class="hl kwd">tostring</span><span class="hl opt">()</span>
+
+<span class="hl kwa">if</span> HALF<span class="hl opt">:</span>
+    <span class="hl slc"># move bitmap fragments to output</span>
+    <span class="hl slc"># eventually modifies bitmap in the process! </span>
+    <span class="hl slc"># But we're done after :-)</span>
+    <span class="hl kwa">def</span> <span class="hl kwd">copybits</span><span class="hl opt">(</span>line_offset<span class="hl opt">,</span> bitmap<span class="hl opt">,</span> lines<span class="hl opt">):</span>
+        <span class="hl slc"># make sure that array is &quot;flat&quot;</span>
+        bitmap<span class="hl opt">.</span><span class="hl kwd">reshape</span><span class="hl opt">(-</span><span class="hl num">1</span><span class="hl opt">)</span>
+        <span class="hl slc"># use this for number of bytes, reshaping influences len(bitmap)</span>
+        len_bitmap <span class="hl opt">=</span> <span class="hl kwb">len</span><span class="hl opt">(</span>bitmap<span class="hl opt">)</span>
+        startbyte <span class="hl opt">=</span> header_offset <span class="hl opt">+</span> line_offset <span class="hl opt">*</span> linesize
+        <span class="hl slc"># program works with 8/8 now, less headache</span>
+        <span class="hl slc"># but keep this for explicity</span>
+        copybytes <span class="hl opt">=</span> len_bitmap<span class="hl opt">*</span>bits<span class="hl opt">//</span>bytesize
+        <span class="hl slc"># didn't get ctypes.memcopy to work,</span>
+        <span class="hl slc"># this does it although it may be a bit slower</span>
+        <span class="hl slc"># bitmap HAS to be flat</span>
+        sharedbitmap<span class="hl opt">[</span>startbyte<span class="hl opt">:</span>startbyte<span class="hl opt">+</span>len_bitmap<span class="hl opt">] =</span> <span class="hl kwd">tobytes</span><span class="hl opt">(</span>bitmap<span class="hl opt">)</span>
+        <span class="hl slc"># now reshape to lines x lines in order to reverse and exploit symmetry</span>
+        bitmap <span class="hl opt">=</span> bitmap<span class="hl opt">.</span><span class="hl kwd">reshape</span><span class="hl opt">((</span>lines<span class="hl opt">,</span> linesize<span class="hl opt">))</span>
+        <span class="hl slc"># reverse the lines</span>
+        bitmap <span class="hl opt">=</span> bitmap<span class="hl opt">[::-</span><span class="hl num">1</span><span class="hl opt">, :]</span>
+        startbyte <span class="hl opt">=</span> bufferlen <span class="hl opt">-</span> line_offset <span class="hl opt">*</span> linesize <span class="hl opt">-</span> len_bitmap <span class="hl opt">+</span> linesize
+        stopbyte <span class="hl opt">=</span> startbyte <span class="hl opt">+</span> len_bitmap
+        <span class="hl slc"># the calculated area is not symmetric, we have overlap</span>
+        <span class="hl slc"># therefore clip overhang</span>
+        <span class="hl kwa">if</span> startbyte <span class="hl opt">&lt; (</span>bufferlen <span class="hl opt">-</span> header_offset<span class="hl opt">) //</span> <span class="hl num">2</span><span class="hl opt">:</span>
+            bitmap <span class="hl opt">=</span> bitmap<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">:,:]</span>
+            startbyte <span class="hl opt">+=</span> linesize
+        <span class="hl kwa">if</span> stopbyte <span class="hl opt">&gt;</span> bufferlen<span class="hl opt">:</span>
+            bitmap <span class="hl opt">=</span> bitmap<span class="hl opt">[:-</span><span class="hl num">1</span><span class="hl opt">,:]</span>
+            stopbyte <span class="hl opt">-=</span> linesize
+        <span class="hl slc"># flat again for output</span>
+        bitmap <span class="hl opt">=</span> bitmap<span class="hl opt">.</span><span class="hl kwd">reshape</span><span class="hl opt">(-</span><span class="hl num">1</span><span class="hl opt">)</span>
+        sharedbitmap<span class="hl opt">[</span>startbyte<span class="hl opt">:</span>startbyte<span class="hl opt">+</span>len_bitmap<span class="hl opt">] =</span> <span class="hl kwd">tobytes</span><span class="hl opt">(</span>bitmap<span class="hl opt">)</span>
+<span class="hl kwa">else</span><span class="hl opt">:</span>
+    <span class="hl slc"># move bitmap fragments to output</span>
+    <span class="hl slc"># eventually modifies bitmap in the process! </span>
+    <span class="hl slc"># But we're done after :-)</span>
+    <span class="hl kwa">def</span> <span class="hl kwd">copybits</span><span class="hl opt">(</span>line_offset<span class="hl opt">,</span> bitmap<span class="hl opt">,</span> lines<span class="hl opt">):</span>
+        <span class="hl slc"># make sure that array is &quot;flat&quot;</span>
+        bitmap<span class="hl opt">.</span><span class="hl kwd">reshape</span><span class="hl opt">(-</span><span class="hl num">1</span><span class="hl opt">)</span>
+        <span class="hl slc"># use this for number of bytes, reshaping influences len(bitmap)</span>
+        len_bitmap <span class="hl opt">=</span> <span class="hl kwb">len</span><span class="hl opt">(</span>bitmap<span class="hl opt">)</span>
+        startbyte <span class="hl opt">=</span> header_offset <span class="hl opt">+</span> line_offset <span class="hl opt">*</span> linesize
+        <span class="hl slc"># program works with 8/8 now, less headache</span>
+        <span class="hl slc"># but keep this for explicity</span>
+        copybytes <span class="hl opt">=</span> len_bitmap<span class="hl opt">*</span>bits<span class="hl opt">//</span>bytesize
+        <span class="hl slc"># didn't get ctypes.memcopy to work,</span>
+        <span class="hl slc"># this does it although it may be a bit slower</span>
+        <span class="hl slc"># bitmap HAS to be flat</span>
+        sharedbitmap<span class="hl opt">[</span>startbyte<span class="hl opt">:</span>startbyte<span class="hl opt">+</span>len_bitmap<span class="hl opt">] =</span> <span class="hl kwd">tobytes</span><span class="hl opt">(</span>bitmap<span class="hl opt">)</span>
+
+<span class="hl slc"># function to be called with element of the task array,</span>
+<span class="hl slc"># suitable for mapping (no output, only modifies shared buffer)</span>
+<span class="hl kwa">def</span> <span class="hl kwd">work</span><span class="hl opt">(</span>tup<span class="hl opt">):</span>
+    <span class="hl opt">(</span>line_offset<span class="hl opt">,</span> lines<span class="hl opt">) =</span> tup
+    block <span class="hl opt">=</span> <span class="hl kwd">mandelblock</span><span class="hl opt">(</span>line_offset<span class="hl opt">,</span> lines<span class="hl opt">)</span>
+    mandelbrot <span class="hl opt">=</span> <span class="hl kwd">mandeliterations</span><span class="hl opt">(</span>block<span class="hl opt">)</span>
+    bitmap <span class="hl opt">=</span> <span class="hl kwd">pbmline</span><span class="hl opt">(</span>block<span class="hl opt">,</span> lines<span class="hl opt">)</span>
+    <span class="hl kwd">copybits</span><span class="hl opt">(</span>line_offset<span class="hl opt">,</span> bitmap<span class="hl opt">,</span> lines<span class="hl opt">)</span>
+
+pool <span class="hl opt">=</span> multiprocessing<span class="hl opt">.</span><span class="hl kwd">Pool</span><span class="hl opt">(</span>workers<span class="hl opt">)</span>
+<span class="hl slc"># for debugging: just use map(...) instead of pool.map(...)</span>
+<span class="hl slc"># to get the exceptions + trace</span>
+<span class="hl slc"># global variables etc. are shared between processes! :-)</span>
+pool<span class="hl opt">.</span><span class="hl kwb">map</span><span class="hl opt">(</span>work<span class="hl opt">,</span> tasks<span class="hl opt">)</span>
+<span class="hl slc">#for tup in tasks:</span>
+    <span class="hl slc">#work(tup)</span>
+
+
+
+<span class="hl slc"># dump it!</span>
+<span class="hl kwa">if</span> V3<span class="hl opt">:</span>
+    sys<span class="hl opt">.</span>stdout<span class="hl opt">.</span><span class="hl kwb">buffer</span><span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span>sharedbitmap<span class="hl opt">)</span>
+<span class="hl kwa">else</span><span class="hl opt">:</span>
+    sys<span class="hl opt">.</span>stdout<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span>sharedbitmap<span class="hl opt">.</span>raw<span class="hl opt">)</span>

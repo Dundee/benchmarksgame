@@ -1,0 +1,16 @@
+
+Thu, 25 Oct 2012 22:38:26 GMT
+
+MAKE:
+mv threadring.ocaml-2.ocaml threadring.ocaml-2.ml
+/usr/local/bin/ocamlopt -noassert -unsafe -nodynlink -inline 100 -thread unix.cmxa threads.cmxa threadring.ocaml-2.ml -o threadring.ocaml-2.ocaml_run
+File "threadring.ocaml-2.ml", line 1:
+Warning 24: bad source file name: "Threadring.ocaml-2" is not a valid module name.
+rm threadring.ocaml-2.ml
+0.23s to complete and log all make actions
+
+COMMAND LINE:
+./threadring.ocaml-2.ocaml_run 50000000
+
+PROGRAM OUTPUT:
+292

@@ -1,0 +1,119 @@
+<span class="hl slc">;;   The Computer Language Benchmarks Game</span>
+<span class="hl slc">;;   http://shootout.alioth.debian.org/</span>
+
+<span class="hl slc">;; contributed by Andy Fingerhut</span>
+
+<span class="hl opt">(</span><span class="hl kwa">ns</span> revcomp
+  <span class="hl opt">(:</span>gen-class<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">set</span><span class="hl opt">! *</span>warn-on-reflection<span class="hl opt">*</span> true<span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">set</span><span class="hl opt">! *</span>unchecked-math<span class="hl opt">*</span> true<span class="hl opt">)</span>
+
+<span class="hl opt">(</span><span class="hl kwa">gen-class</span>
+ <span class="hl opt">:</span>name revcomp.ReversibleByteArray
+ <span class="hl opt">:</span>extends java.io.ByteArrayOutputStream
+ <span class="hl opt">:</span>exposes <span class="hl opt">{</span>count <span class="hl opt">{:</span>get getCount<span class="hl opt">},</span>
+           buf <span class="hl opt">{:</span>get getBuf<span class="hl opt">}}</span>
+ <span class="hl opt">:</span>prefix rba-
+ <span class="hl opt">:</span>methods <span class="hl opt">[ [</span> reverse <span class="hl opt">[</span> <span class="hl str">&quot;[B&quot;</span> <span class="hl opt">]</span> void <span class="hl opt">] ])</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> find-first-byte-idx <span class="hl opt">[#</span>^bytes buf start search-val<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>search-val <span class="hl opt">(</span><span class="hl kwa">int</span> search-val<span class="hl opt">)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>i <span class="hl opt">(</span><span class="hl kwa">int</span> start<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(== (</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">aget</span> buf i<span class="hl opt">))</span> search-val<span class="hl opt">)</span>
+        i
+        <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> i<span class="hl opt">))))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> reverse-and-complement<span class="hl opt">! [#</span>^bytes buf begin end <span class="hl opt">#</span>^bytes map-char-array nl<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>nl <span class="hl opt">(</span><span class="hl kwa">int</span> nl<span class="hl opt">)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>begin <span class="hl opt">(</span><span class="hl kwa">int</span> begin<span class="hl opt">)</span>
+           end   <span class="hl opt">(</span><span class="hl kwa">int</span> end<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>cb <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">aget</span> buf begin<span class="hl opt">))</span>
+            ce <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">aget</span> buf end<span class="hl opt">))</span>
+            begin <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(==</span> cb nl<span class="hl opt">) (</span><span class="hl kwa">inc</span> begin<span class="hl opt">)</span> begin<span class="hl opt">))</span>
+            end   <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(==</span> ce nl<span class="hl opt">) (</span><span class="hl kwa">dec</span> end<span class="hl opt">)</span> end<span class="hl opt">))</span>
+            cb2 <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">aget</span> buf begin<span class="hl opt">))</span>
+            ce2 <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">aget</span> buf end<span class="hl opt">))]</span>
+        <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(&lt;=</span> begin end<span class="hl opt">)</span>
+          <span class="hl opt">(</span><span class="hl kwa">aset</span> buf begin <span class="hl opt">(</span><span class="hl kwa">aget</span> map-char-array ce2<span class="hl opt">))</span>
+          <span class="hl opt">(</span><span class="hl kwa">aset</span> buf end   <span class="hl opt">(</span><span class="hl kwa">aget</span> map-char-array cb2<span class="hl opt">))</span>
+          <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> begin<span class="hl opt">) (</span><span class="hl kwa">dec</span> end<span class="hl opt">)))))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> rba-reverse <span class="hl opt">[#</span>^revcomp.ReversibleByteArray this <span class="hl opt">#</span>^bytes map-char-array<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>count <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span>. this <span class="hl opt">(</span><span class="hl kwa">getCount</span><span class="hl opt">)))</span>
+        <span class="hl opt">#</span>^bytes buf <span class="hl opt">(</span>. this <span class="hl opt">(</span><span class="hl kwa">getBuf</span><span class="hl opt">))</span>
+        nl <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl esc">\n</span>ewline<span class="hl opt">)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(&gt;</span> count <span class="hl num">0</span><span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>begin <span class="hl opt">(</span><span class="hl kwa">inc</span> <span class="hl opt">(</span><span class="hl kwa">find-first-byte-idx</span> buf <span class="hl num">0</span> nl<span class="hl opt">))</span>
+            end <span class="hl opt">(</span><span class="hl kwa">dec</span> count<span class="hl opt">)]</span>
+        <span class="hl opt">(</span><span class="hl kwa">reverse-and-complement</span><span class="hl opt">!</span> buf begin end map-char-array nl<span class="hl opt">))</span>
+      <span class="hl opt">(</span>. System<span class="hl opt">/</span>out write buf <span class="hl num">0</span> count<span class="hl opt">))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">def</span> complement-dna-char-map
+     <span class="hl opt">{</span>\w \W<span class="hl opt">,</span> \W \W<span class="hl opt">,</span>
+      \s \S<span class="hl opt">,</span> \S \S<span class="hl opt">,</span>
+      <span class="hl esc">\a</span> \T<span class="hl opt">,</span> \A \T<span class="hl opt">,</span>
+      <span class="hl esc">\t</span> \A<span class="hl opt">,</span> \T \A<span class="hl opt">,</span>
+      \u \A<span class="hl opt">,</span> \U \A<span class="hl opt">,</span>
+      \g \C<span class="hl opt">,</span> \G \C<span class="hl opt">,</span>
+      \c \G<span class="hl opt">,</span> \C \G<span class="hl opt">,</span>
+      \y \R<span class="hl opt">,</span> \Y \R<span class="hl opt">,</span>
+      <span class="hl esc">\r</span> \Y<span class="hl opt">,</span> \R \Y<span class="hl opt">,</span>
+      \k \M<span class="hl opt">,</span> \K \M<span class="hl opt">,</span>
+      \m \K<span class="hl opt">,</span> \M \K<span class="hl opt">,</span>
+      <span class="hl esc">\b</span> \V<span class="hl opt">,</span> \B \V<span class="hl opt">,</span>
+      \d \H<span class="hl opt">,</span> \D \H<span class="hl opt">,</span>
+      \h \D<span class="hl opt">,</span> \H \D<span class="hl opt">,</span>
+      <span class="hl esc">\v</span> \B<span class="hl opt">,</span> \V \B<span class="hl opt">,</span>
+      <span class="hl esc">\n</span> \N<span class="hl opt">,</span> \N \N <span class="hl opt">})</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> ubyte <span class="hl opt">[</span>val<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(&gt;=</span> val <span class="hl num">128</span><span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">byte</span> <span class="hl opt">(</span><span class="hl kwa">-</span> val <span class="hl num">256</span><span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">byte</span> val<span class="hl opt">)))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> make-array-char-mapper <span class="hl opt">[</span>cmap<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">byte-array</span> <span class="hl num">256</span> <span class="hl opt">(</span><span class="hl kwa">map</span> <span class="hl opt">(</span><span class="hl kwa">fn</span> <span class="hl opt">[</span>i<span class="hl opt">]</span>
+                         <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">contains</span>? cmap <span class="hl opt">(</span><span class="hl kwa">char</span> i<span class="hl opt">))</span>
+                           <span class="hl opt">(</span><span class="hl kwa">ubyte</span> <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">cmap</span> <span class="hl opt">(</span><span class="hl kwa">char</span> i<span class="hl opt">))))</span>
+                           <span class="hl opt">(</span><span class="hl kwa">ubyte</span> i<span class="hl opt">)))</span>
+                       <span class="hl opt">(</span><span class="hl kwa">range</span> <span class="hl num">256</span><span class="hl opt">))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> -main <span class="hl opt">[&amp;</span> args<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>in System<span class="hl opt">/</span>in
+	out System<span class="hl opt">/</span>out
+        read-buf-size <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(*</span> <span class="hl num">16 1024 1024</span><span class="hl opt">))</span>
+        read-buf <span class="hl opt">(</span><span class="hl kwa">byte-array</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> read-buf-size<span class="hl opt">))</span>
+        buf <span class="hl opt">(</span><span class="hl kwa">new</span> revcomp.ReversibleByteArray<span class="hl opt">)</span>
+        complement-dna-char-array <span class="hl opt">(</span><span class="hl kwa">make-array-char-mapper</span>
+				   complement-dna-char-map<span class="hl opt">)</span>
+        gt <span class="hl opt">(</span><span class="hl kwa">byte</span> <span class="hl opt">(</span><span class="hl kwa">int</span> \<span class="hl opt">&gt;))]</span>
+    <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[]</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>nread <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span>. in read read-buf <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">0</span><span class="hl opt">)</span> read-buf-size<span class="hl opt">))]</span>
+        <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(</span><span class="hl kwa">not</span><span class="hl opt">=</span> nread <span class="hl opt">(</span><span class="hl kwa">int</span> -<span class="hl num">1</span><span class="hl opt">))</span>
+          <span class="hl slc">;; Put gt char just after last char read, so we can always</span>
+          <span class="hl slc">;; search for gt and find it without also having to check</span>
+          <span class="hl slc">;; for hitting the end of the buffer.</span>
+          <span class="hl opt">(</span><span class="hl kwa">aset</span> read-buf nread gt<span class="hl opt">)</span>
+          <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>i <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">0</span><span class="hl opt">)</span>
+                 last <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">0</span><span class="hl opt">)]</span>
+            <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>i <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>i <span class="hl opt">(</span><span class="hl kwa">int</span> i<span class="hl opt">)]</span>
+                           <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(= (</span><span class="hl kwa">aget</span> read-buf i<span class="hl opt">)</span> gt<span class="hl opt">)</span>
+                             i
+                             <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> i<span class="hl opt">)))))]</span>
+              <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(==</span> i nread<span class="hl opt">)</span>
+                <span class="hl opt">(</span>. buf write read-buf last <span class="hl opt">(</span><span class="hl kwa">-</span> nread last<span class="hl opt">))</span>
+                <span class="hl opt">(</span><span class="hl kwa">do</span>
+                  <span class="hl opt">(</span>. buf write read-buf last <span class="hl opt">(</span><span class="hl kwa">-</span> i last<span class="hl opt">))</span>
+                  <span class="hl opt">(</span>. buf reverse complement-dna-char-array<span class="hl opt">)</span>
+                  <span class="hl opt">(</span>. buf reset<span class="hl opt">)</span>
+                  <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> i<span class="hl opt">)</span> i<span class="hl opt">)))))</span>
+          <span class="hl opt">(</span><span class="hl kwa">recur</span><span class="hl opt">))))</span>
+    <span class="hl opt">(</span>. buf reverse complement-dna-char-array<span class="hl opt">)))</span>

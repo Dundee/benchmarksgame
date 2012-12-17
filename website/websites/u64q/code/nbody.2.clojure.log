@@ -1,0 +1,15 @@
+
+Fri, 05 Aug 2011 01:19:35 GMT
+
+MAKE:
+mv nbody.clojure-2.clojure nbody.clj
+/usr/local/src/jdk1.7.0/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.2.0/clojure.jar:/usr/local/src/clojure-1.2.0/clojure-contrib-1.2.0.jar clojure.lang.Compile nbody
+Compiling nbody to .
+2.36s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/src/jdk1.7.0/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts -Xmx8m -cp .:/usr/local/src/clojure-1.2.0/clojure.jar:/usr/local/src/clojure-1.2.0/clojure-contrib-1.2.0.jar nbody 50000000
+
+PROGRAM OUTPUT:
+-0.169075164
+-0.169059907

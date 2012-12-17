@@ -1,0 +1,95 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * contributed by The Go Authors.</span>
+<span class="hl com"> */</span>
+
+<span class="hl kwa">package</span> main
+
+<span class="hl kwa">import</span> <span class="hl opt">(</span>
+   <span class="hl str">&quot;fmt&quot;</span>
+   <span class="hl str">&quot;io/ioutil&quot;</span>
+   <span class="hl str">&quot;os&quot;</span>
+   <span class="hl str">&quot;runtime&quot;</span>
+   <span class="hl str">&quot;regexp&quot;</span>
+<span class="hl opt">)</span>
+
+<span class="hl kwa">var</span> variants <span class="hl opt">= []</span><span class="hl kwb">string</span><span class="hl opt">{</span>
+   <span class="hl str">&quot;agggtaaa|tttaccct&quot;</span><span class="hl opt">,</span>
+   <span class="hl str">&quot;[cgt]gggtaaa|tttaccc[acg]&quot;</span><span class="hl opt">,</span>
+   <span class="hl str">&quot;a[act]ggtaaa|tttacc[agt]t&quot;</span><span class="hl opt">,</span>
+   <span class="hl str">&quot;ag[act]gtaaa|tttac[agt]ct&quot;</span><span class="hl opt">,</span>
+   <span class="hl str">&quot;agg[act]taaa|ttta[agt]cct&quot;</span><span class="hl opt">,</span>
+   <span class="hl str">&quot;aggg[acg]aaa|ttt[cgt]ccct&quot;</span><span class="hl opt">,</span>
+   <span class="hl str">&quot;agggt[cgt]aa|tt[acg]accct&quot;</span><span class="hl opt">,</span>
+   <span class="hl str">&quot;agggta[cgt]a|t[acg]taccct&quot;</span><span class="hl opt">,</span>
+   <span class="hl str">&quot;agggtaa[cgt]|[acg]ttaccct&quot;</span><span class="hl opt">,</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">type</span> Subst <span class="hl kwa">struct</span> <span class="hl opt">{</span>
+   pat<span class="hl opt">,</span> repl <span class="hl kwb">string</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">var</span> substs <span class="hl opt">= []</span>Subst<span class="hl opt">{</span>
+   Subst<span class="hl opt">{</span><span class="hl str">&quot;B&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;(c|g|t)&quot;</span><span class="hl opt">},</span>
+   Subst<span class="hl opt">{</span><span class="hl str">&quot;D&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;(a|g|t)&quot;</span><span class="hl opt">},</span>
+   Subst<span class="hl opt">{</span><span class="hl str">&quot;H&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;(a|c|t)&quot;</span><span class="hl opt">},</span>
+   Subst<span class="hl opt">{</span><span class="hl str">&quot;K&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;(g|t)&quot;</span><span class="hl opt">},</span>
+   Subst<span class="hl opt">{</span><span class="hl str">&quot;M&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;(a|c)&quot;</span><span class="hl opt">},</span>
+   Subst<span class="hl opt">{</span><span class="hl str">&quot;N&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;(a|c|g|t)&quot;</span><span class="hl opt">},</span>
+   Subst<span class="hl opt">{</span><span class="hl str">&quot;R&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;(a|g)&quot;</span><span class="hl opt">},</span>
+   Subst<span class="hl opt">{</span><span class="hl str">&quot;S&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;(c|g)&quot;</span><span class="hl opt">},</span>
+   Subst<span class="hl opt">{</span><span class="hl str">&quot;V&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;(a|c|g)&quot;</span><span class="hl opt">},</span>
+   Subst<span class="hl opt">{</span><span class="hl str">&quot;W&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;(a|t)&quot;</span><span class="hl opt">},</span>
+   Subst<span class="hl opt">{</span><span class="hl str">&quot;Y&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;(c|t)&quot;</span><span class="hl opt">},</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">countMatches</span><span class="hl opt">(</span>pat <span class="hl kwb">string</span><span class="hl opt">,</span> bytes <span class="hl opt">[]</span><span class="hl kwb">byte</span><span class="hl opt">)</span> <span class="hl kwb">int</span> <span class="hl opt">{</span>
+   re <span class="hl opt">:=</span> regexp<span class="hl opt">.</span><span class="hl kwd">MustCompile</span><span class="hl opt">(</span>pat<span class="hl opt">)</span>
+   n <span class="hl opt">:=</span> <span class="hl num">0</span>
+   <span class="hl kwa">for</span> <span class="hl opt">{</span>
+      e <span class="hl opt">:=</span> re<span class="hl opt">.</span><span class="hl kwd">FindIndex</span><span class="hl opt">(</span>bytes<span class="hl opt">)</span>
+      <span class="hl kwa">if</span> e <span class="hl opt">==</span> <span class="hl kwb">nil</span> <span class="hl opt">{</span>
+         <span class="hl kwa">break</span>
+      <span class="hl opt">}</span>
+      n<span class="hl opt">++</span>
+      bytes <span class="hl opt">=</span> bytes<span class="hl opt">[</span>e<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]:]</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">return</span> n
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">main</span><span class="hl opt">() {</span>
+   runtime<span class="hl opt">.</span><span class="hl kwd">GOMAXPROCS</span><span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">)</span>
+   bytes<span class="hl opt">,</span> err <span class="hl opt">:=</span> ioutil<span class="hl opt">.</span><span class="hl kwd">ReadAll</span><span class="hl opt">(</span>os<span class="hl opt">.</span>Stdin<span class="hl opt">)</span>
+   <span class="hl kwa">if</span> err <span class="hl opt">!=</span> <span class="hl kwb">nil</span> <span class="hl opt">{</span>
+      fmt<span class="hl opt">.</span><span class="hl kwd">Fprintf</span><span class="hl opt">(</span>os<span class="hl opt">.</span>Stderr<span class="hl opt">,</span> <span class="hl str">&quot;can't read input: %s</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> err<span class="hl opt">)</span>
+      os<span class="hl opt">.</span><span class="hl kwd">Exit</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">)</span>
+   <span class="hl opt">}</span>
+   ilen <span class="hl opt">:=</span> <span class="hl kwb">len</span><span class="hl opt">(</span>bytes<span class="hl opt">)</span>
+   <span class="hl slc">// Delete the comment lines and newlines</span>
+   bytes <span class="hl opt">=</span> regexp<span class="hl opt">.</span><span class="hl kwd">MustCompile</span><span class="hl opt">(</span><span class="hl str">&quot;(&gt;[^</span><span class="hl esc">\n</span><span class="hl str">]+)?</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">).</span><span class="hl kwd">ReplaceAll</span><span class="hl opt">(</span>bytes<span class="hl opt">, []</span><span class="hl kwb">byte</span><span class="hl opt">{})</span>
+   clen <span class="hl opt">:=</span> <span class="hl kwb">len</span><span class="hl opt">(</span>bytes<span class="hl opt">)</span>
+
+   mresults <span class="hl opt">:=</span> <span class="hl kwb">make</span><span class="hl opt">([]</span><span class="hl kwa">chan</span> <span class="hl kwb">int</span><span class="hl opt">,</span> <span class="hl kwb">len</span><span class="hl opt">(</span>variants<span class="hl opt">))</span>
+   <span class="hl kwa">for</span> i<span class="hl opt">,</span> s <span class="hl opt">:=</span> <span class="hl kwa">range</span> variants <span class="hl opt">{</span>
+      ch <span class="hl opt">:=</span> <span class="hl kwb">make</span><span class="hl opt">(</span><span class="hl kwa">chan</span> <span class="hl kwb">int</span><span class="hl opt">)</span>
+      mresults<span class="hl opt">[</span>i<span class="hl opt">] =</span> ch
+      <span class="hl kwa">go func</span><span class="hl opt">(</span>ss <span class="hl kwb">string</span><span class="hl opt">) {</span>
+         ch <span class="hl opt">&lt;-</span> <span class="hl kwd">countMatches</span><span class="hl opt">(</span>ss<span class="hl opt">,</span> bytes<span class="hl opt">)</span>
+      <span class="hl opt">}(</span>s<span class="hl opt">)</span>
+   <span class="hl opt">}</span>
+
+   lenresult <span class="hl opt">:=</span> <span class="hl kwb">make</span><span class="hl opt">(</span><span class="hl kwa">chan</span> <span class="hl kwb">int</span><span class="hl opt">)</span>
+   bb <span class="hl opt">:=</span> bytes
+   <span class="hl kwa">go func</span><span class="hl opt">() {</span>
+      <span class="hl kwa">for</span> _<span class="hl opt">,</span> sub <span class="hl opt">:=</span> <span class="hl kwa">range</span> substs <span class="hl opt">{</span>
+         bb <span class="hl opt">=</span> regexp<span class="hl opt">.</span><span class="hl kwd">MustCompile</span><span class="hl opt">(</span>sub<span class="hl opt">.</span>pat<span class="hl opt">).</span><span class="hl kwd">ReplaceAll</span><span class="hl opt">(</span>bb<span class="hl opt">, []</span><span class="hl kwb">byte</span><span class="hl opt">(</span>sub<span class="hl opt">.</span>repl<span class="hl opt">))</span>
+      <span class="hl opt">}</span>
+      lenresult <span class="hl opt">&lt;-</span> <span class="hl kwb">len</span><span class="hl opt">(</span>bb<span class="hl opt">)</span>
+   <span class="hl opt">}()</span>
+
+   <span class="hl kwa">for</span> i<span class="hl opt">,</span> s <span class="hl opt">:=</span> <span class="hl kwa">range</span> variants <span class="hl opt">{</span>
+      fmt<span class="hl opt">.</span><span class="hl kwd">Printf</span><span class="hl opt">(</span><span class="hl str">&quot;%s %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> s<span class="hl opt">, &lt;-</span>mresults<span class="hl opt">[</span>i<span class="hl opt">])</span>
+   <span class="hl opt">}</span>
+   fmt<span class="hl opt">.</span><span class="hl kwd">Printf</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">%d</span><span class="hl esc">\n</span><span class="hl str">%d</span><span class="hl esc">\n</span><span class="hl str">%d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> ilen<span class="hl opt">,</span> clen<span class="hl opt">, &lt;-</span>lenresult<span class="hl opt">)</span>
+<span class="hl opt">}</span>

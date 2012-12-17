@@ -1,0 +1,282 @@
+<span class="hl com">/**</span>
+<span class="hl com"> * The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Mike Pall</span>
+<span class="hl com">   java port by Stefan Krause</span>
+<span class="hl com">   Data Parallel adaptation by Sassa NF</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>concurrent<span class="hl opt">.*;</span>
+
+<span class="hl kwa">public class</span> pidigits <span class="hl opt">{</span>
+   <span class="hl kwa">final static</span> <span class="hl kwb">int</span> 
+      <span class="hl slc">// plain int values</span>
+      FOUR <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> BQ <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">,</span> BR <span class="hl opt">=</span> <span class="hl num">2</span><span class="hl opt">,</span> BT <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">,</span> 
+      <span class="hl slc">// GMP integers</span>
+      V <span class="hl opt">=</span> <span class="hl num">4</span><span class="hl opt">,</span> ER1 <span class="hl opt">=</span> <span class="hl num">5</span><span class="hl opt">,</span> Q1 <span class="hl opt">=</span> <span class="hl num">6</span><span class="hl opt">,</span> R1 <span class="hl opt">=</span> <span class="hl num">7</span><span class="hl opt">,</span> T1 <span class="hl opt">=</span> <span class="hl num">8</span><span class="hl opt">,</span> U1 <span class="hl opt">=</span> <span class="hl num">9</span><span class="hl opt">,</span> ES1 <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">,</span> ER <span class="hl opt">=</span> <span class="hl num">11</span><span class="hl opt">,</span> 
+      <span class="hl slc">// these are always available</span>
+      Q <span class="hl opt">=</span> <span class="hl num">12</span><span class="hl opt">,</span> R <span class="hl opt">=</span> <span class="hl num">13</span><span class="hl opt">,</span> T <span class="hl opt">=</span> <span class="hl num">14</span><span class="hl opt">,</span> U <span class="hl opt">=</span> <span class="hl num">15</span><span class="hl opt">;</span> 
+
+   <span class="hl kwa">final static</span> <span class="hl kwb">int</span> SPIN <span class="hl opt">=</span> <span class="hl num">1000</span><span class="hl opt">;</span>
+
+   <span class="hl kwb">long</span> <span class="hl opt">[]</span> values <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">long</span><span class="hl opt">[</span> <span class="hl num">16</span> <span class="hl opt">];</span>
+   Semaphore <span class="hl opt">[]</span> sema <span class="hl opt">=</span> <span class="hl kwa">new</span> Semaphore<span class="hl opt">[</span> values<span class="hl opt">.</span>length <span class="hl opt">];</span>
+   Semaphore allDone <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Semaphore</span><span class="hl opt">(</span> <span class="hl num">0</span> <span class="hl opt">);</span>
+   Semaphore moreWork <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Semaphore</span><span class="hl opt">(</span> <span class="hl num">0</span> <span class="hl opt">);</span>
+   <span class="hl kwa">final static</span> <span class="hl kwb">int</span> ADD <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> MUL <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">,</span> DIV_Q_R <span class="hl opt">=</span> <span class="hl num">2</span><span class="hl opt">;</span>
+
+   ExecutorService executor <span class="hl opt">=</span> Executors<span class="hl opt">.</span><span class="hl kwd">newFixedThreadPool</span><span class="hl opt">(</span> <span class="hl num">3</span> <span class="hl opt">);</span>
+
+   <span class="hl kwb">int</span> i<span class="hl opt">;</span>
+   StringBuilder strBuf <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">StringBuilder</span><span class="hl opt">(</span><span class="hl num">20</span><span class="hl opt">);</span>
+   <span class="hl kwa">final</span> <span class="hl kwb">int</span> n<span class="hl opt">;</span>
+
+   <span class="hl kwa">private</span> <span class="hl kwd">pidigits</span><span class="hl opt">(</span><span class="hl kwb">int</span> n<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      <span class="hl kwa">this</span><span class="hl opt">.</span>n<span class="hl opt">=</span>n<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">acquire</span><span class="hl opt">(</span> Semaphore s<span class="hl opt">,</span> <span class="hl kwb">int</span> permits <span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+     <span class="hl kwb">int</span> i <span class="hl opt">=</span> SPIN<span class="hl opt">;</span>
+     <span class="hl kwa">while</span><span class="hl opt">( !</span>s<span class="hl opt">.</span><span class="hl kwd">tryAcquire</span><span class="hl opt">(</span> permits <span class="hl opt">) )</span> <span class="hl kwa">if</span> <span class="hl opt">( --</span>i <span class="hl opt">&lt;=</span> <span class="hl num">0</span> <span class="hl opt">)</span> <span class="hl kwa">break</span><span class="hl opt">;</span>
+
+     <span class="hl slc">// now, if i &lt;= 0, then the semaphore is definitely not acquired</span>
+     <span class="hl kwa">if</span> <span class="hl opt">(</span> i <span class="hl opt">&lt;=</span> <span class="hl num">0</span> <span class="hl opt">)</span>
+     <span class="hl opt">{</span>
+       <span class="hl kwa">try</span>
+       <span class="hl opt">{</span>
+         s<span class="hl opt">.</span><span class="hl kwd">acquire</span><span class="hl opt">(</span> permits <span class="hl opt">);</span>
+       <span class="hl opt">}</span>
+       <span class="hl kwa">catch</span><span class="hl opt">(</span> Exception e <span class="hl opt">)</span>
+       <span class="hl opt">{}</span>
+     <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public class</span> exec <span class="hl kwa">implements</span> Runnable
+   <span class="hl opt">{</span>
+     exec <span class="hl opt">[]</span> seq_tasks<span class="hl opt">;</span>
+     <span class="hl kwb">int</span> instr<span class="hl opt">,</span> dest<span class="hl opt">,</span> op1<span class="hl opt">,</span> op2<span class="hl opt">,</span> op3 <span class="hl opt">= -</span><span class="hl num">1</span><span class="hl opt">;</span>
+
+     <span class="hl kwa">public</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> exec<span class="hl opt">[]</span> tasks <span class="hl opt">)</span>
+     <span class="hl opt">{</span>
+       seq_tasks <span class="hl opt">=</span> tasks<span class="hl opt">;</span>
+     <span class="hl opt">}</span>
+
+     <span class="hl kwa">public</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> <span class="hl kwb">int</span> ins<span class="hl opt">,</span> <span class="hl kwb">int</span> d<span class="hl opt">,</span> <span class="hl kwb">int</span> o1<span class="hl opt">,</span> <span class="hl kwb">int</span> o2 <span class="hl opt">)</span>
+     <span class="hl opt">{</span>
+       instr <span class="hl opt">=</span> ins<span class="hl opt">;</span> dest <span class="hl opt">=</span> d<span class="hl opt">;</span> op1 <span class="hl opt">=</span> o1<span class="hl opt">;</span> op2 <span class="hl opt">=</span> o2<span class="hl opt">;</span>
+     <span class="hl opt">}</span>
+
+     <span class="hl kwa">public</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> <span class="hl kwb">int</span> ins<span class="hl opt">,</span> <span class="hl kwb">int</span> d<span class="hl opt">,</span> <span class="hl kwb">int</span> o1<span class="hl opt">,</span> <span class="hl kwb">int</span> o2<span class="hl opt">,</span> <span class="hl kwb">int</span> o3 <span class="hl opt">)</span>
+     <span class="hl opt">{</span>
+       <span class="hl kwa">this</span><span class="hl opt">(</span> ins<span class="hl opt">,</span> d<span class="hl opt">,</span> o2<span class="hl opt">,</span> o3 <span class="hl opt">);</span> op3 <span class="hl opt">=</span> o1<span class="hl opt">;</span>
+     <span class="hl opt">}</span>
+
+     <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">run</span><span class="hl opt">()</span>
+     <span class="hl opt">{</span>
+       <span class="hl kwd">_run</span><span class="hl opt">();</span>
+       <span class="hl kwd">acquire</span><span class="hl opt">(</span> moreWork<span class="hl opt">,</span> <span class="hl num">1</span> <span class="hl opt">);</span> <span class="hl slc">// leave the thread spinning until more work arrives</span>
+                               <span class="hl slc">// - unparking takes ages on some boxes</span>
+     <span class="hl opt">}</span>
+
+     <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">_run</span><span class="hl opt">()</span>
+     <span class="hl opt">{</span>
+       <span class="hl kwa">if</span> <span class="hl opt">(</span> seq_tasks <span class="hl opt">!=</span> null <span class="hl opt">)</span>
+       <span class="hl opt">{</span>
+         <span class="hl kwa">for</span><span class="hl opt">(</span> exec r<span class="hl opt">:</span> seq_tasks <span class="hl opt">)</span> r<span class="hl opt">.</span><span class="hl kwd">_run</span><span class="hl opt">();</span>
+         allDone<span class="hl opt">.</span><span class="hl kwd">release</span><span class="hl opt">();</span>
+         <span class="hl kwa">return</span><span class="hl opt">;</span>
+       <span class="hl opt">}</span>
+
+       <span class="hl slc">// the while loop makes sure the thread doesn't get preempted</span>
+       <span class="hl slc">// - don't care about the CPU going wild; it would be idle otherwise anyway</span>
+       <span class="hl kwd">acquire</span><span class="hl opt">(</span> sema<span class="hl opt">[</span> op1 <span class="hl opt">],</span> <span class="hl num">1</span> <span class="hl opt">);</span> sema<span class="hl opt">[</span> op1 <span class="hl opt">].</span><span class="hl kwd">release</span><span class="hl opt">();</span>
+       <span class="hl kwd">acquire</span><span class="hl opt">(</span> sema<span class="hl opt">[</span> op2 <span class="hl opt">],</span> <span class="hl num">1</span> <span class="hl opt">);</span> sema<span class="hl opt">[</span> op2 <span class="hl opt">].</span><span class="hl kwd">release</span><span class="hl opt">();</span>
+
+       <span class="hl kwa">if</span> <span class="hl opt">(</span> instr <span class="hl opt">==</span> MUL <span class="hl opt">)</span>
+       <span class="hl opt">{</span>
+         GmpUtil<span class="hl opt">.</span><span class="hl kwd">mpz_mul_si</span><span class="hl opt">(</span> values<span class="hl opt">[</span> dest <span class="hl opt">],</span> values<span class="hl opt">[</span> op1 <span class="hl opt">], (</span><span class="hl kwb">int</span><span class="hl opt">)</span>values<span class="hl opt">[</span> op2 <span class="hl opt">] );</span>
+       <span class="hl opt">}</span>
+       <span class="hl kwa">else if</span> <span class="hl opt">(</span> instr <span class="hl opt">==</span> ADD <span class="hl opt">)</span>
+       <span class="hl opt">{</span>
+         GmpUtil<span class="hl opt">.</span><span class="hl kwd">mpz_add</span><span class="hl opt">(</span> values<span class="hl opt">[</span> dest <span class="hl opt">],</span> values<span class="hl opt">[</span> op1 <span class="hl opt">],</span> values<span class="hl opt">[</span> op2 <span class="hl opt">] );</span>
+       <span class="hl opt">}</span>
+       <span class="hl kwa">else if</span> <span class="hl opt">(</span> instr <span class="hl opt">==</span> DIV_Q_R <span class="hl opt">)</span>
+       <span class="hl opt">{</span>
+         GmpUtil<span class="hl opt">.</span><span class="hl kwd">mpz_tdiv_qr</span><span class="hl opt">(</span> values<span class="hl opt">[</span> dest <span class="hl opt">],</span> values<span class="hl opt">[</span> op3 <span class="hl opt">],</span> values<span class="hl opt">[</span> op1 <span class="hl opt">],</span> values<span class="hl opt">[</span> op2 <span class="hl opt">] );</span>
+         sema<span class="hl opt">[</span> op3 <span class="hl opt">].</span><span class="hl kwd">release</span><span class="hl opt">();</span>
+       <span class="hl opt">}</span>
+
+       sema<span class="hl opt">[</span> dest <span class="hl opt">].</span><span class="hl kwd">release</span><span class="hl opt">();</span>
+     <span class="hl opt">}</span>
+   <span class="hl opt">};</span>
+
+   <span class="hl slc">// compose_r = ( q,r; s,t ) = ( bq, br; bs, bt ) x (q,r; s,t)</span>
+   <span class="hl slc">// bs == 0, hence s == 0 and multiplications involving bs and s aren't here (br*s, bt*s)</span>
+   <span class="hl slc">// bt == 1 hence multiplications involving bt aren't here (s*bt, t*bt)</span>
+
+   <span class="hl slc">// compose_l = ( q,r; s,t ) = (q,r; s,t) x ( bq, br; bs, bt )</span>
+   <span class="hl slc">// extract = ( q*3 + r )/( s*3 + t ) compared to ( q*4 + r )/( s*4 + t )</span>
+   <span class="hl slc">// the latter is the same as computing quotient and remainder of ( q*4 + r )/( s*4 + t );</span>
+   <span class="hl slc">// if the remainder is greater or equal to q,</span>
+   <span class="hl slc">// then the quotient is the same as of ( 3*q + r )/( s*3 + t ) since s==0</span>
+   <span class="hl kwa">final</span> exec<span class="hl opt">[]</span> COMPOSE_R <span class="hl opt">=</span> <span class="hl kwa">new</span> exec<span class="hl opt">[]{</span> 
+      <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> <span class="hl kwa">new</span> exec<span class="hl opt">[]{</span> <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> MUL<span class="hl opt">,</span> Q1<span class="hl opt">,</span> Q<span class="hl opt">,</span> BQ <span class="hl opt">),</span>
+            <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> MUL<span class="hl opt">,</span> U1<span class="hl opt">,</span> Q1<span class="hl opt">,</span> FOUR <span class="hl opt">) } ),</span> <span class="hl slc">// now U is always Q*4</span>
+      <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> <span class="hl kwa">new</span> exec<span class="hl opt">[]{</span> <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> MUL<span class="hl opt">,</span> V<span class="hl opt">,</span> T<span class="hl opt">,</span> BR <span class="hl opt">),</span>
+         <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> ADD<span class="hl opt">,</span> R1<span class="hl opt">,</span> R1<span class="hl opt">,</span> V <span class="hl opt">) } ),</span>
+      <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> <span class="hl kwa">new</span> exec<span class="hl opt">[]{</span> <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> MUL<span class="hl opt">,</span> R1<span class="hl opt">,</span> R<span class="hl opt">,</span> BQ <span class="hl opt">) } )</span>
+      <span class="hl opt">};</span>
+
+   <span class="hl kwa">final</span> exec<span class="hl opt">[]</span> COMPOSE_L <span class="hl opt">=</span> <span class="hl kwa">new</span> exec<span class="hl opt">[]{</span> 
+      <span class="hl slc">// digit extraction logic here</span>
+      <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> <span class="hl kwa">new</span> exec<span class="hl opt">[]{</span> <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> ADD<span class="hl opt">,</span> ES1<span class="hl opt">,</span> U<span class="hl opt">,</span> R <span class="hl opt">),</span>
+         <span class="hl slc">// DIV_Q_R is approx the same cost as two muls</span>
+         <span class="hl slc">// so this splits the work roughly equally</span>
+         <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> DIV_Q_R<span class="hl opt">,</span> ER<span class="hl opt">,</span> ER1<span class="hl opt">,</span> ES1<span class="hl opt">,</span> T <span class="hl opt">) } ),</span> 
+                                                   
+         <span class="hl slc">// compose_l</span>
+      <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> <span class="hl kwa">new</span> exec<span class="hl opt">[]{</span> <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> MUL<span class="hl opt">,</span> R1<span class="hl opt">,</span> R<span class="hl opt">,</span> BT <span class="hl opt">),</span>
+         <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> ADD<span class="hl opt">,</span> R1<span class="hl opt">,</span> R1<span class="hl opt">,</span> V <span class="hl opt">) } ),</span>
+      <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> <span class="hl kwa">new</span> exec<span class="hl opt">[]{</span> <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> MUL<span class="hl opt">,</span> V<span class="hl opt">,</span> Q<span class="hl opt">,</span> BR <span class="hl opt">),</span>
+         <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> MUL<span class="hl opt">,</span> T1<span class="hl opt">,</span> T<span class="hl opt">,</span> BT <span class="hl opt">) } ),</span>
+      <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> <span class="hl kwa">new</span> exec<span class="hl opt">[]{</span> <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> MUL<span class="hl opt">,</span> Q1<span class="hl opt">,</span> Q<span class="hl opt">,</span> BQ <span class="hl opt">),</span>
+         <span class="hl kwa">new</span> <span class="hl kwd">exec</span><span class="hl opt">(</span> MUL<span class="hl opt">,</span> U1<span class="hl opt">,</span> Q1<span class="hl opt">,</span> FOUR <span class="hl opt">) } )</span> <span class="hl slc">// now U is always Q*4</span>
+      <span class="hl opt">};</span>
+
+
+   <span class="hl kwa">private</span> <span class="hl kwb">boolean</span> <span class="hl kwd">multi_threaded_compute</span><span class="hl opt">(</span> exec<span class="hl opt">[]</span> code<span class="hl opt">,</span> <span class="hl kwb">int</span> bq<span class="hl opt">,</span> <span class="hl kwb">int</span> br<span class="hl opt">,</span> <span class="hl kwb">int</span> bt<span class="hl opt">,</span> <span class="hl kwb">boolean</span> compare <span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+     allDone<span class="hl opt">.</span><span class="hl kwd">drainPermits</span><span class="hl opt">();</span>
+
+     <span class="hl kwa">for</span><span class="hl opt">(</span> <span class="hl kwb">int</span> i <span class="hl opt">=</span> BQ<span class="hl opt">;</span> i <span class="hl opt">&lt;</span> Q<span class="hl opt">; ++</span>i <span class="hl opt">)</span> sema<span class="hl opt">[</span> i <span class="hl opt">].</span><span class="hl kwd">drainPermits</span><span class="hl opt">();</span>
+
+     values<span class="hl opt">[</span> BQ <span class="hl opt">] =</span> bq<span class="hl opt">;</span>
+     sema<span class="hl opt">[</span> BQ <span class="hl opt">].</span><span class="hl kwd">release</span><span class="hl opt">();</span>
+     values<span class="hl opt">[</span> BR <span class="hl opt">] =</span> br<span class="hl opt">;</span>
+     sema<span class="hl opt">[</span> BR <span class="hl opt">].</span><span class="hl kwd">release</span><span class="hl opt">();</span>
+     values<span class="hl opt">[</span> BT <span class="hl opt">] =</span> bt<span class="hl opt">;</span>
+     sema<span class="hl opt">[</span> BT <span class="hl opt">].</span><span class="hl kwd">release</span><span class="hl opt">();</span>
+
+     <span class="hl kwa">for</span><span class="hl opt">(</span> <span class="hl kwb">int</span> i <span class="hl opt">=</span> compare ? <span class="hl num">1</span><span class="hl opt">:</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> code<span class="hl opt">.</span>length<span class="hl opt">; ++</span>i <span class="hl opt">)</span>
+     <span class="hl opt">{</span>
+       executor<span class="hl opt">.</span><span class="hl kwd">execute</span><span class="hl opt">(</span> code<span class="hl opt">[</span> i <span class="hl opt">] );</span> <span class="hl slc">// we are one thread, so skip code[ 0 ], </span>
+                                      <span class="hl slc">// if comparing the remainder is needed</span>
+       moreWork<span class="hl opt">.</span><span class="hl kwd">release</span><span class="hl opt">();</span>
+     <span class="hl opt">}</span>
+
+     <span class="hl kwa">if</span> <span class="hl opt">( !</span>compare <span class="hl opt">)</span> <span class="hl kwa">return</span> false<span class="hl opt">;</span>
+
+     code<span class="hl opt">[</span> <span class="hl num">0</span> <span class="hl opt">].</span><span class="hl kwd">_run</span><span class="hl opt">();</span>
+
+     <span class="hl slc">// ER1 &gt;= Q means the remainder of (4*q+r)/t contains q,</span>
+     <span class="hl slc">// and the quotient is the same as (3*q+r)/t</span>
+     <span class="hl kwb">boolean</span> r <span class="hl opt">=</span> GmpUtil<span class="hl opt">.</span><span class="hl kwd">mpz_cmp</span><span class="hl opt">(</span> values<span class="hl opt">[</span> ER1 <span class="hl opt">],</span> values<span class="hl opt">[</span> Q <span class="hl opt">] ) &gt;=</span> <span class="hl num">0</span><span class="hl opt">;</span> 
+                                                                
+     <span class="hl kwd">acquire</span><span class="hl opt">(</span> allDone<span class="hl opt">,</span> code<span class="hl opt">.</span>length <span class="hl opt">);</span>
+
+     <span class="hl kwa">return</span> r<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl com">/* Print one digit. Returns 1 for the last digit. */</span>
+   <span class="hl kwa">private</span> <span class="hl kwb">boolean</span> <span class="hl kwd">printDigit</span><span class="hl opt">(</span><span class="hl kwb">int</span> y<span class="hl opt">,</span> <span class="hl kwb">boolean</span> isWarm<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      strBuf<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span>y<span class="hl opt">);</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(++</span>i <span class="hl opt">%</span> <span class="hl num">10</span> <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl opt">||</span> i <span class="hl opt">==</span> n<span class="hl opt">) {</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>i<span class="hl opt">%</span><span class="hl num">10</span><span class="hl opt">!=</span><span class="hl num">0</span><span class="hl opt">)</span> <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> j<span class="hl opt">=</span><span class="hl num">10</span><span class="hl opt">-(</span>i<span class="hl opt">%</span><span class="hl num">10</span><span class="hl opt">);</span>j<span class="hl opt">&gt;</span><span class="hl num">0</span><span class="hl opt">;</span>j<span class="hl opt">--) {</span> strBuf<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span><span class="hl str">&quot; &quot;</span><span class="hl opt">); }</span>
+         strBuf<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">:&quot;</span><span class="hl opt">);</span>
+         strBuf<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span>i<span class="hl opt">);</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>isWarm<span class="hl opt">)</span> System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">(</span>strBuf<span class="hl opt">);</span>
+         strBuf<span class="hl opt">.</span><span class="hl kwd">setLength</span><span class="hl opt">(</span> <span class="hl num">0</span> <span class="hl opt">);</span> <span class="hl slc">// clear the contents</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">return</span> i <span class="hl opt">==</span> n<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl com">/* Generate successive digits of PI. */</span>
+   <span class="hl kwb">void</span> <span class="hl kwd">printAll</span><span class="hl opt">(</span><span class="hl kwb">boolean</span> isWarm<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+     <span class="hl kwb">int</span> k <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+     <span class="hl kwa">for</span><span class="hl opt">(</span> <span class="hl kwb">int</span> i <span class="hl opt">=</span> V<span class="hl opt">;</span> i <span class="hl opt">&lt;</span> values<span class="hl opt">.</span>length<span class="hl opt">; ++</span>i <span class="hl opt">)</span> values<span class="hl opt">[</span> i <span class="hl opt">] =</span> GmpUtil<span class="hl opt">.</span><span class="hl kwd">mpz_init</span><span class="hl opt">();</span>
+
+     GmpUtil<span class="hl opt">.</span><span class="hl kwd">mpz_set_si</span><span class="hl opt">(</span> values<span class="hl opt">[</span> Q <span class="hl opt">],</span> <span class="hl num">1</span> <span class="hl opt">);</span>
+     GmpUtil<span class="hl opt">.</span><span class="hl kwd">mpz_set_si</span><span class="hl opt">(</span> values<span class="hl opt">[</span> T <span class="hl opt">],</span> <span class="hl num">1</span> <span class="hl opt">);</span>
+     GmpUtil<span class="hl opt">.</span><span class="hl kwd">mpz_set_si</span><span class="hl opt">(</span> values<span class="hl opt">[</span> R <span class="hl opt">],</span> <span class="hl num">0</span> <span class="hl opt">);</span>
+     GmpUtil<span class="hl opt">.</span><span class="hl kwd">mpz_set_si</span><span class="hl opt">(</span> values<span class="hl opt">[</span> U <span class="hl opt">],</span> <span class="hl num">4</span> <span class="hl opt">);</span> <span class="hl slc">// U = Q*4 - invariant</span>
+     values<span class="hl opt">[</span> FOUR <span class="hl opt">] =</span> <span class="hl num">4</span><span class="hl opt">;</span>
+
+     <span class="hl slc">// these are initially unavailable</span>
+     <span class="hl kwa">for</span><span class="hl opt">(</span> <span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> sema<span class="hl opt">.</span>length<span class="hl opt">; ++</span>i <span class="hl opt">)</span> sema<span class="hl opt">[</span> i <span class="hl opt">] =</span> <span class="hl kwa">new</span> <span class="hl kwd">Semaphore</span><span class="hl opt">(</span> <span class="hl num">0</span> <span class="hl opt">);</span>
+
+     sema<span class="hl opt">[</span> Q <span class="hl opt">].</span><span class="hl kwd">release</span><span class="hl opt">();</span> <span class="hl slc">// these are always avalable</span>
+     sema<span class="hl opt">[</span> R <span class="hl opt">].</span><span class="hl kwd">release</span><span class="hl opt">();</span>
+     sema<span class="hl opt">[</span> FOUR <span class="hl opt">].</span><span class="hl kwd">release</span><span class="hl opt">();</span>
+     sema<span class="hl opt">[</span> T <span class="hl opt">].</span><span class="hl kwd">release</span><span class="hl opt">();</span>
+     sema<span class="hl opt">[</span> U <span class="hl opt">].</span><span class="hl kwd">release</span><span class="hl opt">();</span>
+     i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+     <span class="hl kwa">for</span> <span class="hl opt">(;;) {</span>
+       <span class="hl kwa">if</span> <span class="hl opt">(</span> <span class="hl kwd">multi_threaded_compute</span><span class="hl opt">(</span> COMPOSE_L<span class="hl opt">,</span> k<span class="hl opt">,</span> <span class="hl num">4</span><span class="hl opt">*</span>k<span class="hl opt">+</span><span class="hl num">2</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">*</span>k<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">,</span> true <span class="hl opt">) ) {</span>
+         <span class="hl kwb">int</span> y <span class="hl opt">=</span> GmpUtil<span class="hl opt">.</span><span class="hl kwd">mpz_get_si</span><span class="hl opt">(</span> values<span class="hl opt">[</span> ER <span class="hl opt">] );</span>
+       
+         <span class="hl slc">// compare == false - computation is in background; foreground thread can print</span>
+         <span class="hl kwd">multi_threaded_compute</span><span class="hl opt">(</span> COMPOSE_R<span class="hl opt">,</span> <span class="hl num">10</span><span class="hl opt">, -</span><span class="hl num">10</span><span class="hl opt">*</span>y<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> false <span class="hl opt">);</span> 
+ 
+         <span class="hl kwb">boolean</span> r <span class="hl opt">=</span> <span class="hl kwd">printDigit</span><span class="hl opt">(</span>y<span class="hl opt">,</span>isWarm<span class="hl opt">);</span>
+         <span class="hl kwd">acquire</span><span class="hl opt">(</span> allDone<span class="hl opt">,</span>  COMPOSE_R<span class="hl opt">.</span>length <span class="hl opt">);</span> <span class="hl slc">// wait for the COMPOSE_R to complete</span>
+
+         <span class="hl kwa">if</span> <span class="hl opt">(</span> r <span class="hl opt">) {</span>
+           <span class="hl slc">// don't have to be this nice in a one-shot run</span>
+           <span class="hl kwa">for</span><span class="hl opt">(</span> <span class="hl kwb">int</span> i <span class="hl opt">=</span> V<span class="hl opt">;</span> i <span class="hl opt">&lt;</span> values<span class="hl opt">.</span>length<span class="hl opt">; ++</span>i <span class="hl opt">)</span> GmpUtil<span class="hl opt">.</span><span class="hl kwd">mpz_clear</span><span class="hl opt">(</span> values<span class="hl opt">[</span> i <span class="hl opt">] );</span> 
+           <span class="hl kwa">return</span><span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+       <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+         <span class="hl kwb">long</span> g <span class="hl opt">=</span> values<span class="hl opt">[</span> T <span class="hl opt">];</span>
+         values<span class="hl opt">[</span> T <span class="hl opt">] =</span> values<span class="hl opt">[</span> T1 <span class="hl opt">];</span>
+         values<span class="hl opt">[</span> T1 <span class="hl opt">] =</span> g<span class="hl opt">;</span> <span class="hl slc">// to save on init/GC costs</span>
+         k<span class="hl opt">++;</span>
+       <span class="hl opt">}</span>
+       <span class="hl kwb">long</span> g <span class="hl opt">=</span> values<span class="hl opt">[</span> Q <span class="hl opt">];</span>
+       values<span class="hl opt">[</span> Q <span class="hl opt">] =</span> values<span class="hl opt">[</span> Q1 <span class="hl opt">];</span>
+       values<span class="hl opt">[</span> Q1 <span class="hl opt">] =</span> g<span class="hl opt">;</span>
+       g <span class="hl opt">=</span> values<span class="hl opt">[</span> R <span class="hl opt">];</span>
+       values<span class="hl opt">[</span> R <span class="hl opt">] =</span> values<span class="hl opt">[</span> R1 <span class="hl opt">];</span>
+       values<span class="hl opt">[</span> R1 <span class="hl opt">] =</span> g<span class="hl opt">;</span>
+       g <span class="hl opt">=</span> values<span class="hl opt">[</span> U1 <span class="hl opt">];</span>
+       values<span class="hl opt">[</span> U1 <span class="hl opt">] =</span> values<span class="hl opt">[</span> U <span class="hl opt">];</span>
+       values<span class="hl opt">[</span> U <span class="hl opt">] =</span> g<span class="hl opt">;</span>
+     <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">main</span><span class="hl opt">(</span>String<span class="hl opt">[]</span> args<span class="hl opt">){</span>
+      pidigits spigot <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">pidigits</span><span class="hl opt">(</span>Integer<span class="hl opt">.</span><span class="hl kwd">parseInt</span><span class="hl opt">(</span>args<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]));</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">&lt;</span><span class="hl num">65</span><span class="hl opt">; ++</span>i<span class="hl opt">)</span> spigot<span class="hl opt">.</span><span class="hl kwd">printAll</span><span class="hl opt">(</span>false<span class="hl opt">);</span>
+      spigot<span class="hl opt">.</span><span class="hl kwd">printAll</span><span class="hl opt">(</span>true<span class="hl opt">);</span>
+      System<span class="hl opt">.</span><span class="hl kwd">exit</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">class</span> GmpUtil <span class="hl opt">{</span>
+   <span class="hl kwa">static</span> <span class="hl opt">{</span>
+      System<span class="hl opt">.</span><span class="hl kwd">loadLibrary</span><span class="hl opt">(</span><span class="hl str">&quot;jpargmp&quot;</span><span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">static native</span> <span class="hl kwb">long</span> <span class="hl kwd">mpz_init</span><span class="hl opt">();</span>
+
+   <span class="hl kwa">static native</span> <span class="hl kwb">void</span> <span class="hl kwd">mpz_clear</span><span class="hl opt">(</span><span class="hl kwb">long</span> src<span class="hl opt">);</span>
+
+   <span class="hl kwa">static native</span> <span class="hl kwb">void</span> <span class="hl kwd">mpz_mul_si</span><span class="hl opt">(</span><span class="hl kwb">long</span> dest<span class="hl opt">,</span> <span class="hl kwb">long</span> src<span class="hl opt">,</span>
+         <span class="hl kwb">int</span> val<span class="hl opt">);</span>
+
+   <span class="hl kwa">static native</span> <span class="hl kwb">void</span> <span class="hl kwd">mpz_add</span><span class="hl opt">(</span><span class="hl kwb">long</span> dest<span class="hl opt">,</span> <span class="hl kwb">long</span> src<span class="hl opt">,</span>
+         <span class="hl kwb">long</span> src2<span class="hl opt">);</span>
+
+   <span class="hl kwa">static native</span> <span class="hl kwb">void</span> <span class="hl kwd">mpz_set_si</span><span class="hl opt">(</span><span class="hl kwb">long</span> src<span class="hl opt">,</span> <span class="hl kwb">int</span> value<span class="hl opt">);</span>
+
+   <span class="hl kwa">static native</span> <span class="hl kwb">int</span> <span class="hl kwd">mpz_get_si</span><span class="hl opt">(</span><span class="hl kwb">long</span> src<span class="hl opt">);</span>
+
+   <span class="hl kwa">static native</span> <span class="hl kwb">int</span> <span class="hl kwd">mpz_cmp</span><span class="hl opt">(</span><span class="hl kwb">long</span> dest<span class="hl opt">,</span> <span class="hl kwb">long</span> src<span class="hl opt">);</span>
+
+   <span class="hl kwa">static native</span> <span class="hl kwb">void</span> <span class="hl kwd">mpz_tdiv_qr</span><span class="hl opt">(</span><span class="hl kwb">long</span> q<span class="hl opt">,</span> <span class="hl kwb">long</span> r<span class="hl opt">,</span> <span class="hl kwb">long</span> n<span class="hl opt">,</span>
+         <span class="hl kwb">long</span> d<span class="hl opt">);</span>
+<span class="hl opt">}</span>

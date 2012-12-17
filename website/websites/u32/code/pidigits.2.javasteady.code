@@ -1,0 +1,168 @@
+<span class="hl com">/**</span>
+<span class="hl com"> * The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"> * contributed by Mike Pall</span>
+<span class="hl com"> * java port by Stefan Krause</span>
+<span class="hl com">*/</span>
+
+
+<span class="hl kwa">public class</span> pidigits <span class="hl opt">{</span>
+   
+   <span class="hl kwa">final</span> GmpInteger q <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">GmpInteger</span><span class="hl opt">(),</span> r <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">GmpInteger</span><span class="hl opt">(),</span>
+   s <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">GmpInteger</span><span class="hl opt">(),</span> t <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">GmpInteger</span><span class="hl opt">();</span> 
+   <span class="hl kwa">final</span> GmpInteger u <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">GmpInteger</span><span class="hl opt">(),</span> v <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">GmpInteger</span><span class="hl opt">(),</span>
+   w <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">GmpInteger</span><span class="hl opt">();</span> 
+
+   <span class="hl kwb">int</span> i<span class="hl opt">,</span> k<span class="hl opt">,</span> c<span class="hl opt">;</span> 
+   <span class="hl kwb">int</span> digit<span class="hl opt">;</span>
+   <span class="hl kwb">int</span> d<span class="hl opt">;</span>
+   StringBuffer strBuf <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">StringBuffer</span><span class="hl opt">(</span><span class="hl num">20</span><span class="hl opt">);</span>
+   <span class="hl kwa">final</span> <span class="hl kwb">int</span> n<span class="hl opt">;</span>
+   
+   <span class="hl kwa">private</span> <span class="hl kwd">pidigits</span><span class="hl opt">(</span><span class="hl kwb">int</span> n<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      <span class="hl kwa">this</span><span class="hl opt">.</span>n<span class="hl opt">=</span>n<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+   
+   <span class="hl kwa">private</span> <span class="hl kwb">void</span> <span class="hl kwd">compose_r</span><span class="hl opt">(</span><span class="hl kwb">int</span> bq<span class="hl opt">,</span> <span class="hl kwb">int</span> br<span class="hl opt">,</span> <span class="hl kwb">int</span> bs<span class="hl opt">,</span> <span class="hl kwb">int</span> bt<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+     u<span class="hl opt">.</span><span class="hl kwd">mul</span><span class="hl opt">(</span>r<span class="hl opt">,</span> bs<span class="hl opt">);</span>
+     r<span class="hl opt">.</span><span class="hl kwd">mul</span><span class="hl opt">(</span>r<span class="hl opt">,</span> bq<span class="hl opt">);</span>
+     v<span class="hl opt">.</span><span class="hl kwd">mul</span><span class="hl opt">(</span>t<span class="hl opt">,</span> br<span class="hl opt">);</span>
+     r<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>r<span class="hl opt">,</span> v<span class="hl opt">);</span>
+     t<span class="hl opt">.</span><span class="hl kwd">mul</span><span class="hl opt">(</span>t<span class="hl opt">,</span> bt<span class="hl opt">);</span>
+     t<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>t<span class="hl opt">,</span> u<span class="hl opt">);</span>
+     s<span class="hl opt">.</span><span class="hl kwd">mul</span><span class="hl opt">(</span>s<span class="hl opt">,</span> bt<span class="hl opt">);</span>
+     u<span class="hl opt">.</span><span class="hl kwd">mul</span><span class="hl opt">(</span>q<span class="hl opt">,</span> bs<span class="hl opt">);</span>
+     s<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>s<span class="hl opt">,</span> u<span class="hl opt">);</span>
+     q<span class="hl opt">.</span><span class="hl kwd">mul</span><span class="hl opt">(</span>q<span class="hl opt">,</span> bq<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl com">/* Compose matrix with numbers on the left. */</span>
+   <span class="hl kwa">private</span> <span class="hl kwb">void</span> <span class="hl kwd">compose_l</span><span class="hl opt">(</span><span class="hl kwb">int</span> bq<span class="hl opt">,</span> <span class="hl kwb">int</span> br<span class="hl opt">,</span> <span class="hl kwb">int</span> bs<span class="hl opt">,</span> <span class="hl kwb">int</span> bt<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+     r<span class="hl opt">.</span><span class="hl kwd">mul</span><span class="hl opt">(</span>r<span class="hl opt">,</span> bt<span class="hl opt">);</span>
+     u<span class="hl opt">.</span><span class="hl kwd">mul</span><span class="hl opt">(</span>q<span class="hl opt">,</span> br<span class="hl opt">);</span>
+     r<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>r<span class="hl opt">,</span> u<span class="hl opt">);</span>
+     u<span class="hl opt">.</span><span class="hl kwd">mul</span><span class="hl opt">(</span>t<span class="hl opt">,</span> bs<span class="hl opt">);</span>
+     t<span class="hl opt">.</span><span class="hl kwd">mul</span><span class="hl opt">(</span>t<span class="hl opt">,</span> bt<span class="hl opt">);</span>
+     v<span class="hl opt">.</span><span class="hl kwd">mul</span><span class="hl opt">(</span>s<span class="hl opt">,</span> br<span class="hl opt">);</span>
+     t<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>t<span class="hl opt">,</span> v<span class="hl opt">);</span>
+     s<span class="hl opt">.</span><span class="hl kwd">mul</span><span class="hl opt">(</span>s<span class="hl opt">,</span> bq<span class="hl opt">);</span>
+     s<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>s<span class="hl opt">,</span> u<span class="hl opt">);</span>
+     q<span class="hl opt">.</span><span class="hl kwd">mul</span><span class="hl opt">(</span>q<span class="hl opt">,</span> bq<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl com">/* Extract one digit. */</span>
+   <span class="hl kwa">private</span> <span class="hl kwb">int</span> <span class="hl kwd">extract</span><span class="hl opt">(</span><span class="hl kwb">int</span> j<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+     u<span class="hl opt">.</span><span class="hl kwd">mul</span><span class="hl opt">(</span>q<span class="hl opt">,</span> j<span class="hl opt">);</span>
+     u<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>u<span class="hl opt">,</span> r<span class="hl opt">);</span>
+     v<span class="hl opt">.</span><span class="hl kwd">mul</span><span class="hl opt">(</span>s<span class="hl opt">,</span> j<span class="hl opt">);</span>
+     v<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>v<span class="hl opt">,</span> t<span class="hl opt">);</span>
+     w<span class="hl opt">.</span><span class="hl kwd">div</span><span class="hl opt">(</span>u<span class="hl opt">,</span> v<span class="hl opt">);</span>
+     <span class="hl kwa">return</span> w<span class="hl opt">.</span><span class="hl kwd">intValue</span><span class="hl opt">();</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl com">/* Print one digit. Returns 1 for the last digit. */</span>
+   <span class="hl kwa">private</span> <span class="hl kwb">boolean</span> <span class="hl kwd">prdigit</span><span class="hl opt">(</span><span class="hl kwb">int</span> y<span class="hl opt">,</span> <span class="hl kwb">boolean</span> isWarm<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      strBuf<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span>y<span class="hl opt">);</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(++</span>i <span class="hl opt">%</span> <span class="hl num">10</span> <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl opt">||</span> i <span class="hl opt">==</span> n<span class="hl opt">) {</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>i<span class="hl opt">%</span><span class="hl num">10</span><span class="hl opt">!=</span><span class="hl num">0</span><span class="hl opt">)</span> <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> j<span class="hl opt">=</span><span class="hl num">10</span><span class="hl opt">-(</span>i<span class="hl opt">%</span><span class="hl num">10</span><span class="hl opt">);</span>j<span class="hl opt">&gt;</span><span class="hl num">0</span><span class="hl opt">;</span>j<span class="hl opt">--) {</span> strBuf<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span><span class="hl str">&quot; &quot;</span><span class="hl opt">); }</span>
+         strBuf<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">:&quot;</span><span class="hl opt">);</span>
+         strBuf<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span>i<span class="hl opt">);</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>isWarm<span class="hl opt">)</span> System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">(</span>strBuf<span class="hl opt">);</span>
+         strBuf <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">StringBuffer</span><span class="hl opt">(</span><span class="hl num">20</span><span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">return</span> i <span class="hl opt">==</span> n<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl com">/* Generate successive digits of PI. */</span>
+   <span class="hl kwb">void</span> <span class="hl kwd">pidigits</span><span class="hl opt">(</span><span class="hl kwb">boolean</span> isWarm<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+     <span class="hl kwb">int</span> k <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+     d <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+     i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+     q<span class="hl opt">.</span><span class="hl kwd">set</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">);</span>
+     r<span class="hl opt">.</span><span class="hl kwd">set</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
+     s<span class="hl opt">.</span><span class="hl kwd">set</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
+     t<span class="hl opt">.</span><span class="hl kwd">set</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">);</span>
+     <span class="hl kwa">for</span> <span class="hl opt">(;;) {</span>
+       <span class="hl kwb">int</span> y <span class="hl opt">=</span> <span class="hl kwd">extract</span><span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">);</span>
+       <span class="hl kwa">if</span> <span class="hl opt">(</span>y <span class="hl opt">==</span> <span class="hl kwd">extract</span><span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">)) {</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwd">prdigit</span><span class="hl opt">(</span>y<span class="hl opt">,</span>isWarm<span class="hl opt">))</span> <span class="hl kwa">return</span><span class="hl opt">;</span>
+         <span class="hl kwd">compose_r</span><span class="hl opt">(</span><span class="hl num">10</span><span class="hl opt">, -</span><span class="hl num">10</span><span class="hl opt">*</span>y<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">);</span>
+       <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+         <span class="hl kwd">compose_l</span><span class="hl opt">(</span>k<span class="hl opt">,</span> <span class="hl num">4</span><span class="hl opt">*</span>k<span class="hl opt">+</span><span class="hl num">2</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">*</span>k<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">);</span>
+         k<span class="hl opt">++;</span>
+       <span class="hl opt">}</span>
+     <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+      
+   <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">main</span><span class="hl opt">(</span>String<span class="hl opt">[]</span> args<span class="hl opt">){</span>
+      pidigits m <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">pidigits</span><span class="hl opt">(</span>Integer<span class="hl opt">.</span><span class="hl kwd">parseInt</span><span class="hl opt">(</span>args<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]));</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">&lt;</span><span class="hl num">65</span><span class="hl opt">; ++</span>i<span class="hl opt">)</span> m<span class="hl opt">.</span><span class="hl kwd">pidigits</span><span class="hl opt">(</span>false<span class="hl opt">);</span>
+      m<span class="hl opt">.</span><span class="hl kwd">pidigits</span><span class="hl opt">(</span>true<span class="hl opt">);</span>
+
+      System<span class="hl opt">.</span><span class="hl kwd">exit</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+
+
+<span class="hl kwa">class</span> GmpInteger <span class="hl opt">{</span>
+   
+   <span class="hl slc">// Public methods</span>
+   
+   <span class="hl kwa">public</span> <span class="hl kwd">GmpInteger</span><span class="hl opt">() {</span>
+      <span class="hl kwd">mpz_init</span><span class="hl opt">();</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwd">GmpInteger</span><span class="hl opt">(</span><span class="hl kwb">int</span> value<span class="hl opt">) {</span>
+      <span class="hl kwa">this</span><span class="hl opt">();</span>
+      <span class="hl kwd">mpz_set_si</span><span class="hl opt">(</span>pointer<span class="hl opt">,</span> value<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+   
+   <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">set</span><span class="hl opt">(</span><span class="hl kwb">int</span> value<span class="hl opt">) {</span> <span class="hl kwd">mpz_set_si</span><span class="hl opt">(</span>pointer<span class="hl opt">,</span> value<span class="hl opt">); }</span>
+
+   <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">mul</span><span class="hl opt">(</span>GmpInteger src<span class="hl opt">,</span> <span class="hl kwb">int</span> val<span class="hl opt">) {</span> <span class="hl kwd">mpz_mul_si</span><span class="hl opt">(</span>pointer<span class="hl opt">,</span> src<span class="hl opt">.</span>pointer<span class="hl opt">,</span> val<span class="hl opt">); }</span>
+   
+   <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">add</span><span class="hl opt">(</span>GmpInteger op1<span class="hl opt">,</span> GmpInteger op2<span class="hl opt">) {</span> <span class="hl kwd">mpz_add</span><span class="hl opt">(</span>pointer<span class="hl opt">,</span> op1<span class="hl opt">.</span>pointer<span class="hl opt">,</span> op2<span class="hl opt">.</span>pointer<span class="hl opt">); }</span>
+   
+   <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">div</span><span class="hl opt">(</span>GmpInteger op1<span class="hl opt">,</span> GmpInteger op2<span class="hl opt">) {</span> <span class="hl kwd">mpz_tdiv_q</span><span class="hl opt">(</span>pointer<span class="hl opt">,</span> op1<span class="hl opt">.</span>pointer<span class="hl opt">,</span> op2<span class="hl opt">.</span>pointer<span class="hl opt">); }</span>
+   
+   <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">intValue</span><span class="hl opt">() {</span> <span class="hl kwa">return</span> <span class="hl kwd">mpz_get_si</span><span class="hl opt">(</span>pointer<span class="hl opt">); }</span>
+   
+   <span class="hl kwa">public</span> <span class="hl kwb">double</span> <span class="hl kwd">doubleValue</span><span class="hl opt">() {</span> <span class="hl kwa">return</span> <span class="hl kwd">mpz_get_d</span><span class="hl opt">(</span>pointer<span class="hl opt">); }</span> 
+
+   <span class="hl slc">// Non public stuff</span>
+   
+   <span class="hl kwa">static</span> <span class="hl opt">{</span>
+      System<span class="hl opt">.</span><span class="hl kwd">loadLibrary</span><span class="hl opt">(</span><span class="hl str">&quot;jgmplib&quot;</span><span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">private</span> <span class="hl kwb">long</span> pointer<span class="hl opt">;</span>
+   
+   <span class="hl kwa">protected</span> <span class="hl kwb">void</span> <span class="hl kwd">finalize</span><span class="hl opt">()  {</span>
+      <span class="hl kwd">mpz_clear</span><span class="hl opt">(</span>pointer<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+   
+   <span class="hl kwa">private native</span> <span class="hl kwb">void</span> <span class="hl kwd">mpz_init</span><span class="hl opt">();</span>
+
+   <span class="hl kwa">private native</span> <span class="hl kwb">void</span> <span class="hl kwd">mpz_clear</span><span class="hl opt">(</span><span class="hl kwb">long</span> src<span class="hl opt">);</span>
+
+   <span class="hl kwa">private static native</span> <span class="hl kwb">void</span> <span class="hl kwd">mpz_mul_si</span><span class="hl opt">(</span><span class="hl kwb">long</span> dest<span class="hl opt">,</span> <span class="hl kwb">long</span> src<span class="hl opt">,</span>
+         <span class="hl kwb">int</span> val<span class="hl opt">);</span>
+
+   <span class="hl kwa">private static native</span> <span class="hl kwb">void</span> <span class="hl kwd">mpz_add</span><span class="hl opt">(</span><span class="hl kwb">long</span> dest<span class="hl opt">,</span> <span class="hl kwb">long</span> src<span class="hl opt">,</span>
+         <span class="hl kwb">long</span> src2<span class="hl opt">);</span>
+
+   <span class="hl kwa">private static native</span> <span class="hl kwb">void</span> <span class="hl kwd">mpz_tdiv_q</span><span class="hl opt">(</span><span class="hl kwb">long</span> dest<span class="hl opt">,</span> <span class="hl kwb">long</span> src<span class="hl opt">,</span>
+         <span class="hl kwb">long</span> src2<span class="hl opt">);</span>
+
+   <span class="hl kwa">private static native</span> <span class="hl kwb">void</span> <span class="hl kwd">mpz_set_si</span><span class="hl opt">(</span><span class="hl kwb">long</span> src<span class="hl opt">,</span> <span class="hl kwb">int</span> value<span class="hl opt">);</span>
+
+   <span class="hl kwa">private static native</span> <span class="hl kwb">int</span> <span class="hl kwd">mpz_get_si</span><span class="hl opt">(</span><span class="hl kwb">long</span> src<span class="hl opt">);</span>
+
+   <span class="hl kwa">private static native</span> <span class="hl kwb">double</span> <span class="hl kwd">mpz_get_d</span><span class="hl opt">(</span><span class="hl kwb">long</span> src<span class="hl opt">);</span>
+<span class="hl opt">}</span>

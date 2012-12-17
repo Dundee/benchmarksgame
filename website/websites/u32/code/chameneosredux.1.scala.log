@@ -1,0 +1,24 @@
+
+Wed, 15 Aug 2012 23:09:11 GMT
+
+MAKE:
+mv chameneosredux.scala chameneosredux.scala
+mv: `chameneosredux.scala' and `chameneosredux.scala' are the same file
+make: [chameneosredux.scala_run] Error 1 (ignored)
+/usr/local/src/scala-2.9.2/bin/scalac -optimise chameneosredux.scala
+chameneosredux.scala:33: error: value foreach is not a member of object chameneosredux.Color
+      Color.foreach(c1 => Color.foreach(c2 => {
+            ^
+one error found
+make: [chameneosredux.scala_run] Error 1 (ignored)
+3.12s to complete and log all make actions
+
+COMMAND LINE:
+ /usr/local/src/jdk1.7.0_06/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.9.2/lib/scala-library.jar chameneosredux 60000
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Error: Could not find or load main class chameneosredux

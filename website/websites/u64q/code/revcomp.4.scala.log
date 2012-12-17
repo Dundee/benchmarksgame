@@ -1,0 +1,22 @@
+
+Wed, 12 Dec 2012 19:38:49 GMT
+
+MAKE:
+mv revcomp.scala-4.scala revcomp.scala
+/usr/local/src/scala-2.10.0-RC5/bin/scalac -optimise revcomp.scala
+revcomp.scala:15: error: value toLowerCase is not a member of Char
+    table(i.toLowerCase) = o.toByte
+            ^
+one error found
+make: [revcomp.scala-4.scala_run] Error 1 (ignored)
+3.53s to complete and log all make actions
+
+COMMAND LINE:
+env JAVA_OPTS=-Xmx3G /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0-RC5/lib/scala-library.jar revcomp 0 < revcomp-input250000.txt
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Error: Could not find or load main class revcomp

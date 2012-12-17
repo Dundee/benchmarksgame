@@ -1,0 +1,282 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">http://shootout.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">Contributed by Andrew Moon</span>
+<span class="hl com">*/</span>
+
+<span class="hl ppc">#include &lt;cstdlib&gt;</span>
+<span class="hl ppc">#include &lt;cstdio&gt;</span>
+<span class="hl ppc">#include &lt;iostream&gt;</span>
+<span class="hl ppc">#include &lt;fstream&gt;</span>
+<span class="hl ppc">#include &lt;vector&gt;</span>
+<span class="hl ppc">#include &lt;string.h&gt;</span>
+
+<span class="hl kwb">struct</span> CPUs <span class="hl opt">{</span>
+   <span class="hl kwd">CPUs</span><span class="hl opt">() {</span>
+      cpu_set_t cs<span class="hl opt">;</span>
+      <span class="hl kwd">CPU_ZERO</span><span class="hl opt">( &amp;</span>cs <span class="hl opt">);</span>
+      <span class="hl kwd">sched_getaffinity</span><span class="hl opt">(</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span>cs<span class="hl opt">), &amp;</span>cs <span class="hl opt">);</span>
+      count <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span> <span class="hl kwb">size_t</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> CPU_SETSIZE<span class="hl opt">;</span> i<span class="hl opt">++ )</span>
+         count <span class="hl opt">+=</span> <span class="hl kwd">CPU_ISSET</span><span class="hl opt">(</span> i<span class="hl opt">, &amp;</span>cs <span class="hl opt">)</span> ? <span class="hl num">1</span> <span class="hl opt">:</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      count <span class="hl opt">=</span> std<span class="hl opt">::</span><span class="hl kwd">max</span><span class="hl opt">(</span> count<span class="hl opt">,</span> <span class="hl kwb">size_t</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) );</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwb">size_t</span> count<span class="hl opt">;</span>
+<span class="hl opt">}</span> cpus<span class="hl opt">;</span>
+
+<span class="hl kwb">struct</span> ReverseLookup <span class="hl opt">{</span>
+   <span class="hl kwd">ReverseLookup</span><span class="hl opt">(</span> <span class="hl kwb">const char</span> <span class="hl opt">*</span>from<span class="hl opt">,</span> <span class="hl kwb">const char</span> <span class="hl opt">*</span>to <span class="hl opt">) {</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span> <span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> <span class="hl num">256</span><span class="hl opt">;</span> i<span class="hl opt">++ )</span>
+         byteLookup<span class="hl opt">[</span>i<span class="hl opt">] =</span> i<span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">( ; *</span>from <span class="hl opt">&amp;&amp; *</span>to<span class="hl opt">;</span> from<span class="hl opt">++,</span> to<span class="hl opt">++ ) {</span>
+         byteLookup<span class="hl opt">[</span><span class="hl kwd">toupper</span><span class="hl opt">(*</span>from<span class="hl opt">)] = *</span>to<span class="hl opt">;</span>
+         byteLookup<span class="hl opt">[</span><span class="hl kwd">tolower</span><span class="hl opt">(*</span>from<span class="hl opt">)] = *</span>to<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">for</span> <span class="hl opt">(</span> <span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> <span class="hl num">256</span><span class="hl opt">;</span> i<span class="hl opt">++ )</span>
+         <span class="hl kwa">for</span> <span class="hl opt">(</span> <span class="hl kwb">int</span> j <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> j <span class="hl opt">&lt;</span> <span class="hl num">256</span><span class="hl opt">;</span> j<span class="hl opt">++ )</span>
+            wordLookup<span class="hl opt">[(</span>i <span class="hl opt">&lt;&lt;</span> <span class="hl num">8</span><span class="hl opt">) |</span> j<span class="hl opt">] = (</span> byteLookup<span class="hl opt">[</span>j<span class="hl opt">] &lt;&lt;</span> <span class="hl num">8</span> <span class="hl opt">) |</span> byteLookup<span class="hl opt">[</span>i<span class="hl opt">];</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwb">char</span> <span class="hl kwc">operator</span><span class="hl opt">[](</span> <span class="hl kwb">const char</span> <span class="hl opt">&amp;</span>c <span class="hl opt">) {</span> <span class="hl kwa">return</span> <span class="hl opt">(</span><span class="hl kwb">char</span> <span class="hl opt">)</span>byteLookup<span class="hl opt">[(</span><span class="hl kwb">unsigned char</span> <span class="hl opt">)</span>c<span class="hl opt">]; }</span>
+   <span class="hl kwb">short</span> <span class="hl kwc">operator</span><span class="hl opt">[](</span> <span class="hl kwb">const short</span> <span class="hl opt">&amp;</span>s <span class="hl opt">) {</span> <span class="hl kwa">return</span> <span class="hl opt">(</span><span class="hl kwb">short</span> <span class="hl opt">)</span>wordLookup<span class="hl opt">[(</span><span class="hl kwb">unsigned short</span> <span class="hl opt">)</span>s<span class="hl opt">]; }</span>
+
+<span class="hl kwc">protected</span><span class="hl opt">:</span>
+   <span class="hl kwb">unsigned char</span> byteLookup<span class="hl opt">[</span><span class="hl num">256</span><span class="hl opt">];</span>
+   <span class="hl kwb">unsigned short</span> wordLookup<span class="hl opt">[</span><span class="hl num">256</span><span class="hl opt">*</span><span class="hl num">256</span><span class="hl opt">];</span>
+<span class="hl opt">}</span> <span class="hl kwd">lookup</span><span class="hl opt">(</span> <span class="hl str">&quot;acbdghkmnsrutwvy&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;TGVHCDMKNSYAAWBR&quot;</span> <span class="hl opt">);</span>
+
+<span class="hl kwc">template</span><span class="hl opt">&lt;</span> <span class="hl kwc">class</span> type <span class="hl opt">&gt;</span>
+<span class="hl kwb">struct</span> vector2 <span class="hl opt">:</span> <span class="hl kwc">public</span> std<span class="hl opt">::</span>vector<span class="hl opt">&lt;</span>type<span class="hl opt">&gt; {</span>
+   type <span class="hl opt">&amp;</span><span class="hl kwd">last</span><span class="hl opt">() {</span> <span class="hl kwa">return this</span><span class="hl opt">-&gt;</span><span class="hl kwc">operator</span><span class="hl opt">[](</span> std<span class="hl opt">::</span>vector<span class="hl opt">&lt;</span>type<span class="hl opt">&gt;::</span><span class="hl kwd">size</span><span class="hl opt">() -</span><span class="hl num">1</span> <span class="hl opt">); }</span>
+<span class="hl opt">};</span>
+
+<span class="hl kwb">struct</span> Chunker <span class="hl opt">{</span>
+   <span class="hl kwb">enum</span> <span class="hl opt">{</span> lineLength <span class="hl opt">=</span> <span class="hl num">60</span><span class="hl opt">,</span> chunkSize <span class="hl opt">=</span> <span class="hl num">65536</span><span class="hl opt">, };</span>
+
+   <span class="hl kwd">Chunker</span><span class="hl opt">(</span> <span class="hl kwb">int</span> seq <span class="hl opt">) :</span> <span class="hl kwd">id</span><span class="hl opt">(</span>seq<span class="hl opt">) {}</span>
+
+   <span class="hl kwb">struct</span> Chunk <span class="hl opt">{</span>
+      <span class="hl kwd">Chunk</span><span class="hl opt">() {}</span>
+      <span class="hl kwd">Chunk</span><span class="hl opt">(</span> <span class="hl kwb">char</span> <span class="hl opt">*</span>in<span class="hl opt">,</span> <span class="hl kwb">size_t</span> amt <span class="hl opt">) :</span> <span class="hl kwd">data</span><span class="hl opt">(</span>in<span class="hl opt">),</span> <span class="hl kwd">size</span><span class="hl opt">(</span>amt<span class="hl opt">) {}</span>
+      <span class="hl kwb">char</span> <span class="hl opt">*</span>data<span class="hl opt">;</span>
+      <span class="hl kwb">size_t</span> size<span class="hl opt">;</span>
+   <span class="hl opt">};</span>
+
+   <span class="hl kwb">void</span> <span class="hl kwd">NewChunk</span><span class="hl opt">() {</span>
+      <span class="hl kwb">size_t</span> cur <span class="hl opt">=</span> mark <span class="hl opt">-</span> chunkBase<span class="hl opt">;</span>
+      chunks<span class="hl opt">.</span><span class="hl kwd">push_back</span><span class="hl opt">(</span> <span class="hl kwd">Chunk</span><span class="hl opt">(</span> chunkBase<span class="hl opt">,</span> cur <span class="hl opt">) );</span>
+      chunkBase <span class="hl opt">+= (</span> cur <span class="hl opt">+ (</span> cur <span class="hl opt">&amp;</span> <span class="hl num">1</span> <span class="hl opt">) );</span> <span class="hl slc">// keep it word aligned</span>
+      mark <span class="hl opt">=</span> chunkBase<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwc">template</span><span class="hl opt">&lt;</span> <span class="hl kwb">int</span> N <span class="hl opt">&gt;</span>
+   <span class="hl kwb">struct</span> LinePrinter <span class="hl opt">{</span>
+      <span class="hl kwd">LinePrinter</span><span class="hl opt">() :</span> <span class="hl kwd">lineFill</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">) {}</span>
+      <span class="hl kwb">void</span> <span class="hl kwd">endofblock</span><span class="hl opt">() {</span> <span class="hl kwa">if</span> <span class="hl opt">(</span> lineFill <span class="hl opt">)</span> <span class="hl kwd">newline</span><span class="hl opt">(); }</span>
+      <span class="hl kwb">void</span> <span class="hl kwd">emit</span><span class="hl opt">(</span> <span class="hl kwb">const char</span> <span class="hl opt">*</span>str<span class="hl opt">,</span> <span class="hl kwb">size_t</span> amt <span class="hl opt">) {</span> 
+         <span class="hl kwd">fwrite_unlocked</span><span class="hl opt">(</span> str<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> amt<span class="hl opt">,</span> stdout <span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwb">void</span> <span class="hl kwd">emit</span><span class="hl opt">(</span> <span class="hl kwb">char</span> c <span class="hl opt">) {</span> <span class="hl kwd">fputc_unlocked</span><span class="hl opt">(</span> c<span class="hl opt">,</span> stdout <span class="hl opt">); }</span>
+      <span class="hl kwb">void</span> <span class="hl kwd">emitnewline</span><span class="hl opt">() {</span> <span class="hl kwd">emit</span><span class="hl opt">(</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span> <span class="hl opt">); }</span>
+      <span class="hl kwb">void</span> <span class="hl kwd">emitlines</span><span class="hl opt">(</span> <span class="hl kwb">char</span> <span class="hl opt">*</span>data<span class="hl opt">,</span> <span class="hl kwb">size_t</span> size <span class="hl opt">) {</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span> lineFill <span class="hl opt">) {</span>
+            <span class="hl kwb">size_t</span> toprint <span class="hl opt">=</span> std<span class="hl opt">::</span><span class="hl kwd">min</span><span class="hl opt">(</span> size<span class="hl opt">,</span> lineLength <span class="hl opt">-</span> lineFill <span class="hl opt">);</span>
+            <span class="hl kwd">emit</span><span class="hl opt">(</span> data<span class="hl opt">,</span> toprint <span class="hl opt">);</span>
+            size <span class="hl opt">-=</span> toprint<span class="hl opt">;</span>
+            data <span class="hl opt">+=</span> toprint<span class="hl opt">;</span>
+            lineFill <span class="hl opt">+=</span> toprint<span class="hl opt">;</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span> lineFill <span class="hl opt">==</span> lineLength <span class="hl opt">)</span>
+               <span class="hl kwd">newline</span><span class="hl opt">();</span>
+         <span class="hl opt">}</span>
+
+         <span class="hl kwa">while</span> <span class="hl opt">(</span> size <span class="hl opt">&gt;=</span> lineLength <span class="hl opt">) {</span>
+            <span class="hl kwd">emit</span><span class="hl opt">(</span> data<span class="hl opt">,</span> lineLength <span class="hl opt">);</span>
+            <span class="hl kwd">emitnewline</span><span class="hl opt">();</span>
+            size <span class="hl opt">-=</span> lineLength<span class="hl opt">;</span>
+            data <span class="hl opt">+=</span> lineLength<span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+
+         <span class="hl kwa">if</span> <span class="hl opt">(</span> size <span class="hl opt">) {</span>
+            lineFill <span class="hl opt">=</span> size<span class="hl opt">;</span>
+            <span class="hl kwd">emit</span><span class="hl opt">(</span> data<span class="hl opt">,</span> size <span class="hl opt">);</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwb">void</span> <span class="hl kwd">newline</span><span class="hl opt">() {</span> lineFill <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> <span class="hl kwd">emitnewline</span><span class="hl opt">(); }</span>
+      <span class="hl kwb">void</span> <span class="hl kwd">reset</span><span class="hl opt">() {</span> lineFill <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">; }</span>
+   <span class="hl kwc">protected</span><span class="hl opt">:</span>
+      <span class="hl kwb">size_t</span> lineFill<span class="hl opt">;</span>
+   <span class="hl opt">};</span>
+
+   <span class="hl kwb">void</span> <span class="hl kwd">Print</span><span class="hl opt">() {</span>
+      <span class="hl kwb">int</span> prevId <span class="hl opt">= -(</span> id <span class="hl opt">-</span> <span class="hl num">1</span> <span class="hl opt">);</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(</span> <span class="hl kwd">__sync_val_compare_and_swap</span><span class="hl opt">( &amp;</span>printQueue<span class="hl opt">,</span> prevId<span class="hl opt">,</span> id <span class="hl opt">) !=</span> prevId <span class="hl opt">)</span>
+         <span class="hl kwd">sched_yield</span><span class="hl opt">();</span>
+
+      <span class="hl kwd">fwrite_unlocked</span><span class="hl opt">(</span> name<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl kwd">strlen</span><span class="hl opt">(</span> name <span class="hl opt">),</span> stdout <span class="hl opt">);</span>
+      <span class="hl kwb">static</span> LinePrinter<span class="hl opt">&lt;</span><span class="hl num">65536</span><span class="hl opt">*</span><span class="hl num">2</span><span class="hl opt">&gt;</span> line<span class="hl opt">;</span>
+      line<span class="hl opt">.</span><span class="hl kwd">reset</span><span class="hl opt">();</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span> <span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl kwb">int</span><span class="hl opt">(</span>chunks<span class="hl opt">.</span><span class="hl kwd">size</span><span class="hl opt">()) -</span> <span class="hl num">1</span><span class="hl opt">;</span> i <span class="hl opt">&gt;=</span> <span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">-- )</span>
+         line<span class="hl opt">.</span><span class="hl kwd">emitlines</span><span class="hl opt">(</span> chunks<span class="hl opt">[</span>i<span class="hl opt">].</span>data<span class="hl opt">,</span> chunks<span class="hl opt">[</span>i<span class="hl opt">].</span>size <span class="hl opt">);</span>
+      line<span class="hl opt">.</span><span class="hl kwd">endofblock</span><span class="hl opt">();</span>
+
+      <span class="hl kwd">__sync_val_compare_and_swap</span><span class="hl opt">( &amp;</span>printQueue<span class="hl opt">,</span> id<span class="hl opt">, -</span>id <span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl slc">// fseek on stdin seems flaky so this hack. not called often</span>
+   <span class="hl kwb">void</span> <span class="hl kwd">Backup</span><span class="hl opt">() {</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(</span> <span class="hl kwa">true</span> <span class="hl opt">) {</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span> <span class="hl kwd">fgetc_unlocked</span><span class="hl opt">(</span> stdin <span class="hl opt">) ==</span> <span class="hl str">'&gt;'</span> <span class="hl opt">) {</span>
+            <span class="hl kwd">fseek</span><span class="hl opt">(</span> stdin<span class="hl opt">, -</span><span class="hl num">1</span><span class="hl opt">,</span> SEEK_CUR <span class="hl opt">);</span>
+            <span class="hl kwa">return</span><span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+         <span class="hl kwd">fseek</span><span class="hl opt">(</span> stdin<span class="hl opt">, -</span><span class="hl num">2</span><span class="hl opt">,</span> SEEK_CUR <span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl slc">// input buffer can hold all of stdin, so no size checking</span>
+   <span class="hl kwb">size_t</span> <span class="hl kwd">Read</span><span class="hl opt">(</span> <span class="hl kwb">char</span> <span class="hl opt">*</span>data <span class="hl opt">) {</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span> <span class="hl kwd">feof</span><span class="hl opt">(</span> stdin <span class="hl opt">) )</span>
+         <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+      name <span class="hl opt">=</span> data<span class="hl opt">;</span>
+      <span class="hl kwd">fgets_unlocked</span><span class="hl opt">(</span> name<span class="hl opt">,</span> <span class="hl num">128</span><span class="hl opt">,</span> stdin <span class="hl opt">);</span>
+      mark <span class="hl opt">=</span> chunkBase <span class="hl opt">=</span> name <span class="hl opt">+</span> <span class="hl kwd">strlen</span><span class="hl opt">(</span> name <span class="hl opt">) +</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      mark<span class="hl opt">[</span>lineLength<span class="hl opt">] = -</span><span class="hl num">1</span><span class="hl opt">;</span>
+
+      <span class="hl kwa">while</span> <span class="hl opt">(</span> <span class="hl kwd">fgets_unlocked</span><span class="hl opt">(</span> mark<span class="hl opt">,</span> <span class="hl num">128</span><span class="hl opt">,</span> stdin <span class="hl opt">) ) {</span>
+         <span class="hl kwa">if</span> <span class="hl opt">( *</span>mark <span class="hl opt">==</span> <span class="hl str">'&gt;'</span> <span class="hl opt">) {</span>
+            <span class="hl kwd">Backup</span><span class="hl opt">();</span>
+            <span class="hl kwa">break</span><span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+
+         <span class="hl slc">// mark trick should keep us from calling strlen</span>
+         mark <span class="hl opt">+= (</span> mark<span class="hl opt">[</span>lineLength<span class="hl opt">] !=</span> <span class="hl num">0xa</span> <span class="hl opt">)</span> ? <span class="hl kwd">strlen</span><span class="hl opt">(</span> mark <span class="hl opt">) -</span> <span class="hl num">1</span> <span class="hl opt">:</span> lineLength<span class="hl opt">;</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span> mark <span class="hl opt">-</span> chunkBase <span class="hl opt">&gt;</span> chunkSize <span class="hl opt">)</span>
+            <span class="hl kwd">NewChunk</span><span class="hl opt">();</span>
+
+         mark<span class="hl opt">[</span>lineLength<span class="hl opt">] = -</span><span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">if</span> <span class="hl opt">(</span> mark <span class="hl opt">-</span> chunkBase <span class="hl opt">)</span>
+         <span class="hl kwd">NewChunk</span><span class="hl opt">();</span>
+      <span class="hl kwa">return</span> <span class="hl opt">(</span> chunkBase <span class="hl opt">-</span> data <span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwb">struct</span> WorkerState <span class="hl opt">{</span>
+      Chunker <span class="hl opt">*</span>chunker<span class="hl opt">;</span>
+      <span class="hl kwb">size_t</span> offset<span class="hl opt">,</span> count<span class="hl opt">;</span>
+      pthread_t handle<span class="hl opt">;</span>
+   <span class="hl opt">};</span>
+
+   <span class="hl kwb">static void</span> <span class="hl opt">*</span><span class="hl kwd">ReverseWorker</span><span class="hl opt">(</span> <span class="hl kwb">void</span> <span class="hl opt">*</span>arg <span class="hl opt">) {</span>
+      WorkerState <span class="hl opt">*</span>state <span class="hl opt">= (</span>WorkerState <span class="hl opt">*)</span>arg<span class="hl opt">;</span>
+      Chunker <span class="hl opt">&amp;</span>chunker <span class="hl opt">= *</span>state<span class="hl opt">-&gt;</span>chunker<span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span> <span class="hl kwb">size_t</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> state<span class="hl opt">-&gt;</span>count<span class="hl opt">;</span> i<span class="hl opt">++ ) {</span>
+         Chunk <span class="hl opt">&amp;</span>chunk <span class="hl opt">=</span> chunker<span class="hl opt">[</span>state<span class="hl opt">-&gt;</span>offset <span class="hl opt">+</span> i<span class="hl opt">];</span>
+         <span class="hl kwb">short</span> <span class="hl opt">*</span>w <span class="hl opt">= (</span><span class="hl kwb">short</span> <span class="hl opt">*)</span>chunk<span class="hl opt">.</span>data<span class="hl opt">, *</span>bot <span class="hl opt">=</span> w<span class="hl opt">, *</span>top <span class="hl opt">=</span> w <span class="hl opt">+ (</span> chunk<span class="hl opt">.</span>size <span class="hl opt">/</span> <span class="hl num">2</span> <span class="hl opt">) -</span> <span class="hl num">1</span><span class="hl opt">;</span>
+         <span class="hl kwa">for</span> <span class="hl opt">( ;</span> bot <span class="hl opt">&lt;</span> top<span class="hl opt">;</span> bot<span class="hl opt">++,</span> top<span class="hl opt">-- ) {</span>
+            <span class="hl kwb">short</span> tmp <span class="hl opt">=</span> lookup<span class="hl opt">[*</span>bot<span class="hl opt">];</span>
+            <span class="hl opt">*</span>bot <span class="hl opt">=</span> lookup<span class="hl opt">[*</span>top<span class="hl opt">];</span>
+            <span class="hl opt">*</span>top <span class="hl opt">=</span> tmp<span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+         <span class="hl slc">// if size is odd, final byte would reverse to the start (skip it)</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span> chunk<span class="hl opt">.</span>size <span class="hl opt">&amp;</span> <span class="hl num">1</span> <span class="hl opt">)</span>
+            chunk<span class="hl opt">.</span>data<span class="hl opt">++;</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwb">void</span> <span class="hl kwd">Reverse</span><span class="hl opt">() {</span>
+      <span class="hl kwa">if</span> <span class="hl opt">( !</span>chunks<span class="hl opt">.</span><span class="hl kwd">size</span><span class="hl opt">() )</span>
+         <span class="hl kwa">return</span><span class="hl opt">;</span>
+
+      <span class="hl slc">// this takes so little time it's almost not worth parallelizing</span>
+      vector2<span class="hl opt">&lt;</span>WorkerState<span class="hl opt">&gt;</span> threads<span class="hl opt">;</span>
+      threads<span class="hl opt">.</span><span class="hl kwd">reserve</span><span class="hl opt">(</span> cpus<span class="hl opt">.</span>count <span class="hl opt">);</span>
+      <span class="hl kwb">size_t</span> divs <span class="hl opt">=</span> chunks<span class="hl opt">.</span><span class="hl kwd">size</span><span class="hl opt">() /</span> cpus<span class="hl opt">.</span>count<span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span> <span class="hl kwb">size_t</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> offset <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> cpus<span class="hl opt">.</span>count<span class="hl opt">;</span> i<span class="hl opt">++,</span> offset <span class="hl opt">+=</span> divs <span class="hl opt">) {</span>
+         threads<span class="hl opt">.</span><span class="hl kwd">push_back</span><span class="hl opt">(</span> <span class="hl kwd">WorkerState</span><span class="hl opt">() );</span>
+         WorkerState <span class="hl opt">&amp;</span>ws <span class="hl opt">=</span> threads<span class="hl opt">.</span><span class="hl kwd">last</span><span class="hl opt">();</span>
+         ws<span class="hl opt">.</span>chunker <span class="hl opt">=</span> <span class="hl kwa">this</span><span class="hl opt">;</span>
+         ws<span class="hl opt">.</span>count <span class="hl opt">= (</span> i <span class="hl opt">&lt;</span> cpus<span class="hl opt">.</span>count <span class="hl opt">-</span> <span class="hl num">1</span> <span class="hl opt">)</span> ? divs <span class="hl opt">:</span> chunks<span class="hl opt">.</span><span class="hl kwd">size</span><span class="hl opt">() -</span> offset<span class="hl opt">;</span>
+         ws<span class="hl opt">.</span>offset <span class="hl opt">=</span> offset<span class="hl opt">;</span>
+         <span class="hl kwd">pthread_create</span><span class="hl opt">( &amp;</span>ws<span class="hl opt">.</span>handle<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> ReverseWorker<span class="hl opt">, &amp;</span>ws <span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">for</span> <span class="hl opt">(</span> <span class="hl kwb">size_t</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> cpus<span class="hl opt">.</span>count<span class="hl opt">;</span> i<span class="hl opt">++ )</span>
+         <span class="hl kwd">pthread_join</span><span class="hl opt">(</span> threads<span class="hl opt">[</span>i<span class="hl opt">].</span>handle<span class="hl opt">,</span> <span class="hl num">0</span> <span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+   Chunk <span class="hl opt">&amp;</span><span class="hl kwc">operator</span><span class="hl opt">[] (</span> <span class="hl kwb">size_t</span> i <span class="hl opt">) {</span> <span class="hl kwa">return</span> chunks<span class="hl opt">[</span>i<span class="hl opt">]; }</span>
+
+<span class="hl kwc">protected</span><span class="hl opt">:</span>
+   vector2<span class="hl opt">&lt;</span>Chunk<span class="hl opt">&gt;</span> chunks<span class="hl opt">;</span>
+   <span class="hl kwb">char</span> <span class="hl opt">*</span>name<span class="hl opt">, *</span>chunkBase<span class="hl opt">, *</span>mark<span class="hl opt">;</span>
+   <span class="hl kwb">int</span> id<span class="hl opt">;</span>
+   <span class="hl kwb">static</span> <span class="hl kwc">volatile</span> <span class="hl kwb">int</span> printQueue<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+<span class="hl slc">// used to order chunk printing</span>
+<span class="hl kwc">volatile</span> <span class="hl kwb">int</span> Chunker<span class="hl opt">::</span>printQueue <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+<span class="hl kwb">struct</span> ReverseComplement <span class="hl opt">{</span>
+   <span class="hl kwd">ReverseComplement</span><span class="hl opt">() {</span>
+      <span class="hl slc">// get stdin file size</span>
+      <span class="hl kwb">long</span> start <span class="hl opt">=</span> <span class="hl kwd">ftell</span><span class="hl opt">(</span> stdin <span class="hl opt">);</span>
+      <span class="hl kwd">fseek</span><span class="hl opt">(</span> stdin<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> SEEK_END <span class="hl opt">);</span>
+      size <span class="hl opt">=</span> <span class="hl kwd">ftell</span><span class="hl opt">(</span> stdin <span class="hl opt">) -</span> start<span class="hl opt">;</span>
+      <span class="hl kwd">fseek</span><span class="hl opt">(</span> stdin<span class="hl opt">,</span> start<span class="hl opt">,</span> SEEK_SET <span class="hl opt">);</span>
+
+      data <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">char</span><span class="hl opt">[</span>size <span class="hl opt">+</span> <span class="hl num">3</span><span class="hl opt">];</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl opt">~</span><span class="hl kwd">ReverseComplement</span><span class="hl opt">() {</span>
+      <span class="hl kwa">delete</span><span class="hl opt">[]</span> data<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwb">static void</span> <span class="hl opt">*</span><span class="hl kwd">ChunkerThread</span><span class="hl opt">(</span> <span class="hl kwb">void</span> <span class="hl opt">*</span>arg <span class="hl opt">) {</span>
+      Chunker <span class="hl opt">*</span>chunker <span class="hl opt">= (</span>Chunker <span class="hl opt">*)</span>arg<span class="hl opt">;</span>
+      chunker<span class="hl opt">-&gt;</span><span class="hl kwd">Reverse</span><span class="hl opt">();</span>
+      chunker<span class="hl opt">-&gt;</span><span class="hl kwd">Print</span><span class="hl opt">();</span>
+      <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwb">void</span> <span class="hl kwd">Run</span><span class="hl opt">() {</span>
+      vector2<span class="hl opt">&lt;</span>Chunker <span class="hl opt">*&gt;</span> chunkers<span class="hl opt">;</span>
+      vector2<span class="hl opt">&lt;</span>pthread_t<span class="hl opt">&gt;</span> threads<span class="hl opt">;</span>
+
+      <span class="hl kwb">size_t</span> cur <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span> <span class="hl kwb">int</span> id <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span> <span class="hl kwa">true</span><span class="hl opt">;</span> id<span class="hl opt">++ ) {</span>
+         chunkers<span class="hl opt">.</span><span class="hl kwd">push_back</span><span class="hl opt">(</span> <span class="hl kwa">new</span> <span class="hl kwd">Chunker</span><span class="hl opt">(</span> id <span class="hl opt">) );</span>
+
+         <span class="hl kwb">size_t</span> read <span class="hl opt">=</span> chunkers<span class="hl opt">.</span><span class="hl kwd">last</span><span class="hl opt">()-&gt;</span><span class="hl kwd">Read</span><span class="hl opt">(</span> data <span class="hl opt">+</span> cur <span class="hl opt">);</span>
+         cur <span class="hl opt">+=</span> read<span class="hl opt">;</span>
+         <span class="hl kwa">if</span> <span class="hl opt">( !</span>read <span class="hl opt">)</span>
+            <span class="hl kwa">break</span><span class="hl opt">;</span>
+
+         <span class="hl slc">// spawn off a thread to finish this guy up while we read another chunk in</span>
+         threads<span class="hl opt">.</span><span class="hl kwd">push_back</span><span class="hl opt">(</span> <span class="hl num">0</span> <span class="hl opt">);</span>
+         <span class="hl kwd">pthread_create</span><span class="hl opt">( &amp;</span>threads<span class="hl opt">.</span><span class="hl kwd">last</span><span class="hl opt">(),</span> <span class="hl num">0</span><span class="hl opt">,</span> ChunkerThread<span class="hl opt">,</span> chunkers<span class="hl opt">.</span><span class="hl kwd">last</span><span class="hl opt">() );</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">for</span> <span class="hl opt">(</span> <span class="hl kwb">size_t</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> threads<span class="hl opt">.</span><span class="hl kwd">size</span><span class="hl opt">();</span> i<span class="hl opt">++ )</span>
+         <span class="hl kwd">pthread_join</span><span class="hl opt">(</span> threads<span class="hl opt">[</span>i<span class="hl opt">],</span> <span class="hl num">0</span> <span class="hl opt">);</span>
+
+      <span class="hl kwa">for</span> <span class="hl opt">(</span> <span class="hl kwb">size_t</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> chunkers<span class="hl opt">.</span><span class="hl kwd">size</span><span class="hl opt">();</span> i<span class="hl opt">++ )</span>
+         <span class="hl kwa">delete</span> chunkers<span class="hl opt">[</span>i<span class="hl opt">];</span>
+   <span class="hl opt">}</span>
+
+
+<span class="hl kwc">protected</span><span class="hl opt">:</span>
+   <span class="hl kwb">size_t</span> size<span class="hl opt">;</span>
+   <span class="hl kwb">char</span> <span class="hl opt">*</span>data<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+
+<span class="hl kwb">int</span> <span class="hl kwd">main</span><span class="hl opt">(</span> <span class="hl kwb">int</span> argc<span class="hl opt">,</span> <span class="hl kwb">const char</span> <span class="hl opt">*</span>argv<span class="hl opt">[] ) {</span>
+   ReverseComplement revcom<span class="hl opt">;</span>
+   revcom<span class="hl opt">.</span><span class="hl kwd">Run</span><span class="hl opt">();</span>
+   <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>

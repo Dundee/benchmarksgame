@@ -1,0 +1,303 @@
+
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://shootout.alioth.debian.org</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- contributed by Pascal Obry on 2005/04/07</span>
+<span class="hl slc">-- modified by Gautier de Montmollin</span>
+<span class="hl slc">-- modified by Georg Bauhaus, Jonathan Parker (July 2011)</span>
+
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Command_Line<span class="hl opt">;</span>
+<span class="hl kwa">with</span> GNAT<span class="hl opt">.</span>Float_Control<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Sequence<span class="hl opt">.</span>Data<span class="hl opt">,</span> Sequence<span class="hl opt">.</span>Creation<span class="hl opt">;</span>
+
+<span class="hl kwa">procedure</span> Fasta <span class="hl kwa">is</span>
+
+   N <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">Positive</span> <span class="hl opt">:=</span> <span class="hl kwb">Positive</span><span class="hl kwd">'Value</span> <span class="hl opt">(</span>Ada<span class="hl opt">.</span>Command_Line<span class="hl opt">.</span>Argument <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">));</span>
+   
+   <span class="hl kwa">use</span> Sequence<span class="hl opt">.</span>Data<span class="hl opt">,</span> Sequence<span class="hl opt">.</span>Creation<span class="hl opt">;</span>
+   
+   Runner <span class="hl opt">:</span> Environment<span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+   GNAT<span class="hl opt">.</span>Float_Control<span class="hl opt">.</span>Reset<span class="hl opt">;</span>
+
+   Make_Repeat_Fasta <span class="hl opt">(</span><span class="hl str">&quot;&gt;ONE Homo sapiens alu&quot;</span><span class="hl opt">,</span> ALU<span class="hl opt">,</span> N<span class="hl opt">*</span><span class="hl num">2</span><span class="hl opt">);</span>
+   Make_Random_Fasta <span class="hl opt">(</span><span class="hl str">&quot;&gt;TWO IUB ambiguity codes&quot;</span><span class="hl opt">,</span> IUB<span class="hl opt">,</span> N<span class="hl opt">*</span><span class="hl num">3</span><span class="hl opt">);</span>
+   Make_Random_Fasta <span class="hl opt">(</span><span class="hl str">&quot;&gt;THREE Homo sapiens frequency&quot;</span><span class="hl opt">,</span> Homosapiens<span class="hl opt">,</span> N<span class="hl opt">*</span><span class="hl num">5</span><span class="hl opt">);</span>
+
+<span class="hl kwa">end</span> Fasta<span class="hl opt">;</span>
+    
+<span class="hl kwa">package</span> Sequence<span class="hl opt">.</span>Data <span class="hl kwa">is</span>
+   
+   <span class="hl kwa">pragma</span> Pure <span class="hl opt">(</span>Data<span class="hl opt">);</span>
+   
+   Homosapiens <span class="hl opt">:</span> <span class="hl kwa">constant</span> Nucleotide_Set<span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">.</span><span class="hl num">.3</span><span class="hl opt">) :=</span>
+    <span class="hl opt">((</span><span class="hl str">'a'</span><span class="hl opt">,</span> <span class="hl num">0.3029549426680</span><span class="hl opt">), (</span><span class="hl str">'c'</span><span class="hl opt">,</span> <span class="hl num">0.1979883004921</span><span class="hl opt">),</span>
+     <span class="hl opt">(</span><span class="hl str">'g'</span><span class="hl opt">,</span> <span class="hl num">0.1975473066391</span><span class="hl opt">), (</span><span class="hl str">'t'</span><span class="hl opt">,</span> <span class="hl num">0.3015094502008</span><span class="hl opt">));</span>
+
+   IUB <span class="hl opt">:</span> <span class="hl kwa">constant</span> Nucleotide_Set<span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">.</span><span class="hl num">.14</span><span class="hl opt">) :=</span>
+    <span class="hl opt">((</span><span class="hl str">'a'</span><span class="hl opt">,</span> <span class="hl num">0.27</span><span class="hl opt">), (</span><span class="hl str">'c'</span><span class="hl opt">,</span> <span class="hl num">0.12</span><span class="hl opt">), (</span><span class="hl str">'g'</span><span class="hl opt">,</span> <span class="hl num">0.12</span><span class="hl opt">), (</span><span class="hl str">'t'</span><span class="hl opt">,</span> <span class="hl num">0.27</span><span class="hl opt">),</span>
+     <span class="hl opt">(</span><span class="hl str">'B'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">), (</span><span class="hl str">'D'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">), (</span><span class="hl str">'H'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">), (</span><span class="hl str">'K'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">),</span>
+     <span class="hl opt">(</span><span class="hl str">'M'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">), (</span><span class="hl str">'N'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">), (</span><span class="hl str">'R'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">), (</span><span class="hl str">'S'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">),</span>
+     <span class="hl opt">(</span><span class="hl str">'V'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">), (</span><span class="hl str">'W'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">), (</span><span class="hl str">'Y'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">));</span>
+
+   ALU <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">String</span> <span class="hl opt">:=</span>
+     <span class="hl str">&quot;GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG&quot;</span> <span class="hl opt">&amp;</span>
+     <span class="hl str">&quot;GAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGAGA&quot;</span> <span class="hl opt">&amp;</span>
+     <span class="hl str">&quot;CCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAAT&quot;</span> <span class="hl opt">&amp;</span>
+     <span class="hl str">&quot;ACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAATCCCA&quot;</span> <span class="hl opt">&amp;</span>
+     <span class="hl str">&quot;GCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTGAACCCGGG&quot;</span> <span class="hl opt">&amp;</span>
+     <span class="hl str">&quot;AGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCC&quot;</span> <span class="hl opt">&amp;</span>
+     <span class="hl str">&quot;AGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAA&quot;</span><span class="hl opt">;</span>
+   
+<span class="hl kwa">end</span> Sequence<span class="hl opt">.</span>Data<span class="hl opt">;</span>
+
+
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Finalization<span class="hl opt">;</span>
+
+<span class="hl kwa">package</span> Sequence<span class="hl opt">.</span>Creation <span class="hl kwa">is</span>
+
+   <span class="hl kwa">procedure</span> Make_Random_Fasta
+     <span class="hl opt">(</span>Title       <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">;</span> 
+      Nucleotides <span class="hl opt">:</span> <span class="hl kwa">in</span> Nucleotide_Set<span class="hl opt">;</span> 
+      N           <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Positive</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">procedure</span> Make_Repeat_Fasta 
+     <span class="hl opt">(</span>Title <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">;</span>
+      S     <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">;</span> 
+      N     <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Positive</span><span class="hl opt">);</span>
+   
+   <span class="hl kwa">type</span> Environment <span class="hl kwa">is new</span> Ada<span class="hl opt">.</span>Finalization<span class="hl opt">.</span>Limited_Controlled
+     <span class="hl kwa">with null record</span><span class="hl opt">;</span>
+
+<span class="hl kwa">private</span>
+
+   overriding
+   <span class="hl kwa">procedure</span> Initialize <span class="hl opt">(</span>Active <span class="hl opt">:</span> <span class="hl kwa">in out</span> Environment<span class="hl opt">);</span>
+
+   overriding
+   <span class="hl kwa">procedure</span> Finalize <span class="hl opt">(</span>Active <span class="hl opt">:</span> <span class="hl kwa">in out</span> Environment<span class="hl opt">);</span>
+
+<span class="hl kwa">end</span> Sequence<span class="hl opt">.</span>Creation<span class="hl opt">;</span>
+
+<span class="hl kwa">package</span> Sequence <span class="hl kwa">is</span>
+   
+   <span class="hl kwa">pragma</span> Pure <span class="hl opt">(</span>Sequence<span class="hl opt">);</span>
+   
+   <span class="hl kwa">type</span> Real <span class="hl kwa">is digits</span> <span class="hl num">15</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> Nucleotide <span class="hl kwa">is record</span>
+      C <span class="hl opt">:</span> <span class="hl kwb">Character</span><span class="hl opt">;</span>
+      P <span class="hl opt">:</span> Real<span class="hl opt">;</span>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+
+   Max_Length_of_Code <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">15</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">subtype</span> Nucleotide_Index <span class="hl kwa">is</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">0</span> <span class="hl opt">..</span> Max_Length_of_Code<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> Nucleotide_Set <span class="hl kwa">is array</span> <span class="hl opt">(</span>Nucleotide_Index <span class="hl kwa">range</span> <span class="hl opt">&lt;&gt;)</span> <span class="hl kwa">of</span> Nucleotide<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> Sequence<span class="hl opt">;</span>
+
+<span class="hl kwa">with</span> LCG_Random<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Line_IO<span class="hl opt">;</span>
+
+<span class="hl kwa">package body</span> Sequence<span class="hl opt">.</span>Creation <span class="hl kwa">is</span>
+
+   <span class="hl kwa">package</span> Real_Random_Nums <span class="hl kwa">is new</span> LCG_Random <span class="hl opt">(</span>Real<span class="hl opt">);</span>
+   <span class="hl kwa">use</span> Real_Random_Nums<span class="hl opt">;</span>
+   
+   overriding
+   <span class="hl kwa">procedure</span> Initialize <span class="hl opt">(</span>Active <span class="hl opt">:</span> <span class="hl kwa">in out</span> Environment<span class="hl opt">)</span> <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      Line_IO<span class="hl opt">.</span>Open_Stdout<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Initialize<span class="hl opt">;</span>
+   
+   overriding
+   <span class="hl kwa">procedure</span> Finalize <span class="hl opt">(</span>Active <span class="hl opt">:</span> <span class="hl kwa">in out</span> Environment<span class="hl opt">)</span> <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      Line_IO<span class="hl opt">.</span>Close_Stdout<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Finalize<span class="hl opt">;</span>
+
+
+   Line_Length <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">60</span><span class="hl opt">;</span>
+   End_of_Line <span class="hl opt">:</span> <span class="hl kwb">String</span> <span class="hl kwa">renames</span> Line_IO<span class="hl opt">.</span>End_of_Line<span class="hl opt">;</span>
+
+   <span class="hl kwa">subtype</span> Line_End_Positions <span class="hl kwa">is</span> <span class="hl kwb">Positive</span>
+      <span class="hl kwa">range</span> Line_Length <span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl opt">..</span> Line_Length <span class="hl opt">+</span> End_of_Line<span class="hl kwd">'Length</span><span class="hl opt">;</span>
+
+   Line_Buffer <span class="hl opt">:</span> <span class="hl kwb">String</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Line_Length <span class="hl opt">+</span> End_of_Line<span class="hl kwd">'Length</span><span class="hl opt">);</span>
+
+   Nucleo_Cumulative <span class="hl opt">:</span> <span class="hl kwa">array</span> <span class="hl opt">(</span>Nucleotide_Index<span class="hl opt">)</span> <span class="hl kwa">of</span> Nucleotide<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Make_Random_Fasta
+     <span class="hl opt">(</span>Title       <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">;</span> 
+      Nucleotides <span class="hl opt">:</span> <span class="hl kwa">in</span> Nucleotide_Set<span class="hl opt">;</span> 
+      N           <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Positive</span><span class="hl opt">)</span>
+   <span class="hl kwa">is</span>
+      <span class="hl kwa">function</span> Random_Nucleotide <span class="hl kwa">return</span> <span class="hl kwb">Character</span> <span class="hl kwa">is</span>
+         r <span class="hl opt">:</span> <span class="hl kwa">constant</span> Real <span class="hl opt">:=</span> Gen_Random <span class="hl opt">(</span><span class="hl num">1.0</span><span class="hl opt">);</span>
+         Result <span class="hl opt">:</span> <span class="hl kwb">Character</span> <span class="hl opt">:=</span> <span class="hl str">'J'</span><span class="hl opt">;</span>
+      <span class="hl kwa">begin</span>
+         Choose_Random<span class="hl opt">:</span> 
+         <span class="hl kwa">for</span> i <span class="hl kwa">in</span> Nucleo_Cumulative<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+            <span class="hl kwa">if</span> Nucleo_Cumulative<span class="hl opt">(</span>i<span class="hl opt">).</span>P <span class="hl opt">&gt;</span> r <span class="hl kwa">then</span>
+               Result <span class="hl opt">:=</span> Nucleo_Cumulative<span class="hl opt">(</span>i<span class="hl opt">).</span>C<span class="hl opt">;</span>
+               <span class="hl kwa">exit</span> Choose_Random<span class="hl opt">;</span>
+            <span class="hl kwa">end if</span><span class="hl opt">;</span>
+         <span class="hl kwa">end loop</span> Choose_Random<span class="hl opt">;</span>
+         <span class="hl kwa">return</span> Result<span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Random_Nucleotide<span class="hl opt">;</span>
+
+      Sum  <span class="hl opt">:</span> Real<span class="hl opt">;</span>
+      Remaining_Chars  <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">Natural</span> <span class="hl opt">:=</span> N <span class="hl kwa">mod</span> Line_Length<span class="hl opt">;</span>
+      No_of_Full_Lines <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">Natural</span> <span class="hl opt">:=</span> N  <span class="hl opt">/</span>  Line_Length<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      Line_IO<span class="hl opt">.</span>Print <span class="hl opt">(</span>Title <span class="hl opt">&amp;</span> End_of_Line<span class="hl opt">);</span>
+
+      Nucleo_Cumulative <span class="hl opt">:= (</span><span class="hl kwa">others</span> <span class="hl opt">=&gt; (</span><span class="hl str">'j'</span><span class="hl opt">,</span> <span class="hl num">2.0</span><span class="hl opt">));</span>
+      <span class="hl kwa">for</span> k <span class="hl kwa">in</span> Nucleotides<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+         Nucleo_Cumulative<span class="hl opt">(</span>k<span class="hl opt">).</span>C <span class="hl opt">:=</span> Nucleotides<span class="hl opt">(</span>k<span class="hl opt">).</span>C<span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+
+      Sum <span class="hl opt">:=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+      <span class="hl kwa">for</span> k <span class="hl kwa">in</span> Nucleotides<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+         Sum <span class="hl opt">:=</span> Sum <span class="hl opt">+</span> Nucleotides<span class="hl opt">(</span>k<span class="hl opt">).</span>P<span class="hl opt">;</span>
+         Nucleo_Cumulative<span class="hl opt">(</span>k<span class="hl opt">).</span>P <span class="hl opt">:=</span> Sum<span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+
+      Line_Buffer<span class="hl opt">(</span>Line_End_Positions<span class="hl opt">) :=</span> End_of_Line<span class="hl opt">;</span>
+
+      <span class="hl kwa">for</span> k <span class="hl kwa">in</span> <span class="hl num">1</span> <span class="hl opt">..</span> No_of_Full_Lines <span class="hl kwa">loop</span>
+         <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl num">1</span> <span class="hl opt">..</span> Line_Length <span class="hl kwa">loop</span>
+            Line_Buffer<span class="hl opt">(</span>i<span class="hl opt">) :=</span> Random_Nucleotide<span class="hl opt">;</span>
+         <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+         Line_IO<span class="hl opt">.</span>Print <span class="hl opt">(</span>Line_Buffer<span class="hl opt">);</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+
+      <span class="hl kwa">if</span> Remaining_Chars <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl kwa">then</span>
+         <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl num">1</span> <span class="hl opt">..</span> Remaining_Chars <span class="hl kwa">loop</span>
+            Line_Buffer<span class="hl opt">(</span>i<span class="hl opt">) :=</span> Random_Nucleotide<span class="hl opt">;</span>
+         <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+         Line_IO<span class="hl opt">.</span>Print <span class="hl opt">(</span>Line_Buffer<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Remaining_Chars<span class="hl opt">) &amp;</span> End_of_Line<span class="hl opt">);</span>
+      <span class="hl kwa">end if</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">end</span> Make_Random_Fasta<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Make_Repeat_Fasta 
+     <span class="hl opt">(</span>Title <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">;</span>
+      S     <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">;</span> 
+      N     <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Positive</span><span class="hl opt">)</span> 
+   <span class="hl kwa">is</span>
+      S_App <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">String</span> <span class="hl opt">:=</span> S <span class="hl opt">&amp;</span> S<span class="hl opt">(</span>S<span class="hl kwd">'First</span> <span class="hl opt">..</span> S<span class="hl kwd">'First</span> <span class="hl opt">+</span> Line_Length<span class="hl opt">);</span>
+
+      Pos <span class="hl opt">:</span> <span class="hl kwb">Positive</span> <span class="hl opt">:=</span> S_App<span class="hl kwd">'First</span><span class="hl opt">;</span>
+      Remaining_Chars <span class="hl opt">:</span> <span class="hl kwb">Natural</span> <span class="hl opt">:=</span> N<span class="hl opt">;</span>
+      No_of_Chars_Output <span class="hl opt">:</span> <span class="hl kwb">Natural</span> <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      Line_IO<span class="hl opt">.</span>Print <span class="hl opt">(</span>Title <span class="hl opt">&amp;</span> End_of_Line<span class="hl opt">);</span>
+
+      <span class="hl kwa">while</span> Remaining_Chars <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl kwa">loop</span>
+
+         No_of_Chars_Output <span class="hl opt">:=</span> <span class="hl kwb">Integer</span><span class="hl kwd">'Min</span> <span class="hl opt">(</span>Remaining_Chars<span class="hl opt">,</span> Line_Length<span class="hl opt">);</span>
+
+         Line_IO<span class="hl opt">.</span>Print <span class="hl opt">(</span>S_App <span class="hl opt">(</span>Pos <span class="hl opt">..</span> Pos <span class="hl opt">+</span> No_of_Chars_Output <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">));</span>
+         Line_IO<span class="hl opt">.</span>Print <span class="hl opt">(</span>End_of_Line<span class="hl opt">);</span>
+
+         Remaining_Chars <span class="hl opt">:=</span> Remaining_Chars <span class="hl opt">-</span> No_of_Chars_Output<span class="hl opt">;</span>
+
+         Pos <span class="hl opt">:=</span> Pos <span class="hl opt">+</span> No_of_Chars_Output<span class="hl opt">;</span>
+         <span class="hl kwa">if</span> Pos <span class="hl opt">&gt;</span> S<span class="hl kwd">'Last</span> <span class="hl kwa">then</span>
+            Pos <span class="hl opt">:=</span> Pos <span class="hl opt">-</span> S<span class="hl kwd">'Length</span><span class="hl opt">;</span>
+         <span class="hl kwa">end if</span><span class="hl opt">;</span>
+
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">end</span> Make_Repeat_Fasta<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> Sequence<span class="hl opt">.</span>Creation<span class="hl opt">;</span>
+
+<span class="hl kwa">package</span> Line_IO <span class="hl kwa">is</span>
+
+   <span class="hl kwa">procedure</span> Print <span class="hl opt">(</span>Item <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">procedure</span> Close_Stdout<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Open_Stdout<span class="hl opt">;</span>
+
+   End_of_Line <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">String</span> <span class="hl opt">:= (</span><span class="hl num">1</span> <span class="hl opt">=&gt;</span> ASCII<span class="hl opt">.</span>LF<span class="hl opt">);</span>
+
+   <span class="hl kwa">pragma</span> Inline <span class="hl opt">(</span>Print<span class="hl opt">);</span>
+
+<span class="hl kwa">end</span> Line_IO<span class="hl opt">;</span>
+
+
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Streams<span class="hl opt">.</span>Stream_IO<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Unchecked_Conversion<span class="hl opt">;</span>
+
+<span class="hl kwa">package body</span> Line_IO <span class="hl kwa">is</span>
+
+   <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Streams<span class="hl opt">;</span>
+
+   Stdout <span class="hl opt">:</span> Stream_IO<span class="hl opt">.</span>File_Type<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Print <span class="hl opt">(</span>Item <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">)</span> <span class="hl kwa">is</span>
+      <span class="hl kwa">subtype</span> Index <span class="hl kwa">is</span> Stream_Element_Offset <span class="hl kwa">range</span>
+         Stream_Element_Offset<span class="hl opt">(</span>Item<span class="hl kwd">'First</span><span class="hl opt">) ..</span> Stream_Element_Offset<span class="hl opt">(</span>Item<span class="hl kwd">'Last</span><span class="hl opt">);</span>
+      <span class="hl kwa">subtype</span> XString <span class="hl kwa">is</span> <span class="hl kwb">String</span> <span class="hl opt">(</span>Item<span class="hl kwd">'Range</span><span class="hl opt">);</span>
+      <span class="hl kwa">subtype</span> XBytes <span class="hl kwa">is</span> Stream_Element_Array <span class="hl opt">(</span>Index<span class="hl opt">);</span>
+      <span class="hl kwa">function</span> To_Bytes <span class="hl kwa">is new</span> Unchecked_Conversion
+        <span class="hl opt">(</span>Source <span class="hl opt">=&gt;</span> XString<span class="hl opt">,</span>
+         Target <span class="hl opt">=&gt;</span> XBytes<span class="hl opt">);</span>
+   <span class="hl kwa">begin</span>
+      Stream_IO<span class="hl opt">.</span>Write <span class="hl opt">(</span>Stdout<span class="hl opt">,</span> To_Bytes <span class="hl opt">(</span>Item<span class="hl opt">));</span>
+   <span class="hl kwa">end</span> Print<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Close_Stdout <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      Stream_IO<span class="hl opt">.</span>Close <span class="hl opt">(</span>Stdout<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Close_Stdout<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Open_Stdout <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      Stream_IO<span class="hl opt">.</span>Open 
+        <span class="hl opt">(</span>File <span class="hl opt">=&gt;</span> Stdout<span class="hl opt">,</span>
+         Mode <span class="hl opt">=&gt;</span> Stream_IO<span class="hl opt">.</span>Out_File<span class="hl opt">,</span>
+         Name <span class="hl opt">=&gt;</span> <span class="hl str">&quot;/dev/stdout&quot;</span><span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Open_Stdout<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> Line_IO<span class="hl opt">;</span>
+
+
+<span class="hl kwa">generic</span>
+
+   <span class="hl kwa">type</span> Real <span class="hl kwa">is digits</span> <span class="hl opt">&lt;&gt;;</span>
+
+<span class="hl kwa">package</span> LCG_Random <span class="hl kwa">is</span>
+
+   <span class="hl kwa">function</span> Gen_Random <span class="hl opt">(</span>Max <span class="hl opt">:</span> <span class="hl kwa">in</span> Real<span class="hl opt">)</span> <span class="hl kwa">return</span> Real<span class="hl opt">;</span>
+   <span class="hl slc">-- Linear congruential random number generator. </span>
+   <span class="hl slc">-- Period = 139_968, with output in [0.0, 1.0) if Max = 1.0.</span>
+
+<span class="hl kwa">end</span> LCG_Random<span class="hl opt">;</span>
+
+<span class="hl kwa">package body</span> LCG_Random <span class="hl kwa">is</span>
+
+   <span class="hl kwa">pragma</span> Assert <span class="hl opt">(</span>Real<span class="hl kwd">'Digits</span> <span class="hl opt">&gt;</span> <span class="hl num">5</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">type</span> Random_State <span class="hl kwa">is mod</span> <span class="hl num">2</span><span class="hl opt">**</span><span class="hl num">32</span><span class="hl opt">;</span>
+
+   State <span class="hl opt">:</span> Random_State <span class="hl opt">:=</span> <span class="hl num">42</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> Signed <span class="hl kwa">is range</span>
+      <span class="hl opt">-</span><span class="hl num">2</span><span class="hl opt">**(</span>Random_State<span class="hl kwd">'Size</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">) ..</span> <span class="hl num">2</span><span class="hl opt">**(</span>Random_State<span class="hl kwd">'Size</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">) -</span> <span class="hl num">1</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">function</span> Gen_Random <span class="hl opt">(</span>Max <span class="hl opt">:</span> <span class="hl kwa">in</span> Real<span class="hl opt">)</span> <span class="hl kwa">return</span> Real <span class="hl kwa">is</span>
+      IM <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">139</span>_968<span class="hl opt">;</span>
+      IA <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span>   <span class="hl num">3</span>_877<span class="hl opt">;</span>
+      IC <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span>  <span class="hl num">29</span>_573<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      State <span class="hl opt">:= (</span>State <span class="hl opt">*</span> IA <span class="hl opt">+</span> IC<span class="hl opt">)</span> <span class="hl kwa">mod</span> IM<span class="hl opt">;</span>
+      <span class="hl kwa">return</span> <span class="hl opt">(</span>Max <span class="hl opt">*</span> Real <span class="hl opt">(</span>Signed <span class="hl opt">(</span>State<span class="hl opt">))) * (</span><span class="hl num">1.0</span> <span class="hl opt">/</span> Real <span class="hl opt">(</span>IM<span class="hl opt">));</span>
+   <span class="hl kwa">end</span> Gen_Random<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> LCG_Random<span class="hl opt">;</span>

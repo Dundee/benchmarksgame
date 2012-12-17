@@ -1,0 +1,148 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com"> </span>
+<span class="hl com">   contributed by Leonhard Holz</span>
+<span class="hl com">   based on contribution by Jarkko Miettinen</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">public class</span> binarytrees <span class="hl opt">{</span>
+
+   <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">main</span><span class="hl opt">(</span>String<span class="hl opt">[]</span> args<span class="hl opt">){</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">&lt;</span><span class="hl num">65</span><span class="hl opt">; ++</span>i<span class="hl opt">)</span> binarytrees<span class="hl opt">.</span><span class="hl kwd">program_main</span><span class="hl opt">(</span>args<span class="hl opt">,</span>false<span class="hl opt">);</span>
+      binarytrees<span class="hl opt">.</span><span class="hl kwd">program_main</span><span class="hl opt">(</span>args<span class="hl opt">,</span>true<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private final static</span> <span class="hl kwb">int</span> minDepth <span class="hl opt">=</span> <span class="hl num">4</span><span class="hl opt">;</span>
+   <span class="hl kwa">private final static</span> <span class="hl kwb">int</span> threadCount <span class="hl opt">=</span> Runtime<span class="hl opt">.</span><span class="hl kwd">getRuntime</span><span class="hl opt">().</span><span class="hl kwd">availableProcessors</span><span class="hl opt">() &gt;</span> <span class="hl num">1</span> ? <span class="hl num">2</span> <span class="hl opt">:</span> <span class="hl num">1</span><span class="hl opt">;</span>
+   <span class="hl kwa">private final static</span> TreeGenerator<span class="hl opt">[]</span> threads <span class="hl opt">=</span> <span class="hl kwa">new</span> TreeGenerator<span class="hl opt">[</span>threadCount <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">];</span>
+   
+   <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">program_main</span><span class="hl opt">(</span>String<span class="hl opt">[]</span> args<span class="hl opt">,</span> <span class="hl kwb">boolean</span> isWarm<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+      <span class="hl kwb">int</span> n <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>args<span class="hl opt">.</span>length <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">)</span> n <span class="hl opt">=</span> Integer<span class="hl opt">.</span><span class="hl kwd">parseInt</span><span class="hl opt">(</span>args<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]);</span>
+      <span class="hl kwb">int</span> maxDepth <span class="hl opt">= (</span>minDepth <span class="hl opt">+</span> <span class="hl num">2</span> <span class="hl opt">&gt;</span> n<span class="hl opt">)</span> ? minDepth <span class="hl opt">+</span> <span class="hl num">2</span> <span class="hl opt">:</span> n<span class="hl opt">;</span>
+
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> threadCount <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+         threads<span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl kwa">new</span> <span class="hl kwd">TreeGenerator</span><span class="hl opt">();</span>
+         threads<span class="hl opt">[</span>i<span class="hl opt">].</span><span class="hl kwd">start</span><span class="hl opt">();</span>
+      <span class="hl opt">}</span>
+      
+      TreeGenerator lastThread <span class="hl opt">=</span> threads<span class="hl opt">[</span>threadCount<span class="hl opt">];</span>
+      lastThread<span class="hl opt">.</span>depth <span class="hl opt">=</span> maxDepth <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      lastThread<span class="hl opt">.</span>run <span class="hl opt">=</span> true<span class="hl opt">;</span>
+      <span class="hl kwa">try</span> <span class="hl opt">{</span>
+         <span class="hl kwa">synchronized</span><span class="hl opt">(</span>lastThread<span class="hl opt">) {</span>
+            lastThread<span class="hl opt">.</span><span class="hl kwd">notify</span><span class="hl opt">();</span>
+            lastThread<span class="hl opt">.</span><span class="hl kwd">wait</span><span class="hl opt">();</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span> <span class="hl kwa">catch</span> <span class="hl opt">(</span>InterruptedException e<span class="hl opt">) {}</span>
+
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>isWarm<span class="hl opt">)</span>
+         System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">(</span><span class="hl str">&quot;stretch tree of depth &quot;</span> <span class="hl opt">+</span>
+            lastThread<span class="hl opt">.</span>depth <span class="hl opt">+</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">check: &quot;</span> <span class="hl opt">+</span> lastThread<span class="hl opt">.</span>result<span class="hl opt">);</span>
+
+      lastThread<span class="hl opt">.</span>depth <span class="hl opt">=</span> maxDepth<span class="hl opt">;</span>
+      lastThread<span class="hl opt">.</span>run <span class="hl opt">=</span> true<span class="hl opt">;</span>
+      <span class="hl kwa">try</span> <span class="hl opt">{</span>
+         <span class="hl kwa">synchronized</span><span class="hl opt">(</span>lastThread<span class="hl opt">) {</span>
+            lastThread<span class="hl opt">.</span><span class="hl kwd">notify</span><span class="hl opt">();</span>
+            lastThread<span class="hl opt">.</span><span class="hl kwd">wait</span><span class="hl opt">();</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span> <span class="hl kwa">catch</span> <span class="hl opt">(</span>InterruptedException e<span class="hl opt">) {}</span>
+
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> depth <span class="hl opt">=</span> minDepth<span class="hl opt">;</span> depth <span class="hl opt">&lt;=</span> maxDepth<span class="hl opt">;</span> depth<span class="hl opt">+=</span><span class="hl num">2</span> <span class="hl opt">) {</span>
+
+         <span class="hl kwb">int</span> check <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+         <span class="hl kwb">int</span> iterations <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl opt">&lt;&lt; (</span>maxDepth <span class="hl opt">-</span> depth <span class="hl opt">+</span> minDepth<span class="hl opt">);</span>
+         <span class="hl kwb">int</span> length <span class="hl opt">=</span> iterations <span class="hl opt">/</span> threadCount<span class="hl opt">;</span>
+
+         <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> threadCount<span class="hl opt">;</span> i<span class="hl opt">++)</span> <span class="hl kwa">synchronized</span><span class="hl opt">(</span>threads<span class="hl opt">[</span>i<span class="hl opt">]) {</span>
+            threads<span class="hl opt">[</span>i<span class="hl opt">].</span>depth <span class="hl opt">=</span> depth<span class="hl opt">;</span>
+            threads<span class="hl opt">[</span>i<span class="hl opt">].</span>start <span class="hl opt">=</span> i <span class="hl opt">*</span> length<span class="hl opt">;</span>
+            threads<span class="hl opt">[</span>i<span class="hl opt">].</span>end <span class="hl opt">= (</span>i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">) *</span> length<span class="hl opt">;</span>
+            threads<span class="hl opt">[</span>i<span class="hl opt">].</span>run <span class="hl opt">=</span> true<span class="hl opt">;</span>
+            threads<span class="hl opt">[</span>i<span class="hl opt">].</span><span class="hl kwd">notify</span><span class="hl opt">();</span>
+         <span class="hl opt">}</span>
+         <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> threadCount<span class="hl opt">;</span> i<span class="hl opt">++)</span> <span class="hl kwa">try</span> <span class="hl opt">{</span>
+            <span class="hl kwa">synchronized</span><span class="hl opt">(</span>threads<span class="hl opt">[</span>i<span class="hl opt">]) {</span>
+               <span class="hl kwa">if</span> <span class="hl opt">(</span>threads<span class="hl opt">[</span>i<span class="hl opt">].</span>run<span class="hl opt">)</span> threads<span class="hl opt">[</span>i<span class="hl opt">].</span><span class="hl kwd">wait</span><span class="hl opt">();</span>
+            <span class="hl opt">}</span>
+            check <span class="hl opt">+=</span> threads<span class="hl opt">[</span>i<span class="hl opt">].</span>result<span class="hl opt">;</span>
+         <span class="hl opt">}</span> <span class="hl kwa">catch</span> <span class="hl opt">(</span>InterruptedException e<span class="hl opt">) {}</span>
+
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>isWarm<span class="hl opt">)</span>
+            System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">((</span>iterations <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">) +</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">trees of depth &quot;</span> <span class="hl opt">+</span>
+               depth <span class="hl opt">+</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">check: &quot;</span> <span class="hl opt">+</span> check<span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>isWarm<span class="hl opt">)</span>
+         System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">(</span><span class="hl str">&quot;long lived tree of depth &quot;</span> <span class="hl opt">+</span> maxDepth <span class="hl opt">+</span> 
+            <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">check: &quot;</span><span class="hl opt">+</span> lastThread<span class="hl opt">.</span>result<span class="hl opt">);</span>
+
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> threadCount <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+         threads<span class="hl opt">[</span>i<span class="hl opt">].</span>terminate <span class="hl opt">=</span> true<span class="hl opt">;</span>
+         <span class="hl kwa">synchronized</span><span class="hl opt">(</span>threads<span class="hl opt">[</span>i<span class="hl opt">]) {</span>
+            threads<span class="hl opt">[</span>i<span class="hl opt">].</span><span class="hl kwd">notify</span><span class="hl opt">();</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private static class</span> TreeGenerator <span class="hl kwa">extends</span> Thread
+   <span class="hl opt">{</span>
+      <span class="hl kwa">private</span> <span class="hl kwb">boolean</span> run <span class="hl opt">=</span> false<span class="hl opt">;</span>
+      <span class="hl kwa">private</span> <span class="hl kwb">boolean</span> terminate <span class="hl opt">=</span> false<span class="hl opt">;</span>
+
+      <span class="hl kwa">private</span> <span class="hl kwb">int</span> start <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">private</span> <span class="hl kwb">int</span> end <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">private</span> <span class="hl kwb">int</span> result <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">private</span> <span class="hl kwb">int</span> depth<span class="hl opt">;</span>
+      
+      <span class="hl kwa">private static</span> TreeNode <span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span><span class="hl kwb">int</span> item<span class="hl opt">,</span> <span class="hl kwb">int</span> depth<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+         TreeNode node <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">TreeNode</span><span class="hl opt">();</span>
+         node<span class="hl opt">.</span>item <span class="hl opt">=</span> item<span class="hl opt">;</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>depth <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+            node<span class="hl opt">.</span>left <span class="hl opt">=</span> <span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span><span class="hl num">2</span> <span class="hl opt">*</span> item <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">,</span> depth <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span>
+            node<span class="hl opt">.</span>right <span class="hl opt">=</span> <span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span><span class="hl num">2</span> <span class="hl opt">*</span> item<span class="hl opt">,</span> depth <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span>
+         <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+            node<span class="hl opt">.</span>left <span class="hl opt">=</span> null<span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+         <span class="hl kwa">return</span> node<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">private static</span> <span class="hl kwb">int</span> <span class="hl kwd">checkItems</span><span class="hl opt">(</span>TreeNode node<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>node<span class="hl opt">.</span>left <span class="hl opt">==</span> null<span class="hl opt">) {</span>
+            <span class="hl kwa">return</span> node<span class="hl opt">.</span>item<span class="hl opt">;</span>
+         <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+            <span class="hl kwa">return</span> node<span class="hl opt">.</span>item <span class="hl opt">+</span> <span class="hl kwd">checkItems</span><span class="hl opt">(</span>node<span class="hl opt">.</span>left<span class="hl opt">) -</span> <span class="hl kwd">checkItems</span><span class="hl opt">(</span>node<span class="hl opt">.</span>right<span class="hl opt">);</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+      
+      
+      <span class="hl kwa">public synchronized</span> <span class="hl kwb">void</span> <span class="hl kwd">run</span><span class="hl opt">()</span>
+      <span class="hl opt">{</span>
+         <span class="hl kwa">while</span> <span class="hl opt">(!</span>terminate<span class="hl opt">) {</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>run<span class="hl opt">) {</span>
+               result <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+               <span class="hl kwa">if</span> <span class="hl opt">(</span>start <span class="hl opt">==</span> end<span class="hl opt">) {</span>
+                  result <span class="hl opt">+=</span> <span class="hl kwd">checkItems</span><span class="hl opt">(</span><span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span>start<span class="hl opt">,</span> depth<span class="hl opt">));</span>
+               <span class="hl opt">}</span> <span class="hl kwa">else for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> start<span class="hl opt">;</span> i <span class="hl opt">&lt;</span> end<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+                  result <span class="hl opt">+=</span> <span class="hl kwd">checkItems</span><span class="hl opt">(</span><span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span>i<span class="hl opt">,</span> depth<span class="hl opt">)) +</span> <span class="hl kwd">checkItems</span><span class="hl opt">(</span><span class="hl kwd">bottomUpTree</span><span class="hl opt">(-</span>i<span class="hl opt">,</span> depth<span class="hl opt">));</span>
+               <span class="hl opt">}</span>
+               run <span class="hl opt">=</span> false<span class="hl opt">;</span>
+               <span class="hl kwd">notify</span><span class="hl opt">();</span>
+            <span class="hl opt">}</span>
+            <span class="hl kwa">try</span> <span class="hl opt">{</span>
+               <span class="hl kwd">wait</span><span class="hl opt">();</span>
+            <span class="hl opt">}</span> <span class="hl kwa">catch</span> <span class="hl opt">(</span>InterruptedException e<span class="hl opt">) {}</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+   
+   <span class="hl kwa">private static class</span> TreeNode
+   <span class="hl opt">{</span>
+      <span class="hl kwa">private</span> <span class="hl kwb">int</span> item<span class="hl opt">;</span>
+      <span class="hl kwa">private</span> TreeNode left<span class="hl opt">,</span> right<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>

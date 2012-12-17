@@ -1,0 +1,18 @@
+
+Sat, 14 Jul 2012 00:35:40 GMT
+
+MAKE:
+/usr/local/src/rust-0.3/bin/rustc --opt-level=3 binarytrees.rust-2.rs -o binarytrees.rust-2.rust_run
+rm binarytrees.rust-2.rs
+0.40s to complete and log all make actions
+
+COMMAND LINE:
+./binarytrees.rust-2.rust_run 20
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+stretch tree of depth 21	 check: -1
+2097152	 trees of depth 4	 check: -2097152
+524288	 trees of depth 6	 check: -524288

@@ -1,0 +1,19 @@
+
+Wed, 24 Oct 2012 08:51:23 GMT
+
+MAKE:
+mv pidigits.jruby-2.jruby pidigits.rb
+0.01s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/src/jruby-1.7.0/bin/jruby -Xcompile.invokedynamic=true -J-server -J-Xmn512m -J-Xms2048m -J-Xmx2048m pidigits.rb 2000
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+LoadError: no such file to load -- gmp
+  require at org/jruby/RubyKernel.java:1019
+  require at /usr/local/src/jruby-1.7.0/lib/ruby/shared/rubygems/custom_require.rb:36
+   (root) at pidigits.rb:9

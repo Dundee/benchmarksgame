@@ -1,0 +1,1222 @@
+
+Tue, 09 Oct 2012 03:02:33 GMT
+
+MAKE:
+cp: `knucleotide.sbcl-4.sbcl' and `./knucleotide.sbcl-4.sbcl' are the same file
+SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load "knucleotide.sbcl-4.sbcl_compile")'
+### START knucleotide.sbcl-4.sbcl_compile
+(handler-bind ((sb-ext:defconstant-uneql      (lambda (c) (abort c))))      (load (compile-file "knucleotide.sbcl-4.sbcl" ))) (save-lisp-and-die "sbcl.core" :purify t)
+### END knucleotide.sbcl-4.sbcl_compile
+
+
+; compiling file "/home/dunham/shootout/bench/knucleotide/knucleotide.sbcl-4.sbcl" (written 06 OCT 2010 09:41:02 AM):
+; compiling (DEFPACKAGE #:K-NUCLEOTIDE ...)
+; compiling (IN-PACKAGE :K-NUCLEOTIDE)
+; compiling (DEFMACRO WITH-PACKED-SEQUENCES ...)
+; compiling (DEFMACRO PACK-SEQUENCE ...)
+; compiling (DEFUN UNPACK-SEQUENCE ...)
+; compiling (DEFMACRO WITH-PACKED-CACHES-FILL ...)
+; compiling (DEFMACRO WITH-READING-STREAM ...)
+; compiling (DEFMACRO SKIP-BUFFER-TO ...)
+; compiling (DEFMACRO WITH-DNA-ANALYZED ...)
+; compiling (DEFUN SEQ= ...)
+; compiling (DEFUN SEQ-HASH ...)
+; compiling (SB-EXT:DEFINE-HASH-TABLE-TEST SEQ= ...)
+; compiling (DEFMACRO WITH-SMART-DNA-HASH ...)
+; compiling (DEFMACRO WITH-PERCENTAGE ...)
+; compiling (DEFMACRO OBTAIN-SEQ-COUNT ...)
+; compiling (DEFUN PERFORM-WORK ...)
+; file: /home/dunham/shootout/bench/knucleotide/knucleotide.sbcl-4.sbcl
+; in: DEFUN PERFORM-WORK
+;     (K-NUCLEOTIDE::WITH-DNA-ANALYZED
+;      (STREAM K-NUCLEOTIDE::INCF-HASH-ELEMENT :BLOCK-SIZE 655350) 1 2 3 4 6 12 18)
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE LOGIOR 
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; ==>
+;   (ASH #:G296 -2)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     (UNSIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE 
+; ==>
+;   (LOGIOR (ASH #:G296 -2) (ASH (LOGAND (CHAR-CODE CHAR) 6) 33))
+; 
+; note: forced to do static-fun Two-arg-ior (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a FIXNUM.
+;       The second argument is a (MOD 51539607553), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a (SIGNED-BYTE 32).
+;       The second argument is a (MOD 51539607553), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     (SIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE LOGIOR 
+; ==>
+;   (ASH #:G296 -2)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     (UNSIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE 
+; ==>
+;   (LOGIOR (ASH #:G296 -2) (ASH (LOGAND (CHAR-CODE CHAR) 6) 33))
+; 
+; note: forced to do static-fun Two-arg-ior (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a FIXNUM.
+;       The second argument is a (MOD 51539607553), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a (SIGNED-BYTE 32).
+;       The second argument is a (MOD 51539607553), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     (SIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE LOGIOR 
+; ==>
+;   (ASH #:G296 -2)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     (UNSIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE 
+; ==>
+;   (LOGIOR (ASH #:G296 -2) (ASH (LOGAND (CHAR-CODE CHAR) 6) 33))
+; 
+; note: forced to do static-fun Two-arg-ior (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a FIXNUM.
+;       The second argument is a (MOD 51539607553), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a (SIGNED-BYTE 32).
+;       The second argument is a (MOD 51539607553), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     (SIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE LOGIOR 
+; ==>
+;   (ASH #:G296 -2)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     (UNSIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE 
+; ==>
+;   (LOGIOR (ASH #:G296 -2) (ASH (LOGAND (CHAR-CODE CHAR) 6) 33))
+; 
+; note: forced to do static-fun Two-arg-ior (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a FIXNUM.
+;       The second argument is a (MOD 51539607553), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a (SIGNED-BYTE 32).
+;       The second argument is a (MOD 51539607553), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     (SIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE LOGIOR 
+; ==>
+;   (ASH #:G296 -2)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     (UNSIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE 
+; ==>
+;   (LOGIOR (ASH #:G296 -2) (ASH (LOGAND (CHAR-CODE CHAR) 6) 33))
+; 
+; note: forced to do static-fun Two-arg-ior (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a FIXNUM.
+;       The second argument is a (MOD 51539607553), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a (SIGNED-BYTE 32).
+;       The second argument is a (MOD 51539607553), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     (SIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE LOGIOR 
+; ==>
+;   (ASH #:G296 -2)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     (UNSIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE 
+; ==>
+;   (LOGIOR (ASH #:G296 -2) (ASH (LOGAND (CHAR-CODE CHAR) 6) 33))
+; 
+; note: forced to do static-fun Two-arg-ior (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a FIXNUM.
+;       The second argument is a (MOD 51539607553), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a (SIGNED-BYTE 32).
+;       The second argument is a (MOD 51539607553), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     (SIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE LOGIOR 
+; ==>
+;   (ASH #:G296 -2)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     (UNSIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE 
+; ==>
+;   (LOGIOR (ASH #:G296 -2) (ASH (LOGAND (CHAR-CODE CHAR) 6) 33))
+; 
+; note: forced to do static-fun Two-arg-ior (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a FIXNUM.
+;       The second argument is a (MOD 51539607553), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a (SIGNED-BYTE 32).
+;       The second argument is a (MOD 51539607553), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     (SIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE LOGIOR 
+; ==>
+;   (ASH #:G296 -2)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     (UNSIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE 
+; ==>
+;   (LOGIOR (ASH #:G296 -2) (ASH (LOGAND (CHAR-CODE CHAR) 6) 33))
+; 
+; note: forced to do static-fun Two-arg-ior (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a FIXNUM.
+;       The second argument is a (MOD 51539607553), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a (SIGNED-BYTE 32).
+;       The second argument is a (MOD 51539607553), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     (SIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE LOGIOR 
+; ==>
+;   (ASH #:G296 -2)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     (UNSIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE 
+; ==>
+;   (LOGIOR (ASH #:G296 -2) (ASH (LOGAND (CHAR-CODE CHAR) 6) 33))
+; 
+; note: forced to do static-fun Two-arg-ior (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a FIXNUM.
+;       The second argument is a (MOD 51539607553), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a (SIGNED-BYTE 32).
+;       The second argument is a (MOD 51539607553), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     (SIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE LOGIOR 
+; ==>
+;   (ASH #:G296 -2)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     (UNSIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE 
+; ==>
+;   (LOGIOR (ASH #:G296 -2) (ASH (LOGAND (CHAR-CODE CHAR) 6) 33))
+; 
+; note: forced to do static-fun Two-arg-ior (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a FIXNUM.
+;       The second argument is a (MOD 51539607553), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a (SIGNED-BYTE 32).
+;       The second argument is a (MOD 51539607553), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     (SIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE LOGIOR 
+; ==>
+;   (ASH #:G296 -2)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     (UNSIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE 
+; ==>
+;   (LOGIOR (ASH #:G296 -2) (ASH (LOGAND (CHAR-CODE CHAR) 6) 33))
+; 
+; note: forced to do static-fun Two-arg-ior (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a FIXNUM.
+;       The second argument is a (MOD 51539607553), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a (SIGNED-BYTE 32).
+;       The second argument is a (MOD 51539607553), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     (SIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE LOGIOR 
+; ==>
+;   (ASH #:G296 -2)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     (UNSIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE 
+; ==>
+;   (LOGIOR (ASH #:G296 -2) (ASH (LOGAND (CHAR-CODE CHAR) 6) 33))
+; 
+; note: forced to do static-fun Two-arg-ior (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a FIXNUM.
+;       The second argument is a (MOD 51539607553), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a (SIGNED-BYTE 32).
+;       The second argument is a (MOD 51539607553), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     (SIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE LOGIOR 
+; ==>
+;   (ASH #:G296 -2)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     (UNSIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE 
+; ==>
+;   (LOGIOR (ASH #:G296 -2) (ASH (LOGAND (CHAR-CODE CHAR) 6) 33))
+; 
+; note: forced to do static-fun Two-arg-ior (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a FIXNUM.
+;       The second argument is a (MOD 51539607553), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a (SIGNED-BYTE 32).
+;       The second argument is a (MOD 51539607553), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     (SIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE LOGIOR 
+; ==>
+;   (ASH #:G296 -2)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     (UNSIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE 
+; ==>
+;   (LOGIOR (ASH #:G296 -2) (ASH (LOGAND (CHAR-CODE CHAR) 6) 33))
+; 
+; note: forced to do static-fun Two-arg-ior (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a FIXNUM.
+;       The second argument is a (MOD 51539607553), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a (SIGNED-BYTE 32).
+;       The second argument is a (MOD 51539607553), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     (SIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE LOGIOR 
+; ==>
+;   (ASH #:G296 -2)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     (UNSIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE 
+; ==>
+;   (LOGIOR (ASH #:G296 -2) (ASH (LOGAND (CHAR-CODE CHAR) 6) 33))
+; 
+; note: forced to do static-fun Two-arg-ior (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a FIXNUM.
+;       The second argument is a (MOD 51539607553), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a (SIGNED-BYTE 32).
+;       The second argument is a (MOD 51539607553), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     (SIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE LOGIOR 
+; ==>
+;   (ASH #:G296 -2)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     (UNSIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE 
+; ==>
+;   (LOGIOR (ASH #:G296 -2) (ASH (LOGAND (CHAR-CODE CHAR) 6) 33))
+; 
+; note: forced to do static-fun Two-arg-ior (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a FIXNUM.
+;       The second argument is a (MOD 51539607553), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a (SIGNED-BYTE 32).
+;       The second argument is a (MOD 51539607553), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     (SIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE LOGIOR 
+; ==>
+;   (ASH #:G296 -2)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     (UNSIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET 
+; --> K-NUCLEOTIDE::WITH-PACKED-CACHES-FILL PROGN 
+; --> K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE 
+; ==>
+;   (LOGIOR (ASH #:G296 -2) (ASH (LOGAND (CHAR-CODE CHAR) 6) 33))
+; 
+; note: forced to do static-fun Two-arg-ior (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a FIXNUM.
+;       The second argument is a (MOD 51539607553), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a (SIGNED-BYTE 32).
+;       The second argument is a (MOD 51539607553), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     (SIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET LOOP BLOCK 
+; --> TAGBODY PROGN K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE 
+; --> LOGIOR 
+; ==>
+;   (ASH #:G296 -2)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     (UNSIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; --> K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET MACROLET 
+; --> K-NUCLEOTIDE::WITH-READING-STREAM BLOCK LET FLET MACROLET LOOP BLOCK 
+; --> TAGBODY PROGN K-NUCLEOTIDE::WITH-CURRENT-CHAR LET #:G297 SETF SETQ THE 
+; ==>
+;   (LOGIOR (ASH #:G296 -2) (ASH (LOGAND (CHAR-CODE CHAR) 6) 33))
+; 
+; note: forced to do static-fun Two-arg-ior (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a FIXNUM.
+;       The second argument is a (MOD 51539607553), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a (SIGNED-BYTE 32).
+;       The second argument is a (MOD 51539607553), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     (SIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+;     (K-NUCLEOTIDE::OBTAIN-SEQ-COUNT K-NUCLEOTIDE::HASH-ACCESS
+;                                     "GGTATTTTAATTTATAGT")
+; --> LIST K-NUCLEOTIDE::HASH-ACCESS THE GETHASH SB-IMPL::GETHASH3 
+; --> K-NUCLEOTIDE::PACK-SEQUENCE K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET 
+; --> MACROLET LOOP BLOCK LET SB-LOOP::LOOP-BODY TAGBODY K-NUCLEOTIDE::UPDATE 
+; --> SETF SETQ THE LOGIOR 
+; ==>
+;   (ASH K-NUCLEOTIDE::BIND -2)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 36), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 34) &OPTIONAL), not a (VALUES
+;                                                                     (UNSIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; ==>
+;   (ASH (LOGAND (CHAR-CODE CHAR) 6) 33)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    FIXNUM &REST
+;                                                                    T).
+;       unable to do inline ASH (cost 3) because:
+;       The result is a (VALUES (MOD 51539607553) &OPTIONAL), not a (VALUES
+;                                                                    (UNSIGNED-BYTE
+;                                                                     32)
+;                                                                    &REST T).
+;       etc.
+
+; --> LIST K-NUCLEOTIDE::HASH-ACCESS THE GETHASH SB-IMPL::GETHASH3 
+; --> K-NUCLEOTIDE::PACK-SEQUENCE K-NUCLEOTIDE::WITH-PACKED-SEQUENCES LET 
+; --> MACROLET LOOP BLOCK LET SB-LOOP::LOOP-BODY TAGBODY K-NUCLEOTIDE::UPDATE 
+; --> SETF SETQ THE 
+; ==>
+;   (LOGIOR (ASH K-NUCLEOTIDE::BIND -2) (ASH (LOGAND (CHAR-CODE CHAR) 6) 33))
+; 
+; note: forced to do static-fun Two-arg-ior (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a FIXNUM.
+;       The second argument is a (MOD 51539607553), not a FIXNUM.
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     FIXNUM
+;                                                                     &REST T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (UNSIGNED-BYTE 34), not a (SIGNED-BYTE 32).
+;       The second argument is a (MOD 51539607553), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (UNSIGNED-BYTE 36) &OPTIONAL), not a (VALUES
+;                                                                     (SIGNED-BYTE
+;                                                                      32)
+;                                                                     &REST T).
+;       etc.
+
+; compiling (DEFUN PRINT-RESULTS ...)
+; compiling (DEFUN MAIN ...)
+; compiling (IN-PACKAGE :CL-USER)
+; compiling (DEFUN MAIN ...); 
+; compilation unit finished
+;   printed 58 notes
+
+
+; /home/dunham/benchmarksgame/knucleotide/tmp/knucleotide.sbcl-4.fasl written
+; compilation finished in 0:00:00.502
+[undoing binding stack and other enclosing state... done]
+[saving current Lisp image into sbcl.core:
+writing 3512 bytes from the read-only space at 0x01000000
+writing 2224 bytes from the static space at 0x01100000
+writing 28139520 bytes from the dynamic space at 0x09000000
+done]
+### START knucleotide.sbcl-4.sbcl_run
+(main) (quit)
+### END knucleotide.sbcl-4.sbcl_run
+
+1.09s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/bin/sbcl  --noinform --core sbcl.core --userinit /dev/null --load knucleotide.sbcl-4.sbcl_run 0 < knucleotide-input25000000.txt
+
+PROGRAM OUTPUT:
+A 30.295
+T 30.151
+C 19.800
+G 19.754
+
+AA 9.177
+TA 9.132
+AT 9.131
+TT 9.091
+CA 6.002
+AC 6.001
+AG 5.987
+GA 5.984
+CT 5.971
+TC 5.971
+GT 5.957
+TG 5.956
+CC 3.917
+GC 3.911
+CG 3.909
+GG 3.902
+
+1471758	GGT
+446535	GGTA
+47336	GGTATT
+893	GGTATTTTAATT
+893	GGTATTTTAATTTATAGT

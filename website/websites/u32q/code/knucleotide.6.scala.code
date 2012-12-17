@@ -1,0 +1,123 @@
+<span class="hl com">/*</span>
+<span class="hl com">   The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com">   Based partially on the version by The Anh Tran</span>
+<span class="hl com">   Based on bit encoding idea of C++ contribution of Andrew Moon</span>
+<span class="hl com">   Contributed by Mark Hammons</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">import</span> annotation<span class="hl opt">.</span>tailrec
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>HashMap
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>io<span class="hl opt">.{</span>InputStreamReader<span class="hl opt">,</span> BufferedReader<span class="hl opt">}</span>
+<span class="hl kwa">import</span> scala<span class="hl opt">.</span>actors<span class="hl opt">.</span>Futures<span class="hl opt">.</span>_
+<span class="hl kwa">import</span> scala<span class="hl opt">.</span>actors<span class="hl opt">.</span>Future
+
+
+<span class="hl kwa">object</span> knucleotide <span class="hl kwa">extends</span> App <span class="hl opt">{</span>
+  <span class="hl kwa">val</span> reader <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">BufferedReader</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">InputStreamReader</span><span class="hl opt">(</span>System<span class="hl opt">.</span><span class="hl kwa">in</span><span class="hl opt">,</span>  <span class="hl str">&quot;US-ASCII&quot;</span><span class="hl opt">),</span> <span class="hl num">8</span><span class="hl opt">*</span><span class="hl num">1024</span><span class="hl opt">*</span><span class="hl num">1024</span><span class="hl opt">)</span>
+
+  <span class="hl kwa">var</span> buffer <span class="hl opt">=</span> <span class="hl str">&quot;lola&quot;</span>
+
+  <span class="hl kwa">while</span><span class="hl opt">(</span>buffer <span class="hl opt">!=</span> null <span class="hl opt">&amp;&amp; (</span><span class="hl kwd">buffer</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">) !=</span> <span class="hl str">'&gt;'</span> <span class="hl opt">||</span> <span class="hl kwd">buffer</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">) !=</span> <span class="hl str">'H'</span><span class="hl opt">))</span>
+    buffer <span class="hl opt">=</span> reader<span class="hl opt">.</span><span class="hl kwd">readLine</span><span class="hl opt">();</span>
+
+  <span class="hl kwa">type</span> mapSeqType <span class="hl opt">=</span> List<span class="hl opt">[(</span>Future<span class="hl opt">[</span>NucleoHashMap<span class="hl opt">],(</span>String<span class="hl opt">,</span>Int<span class="hl opt">))]</span>
+
+  <span class="hl kwa">val</span> digestibleSeq<span class="hl opt">:</span>mapSeqType <span class="hl opt">=</span> <span class="hl kwd">List</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span><span class="hl num">2</span><span class="hl opt">,</span><span class="hl num">3</span><span class="hl opt">,</span><span class="hl num">4</span><span class="hl opt">,</span><span class="hl num">6</span><span class="hl opt">,</span><span class="hl num">12</span><span class="hl opt">,</span><span class="hl num">18</span><span class="hl opt">).</span><span class="hl kwd">map</span><span class="hl opt">(</span>frame <span class="hl opt">=&gt;</span> future<span class="hl opt">{</span><span class="hl kwa">new</span> <span class="hl kwd">NucleoHashMap</span><span class="hl opt">(</span>frame<span class="hl opt">)} -&gt; (</span><span class="hl str">&quot;&quot;</span><span class="hl opt">,</span>frame<span class="hl opt">))</span>
+
+  <span class="hl kwc">&#64;tailrec</span>
+  <span class="hl kwa">def</span> <span class="hl kwd">digester</span><span class="hl opt">(</span>maps<span class="hl opt">:</span> mapSeqType<span class="hl opt">,</span> length<span class="hl opt">:</span> Int <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">): (</span>mapSeqType<span class="hl opt">,</span>Int<span class="hl opt">) = {</span>
+    <span class="hl kwa">var in</span> <span class="hl opt">=</span> <span class="hl kwa">new</span> StringBuilder
+
+    <span class="hl kwa">while</span><span class="hl opt">(</span>reader<span class="hl opt">.</span><span class="hl kwd">ready</span><span class="hl opt">() &amp;&amp;</span> <span class="hl kwa">in</span><span class="hl opt">.</span>length <span class="hl opt">&lt;</span> <span class="hl num">500000</span><span class="hl opt">)</span>
+      <span class="hl kwa">in</span><span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span>reader<span class="hl opt">.</span><span class="hl kwd">readLine</span><span class="hl opt">())</span>
+
+    <span class="hl kwa">val</span> input <span class="hl opt">=</span> <span class="hl kwa">in</span><span class="hl opt">.</span>stripLineEnd<span class="hl opt">.</span>toLowerCase
+
+    <span class="hl kwa">val</span> f <span class="hl opt">=</span> maps<span class="hl opt">.</span><span class="hl kwd">map</span><span class="hl opt">(</span>x <span class="hl opt">=&gt;</span> x<span class="hl opt">.</span><span class="hl kwd">_1</span><span class="hl opt">() -&gt;</span> x<span class="hl opt">.</span>_2<span class="hl opt">)</span>
+
+    <span class="hl kwa">def</span> <span class="hl kwd">getRemainder</span><span class="hl opt">(</span>str<span class="hl opt">:</span> String<span class="hl opt">,</span> frame<span class="hl opt">:</span> Int<span class="hl opt">) =</span> str<span class="hl opt">.</span><span class="hl kwd">substring</span><span class="hl opt">(</span>str<span class="hl opt">.</span>length <span class="hl opt">- (</span>frame<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">))</span>
+    <span class="hl kwa">val</span> res <span class="hl opt">=</span> <span class="hl kwa">for</span><span class="hl opt">((</span>map<span class="hl opt">,(</span>remainder<span class="hl opt">,</span>frame<span class="hl opt">)) &lt;-</span> f<span class="hl opt">)</span> <span class="hl kwa">yield</span>
+      future<span class="hl opt">{</span>
+        <span class="hl kwa">val in</span> <span class="hl opt">=</span> remainder <span class="hl opt">+</span> input
+        map<span class="hl opt">.</span><span class="hl kwd">process</span><span class="hl opt">(</span><span class="hl kwa">in</span><span class="hl opt">)</span>
+        map
+      <span class="hl opt">} -&gt; (</span><span class="hl kwd">getRemainder</span><span class="hl opt">(</span>remainder<span class="hl opt">+</span>input<span class="hl opt">,</span>frame<span class="hl opt">),</span>frame<span class="hl opt">)</span>
+
+
+    <span class="hl kwa">if</span><span class="hl opt">(</span>reader<span class="hl opt">.</span>ready<span class="hl opt">)</span> <span class="hl kwd">digester</span><span class="hl opt">(</span>res<span class="hl opt">,</span>input<span class="hl opt">.</span>length <span class="hl opt">+</span> length<span class="hl opt">)</span>
+    <span class="hl kwa">else</span> <span class="hl opt">(</span>res<span class="hl opt">,(</span>input<span class="hl opt">.</span>length <span class="hl opt">+</span> length<span class="hl opt">))</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwa">val</span> <span class="hl opt">(</span>retList<span class="hl opt">,</span>length<span class="hl opt">) =</span> <span class="hl kwd">digester</span><span class="hl opt">(</span>digestibleSeq<span class="hl opt">)</span>
+
+  <span class="hl kwa">val</span> maps <span class="hl opt">=</span> retList<span class="hl opt">.</span><span class="hl kwd">map</span><span class="hl opt">(</span>_<span class="hl opt">.</span><span class="hl kwd">_1</span><span class="hl opt">())</span>
+
+  <span class="hl kwa">def</span> <span class="hl kwd">lookup</span><span class="hl opt">(</span>str<span class="hl opt">:</span> String<span class="hl opt">):</span> Int <span class="hl opt">= {</span>
+    <span class="hl kwa">val</span> l <span class="hl opt">=</span> str<span class="hl opt">.</span>length
+    <span class="hl kwa">val</span> map <span class="hl opt">=</span> maps<span class="hl opt">.</span><span class="hl kwd">find</span><span class="hl opt">(</span>_<span class="hl opt">.</span>frame <span class="hl opt">==</span> l<span class="hl opt">).</span><span class="hl kwd">getOrElse</span><span class="hl opt">(</span><span class="hl kwa">throw new</span> <span class="hl kwd">Exception</span><span class="hl opt">(</span><span class="hl str">&quot;no keys of length &quot;</span> <span class="hl opt">+</span> l<span class="hl opt">))</span>
+    <span class="hl kwd">map</span><span class="hl opt">(</span>str<span class="hl opt">)</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwa">val</span> componentList <span class="hl opt">=</span> <span class="hl kwd">List</span><span class="hl opt">(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;t&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;c&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;g&quot;</span><span class="hl opt">)</span>
+  <span class="hl kwa">val</span> singles <span class="hl opt">=</span> <span class="hl kwa">for</span><span class="hl opt">(</span>i <span class="hl opt">&lt;-</span> componentList<span class="hl opt">)</span>
+    <span class="hl kwa">yield</span> <span class="hl opt">(</span>i<span class="hl opt">).</span>toUpperCase <span class="hl opt">-&gt; (</span><span class="hl kwd">lookup</span><span class="hl opt">(</span>i<span class="hl opt">)/</span>length<span class="hl opt">.</span>toDouble <span class="hl opt">*</span> <span class="hl num">100</span><span class="hl opt">)</span>
+
+  <span class="hl kwa">val</span> doubles <span class="hl opt">=</span> <span class="hl kwa">for</span><span class="hl opt">(</span>i <span class="hl opt">&lt;-</span> componentList<span class="hl opt">;</span> j <span class="hl opt">&lt;-</span> componentList<span class="hl opt">)</span>
+    <span class="hl kwa">yield</span> <span class="hl opt">(</span>i<span class="hl opt">+</span>j<span class="hl opt">).</span>toUpperCase <span class="hl opt">-&gt; (</span><span class="hl kwd">lookup</span><span class="hl opt">(</span>i<span class="hl opt">+</span>j<span class="hl opt">)/</span>length<span class="hl opt">.</span>toDouble <span class="hl opt">*</span> <span class="hl num">100</span><span class="hl opt">)</span>
+
+  singles<span class="hl opt">.</span><span class="hl kwd">sortWith</span><span class="hl opt">(</span>_<span class="hl opt">.</span>_2 <span class="hl opt">&gt;</span> _<span class="hl opt">.</span>_2<span class="hl opt">).</span><span class="hl kwd">foreach</span><span class="hl opt">(</span>a <span class="hl opt">=&gt; {</span><span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%s %.3f</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span>a<span class="hl opt">.</span>_1<span class="hl opt">,</span>a<span class="hl opt">.</span>_2<span class="hl opt">);</span> <span class="hl com">/*println(lookup(a._1.toLowerCase))*/</span><span class="hl opt">})</span>
+  <span class="hl kwd">println</span><span class="hl opt">(</span><span class="hl str">&quot;&quot;</span><span class="hl opt">)</span>
+  doubles<span class="hl opt">.</span><span class="hl kwd">sortWith</span><span class="hl opt">(</span>_<span class="hl opt">.</span>_2 <span class="hl opt">&gt;</span> _<span class="hl opt">.</span>_2<span class="hl opt">).</span><span class="hl kwd">foreach</span><span class="hl opt">(</span>a <span class="hl opt">=&gt; {</span><span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%s %.3f</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span>a<span class="hl opt">.</span>_1<span class="hl opt">,</span>a<span class="hl opt">.</span>_2<span class="hl opt">);</span> <span class="hl com">/*println(lookup(a._1.toLowerCase))*/</span><span class="hl opt">})</span>
+
+  <span class="hl kwd">println</span><span class="hl opt">(</span><span class="hl str">&quot;&quot;</span><span class="hl opt">)</span>
+
+  <span class="hl kwd">List</span><span class="hl opt">(</span><span class="hl str">&quot;GGT&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;GGTA&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;GGTATT&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATTTTAATT&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATTTTAATTTATAGT&quot;</span><span class="hl opt">).</span><span class="hl kwd">foreach</span><span class="hl opt">(</span>
+    s <span class="hl opt">=&gt;</span> <span class="hl kwd">println</span><span class="hl opt">(</span><span class="hl kwd">lookup</span><span class="hl opt">(</span>s<span class="hl opt">.</span>toLowerCase<span class="hl opt">) +</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">&quot;</span> <span class="hl opt">+</span> s<span class="hl opt">)</span>
+  <span class="hl opt">)</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">class</span> <span class="hl kwd">NucleoHashMap</span><span class="hl opt">(</span><span class="hl kwa">val</span> frame<span class="hl opt">:</span> Int<span class="hl opt">) {</span>
+  <span class="hl kwa">class</span> BabyHash<span class="hl opt">[</span>K<span class="hl opt">]</span> <span class="hl kwa">extends</span> HashMap<span class="hl opt">[</span>K<span class="hl opt">,</span>Count<span class="hl opt">] {</span>
+  <span class="hl kwc">&#64;inline</span> <span class="hl kwa">final def</span> <span class="hl kwd">apply</span><span class="hl opt">(</span>key<span class="hl opt">:</span> K<span class="hl opt">):</span> Count <span class="hl opt">= {</span>
+      <span class="hl kwa">val</span> r <span class="hl opt">=</span> <span class="hl kwa">this</span><span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">(</span>key<span class="hl opt">)</span>
+      <span class="hl kwa">if</span><span class="hl opt">(</span>r <span class="hl opt">!=</span> null<span class="hl opt">)</span>
+        r
+      <span class="hl kwa">else</span> <span class="hl opt">{</span>
+        <span class="hl kwa">val</span> c <span class="hl opt">=</span> <span class="hl kwa">new</span> Count
+        <span class="hl kwd">put</span><span class="hl opt">(</span>key<span class="hl opt">,</span>c<span class="hl opt">)</span>
+        c
+      <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwa">val</span> maps <span class="hl opt">=</span> <span class="hl kwa">for</span><span class="hl opt">(</span>i <span class="hl opt">&lt;-</span> <span class="hl num">0</span> until frame<span class="hl opt">)</span>
+    <span class="hl kwa">yield new</span> BabyHash<span class="hl opt">[</span>String<span class="hl opt">] -&gt;</span> i
+
+  <span class="hl kwa">def</span> <span class="hl kwd">process</span><span class="hl opt">(</span>str<span class="hl opt">:</span> String<span class="hl opt">) {</span>
+    <span class="hl kwc">&#64;inline</span>
+    <span class="hl kwa">def</span> <span class="hl kwd">addStrings</span><span class="hl opt">(</span>map<span class="hl opt">:</span> BabyHash<span class="hl opt">[</span>String<span class="hl opt">],</span> str<span class="hl opt">:</span> String<span class="hl opt">) {</span>
+      <span class="hl kwa">var</span> offset <span class="hl opt">=</span> <span class="hl num">0</span>
+      <span class="hl kwa">var</span> frmoffset <span class="hl opt">=</span> offset <span class="hl opt">+</span> frame
+      <span class="hl kwa">while</span><span class="hl opt">(</span>str<span class="hl opt">.</span>length <span class="hl opt">&gt;=</span> frmoffset<span class="hl opt">) {</span>
+        <span class="hl kwd">map</span><span class="hl opt">(</span>str<span class="hl opt">.</span><span class="hl kwd">substring</span><span class="hl opt">(</span>offset<span class="hl opt">,</span>frmoffset<span class="hl opt">)) +=</span> <span class="hl num">1</span>
+        offset <span class="hl opt">+=</span> frame
+        frmoffset <span class="hl opt">+=</span> frame
+      <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+
+    maps<span class="hl opt">.</span><span class="hl kwd">map</span><span class="hl opt">(</span>x <span class="hl opt">=&gt;</span> <span class="hl kwd">future</span><span class="hl opt">(</span><span class="hl kwd">addStrings</span><span class="hl opt">(</span>x<span class="hl opt">.</span>_1<span class="hl opt">,</span>str<span class="hl opt">.</span><span class="hl kwd">substring</span><span class="hl opt">(</span>x<span class="hl opt">.</span>_2<span class="hl opt">)))).</span><span class="hl kwd">map</span><span class="hl opt">(</span><span class="hl kwd">_</span><span class="hl opt">())</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwa">def</span> <span class="hl kwd">apply</span><span class="hl opt">(</span>str<span class="hl opt">:</span> String<span class="hl opt">):</span>Int <span class="hl opt">= {</span>
+    maps<span class="hl opt">.</span><span class="hl kwd">foldLeft</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">)((</span>z<span class="hl opt">,</span>map<span class="hl opt">) =&gt;</span> map<span class="hl opt">.</span><span class="hl kwd">_1</span><span class="hl opt">(</span>str<span class="hl opt">)+</span>z<span class="hl opt">)</span>
+  <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">class</span> Count <span class="hl opt">{</span>
+  <span class="hl kwa">var</span> count <span class="hl opt">=</span> <span class="hl num">0</span>
+
+  <span class="hl kwc">&#64;inline</span> <span class="hl kwa">final def</span> <span class="hl opt">+=(</span>v<span class="hl opt">:</span> Int<span class="hl opt">) {</span>count <span class="hl opt">+=</span> v<span class="hl opt">}</span>
+
+  <span class="hl kwc">&#64;inline</span> <span class="hl kwa">final def</span> <span class="hl opt">+(</span>v<span class="hl opt">:</span> Int<span class="hl opt">) =</span> count <span class="hl opt">+</span> v
+<span class="hl opt">}</span>

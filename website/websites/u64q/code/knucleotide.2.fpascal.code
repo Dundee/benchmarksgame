@@ -1,0 +1,396 @@
+<span class="hl com">(* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Josh Goldfoot</span>
+<span class="hl com">   modified by Vincent Snijders</span>
+<span class="hl com">*)</span>
+
+<span class="hl com">{$mode objfpc}</span>
+
+<span class="hl kwa">program</span> knucleotide<span class="hl opt">;</span>
+
+<span class="hl com">(* simple_hash available from CVS *)</span>
+
+<span class="hl kwa">const</span>
+  ht_num_primes <span class="hl opt">=</span> <span class="hl num">28</span><span class="hl opt">;</span>
+
+  ht_prime_list<span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">[</span><span class="hl num">0</span> <span class="hl opt">..</span> ht_num_primes<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">]</span> <span class="hl kwa">of</span> dword <span class="hl opt">=</span>
+  <span class="hl opt">(</span> <span class="hl num">53</span><span class="hl opt">,</span>         <span class="hl num">97</span><span class="hl opt">,</span>         <span class="hl num">193</span><span class="hl opt">,</span>       <span class="hl num">389</span><span class="hl opt">,</span>       <span class="hl num">769</span><span class="hl opt">,</span>
+    <span class="hl num">1543</span><span class="hl opt">,</span>       <span class="hl num">3079</span><span class="hl opt">,</span>       <span class="hl num">6151</span><span class="hl opt">,</span>      <span class="hl num">12289</span><span class="hl opt">,</span>     <span class="hl num">24593</span><span class="hl opt">,</span>
+    <span class="hl num">49157</span><span class="hl opt">,</span>      <span class="hl num">98317</span><span class="hl opt">,</span>      <span class="hl num">196613</span><span class="hl opt">,</span>    <span class="hl num">393241</span><span class="hl opt">,</span>    <span class="hl num">786433</span><span class="hl opt">,</span>
+    <span class="hl num">1572869</span><span class="hl opt">,</span>    <span class="hl num">3145739</span><span class="hl opt">,</span>    <span class="hl num">6291469</span><span class="hl opt">,</span>   <span class="hl num">12582917</span><span class="hl opt">,</span>  <span class="hl num">25165843</span><span class="hl opt">,</span>
+    <span class="hl num">50331653</span><span class="hl opt">,</span>   <span class="hl num">100663319</span><span class="hl opt">,</span>  <span class="hl num">201326611</span><span class="hl opt">,</span> <span class="hl num">402653189</span><span class="hl opt">,</span> <span class="hl num">805306457</span><span class="hl opt">,</span>
+    <span class="hl num">1610612741</span><span class="hl opt">,</span> <span class="hl num">3221225473</span><span class="hl opt">,</span> <span class="hl num">4294967291</span> <span class="hl opt">);</span>
+
+<span class="hl kwa">type</span>
+  <span class="hl com">{ TNonFreePooledMemManager - a memory manager for records without freeing }</span>
+
+  PMemChunk <span class="hl opt">= ^</span>TMemChunk<span class="hl opt">;</span>
+  TMemChunk <span class="hl opt">=</span> <span class="hl kwa">record</span>
+    data<span class="hl opt">:</span> <span class="hl kwb">pointer</span><span class="hl opt">;</span>
+    next<span class="hl opt">:</span> PMemChunk<span class="hl opt">;</span>
+  <span class="hl kwa">end</span><span class="hl opt">;</span>
+
+  TNonFreePooledMemManager <span class="hl opt">=</span> <span class="hl kwa">class</span>
+  <span class="hl kwa">private</span>
+    FItemSize<span class="hl opt">:</span> <span class="hl kwb">integer</span><span class="hl opt">;</span>
+    FItems<span class="hl opt">:</span> PMemChunk<span class="hl opt">;</span>
+    FCurItem<span class="hl opt">:</span> <span class="hl kwb">Pointer</span><span class="hl opt">;</span>
+    FEndItem<span class="hl opt">:</span> <span class="hl kwb">Pointer</span><span class="hl opt">;</span>
+    FCurSize<span class="hl opt">:</span> <span class="hl kwb">integer</span><span class="hl opt">;</span>
+    <span class="hl kwa">procedure</span> Grow<span class="hl opt">;</span>
+  <span class="hl kwa">public</span>
+    <span class="hl kwa">property</span> ItemSize<span class="hl opt">:</span> <span class="hl kwb">integer</span> read FItemSize<span class="hl opt">;</span>
+    <span class="hl kwa">constructor</span> <span class="hl kwd">Create</span><span class="hl opt">(</span>TheItemSize<span class="hl opt">:</span> <span class="hl kwb">integer</span><span class="hl opt">);</span>
+    <span class="hl kwa">destructor</span> Destroy<span class="hl opt">;</span> <span class="hl kwa">override</span><span class="hl opt">;</span>
+    <span class="hl kwa">function</span> NewItem<span class="hl opt">:</span> <span class="hl kwb">Pointer</span><span class="hl opt">;</span> <span class="hl kwa">inline</span><span class="hl opt">;</span>
+  <span class="hl kwa">end</span><span class="hl opt">;</span>
+
+  <span class="hl com">{ THashTable }</span>
+
+  ht_ppnode <span class="hl opt">= ^</span>ht_pnode<span class="hl opt">;</span>
+  ht_pnode <span class="hl opt">= ^</span>ht_node<span class="hl opt">;</span>
+  ht_node <span class="hl opt">=</span> <span class="hl kwa">record</span>
+    val<span class="hl opt">:</span> <span class="hl kwb">integer</span><span class="hl opt">;</span>
+    next<span class="hl opt">:</span> ht_pnode<span class="hl opt">;</span>
+    keydata<span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">.</span><span class="hl num">.0</span><span class="hl opt">]</span> <span class="hl kwa">of</span> <span class="hl kwb">char</span><span class="hl opt">;</span>
+  <span class="hl kwa">end</span><span class="hl opt">;</span>
+
+  THashTable<span class="hl opt">=</span><span class="hl kwa">class</span>
+  <span class="hl kwa">private</span>
+    FSize<span class="hl opt">:</span> dword<span class="hl opt">;</span>
+    FKeysize<span class="hl opt">:</span> dword<span class="hl opt">;</span>
+    FTbl<span class="hl opt">:</span> ht_ppnode<span class="hl opt">;</span>
+    FIter_index<span class="hl opt">:</span> dword<span class="hl opt">;</span>
+    FIter_next<span class="hl opt">:</span> ht_pnode<span class="hl opt">;</span>
+    FNodeMemManager<span class="hl opt">:</span> TNonFreePooledMemManager<span class="hl opt">;</span>
+  <span class="hl kwa">public</span>
+    <span class="hl kwa">constructor</span> <span class="hl kwd">Create</span><span class="hl opt">(</span>size<span class="hl opt">:</span> dword<span class="hl opt">;</span> keysize<span class="hl opt">:</span> dword<span class="hl opt">);</span>
+    <span class="hl kwa">destructor</span> Destroy<span class="hl opt">;</span> <span class="hl kwa">override</span><span class="hl opt">;</span>
+    <span class="hl kwa">function</span> <span class="hl kwd">Find</span><span class="hl opt">(</span>key<span class="hl opt">:</span> pchar<span class="hl opt">):</span> ht_pnode<span class="hl opt">;</span>
+    <span class="hl kwa">function</span> <span class="hl kwd">FindNew</span><span class="hl opt">(</span>key<span class="hl opt">:</span> pchar<span class="hl opt">):</span> ht_pnode<span class="hl opt">;</span>
+    <span class="hl kwa">function</span> First<span class="hl opt">:</span> ht_pnode<span class="hl opt">;</span>
+    <span class="hl kwa">function</span> Next<span class="hl opt">:</span> ht_pnode<span class="hl opt">;</span>
+  <span class="hl kwa">end</span><span class="hl opt">;</span>
+
+<span class="hl com">{ TNonFreePooledMemManager }</span>
+
+<span class="hl kwa">procedure</span> TNonFreePooledMemManager<span class="hl opt">.</span>Grow<span class="hl opt">;</span>
+<span class="hl kwa">var</span>
+  memchunk<span class="hl opt">:</span> PMemChunk<span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+  <span class="hl kwc">if</span> FCurSize<span class="hl opt">&lt;</span><span class="hl num">256</span><span class="hl opt">*</span><span class="hl num">1024</span> <span class="hl kwc">then</span>
+  <span class="hl slc">// each item has double the size of its predecessor</span>
+    <span class="hl kwd">inc</span><span class="hl opt">(</span>FCurSize<span class="hl opt">,</span> FCurSize<span class="hl opt">);</span>
+  <span class="hl kwd">GetMem</span><span class="hl opt">(</span>FCurItem<span class="hl opt">,</span>FCurSize<span class="hl opt">);</span>
+  <span class="hl kwd">FillChar</span><span class="hl opt">(</span>FCurItem<span class="hl opt">^,</span> FCurSize<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+  <span class="hl kwd">new</span><span class="hl opt">(</span>MemChunk<span class="hl opt">);</span>
+  MemChunk<span class="hl opt">^.</span>next <span class="hl opt">:=</span> FItems<span class="hl opt">;</span>
+  MemChunk<span class="hl opt">^.</span>Data <span class="hl opt">:=</span> FCurItem<span class="hl opt">;</span>
+  FItems <span class="hl opt">:=</span> MemChunk<span class="hl opt">;</span>
+  FEndItem <span class="hl opt">:=</span> FCurItem<span class="hl opt">;</span>
+  <span class="hl kwd">Inc</span><span class="hl opt">(</span>FEndItem<span class="hl opt">,</span> FCurSize<span class="hl opt">);</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span>
+
+<span class="hl kwa">constructor</span> TNonFreePooledMemManager<span class="hl opt">.</span><span class="hl kwd">Create</span><span class="hl opt">(</span>TheItemSize<span class="hl opt">:</span> <span class="hl kwb">integer</span><span class="hl opt">);</span>
+<span class="hl kwa">begin</span>
+  FItemSize<span class="hl opt">:=</span>TheItemSize<span class="hl opt">;</span>
+  FCurSize<span class="hl opt">:=</span>FItemSize<span class="hl opt">*</span><span class="hl num">4</span><span class="hl opt">;</span> <span class="hl slc">// 4 items =&gt; the first item has 8 entries</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span>
+
+<span class="hl kwa">destructor</span> TNonFreePooledMemManager<span class="hl opt">.</span>Destroy<span class="hl opt">;</span>
+<span class="hl kwa">var</span>
+  p<span class="hl opt">:</span> PMemChunk<span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+  <span class="hl kwc">while</span> FItems<span class="hl opt">&lt;&gt;</span><span class="hl kwa">nil</span> <span class="hl kwc">do</span> <span class="hl kwa">begin</span>
+    p <span class="hl opt">:=</span> FItems<span class="hl opt">;</span>
+    FItems <span class="hl opt">:=</span> Fitems<span class="hl opt">^.</span>next<span class="hl opt">;</span>
+    <span class="hl kwd">FreeMem</span><span class="hl opt">(</span>p<span class="hl opt">^.</span>Data<span class="hl opt">);</span>
+    <span class="hl kwd">Dispose</span><span class="hl opt">(</span>p<span class="hl opt">);</span>
+  <span class="hl kwa">end</span><span class="hl opt">;</span>
+  <span class="hl kwa">inherited</span> Destroy<span class="hl opt">;</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span>
+
+<span class="hl kwa">function</span> TNonFreePooledMemManager<span class="hl opt">.</span>NewItem<span class="hl opt">:</span> <span class="hl kwb">Pointer</span><span class="hl opt">;</span> <span class="hl kwa">inline</span><span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+  <span class="hl kwc">if</span> <span class="hl opt">(</span>FCurItem<span class="hl opt">=</span>FEndItem<span class="hl opt">)</span> <span class="hl kwc">then</span>
+   Grow<span class="hl opt">;</span>
+  Result<span class="hl opt">:=</span>FCurItem<span class="hl opt">;</span>
+  <span class="hl kwd">Inc</span><span class="hl opt">(</span>FCurItem<span class="hl opt">,</span> FItemSize<span class="hl opt">);</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span>
+
+<span class="hl com">{ THashTable }</span>
+
+<span class="hl kwa">constructor</span> THashTable<span class="hl opt">.</span><span class="hl kwd">Create</span><span class="hl opt">(</span>size<span class="hl opt">:</span> dword<span class="hl opt">;</span> keysize<span class="hl opt">:</span> dword<span class="hl opt">);</span>
+<span class="hl kwa">var</span>
+  i<span class="hl opt">:</span> <span class="hl kwb">integer</span><span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+  i <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+  <span class="hl kwc">while</span> <span class="hl opt">(</span>i<span class="hl opt">&lt;</span><span class="hl kwd">high</span><span class="hl opt">(</span>ht_prime_list<span class="hl opt">))</span> <span class="hl kwa">and</span> <span class="hl opt">(</span>size<span class="hl opt">&gt;</span>ht_prime_list<span class="hl opt">[</span>i<span class="hl opt">])</span> <span class="hl kwc">do</span>
+    <span class="hl kwd">inc</span><span class="hl opt">(</span>i<span class="hl opt">);</span>
+  FSize <span class="hl opt">:=</span> ht_prime_list<span class="hl opt">[</span>i<span class="hl opt">];</span>
+  fkeysize <span class="hl opt">:=</span> keysize<span class="hl opt">;</span>
+  ftbl <span class="hl opt">:=</span> <span class="hl kwd">allocmem</span><span class="hl opt">(</span><span class="hl kwd">sizeof</span><span class="hl opt">(</span>ht_pnode<span class="hl opt">) *</span> FSize<span class="hl opt">);</span>
+  fiter_index <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+  fiter_next <span class="hl opt">:=</span> <span class="hl kwa">nil</span><span class="hl opt">;</span>
+  FNodeMemManager <span class="hl opt">:=</span> TNonFreePooledMemManager<span class="hl opt">.</span><span class="hl kwd">Create</span><span class="hl opt">(</span><span class="hl kwd">SizeOf</span><span class="hl opt">(</span>ht_node<span class="hl opt">)+</span>FKeySize<span class="hl opt">);</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span>
+
+<span class="hl kwa">destructor</span> THashTable<span class="hl opt">.</span>Destroy<span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+  FNodeMemManager<span class="hl opt">.</span>Free<span class="hl opt">;</span>
+  <span class="hl kwd">freemem</span><span class="hl opt">(</span>Ftbl<span class="hl opt">);</span>
+  <span class="hl kwa">inherited</span><span class="hl opt">;</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">ht_hashcode</span><span class="hl opt">(</span>key<span class="hl opt">:</span> pchar<span class="hl opt">;</span> keysize<span class="hl opt">:</span> dword<span class="hl opt">):</span> dword<span class="hl opt">;</span> <span class="hl slc">//inline;</span>
+<span class="hl kwa">var</span>
+  val<span class="hl opt">:</span> dword<span class="hl opt">;</span>
+  i<span class="hl opt">:</span> <span class="hl kwb">integer</span><span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+  val <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+  <span class="hl kwc">for</span> i <span class="hl opt">:=</span> <span class="hl num">0</span> <span class="hl kwc">to</span> Keysize <span class="hl opt">-</span><span class="hl num">1</span> <span class="hl kwc">do</span>
+  <span class="hl kwa">begin</span>
+    val <span class="hl opt">:=</span> val <span class="hl opt">*</span> <span class="hl num">4</span><span class="hl opt">;</span>
+    <span class="hl kwd">inc</span><span class="hl opt">(</span>val<span class="hl opt">,</span> <span class="hl kwd">dword</span><span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">(</span>key<span class="hl opt">^)</span> <span class="hl kwa">and</span> <span class="hl num">6</span><span class="hl opt">)</span> <span class="hl kwa">shr</span> <span class="hl num">1</span><span class="hl opt">);</span>
+    <span class="hl kwd">inc</span><span class="hl opt">(</span>key<span class="hl opt">);</span>
+  <span class="hl kwa">end</span><span class="hl opt">;</span>
+  result <span class="hl opt">:=</span> val<span class="hl opt">;</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span>
+
+<span class="hl kwa">function</span> THashTable<span class="hl opt">.</span><span class="hl kwd">Find</span><span class="hl opt">(</span>key<span class="hl opt">:</span> pchar<span class="hl opt">):</span> ht_pnode<span class="hl opt">;</span>
+<span class="hl kwa">var</span>
+  hash_code<span class="hl opt">:</span> dword<span class="hl opt">;</span>
+  node<span class="hl opt">:</span> ht_pnode<span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+  hash_code <span class="hl opt">:=</span> <span class="hl kwd">ht_hashcode</span><span class="hl opt">(</span>key<span class="hl opt">,</span> FKeySize<span class="hl opt">)</span> <span class="hl kwa">mod</span> FSize<span class="hl opt">;</span>
+  node <span class="hl opt">:=</span> FTbl<span class="hl opt">[</span>hash_code<span class="hl opt">];</span>
+  <span class="hl kwc">while</span> node <span class="hl opt">&lt;&gt;</span> <span class="hl kwa">nil</span> <span class="hl kwc">do</span>
+  <span class="hl kwa">begin</span>
+    <span class="hl kwc">if</span> <span class="hl kwd">comparebyte</span><span class="hl opt">(</span>key<span class="hl opt">^,</span> node<span class="hl opt">^.</span>keydata<span class="hl opt">,</span> FKeysize<span class="hl opt">) =</span> <span class="hl num">0</span> <span class="hl kwc">then</span>
+    <span class="hl kwa">begin</span>
+      result <span class="hl opt">:=</span> node<span class="hl opt">;</span>
+      exit<span class="hl opt">;</span>
+    <span class="hl kwa">end</span><span class="hl opt">;</span>
+    node <span class="hl opt">:=</span> node<span class="hl opt">^.</span>next<span class="hl opt">;</span>
+  <span class="hl kwa">end</span><span class="hl opt">;</span>
+  result <span class="hl opt">:=</span> <span class="hl kwa">nil</span><span class="hl opt">;</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span>
+
+<span class="hl kwa">function</span> THashTable<span class="hl opt">.</span><span class="hl kwd">FindNew</span><span class="hl opt">(</span>key<span class="hl opt">:</span> pchar<span class="hl opt">):</span> ht_pnode<span class="hl opt">;</span>
+<span class="hl kwa">var</span>
+  hash_code<span class="hl opt">:</span> <span class="hl kwb">integer</span><span class="hl opt">;</span>
+  prev<span class="hl opt">,</span> node<span class="hl opt">:</span> ht_pnode<span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+  prev <span class="hl opt">:=</span> <span class="hl kwa">nil</span><span class="hl opt">;</span>
+  hash_code <span class="hl opt">:=</span> <span class="hl kwd">ht_hashcode</span><span class="hl opt">(</span>key<span class="hl opt">,</span> FKeysize<span class="hl opt">)</span> <span class="hl kwa">mod</span> FSize<span class="hl opt">;</span>
+  node <span class="hl opt">:=</span> FTbl<span class="hl opt">[</span>hash_code<span class="hl opt">];</span>
+  <span class="hl kwc">while</span> node <span class="hl opt">&lt;&gt;</span> <span class="hl kwa">nil</span> <span class="hl kwc">do</span>
+  <span class="hl kwa">begin</span>
+    <span class="hl kwc">if</span> <span class="hl kwd">CompareByte</span><span class="hl opt">(</span>key<span class="hl opt">^,</span> node<span class="hl opt">^.</span>keydata<span class="hl opt">,</span> FKeysize<span class="hl opt">) =</span> <span class="hl num">0</span> <span class="hl kwc">then</span>
+    <span class="hl kwa">begin</span>
+      result <span class="hl opt">:=</span> node<span class="hl opt">;</span>
+      exit<span class="hl opt">;</span>
+    <span class="hl kwa">end</span><span class="hl opt">;</span>
+    prev <span class="hl opt">:=</span> node<span class="hl opt">;</span>
+    node <span class="hl opt">:=</span> node<span class="hl opt">^.</span>next<span class="hl opt">;</span>
+  <span class="hl kwa">end</span><span class="hl opt">;</span>
+  result <span class="hl opt">:=</span> FNodeMemManager<span class="hl opt">.</span>NewItem<span class="hl opt">;</span>
+  <span class="hl kwd">move</span><span class="hl opt">(</span>key<span class="hl opt">^,</span>Result<span class="hl opt">^.</span>keydata<span class="hl opt">,</span>FKeysize<span class="hl opt">);</span>
+  <span class="hl kwc">if</span> prev <span class="hl opt">&lt;&gt;</span> <span class="hl kwa">nil</span> <span class="hl kwc">then</span>
+  <span class="hl kwa">begin</span>
+    prev<span class="hl opt">^.</span>next <span class="hl opt">:=</span> result<span class="hl opt">;</span>
+  <span class="hl kwa">end</span> <span class="hl kwc">else</span> <span class="hl kwa">begin</span>
+    FTbl<span class="hl opt">[</span>hash_code<span class="hl opt">] :=</span> result<span class="hl opt">;</span>
+  <span class="hl kwa">end</span><span class="hl opt">;</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span>
+
+<span class="hl com">{</span>
+<span class="hl com">  Hash Table iterator data / functions</span>
+<span class="hl com">}</span>
+
+<span class="hl kwa">function</span> THashTable<span class="hl opt">.</span>First<span class="hl opt">:</span> ht_pnode<span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+  FIter_index <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+  FIter_next <span class="hl opt">:=</span> <span class="hl kwa">nil</span><span class="hl opt">;</span>
+  result <span class="hl opt">:=</span> next<span class="hl opt">;</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span>
+
+<span class="hl kwa">function</span> THashTable<span class="hl opt">.</span>Next<span class="hl opt">:</span> ht_pnode<span class="hl opt">;</span>
+<span class="hl kwa">var</span>
+  index<span class="hl opt">:</span> dword<span class="hl opt">;</span>
+  node<span class="hl opt">:</span> ht_pnode<span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+  node <span class="hl opt">:=</span> FIter_next<span class="hl opt">;</span>
+  <span class="hl kwc">if</span> node <span class="hl opt">&lt;&gt;</span> <span class="hl kwa">nil</span> <span class="hl kwc">then</span>
+  <span class="hl kwa">begin</span>
+    FIter_next <span class="hl opt">:=</span> node<span class="hl opt">^.</span>next<span class="hl opt">;</span>
+    result <span class="hl opt">:=</span> node<span class="hl opt">;</span>
+    exit<span class="hl opt">;</span>
+  <span class="hl kwa">end</span> <span class="hl kwc">else</span> <span class="hl kwa">begin</span>
+    <span class="hl kwc">while</span> FIter_index <span class="hl opt">&lt;</span> FSize <span class="hl kwc">do</span>
+    <span class="hl kwa">begin</span>
+      index <span class="hl opt">:=</span> FIter_index<span class="hl opt">;</span>
+      <span class="hl kwd">inc</span><span class="hl opt">(</span>FIter_index<span class="hl opt">);</span>
+      <span class="hl kwc">if</span> FTbl<span class="hl opt">[</span>index<span class="hl opt">] &lt;&gt;</span> <span class="hl kwa">nil</span> <span class="hl kwc">then</span>
+      <span class="hl kwa">begin</span>
+        FIter_next <span class="hl opt">:=</span> FTbl<span class="hl opt">[</span>index<span class="hl opt">]^.</span>next<span class="hl opt">;</span>
+        result <span class="hl opt">:=</span> FTbl<span class="hl opt">[</span>index<span class="hl opt">];</span>
+        exit<span class="hl opt">;</span>
+      <span class="hl kwa">end</span><span class="hl opt">;</span>
+    <span class="hl kwa">end</span><span class="hl opt">;</span>
+  <span class="hl kwa">end</span><span class="hl opt">;</span>
+  result <span class="hl opt">:=</span> <span class="hl kwa">nil</span><span class="hl opt">;</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span>
+
+<span class="hl com">{==============================================================================}</span>
+
+<span class="hl kwa">type</span>
+   sorter      <span class="hl opt">=</span> <span class="hl kwa">record</span>
+		   sequence <span class="hl opt">:</span> ansistring<span class="hl opt">;</span>
+		   num	     <span class="hl opt">:</span> <span class="hl kwb">longint</span><span class="hl opt">;</span>
+		 <span class="hl kwa">end</span><span class="hl opt">;</span>
+   sorterArray <span class="hl opt">=</span> <span class="hl kwa">array of</span> sorter<span class="hl opt">;</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">hash_table_size</span> <span class="hl opt">(</span>fl <span class="hl opt">:</span> dword<span class="hl opt">):</span> dword<span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+  <span class="hl kwc">if</span> fl<span class="hl opt">&lt;</span><span class="hl num">8</span> <span class="hl kwc">then</span>
+   hash_table_size <span class="hl opt">:=</span> <span class="hl num">1</span> <span class="hl kwa">shl</span> <span class="hl opt">(</span><span class="hl num">2</span> <span class="hl opt">*</span> fl<span class="hl opt">)</span>
+  <span class="hl kwc">else</span>
+   hash_table_size <span class="hl opt">:=</span> <span class="hl num">$10000</span><span class="hl opt">;</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span> <span class="hl com">{ hash_table_size }</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">generate_frequencies</span><span class="hl opt">(</span>fl<span class="hl opt">:</span> <span class="hl kwb">integer</span><span class="hl opt">;</span> buffer<span class="hl opt">:</span> PChar<span class="hl opt">;</span> buflen <span class="hl opt">:</span> <span class="hl kwb">longint</span><span class="hl opt">):</span> THashTable<span class="hl opt">;</span>
+<span class="hl kwa">var</span>
+   reader <span class="hl opt">:</span> PChar<span class="hl opt">;</span>
+   i <span class="hl opt">:</span> <span class="hl kwb">longint</span><span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+   <span class="hl kwc">if</span> fl <span class="hl opt">&lt;=</span> buflen <span class="hl kwc">then</span>
+   <span class="hl kwa">begin</span>
+      result <span class="hl opt">:=</span> THashTable<span class="hl opt">.</span><span class="hl kwd">Create</span><span class="hl opt">(</span><span class="hl kwd">hash_table_size</span> <span class="hl opt">(</span>fl<span class="hl opt">),</span> fl<span class="hl opt">);</span>
+      reader <span class="hl opt">:=</span> buffer<span class="hl opt">;</span>
+      <span class="hl kwc">for</span> i <span class="hl opt">:=</span> <span class="hl num">0</span> <span class="hl kwc">to</span> buflen<span class="hl opt">-</span>fl <span class="hl kwc">do</span>
+      <span class="hl kwa">begin</span>
+         <span class="hl kwd">inc</span><span class="hl opt">(</span>Result<span class="hl opt">.</span><span class="hl kwd">FindNew</span><span class="hl opt">(</span>reader<span class="hl opt">)^.</span>val<span class="hl opt">);</span>
+         <span class="hl kwd">inc</span><span class="hl opt">(</span>reader<span class="hl opt">);</span>
+      <span class="hl kwa">end</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> <span class="hl kwc">else</span>
+      result <span class="hl opt">:=</span> <span class="hl kwa">nil</span><span class="hl opt">;</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span> <span class="hl com">{ generate_frequencies }</span>
+
+<span class="hl kwa">procedure</span> <span class="hl kwd">sortArray</span><span class="hl opt">(</span><span class="hl kwa">var</span> s <span class="hl opt">:</span> sorterArray<span class="hl opt">;</span> size<span class="hl opt">:</span><span class="hl kwb">longint</span><span class="hl opt">);</span>
+<span class="hl kwa">var</span>
+   i<span class="hl opt">,</span>j <span class="hl opt">:</span> <span class="hl kwb">longint</span><span class="hl opt">;</span>
+   tmp <span class="hl opt">:</span> sorter<span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+   <span class="hl kwc">for</span> i <span class="hl opt">:=</span> <span class="hl num">0</span> <span class="hl kwc">to</span> size<span class="hl opt">-</span><span class="hl num">2</span> <span class="hl kwc">do</span>
+      <span class="hl kwc">for</span> j <span class="hl opt">:=</span> i<span class="hl opt">+</span><span class="hl num">1</span> <span class="hl kwc">to</span> size<span class="hl opt">-</span><span class="hl num">1</span> <span class="hl kwc">do</span>
+         <span class="hl kwc">if</span> s<span class="hl opt">[</span>i<span class="hl opt">].</span>num <span class="hl opt">&lt;</span> s<span class="hl opt">[</span>j<span class="hl opt">].</span>num <span class="hl kwc">then</span>
+	 <span class="hl kwa">begin</span>
+	    tmp <span class="hl opt">:=</span> s<span class="hl opt">[</span>i<span class="hl opt">];</span>
+	    s<span class="hl opt">[</span>i<span class="hl opt">] :=</span> s<span class="hl opt">[</span>j<span class="hl opt">];</span>
+	    s<span class="hl opt">[</span>j<span class="hl opt">] :=</span> tmp<span class="hl opt">;</span>
+	 <span class="hl kwa">end</span><span class="hl opt">;</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span> <span class="hl com">{ sortArray }</span>
+
+<span class="hl kwa">procedure</span> <span class="hl kwd">write_frequencies</span><span class="hl opt">(</span>fl <span class="hl opt">:</span> <span class="hl kwb">integer</span><span class="hl opt">;</span> buffer <span class="hl opt">:</span> PChar<span class="hl opt">;</span> buflen <span class="hl opt">:</span> <span class="hl kwb">longint</span><span class="hl opt">);</span>
+<span class="hl kwa">var</span>
+  ht	   <span class="hl opt">:</span> THashTable<span class="hl opt">;</span>
+  i<span class="hl opt">,</span> size <span class="hl opt">:</span> <span class="hl kwb">longint</span><span class="hl opt">;</span>
+  total   <span class="hl opt">:</span> <span class="hl kwb">real</span><span class="hl opt">;</span>
+  nd	   <span class="hl opt">:</span> ht_pnode<span class="hl opt">;</span>
+  s	   <span class="hl opt">:</span> sorterArray<span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+  ht <span class="hl opt">:=</span> <span class="hl kwd">generate_frequencies</span><span class="hl opt">(</span>fl<span class="hl opt">,</span> buffer<span class="hl opt">,</span> buflen<span class="hl opt">);</span>
+  total <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+  size <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+  nd <span class="hl opt">:=</span> ht<span class="hl opt">.</span>First<span class="hl opt">;</span>
+  <span class="hl kwc">while</span> <span class="hl opt">(</span>nd <span class="hl opt">&lt;&gt;</span> <span class="hl kwa">nil</span><span class="hl opt">)</span> <span class="hl kwc">do</span>
+  <span class="hl kwa">begin</span>
+    total <span class="hl opt">:=</span> total <span class="hl opt">+</span> nd<span class="hl opt">^.</span>val<span class="hl opt">;</span>
+    size <span class="hl opt">:=</span> size <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+    nd <span class="hl opt">:=</span> ht<span class="hl opt">.</span>Next<span class="hl opt">;</span>
+  <span class="hl kwa">end</span><span class="hl opt">;</span>
+  <span class="hl kwd">SetLength</span><span class="hl opt">(</span>s<span class="hl opt">,</span> size<span class="hl opt">);</span>
+
+  nd <span class="hl opt">:=</span> ht<span class="hl opt">.</span>First<span class="hl opt">;</span>
+  size <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+  <span class="hl kwc">while</span> <span class="hl opt">(</span>nd <span class="hl opt">&lt;&gt;</span> <span class="hl kwa">nil</span><span class="hl opt">)</span> <span class="hl kwc">do</span>
+  <span class="hl kwa">begin</span>
+    s<span class="hl opt">[</span>size<span class="hl opt">].</span>sequence <span class="hl opt">:=</span> <span class="hl kwd">upcase</span><span class="hl opt">(</span><span class="hl kwd">pchar</span><span class="hl opt">(&#64;</span>nd<span class="hl opt">^.</span>keydata<span class="hl opt">));</span>
+    s<span class="hl opt">[</span>size<span class="hl opt">].</span>num <span class="hl opt">:=</span> nd<span class="hl opt">^.</span>val<span class="hl opt">;</span>
+    size <span class="hl opt">:=</span> size <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+    nd <span class="hl opt">:=</span> ht<span class="hl opt">.</span>Next<span class="hl opt">;</span>
+  <span class="hl kwa">end</span><span class="hl opt">;</span>
+
+  <span class="hl kwd">sortArray</span><span class="hl opt">(</span>s<span class="hl opt">,</span> size<span class="hl opt">);</span>
+  <span class="hl kwc">for</span> i <span class="hl opt">:=</span> <span class="hl num">0</span> <span class="hl kwc">to</span> size <span class="hl opt">-</span> <span class="hl num">1</span> <span class="hl kwc">do</span>
+    <span class="hl kwd">writeln</span><span class="hl opt">(</span>s<span class="hl opt">[</span>i<span class="hl opt">].</span>sequence<span class="hl opt">,</span><span class="hl str">' '</span><span class="hl opt">, (</span><span class="hl num">100</span> <span class="hl opt">* (</span>s<span class="hl opt">[</span>i<span class="hl opt">].</span>num <span class="hl opt">/</span> total<span class="hl opt">)):</span><span class="hl num">3</span><span class="hl opt">:</span><span class="hl num">3</span><span class="hl opt">);</span>
+  writeln<span class="hl opt">;</span>
+
+  ht<span class="hl opt">.</span>Free<span class="hl opt">;</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span> <span class="hl com">{ write_frequencies }</span>
+
+<span class="hl kwa">procedure</span> <span class="hl kwd">write_count</span><span class="hl opt">(</span>searchFor <span class="hl opt">:</span> ansistring<span class="hl opt">;</span> buffer <span class="hl opt">:</span> PChar<span class="hl opt">;</span> buflen <span class="hl opt">:</span> <span class="hl kwb">longint</span><span class="hl opt">);</span>
+<span class="hl kwa">var</span>
+   ht <span class="hl opt">:</span> THashTable<span class="hl opt">;</span>
+   nd <span class="hl opt">:</span> ht_pnode<span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+   ht <span class="hl opt">:=</span> <span class="hl kwd">generate_frequencies</span> <span class="hl opt">(</span><span class="hl kwd">length</span><span class="hl opt">(</span>searchFor<span class="hl opt">),</span> buffer<span class="hl opt">,</span> buflen<span class="hl opt">);</span>
+   nd <span class="hl opt">:=</span> ht<span class="hl opt">.</span><span class="hl kwd">Find</span><span class="hl opt">(</span><span class="hl kwd">pchar</span><span class="hl opt">(</span>searchFor<span class="hl opt">));</span>
+   <span class="hl kwc">if</span> <span class="hl opt">(</span>nd <span class="hl opt">&lt;&gt;</span> <span class="hl kwa">nil</span><span class="hl opt">)</span> <span class="hl kwc">then</span>
+      <span class="hl kwd">write</span><span class="hl opt">(</span>nd<span class="hl opt">^.</span>val<span class="hl opt">)</span>
+   <span class="hl kwc">else</span>
+      <span class="hl kwd">write</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
+   searchfor <span class="hl opt">:=</span> <span class="hl kwd">UpCase</span><span class="hl opt">(</span>searchFor<span class="hl opt">);</span>
+   <span class="hl kwd">writeln</span><span class="hl opt">(</span>#<span class="hl num">9</span><span class="hl opt">,</span> searchFor<span class="hl opt">);</span>
+
+   ht<span class="hl opt">.</span>Free<span class="hl opt">;</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span> <span class="hl com">{ write_count }</span>
+
+<span class="hl kwa">procedure</span> main<span class="hl opt">;</span>
+<span class="hl kwa">var</span>
+   buffer <span class="hl opt">:</span> PChar<span class="hl opt">;</span>
+   len<span class="hl opt">,</span> seqlen <span class="hl opt">:</span> <span class="hl kwb">longint</span><span class="hl opt">;</span>
+   buffersize<span class="hl opt">,</span> bufferptr<span class="hl opt">:</span> <span class="hl kwb">longint</span><span class="hl opt">;</span>
+   s <span class="hl opt">:</span> <span class="hl kwa">String</span><span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+   seqlen <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwc">repeat</span>
+      <span class="hl kwd">readln</span><span class="hl opt">(</span>s<span class="hl opt">)</span>
+   <span class="hl kwc">until</span> <span class="hl opt">(</span>s<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] =</span> <span class="hl str">'&gt;'</span><span class="hl opt">)</span> <span class="hl kwa">and</span> <span class="hl opt">(</span>s<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">] =</span> <span class="hl str">'T'</span><span class="hl opt">)</span> <span class="hl kwa">and</span> <span class="hl opt">(</span>s<span class="hl opt">[</span><span class="hl num">3</span><span class="hl opt">] =</span> <span class="hl str">'H'</span><span class="hl opt">);</span>
+   buffersize<span class="hl opt">:=</span><span class="hl num">1024</span><span class="hl opt">;</span>
+   buffer<span class="hl opt">:=</span><span class="hl kwd">getmem</span><span class="hl opt">(</span>buffersize<span class="hl opt">);</span>
+   bufferptr <span class="hl opt">:=</span><span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwc">while</span> <span class="hl kwa">not</span> eof <span class="hl kwc">do</span> <span class="hl kwa">begin</span>
+     <span class="hl kwd">readln</span><span class="hl opt">(</span>s<span class="hl opt">);</span>
+     <span class="hl kwc">if</span> <span class="hl opt">(</span>s<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] &lt;&gt;</span> <span class="hl str">'&gt;'</span><span class="hl opt">)</span> <span class="hl kwa">and</span> <span class="hl opt">(</span>s<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] &lt;&gt;</span> <span class="hl str">';'</span><span class="hl opt">)</span> <span class="hl kwc">then</span> <span class="hl kwa">begin</span>
+       len<span class="hl opt">:=</span><span class="hl kwd">length</span><span class="hl opt">(</span>s<span class="hl opt">);</span>
+       <span class="hl kwc">if</span> <span class="hl opt">(</span>bufferptr<span class="hl opt">+</span>len<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)&gt;</span>buffersize <span class="hl kwc">then</span>  <span class="hl kwa">begin</span>
+         <span class="hl kwd">inc</span><span class="hl opt">(</span>buffersize<span class="hl opt">,</span>buffersize<span class="hl opt">);</span>
+         <span class="hl kwd">reallocmem</span><span class="hl opt">(</span>buffer<span class="hl opt">,</span>buffersize<span class="hl opt">);</span>
+       <span class="hl kwa">end</span><span class="hl opt">;</span>
+       <span class="hl kwd">move</span> <span class="hl opt">(</span>s<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">],</span>buffer<span class="hl opt">[</span>bufferptr<span class="hl opt">],</span>len<span class="hl opt">);</span>
+       <span class="hl kwd">inc</span><span class="hl opt">(</span>bufferptr<span class="hl opt">,</span>len<span class="hl opt">);</span>
+     <span class="hl kwa">end</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span><span class="hl opt">;</span>
+   buffer<span class="hl opt">[</span>bufferptr<span class="hl opt">] :=</span> #<span class="hl num">0</span><span class="hl opt">;</span>
+   seqlen <span class="hl opt">:=</span> <span class="hl kwd">strlen</span><span class="hl opt">(</span>buffer<span class="hl opt">);</span>
+
+   <span class="hl kwd">write_frequencies</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span> buffer<span class="hl opt">,</span> seqlen<span class="hl opt">);</span>
+   <span class="hl kwd">write_frequencies</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">,</span> buffer<span class="hl opt">,</span> seqlen<span class="hl opt">);</span>
+   <span class="hl kwd">write_count</span><span class="hl opt">(</span><span class="hl str">'ggt'</span><span class="hl opt">,</span> buffer<span class="hl opt">,</span> seqlen<span class="hl opt">);</span>
+   <span class="hl kwd">write_count</span><span class="hl opt">(</span><span class="hl str">'ggta'</span><span class="hl opt">,</span> buffer<span class="hl opt">,</span> seqlen<span class="hl opt">);</span>
+   <span class="hl kwd">write_count</span><span class="hl opt">(</span><span class="hl str">'ggtatt'</span><span class="hl opt">,</span> buffer<span class="hl opt">,</span> seqlen<span class="hl opt">);</span>
+   <span class="hl kwd">write_count</span><span class="hl opt">(</span><span class="hl str">'ggtattttaatt'</span><span class="hl opt">,</span> buffer<span class="hl opt">,</span> seqlen<span class="hl opt">);</span>
+   <span class="hl kwd">write_count</span><span class="hl opt">(</span><span class="hl str">'ggtattttaatttatagt'</span><span class="hl opt">,</span> buffer<span class="hl opt">,</span> seqlen<span class="hl opt">);</span>
+   <span class="hl kwd">freemem</span><span class="hl opt">(</span>buffer<span class="hl opt">);</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span> <span class="hl com">{ main }</span>
+
+
+<span class="hl kwa">begin</span>
+   <span class="hl slc">//SetPrecisionMode(pmDouble);</span>
+   main<span class="hl opt">;</span>
+<span class="hl kwa">end</span><span class="hl opt">.</span>
+

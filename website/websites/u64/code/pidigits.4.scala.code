@@ -1,0 +1,108 @@
+<span class="hl com">/* </span>
+<span class="hl com"> * The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"> * contributed by Rex Kerr</span>
+<span class="hl com"> * based on version by John Nilsson as modified by Geoff Reedy</span>
+<span class="hl com"> * GMP wrapping based on Java version by Pall, Kraus, &amp; Sassa</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">object</span> pidigits <span class="hl opt">{</span>
+  <span class="hl kwa">import</span> Gmp<span class="hl opt">.</span>_
+    
+  <span class="hl kwa">class</span> <span class="hl kwd">LFT</span><span class="hl opt">(</span>q<span class="hl opt">:</span>I<span class="hl opt">,</span> r<span class="hl opt">:</span>I<span class="hl opt">,</span> <span class="hl kwa">val</span> t<span class="hl opt">:</span>I<span class="hl opt">) {</span>
+    <span class="hl kwa">def</span> <span class="hl kwd">use</span><span class="hl opt">(</span>z<span class="hl opt">:</span> LFT<span class="hl opt">) = {</span> ~q<span class="hl opt">;</span> ~r<span class="hl opt">;</span> <span class="hl kwa">if</span> <span class="hl opt">(</span>t ne z<span class="hl opt">.</span>t<span class="hl opt">)</span> ~t<span class="hl opt">;</span> z <span class="hl opt">}</span>
+    <span class="hl kwa">def</span> <span class="hl kwd">compose</span><span class="hl opt">(</span>k<span class="hl opt">:</span> Int<span class="hl opt">) =</span> <span class="hl kwd">use</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">LFT</span><span class="hl opt">(</span>q<span class="hl opt">*</span>k<span class="hl opt">!, (</span>q<span class="hl opt">*(</span><span class="hl num">4</span><span class="hl opt">*</span>k<span class="hl opt">+</span><span class="hl num">2</span><span class="hl opt">))+*=(</span>r<span class="hl opt">,(</span><span class="hl num">2</span><span class="hl opt">*</span>k<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">))!,</span> t<span class="hl opt">*(</span><span class="hl num">2</span><span class="hl opt">*</span>k<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)!))</span>
+    <span class="hl kwa">def</span> extract <span class="hl opt">= {</span>
+      <span class="hl kwa">val</span> <span class="hl opt">(</span>y<span class="hl opt">,</span>rem<span class="hl opt">) = (</span>r <span class="hl opt">+</span> q<span class="hl opt">*</span><span class="hl num">3</span><span class="hl opt">) /%</span> t <span class="hl opt">!!</span>
+      <span class="hl kwa">val</span> x <span class="hl opt">=</span> <span class="hl kwa">if</span><span class="hl opt">((</span>rem <span class="hl opt">+</span> q<span class="hl opt">) &lt;</span> t<span class="hl opt">)</span> <span class="hl kwd">Some</span><span class="hl opt">(</span>y<span class="hl opt">.</span>toInt<span class="hl opt">)</span> <span class="hl kwa">else</span> None
+      ~y<span class="hl opt">;</span> ~rem
+      x
+    <span class="hl opt">}</span>
+    <span class="hl kwa">def</span> <span class="hl kwd">next</span><span class="hl opt">(</span>y<span class="hl opt">:</span> Int<span class="hl opt">) =</span> <span class="hl kwd">use</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">LFT</span><span class="hl opt">(</span>q<span class="hl opt">*</span><span class="hl num">10</span><span class="hl opt">!, (</span>r<span class="hl opt">*</span><span class="hl num">10</span> <span class="hl opt">-*= (</span>t<span class="hl opt">,</span><span class="hl num">10</span><span class="hl opt">*</span>y<span class="hl opt">))!,</span> t<span class="hl opt">))</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwa">def</span> pi_digits <span class="hl opt">= {</span>
+    <span class="hl kwa">def</span> <span class="hl kwd">digits</span><span class="hl opt">(</span>z<span class="hl opt">:</span> LFT<span class="hl opt">,</span> k<span class="hl opt">:</span> Int<span class="hl opt">):</span> Stream<span class="hl opt">[</span>Int<span class="hl opt">] =</span> z extract match <span class="hl opt">{</span>
+      <span class="hl kwa">case</span> <span class="hl kwd">Some</span><span class="hl opt">(</span>y<span class="hl opt">) =&gt;</span> Stream<span class="hl opt">.</span><span class="hl kwd">cons</span><span class="hl opt">(</span>y<span class="hl opt">,</span><span class="hl kwd">digits</span><span class="hl opt">(</span>z next y<span class="hl opt">,</span>k<span class="hl opt">))</span>
+      <span class="hl kwa">case</span> None    <span class="hl opt">=&gt;</span> <span class="hl kwd">digits</span><span class="hl opt">(</span>z compose k<span class="hl opt">,</span>k<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwd">digits</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">LFT</span><span class="hl opt">(</span><span class="hl kwd">I</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">),</span><span class="hl kwd">I</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">),</span><span class="hl kwd">I</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)),</span><span class="hl num">1</span><span class="hl opt">)</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwa">def</span> by<span class="hl opt">[</span>T<span class="hl opt">](</span>s<span class="hl opt">:</span> Stream<span class="hl opt">[</span>T<span class="hl opt">],</span> n<span class="hl opt">:</span> Int<span class="hl opt">):</span> Stream<span class="hl opt">[</span>Stream<span class="hl opt">[</span>T<span class="hl opt">]] =</span>
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>s<span class="hl opt">.</span>isEmpty<span class="hl opt">)</span> Stream<span class="hl opt">.</span>empty
+    <span class="hl kwa">else</span> Stream<span class="hl opt">.</span><span class="hl kwd">cons</span><span class="hl opt">(</span>s take n<span class="hl opt">,</span> <span class="hl kwd">by</span><span class="hl opt">(</span>s drop n<span class="hl opt">,</span> n<span class="hl opt">))</span>
+
+  <span class="hl kwa">def</span> <span class="hl kwd">main</span><span class="hl opt">(</span>args<span class="hl opt">:</span> Array<span class="hl opt">[</span>String<span class="hl opt">]):</span> Unit <span class="hl opt">=</span>
+    <span class="hl kwa">for</span> <span class="hl opt">((</span>d<span class="hl opt">,</span>n<span class="hl opt">) &lt;-</span> <span class="hl kwd">by</span><span class="hl opt">(</span>pi_digits take <span class="hl kwd">args</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">).</span>toInt<span class="hl opt">,</span> <span class="hl num">10</span><span class="hl opt">).</span>zipWithIndex<span class="hl opt">)</span>
+      <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%-10s</span><span class="hl esc">\t</span><span class="hl str">:%d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span>d<span class="hl opt">.</span>mkString<span class="hl opt">,</span><span class="hl num">10</span><span class="hl opt">*</span>n<span class="hl opt">+</span>d<span class="hl opt">.</span>length<span class="hl opt">)</span>
+<span class="hl opt">}</span>
+
+<span class="hl com">/*</span>
+<span class="hl com"> * Partial GMP wrapper for Scala.</span>
+<span class="hl com"> * Write math like normal.</span>
+<span class="hl com"> * Use ! to pull the result off the temporary stack</span>
+<span class="hl com"> * Use ~ to return a value to the temporary stack</span>
+<span class="hl com"> * Be careful with weird +*= GMP functions that destroy argument</span>
+<span class="hl com">*/</span>
+<span class="hl kwa">class</span> GmpUtil <span class="hl opt">{</span>
+  System<span class="hl opt">.</span><span class="hl kwd">loadLibrary</span><span class="hl opt">(</span><span class="hl str">&quot;jpargmp&quot;</span><span class="hl opt">)</span>
+  <span class="hl kwc">&#64;native</span> <span class="hl kwa">def</span> <span class="hl kwd">mpz_init</span><span class="hl opt">():</span> Long
+  <span class="hl kwc">&#64;native</span> <span class="hl kwa">def</span> <span class="hl kwd">mpz_clear</span><span class="hl opt">(</span>src<span class="hl opt">:</span> Long<span class="hl opt">)</span>
+  <span class="hl kwc">&#64;native</span> <span class="hl kwa">def</span> <span class="hl kwd">mpz_set_si</span><span class="hl opt">(</span>lhs<span class="hl opt">:</span> Long<span class="hl opt">,</span> a<span class="hl opt">:</span> Int<span class="hl opt">)</span>
+  <span class="hl kwc">&#64;native</span> <span class="hl kwa">def</span> <span class="hl kwd">mpz_get_si</span><span class="hl opt">(</span>a<span class="hl opt">:</span> Long<span class="hl opt">):</span> Int
+  <span class="hl kwc">&#64;native</span> <span class="hl kwa">def</span> <span class="hl kwd">mpz_cmp</span><span class="hl opt">(</span>a<span class="hl opt">:</span> Long<span class="hl opt">,</span> b<span class="hl opt">:</span> Long<span class="hl opt">):</span> Int
+  <span class="hl kwc">&#64;native</span> <span class="hl kwa">def</span> <span class="hl kwd">mpz_add</span><span class="hl opt">(</span>sum<span class="hl opt">:</span> Long<span class="hl opt">,</span> a<span class="hl opt">:</span> Long<span class="hl opt">,</span> b<span class="hl opt">:</span> Long<span class="hl opt">)</span>
+  <span class="hl kwc">&#64;native</span> <span class="hl kwa">def</span> <span class="hl kwd">mpz_sub</span><span class="hl opt">(</span>sum<span class="hl opt">:</span> Long<span class="hl opt">,</span> a<span class="hl opt">:</span> Long<span class="hl opt">,</span> b<span class="hl opt">:</span> Long<span class="hl opt">)</span>
+  <span class="hl kwc">&#64;native</span> <span class="hl kwa">def</span> <span class="hl kwd">mpz_mul_si</span><span class="hl opt">(</span>prod<span class="hl opt">:</span> Long<span class="hl opt">,</span> a<span class="hl opt">:</span> Long<span class="hl opt">,</span> b<span class="hl opt">:</span> Int<span class="hl opt">)</span>
+  <span class="hl kwc">&#64;native</span> <span class="hl kwa">def</span> <span class="hl kwd">mpz_addmul_ui</span><span class="hl opt">(</span>lhs<span class="hl opt">:</span> Long<span class="hl opt">,</span> a<span class="hl opt">:</span> Long<span class="hl opt">,</span> b<span class="hl opt">:</span> Int<span class="hl opt">)</span>
+  <span class="hl kwc">&#64;native</span> <span class="hl kwa">def</span> <span class="hl kwd">mpz_submul_ui</span><span class="hl opt">(</span>lhs<span class="hl opt">:</span> Long<span class="hl opt">,</span> a<span class="hl opt">:</span> Long<span class="hl opt">,</span> b<span class="hl opt">:</span> Int<span class="hl opt">)</span>
+  <span class="hl kwc">&#64;native</span> <span class="hl kwa">def</span> <span class="hl kwd">mpz_tdiv_qr</span><span class="hl opt">(</span>quot<span class="hl opt">:</span> Long<span class="hl opt">,</span> rem<span class="hl opt">:</span> Long<span class="hl opt">,</span> n<span class="hl opt">:</span> Long<span class="hl opt">,</span> d<span class="hl opt">:</span> Long<span class="hl opt">)</span>
+<span class="hl opt">}</span>
+<span class="hl kwa">object</span> Gmp <span class="hl opt">{</span>
+  <span class="hl kwa">val</span> gmp <span class="hl opt">=</span> <span class="hl kwa">new</span> GmpUtil
+  <span class="hl kwa">private var</span> stack <span class="hl opt">=</span> Nil<span class="hl opt">:</span>List<span class="hl opt">[</span>I<span class="hl opt">]</span>
+  <span class="hl kwa">private var</span> defunct <span class="hl opt">=</span> Nil<span class="hl opt">:</span>List<span class="hl opt">[</span>I<span class="hl opt">]</span>
+  <span class="hl kwa">class</span> I <span class="hl opt">{</span>
+    <span class="hl kwa">private val</span> z <span class="hl opt">=</span> gmp<span class="hl opt">.</span><span class="hl kwd">mpz_init</span><span class="hl opt">()</span>
+    <span class="hl kwa">def</span> <span class="hl opt">!() =</span> stack match <span class="hl opt">{</span>
+      <span class="hl kwa">case</span> i <span class="hl opt">::</span> rest <span class="hl kwa">if</span> <span class="hl opt">(</span>i eq <span class="hl kwa">this</span><span class="hl opt">) =&gt;</span>
+        stack <span class="hl opt">=</span> Nil
+        defunct <span class="hl opt">=</span> rest <span class="hl opt">:::</span> defunct
+        i
+      <span class="hl kwa">case</span> _ <span class="hl opt">=&gt;</span> I<span class="hl opt">.</span>die
+    <span class="hl opt">}</span>
+    <span class="hl kwa">def</span> <span class="hl opt">!!() =</span> stack match <span class="hl opt">{</span>
+      <span class="hl kwa">case</span> i <span class="hl opt">::</span> j <span class="hl opt">::</span> rest <span class="hl kwa">if</span> <span class="hl opt">(</span>i eq <span class="hl kwa">this</span><span class="hl opt">) =&gt;</span>
+        stack <span class="hl opt">=</span> Nil
+        defunct <span class="hl opt">=</span> rest <span class="hl opt">:::</span> defunct
+        <span class="hl opt">(</span>i<span class="hl opt">,</span>j<span class="hl opt">)</span>
+      <span class="hl kwa">case</span> _ <span class="hl opt">=&gt;</span> I<span class="hl opt">.</span>die
+    <span class="hl opt">}</span>
+    <span class="hl kwa">def</span> toInt <span class="hl opt">=</span> gmp<span class="hl opt">.</span><span class="hl kwd">mpz_get_si</span><span class="hl opt">(</span>z<span class="hl opt">)</span>
+    <span class="hl kwa">def</span> <span class="hl opt">&lt;(</span>i<span class="hl opt">:</span> I<span class="hl opt">) =</span> gmp<span class="hl opt">.</span><span class="hl kwd">mpz_cmp</span><span class="hl opt">(</span>z<span class="hl opt">,</span> i<span class="hl opt">.</span>z<span class="hl opt">) &lt;</span> <span class="hl num">0</span>
+    <span class="hl kwa">def</span> <span class="hl opt">+(</span>i<span class="hl opt">:</span> I<span class="hl opt">) = {</span> gmp<span class="hl opt">.</span><span class="hl kwd">mpz_add</span><span class="hl opt">(</span>I<span class="hl opt">.</span>ans<span class="hl opt">.</span>z<span class="hl opt">,</span> z<span class="hl opt">,</span> i<span class="hl opt">.</span>z<span class="hl opt">);</span> I<span class="hl opt">.</span>get <span class="hl opt">}</span>
+    <span class="hl kwa">def</span> <span class="hl opt">-(</span>i<span class="hl opt">:</span> I<span class="hl opt">) = {</span> gmp<span class="hl opt">.</span><span class="hl kwd">mpz_sub</span><span class="hl opt">(</span>I<span class="hl opt">.</span>ans<span class="hl opt">.</span>z<span class="hl opt">,</span> z<span class="hl opt">,</span> i<span class="hl opt">.</span>z<span class="hl opt">);</span> I<span class="hl opt">.</span>get <span class="hl opt">}</span>
+    <span class="hl kwa">def</span> <span class="hl opt">*(</span>n<span class="hl opt">:</span> Int<span class="hl opt">) = {</span> gmp<span class="hl opt">.</span><span class="hl kwd">mpz_mul_si</span><span class="hl opt">(</span>I<span class="hl opt">.</span>ans<span class="hl opt">.</span>z<span class="hl opt">,</span> z<span class="hl opt">,</span> n<span class="hl opt">);</span> I<span class="hl opt">.</span>get <span class="hl opt">}</span>
+    <span class="hl kwa">def</span> <span class="hl opt">+*=(</span>i<span class="hl opt">:</span> I<span class="hl opt">,</span> n<span class="hl opt">:</span> Int<span class="hl opt">) = {</span> gmp<span class="hl opt">.</span><span class="hl kwd">mpz_addmul_ui</span><span class="hl opt">(</span>z<span class="hl opt">,</span> i<span class="hl opt">.</span>z<span class="hl opt">,</span> n<span class="hl opt">);</span> <span class="hl kwa">this</span> <span class="hl opt">}</span>
+    <span class="hl kwa">def</span> <span class="hl opt">-*=(</span>i<span class="hl opt">:</span> I<span class="hl opt">,</span> n<span class="hl opt">:</span> Int<span class="hl opt">) = {</span> gmp<span class="hl opt">.</span><span class="hl kwd">mpz_submul_ui</span><span class="hl opt">(</span>z<span class="hl opt">,</span> i<span class="hl opt">.</span>z<span class="hl opt">,</span> n<span class="hl opt">);</span> <span class="hl kwa">this</span> <span class="hl opt">}</span>
+    <span class="hl kwa">def</span> <span class="hl opt">/%(</span>i<span class="hl opt">:</span> I<span class="hl opt">) = {</span> <span class="hl kwa">val</span> r <span class="hl opt">=</span> I<span class="hl opt">.</span>ans<span class="hl opt">.</span>z<span class="hl opt">;</span> gmp<span class="hl opt">.</span><span class="hl kwd">mpz_tdiv_qr</span><span class="hl opt">(</span>I<span class="hl opt">.</span>ans<span class="hl opt">.</span>z<span class="hl opt">,</span> r<span class="hl opt">,</span> z<span class="hl opt">,</span> i<span class="hl opt">.</span>z<span class="hl opt">);</span> I<span class="hl opt">.</span>get <span class="hl opt">}</span>
+    <span class="hl kwa">def</span> unary_~<span class="hl opt">() = {</span> defunct <span class="hl opt">::=</span> <span class="hl kwa">this</span> <span class="hl opt">}</span>
+    <span class="hl kwa">override def</span> <span class="hl kwd">finalize</span><span class="hl opt">() {</span> gmp<span class="hl opt">.</span><span class="hl kwd">mpz_clear</span><span class="hl opt">(</span>z<span class="hl opt">);</span> <span class="hl kwa">super</span><span class="hl opt">.</span>finalize <span class="hl opt">}</span>
+  <span class="hl opt">}</span>
+  <span class="hl kwa">object</span> I <span class="hl opt">{</span>
+    <span class="hl kwa">def</span> <span class="hl kwd">apply</span><span class="hl opt">(</span>n<span class="hl opt">:</span>Int<span class="hl opt">) =</span> defunct match <span class="hl opt">{</span>
+      <span class="hl kwa">case</span> i <span class="hl opt">::</span> rest <span class="hl opt">=&gt;</span>
+        defunct <span class="hl opt">=</span> rest
+        gmp<span class="hl opt">.</span><span class="hl kwd">mpz_set_si</span><span class="hl opt">(</span>i<span class="hl opt">.</span>z<span class="hl opt">,</span>n<span class="hl opt">)</span>
+        i
+      <span class="hl kwa">case</span> _ <span class="hl opt">=&gt;</span>
+        <span class="hl kwa">val</span> i <span class="hl opt">=</span> <span class="hl kwa">new</span> I
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>n <span class="hl opt">!=</span> <span class="hl num">0</span><span class="hl opt">)</span> gmp<span class="hl opt">.</span><span class="hl kwd">mpz_set_si</span><span class="hl opt">(</span>i<span class="hl opt">.</span>z<span class="hl opt">,</span>n<span class="hl opt">)</span>
+        i
+    <span class="hl opt">}</span>
+    <span class="hl kwa">def</span> <span class="hl kwd">ans</span><span class="hl opt">() = {</span> <span class="hl kwa">val</span> i <span class="hl opt">=</span> <span class="hl kwd">I</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span> stack <span class="hl opt">::=</span> i<span class="hl opt">;</span> i <span class="hl opt">}</span>
+    <span class="hl kwa">def</span> die<span class="hl opt">:</span> Nothing <span class="hl opt">=</span> <span class="hl kwa">throw new</span> IndexOutOfBoundsException
+    <span class="hl kwa">def</span> <span class="hl kwd">get</span><span class="hl opt">() =</span> stack match <span class="hl opt">{</span> <span class="hl kwa">case</span> i <span class="hl opt">::</span> rest <span class="hl opt">=&gt;</span> i <span class="hl opt">;</span> <span class="hl kwa">case</span> _ <span class="hl opt">=&gt;</span> die <span class="hl opt">}</span>
+  <span class="hl opt">}</span>  
+<span class="hl opt">}</span>

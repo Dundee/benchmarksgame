@@ -1,0 +1,184 @@
+<span class="hl com">{-</span>
+<span class="hl com">   The Computer Language Benchmarks Game</span>
+<span class="hl com">      http://shootout.alioth.debian.org/</span>
+<span class="hl com">      contributed by Olof Kraigher</span>
+<span class="hl com">-}</span>
+
+<span class="hl kwd">module</span> Main <span class="hl kwd">where</span>
+
+<span class="hl kwd">import</span> System<span class="hl opt">.</span>Environment<span class="hl opt">;</span> <span class="hl kwd">import</span> Data<span class="hl opt">.</span>List<span class="hl opt">;</span> <span class="hl kwd">import</span> Data<span class="hl opt">.</span>Bits<span class="hl opt">;</span> <span class="hl kwd">import</span> Data<span class="hl opt">.</span><span class="hl kwb">Array</span><span class="hl opt">.</span>IArray<span class="hl opt">;</span>
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span>Word<span class="hl opt">(</span>Word64<span class="hl opt">);</span> <span class="hl kwd">import</span> Data<span class="hl opt">.</span><span class="hl kwb">Maybe</span><span class="hl opt">;</span> <span class="hl kwd">import</span> Control<span class="hl opt">.</span>Monad<span class="hl opt">;</span>
+
+<span class="hl kwd">data</span> Direction <span class="hl opt">=</span> E | SE | SW | W | NW | NE <span class="hl kwd">deriving</span> <span class="hl opt">(</span>Enum<span class="hl opt">,</span> Eq<span class="hl opt">,</span> Ord<span class="hl opt">,</span> <span class="hl kwb">Show</span><span class="hl opt">)</span>
+<span class="hl kwd">type</span> Piece <span class="hl opt">= [</span>Direction<span class="hl opt">]</span>
+<span class="hl kwd">type</span> Cell <span class="hl opt">= (</span><span class="hl kwb">Int</span><span class="hl opt">,</span> <span class="hl kwb">Int</span><span class="hl opt">)</span>
+<span class="hl kwd">type</span> Mask <span class="hl opt">=</span> Word64
+<span class="hl kwd">type</span> Color <span class="hl opt">=</span> <span class="hl kwb">Int</span>
+
+<span class="hl kwd">class</span> Rotatable a <span class="hl kwd">where</span>
+   rot <span class="hl opt">::</span> a <span class="hl opt">-&gt;</span> a 
+
+<span class="hl kwd">class</span> Floppable a <span class="hl kwd">where</span>
+   flop <span class="hl opt">::</span> a <span class="hl opt">-&gt;</span> a   
+   
+<span class="hl kwd">class</span> Maskable a <span class="hl kwd">where</span>
+   mask <span class="hl opt">::</span> a <span class="hl opt">-&gt;</span> Mask
+
+<span class="hl kwd">instance</span> Rotatable Direction <span class="hl kwd">where</span>
+   rot NE <span class="hl opt">=</span> E
+   rot d <span class="hl opt">=</span> <span class="hl kwc">succ</span> d
+
+<span class="hl kwd">instance</span> Rotatable Piece <span class="hl kwd">where</span>
+   rot a <span class="hl opt">=</span> <span class="hl kwc">map</span> rot a
+
+<span class="hl kwd">instance</span> Floppable Direction <span class="hl kwd">where</span>
+   flop E <span class="hl opt">=</span> W
+   flop W <span class="hl opt">=</span> E
+   flop SE <span class="hl opt">=</span> SW
+   flop SW <span class="hl opt">=</span> SE
+   flop NE <span class="hl opt">=</span> NW
+   flop NW <span class="hl opt">=</span> NE
+
+<span class="hl kwd">instance</span> Floppable Piece <span class="hl kwd">where</span>
+   flop a <span class="hl opt">=</span> <span class="hl kwc">map</span> flop a
+   
+<span class="hl kwd">instance</span> Maskable Cell <span class="hl kwd">where</span>
+   mask <span class="hl opt">(</span>x<span class="hl opt">,</span>y<span class="hl opt">) =</span> bit <span class="hl opt">(</span>x <span class="hl opt">+</span> y<span class="hl opt">*</span>width<span class="hl opt">)</span>
+
+<span class="hl kwd">instance</span> Maskable <span class="hl opt">[</span>Cell<span class="hl opt">]</span> <span class="hl kwd">where</span>
+   mask p <span class="hl opt">=</span> <span class="hl kwc">foldl</span><span class="hl opt">' (</span><span class="hl esc">\a</span> b <span class="hl opt">-&gt;</span> a <span class="hl opt">.</span>|<span class="hl opt">.</span> mask b<span class="hl opt">)</span> <span class="hl num">0</span> p
+
+width <span class="hl opt">::</span> <span class="hl kwb">Int</span>
+width <span class="hl opt">=</span> <span class="hl num">5</span>
+
+height <span class="hl opt">::</span> <span class="hl kwb">Int</span>
+height <span class="hl opt">=</span> <span class="hl num">10</span>
+
+cells <span class="hl opt">:: [</span>Cell<span class="hl opt">]</span>
+cells <span class="hl opt">= [(</span>x<span class="hl opt">,</span>y<span class="hl opt">)</span> | y <span class="hl opt">&lt;- [</span><span class="hl num">0</span><span class="hl opt">..</span>height<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">],</span> x <span class="hl opt">&lt;- [</span><span class="hl num">0</span><span class="hl opt">..</span>width<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">]]</span>
+
+fullMask <span class="hl opt">::</span> Mask
+fullMask <span class="hl opt">=</span> <span class="hl num">0x3FFFFFFFFFFFF</span> 
+      
+pieces <span class="hl opt">::</span> <span class="hl kwb">Array</span> Color Piece
+pieces <span class="hl opt">=</span> <span class="hl kwa">array</span> <span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">9</span><span class="hl opt">) $</span> <span class="hl kwc">zip</span> <span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">.</span><span class="hl num">.9</span><span class="hl opt">] $</span> 
+      <span class="hl opt">[   [</span>E<span class="hl opt">,</span>    E<span class="hl opt">,</span>  E<span class="hl opt">,</span>  SE<span class="hl opt">],</span>
+         <span class="hl opt">[</span>SE<span class="hl opt">,</span> SW<span class="hl opt">,</span> W<span class="hl opt">,</span>  SW<span class="hl opt">],</span>
+         <span class="hl opt">[</span>W<span class="hl opt">,</span>  W<span class="hl opt">,</span>  SW<span class="hl opt">,</span> SE<span class="hl opt">],</span>
+         <span class="hl opt">[</span>E<span class="hl opt">,</span>  E<span class="hl opt">,</span>  SW<span class="hl opt">,</span> SE<span class="hl opt">],</span>
+         <span class="hl opt">[</span>NW<span class="hl opt">,</span> W<span class="hl opt">,</span>  NW<span class="hl opt">,</span> SE<span class="hl opt">,</span> SW<span class="hl opt">],</span>
+         <span class="hl opt">[</span>E<span class="hl opt">,</span>  E<span class="hl opt">,</span>  NE<span class="hl opt">,</span> W<span class="hl opt">],</span>
+         <span class="hl opt">[</span>NW<span class="hl opt">,</span> NE<span class="hl opt">,</span> NE<span class="hl opt">,</span> W<span class="hl opt">],</span>
+         <span class="hl opt">[</span>NE<span class="hl opt">,</span> SE<span class="hl opt">,</span> E<span class="hl opt">,</span>  NE<span class="hl opt">],</span>
+         <span class="hl opt">[</span>SE<span class="hl opt">,</span> SE<span class="hl opt">,</span> E<span class="hl opt">,</span>  SE<span class="hl opt">],</span>
+         <span class="hl opt">[</span>E<span class="hl opt">,</span>  NW<span class="hl opt">,</span> NW<span class="hl opt">,</span> NW<span class="hl opt">]]</span>
+
+valid <span class="hl opt">::</span> Cell <span class="hl opt">-&gt;</span> <span class="hl kwb">Maybe</span> Cell
+valid p<span class="hl opt">&#64;(</span>x<span class="hl opt">,</span>y<span class="hl opt">)</span>
+   | <span class="hl num">0</span> <span class="hl opt">&lt;=</span> x<span class="hl opt">,</span> x <span class="hl opt">&lt;</span> width<span class="hl opt">,</span> <span class="hl num">0</span> <span class="hl opt">&lt;=</span> y<span class="hl opt">,</span> y <span class="hl opt">&lt;</span> height <span class="hl opt">=</span> Just p
+   |<span class="hl kwc">otherwise</span> <span class="hl opt">=</span> Nothing
+
+move <span class="hl opt">::</span> Cell <span class="hl opt">-&gt;</span> Direction <span class="hl opt">-&gt;</span> <span class="hl kwb">Maybe</span> Cell
+move <span class="hl opt">(</span>x<span class="hl opt">,</span>y<span class="hl opt">)</span> E <span class="hl opt">=</span> valid <span class="hl opt">(</span>x<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">,</span>y<span class="hl opt">)</span>
+move <span class="hl opt">(</span>x<span class="hl opt">,</span>y<span class="hl opt">)</span> W <span class="hl opt">=</span> valid <span class="hl opt">(</span>x<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">,</span>y<span class="hl opt">)</span>
+move <span class="hl opt">(</span>x<span class="hl opt">,</span>y<span class="hl opt">)</span> NE <span class="hl opt">=</span> valid <span class="hl opt">(</span>x<span class="hl opt">+(</span><span class="hl kwc">mod</span> y <span class="hl num">2</span><span class="hl opt">),</span>y<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span>
+move <span class="hl opt">(</span>x<span class="hl opt">,</span>y<span class="hl opt">)</span> NW <span class="hl opt">=</span> valid <span class="hl opt">(</span>x<span class="hl opt">+(</span><span class="hl kwc">mod</span> y <span class="hl num">2</span><span class="hl opt">)-</span><span class="hl num">1</span><span class="hl opt">,</span>y<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span>
+move <span class="hl opt">(</span>x<span class="hl opt">,</span>y<span class="hl opt">)</span> SE <span class="hl opt">=</span> valid <span class="hl opt">(</span>x<span class="hl opt">+(</span><span class="hl kwc">mod</span> y <span class="hl num">2</span><span class="hl opt">),</span>y<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+move <span class="hl opt">(</span>x<span class="hl opt">,</span>y<span class="hl opt">)</span> SW <span class="hl opt">=</span> valid <span class="hl opt">(</span>x<span class="hl opt">+(</span><span class="hl kwc">mod</span> y <span class="hl num">2</span><span class="hl opt">)-</span><span class="hl num">1</span><span class="hl opt">,</span>y<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+
+overlap <span class="hl opt">::</span> Mask <span class="hl opt">-&gt;</span> Mask <span class="hl opt">-&gt;</span> <span class="hl kwb">Bool</span>
+overlap a b <span class="hl opt">= (</span>a <span class="hl opt">.&amp;.</span> b<span class="hl opt">) /=</span> <span class="hl num">0</span>
+
+bitCount <span class="hl opt">::</span> Mask <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span>
+bitCount <span class="hl num">0</span> <span class="hl opt">=</span> <span class="hl num">0</span>
+bitCount mask <span class="hl opt">= (</span><span class="hl kwc">fromIntegral</span> <span class="hl opt">$ (</span>mask <span class="hl opt">.&amp;.</span> <span class="hl num">1</span><span class="hl opt">)) + (</span>bitCount <span class="hl opt">(</span>shiftR mask <span class="hl num">1</span><span class="hl opt">))</span>
+
+floodFill <span class="hl opt">::</span> Mask <span class="hl opt">-&gt;</span> Cell <span class="hl opt">-&gt;</span> Mask
+floodFill mask cell<span class="hl opt">&#64;(</span>x<span class="hl opt">,</span>y<span class="hl opt">)</span>
+   | overlap mask <span class="hl opt">(</span>bit <span class="hl opt">$</span> x <span class="hl opt">+</span> y<span class="hl opt">*</span>width<span class="hl opt">) =</span> mask
+   | <span class="hl kwc">otherwise</span> <span class="hl opt">=</span> 
+      <span class="hl kwd">let</span> mask<span class="hl opt">' =</span> mask <span class="hl opt">.</span>|<span class="hl opt">. (</span>bit <span class="hl opt">$</span> x <span class="hl opt">+</span> y<span class="hl opt">*</span>width<span class="hl opt">)</span>
+      <span class="hl kwd">in</span>   <span class="hl kwc">foldl</span><span class="hl opt">'</span> floodFill mask<span class="hl opt">' $</span> <span class="hl kwc">mapMaybe</span> <span class="hl opt">(</span>move cell<span class="hl opt">) [</span>E <span class="hl opt">..</span> NE<span class="hl opt">]</span>
+
+findFreeCell <span class="hl opt">::</span> Mask <span class="hl opt">-&gt;</span> Cell
+findFreeCell mask <span class="hl opt">=</span> 
+   <span class="hl kwc">fromJust</span> <span class="hl opt">$</span> <span class="hl kwc">find</span> <span class="hl opt">(\(</span>x<span class="hl opt">,</span>y<span class="hl opt">) -&gt;</span> <span class="hl kwc">not</span> <span class="hl opt">$</span> overlap mask <span class="hl opt">(</span>bit <span class="hl opt">$</span> x <span class="hl opt">+</span> y<span class="hl opt">*</span>width<span class="hl opt">))</span> cells
+
+noIslands <span class="hl opt">::</span> Mask <span class="hl opt">-&gt;</span> <span class="hl kwb">Bool</span>
+noIslands mask <span class="hl opt">=</span> <span class="hl kwc">not</span> <span class="hl opt">$</span> <span class="hl kwc">any</span> <span class="hl opt">(&lt;</span><span class="hl num">5</span><span class="hl opt">) $</span> diffs <span class="hl opt">$</span> noIslands<span class="hl opt">'</span> mask <span class="hl kwd">where</span>
+   noIslands<span class="hl opt">'</span> mask
+      | mask <span class="hl opt">==</span> fullMask <span class="hl opt">= [</span>bitCount mask<span class="hl opt">]</span>
+      | <span class="hl kwc">otherwise</span> <span class="hl opt">= (</span>bitCount mask<span class="hl opt">) : (</span>noIslands<span class="hl opt">' $</span> floodFill mask <span class="hl opt">$</span> findFreeCell mask<span class="hl opt">)</span>
+   diffs l <span class="hl opt">=</span> <span class="hl kwc">zipWith</span> <span class="hl opt">(-) (</span><span class="hl kwc">tail</span> l<span class="hl opt">)</span> l
+   
+
+placePiece <span class="hl opt">::</span> Piece <span class="hl opt">-&gt;</span> Cell <span class="hl opt">-&gt;</span> <span class="hl kwb">Maybe</span> <span class="hl opt">[</span>Cell<span class="hl opt">]</span>
+placePiece <span class="hl opt">[]</span> cell <span class="hl opt">=</span> Just <span class="hl opt">[</span>cell<span class="hl opt">]</span>
+placePiece <span class="hl opt">(</span>p<span class="hl opt">:</span>ps<span class="hl opt">)</span> cell <span class="hl opt">=</span> move cell p <span class="hl opt">&gt;&gt;= (</span>placePiece ps<span class="hl opt">) &gt;&gt;=</span> <span class="hl kwc">return</span> <span class="hl opt">. (</span>cell<span class="hl opt">:)</span>
+
+pieceMasks <span class="hl opt">::</span> <span class="hl kwb">Array</span> Color <span class="hl opt">[</span>Mask<span class="hl opt">]</span>
+pieceMasks <span class="hl opt">=</span> amap pieceMasks<span class="hl opt">'</span> pieces <span class="hl kwd">where</span>      
+   pieceMasks<span class="hl opt">'</span> piece
+      | piece <span class="hl opt">== (</span>pieces<span class="hl opt">!</span><span class="hl num">5</span><span class="hl opt">) =</span> <span class="hl kwd">do</span>
+         piece<span class="hl opt">' &lt;- (</span><span class="hl kwc">take</span> <span class="hl num">3</span> <span class="hl opt">$</span> <span class="hl kwc">iterate</span> rot piece<span class="hl opt">) ++ (</span><span class="hl kwc">take</span> <span class="hl num">3</span> <span class="hl opt">$</span> <span class="hl kwc">iterate</span> rot <span class="hl opt">$</span> flop <span class="hl opt">$</span> piece<span class="hl opt">)</span>
+         <span class="hl kwc">filter</span> noIslands <span class="hl opt">$</span> <span class="hl kwc">map</span> mask <span class="hl opt">$</span> <span class="hl kwc">mapMaybe</span> <span class="hl opt">(</span>placePiece piece<span class="hl opt">')</span> cells
+      
+      | <span class="hl kwc">otherwise</span> <span class="hl opt">=</span> <span class="hl kwd">do</span>
+         piece<span class="hl opt">' &lt;- (</span><span class="hl kwc">take</span> <span class="hl num">6</span> <span class="hl opt">$</span> <span class="hl kwc">iterate</span> rot piece<span class="hl opt">) ++ (</span><span class="hl kwc">take</span> <span class="hl num">6</span> <span class="hl opt">$</span> <span class="hl kwc">iterate</span> rot <span class="hl opt">$</span> flop <span class="hl opt">$</span> piece<span class="hl opt">)</span>
+         <span class="hl kwc">filter</span> noIslands <span class="hl opt">$</span> <span class="hl kwc">map</span> mask <span class="hl opt">$</span> <span class="hl kwc">mapMaybe</span> <span class="hl opt">(</span>placePiece piece<span class="hl opt">')</span> cells
+
+pieceMasksAtCell <span class="hl opt">::</span> <span class="hl kwb">Array</span> Color <span class="hl opt">(</span><span class="hl kwb">Array</span> Cell <span class="hl opt">[</span>Mask<span class="hl opt">])</span>
+pieceMasksAtCell <span class="hl opt">=</span> amap pieceMasksAtCell<span class="hl opt">'</span> pieceMasks <span class="hl kwd">where</span>
+   pieceMasksAtCell<span class="hl opt">'</span> masks <span class="hl opt">=</span> <span class="hl kwa">array</span> <span class="hl opt">((</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">),(</span>width<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">,</span>height<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)) $</span> pieceMasksAtCell<span class="hl opt">''</span> masks cells <span class="hl kwd">where</span>
+      pieceMasksAtCell<span class="hl opt">''</span> masks <span class="hl opt">[] = []</span>
+      pieceMasksAtCell<span class="hl opt">''</span> masks <span class="hl opt">(</span>c<span class="hl opt">:</span>cs<span class="hl opt">) =</span> 
+         <span class="hl kwd">let</span> <span class="hl opt">(</span>a<span class="hl opt">,</span>b<span class="hl opt">) =</span> <span class="hl kwc">partition</span> <span class="hl opt">(</span>overlap <span class="hl opt">(</span>mask c<span class="hl opt">))</span> masks
+         <span class="hl kwd">in</span> <span class="hl opt">(</span>c<span class="hl opt">,</span>a<span class="hl opt">) : (</span>pieceMasksAtCell<span class="hl opt">''</span> b cs<span class="hl opt">)</span>
+
+nextCell <span class="hl opt">::</span> Cell <span class="hl opt">-&gt;</span> Cell
+nextCell <span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">,</span>y<span class="hl opt">) = (</span><span class="hl num">0</span><span class="hl opt">,</span>y<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+nextCell <span class="hl opt">(</span>x<span class="hl opt">,</span>y<span class="hl opt">) =  (</span>x<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">,</span>y<span class="hl opt">)</span>
+
+solutions <span class="hl opt">:: [</span><span class="hl kwb">String</span><span class="hl opt">]</span>
+solutions <span class="hl opt">=</span> solutions<span class="hl opt">'</span> <span class="hl num">0</span> <span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">) [</span><span class="hl num">0</span><span class="hl opt">.</span><span class="hl num">.9</span><span class="hl opt">] []</span> <span class="hl kwd">where</span>
+
+   solutions<span class="hl opt">' ::</span> Mask <span class="hl opt">-&gt;</span> Cell <span class="hl opt">-&gt; [</span>Color<span class="hl opt">] -&gt; [(</span>Color<span class="hl opt">,</span> Mask<span class="hl opt">)]-&gt; [</span><span class="hl kwb">String</span><span class="hl opt">]</span>
+   solutions<span class="hl opt">'</span> _ _ <span class="hl opt">[]</span> usedMasks <span class="hl opt">=</span>    <span class="hl kwd">let</span> s <span class="hl opt">=</span> stringOfColorMasks usedMasks <span class="hl kwd">in</span>   <span class="hl opt">[</span>s<span class="hl opt">,</span> invertString s<span class="hl opt">]</span>
+   solutions<span class="hl opt">'</span> board cell colorsLeft usedMasks 
+      | overlap board <span class="hl opt">(</span>mask cell<span class="hl opt">) =</span> solutions<span class="hl opt">'</span> board <span class="hl opt">(</span>nextCell cell<span class="hl opt">)</span> colorsLeft usedMasks
+      | <span class="hl kwc">otherwise</span> <span class="hl opt">=</span> <span class="hl kwd">do</span>
+         color <span class="hl opt">&lt;-</span> colorsLeft
+         mask <span class="hl opt">&lt;-</span> <span class="hl kwc">filter</span> <span class="hl opt">(</span><span class="hl kwc">not</span><span class="hl opt">.(</span>overlap board<span class="hl opt">)) $</span> pieceMasksAtCell<span class="hl opt">!</span>color<span class="hl opt">!</span>cell
+         solutions<span class="hl opt">' (</span>board <span class="hl opt">.</span>|<span class="hl opt">.</span> mask<span class="hl opt">) (</span>nextCell cell<span class="hl opt">) (</span>colorsLeft <span class="hl esc">\\</span> <span class="hl opt">[</span>color<span class="hl opt">]) ((</span>color<span class="hl opt">,</span> mask<span class="hl opt">):</span>usedMasks<span class="hl opt">)</span>
+
+stringOfColorMasks <span class="hl opt">:: [(</span>Color<span class="hl opt">,</span> Mask<span class="hl opt">)] -&gt;</span> <span class="hl kwb">String</span>
+stringOfColorMasks colorMasks <span class="hl opt">=</span> 
+   <span class="hl kwc">tail</span><span class="hl opt">.</span><span class="hl kwc">show</span><span class="hl opt">.(+</span><span class="hl num">10</span>^<span class="hl opt">(</span>width<span class="hl opt">*</span>height<span class="hl opt">)).</span><span class="hl kwa">sum</span> <span class="hl opt">$</span> <span class="hl kwc">map</span> <span class="hl opt">(\(</span>c<span class="hl opt">,</span>m<span class="hl opt">) -&gt; (</span><span class="hl kwc">fromIntegral</span> c<span class="hl opt">) * (</span>binToDec m<span class="hl opt">))</span> colorMasks <span class="hl kwd">where</span>
+   binToDec <span class="hl opt">::</span> Mask <span class="hl opt">-&gt;</span> <span class="hl kwb">Integer</span>
+   binToDec <span class="hl num">0</span> <span class="hl opt">=</span> <span class="hl num">0</span>
+   binToDec n <span class="hl opt">= (</span><span class="hl kwc">fromIntegral</span> <span class="hl opt">(</span><span class="hl kwc">mod</span> n <span class="hl num">2</span><span class="hl opt">)) +</span> <span class="hl num">10</span><span class="hl opt">*(</span>binToDec <span class="hl opt">$</span> <span class="hl kwc">div</span> n <span class="hl num">2</span><span class="hl opt">)</span>
+
+invertString <span class="hl opt">::</span> <span class="hl kwb">String</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">String</span>
+invertString s <span class="hl opt">=</span> <span class="hl kwc">map</span> <span class="hl opt">(\(</span>x<span class="hl opt">,</span>y<span class="hl opt">) -&gt;</span> s<span class="hl opt">!!(</span>width<span class="hl opt">-</span>x<span class="hl opt">-</span><span class="hl num">1</span> <span class="hl opt">+ (</span>height<span class="hl opt">-</span>y<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)*</span>width<span class="hl opt">))</span> cells
+
+printSolution <span class="hl opt">::</span> <span class="hl kwb">String</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">()</span>
+printSolution solution <span class="hl opt">=</span> printSolution<span class="hl opt">'</span> <span class="hl num">0</span> solution <span class="hl kwd">where</span>
+   printSolution<span class="hl opt">'</span> cell <span class="hl opt">[] =</span> <span class="hl kwc">return</span> <span class="hl opt">()</span>
+   printSolution<span class="hl opt">'</span> cell <span class="hl opt">(</span>s<span class="hl opt">:</span>ss<span class="hl opt">) =</span> <span class="hl kwd">do</span>
+      <span class="hl kwc">putStr</span> <span class="hl opt">$</span> s<span class="hl opt">:</span><span class="hl str">&quot; &quot;</span>
+      <span class="hl kwd">case</span> <span class="hl kwc">mod</span> <span class="hl opt">(</span>cell<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span> width <span class="hl kwd">of</span>
+         <span class="hl num">0</span> <span class="hl opt">-&gt;</span> <span class="hl kwd">case</span> <span class="hl kwc">mod</span> <span class="hl opt">(</span>cell<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">) (</span><span class="hl num">2</span><span class="hl opt">*</span>width<span class="hl opt">)</span> <span class="hl kwd">of</span>
+            <span class="hl num">0</span> <span class="hl opt">-&gt;</span> <span class="hl kwc">putStr</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span>
+            _ <span class="hl opt">-&gt;</span> <span class="hl kwc">putStr</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span> <span class="hl str">&quot;</span>
+         _ <span class="hl opt">-&gt;</span> <span class="hl kwc">return</span> <span class="hl opt">()</span>
+
+      printSolution<span class="hl opt">' (</span>cell<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span> ss
+
+main <span class="hl opt">=</span> <span class="hl kwd">do</span> 
+   <span class="hl opt">(</span>n <span class="hl opt">::</span> <span class="hl kwb">Int</span><span class="hl opt">) &lt;-</span> <span class="hl kwc">return</span><span class="hl opt">.</span><span class="hl kwc">read</span><span class="hl opt">.</span><span class="hl kwc">head</span> <span class="hl opt">=&lt;&lt;</span> <span class="hl kwc">getArgs</span>
+   <span class="hl kwd">let</span> nsolutions <span class="hl opt">=</span> <span class="hl kwc">take</span> n solutions
+   <span class="hl kwc">putStrLn</span> <span class="hl opt">$ (</span><span class="hl kwc">show</span> <span class="hl opt">$</span> <span class="hl kwa">length</span> nsolutions<span class="hl opt">) ++</span> <span class="hl str">&quot; solutions found</span><span class="hl esc">\n</span><span class="hl str">&quot;</span>
+   printSolution <span class="hl opt">$</span> <span class="hl kwc">minimum</span> nsolutions
+   <span class="hl kwc">putStr</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span>
+   printSolution <span class="hl opt">$</span> <span class="hl kwc">maximum</span> nsolutions
+   <span class="hl kwc">putStr</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span>

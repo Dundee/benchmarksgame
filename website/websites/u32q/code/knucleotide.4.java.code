@@ -1,0 +1,220 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Peter Lawrey</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">import</span> java<span class="hl sym">.</span>io<span class="hl sym">.</span><span class="hl kwc">FileInputStream</span><span class="hl sym">;</span>
+<span class="hl kwa">import</span> java<span class="hl sym">.</span>lang<span class="hl sym">.</span>management<span class="hl sym">.</span><span class="hl kwc">ManagementFactory</span><span class="hl sym">;</span>
+<span class="hl kwa">import</span> java<span class="hl sym">.</span>nio<span class="hl sym">.</span><span class="hl kwc">ByteBuffer</span><span class="hl sym">;</span>
+<span class="hl kwa">import</span> java<span class="hl sym">.</span>nio<span class="hl sym">.</span><span class="hl kwc">ByteOrder</span><span class="hl sym">;</span>
+<span class="hl kwa">import</span> java<span class="hl sym">.</span>nio<span class="hl sym">.</span>channels<span class="hl sym">.</span><span class="hl kwc">FileChannel</span><span class="hl sym">;</span>
+<span class="hl kwa">import</span> java<span class="hl sym">.</span>util<span class="hl sym">.*;</span>
+<span class="hl kwa">import</span> java<span class="hl sym">.</span>util<span class="hl sym">.</span>concurrent<span class="hl sym">.*;</span>
+
+<span class="hl kwa">public class</span> knucleotide <span class="hl sym">{</span>
+  <span class="hl kwa">static final</span> <span class="hl kwc">String</span> ATCG <span class="hl sym">=</span> <span class="hl str">&quot;ATCG&quot;</span><span class="hl sym">;</span>
+  <span class="hl kwa">static final</span> <span class="hl kwb">int</span> A <span class="hl sym">=</span> <span class="hl num">0</span><span class="hl sym">,</span> T <span class="hl sym">=</span> <span class="hl num">1</span><span class="hl sym">,</span> C <span class="hl sym">=</span> <span class="hl num">2</span><span class="hl sym">,</span> G <span class="hl sym">=</span> <span class="hl num">3</span><span class="hl sym">;</span>
+  <span class="hl kwa">static final</span> <span class="hl kwb">int</span> LONGEST_SEARCH <span class="hl sym">=</span> <span class="hl num">18</span><span class="hl sym">;</span>
+  <span class="hl kwa">public static final</span> <span class="hl kwb">int</span> WARMUP <span class="hl sym">=</span> LONGEST_SEARCH<span class="hl sym">+</span><span class="hl num">2</span><span class="hl sym">;</span>
+  <span class="hl kwa">static final</span> <span class="hl kwb">long</span> MASK18 <span class="hl sym">= (</span><span class="hl num">1L</span> <span class="hl sym">&lt;&lt; (</span><span class="hl num">2</span> <span class="hl sym">*</span> LONGEST_SEARCH<span class="hl sym">)) -</span> <span class="hl num">1</span><span class="hl sym">;</span>
+
+  <span class="hl kwa">static</span> <span class="hl kwb">byte</span><span class="hl sym">[]</span> values <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl sym">[</span><span class="hl num">256</span><span class="hl sym">];</span> <span class="hl kwa">static</span> <span class="hl sym">{</span>
+    <span class="hl kwc">Arrays</span><span class="hl sym">.</span><span class="hl kwd">fill</span><span class="hl sym">(</span>values<span class="hl sym">, (</span><span class="hl kwb">byte</span><span class="hl sym">) -</span><span class="hl num">1</span><span class="hl sym">);</span>
+    values<span class="hl sym">[</span><span class="hl str">'A'</span><span class="hl sym">] =</span> values<span class="hl sym">[</span><span class="hl str">'a'</span><span class="hl sym">] =</span> A<span class="hl sym">;</span>
+    values<span class="hl sym">[</span><span class="hl str">'T'</span><span class="hl sym">] =</span> values<span class="hl sym">[</span><span class="hl str">'t'</span><span class="hl sym">] =</span> T<span class="hl sym">;</span>
+    values<span class="hl sym">[</span><span class="hl str">'C'</span><span class="hl sym">] =</span> values<span class="hl sym">[</span><span class="hl str">'c'</span><span class="hl sym">] =</span> C<span class="hl sym">;</span>
+    values<span class="hl sym">[</span><span class="hl str">'G'</span><span class="hl sym">] =</span> values<span class="hl sym">[</span><span class="hl str">'g'</span><span class="hl sym">] =</span> G<span class="hl sym">;</span>
+  <span class="hl sym">}</span>
+
+  <span class="hl kwa">private static</span> <span class="hl kwb">long</span> <span class="hl kwd">encode</span><span class="hl sym">(</span><span class="hl kwc">String</span> code<span class="hl sym">) {</span>
+    <span class="hl kwb">long</span> l <span class="hl sym">=</span> <span class="hl num">0</span><span class="hl sym">;</span>
+    <span class="hl kwa">for</span> <span class="hl sym">(</span><span class="hl kwb">int</span> i <span class="hl sym">=</span> <span class="hl num">0</span><span class="hl sym">;</span> i <span class="hl sym">&lt;</span> code<span class="hl sym">.</span><span class="hl kwd">length</span><span class="hl sym">();</span> i<span class="hl sym">++)</span>
+      l <span class="hl sym">= (</span>l <span class="hl sym">&lt;&lt;</span> <span class="hl num">2</span><span class="hl sym">) |</span> values<span class="hl sym">[</span>code<span class="hl sym">.</span><span class="hl kwd">charAt</span><span class="hl sym">(</span>i<span class="hl sym">)];</span>
+    <span class="hl kwa">return</span> l<span class="hl sym">;</span>
+  <span class="hl sym">}</span>
+
+  <span class="hl kwa">static final</span> <span class="hl kwb">long</span> GGT <span class="hl sym">=</span> <span class="hl kwd">encode</span><span class="hl sym">(</span><span class="hl str">&quot;GGT&quot;</span><span class="hl sym">);</span>
+  <span class="hl kwa">static final</span> <span class="hl kwb">long</span> GGTA <span class="hl sym">=</span> <span class="hl kwd">encode</span><span class="hl sym">(</span><span class="hl str">&quot;GGTA&quot;</span><span class="hl sym">);</span>
+  <span class="hl kwa">static final</span> <span class="hl kwb">long</span> GGTATT <span class="hl sym">=</span> <span class="hl kwd">encode</span><span class="hl sym">(</span><span class="hl str">&quot;GGTATT&quot;</span><span class="hl sym">);</span>
+  <span class="hl kwa">static final</span> <span class="hl kwb">long</span> GGTATTTTAATT <span class="hl sym">=</span> <span class="hl kwd">encode</span><span class="hl sym">(</span><span class="hl str">&quot;GGTATTTTAATT&quot;</span><span class="hl sym">);</span>
+  <span class="hl kwa">static final</span> <span class="hl kwb">long</span> GGTATTTTAATTTATAGT <span class="hl sym">=</span> <span class="hl kwd">encode</span><span class="hl sym">(</span><span class="hl str">&quot;GGTATTTTAATTTATAGT&quot;</span><span class="hl sym">);</span>
+
+  <span class="hl kwa">static</span> <span class="hl kwb">int</span> nThreads <span class="hl sym">=</span> <span class="hl kwc">Runtime</span><span class="hl sym">.</span><span class="hl kwd">getRuntime</span><span class="hl sym">().</span><span class="hl kwd">availableProcessors</span><span class="hl sym">();</span>
+
+  <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">main</span><span class="hl sym">(</span><span class="hl kwc">String</span><span class="hl sym">...</span> args<span class="hl sym">)</span> <span class="hl kwa">throws</span> <span class="hl kwc">Exception</span> <span class="hl sym">{</span>
+    <span class="hl kwc">String</span> processId <span class="hl sym">=</span> <span class="hl kwc">ManagementFactory</span><span class="hl sym">.</span><span class="hl kwd">getRuntimeMXBean</span><span class="hl sym">().</span><span class="hl kwd">getName</span><span class="hl sym">().</span><span class="hl kwd">split</span><span class="hl sym">(</span><span class="hl str">&quot;&#64;&quot;</span><span class="hl sym">)[</span><span class="hl num">0</span><span class="hl sym">];</span>
+    <span class="hl kwc">FileInputStream</span> <span class="hl kwa">in</span> <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwc">FileInputStream</span><span class="hl sym">(</span><span class="hl str">&quot;/proc/&quot;</span> <span class="hl sym">+</span> processId <span class="hl sym">+</span> <span class="hl str">&quot;/fd/0&quot;</span><span class="hl sym">);</span>
+    <span class="hl kwc">ExecutorService</span> es <span class="hl sym">=</span> <span class="hl kwc">Executors</span><span class="hl sym">.</span><span class="hl kwd">newFixedThreadPool</span><span class="hl sym">(</span>nThreads <span class="hl sym">-</span> <span class="hl num">1</span><span class="hl sym">);</span>
+    <span class="hl kwc">FileChannel</span> fc <span class="hl sym">=</span> <span class="hl kwa">in</span><span class="hl sym">.</span><span class="hl kwd">getChannel</span><span class="hl sym">();</span>
+    <span class="hl kwc">ByteBuffer</span> bb <span class="hl sym">=</span> fc<span class="hl sym">.</span><span class="hl kwd">map</span><span class="hl sym">(</span><span class="hl kwc">FileChannel</span><span class="hl sym">.</span>MapMode<span class="hl sym">.</span>READ_ONLY<span class="hl sym">,</span> <span class="hl num">0</span><span class="hl sym">,</span> fc<span class="hl sym">.</span><span class="hl kwd">size</span><span class="hl sym">());</span>
+    <span class="hl kwb">int</span> startFrom <span class="hl sym">=</span> <span class="hl kwd">findStartOfThree</span><span class="hl sym">(</span>bb<span class="hl sym">,</span> es<span class="hl sym">,</span> nThreads<span class="hl sym">);</span>
+    bb<span class="hl sym">.</span><span class="hl kwd">position</span><span class="hl sym">(</span>startFrom<span class="hl sym">);</span>
+
+    <span class="hl kwb">int</span> blockSize <span class="hl sym">= (</span>bb<span class="hl sym">.</span><span class="hl kwd">remaining</span><span class="hl sym">() +</span> nThreads <span class="hl sym">-</span> <span class="hl num">1</span><span class="hl sym">) /</span> nThreads<span class="hl sym">;</span>
+    <span class="hl kwa">for</span> <span class="hl sym">(</span><span class="hl kwb">int</span> i <span class="hl sym">=</span> <span class="hl num">0</span><span class="hl sym">;</span> i <span class="hl sym">&lt;</span> nThreads<span class="hl sym">;</span> i<span class="hl sym">++) {</span>
+      <span class="hl kwb">int</span> min <span class="hl sym">=</span> startFrom <span class="hl sym">+</span> i <span class="hl sym">*</span> blockSize<span class="hl sym">;</span>
+      <span class="hl kwb">int</span> max <span class="hl sym">=</span> min <span class="hl sym">+</span> blockSize<span class="hl sym">;</span>
+      bb<span class="hl sym">.</span><span class="hl kwd">limit</span><span class="hl sym">(</span><span class="hl kwc">Math</span><span class="hl sym">.</span><span class="hl kwd">min</span><span class="hl sym">(</span>max<span class="hl sym">,</span> bb<span class="hl sym">.</span><span class="hl kwd">capacity</span><span class="hl sym">()));</span>
+      bb<span class="hl sym">.</span><span class="hl kwd">position</span><span class="hl sym">(</span>min <span class="hl sym">-</span> WARMUP<span class="hl sym">);</span>
+      <span class="hl kwa">final</span> <span class="hl kwc">ByteBuffer</span> bb3 <span class="hl sym">=</span> bb<span class="hl sym">.</span><span class="hl kwd">slice</span><span class="hl sym">().</span><span class="hl kwd">order</span><span class="hl sym">(</span><span class="hl kwc">ByteOrder</span><span class="hl sym">.</span><span class="hl kwd">nativeOrder</span><span class="hl sym">());</span>
+      <span class="hl kwa">final</span> <span class="hl kwb">boolean</span> warmup <span class="hl sym">=</span> i <span class="hl sym">&gt;</span> <span class="hl num">0</span><span class="hl sym">;</span>
+      <span class="hl kwa">final</span> <span class="hl kwc">Runnable</span> task <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwc">Runnable</span><span class="hl sym">() {</span>
+        &#64;Override
+        <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">run</span><span class="hl sym">() {</span>
+          <span class="hl kwa">new</span> <span class="hl kwd">Results</span><span class="hl sym">().</span><span class="hl kwd">process</span><span class="hl sym">(</span>bb3<span class="hl sym">,</span> <span class="hl num">0</span><span class="hl sym">,</span> bb3<span class="hl sym">.</span><span class="hl kwd">limit</span><span class="hl sym">(),</span> warmup<span class="hl sym">);</span>
+        <span class="hl sym">}</span>
+      <span class="hl sym">};</span>
+      <span class="hl kwa">if</span> <span class="hl sym">(</span>i <span class="hl sym">&lt;</span> nThreads <span class="hl sym">-</span> <span class="hl num">1</span><span class="hl sym">)</span>
+        es<span class="hl sym">.</span><span class="hl kwd">submit</span><span class="hl sym">(</span>task<span class="hl sym">);</span>
+      <span class="hl kwa">else</span>
+        task<span class="hl sym">.</span><span class="hl kwd">run</span><span class="hl sym">();</span>
+    <span class="hl sym">}</span>
+
+    <span class="hl kwa">in</span><span class="hl sym">.</span><span class="hl kwd">close</span><span class="hl sym">();</span>
+    es<span class="hl sym">.</span><span class="hl kwd">shutdown</span><span class="hl sym">();</span>
+    es<span class="hl sym">.</span><span class="hl kwd">awaitTermination</span><span class="hl sym">(</span><span class="hl num">1</span><span class="hl sym">,</span> <span class="hl kwc">TimeUnit</span><span class="hl sym">.</span>MINUTES<span class="hl sym">);</span>
+    Results<span class="hl sym">.</span><span class="hl kwd">report</span><span class="hl sym">((</span><span class="hl kwb">char</span><span class="hl sym">)</span> bb<span class="hl sym">.</span><span class="hl kwd">get</span><span class="hl sym">(</span>startFrom<span class="hl sym">));</span>
+  <span class="hl sym">}</span>
+
+  <span class="hl kwa">private static</span> <span class="hl kwb">int</span> <span class="hl kwd">findStartOfThree</span><span class="hl sym">(</span><span class="hl kwc">ByteBuffer</span> bb<span class="hl sym">,</span> <span class="hl kwc">ExecutorService</span> es<span class="hl sym">,</span> <span class="hl kwb">int</span> nThreads<span class="hl sym">)</span> <span class="hl kwa">throws</span> <span class="hl kwc">InterruptedException</span> <span class="hl sym">{</span>
+    <span class="hl kwa">final</span> <span class="hl kwc">ArrayBlockingQueue</span><span class="hl sym">&lt;</span><span class="hl kwc">Integer</span><span class="hl sym">&gt;</span> startOfThree <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwc">ArrayBlockingQueue</span><span class="hl sym">&lt;</span><span class="hl kwc">Integer</span><span class="hl sym">&gt;(</span><span class="hl num">1</span><span class="hl sym">);</span>
+    <span class="hl kwb">int</span> blockSize <span class="hl sym">=</span> bb<span class="hl sym">.</span><span class="hl kwd">remaining</span><span class="hl sym">() /</span> nThreads<span class="hl sym">;</span>
+    <span class="hl kwa">for</span> <span class="hl sym">(</span><span class="hl kwb">int</span> i <span class="hl sym">=</span> <span class="hl num">0</span><span class="hl sym">;</span> i <span class="hl sym">&lt;</span> nThreads<span class="hl sym">;</span> i<span class="hl sym">++) {</span>
+      <span class="hl kwa">final</span> <span class="hl kwb">int</span> min <span class="hl sym">=</span> i <span class="hl sym">*</span> blockSize<span class="hl sym">;</span>
+      <span class="hl kwa">final</span> <span class="hl kwb">int</span> max <span class="hl sym">=</span> min <span class="hl sym">+</span> blockSize<span class="hl sym">;</span>
+      <span class="hl kwa">final</span> FindThreeRunnable task <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwd">FindThreeRunnable</span><span class="hl sym">(</span>bb<span class="hl sym">,</span> startOfThree<span class="hl sym">,</span> min<span class="hl sym">,</span> max<span class="hl sym">);</span>
+      <span class="hl kwa">if</span> <span class="hl sym">(</span>i <span class="hl sym">==</span> nThreads <span class="hl sym">-</span> <span class="hl num">1</span><span class="hl sym">)</span>
+        task<span class="hl sym">.</span><span class="hl kwd">run</span><span class="hl sym">();</span>
+      <span class="hl kwa">else</span>
+        es<span class="hl sym">.</span><span class="hl kwd">submit</span><span class="hl sym">(</span>task<span class="hl sym">);</span>
+    <span class="hl sym">}</span>
+    <span class="hl kwa">return</span> startOfThree<span class="hl sym">.</span><span class="hl kwd">take</span><span class="hl sym">();</span>
+  <span class="hl sym">}</span>
+
+  <span class="hl kwa">static class</span> Results <span class="hl sym">{</span>
+    <span class="hl kwa">static final</span> <span class="hl kwb">int</span> LEN <span class="hl sym">=</span> <span class="hl num">256</span> <span class="hl sym">*</span> <span class="hl num">1024</span><span class="hl sym">;</span>
+    <span class="hl kwa">static final</span> <span class="hl kwb">int</span> KEY_SIZE <span class="hl sym">=</span> <span class="hl num">2</span> <span class="hl sym">*</span> LONGEST_SEARCH<span class="hl sym">;</span>
+    <span class="hl kwa">static final</span> <span class="hl kwb">long</span> COUNT_BASE <span class="hl sym">=</span> <span class="hl num">1L</span> <span class="hl sym">&lt;&lt;</span> KEY_SIZE<span class="hl sym">;</span>
+    <span class="hl kwa">static final</span> <span class="hl kwb">long</span> KEY_MASK <span class="hl sym">=</span> COUNT_BASE <span class="hl sym">-</span> <span class="hl num">1</span><span class="hl sym">;</span>
+    <span class="hl kwa">final</span> <span class="hl kwb">long</span><span class="hl sym">[]</span> keyValues <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwb">long</span><span class="hl sym">[</span>LEN<span class="hl sym">];</span>
+    <span class="hl kwa">static final</span> <span class="hl kwc">Set</span><span class="hl sym">&lt;</span>Results<span class="hl sym">&gt;</span> ALL_RESULTS <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwc">CopyOnWriteArraySet</span><span class="hl sym">&lt;</span>Results<span class="hl sym">&gt;();</span>
+
+    <span class="hl kwd">Results</span><span class="hl sym">() {</span>
+      ALL_RESULTS<span class="hl sym">.</span><span class="hl kwd">add</span><span class="hl sym">(</span><span class="hl kwa">this</span><span class="hl sym">);</span>
+    <span class="hl sym">}</span>
+
+    <span class="hl kwb">void</span> <span class="hl kwd">increment</span><span class="hl sym">(</span><span class="hl kwb">long</span> id<span class="hl sym">) {</span>
+      <span class="hl kwa">if</span> <span class="hl sym">(!</span><span class="hl kwd">tryIncrement</span><span class="hl sym">(</span>id<span class="hl sym">,</span> id<span class="hl sym">))</span> <span class="hl kwa">return</span><span class="hl sym">;</span>
+      <span class="hl kwa">for</span> <span class="hl sym">(</span><span class="hl kwb">int</span> i <span class="hl sym">=</span> <span class="hl num">1</span><span class="hl sym">;</span> i <span class="hl sym">&lt;</span> LEN<span class="hl sym">;</span> i<span class="hl sym">++)</span>
+        <span class="hl kwa">if</span> <span class="hl sym">(!</span><span class="hl kwd">tryIncrement</span><span class="hl sym">(</span>id<span class="hl sym">,</span> id <span class="hl sym">+</span> i<span class="hl sym">))</span> <span class="hl kwa">return</span><span class="hl sym">;</span>
+      <span class="hl kwa">throw new</span> <span class="hl kwc">AssertionError</span><span class="hl sym">(</span>id<span class="hl sym">);</span>
+    <span class="hl sym">}</span>
+
+    <span class="hl kwa">private</span> <span class="hl kwb">boolean</span> <span class="hl kwd">tryIncrement</span><span class="hl sym">(</span><span class="hl kwb">long</span> id<span class="hl sym">,</span> <span class="hl kwb">long</span> id2<span class="hl sym">) {</span>
+      <span class="hl kwb">int</span> hash <span class="hl sym">= (</span><span class="hl kwb">int</span><span class="hl sym">) ((</span>id2 <span class="hl sym">+ (</span>id2 <span class="hl sym">&gt;&gt;&gt;</span> <span class="hl num">17</span><span class="hl sym">)) &amp; (</span>LEN <span class="hl sym">-</span> <span class="hl num">1</span><span class="hl sym">));</span>
+      <span class="hl kwb">long</span> key <span class="hl sym">=</span> keyValues<span class="hl sym">[</span>hash<span class="hl sym">];</span>
+      <span class="hl kwa">if</span> <span class="hl sym">(</span>key <span class="hl sym">==</span> <span class="hl num">0</span><span class="hl sym">) {</span>
+        keyValues<span class="hl sym">[</span>hash<span class="hl sym">] =</span> id <span class="hl sym">|</span> COUNT_BASE<span class="hl sym">;</span>
+      <span class="hl sym">}</span> <span class="hl kwa">else if</span> <span class="hl sym">((</span>key <span class="hl sym">&amp;</span> KEY_MASK<span class="hl sym">) ==</span> id<span class="hl sym">) {</span>
+        keyValues<span class="hl sym">[</span>hash<span class="hl sym">] +=</span> COUNT_BASE<span class="hl sym">;</span>
+      <span class="hl sym">}</span> <span class="hl kwa">else</span> <span class="hl sym">{</span>
+        <span class="hl kwa">return</span> true<span class="hl sym">;</span>
+      <span class="hl sym">}</span>
+      <span class="hl kwa">return</span> false<span class="hl sym">;</span>
+    <span class="hl sym">}</span>
+
+    <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">report</span><span class="hl sym">(</span><span class="hl kwb">char</span> firstLetter<span class="hl sym">) {</span>
+      <span class="hl kwb">int</span><span class="hl sym">[]</span> count1s <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwb">int</span><span class="hl sym">[</span><span class="hl num">4</span><span class="hl sym">];</span>
+      <span class="hl kwb">int</span><span class="hl sym">[]</span> count2s <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwb">int</span><span class="hl sym">[</span><span class="hl num">4</span> <span class="hl sym">*</span> <span class="hl num">4</span><span class="hl sym">];</span>
+      <span class="hl kwb">int</span><span class="hl sym">[]</span> ggtCounts <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwb">int</span><span class="hl sym">[</span><span class="hl num">5</span><span class="hl sym">];</span>
+      <span class="hl kwa">for</span> <span class="hl sym">(</span>Results results <span class="hl sym">:</span> ALL_RESULTS<span class="hl sym">)</span>
+        <span class="hl kwa">for</span> <span class="hl sym">(</span><span class="hl kwb">long</span> key1 <span class="hl sym">:</span> results<span class="hl sym">.</span>keyValues<span class="hl sym">) {</span>
+          <span class="hl kwa">if</span> <span class="hl sym">(</span>key1 <span class="hl sym">==</span> <span class="hl num">0</span><span class="hl sym">)</span> <span class="hl kwa">continue</span><span class="hl sym">;</span>
+          <span class="hl kwa">final</span> <span class="hl kwb">long</span> key <span class="hl sym">=</span> key1 <span class="hl sym">&amp;</span> KEY_MASK<span class="hl sym">;</span>
+          <span class="hl kwa">final</span> <span class="hl kwb">int</span> value <span class="hl sym">= (</span><span class="hl kwb">int</span><span class="hl sym">) (</span>key1 <span class="hl sym">&gt;&gt;&gt;</span> KEY_SIZE<span class="hl sym">);</span>
+
+          count1s<span class="hl sym">[((</span><span class="hl kwb">int</span><span class="hl sym">) (</span>key <span class="hl sym">&amp; ((</span><span class="hl num">1</span> <span class="hl sym">&lt;&lt;</span> <span class="hl num">2</span> <span class="hl sym">*</span> <span class="hl num">1</span><span class="hl sym">) -</span> <span class="hl num">1</span><span class="hl sym">)))] +=</span> value<span class="hl sym">;</span>
+          count2s<span class="hl sym">[((</span><span class="hl kwb">int</span><span class="hl sym">) (</span>key <span class="hl sym">&amp; ((</span><span class="hl num">1</span> <span class="hl sym">&lt;&lt;</span> <span class="hl num">2</span> <span class="hl sym">*</span> <span class="hl num">2</span><span class="hl sym">) -</span> <span class="hl num">1</span><span class="hl sym">)))] +=</span> value<span class="hl sym">;</span>
+          <span class="hl kwa">if</span> <span class="hl sym">((</span>key <span class="hl sym">&amp; ((</span><span class="hl num">1</span> <span class="hl sym">&lt;&lt;</span> <span class="hl num">2</span> <span class="hl sym">*</span> <span class="hl num">3</span><span class="hl sym">) -</span> <span class="hl num">1</span><span class="hl sym">)) ==</span> GGT<span class="hl sym">)</span> ggtCounts<span class="hl sym">[</span><span class="hl num">0</span><span class="hl sym">] +=</span> value<span class="hl sym">;</span>
+          <span class="hl kwa">if</span> <span class="hl sym">((</span>key <span class="hl sym">&amp; ((</span><span class="hl num">1</span> <span class="hl sym">&lt;&lt;</span> <span class="hl num">2</span> <span class="hl sym">*</span> <span class="hl num">4</span><span class="hl sym">) -</span> <span class="hl num">1</span><span class="hl sym">)) ==</span> GGTA<span class="hl sym">)</span> ggtCounts<span class="hl sym">[</span><span class="hl num">1</span><span class="hl sym">] +=</span> value<span class="hl sym">;</span>
+          <span class="hl kwa">if</span> <span class="hl sym">((</span>key <span class="hl sym">&amp; ((</span><span class="hl num">1</span> <span class="hl sym">&lt;&lt;</span> <span class="hl num">2</span> <span class="hl sym">*</span> <span class="hl num">6</span><span class="hl sym">) -</span> <span class="hl num">1</span><span class="hl sym">)) ==</span> GGTATT<span class="hl sym">)</span> ggtCounts<span class="hl sym">[</span><span class="hl num">2</span><span class="hl sym">] +=</span> value<span class="hl sym">;</span>
+          <span class="hl kwa">if</span> <span class="hl sym">((</span>key <span class="hl sym">&amp; ((</span><span class="hl num">1</span> <span class="hl sym">&lt;&lt;</span> <span class="hl num">2</span> <span class="hl sym">*</span> <span class="hl num">12</span><span class="hl sym">) -</span> <span class="hl num">1</span><span class="hl sym">)) ==</span> GGTATTTTAATT<span class="hl sym">)</span> ggtCounts<span class="hl sym">[</span><span class="hl num">3</span><span class="hl sym">] +=</span> value<span class="hl sym">;</span>
+          <span class="hl kwa">if</span> <span class="hl sym">(</span>key <span class="hl sym">==</span> GGTATTTTAATTTATAGT<span class="hl sym">)</span> ggtCounts<span class="hl sym">[</span><span class="hl num">4</span><span class="hl sym">] +=</span> value<span class="hl sym">;</span>
+        <span class="hl sym">}</span>
+      <span class="hl slc">// first letter is counted incorrectly as a pair when there was no previous letter.</span>
+      count2s<span class="hl sym">[((</span><span class="hl kwb">int</span><span class="hl sym">)</span> <span class="hl kwd">encode</span><span class="hl sym">(</span><span class="hl str">&quot;A&quot;</span> <span class="hl sym">+</span> firstLetter<span class="hl sym">))]--;</span>
+      <span class="hl kwb">long</span> sum <span class="hl sym">=</span> <span class="hl num">0</span><span class="hl sym">;</span>
+      <span class="hl kwc">SortedMap</span><span class="hl sym">&lt;</span><span class="hl kwc">Integer</span><span class="hl sym">,</span> <span class="hl kwc">Integer</span><span class="hl sym">&gt;</span> singles <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwc">TreeMap</span><span class="hl sym">&lt;</span><span class="hl kwc">Integer</span><span class="hl sym">,</span> <span class="hl kwc">Integer</span><span class="hl sym">&gt;(</span><span class="hl kwc">Collections</span><span class="hl sym">.&lt;</span><span class="hl kwc">Object</span><span class="hl sym">&gt;</span><span class="hl kwd">reverseOrder</span><span class="hl sym">());</span>
+      <span class="hl kwa">for</span> <span class="hl sym">(</span><span class="hl kwb">int</span> i <span class="hl sym">=</span> <span class="hl num">0</span><span class="hl sym">,</span> count1sLength <span class="hl sym">=</span> count1s<span class="hl sym">.</span>length<span class="hl sym">;</span> i <span class="hl sym">&lt;</span> count1sLength<span class="hl sym">;</span> i<span class="hl sym">++) {</span>
+        sum <span class="hl sym">+=</span> count1s<span class="hl sym">[</span>i<span class="hl sym">];</span>
+        singles<span class="hl sym">.</span><span class="hl kwd">put</span><span class="hl sym">(</span>count1s<span class="hl sym">[</span>i<span class="hl sym">],</span> i<span class="hl sym">);</span>
+      <span class="hl sym">}</span>
+      <span class="hl kwa">for</span> <span class="hl sym">(</span><span class="hl kwc">Map</span><span class="hl sym">.</span>Entry<span class="hl sym">&lt;</span><span class="hl kwc">Integer</span><span class="hl sym">,</span> <span class="hl kwc">Integer</span><span class="hl sym">&gt;</span> entry <span class="hl sym">:</span> singles<span class="hl sym">.</span><span class="hl kwd">entrySet</span><span class="hl sym">())</span>
+        <span class="hl kwc">System</span><span class="hl sym">.</span>out<span class="hl sym">.</span><span class="hl kwd">printf</span><span class="hl sym">(</span><span class="hl str">&quot;&quot;</span> <span class="hl sym">+</span> ATCG<span class="hl sym">.</span><span class="hl kwd">charAt</span><span class="hl sym">(</span>entry<span class="hl sym">.</span><span class="hl kwd">getValue</span><span class="hl sym">()) +</span> <span class="hl str">&quot; %5.3f%n&quot;</span><span class="hl sym">,</span> <span class="hl num">100.0</span> <span class="hl sym">*</span> entry<span class="hl sym">.</span><span class="hl kwd">getKey</span><span class="hl sym">() /</span> sum<span class="hl sym">);</span>
+      <span class="hl kwc">System</span><span class="hl sym">.</span>out<span class="hl sym">.</span><span class="hl kwd">println</span><span class="hl sym">();</span>
+      <span class="hl kwc">SortedMap</span><span class="hl sym">&lt;</span><span class="hl kwc">Integer</span><span class="hl sym">,</span> <span class="hl kwc">Integer</span><span class="hl sym">&gt;</span> pairs <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwc">TreeMap</span><span class="hl sym">&lt;</span><span class="hl kwc">Integer</span><span class="hl sym">,</span> <span class="hl kwc">Integer</span><span class="hl sym">&gt;(</span><span class="hl kwc">Collections</span><span class="hl sym">.&lt;</span><span class="hl kwc">Object</span><span class="hl sym">&gt;</span><span class="hl kwd">reverseOrder</span><span class="hl sym">());</span>
+      <span class="hl kwa">for</span> <span class="hl sym">(</span><span class="hl kwb">int</span> i <span class="hl sym">=</span> <span class="hl num">0</span><span class="hl sym">,</span> count2sLength <span class="hl sym">=</span> count2s<span class="hl sym">.</span>length<span class="hl sym">;</span> i <span class="hl sym">&lt;</span> count2sLength<span class="hl sym">;</span> i<span class="hl sym">++)</span>
+        pairs<span class="hl sym">.</span><span class="hl kwd">put</span><span class="hl sym">(</span>count2s<span class="hl sym">[</span>i<span class="hl sym">],</span> i<span class="hl sym">);</span>
+      <span class="hl kwa">for</span> <span class="hl sym">(</span><span class="hl kwc">Map</span><span class="hl sym">.</span>Entry<span class="hl sym">&lt;</span><span class="hl kwc">Integer</span><span class="hl sym">,</span> <span class="hl kwc">Integer</span><span class="hl sym">&gt;</span> entry <span class="hl sym">:</span> pairs<span class="hl sym">.</span><span class="hl kwd">entrySet</span><span class="hl sym">())</span>
+        <span class="hl kwc">System</span><span class="hl sym">.</span>out<span class="hl sym">.</span><span class="hl kwd">printf</span><span class="hl sym">(</span><span class="hl str">&quot;&quot;</span> <span class="hl sym">+</span> ATCG<span class="hl sym">.</span><span class="hl kwd">charAt</span><span class="hl sym">(</span>entry<span class="hl sym">.</span><span class="hl kwd">getValue</span><span class="hl sym">() /</span> <span class="hl num">4</span><span class="hl sym">) +</span> ATCG<span class="hl sym">.</span><span class="hl kwd">charAt</span><span class="hl sym">(</span>entry<span class="hl sym">.</span><span class="hl kwd">getValue</span><span class="hl sym">() %</span> <span class="hl num">4</span><span class="hl sym">) +</span> <span class="hl str">&quot; %5.3f%n&quot;</span><span class="hl sym">,</span> <span class="hl num">100.0</span> <span class="hl sym">*</span> entry<span class="hl sym">.</span><span class="hl kwd">getKey</span><span class="hl sym">() /</span> sum<span class="hl sym">);</span>
+      <span class="hl kwc">System</span><span class="hl sym">.</span>out<span class="hl sym">.</span><span class="hl kwd">println</span><span class="hl sym">();</span>
+      <span class="hl kwc">String</span><span class="hl sym">[]</span> names <span class="hl sym">=</span> <span class="hl str">&quot;GGT GGTA GGTATT GGTATTTTAATT GGTATTTTAATTTATAGT&quot;</span><span class="hl sym">.</span><span class="hl kwd">split</span><span class="hl sym">(</span><span class="hl str">&quot; &quot;</span><span class="hl sym">);</span>
+      <span class="hl kwa">for</span> <span class="hl sym">(</span><span class="hl kwb">int</span> i <span class="hl sym">=</span> <span class="hl num">0</span><span class="hl sym">;</span> i <span class="hl sym">&lt;</span> ggtCounts<span class="hl sym">.</span>length<span class="hl sym">;</span> i<span class="hl sym">++)</span>
+        <span class="hl kwc">System</span><span class="hl sym">.</span>out<span class="hl sym">.</span><span class="hl kwd">printf</span><span class="hl sym">(</span><span class="hl str">&quot;%d</span><span class="hl esc">\t</span><span class="hl str">%s%n&quot;</span><span class="hl sym">,</span> ggtCounts<span class="hl sym">[</span>i<span class="hl sym">],</span> names<span class="hl sym">[</span>i<span class="hl sym">]);</span>
+    <span class="hl sym">}</span>
+
+    <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">process</span><span class="hl sym">(</span><span class="hl kwc">ByteBuffer</span> bytes<span class="hl sym">,</span> <span class="hl kwb">int</span> start<span class="hl sym">,</span> <span class="hl kwb">int</span> end<span class="hl sym">,</span> <span class="hl kwb">boolean</span> warmup<span class="hl sym">) {</span>
+      <span class="hl kwb">long</span> l <span class="hl sym">=</span> <span class="hl num">0</span><span class="hl sym">;</span>
+      <span class="hl kwa">if</span> <span class="hl sym">(</span>warmup<span class="hl sym">)</span>
+      <span class="hl kwa">for</span> <span class="hl sym">(</span><span class="hl kwb">int</span> i <span class="hl sym">=</span> start<span class="hl sym">;</span> i <span class="hl sym">&lt;</span> start <span class="hl sym">+</span> WARMUP<span class="hl sym">;</span> i<span class="hl sym">++) {</span>
+        <span class="hl kwb">int</span> b <span class="hl sym">=</span> values<span class="hl sym">[</span>bytes<span class="hl sym">.</span><span class="hl kwd">get</span><span class="hl sym">(</span>i<span class="hl sym">)];</span>
+        <span class="hl kwa">if</span> <span class="hl sym">(</span>b <span class="hl sym">&lt;</span> <span class="hl num">0</span><span class="hl sym">)</span> <span class="hl kwa">continue</span><span class="hl sym">;</span>
+        l <span class="hl sym">= (</span>l <span class="hl sym">&lt;&lt;</span> <span class="hl num">2</span><span class="hl sym">) |</span> b<span class="hl sym">;</span>
+      <span class="hl sym">}</span>
+
+      <span class="hl kwa">for</span> <span class="hl sym">(</span><span class="hl kwb">int</span> i <span class="hl sym">=</span> start <span class="hl sym">+</span> WARMUP<span class="hl sym">;</span> i <span class="hl sym">&lt;</span> end<span class="hl sym">;</span> i<span class="hl sym">++) {</span>
+        <span class="hl kwb">int</span> b <span class="hl sym">=</span> values<span class="hl sym">[</span>bytes<span class="hl sym">.</span><span class="hl kwd">get</span><span class="hl sym">(</span>i<span class="hl sym">)];</span>
+        <span class="hl kwa">if</span> <span class="hl sym">(</span>b <span class="hl sym">&lt;</span> <span class="hl num">0</span><span class="hl sym">)</span> <span class="hl kwa">continue</span><span class="hl sym">;</span>
+        l <span class="hl sym">= (</span>l <span class="hl sym">&lt;&lt;</span> <span class="hl num">2</span><span class="hl sym">) |</span> b<span class="hl sym">;</span>
+        <span class="hl kwd">increment</span><span class="hl sym">(</span>l <span class="hl sym">&amp;</span> MASK18<span class="hl sym">);</span>
+      <span class="hl sym">}</span>
+    <span class="hl sym">}</span>
+  <span class="hl sym">}</span>
+
+  <span class="hl kwa">static class</span> FindThreeRunnable <span class="hl kwa">implements</span> <span class="hl kwc">Runnable</span> <span class="hl sym">{</span>
+    <span class="hl kwa">static final</span> <span class="hl kwb">int</span> THREE_L <span class="hl sym">= (</span><span class="hl str">'&gt;'</span> <span class="hl sym">&lt;&lt;</span> <span class="hl num">24</span><span class="hl sym">) | (</span><span class="hl str">'T'</span> <span class="hl sym">&lt;&lt;</span> <span class="hl num">16</span><span class="hl sym">) | (</span><span class="hl str">'H'</span> <span class="hl sym">&lt;&lt;</span> <span class="hl num">8</span><span class="hl sym">) | (</span><span class="hl str">'R'</span> <span class="hl sym">&lt;&lt;</span> <span class="hl num">0</span><span class="hl sym">);</span>
+    <span class="hl kwa">static final</span> <span class="hl kwb">int</span> THREE_B <span class="hl sym">= (</span><span class="hl str">'&gt;'</span> <span class="hl sym">&lt;&lt;</span> <span class="hl num">0</span><span class="hl sym">) | (</span><span class="hl str">'T'</span> <span class="hl sym">&lt;&lt;</span> <span class="hl num">8</span><span class="hl sym">) | (</span><span class="hl str">'H'</span> <span class="hl sym">&lt;&lt;</span> <span class="hl num">16</span><span class="hl sym">) | (</span><span class="hl str">'R'</span> <span class="hl sym">&lt;&lt;</span> <span class="hl num">24</span><span class="hl sym">);</span>
+
+    <span class="hl kwa">static volatile</span> <span class="hl kwb">boolean</span> found <span class="hl sym">=</span> false<span class="hl sym">;</span>
+    <span class="hl kwa">private final</span> <span class="hl kwc">ByteBuffer</span> bb<span class="hl sym">;</span>
+    <span class="hl kwa">private final</span> <span class="hl kwc">BlockingQueue</span><span class="hl sym">&lt;</span><span class="hl kwc">Integer</span><span class="hl sym">&gt;</span> startOfThree<span class="hl sym">;</span>
+    <span class="hl kwa">private final</span> <span class="hl kwb">int</span> min<span class="hl sym">;</span>
+    <span class="hl kwa">private final</span> <span class="hl kwb">int</span> max<span class="hl sym">;</span>
+
+    <span class="hl kwa">public</span> <span class="hl kwd">FindThreeRunnable</span><span class="hl sym">(</span><span class="hl kwc">ByteBuffer</span> bb<span class="hl sym">,</span> <span class="hl kwc">BlockingQueue</span><span class="hl sym">&lt;</span><span class="hl kwc">Integer</span><span class="hl sym">&gt;</span> startOfThree<span class="hl sym">,</span> <span class="hl kwb">int</span> min<span class="hl sym">,</span> <span class="hl kwb">int</span> max<span class="hl sym">) {</span>
+      <span class="hl kwa">this</span><span class="hl sym">.</span>bb <span class="hl sym">=</span> bb<span class="hl sym">;</span>
+      <span class="hl kwa">this</span><span class="hl sym">.</span>startOfThree <span class="hl sym">=</span> startOfThree<span class="hl sym">;</span>
+      <span class="hl kwa">this</span><span class="hl sym">.</span>min <span class="hl sym">=</span> min<span class="hl sym">;</span>
+      <span class="hl kwa">this</span><span class="hl sym">.</span>max <span class="hl sym">=</span> max<span class="hl sym">;</span>
+    <span class="hl sym">}</span>
+
+    &#64;Override
+    <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">run</span><span class="hl sym">() {</span>
+      <span class="hl kwa">try</span> <span class="hl sym">{</span>
+        <span class="hl kwa">for</span> <span class="hl sym">(</span><span class="hl kwb">int</span> i <span class="hl sym">=</span> min<span class="hl sym">;</span> i <span class="hl sym">&lt;</span> max <span class="hl sym">&amp;&amp; !</span>found<span class="hl sym">;</span> i<span class="hl sym">++) {</span>
+          <span class="hl kwa">switch</span> <span class="hl sym">(</span>bb<span class="hl sym">.</span><span class="hl kwd">getInt</span><span class="hl sym">(</span>i<span class="hl sym">)) {</span>
+            <span class="hl kwa">case</span> THREE_B<span class="hl sym">:</span>
+            <span class="hl kwa">case</span> THREE_L<span class="hl sym">:</span>
+              <span class="hl kwa">while</span> <span class="hl sym">(</span>bb<span class="hl sym">.</span><span class="hl kwd">get</span><span class="hl sym">(</span>i<span class="hl sym">++) !=</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl sym">) ;</span>
+              startOfThree<span class="hl sym">.</span><span class="hl kwd">add</span><span class="hl sym">(</span>i<span class="hl sym">);</span>
+              found <span class="hl sym">=</span> true<span class="hl sym">;</span>
+              <span class="hl kwa">return</span><span class="hl sym">;</span>
+          <span class="hl sym">}</span>
+        <span class="hl sym">}</span>
+      <span class="hl sym">}</span> <span class="hl kwa">catch</span> <span class="hl sym">(</span><span class="hl kwc">Exception</span> e<span class="hl sym">) {</span>
+        e<span class="hl sym">.</span><span class="hl kwd">printStackTrace</span><span class="hl sym">();</span>
+      <span class="hl sym">}</span>
+    <span class="hl sym">}</span>
+  <span class="hl sym">}</span>
+<span class="hl sym">}</span>

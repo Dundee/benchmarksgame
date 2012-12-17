@@ -1,0 +1,49 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * contributed by Brian Anderson</span>
+<span class="hl com"> * Based on threadring.erlang by Jira Isa</span>
+<span class="hl com"> */</span>
+
+use std<span class="hl opt">;</span>
+
+<span class="hl kwb">const</span> n_threads<span class="hl opt">:</span> <span class="hl kwb">int</span> <span class="hl opt">=</span> <span class="hl num">503</span><span class="hl opt">;</span>
+
+fn <span class="hl kwd">start</span><span class="hl opt">(+</span>token<span class="hl opt">:</span> <span class="hl kwb">int</span><span class="hl opt">) {</span>
+    import iter<span class="hl opt">::*;</span>
+
+    let p <span class="hl opt">=</span> comm<span class="hl opt">::</span><span class="hl kwd">port</span><span class="hl opt">();</span>
+    let mut ch <span class="hl opt">=</span> comm<span class="hl opt">::</span><span class="hl kwd">chan</span><span class="hl opt">(</span>p<span class="hl opt">);</span>
+    <span class="hl kwa">for</span> <span class="hl kwb">int</span><span class="hl opt">::</span><span class="hl kwd">range</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">,</span> n_threads <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">) |</span>i<span class="hl opt">| {</span>
+        let id <span class="hl opt">=</span> n_threads <span class="hl opt">+</span> <span class="hl num">2</span> <span class="hl opt">-</span> i<span class="hl opt">;</span>
+        let to_child <span class="hl opt">=</span> <span class="hl kwa">do</span> task<span class="hl opt">::</span>spawn_listener<span class="hl opt">::&lt;</span><span class="hl kwb">int</span><span class="hl opt">&gt; |</span>p<span class="hl opt">,</span> copy ch<span class="hl opt">| {</span>
+            <span class="hl kwd">roundtrip</span><span class="hl opt">(</span>id<span class="hl opt">,</span> p<span class="hl opt">,</span> ch<span class="hl opt">)</span>
+        <span class="hl opt">};</span>
+        ch <span class="hl opt">=</span> to_child<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+    comm<span class="hl opt">::</span><span class="hl kwd">send</span><span class="hl opt">(</span>ch<span class="hl opt">,</span> token<span class="hl opt">);</span>
+    <span class="hl kwd">roundtrip</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span> p<span class="hl opt">,</span> ch<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+fn <span class="hl kwd">roundtrip</span><span class="hl opt">(</span>id<span class="hl opt">:</span> <span class="hl kwb">int</span><span class="hl opt">,</span> p<span class="hl opt">:</span> comm<span class="hl opt">::</span>port<span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">&gt;,</span> ch<span class="hl opt">:</span> comm<span class="hl opt">::</span>chan<span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">&gt;) {</span>
+    <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl kwa">true</span><span class="hl opt">) {</span>
+        alt comm<span class="hl opt">::</span><span class="hl kwd">recv</span><span class="hl opt">(</span>p<span class="hl opt">) {</span>
+          <span class="hl num">1</span> <span class="hl opt">{</span>
+            io<span class="hl opt">::</span><span class="hl kwd">println</span><span class="hl opt">(</span><span class="hl ppc">#fmt(</span><span class="hl pps">&quot;%d&quot;</span><span class="hl ppc">, id));</span>
+            ret<span class="hl opt">;</span>
+          <span class="hl opt">}</span>
+          token <span class="hl opt">{</span>
+            <span class="hl ppc">#debug(</span><span class="hl pps">&quot;%d %d&quot;</span><span class="hl ppc">, id, token);</span>
+            comm<span class="hl opt">::</span><span class="hl kwd">send</span><span class="hl opt">(</span>ch<span class="hl opt">,</span> token <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span>
+            <span class="hl kwa">if</span> token <span class="hl opt">&lt;=</span> n_threads <span class="hl opt">{</span>
+                ret<span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+          <span class="hl opt">}</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+fn <span class="hl kwd">main</span><span class="hl opt">(</span>args<span class="hl opt">: ~[</span>str<span class="hl opt">]) {</span>
+   let token <span class="hl opt">=</span> <span class="hl kwb">int</span><span class="hl opt">::</span><span class="hl kwd">from_str</span><span class="hl opt">(</span>args<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]).</span><span class="hl kwd">get</span><span class="hl opt">();</span>
+   <span class="hl kwd">start</span><span class="hl opt">(</span>token<span class="hl opt">);</span>
+<span class="hl opt">}</span>

@@ -1,0 +1,72 @@
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://shootout.alioth.debian.org/</span>
+<span class="hl slc">-- contributed by Mike Pall</span>
+<span class="hl slc">-- requires LGMP &quot;A GMP package for Lua 5.1&quot;</span>
+
+<span class="hl kwa">local</span> g<span class="hl opt">,</span> aux <span class="hl opt">= {}, {}</span>
+require<span class="hl str">&quot;c-gmp&quot;</span><span class="hl opt">(</span>g<span class="hl opt">,</span> aux<span class="hl opt">)</span>
+<span class="hl kwa">local</span> add<span class="hl opt">,</span> mul<span class="hl opt">,</span> div <span class="hl opt">=</span> g<span class="hl opt">.</span>mpz_add<span class="hl opt">,</span> g<span class="hl opt">.</span>mpz_mul_si<span class="hl opt">,</span> g<span class="hl opt">.</span>mpz_tdiv_q
+<span class="hl kwa">local</span> init<span class="hl opt">,</span> get <span class="hl opt">=</span> g<span class="hl opt">.</span>mpz_init_set_d<span class="hl opt">,</span> g<span class="hl opt">.</span>mpz_get_d
+
+<span class="hl kwa">local</span> q<span class="hl opt">,</span> r<span class="hl opt">,</span> s<span class="hl opt">,</span> t<span class="hl opt">,</span> u<span class="hl opt">,</span> v<span class="hl opt">,</span> w
+
+<span class="hl slc">-- Compose matrix with numbers on the right.</span>
+<span class="hl kwa">local function</span> <span class="hl kwd">compose_r</span><span class="hl opt">(</span>bq<span class="hl opt">,</span> br<span class="hl opt">,</span> bs<span class="hl opt">,</span> bt<span class="hl opt">)</span>
+  <span class="hl kwd">mul</span><span class="hl opt">(</span>r<span class="hl opt">,</span> bs<span class="hl opt">,</span> u<span class="hl opt">)</span>
+  <span class="hl kwd">mul</span><span class="hl opt">(</span>r<span class="hl opt">,</span> bq<span class="hl opt">,</span> r<span class="hl opt">)</span>
+  <span class="hl kwd">mul</span><span class="hl opt">(</span>t<span class="hl opt">,</span> br<span class="hl opt">,</span> v<span class="hl opt">)</span>
+  <span class="hl kwd">add</span><span class="hl opt">(</span>r<span class="hl opt">,</span> v<span class="hl opt">,</span> r<span class="hl opt">)</span>
+  <span class="hl kwd">mul</span><span class="hl opt">(</span>t<span class="hl opt">,</span> bt<span class="hl opt">,</span> t<span class="hl opt">)</span>
+  <span class="hl kwd">add</span><span class="hl opt">(</span>t<span class="hl opt">,</span> u<span class="hl opt">,</span> t<span class="hl opt">)</span>
+  <span class="hl kwd">mul</span><span class="hl opt">(</span>s<span class="hl opt">,</span> bt<span class="hl opt">,</span> s<span class="hl opt">)</span>
+  <span class="hl kwd">mul</span><span class="hl opt">(</span>q<span class="hl opt">,</span> bs<span class="hl opt">,</span> u<span class="hl opt">)</span>
+  <span class="hl kwd">add</span><span class="hl opt">(</span>s<span class="hl opt">,</span> u<span class="hl opt">,</span> s<span class="hl opt">)</span>
+  <span class="hl kwd">mul</span><span class="hl opt">(</span>q<span class="hl opt">,</span> bq<span class="hl opt">,</span> q<span class="hl opt">)</span>
+<span class="hl kwa">end</span>
+
+<span class="hl slc">-- Compose matrix with numbers on the left.</span>
+<span class="hl kwa">local function</span> <span class="hl kwd">compose_l</span><span class="hl opt">(</span>bq<span class="hl opt">,</span> br<span class="hl opt">,</span> bs<span class="hl opt">,</span> bt<span class="hl opt">)</span>
+  <span class="hl kwd">mul</span><span class="hl opt">(</span>r<span class="hl opt">,</span> bt<span class="hl opt">,</span> r<span class="hl opt">)</span>
+  <span class="hl kwd">mul</span><span class="hl opt">(</span>q<span class="hl opt">,</span> br<span class="hl opt">,</span> u<span class="hl opt">)</span>
+  <span class="hl kwd">add</span><span class="hl opt">(</span>r<span class="hl opt">,</span> u<span class="hl opt">,</span> r<span class="hl opt">)</span>
+  <span class="hl kwd">mul</span><span class="hl opt">(</span>t<span class="hl opt">,</span> bs<span class="hl opt">,</span> u<span class="hl opt">)</span>
+  <span class="hl kwd">mul</span><span class="hl opt">(</span>t<span class="hl opt">,</span> bt<span class="hl opt">,</span> t<span class="hl opt">)</span>
+  <span class="hl kwd">mul</span><span class="hl opt">(</span>s<span class="hl opt">,</span> br<span class="hl opt">,</span> v<span class="hl opt">)</span>
+  <span class="hl kwd">add</span><span class="hl opt">(</span>t<span class="hl opt">,</span> v<span class="hl opt">,</span> t<span class="hl opt">)</span>
+  <span class="hl kwd">mul</span><span class="hl opt">(</span>s<span class="hl opt">,</span> bq<span class="hl opt">,</span> s<span class="hl opt">)</span>
+  <span class="hl kwd">add</span><span class="hl opt">(</span>s<span class="hl opt">,</span> u<span class="hl opt">,</span> s<span class="hl opt">)</span>
+  <span class="hl kwd">mul</span><span class="hl opt">(</span>q<span class="hl opt">,</span> bq<span class="hl opt">,</span> q<span class="hl opt">)</span>
+<span class="hl kwa">end</span>
+
+<span class="hl slc">-- Extract one digit.</span>
+<span class="hl kwa">local function</span> <span class="hl kwd">extract</span><span class="hl opt">(</span>j<span class="hl opt">)</span>
+  <span class="hl kwd">mul</span><span class="hl opt">(</span>q<span class="hl opt">,</span> j<span class="hl opt">,</span> u<span class="hl opt">)</span>
+  <span class="hl kwd">add</span><span class="hl opt">(</span>u<span class="hl opt">,</span> r<span class="hl opt">,</span> u<span class="hl opt">)</span>
+  <span class="hl kwd">mul</span><span class="hl opt">(</span>s<span class="hl opt">,</span> j<span class="hl opt">,</span> v<span class="hl opt">)</span>
+  <span class="hl kwd">add</span><span class="hl opt">(</span>v<span class="hl opt">,</span> t<span class="hl opt">,</span> v<span class="hl opt">)</span>
+  <span class="hl kwa">return</span> <span class="hl kwd">get</span><span class="hl opt">(</span><span class="hl kwd">div</span><span class="hl opt">(</span>u<span class="hl opt">,</span> v<span class="hl opt">,</span> w<span class="hl opt">))</span>
+<span class="hl kwa">end</span>
+
+<span class="hl slc">-- Generate successive digits of PI.</span>
+<span class="hl kwa">local function</span> <span class="hl kwd">pidigits</span><span class="hl opt">(</span>N<span class="hl opt">)</span>
+  <span class="hl kwa">local</span> <span class="hl kwb">write</span> <span class="hl opt">=</span> io<span class="hl opt">.</span><span class="hl kwb">write</span>
+  <span class="hl kwa">local</span> k <span class="hl opt">=</span> <span class="hl num">1</span>
+  q<span class="hl opt">,</span> r<span class="hl opt">,</span> s<span class="hl opt">,</span> t <span class="hl opt">=</span> <span class="hl kwd">init</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">),</span> <span class="hl kwd">init</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">),</span> <span class="hl kwd">init</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">),</span> <span class="hl kwd">init</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)</span>
+  u<span class="hl opt">,</span> v<span class="hl opt">,</span> w <span class="hl opt">=</span> <span class="hl kwd">init</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">),</span> <span class="hl kwd">init</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">),</span> <span class="hl kwd">init</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">)</span>
+  <span class="hl kwa">local</span> i <span class="hl opt">=</span> <span class="hl num">0</span>
+  <span class="hl kwa">while</span> i <span class="hl opt">&lt;</span> N <span class="hl kwa">do</span>
+    <span class="hl kwa">local</span> y <span class="hl opt">=</span> <span class="hl kwd">extract</span><span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">)</span>
+    <span class="hl kwa">if</span> y <span class="hl opt">==</span> <span class="hl kwd">extract</span><span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">)</span> <span class="hl kwa">then</span>
+      <span class="hl kwb">write</span><span class="hl opt">(</span>y<span class="hl opt">)</span>
+      i <span class="hl opt">=</span> i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span> <span class="hl kwa">if</span> i <span class="hl opt">%</span> <span class="hl num">10</span> <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl kwa">then</span> <span class="hl kwb">write</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">:&quot;</span><span class="hl opt">,</span> i<span class="hl opt">,</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">)</span> <span class="hl kwa">end</span>
+      <span class="hl kwd">compose_r</span><span class="hl opt">(</span><span class="hl num">10</span><span class="hl opt">, -</span><span class="hl num">10</span><span class="hl opt">*</span>y<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">)</span>
+    <span class="hl kwa">else</span>
+      <span class="hl kwd">compose_l</span><span class="hl opt">(</span>k<span class="hl opt">,</span> <span class="hl num">4</span><span class="hl opt">*</span>k<span class="hl opt">+</span><span class="hl num">2</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">*</span>k<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+      k <span class="hl opt">=</span> k <span class="hl opt">+</span> <span class="hl num">1</span>
+    <span class="hl kwa">end</span>
+  <span class="hl kwa">end</span>
+  <span class="hl kwa">if</span> i <span class="hl opt">%</span> <span class="hl num">10</span> <span class="hl opt">~=</span> <span class="hl num">0</span> <span class="hl kwa">then</span> <span class="hl kwb">write</span><span class="hl opt">(</span><span class="hl kwb">string</span><span class="hl opt">.</span><span class="hl kwd">rep</span><span class="hl opt">(</span><span class="hl str">&quot; &quot;</span><span class="hl opt">,</span> <span class="hl num">10</span> <span class="hl opt">-</span> N <span class="hl opt">%</span> <span class="hl num">10</span><span class="hl opt">),</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">:&quot;</span><span class="hl opt">,</span> N<span class="hl opt">,</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">)</span> <span class="hl kwa">end</span>
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">local</span> N <span class="hl opt">=</span> <span class="hl kwb">tonumber</span><span class="hl opt">(</span>arg <span class="hl kwa">and</span> arg<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">])</span> <span class="hl kwa">or</span> <span class="hl num">27</span>
+<span class="hl kwd">pidigits</span><span class="hl opt">(</span>N<span class="hl opt">)</span>

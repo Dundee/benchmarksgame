@@ -1,0 +1,126 @@
+<span class="hl com">/* The Great Computer Language Shootout</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com"> </span>
+<span class="hl com">   contributed by Isaac Gouy</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>math<span class="hl opt">.</span>BigInteger<span class="hl opt">;</span>
+
+<span class="hl kwa">public class</span> pidigits <span class="hl opt">{</span>
+   <span class="hl kwa">static final</span> <span class="hl kwb">int</span> L <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">main</span><span class="hl opt">(</span>String args<span class="hl opt">[]) {</span> 
+      <span class="hl kwb">int</span> n <span class="hl opt">=</span> Integer<span class="hl opt">.</span><span class="hl kwd">parseInt</span><span class="hl opt">(</span>args<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]);</span>
+      <span class="hl kwb">int</span> j <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   
+      PiDigitSpigot digits <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PiDigitSpigot</span><span class="hl opt">();</span>
+      
+      <span class="hl kwa">while</span> <span class="hl opt">(</span>n <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">){</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>n <span class="hl opt">&gt;=</span> L<span class="hl opt">){</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">&lt;</span>L<span class="hl opt">;</span> i<span class="hl opt">++)</span> System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">print</span><span class="hl opt">(</span> digits<span class="hl opt">.</span><span class="hl kwd">next</span><span class="hl opt">() );</span>
+            j <span class="hl opt">+=</span> L<span class="hl opt">;</span>
+         <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">&lt;</span>n<span class="hl opt">;</span> i<span class="hl opt">++)</span> System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">print</span><span class="hl opt">(</span> digits<span class="hl opt">.</span><span class="hl kwd">next</span><span class="hl opt">() );</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">=</span>n<span class="hl opt">;</span> i<span class="hl opt">&lt;</span>L<span class="hl opt">;</span> i<span class="hl opt">++)</span> System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">print</span><span class="hl opt">(</span><span class="hl str">&quot; &quot;</span><span class="hl opt">);</span>  
+            j <span class="hl opt">+=</span> n<span class="hl opt">;</span>   
+         <span class="hl opt">}</span>
+         System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">print</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">:&quot;</span><span class="hl opt">);</span> System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">(</span>j<span class="hl opt">);</span>
+         n <span class="hl opt">-=</span> L<span class="hl opt">;</span>           
+      <span class="hl opt">}</span>               
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+
+<span class="hl kwa">class</span> PiDigitSpigot <span class="hl opt">{</span>
+   Transformation z<span class="hl opt">,</span> x<span class="hl opt">,</span> inverse<span class="hl opt">;</span>            
+       
+   <span class="hl kwa">public</span> <span class="hl kwd">PiDigitSpigot</span><span class="hl opt">(){</span>
+      z <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Transformation</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">1</span><span class="hl opt">);</span>
+      x <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Transformation</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">);</span>
+      inverse <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Transformation</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">);</span>
+   <span class="hl opt">}</span>   
+   
+   <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">next</span><span class="hl opt">(){</span>
+      <span class="hl kwb">int</span> y <span class="hl opt">=</span> <span class="hl kwd">digit</span><span class="hl opt">();</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwd">isSafe</span><span class="hl opt">(</span>y<span class="hl opt">)){</span> 
+         z <span class="hl opt">=</span> <span class="hl kwd">produce</span><span class="hl opt">(</span>y<span class="hl opt">);</span> <span class="hl kwa">return</span> y<span class="hl opt">;</span>
+      <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+         z <span class="hl opt">=</span> <span class="hl kwd">consume</span><span class="hl opt">(</span> x<span class="hl opt">.</span><span class="hl kwd">next</span><span class="hl opt">() );</span> <span class="hl kwa">return</span> <span class="hl kwd">next</span><span class="hl opt">();</span>   
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>    
+      
+   <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">digit</span><span class="hl opt">(){</span>
+      <span class="hl kwa">return</span> z<span class="hl opt">.</span><span class="hl kwd">extract</span><span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">);</span>
+   <span class="hl opt">}</span>        
+   
+   <span class="hl kwa">public</span> <span class="hl kwb">boolean</span> <span class="hl kwd">isSafe</span><span class="hl opt">(</span><span class="hl kwb">int</span> digit<span class="hl opt">){</span>
+      <span class="hl kwa">return</span> digit <span class="hl opt">==</span> z<span class="hl opt">.</span><span class="hl kwd">extract</span><span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">);</span>
+   <span class="hl opt">}</span>   
+   
+   <span class="hl kwa">public</span> Transformation <span class="hl kwd">produce</span><span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">){</span>
+      <span class="hl kwa">return</span> <span class="hl opt">(</span> inverse<span class="hl opt">.</span><span class="hl kwd">qrst</span><span class="hl opt">(</span><span class="hl num">10</span><span class="hl opt">,-</span><span class="hl num">10</span><span class="hl opt">*</span>i<span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">1</span><span class="hl opt">) ).</span><span class="hl kwd">compose</span><span class="hl opt">(</span>z<span class="hl opt">);</span>
+   <span class="hl opt">}</span>     
+      
+   <span class="hl kwa">public</span> Transformation <span class="hl kwd">consume</span><span class="hl opt">(</span>Transformation a<span class="hl opt">){</span>
+      <span class="hl kwa">return</span> z<span class="hl opt">.</span><span class="hl kwd">compose</span><span class="hl opt">(</span>a<span class="hl opt">);</span>
+   <span class="hl opt">}</span>                   
+<span class="hl opt">}</span> 
+
+
+<span class="hl kwa">class</span> Transformation <span class="hl opt">{</span>
+   BigInteger q<span class="hl opt">,</span> r<span class="hl opt">,</span> s<span class="hl opt">,</span> t<span class="hl opt">;</span>
+   <span class="hl kwb">int</span> k<span class="hl opt">;</span>              
+       
+   <span class="hl kwa">public</span> <span class="hl kwd">Transformation</span><span class="hl opt">(</span><span class="hl kwb">int</span> q<span class="hl opt">,</span> <span class="hl kwb">int</span> r<span class="hl opt">,</span> <span class="hl kwb">int</span> s<span class="hl opt">,</span> <span class="hl kwb">int</span> t<span class="hl opt">){</span>
+      <span class="hl kwa">this</span><span class="hl opt">.</span>q <span class="hl opt">=</span> BigInteger<span class="hl opt">.</span><span class="hl kwd">valueOf</span><span class="hl opt">(</span>q<span class="hl opt">);</span>
+      <span class="hl kwa">this</span><span class="hl opt">.</span>r <span class="hl opt">=</span> BigInteger<span class="hl opt">.</span><span class="hl kwd">valueOf</span><span class="hl opt">(</span>r<span class="hl opt">);</span>
+      <span class="hl kwa">this</span><span class="hl opt">.</span>s <span class="hl opt">=</span> BigInteger<span class="hl opt">.</span><span class="hl kwd">valueOf</span><span class="hl opt">(</span>s<span class="hl opt">);</span>
+      <span class="hl kwa">this</span><span class="hl opt">.</span>t <span class="hl opt">=</span> BigInteger<span class="hl opt">.</span><span class="hl kwd">valueOf</span><span class="hl opt">(</span>t<span class="hl opt">);</span>                  
+      k <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+   
+   <span class="hl kwa">public</span> <span class="hl kwd">Transformation</span><span class="hl opt">(</span>BigInteger q<span class="hl opt">,</span> BigInteger r<span class="hl opt">,</span> BigInteger s<span class="hl opt">,</span> BigInteger t<span class="hl opt">){</span>
+      <span class="hl kwa">this</span><span class="hl opt">.</span>q <span class="hl opt">=</span> q<span class="hl opt">;</span>
+      <span class="hl kwa">this</span><span class="hl opt">.</span>r <span class="hl opt">=</span> r<span class="hl opt">;</span>
+      <span class="hl kwa">this</span><span class="hl opt">.</span>s <span class="hl opt">=</span> s<span class="hl opt">;</span>
+      <span class="hl kwa">this</span><span class="hl opt">.</span>t <span class="hl opt">=</span> t<span class="hl opt">;</span>                  
+      k <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl opt">}</span>        
+   
+   <span class="hl kwa">public</span> Transformation <span class="hl kwd">next</span><span class="hl opt">(){</span>
+      k<span class="hl opt">++;</span>
+      q <span class="hl opt">=</span> BigInteger<span class="hl opt">.</span><span class="hl kwd">valueOf</span><span class="hl opt">(</span>k<span class="hl opt">);</span>
+      r <span class="hl opt">=</span> BigInteger<span class="hl opt">.</span><span class="hl kwd">valueOf</span><span class="hl opt">(</span><span class="hl num">4</span> <span class="hl opt">*</span> k <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">);</span>
+      s <span class="hl opt">=</span> BigInteger<span class="hl opt">.</span><span class="hl kwd">valueOf</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
+      t <span class="hl opt">=</span> BigInteger<span class="hl opt">.</span><span class="hl kwd">valueOf</span><span class="hl opt">(</span><span class="hl num">2</span> <span class="hl opt">*</span> k <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">);</span> 
+      <span class="hl kwa">return this</span><span class="hl opt">;</span>                 
+   <span class="hl opt">}</span>      
+   
+   <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">extract</span><span class="hl opt">(</span><span class="hl kwb">int</span> j<span class="hl opt">){</span>
+      BigInteger bigj <span class="hl opt">=</span> BigInteger<span class="hl opt">.</span><span class="hl kwd">valueOf</span><span class="hl opt">(</span>j<span class="hl opt">);</span>
+      BigInteger numerator <span class="hl opt">= (</span>q<span class="hl opt">.</span><span class="hl kwd">multiply</span><span class="hl opt">(</span>bigj<span class="hl opt">)).</span><span class="hl kwd">add</span><span class="hl opt">(</span>r<span class="hl opt">);</span>
+      BigInteger denominator <span class="hl opt">= (</span>s<span class="hl opt">.</span><span class="hl kwd">multiply</span><span class="hl opt">(</span>bigj<span class="hl opt">)).</span><span class="hl kwd">add</span><span class="hl opt">(</span>t<span class="hl opt">);</span>                  
+      <span class="hl kwa">return</span> <span class="hl opt">(</span> numerator<span class="hl opt">.</span><span class="hl kwd">divide</span><span class="hl opt">(</span>denominator<span class="hl opt">) ).</span><span class="hl kwd">intValue</span><span class="hl opt">();</span>                    
+   <span class="hl opt">}</span>     
+   
+   <span class="hl kwa">public</span> Transformation <span class="hl kwd">qrst</span><span class="hl opt">(</span><span class="hl kwb">int</span> q<span class="hl opt">,</span> <span class="hl kwb">int</span> r<span class="hl opt">,</span> <span class="hl kwb">int</span> s<span class="hl opt">,</span> <span class="hl kwb">int</span> t<span class="hl opt">){</span>
+      <span class="hl kwa">this</span><span class="hl opt">.</span>q <span class="hl opt">=</span> BigInteger<span class="hl opt">.</span><span class="hl kwd">valueOf</span><span class="hl opt">(</span>q<span class="hl opt">);</span>
+      <span class="hl kwa">this</span><span class="hl opt">.</span>r <span class="hl opt">=</span> BigInteger<span class="hl opt">.</span><span class="hl kwd">valueOf</span><span class="hl opt">(</span>r<span class="hl opt">);</span>
+      <span class="hl kwa">this</span><span class="hl opt">.</span>s <span class="hl opt">=</span> BigInteger<span class="hl opt">.</span><span class="hl kwd">valueOf</span><span class="hl opt">(</span>s<span class="hl opt">);</span>
+      <span class="hl kwa">this</span><span class="hl opt">.</span>t <span class="hl opt">=</span> BigInteger<span class="hl opt">.</span><span class="hl kwd">valueOf</span><span class="hl opt">(</span>t<span class="hl opt">);</span> 
+      k <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>  
+      <span class="hl kwa">return this</span><span class="hl opt">;</span>                             
+   <span class="hl opt">}</span>         
+  
+   <span class="hl kwa">public</span> Transformation <span class="hl kwd">compose</span><span class="hl opt">(</span>Transformation a<span class="hl opt">){</span>      
+      <span class="hl kwa">return new</span> <span class="hl kwd">Transformation</span><span class="hl opt">(</span>
+         q<span class="hl opt">.</span><span class="hl kwd">multiply</span><span class="hl opt">(</span>a<span class="hl opt">.</span>q<span class="hl opt">)</span>
+         <span class="hl opt">,(</span>q<span class="hl opt">.</span><span class="hl kwd">multiply</span><span class="hl opt">(</span>a<span class="hl opt">.</span>r<span class="hl opt">)).</span><span class="hl kwd">add</span><span class="hl opt">( (</span>r<span class="hl opt">.</span><span class="hl kwd">multiply</span><span class="hl opt">(</span>a<span class="hl opt">.</span>t<span class="hl opt">)) )</span> 
+         <span class="hl opt">,(</span>s<span class="hl opt">.</span><span class="hl kwd">multiply</span><span class="hl opt">(</span>a<span class="hl opt">.</span>q<span class="hl opt">)).</span><span class="hl kwd">add</span><span class="hl opt">( (</span>t<span class="hl opt">.</span><span class="hl kwd">multiply</span><span class="hl opt">(</span>a<span class="hl opt">.</span>s<span class="hl opt">)) )</span> 
+         <span class="hl opt">,(</span>s<span class="hl opt">.</span><span class="hl kwd">multiply</span><span class="hl opt">(</span>a<span class="hl opt">.</span>r<span class="hl opt">)).</span><span class="hl kwd">add</span><span class="hl opt">( (</span>t<span class="hl opt">.</span><span class="hl kwd">multiply</span><span class="hl opt">(</span>a<span class="hl opt">.</span>t<span class="hl opt">)) )</span>                   
+         <span class="hl opt">);</span>                    
+   <span class="hl opt">}</span>          
+<span class="hl opt">}</span>
+
+
+  

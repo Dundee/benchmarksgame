@@ -1,0 +1,38 @@
+
+Sat, 14 Jul 2012 01:19:36 GMT
+
+MAKE:
+/usr/local/src/rust-0.3/bin/rustc --opt-level=3 mandelbrot.rs -o mandelbrot.rust_run
+mandelbrot.rs:80:0: 120:1 [1;33mwarning:[0m unused variable: `path`
+mandelbrot.rs:80 fn writer(path: str, writech: comm::chan<comm::chan<line>>, size: uint)
+mandelbrot.rs:81 {
+mandelbrot.rs:82     let p: comm::port<line> = comm::port();
+mandelbrot.rs:83     let ch = comm::chan(p);
+mandelbrot.rs:84     comm::send(writech, ch);
+mandelbrot.rs:85     let cout: io::writer = io::stdout();
+                 ...
+mandelbrot.rs:88:16: 88:35 [1;33mwarning:[0m instantiating copy type parameter with a not implicitly copyable type
+mandelbrot.rs:88     let lines = std::map::uint_hash();
+                                 ^~~~~~~~~~~~~~~~~~~
+mandelbrot.rs:99:19: 99:37 [1;33mwarning:[0m instantiating copy type parameter with a not implicitly copyable type
+mandelbrot.rs:99                 if lines.contains_key(prev) {
+                                    ^~~~~~~~~~~~~~~~~~
+mandelbrot.rs:103:36: 103:45 [1;33mwarning:[0m instantiating copy type parameter with a not implicitly copyable type
+mandelbrot.rs:103                     let v : ~[u8] = lines.get(prev);
+                                                      ^~~~~~~~~
+mandelbrot.rs:106:20: 106:32 [1;33mwarning:[0m instantiating copy type parameter with a not implicitly copyable type
+mandelbrot.rs:106                     lines.remove(prev);
+                                      ^~~~~~~~~~~~
+mandelbrot.rs:116:34: 116:41 [1;33mwarning:[0m implicitly copying a non-implicitly-copyable value
+mandelbrot.rs:116             lines.insert(aline.i, aline.b);
+                                                    ^~~~~~~
+mandelbrot.rs:116:12: 116:24 [1;33mwarning:[0m instantiating copy type parameter with a not implicitly copyable type
+mandelbrot.rs:116             lines.insert(aline.i, aline.b);
+                              ^~~~~~~~~~~~
+rm mandelbrot.rs
+0.88s to complete and log all make actions
+
+COMMAND LINE:
+./mandelbrot.rust_run 16000
+
+(BINARY) PROGRAM OUTPUT NOT SHOWN

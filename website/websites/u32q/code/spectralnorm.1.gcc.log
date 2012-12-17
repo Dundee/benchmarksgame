@@ -1,0 +1,13 @@
+
+Sat, 28 Apr 2012 18:01:53 GMT
+
+MAKE:
+/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -Os -fopenmp -mfpmath=sse -msse2 spectralnorm.c -o spectralnorm.gcc_run -lm
+rm spectralnorm.c
+0.10s to complete and log all make actions
+
+COMMAND LINE:
+./spectralnorm.gcc_run 5500
+
+PROGRAM OUTPUT:
+1.274224153

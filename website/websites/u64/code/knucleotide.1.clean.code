@@ -1,0 +1,133 @@
+<span class="hl com">/*</span>
+<span class="hl com">	The Computer Language Shootout</span>
+<span class="hl com">	http://shootout.alioth.debian.org/</span>
+<span class="hl com">	the hash function is ported from &quot;simple_hash.h&quot;, available from</span>
+<span class="hl com">	http://cvs.alioth.debian.org/cgi-bin/cvsweb.cgi/shootout/bench/Include/?cvsroot=shootout</span>
+<span class="hl com">	the hashtable functions are based on code written by Isaac Gouy</span>
+<span class="hl com">	contributed by John van Groningen</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">module</span> knucleotide
+
+<span class="hl kwa">import</span> StdEnv<span class="hl opt">,</span>StdOverloadedList<span class="hl opt">,</span>LanguageShootout
+
+Start world
+	<span class="hl opt"># (</span>file<span class="hl opt">,</span>world<span class="hl opt">) =</span> stdio world
+	  lines <span class="hl opt">=</span> read_lines <span class="hl opt">(</span>find_three file<span class="hl opt">)</span>
+	
+	  n_chars <span class="hl opt">=</span> foldl <span class="hl opt">(</span><span class="hl esc">\n</span> s<span class="hl opt">=</span>n<span class="hl opt">+</span>size s<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span> <span class="hl num">0</span> lines
+	  dna <span class="hl opt">=</span> fill_sequence lines <span class="hl num">0</span> <span class="hl opt">(</span>createArray n_chars <span class="hl opt">'</span>?<span class="hl opt">')</span>
+
+	 <span class="hl opt">= ( [([</span>key<span class="hl opt">+++</span><span class="hl str">&quot; &quot;</span><span class="hl opt">+++</span>toStringWith <span class="hl num">3</span> <span class="hl opt">(</span><span class="hl num">100.0</span><span class="hl opt">*</span>toReal val<span class="hl opt">/</span>toReal <span class="hl opt">(</span>n_chars<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">-</span>l<span class="hl opt">))+++</span><span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span>
+			<span class="hl esc">\\</span> <span class="hl opt">{</span>key<span class="hl opt">,</span>val<span class="hl opt">} &lt;-</span> sort <span class="hl opt">(</span>htItems <span class="hl opt">(</span>frequencies l dna<span class="hl opt">))],'</span><span class="hl esc">\n</span><span class="hl opt">')</span> <span class="hl esc">\\</span> l<span class="hl opt">&lt;-[</span><span class="hl num">1</span><span class="hl opt">.</span><span class="hl num">.2</span><span class="hl opt">]],</span>
+
+	 	<span class="hl opt">[</span>toString <span class="hl opt">((</span>htFind s <span class="hl opt">(</span>frequencies <span class="hl opt">(</span>size s<span class="hl opt">)</span> dna<span class="hl opt">)).</span>val<span class="hl opt">)+++</span><span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">&quot;</span><span class="hl opt">+++</span>s<span class="hl opt">+++</span><span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span>
+			<span class="hl esc">\\</span> s <span class="hl opt">&lt;- [</span> <span class="hl str">&quot;GGT&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;GGTA&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;GGTATT&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;GGTATTTTAATT&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;GGTATTTTAATTTATAGT&quot;</span><span class="hl opt">] ])</span>
+
+find_three file
+	<span class="hl opt"># (</span>line<span class="hl opt">,</span>file<span class="hl opt">) =</span> freadline file
+	| line<span class="hl opt">.[</span><span class="hl num">0</span><span class="hl opt">]=='&gt;' &amp;&amp;</span> line<span class="hl opt">%(</span><span class="hl num">1</span><span class="hl opt">,</span><span class="hl num">5</span><span class="hl opt">)==</span><span class="hl str">&quot;THREE&quot;</span>
+		<span class="hl opt">=</span> file
+		<span class="hl opt">=</span> find_three file
+
+read_lines file
+	<span class="hl opt"># (</span>line<span class="hl opt">,</span>file<span class="hl opt">) =</span> freadline file
+	| size line<span class="hl opt">==</span><span class="hl num">0</span>  <span class="hl opt">= []</span>
+	| line<span class="hl opt">.[</span><span class="hl num">0</span><span class="hl opt">]==';' =</span> read_lines file
+	| line<span class="hl opt">.[</span><span class="hl num">0</span><span class="hl opt">]=='&gt;' = []</span>
+	| line<span class="hl opt">.[</span>size line<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">]=='</span><span class="hl esc">\n</span><span class="hl opt">'</span>
+		<span class="hl opt">= [</span>line <span class="hl opt">:</span> read_lines file<span class="hl opt">]</span>
+		<span class="hl opt">= [</span>line<span class="hl opt">+++</span><span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> <span class="hl opt">:</span> read_lines file<span class="hl opt">]</span>
+
+fill_sequence <span class="hl opt">[]</span> i a <span class="hl opt">=</span> a
+fill_sequence <span class="hl opt">[</span>l<span class="hl opt">:</span>ls<span class="hl opt">]</span> i a
+	<span class="hl opt">#</span> n <span class="hl opt">=</span> size l<span class="hl opt">-</span><span class="hl num">1</span>
+	<span class="hl opt">=</span> fill_sequence ls <span class="hl opt">(</span>i<span class="hl opt">+</span>n<span class="hl opt">) (</span>copy <span class="hl opt">(</span>n<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span> i a l<span class="hl opt">)</span> <span class="hl kwa">where</span>
+
+	copy <span class="hl opt">:: !</span><span class="hl kwb">Int</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">!*{#</span><span class="hl kwb">Char</span><span class="hl opt">} !{#</span><span class="hl kwb">Char</span><span class="hl opt">} -&gt; *{#</span><span class="hl kwb">Char</span><span class="hl opt">}</span>
+	copy j i a l
+		| j<span class="hl opt">&gt;=</span><span class="hl num">0</span>	<span class="hl opt">=</span> copy <span class="hl opt">(</span>j<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span> i <span class="hl opt">{</span>a <span class="hl opt">&amp; [</span>i<span class="hl opt">+</span>j<span class="hl opt">]=</span>toUpper l<span class="hl opt">.[</span>j<span class="hl opt">]}</span> l
+				<span class="hl opt">=</span> a
+
+<span class="hl kwa">instance</span> <span class="hl opt">&lt;</span> Item <span class="hl kwa">where</span> <span class="hl opt">(&lt;)</span> i1 i2 <span class="hl opt">=</span> <span class="hl kwa">if</span> <span class="hl opt">(</span>i1<span class="hl opt">.</span>val<span class="hl opt">&lt;&gt;</span>i2<span class="hl opt">.</span>val<span class="hl opt">) (</span>i1<span class="hl opt">.</span>val<span class="hl opt">&gt;</span>i2<span class="hl opt">.</span>val<span class="hl opt">) (</span>i1<span class="hl opt">.</span>key<span class="hl opt">&lt;</span>i2<span class="hl opt">.</span>key<span class="hl opt">)</span>
+
+frequencies l s
+	<span class="hl opt">#</span> htSize1 <span class="hl opt">=</span> <span class="hl num">25</span><span class="hl opt">&lt;&lt;(</span>l<span class="hl opt">+</span>l<span class="hl opt">)</span>
+	  htSize <span class="hl opt">=</span> <span class="hl kwa">if</span> <span class="hl opt">(</span>l<span class="hl opt">&lt;=</span><span class="hl num">13</span> <span class="hl opt">&amp;&amp;</span> htSize1<span class="hl opt">&lt;</span>size s<span class="hl opt">)</span> htSize1 <span class="hl opt">(</span>size s<span class="hl opt">)</span>
+	<span class="hl opt">=</span> add_sub_strings <span class="hl num">0</span> <span class="hl opt">(</span>l<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">) (</span>htNew htSize<span class="hl opt">)</span> <span class="hl kwa">where</span>
+
+	add_sub_strings i l ht
+		<span class="hl opt">#</span> e<span class="hl opt">=</span>i<span class="hl opt">+</span>l
+		| e<span class="hl opt">&gt;=</span>size s <span class="hl opt">=</span> ht
+		<span class="hl opt">=</span> add_sub_strings <span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span> l <span class="hl opt">(</span>htAddOrUpdate <span class="hl opt">(</span>s <span class="hl opt">% (</span>i<span class="hl opt">,</span>e<span class="hl opt">))</span> <span class="hl num">1</span> <span class="hl opt">(\</span>x<span class="hl opt">-&gt;</span>x<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span> ht<span class="hl opt">)</span>
+
+<span class="hl slc">// hash table</span>
+
+<span class="hl slc">//hash :: !{#Char} !Int -&gt; Int</span>
+hash key nBuckets
+	<span class="hl opt">#</span> h <span class="hl opt">=</span> loop key <span class="hl opt">(</span>size key<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span> <span class="hl num">0</span><span class="hl opt">;</span>
+	| h<span class="hl opt">&gt;=</span><span class="hl num">0</span>
+		<span class="hl opt">=</span> <span class="hl kwa">if</span> <span class="hl opt">(</span>h<span class="hl opt">&lt;</span>nBuckets<span class="hl opt">)</span> h <span class="hl opt">(</span>h rem nBuckets<span class="hl opt">)</span>
+		<span class="hl opt">=</span> ~<span class="hl opt">(</span>h rem nBuckets<span class="hl opt">)</span> <span class="hl kwa">where</span>
+
+	loop <span class="hl opt">:: !{#</span><span class="hl kwb">Char</span><span class="hl opt">} !</span><span class="hl kwb">Int</span> <span class="hl opt">!</span><span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span>
+	loop k n h <span class="hl opt">=</span> <span class="hl kwa">if</span> <span class="hl opt">(</span>n<span class="hl opt">&gt;=</span><span class="hl num">0</span><span class="hl opt">) (</span>loop k <span class="hl opt">(</span>n<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">) (</span><span class="hl num">5</span><span class="hl opt">*</span>h <span class="hl opt">+</span> toInt k<span class="hl opt">.[</span>n<span class="hl opt">]))</span> h
+
+<span class="hl opt">::</span> Item <span class="hl opt">= {</span> key <span class="hl opt">:: !</span>String<span class="hl opt">,</span> val <span class="hl opt">:: !</span><span class="hl kwb">Int</span> <span class="hl opt">}</span>
+
+<span class="hl opt">::</span> HashTable <span class="hl opt">= {</span> table<span class="hl opt">::!.{!</span>Buckets<span class="hl opt">} }</span>
+
+<span class="hl opt">::</span> Buckets <span class="hl opt">=</span> EmptyBucket | Bucket <span class="hl opt">!</span>Item | Buckets <span class="hl opt">![!</span>Item<span class="hl opt">!]</span>
+
+htNew <span class="hl opt">:: !</span><span class="hl kwb">Int</span> <span class="hl opt">-&gt; *</span>HashTable
+htNew n <span class="hl opt">= {</span> table <span class="hl opt">=</span> createArray nprime EmptyBucket <span class="hl opt">}</span> <span class="hl kwa">where</span>
+
+   nprime <span class="hl opt">=</span> hd <span class="hl opt">(</span>dropWhile <span class="hl opt">(\</span>x <span class="hl opt">-&gt;</span> x <span class="hl opt">&lt;</span> n<span class="hl opt">)</span> primes<span class="hl opt">)</span>
+
+primes <span class="hl opt">=: [</span> <span class="hl num">53</span><span class="hl opt">,</span>       <span class="hl num">97</span><span class="hl opt">,</span>        <span class="hl num">193</span><span class="hl opt">,</span>       <span class="hl num">389</span><span class="hl opt">,</span>       <span class="hl num">769</span><span class="hl opt">,</span>
+            <span class="hl num">1543</span><span class="hl opt">,</span>     <span class="hl num">3079</span><span class="hl opt">,</span>      <span class="hl num">6151</span><span class="hl opt">,</span>      <span class="hl num">12289</span><span class="hl opt">,</span>     <span class="hl num">24593</span><span class="hl opt">,</span>
+            <span class="hl num">49157</span><span class="hl opt">,</span>    <span class="hl num">98317</span><span class="hl opt">,</span>     <span class="hl num">196613</span><span class="hl opt">,</span>    <span class="hl num">93241</span><span class="hl opt">,</span>     <span class="hl num">786433</span><span class="hl opt">,</span>
+            <span class="hl num">1572869</span><span class="hl opt">,</span>  <span class="hl num">3145739</span><span class="hl opt">,</span>   <span class="hl num">6291469</span><span class="hl opt">,</span>   <span class="hl num">12582917</span><span class="hl opt">,</span>  <span class="hl num">25165843</span><span class="hl opt">,</span>
+            <span class="hl num">50331653</span><span class="hl opt">,</span> <span class="hl num">100663319</span><span class="hl opt">,</span> <span class="hl num">201326611</span><span class="hl opt">,</span> <span class="hl num">402653189</span><span class="hl opt">,</span> <span class="hl num">805306457</span> <span class="hl opt">]</span>
+
+<span class="hl slc">//htFind :: !{#Char} !HashTable -&gt; Item </span>
+htFind k <span class="hl opt">{</span>table<span class="hl opt">} = (</span>find k table<span class="hl opt">.[</span>hash k <span class="hl opt">(</span>size table<span class="hl opt">)])</span> <span class="hl kwa">where</span>
+
+	find k <span class="hl opt">(</span>Bucket item<span class="hl opt">) =</span> <span class="hl kwa">if</span> <span class="hl opt">(</span>item<span class="hl opt">.</span>key<span class="hl opt">==</span>k<span class="hl opt">)</span> item <span class="hl opt">{</span>key<span class="hl opt">=</span>k<span class="hl opt">,</span>val<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">}</span>
+	find k <span class="hl opt">(</span>Buckets l<span class="hl opt">) =</span> find_l k l
+	find k EmptyBucket <span class="hl opt">= {</span>key<span class="hl opt">=</span>k<span class="hl opt">,</span>val<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">}</span>
+
+	find_l k <span class="hl opt">[</span>|item<span class="hl opt">:</span>ls<span class="hl opt">] =</span> <span class="hl kwa">if</span> <span class="hl opt">(</span>item<span class="hl opt">.</span>key<span class="hl opt">==</span>k<span class="hl opt">)</span> item <span class="hl opt">(</span>find_l k ls<span class="hl opt">)</span>
+	find_l k <span class="hl opt">[</span>|<span class="hl opt">] = {</span>key<span class="hl opt">=</span>k<span class="hl opt">,</span>val<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">}</span>
+
+htAddOrUpdate k v f ht<span class="hl opt">=:{</span>table<span class="hl opt">}</span>
+	<span class="hl opt"># (</span>nBuckets<span class="hl opt">,</span>table<span class="hl opt">) =</span> usize table
+	  i <span class="hl opt">=</span> hash k nBuckets
+ 	  <span class="hl opt">(</span>b<span class="hl opt">,</span>table<span class="hl opt">) =</span> table<span class="hl opt">![</span>i<span class="hl opt">]</span>
+	<span class="hl opt">:== {</span>ht <span class="hl opt">&amp;</span> table <span class="hl opt">= {</span>table <span class="hl opt">&amp; [</span>i<span class="hl opt">] =</span> addOrUpdateItem b k<span class="hl opt">}}</span> <span class="hl kwa">where</span>
+
+<span class="hl slc">//	addOrUpdateItem :: !Buckets !{#Char} -&gt; Buckets</span>
+	addOrUpdateItem EmptyBucket k <span class="hl opt">=</span> Bucket <span class="hl opt">{</span>key<span class="hl opt">=</span>k<span class="hl opt">,</span>val<span class="hl opt">=</span>v<span class="hl opt">}</span>
+	addOrUpdateItem <span class="hl opt">(</span>Bucket item<span class="hl opt">=:{</span>key<span class="hl opt">,</span>val<span class="hl opt">})</span> k
+	   | key<span class="hl opt">==</span>k	<span class="hl opt">=</span> Bucket <span class="hl opt">{</span>item <span class="hl opt">&amp;</span> val<span class="hl opt">=</span>f val<span class="hl opt">}</span>
+	   			<span class="hl opt">=</span> Buckets <span class="hl opt">[</span>|item <span class="hl opt">, {</span>key<span class="hl opt">=</span>k<span class="hl opt">,</span>val<span class="hl opt">=</span>v<span class="hl opt">}]</span>
+	addOrUpdateItem <span class="hl opt">(</span>Buckets b<span class="hl opt">)</span> k <span class="hl opt">=</span> Buckets <span class="hl opt">(</span>addOrUpdateItemL b k<span class="hl opt">)</span>
+
+<span class="hl slc">//	addOrUpdateItemL :: ![!Item!] !{#Char} -&gt; [!Item!]</span>
+	addOrUpdateItemL <span class="hl opt">[</span>|item<span class="hl opt">=:{</span>key<span class="hl opt">,</span>val<span class="hl opt">}:</span>ls<span class="hl opt">]</span> k
+	   | key<span class="hl opt">==</span>k	<span class="hl opt">= [</span>|<span class="hl opt">{</span>item <span class="hl opt">&amp;</span> val<span class="hl opt">=</span>f val<span class="hl opt">}:</span>ls<span class="hl opt">]</span>
+	   			<span class="hl opt">= [</span>|item <span class="hl opt">:</span> addOrUpdateItemL ls k<span class="hl opt">]</span>
+	addOrUpdateItemL <span class="hl opt">[</span>|<span class="hl opt">]</span> k <span class="hl opt">= [</span>|<span class="hl opt">{</span>key<span class="hl opt">=</span>k<span class="hl opt">,</span>val<span class="hl opt">=</span>v<span class="hl opt">}]</span>
+
+<span class="hl slc">//htItems :: !HashTable -&gt; [Item]</span>
+htItems ht<span class="hl opt">=:{</span>table<span class="hl opt">} =</span> ht_items <span class="hl num">0</span> table <span class="hl kwa">where</span>
+
+	ht_items i table | i<span class="hl opt">&gt;=</span>size table <span class="hl opt">= []</span>
+					 <span class="hl opt">=</span> ht_items_bucket table<span class="hl opt">.[</span>i<span class="hl opt">] (</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span> table
+
+	ht_items_bucket EmptyBucket i table <span class="hl opt">=</span> ht_items i table
+	ht_items_bucket <span class="hl opt">(</span>Bucket e<span class="hl opt">)</span>  i table <span class="hl opt">= [</span>e<span class="hl opt">:</span>ht_items i table<span class="hl opt">]</span>
+	ht_items_bucket <span class="hl opt">(</span>Buckets b<span class="hl opt">)</span> i table <span class="hl opt">=</span> ht_items_list b i table 
+
+	ht_items_list <span class="hl opt">[</span>|e<span class="hl opt">:</span>l<span class="hl opt">]</span> i table <span class="hl opt">= [</span>e<span class="hl opt">:</span>ht_items_list l i table<span class="hl opt">]</span>
+	ht_items_list <span class="hl opt">[</span>|<span class="hl opt">]</span>    i table <span class="hl opt">=</span> ht_items i table

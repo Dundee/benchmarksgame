@@ -1,0 +1,54 @@
+
+Fri, 18 May 2012 01:25:34 GMT
+
+MAKE:
+/usr/bin/gnatchop -r -w meteor.gnat
+splitting meteor.gnat into:
+   meteors.ads
+   meteors.adb
+   meteors-pieces.ads
+   meteors-pieces.adb
+   meteors-board.ads
+   meteors-board.adb
+   meteors-solution.ads
+   meteors-solution.adb
+   meteor.adb
+/usr/bin/gnatmake -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp -f meteor.adb -o meteor.gnat_run 
+gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp meteor.adb
+gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp meteors.adb
+gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp meteors-board.adb
+gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp meteors-pieces.adb
+meteor.gnat:229:04: warning: pragma appears too late, ignored
+gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp meteors-solution.adb
+gnatbind -x meteor.ali
+gnatlink meteor.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o meteor.gnat_run
+1.47s to complete and log all make actions
+
+COMMAND LINE:
+./meteor.gnat_run 2098
+
+PROGRAM OUTPUT:
+2098 solutions found
+
+0 0 0 0 1 
+ 2 2 2 0 1 
+2 6 6 1 1 
+ 2 6 1 5 5 
+8 6 5 5 5 
+ 8 6 3 3 3 
+4 8 8 9 3 
+ 4 4 8 9 3 
+4 7 4 7 9 
+ 7 7 7 9 9 
+
+9 9 9 9 8 
+ 9 6 6 8 5 
+6 6 8 8 5 
+ 6 8 2 5 5 
+7 7 7 2 5 
+ 7 4 7 2 0 
+1 4 2 2 0 
+ 1 4 4 0 3 
+1 4 0 0 3 
+ 1 1 3 3 3 
+

@@ -1,0 +1,170 @@
+<span class="hl slc">;; The Computer Language Benchmarks Game</span>
+<span class="hl slc">;; http://shootout.alioth.debian.org/</span>
+<span class="hl slc">;;</span>
+<span class="hl slc">;; Adapted from the C (gcc) code by Lorenzo Bolla</span>
+
+<span class="hl opt">(</span><span class="hl kwa">declaim</span> <span class="hl opt">(</span><span class="hl kwa">optimize</span> <span class="hl opt">(</span><span class="hl kwa">speed</span> <span class="hl num">3</span><span class="hl opt">) (</span><span class="hl kwa">safety</span> <span class="hl num">0</span><span class="hl opt">) (</span><span class="hl kwa">debug</span> <span class="hl num">0</span><span class="hl opt">)))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define-alien-type</span> mp-limb-t unsigned-int<span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">define-alien-type</span> mp-bitcnt-t unsigned-long<span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">define-alien-type</span> mpz-struct
+				   <span class="hl opt">(</span><span class="hl kwa">struct</span> nil
+						   <span class="hl opt">(</span><span class="hl kwa">mp-alloc</span> int<span class="hl opt">)</span>
+						   <span class="hl opt">(</span><span class="hl kwa">mp-size</span> int<span class="hl opt">)</span>
+						   <span class="hl opt">(</span><span class="hl kwa">mp-d</span> mp-limb-t<span class="hl opt">)))</span>
+<span class="hl opt">(</span><span class="hl kwa">define-alien-type</span> mpz-ptr <span class="hl opt">(*</span> mpz-struct<span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">define-alien-type</span> mpz-srcptr <span class="hl opt">(*</span> mpz-struct<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">declaim</span> <span class="hl opt">(</span><span class="hl kwa">inline</span> mpz-init<span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">define-alien-routine</span> <span class="hl opt">(</span><span class="hl str">&quot;__gmpz_init&quot;</span> mpz-init<span class="hl opt">)</span>
+					  void
+					  <span class="hl opt">(</span><span class="hl kwa">a</span> mpz-ptr<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">declaim</span> <span class="hl opt">(</span><span class="hl kwa">inline</span> mpz-init-set-ui<span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">define-alien-routine</span> <span class="hl opt">(</span><span class="hl str">&quot;__gmpz_init_set_ui&quot;</span> mpz-init-set-ui<span class="hl opt">)</span>
+					  void
+					  <span class="hl opt">(</span><span class="hl kwa">a</span> mpz-ptr<span class="hl opt">)</span>
+					  <span class="hl opt">(</span><span class="hl kwa">b</span> unsigned-long<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">declaim</span> <span class="hl opt">(</span><span class="hl kwa">inline</span> mpz-get-ui<span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">define-alien-routine</span> <span class="hl opt">(</span><span class="hl str">&quot;__gmpz_get_ui&quot;</span> mpz-get-ui<span class="hl opt">)</span>
+					  unsigned-long
+					  <span class="hl opt">(</span><span class="hl kwa">a</span> mpz-srcptr<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">declaim</span> <span class="hl opt">(</span><span class="hl kwa">inline</span> mpz-set-ui<span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">define-alien-routine</span> <span class="hl opt">(</span><span class="hl str">&quot;__gmpz_set_ui&quot;</span> mpz-set-ui<span class="hl opt">)</span>
+					  void
+					  <span class="hl opt">(</span><span class="hl kwa">a</span> mpz-ptr<span class="hl opt">)</span>
+					  <span class="hl opt">(</span><span class="hl kwa">b</span> unsigned-long<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">declaim</span> <span class="hl opt">(</span><span class="hl kwa">inline</span> mpz-cmp<span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">define-alien-routine</span> <span class="hl opt">(</span><span class="hl str">&quot;__gmpz_cmp&quot;</span> mpz-cmp<span class="hl opt">)</span>
+					  int
+					  <span class="hl opt">(</span><span class="hl kwa">a</span> mpz-srcptr<span class="hl opt">)</span>
+					  <span class="hl opt">(</span><span class="hl kwa">b</span> mpz-srcptr<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">declaim</span> <span class="hl opt">(</span><span class="hl kwa">inline</span> mpz-add<span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">define-alien-routine</span> <span class="hl opt">(</span><span class="hl str">&quot;__gmpz_add&quot;</span> mpz-add<span class="hl opt">)</span>
+					  void
+					  <span class="hl opt">(</span><span class="hl kwa">a</span> mpz-ptr<span class="hl opt">)</span>
+					  <span class="hl opt">(</span><span class="hl kwa">b</span> mpz-srcptr<span class="hl opt">)</span>
+					  <span class="hl opt">(</span><span class="hl kwa">c</span> mpz-srcptr<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">declaim</span> <span class="hl opt">(</span><span class="hl kwa">inline</span> mpz-mul-2exp<span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">define-alien-routine</span> <span class="hl opt">(</span><span class="hl str">&quot;__gmpz_mul_2exp&quot;</span> mpz-mul-2exp<span class="hl opt">)</span>
+					  void
+					  <span class="hl opt">(</span><span class="hl kwa">a</span> mpz-ptr<span class="hl opt">)</span>
+					  <span class="hl opt">(</span><span class="hl kwa">b</span> mpz-srcptr<span class="hl opt">)</span>
+					  <span class="hl opt">(</span><span class="hl kwa">c</span> mp-bitcnt-t<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">declaim</span> <span class="hl opt">(</span><span class="hl kwa">inline</span> mpz-fdiv-qr<span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">define-alien-routine</span> <span class="hl opt">(</span><span class="hl str">&quot;__gmpz_fdiv_qr&quot;</span> mpz-fdiv-qr<span class="hl opt">)</span>
+					  void
+					  <span class="hl opt">(</span><span class="hl kwa">a</span> mpz-ptr<span class="hl opt">)</span>
+					  <span class="hl opt">(</span><span class="hl kwa">b</span> mpz-ptr<span class="hl opt">)</span>
+					  <span class="hl opt">(</span><span class="hl kwa">c</span> mpz-srcptr<span class="hl opt">)</span>
+					  <span class="hl opt">(</span><span class="hl kwa">d</span> mpz-srcptr<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">declaim</span> <span class="hl opt">(</span><span class="hl kwa">inline</span> mpz-mul-ui<span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">define-alien-routine</span> <span class="hl opt">(</span><span class="hl str">&quot;__gmpz_mul_ui&quot;</span> mpz-mul-ui<span class="hl opt">)</span>
+					  void
+					  <span class="hl opt">(</span><span class="hl kwa">a</span> mpz-ptr<span class="hl opt">)</span>
+					  <span class="hl opt">(</span><span class="hl kwa">b</span> mpz-srcptr<span class="hl opt">)</span>
+					  <span class="hl opt">(</span><span class="hl kwa">c</span> unsigned-long<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">declaim</span> <span class="hl opt">(</span><span class="hl kwa">inline</span> mpz-submul-ui<span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">define-alien-routine</span> <span class="hl opt">(</span><span class="hl str">&quot;__gmpz_submul_ui&quot;</span> mpz-submul-ui<span class="hl opt">)</span>
+					  void
+					  <span class="hl opt">(</span><span class="hl kwa">a</span> mpz-ptr<span class="hl opt">)</span>
+					  <span class="hl opt">(</span><span class="hl kwa">b</span> mpz-srcptr<span class="hl opt">)</span>
+					  <span class="hl opt">(</span><span class="hl kwa">c</span> unsigned-long<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defvar</span> <span class="hl opt">*</span>libgmp-so<span class="hl opt">* (</span><span class="hl kwa">load-shared-object</span> <span class="hl str">&quot;libgmp.so&quot;</span><span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">defvar</span> <span class="hl opt">*</span>tmp1<span class="hl opt">*)</span>
+<span class="hl opt">(</span><span class="hl kwa">defvar</span> <span class="hl opt">*</span>tmp2<span class="hl opt">*)</span>
+<span class="hl opt">(</span><span class="hl kwa">defvar</span> <span class="hl opt">*</span>num<span class="hl opt">*)</span>
+<span class="hl opt">(</span><span class="hl kwa">defvar</span> <span class="hl opt">*</span>acc<span class="hl opt">*)</span>
+<span class="hl opt">(</span><span class="hl kwa">defvar</span> <span class="hl opt">*</span>den<span class="hl opt">*)</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> init <span class="hl opt">()</span>
+  <span class="hl opt">(</span><span class="hl kwa">setf</span> <span class="hl opt">*</span>tmp1<span class="hl opt">* (</span><span class="hl kwa">make-alien</span> mpz-struct<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">setf</span> <span class="hl opt">*</span>tmp2<span class="hl opt">* (</span><span class="hl kwa">make-alien</span> mpz-struct<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">setf</span> <span class="hl opt">*</span>num<span class="hl opt">* (</span><span class="hl kwa">make-alien</span> mpz-struct<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">setf</span> <span class="hl opt">*</span>acc<span class="hl opt">* (</span><span class="hl kwa">make-alien</span> mpz-struct<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">setf</span> <span class="hl opt">*</span>den<span class="hl opt">* (</span><span class="hl kwa">make-alien</span> mpz-struct<span class="hl opt">)))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> cleanup <span class="hl opt">()</span>
+  <span class="hl opt">(</span><span class="hl kwa">free-alien</span> <span class="hl opt">*</span>tmp1<span class="hl opt">*)</span>
+  <span class="hl opt">(</span><span class="hl kwa">free-alien</span> <span class="hl opt">*</span>tmp2<span class="hl opt">*)</span>
+  <span class="hl opt">(</span><span class="hl kwa">free-alien</span> <span class="hl opt">*</span>num<span class="hl opt">*)</span>
+  <span class="hl opt">(</span><span class="hl kwa">free-alien</span> <span class="hl opt">*</span>acc<span class="hl opt">*)</span>
+  <span class="hl opt">(</span><span class="hl kwa">free-alien</span> <span class="hl opt">*</span>den<span class="hl opt">*))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> extract-digit <span class="hl opt">()</span>
+  <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(&gt; (</span><span class="hl kwa">mpz-cmp</span> <span class="hl opt">*</span>num<span class="hl opt">* *</span>acc<span class="hl opt">*)</span> <span class="hl num">0</span><span class="hl opt">)</span>
+	-<span class="hl num">1</span>
+	<span class="hl opt">(</span><span class="hl kwa">progn</span>
+	  <span class="hl opt">(</span><span class="hl kwa">mpz-mul-2exp</span> <span class="hl opt">*</span>tmp1<span class="hl opt">* *</span>num<span class="hl opt">*</span> <span class="hl num">1</span><span class="hl opt">)</span>
+	  <span class="hl opt">(</span><span class="hl kwa">mpz-add</span> <span class="hl opt">*</span>tmp1<span class="hl opt">* *</span>tmp1<span class="hl opt">* *</span>num<span class="hl opt">*)</span>
+	  <span class="hl opt">(</span><span class="hl kwa">mpz-add</span> <span class="hl opt">*</span>tmp1<span class="hl opt">* *</span>tmp1<span class="hl opt">* *</span>acc<span class="hl opt">*)</span>
+	  <span class="hl opt">(</span><span class="hl kwa">mpz-fdiv-qr</span> <span class="hl opt">*</span>tmp1<span class="hl opt">* *</span>tmp2<span class="hl opt">* *</span>tmp1<span class="hl opt">* *</span>den<span class="hl opt">*)</span>
+	  <span class="hl opt">(</span><span class="hl kwa">mpz-add</span> <span class="hl opt">*</span>tmp2<span class="hl opt">* *</span>tmp2<span class="hl opt">* *</span>num<span class="hl opt">*)</span>
+	  <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(&gt;= (</span><span class="hl kwa">mpz-cmp</span> <span class="hl opt">*</span>tmp2<span class="hl opt">* *</span>den<span class="hl opt">*)</span> <span class="hl num">0</span><span class="hl opt">)</span>
+		-<span class="hl num">1</span>
+		<span class="hl opt">(</span><span class="hl kwa">mpz-get-ui</span> <span class="hl opt">*</span>tmp1<span class="hl opt">*)))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> next-term <span class="hl opt">(</span><span class="hl kwa">k</span><span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">type</span> fixnum k<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">y2</span> <span class="hl opt">(</span><span class="hl kwa">1</span><span class="hl opt">+ (*</span> <span class="hl num">2</span> k<span class="hl opt">))))</span>
+	<span class="hl opt">(</span><span class="hl kwa">mpz-mul-2exp</span> <span class="hl opt">*</span>tmp1<span class="hl opt">* *</span>num<span class="hl opt">*</span> <span class="hl num">1</span><span class="hl opt">)</span>
+	<span class="hl opt">(</span><span class="hl kwa">mpz-add</span> <span class="hl opt">*</span>acc<span class="hl opt">* *</span>acc<span class="hl opt">* *</span>tmp1<span class="hl opt">*)</span>
+	<span class="hl opt">(</span><span class="hl kwa">mpz-mul-ui</span> <span class="hl opt">*</span>acc<span class="hl opt">* *</span>acc<span class="hl opt">*</span> y2<span class="hl opt">)</span>
+	<span class="hl opt">(</span><span class="hl kwa">mpz-mul-ui</span> <span class="hl opt">*</span>num<span class="hl opt">* *</span>num<span class="hl opt">*</span> k<span class="hl opt">)</span>
+	<span class="hl opt">(</span><span class="hl kwa">mpz-mul-ui</span> <span class="hl opt">*</span>den<span class="hl opt">* *</span>den<span class="hl opt">*</span> y2<span class="hl opt">)))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> eliminate-digit <span class="hl opt">(</span><span class="hl kwa">d</span><span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">mpz-submul-ui</span> <span class="hl opt">*</span>acc<span class="hl opt">* *</span>den<span class="hl opt">*</span> d<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">mpz-mul-ui</span> <span class="hl opt">*</span>acc<span class="hl opt">* *</span>acc<span class="hl opt">*</span> <span class="hl num">10</span><span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">mpz-mul-ui</span> <span class="hl opt">*</span>num<span class="hl opt">* *</span>num<span class="hl opt">*</span> <span class="hl num">10</span><span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> pidigits <span class="hl opt">(</span><span class="hl kwa">n</span><span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">type</span> fixnum n<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">d</span> <span class="hl num">0</span><span class="hl opt">)</span>
+		<span class="hl opt">(</span><span class="hl kwa">k</span> <span class="hl num">0</span><span class="hl opt">)</span>
+		<span class="hl opt">(</span><span class="hl kwa">i</span> <span class="hl num">0</span><span class="hl opt">)</span>
+		<span class="hl opt">(</span><span class="hl kwa">m</span> <span class="hl num">0</span><span class="hl opt">))</span>
+	<span class="hl opt">(</span><span class="hl kwa">declare</span> <span class="hl opt">(</span><span class="hl kwa">type</span> fixnum d k i m<span class="hl opt">))</span>
+	<span class="hl opt">(</span><span class="hl kwa">mpz-init</span> <span class="hl opt">*</span>tmp1<span class="hl opt">*)</span>
+	<span class="hl opt">(</span><span class="hl kwa">mpz-init</span> <span class="hl opt">*</span>tmp2<span class="hl opt">*)</span>
+	<span class="hl opt">(</span><span class="hl kwa">mpz-init-set-ui</span> <span class="hl opt">*</span>num<span class="hl opt">*</span> <span class="hl num">1</span><span class="hl opt">)</span>
+	<span class="hl opt">(</span><span class="hl kwa">mpz-init-set-ui</span> <span class="hl opt">*</span>acc<span class="hl opt">*</span> <span class="hl num">0</span><span class="hl opt">)</span>
+	<span class="hl opt">(</span><span class="hl kwa">mpz-init-set-ui</span> <span class="hl opt">*</span>den<span class="hl opt">*</span> <span class="hl num">1</span><span class="hl opt">)</span>
+	<span class="hl opt">(</span><span class="hl kwa">loop</span>
+	  <span class="hl opt">(</span><span class="hl kwa">loop</span>
+		<span class="hl opt">(</span><span class="hl kwa">incf</span> k<span class="hl opt">)</span>
+		<span class="hl opt">(</span><span class="hl kwa">next-term</span> k<span class="hl opt">)</span>
+		<span class="hl opt">(</span><span class="hl kwa">setf</span> d <span class="hl opt">(</span><span class="hl kwa">extract-digit</span><span class="hl opt">))</span>
+		<span class="hl opt">(</span><span class="hl kwa">unless</span> <span class="hl opt">(=</span> d -<span class="hl num">1</span><span class="hl opt">)</span>
+		  <span class="hl opt">(</span><span class="hl kwa">return</span><span class="hl opt">)))</span>
+	  <span class="hl opt">(</span><span class="hl kwa">format</span> t <span class="hl str">&quot;~D&quot;</span> d<span class="hl opt">)</span>
+	  <span class="hl opt">(</span><span class="hl kwa">incf</span> i<span class="hl opt">)</span>
+	  <span class="hl opt">(</span><span class="hl kwa">setf</span> m <span class="hl opt">(</span><span class="hl kwa">rem</span> i <span class="hl num">10</span><span class="hl opt">))</span>
+	  <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(=</span> m <span class="hl num">0</span><span class="hl opt">)</span>
+		<span class="hl opt">(</span><span class="hl kwa">format</span> t <span class="hl str">&quot;	:~D~%&quot;</span> i<span class="hl opt">))</span>
+	  <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(&gt;=</span> i n<span class="hl opt">)</span>
+		<span class="hl opt">(</span><span class="hl kwa">return</span><span class="hl opt">))</span>
+	  <span class="hl opt">(</span><span class="hl kwa">eliminate-digit</span> d<span class="hl opt">))</span>
+	<span class="hl opt">(</span><span class="hl kwa">unless</span> <span class="hl opt">(=</span> m <span class="hl num">0</span><span class="hl opt">)</span>
+	  <span class="hl opt">(</span><span class="hl kwa">format</span> t <span class="hl str">&quot;	:~D~%&quot;</span> n<span class="hl opt">))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defun</span> main <span class="hl opt">(&amp;</span>optional n-supplied<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">n</span> <span class="hl opt">(</span><span class="hl kwa">or</span> n-supplied
+			   <span class="hl opt">(</span><span class="hl kwa">parse-integer</span> <span class="hl opt">(</span><span class="hl kwa">or</span> <span class="hl opt">(</span><span class="hl kwa">car</span> <span class="hl opt">(</span><span class="hl kwa">last</span> <span class="hl opt">#+</span>sbcl sb-ext<span class="hl opt">:*</span>posix-argv<span class="hl opt">*</span>
+											 <span class="hl opt">#+</span>clisp ext<span class="hl opt">:*</span>args<span class="hl opt">*</span>
+											 <span class="hl opt">#+</span>cmu extensions<span class="hl opt">:*</span>command-line-strings<span class="hl opt">*</span>
+											 <span class="hl opt">#+</span>gcl  si<span class="hl opt">::*</span>command-args<span class="hl opt">*))</span>
+								  <span class="hl str">&quot;2000&quot;</span><span class="hl opt">)))))</span>
+	<span class="hl opt">(</span><span class="hl kwa">init</span><span class="hl opt">)</span>
+	<span class="hl opt">(</span><span class="hl kwa">pidigits</span> n<span class="hl opt">)</span>
+	<span class="hl opt">(</span><span class="hl kwa">cleanup</span><span class="hl opt">)))</span>
+

@@ -1,0 +1,78 @@
+<span class="hl slc">--</span>
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://shootout.alioth.debian.org/</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- Contributed by Sterling Clover</span>
+<span class="hl slc">-- Heavily inspired by contribution from Don Stewart</span>
+<span class="hl slc">-- Inlining improvements by Don Stewart.</span>
+<span class="hl slc">--</span>
+
+<span class="hl kwd">import qualified</span> Data<span class="hl opt">.</span>ByteString<span class="hl opt">.</span>Char8 <span class="hl kwd">as</span> S
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span>ByteString<span class="hl opt">.</span>Internal
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span>ByteString<span class="hl opt">.</span>Unsafe
+<span class="hl kwd">import</span> Foreign
+<span class="hl kwd">import</span> Control<span class="hl opt">.</span>Arrow
+<span class="hl kwd">import</span> GHC<span class="hl opt">.</span>Base
+<span class="hl kwd">import</span> GHC<span class="hl opt">.</span>Ptr
+<span class="hl kwd">import</span> GHC<span class="hl opt">.</span><span class="hl kwb">IO</span>
+
+main <span class="hl opt">=</span> <span class="hl kwc">uncurry</span> proc <span class="hl opt">=&lt;&lt;</span> clines `<span class="hl kwc">fmap</span>` S<span class="hl opt">.</span><span class="hl kwc">getContents</span>
+
+proc <span class="hl opt">[]</span> _ <span class="hl opt">=</span> <span class="hl kwc">return</span> <span class="hl opt">()</span>
+proc <span class="hl opt">(</span>h<span class="hl opt">:</span>hs<span class="hl opt">) (</span>b<span class="hl opt">:</span>bs<span class="hl opt">) =</span> S<span class="hl opt">.</span><span class="hl kwc">putStrLn</span> h <span class="hl opt">&gt;&gt;</span> revcomp b <span class="hl opt">&gt;&gt;</span> writeFasta b <span class="hl opt">&gt;&gt;</span> proc hs bs
+
+writeFasta t
+    | S<span class="hl opt">.</span><span class="hl kwc">null</span> t  <span class="hl opt">=</span> <span class="hl kwc">return</span> <span class="hl opt">()</span>
+    | <span class="hl kwc">otherwise</span> <span class="hl opt">=</span> S<span class="hl opt">.</span><span class="hl kwc">putStrLn</span> l <span class="hl opt">&gt;&gt;</span> writeFasta r
+    <span class="hl kwd">where</span> <span class="hl opt">(</span>l<span class="hl opt">,</span>r<span class="hl opt">) =</span> S<span class="hl opt">.</span><span class="hl kwc">splitAt</span> <span class="hl num">60</span> t
+
+clines <span class="hl opt">::</span> ByteString <span class="hl opt">-&gt; ([</span>ByteString<span class="hl opt">],[</span>ByteString<span class="hl opt">])</span>
+clines ps <span class="hl opt">=</span> clines<span class="hl opt">'</span> ps <span class="hl opt">([],[])</span>
+    <span class="hl kwd">where</span>
+      <span class="hl com">{-# INLINE clines' #-}</span>
+      clines<span class="hl opt">'</span> ps <span class="hl kwc">accum</span><span class="hl opt">&#64;(</span>f<span class="hl opt">,</span>s<span class="hl opt">)</span>
+          | <span class="hl kwc">otherwise</span> <span class="hl opt">=</span> <span class="hl kwd">case</span> S<span class="hl opt">.</span><span class="hl kwc">elemIndex</span> <span class="hl opt">'</span><span class="hl esc">\n</span><span class="hl opt">'</span> ps <span class="hl kwd">of</span>
+                          Just n  <span class="hl opt">-&gt;</span> clines<span class="hl opt">'' (</span>S<span class="hl opt">.</span><span class="hl kwc">drop</span> <span class="hl opt">(</span>n<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span> ps<span class="hl opt">) (</span>f<span class="hl opt">++[</span>S<span class="hl opt">.</span><span class="hl kwc">take</span> n ps<span class="hl opt">],</span>s<span class="hl opt">)</span>
+      clines<span class="hl opt">''</span> ps <span class="hl kwc">accum</span><span class="hl opt">&#64;(</span>f<span class="hl opt">,</span>s<span class="hl opt">)</span>
+          | <span class="hl kwc">otherwise</span> <span class="hl opt">=</span> <span class="hl kwd">case</span> S<span class="hl opt">.</span><span class="hl kwc">elemIndex</span> <span class="hl opt">'&gt;'</span> ps <span class="hl kwd">of</span>
+                      Nothing <span class="hl opt">-&gt; (</span>f<span class="hl opt">,</span>s<span class="hl opt">++[</span>S<span class="hl opt">.</span><span class="hl kwc">filter</span> <span class="hl opt">(/='</span><span class="hl esc">\n</span><span class="hl opt">')</span> ps<span class="hl opt">])</span>
+                      Just n  <span class="hl opt">-&gt;</span> clines<span class="hl opt">' (</span>S<span class="hl opt">.</span><span class="hl kwc">drop</span> n ps<span class="hl opt">) (</span>f<span class="hl opt">,</span>s<span class="hl opt">++[</span>S<span class="hl opt">.</span><span class="hl kwc">filter</span> <span class="hl opt">(/='</span><span class="hl esc">\n</span><span class="hl opt">') .</span> S<span class="hl opt">.</span><span class="hl kwc">take</span> n <span class="hl opt">$</span> ps<span class="hl opt">])</span>
+
+<span class="hl com">{-# INLINE comps #-}</span>
+comps <span class="hl opt">=</span> <span class="hl kwc">map</span> <span class="hl opt">(</span><span class="hl kwc">ord</span> <span class="hl opt">***</span> c2w<span class="hl opt">) [</span>
+    <span class="hl opt">('</span>A<span class="hl opt">' , '</span>T<span class="hl opt">'), ( '</span>a<span class="hl opt">' , '</span>T<span class="hl opt">'), ( '</span>C<span class="hl opt">' , '</span>G<span class="hl opt">'), ( '</span>c<span class="hl opt">' , '</span>G<span class="hl opt">'), ( '</span>G<span class="hl opt">' , '</span>C<span class="hl opt">'),</span>
+    <span class="hl opt">('</span>g<span class="hl opt">' , '</span>C<span class="hl opt">'), ( '</span>T<span class="hl opt">' , '</span>A<span class="hl opt">'), ( '</span>t<span class="hl opt">' , '</span>A<span class="hl opt">'), ( '</span>U<span class="hl opt">' , '</span>A<span class="hl opt">'), ( '</span>u<span class="hl opt">' , '</span>A<span class="hl opt">'),</span>
+    <span class="hl opt">('</span>M<span class="hl opt">' , '</span>K<span class="hl opt">'), ( '</span>m<span class="hl opt">' , '</span>K<span class="hl opt">'), ( '</span>R<span class="hl opt">' , '</span>Y<span class="hl opt">'), ( '</span>r<span class="hl opt">' , '</span>Y<span class="hl opt">'), ( '</span>Y<span class="hl opt">' , '</span>R<span class="hl opt">'),</span>
+    <span class="hl opt">('</span>y<span class="hl opt">' , '</span>R<span class="hl opt">'), ( '</span>K<span class="hl opt">' , '</span>M<span class="hl opt">'), ( '</span>k<span class="hl opt">' , '</span>M<span class="hl opt">'), ( '</span>V<span class="hl opt">' , '</span>B<span class="hl opt">'), ( '</span>v<span class="hl opt">' , '</span>B<span class="hl opt">'),</span>
+    <span class="hl opt">('</span>H<span class="hl opt">' , '</span>D<span class="hl opt">'), ( '</span>h<span class="hl opt">' , '</span>D<span class="hl opt">'), ( '</span>D<span class="hl opt">' , '</span>H<span class="hl opt">'), ( '</span>d<span class="hl opt">' , '</span>H<span class="hl opt">'), ( '</span>B<span class="hl opt">' , '</span>V<span class="hl opt">'), ( '</span>b<span class="hl opt">' , '</span>V<span class="hl opt">')]</span>
+
+ca <span class="hl opt">::</span> Ptr Word8
+ca <span class="hl opt">=</span> inlinePerformIO <span class="hl opt">$</span> <span class="hl kwd">do</span>
+       a <span class="hl opt">&lt;-</span> mallocArray <span class="hl num">200</span>
+       <span class="hl kwc">mapM_</span> <span class="hl opt">(</span><span class="hl kwc">uncurry</span> <span class="hl opt">(</span>pokeByteOff a<span class="hl opt">)) $</span> <span class="hl kwc">zip</span> <span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">.</span><span class="hl num">.199</span><span class="hl opt">::</span><span class="hl kwb">Int</span><span class="hl opt">] [</span><span class="hl num">0</span><span class="hl opt">.</span><span class="hl num">.199</span><span class="hl opt">::</span>Word8<span class="hl opt">]</span>
+       <span class="hl kwc">mapM_</span> <span class="hl opt">(</span><span class="hl kwc">uncurry</span> <span class="hl opt">(</span>pokeByteOff a<span class="hl opt">))</span> comps
+       <span class="hl kwc">return</span> a
+
+comp <span class="hl opt">::</span> Word<span class="hl opt"># -&gt;</span> Word<span class="hl opt">#</span>
+comp c <span class="hl opt">=</span> rw8 ca <span class="hl opt">(</span>word2Int<span class="hl opt">#</span> c<span class="hl opt">)</span>
+
+revcomp <span class="hl opt">(</span>PS fp s <span class="hl opt">(</span>I<span class="hl opt">#</span> l<span class="hl opt">)) =</span> withForeignPtr fp <span class="hl opt">$ \</span>p <span class="hl opt">-&gt;</span> rc <span class="hl opt">(</span>p `plusPtr` s<span class="hl opt">)</span> <span class="hl num">0</span><span class="hl opt"># (</span>l <span class="hl opt">-#</span> <span class="hl num">1</span><span class="hl opt">#)</span>
+  <span class="hl kwd">where</span>
+    rc <span class="hl opt">::</span> Ptr Word8 <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span><span class="hl opt"># -&gt;</span> <span class="hl kwb">Int</span><span class="hl opt"># -&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">()</span>
+    rc p i j  <span class="hl opt">=</span> rc<span class="hl opt">'</span> i j
+        <span class="hl kwd">where</span>
+          rc<span class="hl opt">'</span> i j
+              | i <span class="hl opt">&lt;#</span> j <span class="hl opt">=</span> <span class="hl kwd">do</span>
+                          <span class="hl kwd">let</span> x <span class="hl opt">=</span> rw8 p i
+                          ww8 p i <span class="hl opt">(</span>comp <span class="hl opt">(</span>rw8 p j<span class="hl opt">))</span>
+                          ww8 p j <span class="hl opt">(</span>comp x<span class="hl opt">)</span>
+                          rc<span class="hl opt">' (</span>i <span class="hl opt">+#</span> <span class="hl num">1</span><span class="hl opt">#) (</span>j <span class="hl opt">-#</span> <span class="hl num">1</span><span class="hl opt">#)</span>
+              | i <span class="hl opt">==#</span> j <span class="hl opt">=</span> ww8 p i <span class="hl opt">(</span>comp <span class="hl opt">(</span>rw8 p i<span class="hl opt">))</span>
+              | <span class="hl kwc">otherwise</span> <span class="hl opt">=</span>  <span class="hl kwc">return</span> <span class="hl opt">()</span>
+
+rw8 <span class="hl opt">::</span> Ptr Word8 <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span><span class="hl opt"># -&gt;</span> Word<span class="hl opt">#</span>
+rw8 <span class="hl opt">(</span>Ptr a<span class="hl opt">)</span> i <span class="hl opt">=</span> <span class="hl kwd">case</span> readWord8OffAddr<span class="hl opt">#</span> a i realWorld<span class="hl opt">#</span>  <span class="hl kwd">of</span> <span class="hl opt">(#</span> _<span class="hl opt">,</span> x <span class="hl opt">#) -&gt;</span>  x
+<span class="hl com">{-# INLINE rw8 #-}</span>
+
+ww8 <span class="hl opt">::</span> Ptr Word8 <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span><span class="hl opt"># -&gt;</span> Word<span class="hl opt"># -&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">()</span>
+ww8 <span class="hl opt">(</span>Ptr a<span class="hl opt">)</span> i x  <span class="hl opt">=</span> <span class="hl kwb">IO</span> <span class="hl opt">$ \</span>s <span class="hl opt">-&gt;</span> <span class="hl kwd">case</span> writeWord8OffAddr<span class="hl opt">#</span> a i x s <span class="hl kwd">of</span> s2 <span class="hl opt">-&gt; (#</span> s2<span class="hl opt">, () #)</span>

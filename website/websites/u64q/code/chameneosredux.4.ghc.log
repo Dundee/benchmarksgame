@@ -1,0 +1,49 @@
+
+Fri, 07 Sep 2012 16:57:19 GMT
+
+MAKE:
+mv chameneosredux.ghc-4.ghc chameneosredux.ghc-4.hs
+/usr/local/src/ghc-7.6.1/bin/ghc --make -fllvm -O2 -XBangPatterns -threaded -rtsopts -XGeneralizedNewtypeDeriving chameneosredux.ghc-4.hs -o chameneosredux.ghc-4.ghc_run
+[1 of 1] Compiling Main             ( chameneosredux.ghc-4.hs, chameneosredux.ghc-4.o )
+
+chameneosredux.ghc-4.hs:78:21: Warning:
+    In the use of `forkOnIO'
+    (imported from GHC.Conc, but defined in GHC.Conc.Sync):
+    Deprecated: "renamed to forkOn"
+Linking chameneosredux.ghc-4.ghc_run ...
+rm chameneosredux.ghc-4.hs
+2.49s to complete and log all make actions
+
+COMMAND LINE:
+./chameneosredux.ghc-4.ghc_run +RTS -N4 -RTS 6000000
+
+PROGRAM OUTPUT:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
+ blue red yellow
+3749738 zero
+4436473 zero
+3813789 zero
+ one two zero zero zero zero zero zero
+
+ blue red yellow red yellow blue red yellow red blue
+1200002 zero
+1200002 zero
+1200002 zero
+1200003 zero
+1200004 zero
+1200003 zero
+1199996 zero
+1199996 zero
+1199996 zero
+1199996 zero
+ one two zero zero zero zero zero zero
+

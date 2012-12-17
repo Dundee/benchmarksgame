@@ -1,0 +1,17 @@
+
+Mon, 30 Apr 2012 00:40:11 GMT
+
+MAKE:
+/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread -std=c99 threadring.gcc-3.c -o threadring.gcc-3.gcc_run 
+rm threadring.gcc-3.c
+0.87s to complete and log all make actions
+
+COMMAND LINE:
+./threadring.gcc-3.gcc_run 500000
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+pthread_create: Cannot allocate memory

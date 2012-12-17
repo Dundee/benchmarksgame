@@ -1,0 +1,183 @@
+<span class="hl com">(*</span>
+<span class="hl com">** The Computer Language Benchmarks Game</span>
+<span class="hl com">** http://shootout.alioth.debian.org/</span>
+<span class="hl com">**</span>
+<span class="hl com">** based on code by Hongwei Xi, Miroslav Rubanets, and Oleg Mazurov</span>
+<span class="hl com">** contributed by Julian Beaumont</span>
+<span class="hl com">**</span>
+<span class="hl com">** compilation command:</span>
+<span class="hl com">**   atscc -fomit-frame-pointer -O3 fannkuchredux.dats -o fannkuchredux</span>
+<span class="hl com">*)</span>
+
+<span class="hl com">(* ****** ****** *)</span>
+
+<span class="hl kwa">staload</span> _ <span class="hl opt">=</span> <span class="hl str">&quot;prelude/DATS/pointer.dats&quot;</span>
+
+<span class="hl com">(* ****** ****** *)</span>
+
+<span class="hl opt">%{^</span>
+<span class="hl slc">//</span>
+<span class="hl slc">// HX: this is the best choice on my machine</span>
+<span class="hl slc">//</span>
+<span class="hl kwa">typedef</span> ats_uint_type ats_ussi_type <span class="hl opt">;</span>
+<span class="hl opt">%}</span>
+abst&#64;ype ussiLt <span class="hl opt">(</span>n<span class="hl opt">:</span> <span class="hl kwb">int</span><span class="hl opt">) =</span> $extype <span class="hl str">&quot;ats_ussi_type&quot;</span>
+
+<span class="hl kwa">extern</span> castfn ussiLt_of <span class="hl opt">{</span>n <span class="hl opt">:</span> nat | n <span class="hl opt">&lt;=</span> <span class="hl num">256</span><span class="hl opt">} (</span>x <span class="hl opt">:</span> sizeLt  n<span class="hl opt">) :&lt;&gt;</span> ussiLt n
+<span class="hl kwa">extern</span> castfn sizeLt_of  <span class="hl opt">{</span>n <span class="hl opt">:</span> nat | n <span class="hl opt">&lt;=</span> <span class="hl num">256</span><span class="hl opt">} (</span>x <span class="hl opt">:</span> ussiLt n<span class="hl opt">) :&lt;&gt;</span> sizeLt n
+
+<span class="hl com">(* ****** ****** *)</span>
+
+viewtypedef iarray <span class="hl opt">(</span>n <span class="hl opt">:</span> <span class="hl kwb">int</span><span class="hl opt">,</span> l <span class="hl opt">:</span> addr<span class="hl opt">)</span>
+  <span class="hl opt">= [</span><span class="hl num">0</span> <span class="hl opt">&lt;</span> n <span class="hl opt">&amp;&amp;</span> n <span class="hl opt">&lt;=</span> <span class="hl num">256</span><span class="hl opt">]</span> &#64;<span class="hl opt">(</span> array_v <span class="hl opt">(</span>ussiLt n<span class="hl opt">,</span> n<span class="hl opt">,</span> l<span class="hl opt">)</span> | ptr l <span class="hl opt">)</span>
+
+fn array_get <span class="hl opt">{</span>n <span class="hl opt">:</span> nat<span class="hl opt">} {</span>l <span class="hl opt">:</span> addr<span class="hl opt">} {</span>i <span class="hl opt">:</span> nat | i <span class="hl opt">&lt;</span> n<span class="hl opt">}</span>
+  <span class="hl opt">(</span>xs <span class="hl opt">: !</span> iarray <span class="hl opt">(</span>n<span class="hl opt">,</span> l<span class="hl opt">),</span> i <span class="hl opt">:</span> size_t i<span class="hl opt">) :&lt;&gt;</span> sizeLt n <span class="hl opt">=</span> <span class="hl kwa">let</span>
+  prval pf <span class="hl opt">=</span> xs<span class="hl num">.0</span>
+  <span class="hl kwa">val</span> p <span class="hl opt">=</span> xs<span class="hl num">.1</span>
+  <span class="hl kwa">val</span> result <span class="hl opt">=</span> p<span class="hl opt">-&gt;[</span>i<span class="hl opt">]</span>
+  prval <span class="hl opt">() =</span> xs<span class="hl num">.0</span> <span class="hl opt">:=</span> pf
+<span class="hl kwa">in</span> sizeLt_of <span class="hl opt">{</span>n<span class="hl opt">} (</span>result<span class="hl opt">)</span> <span class="hl kwa">end</span>
+
+fn array_set <span class="hl opt">{</span>n <span class="hl opt">:</span> nat<span class="hl opt">} {</span>l <span class="hl opt">:</span> addr<span class="hl opt">} {</span>i <span class="hl opt">:</span> nat | i <span class="hl opt">&lt;</span> n<span class="hl opt">}</span>
+  <span class="hl opt">(</span>xs <span class="hl opt">: !</span> iarray <span class="hl opt">(</span>n<span class="hl opt">,</span> l<span class="hl opt">),</span> i <span class="hl opt">:</span> size_t i<span class="hl opt">,</span> x <span class="hl opt">:</span> sizeLt n<span class="hl opt">) :&lt;&gt;</span> void <span class="hl opt">=</span> <span class="hl kwa">let</span>
+  prval pf <span class="hl opt">=</span> xs<span class="hl num">.0</span>
+  <span class="hl kwa">val</span> p <span class="hl opt">=</span> xs<span class="hl num">.1</span>
+  <span class="hl kwa">val</span> <span class="hl opt">() =</span> p<span class="hl opt">-&gt;[</span>i<span class="hl opt">] := (</span>ussiLt_of<span class="hl opt">)</span>x
+  prval <span class="hl opt">() =</span> xs<span class="hl num">.0</span> <span class="hl opt">:=</span> pf
+<span class="hl kwa">in</span> <span class="hl opt">()</span> <span class="hl kwa">end</span>
+
+overload <span class="hl opt">[]</span> <span class="hl kwa">with</span> array_get
+overload <span class="hl opt">[]</span> <span class="hl kwa">with</span> array_set
+
+<span class="hl com">(* ****** ****** *)</span>
+
+<span class="hl opt">%{^</span>
+<span class="hl kwd">ATSinline</span><span class="hl opt">()</span>
+ats_void_type array_copy
+ <span class="hl opt">(</span>ats_ptr_type src<span class="hl opt">,</span> ats_ptr_type dst<span class="hl opt">,</span> ats_size_type n<span class="hl opt">) {</span>
+  memcpy <span class="hl opt">(</span>dst<span class="hl opt">,</span> src<span class="hl opt">,</span> n<span class="hl opt">*</span>sizeof<span class="hl opt">(</span>ats_ussi_type<span class="hl opt">));</span>
+<span class="hl opt">}</span>
+<span class="hl opt">%}</span>
+
+<span class="hl kwa">extern fun</span> array_copy <span class="hl opt">{</span>n <span class="hl opt">:</span> nat<span class="hl opt">} {</span>s<span class="hl opt">,</span> d <span class="hl opt">:</span> addr<span class="hl opt">}</span>
+    <span class="hl opt">(</span> src <span class="hl opt">: !</span> iarray <span class="hl opt">(</span>n<span class="hl opt">,</span> s<span class="hl opt">),</span> dst <span class="hl opt">: !</span> iarray <span class="hl opt">(</span>n<span class="hl opt">,</span> d<span class="hl opt">),</span> n <span class="hl opt">:</span> size_t n
+    <span class="hl opt">) :&lt;&gt;</span> void <span class="hl opt">=</span> <span class="hl str">&quot;array_copy&quot;</span>
+
+<span class="hl com">(* ****** ****** *)</span>
+
+fn array_fprint <span class="hl opt">{</span>n <span class="hl opt">:</span> nat<span class="hl opt">} {</span>l <span class="hl opt">:</span> addr<span class="hl opt">}</span>
+  <span class="hl opt">(</span> out <span class="hl opt">:</span> <span class="hl kwd">FILEref</span><span class="hl opt">,</span> xs <span class="hl opt">: !</span> iarray <span class="hl opt">(</span>n<span class="hl opt">,</span> l<span class="hl opt">),</span> n <span class="hl opt">:</span> size_t n <span class="hl opt">) :</span> void <span class="hl opt">=</span> <span class="hl kwa">let</span>
+  var i <span class="hl opt">:</span> sizeLte n <span class="hl opt">=</span> size1_of_int1 <span class="hl num">0</span>
+  <span class="hl kwa">val</span> <span class="hl opt">() =</span> <span class="hl kwa">while</span> <span class="hl opt">(</span>i <span class="hl opt">&lt;</span> n<span class="hl opt">) (</span>fprint_size <span class="hl opt">(</span>out<span class="hl opt">,</span> xs<span class="hl opt">[</span>i<span class="hl opt">]);</span> i <span class="hl opt">:=</span> i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)</span>
+  <span class="hl kwa">val</span> <span class="hl opt">() =</span> fprint_char <span class="hl opt">(</span>out<span class="hl opt">,</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">)</span>
+<span class="hl kwa">in end</span>
+
+fn array_print <span class="hl opt">{</span>n <span class="hl opt">:</span> nat<span class="hl opt">} {</span>l <span class="hl opt">:</span> addr<span class="hl opt">}</span>
+  <span class="hl opt">(</span> xs <span class="hl opt">: !</span> iarray <span class="hl opt">(</span>n<span class="hl opt">,</span> l<span class="hl opt">),</span> n <span class="hl opt">:</span> size_t n <span class="hl opt">) :</span> void <span class="hl opt">=</span> <span class="hl kwa">begin</span>
+  array_fprint <span class="hl opt">(</span>stdout_ref<span class="hl opt">,</span> xs<span class="hl opt">,</span> n<span class="hl opt">)</span>
+<span class="hl kwa">end</span>
+
+<span class="hl com">(* ****** ****** *)</span>
+
+<span class="hl kwa">fun</span> array_init <span class="hl opt">{</span>n <span class="hl opt">:</span> nat<span class="hl opt">} {</span>l <span class="hl opt">:</span> addr<span class="hl opt">} {</span>i <span class="hl opt">:</span> nat | i <span class="hl opt">&lt;=</span> n<span class="hl opt">} .&lt;</span> n <span class="hl opt">-</span> i <span class="hl opt">&gt;.</span>
+        <span class="hl opt">(</span>xs <span class="hl opt">: !</span> iarray <span class="hl opt">(</span>n<span class="hl opt">,</span> l<span class="hl opt">),</span> n <span class="hl opt">:</span> size_t n<span class="hl opt">,</span> i <span class="hl opt">:</span> size_t i<span class="hl opt">) :&lt;&gt;</span> void <span class="hl opt">=</span>
+    <span class="hl kwa">if</span> i <span class="hl opt">&lt;</span> n <span class="hl kwa">then</span> <span class="hl opt">(</span>xs<span class="hl opt">[</span>i<span class="hl opt">] :=</span> i <span class="hl opt">;</span> array_init <span class="hl opt">(</span>xs<span class="hl opt">,</span> n<span class="hl opt">,</span> i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">))</span>
+
+<span class="hl kwa">fun</span> array_shift <span class="hl opt">{</span>n<span class="hl opt">,</span> i<span class="hl opt">,</span> j <span class="hl opt">:</span> nat | i <span class="hl opt">&lt;=</span> j <span class="hl opt">;</span> j <span class="hl opt">&lt;</span> n<span class="hl opt">} {</span>l <span class="hl opt">:</span> addr<span class="hl opt">} .&lt;</span> j <span class="hl opt">-</span> i <span class="hl opt">&gt;.</span>
+        <span class="hl opt">(</span>xs <span class="hl opt">: !</span> iarray <span class="hl opt">(</span>n<span class="hl opt">,</span> l<span class="hl opt">),</span> i <span class="hl opt">:</span> size_t i<span class="hl opt">,</span> j <span class="hl opt">:</span> size_t j<span class="hl opt">) :&lt;&gt;</span> void <span class="hl opt">=</span>
+    <span class="hl kwa">if</span> i <span class="hl opt">&lt;</span> j <span class="hl kwa">then</span> <span class="hl opt">(</span>xs<span class="hl opt">[</span>i<span class="hl opt">] :=</span> xs<span class="hl opt">[</span>i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">] ;</span> array_shift <span class="hl opt">(</span>xs<span class="hl opt">,</span> i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">,</span> j<span class="hl opt">))</span>
+
+fn array_rotate <span class="hl opt">{</span>n <span class="hl opt">:</span> nat<span class="hl opt">} {</span>l <span class="hl opt">:</span> addr<span class="hl opt">}</span>
+        <span class="hl opt">(</span>xs <span class="hl opt">: !</span> iarray <span class="hl opt">(</span>n<span class="hl opt">,</span> l<span class="hl opt">),</span> i <span class="hl opt">:</span> sizeLt n<span class="hl opt">) :&lt;&gt;</span> void <span class="hl opt">=</span> <span class="hl kwa">let</span>
+    <span class="hl kwa">val</span> x0 <span class="hl opt">=</span> xs<span class="hl opt">[</span>size1_of_int1 <span class="hl num">0</span><span class="hl opt">]</span>
+    <span class="hl kwa">val</span> <span class="hl opt">() =</span> array_shift <span class="hl opt">(</span>xs<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> i<span class="hl opt">)</span>
+    <span class="hl kwa">val</span> <span class="hl opt">() =</span> xs<span class="hl opt">[</span>i<span class="hl opt">] :=</span> x0
+<span class="hl kwa">in</span> <span class="hl opt">()</span> <span class="hl kwa">end</span>
+
+<span class="hl kwa">fun</span> array_reverse <span class="hl opt">{</span>n <span class="hl opt">:</span> nat<span class="hl opt">} {</span>x <span class="hl opt">:</span> addr<span class="hl opt">}</span> 
+            <span class="hl opt">{</span>l<span class="hl opt">,</span> u <span class="hl opt">:</span> nat | l <span class="hl opt">-</span> <span class="hl num">1</span> <span class="hl opt">&lt;=</span> u <span class="hl opt">;</span> u <span class="hl opt">&lt;</span> n<span class="hl opt">} .&lt;</span> u <span class="hl opt">-</span> l <span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl opt">&gt;.</span>
+        <span class="hl opt">(</span>xs <span class="hl opt">: !</span> iarray <span class="hl opt">(</span>n<span class="hl opt">,</span> x<span class="hl opt">),</span> l <span class="hl opt">:</span> size_t l<span class="hl opt">,</span> u <span class="hl opt">:</span> size_t u<span class="hl opt">) :&lt;&gt;</span> void <span class="hl opt">=</span> <span class="hl kwa">begin</span>
+    <span class="hl kwa">if</span> l <span class="hl opt">&lt;</span> u <span class="hl kwa">then let</span>
+        <span class="hl kwa">val</span> xl <span class="hl opt">=</span> xs<span class="hl opt">[</span>l<span class="hl opt">]</span>
+        <span class="hl kwa">val</span> <span class="hl opt">() =</span> xs<span class="hl opt">[</span>l<span class="hl opt">] :=</span> xs<span class="hl opt">[</span>u<span class="hl opt">]</span>
+        <span class="hl kwa">val</span> <span class="hl opt">() =</span> xs<span class="hl opt">[</span>u<span class="hl opt">] :=</span> xl
+        <span class="hl kwa">val</span> <span class="hl opt">() =</span> array_reverse <span class="hl opt">(</span>xs<span class="hl opt">,</span> l <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">,</span> u <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">)</span>
+    <span class="hl kwa">in</span> <span class="hl opt">()</span> <span class="hl kwa">end</span>
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">fun</span> array_next_permutation <span class="hl opt">{</span>n <span class="hl opt">:</span> nat<span class="hl opt">} {</span>c<span class="hl opt">,</span> p <span class="hl opt">:</span> addr<span class="hl opt">}</span> 
+            <span class="hl opt">{</span>i <span class="hl opt">:</span> nat | i <span class="hl opt">&lt;</span> n<span class="hl opt">} .&lt;</span> n <span class="hl opt">-</span> i <span class="hl opt">&gt;.</span>
+        <span class="hl opt">(</span> cs <span class="hl opt">: !</span> iarray <span class="hl opt">(</span>n<span class="hl opt">,</span> c<span class="hl opt">),</span> ps <span class="hl opt">: !</span> iarray <span class="hl opt">(</span>n<span class="hl opt">,</span> p<span class="hl opt">)</span>
+        <span class="hl opt">,</span> n <span class="hl opt">:</span> size_t n<span class="hl opt">,</span> i <span class="hl opt">:</span> size_t i
+        <span class="hl opt">) :&lt;&gt;</span> sizeLte n <span class="hl opt">=</span> <span class="hl kwa">let</span>
+    <span class="hl kwa">val</span> <span class="hl opt">() =</span> array_rotate <span class="hl opt">(</span>ps<span class="hl opt">,</span> i<span class="hl opt">)</span>
+    <span class="hl kwa">val</span> ci <span class="hl opt">=</span> cs<span class="hl opt">[</span>i<span class="hl opt">]</span> <span class="hl kwa">in</span>
+    <span class="hl kwa">if</span> ci <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl kwa">then</span> <span class="hl opt">(</span>cs<span class="hl opt">[</span>i<span class="hl opt">] :=</span> ci <span class="hl opt">-</span> <span class="hl num">1</span> <span class="hl opt">;</span> i<span class="hl opt">)</span> <span class="hl kwa">else let</span>
+        <span class="hl kwa">val</span> <span class="hl opt">() =</span> cs<span class="hl opt">[</span>i<span class="hl opt">] :=</span> i <span class="hl kwa">in</span>
+        <span class="hl kwa">if</span> i <span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl opt">&gt;=</span> n <span class="hl kwa">then</span> i <span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl kwa">else</span>
+            array_next_permutation <span class="hl opt">(</span>cs<span class="hl opt">,</span> ps<span class="hl opt">,</span> n<span class="hl opt">,</span> i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)</span>
+    <span class="hl kwa">end</span>
+<span class="hl kwa">end</span>
+
+<span class="hl com">(* ****** ****** *)</span>
+
+<span class="hl kwa">typedef</span> result <span class="hl opt">=</span>
+    &#64;<span class="hl opt">{</span> maxFlips <span class="hl opt">=</span> <span class="hl kwb">int</span>
+     <span class="hl opt">,</span> checksum <span class="hl opt">=</span> <span class="hl kwb">int</span>
+     <span class="hl opt">}</span>
+
+<span class="hl kwa">fun</span> fannkuch <span class="hl opt">{</span>n <span class="hl opt">:</span> nat | n <span class="hl opt">&gt;=</span> <span class="hl num">2</span><span class="hl opt">} {</span>c<span class="hl opt">,</span> p<span class="hl opt">,</span> s <span class="hl opt">:</span> addr<span class="hl opt">}</span>
+        <span class="hl opt">(</span> cs <span class="hl opt">: !</span> iarray <span class="hl opt">(</span>n<span class="hl opt">,</span> c<span class="hl opt">),</span> ps <span class="hl opt">: !</span> iarray <span class="hl opt">(</span>n<span class="hl opt">,</span> p<span class="hl opt">),</span> ss <span class="hl opt">: !</span> iarray <span class="hl opt">(</span>n<span class="hl opt">,</span> s<span class="hl opt">)</span>
+        <span class="hl opt">,</span> n <span class="hl opt">:</span> size_t n<span class="hl opt">,</span> count <span class="hl opt">:</span> <span class="hl kwb">int</span><span class="hl opt">,</span> result <span class="hl opt">: &amp;</span>result
+        <span class="hl opt">) :</span> void <span class="hl opt">=</span> <span class="hl kwa">let</span>
+    <span class="hl kwa">val</span> <span class="hl opt">() =</span>
+        <span class="hl kwa">if</span> array_get <span class="hl opt">(</span>ps<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">) =</span> <span class="hl num">0</span> <span class="hl kwa">then</span> <span class="hl opt">()</span> <span class="hl kwa">else let</span>
+            var flips <span class="hl opt">:</span> <span class="hl kwb">int</span> <span class="hl opt">=</span> <span class="hl num">0</span>
+            <span class="hl kwa">val</span> <span class="hl opt">() =</span> array_copy <span class="hl opt">(</span>ps<span class="hl opt">,</span> ss<span class="hl opt">,</span> n<span class="hl opt">)</span>
+            var s0 <span class="hl opt">:</span> sizeLt n <span class="hl opt">=</span> ss<span class="hl opt">[</span>size1_of_int1 <span class="hl num">0</span><span class="hl opt">]</span>
+            <span class="hl kwa">val</span> <span class="hl opt">() =</span> <span class="hl kwa">while</span> <span class="hl opt">(</span>s0 <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">)</span> <span class="hl kwa">let</span>
+                <span class="hl kwa">val</span> <span class="hl opt">() =</span> flips <span class="hl opt">:=</span> flips <span class="hl opt">+</span> <span class="hl num">1</span>
+                <span class="hl kwa">val</span> <span class="hl opt">() =</span> array_reverse <span class="hl opt">(</span>ss<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> s0<span class="hl opt">)</span>
+                <span class="hl kwa">val</span> <span class="hl opt">() =</span> s0 <span class="hl opt">:=</span> ss<span class="hl opt">[</span>size1_of_int1 <span class="hl num">0</span><span class="hl opt">]</span>
+            <span class="hl kwa">in</span> <span class="hl opt">()</span> <span class="hl kwa">end</span>
+            <span class="hl kwa">val</span> <span class="hl opt">() =</span> result<span class="hl opt">.</span>maxFlips <span class="hl opt">:=</span>
+                <span class="hl opt">(</span><span class="hl kwa">if</span> result<span class="hl opt">.</span>maxFlips <span class="hl opt">&lt;</span> flips
+                    <span class="hl kwa">then</span> flips <span class="hl kwa">else</span> result<span class="hl opt">.</span>maxFlips<span class="hl opt">)</span>
+            <span class="hl kwa">val</span> <span class="hl opt">() =</span> result<span class="hl opt">.</span>checksum <span class="hl opt">:=</span> result<span class="hl opt">.</span>checksum <span class="hl opt">+</span>
+                <span class="hl opt">(</span><span class="hl kwa">if</span> count <span class="hl kwa">mod</span> <span class="hl num">2</span> <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl kwa">then</span> flips <span class="hl kwa">else</span> ~flips<span class="hl opt">)</span>
+        <span class="hl kwa">in</span> <span class="hl opt">()</span> <span class="hl kwa">end</span>
+    <span class="hl kwa">val</span> i <span class="hl opt">=</span> array_next_permutation <span class="hl opt">(</span>cs<span class="hl opt">,</span> ps<span class="hl opt">,</span> n<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">)</span>
+<span class="hl kwa">in</span>
+    <span class="hl kwa">if</span> i <span class="hl opt">&lt;</span> n <span class="hl kwa">then</span>
+        fannkuch <span class="hl opt">(</span>cs<span class="hl opt">,</span> ps<span class="hl opt">,</span> ss<span class="hl opt">,</span> n<span class="hl opt">,</span> count <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">,</span> result<span class="hl opt">)</span>
+<span class="hl kwa">end</span>
+
+<span class="hl com">(* ****** ****** *)</span>
+
+<span class="hl kwa">implement</span> main <span class="hl opt">(</span>argc<span class="hl opt">,</span> argv<span class="hl opt">) =</span> <span class="hl kwa">let</span>
+    <span class="hl kwa">val</span> <span class="hl opt">() =</span> <span class="hl kwa">assert</span> <span class="hl opt">(</span>argc <span class="hl opt">&gt;=</span> <span class="hl num">2</span><span class="hl opt">)</span>
+    <span class="hl kwa">val</span> <span class="hl opt">[</span>n <span class="hl opt">:</span> <span class="hl kwb">int</span><span class="hl opt">]</span> n <span class="hl opt">=</span> int1_of argv<span class="hl opt">.[</span><span class="hl num">1</span><span class="hl opt">]</span>
+    <span class="hl kwa">val</span> <span class="hl opt">() =</span> <span class="hl kwa">assert</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">&lt;</span> n <span class="hl opt">&amp;&amp;</span> n <span class="hl opt">&lt;=</span> <span class="hl num">256</span><span class="hl opt">)</span>
+    <span class="hl kwa">val</span> n <span class="hl opt">=</span> size1_of_int1 n
+    <span class="hl kwa">val</span> z <span class="hl opt">=</span> ussiLt_of <span class="hl opt">(</span>size1_of_int1 <span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">))</span>
+    var <span class="hl opt">!</span>cs <span class="hl kwa">with</span> pcs <span class="hl opt">=</span> &#64;<span class="hl opt">[</span>ussiLt n<span class="hl opt">][</span>n<span class="hl opt">](</span>z<span class="hl opt">)</span>
+    var <span class="hl opt">!</span>ps <span class="hl kwa">with</span> pps <span class="hl opt">=</span> &#64;<span class="hl opt">[</span>ussiLt n<span class="hl opt">][</span>n<span class="hl opt">](</span>z<span class="hl opt">)</span>
+    var <span class="hl opt">!</span>ss <span class="hl kwa">with</span> pss <span class="hl opt">=</span> &#64;<span class="hl opt">[</span>ussiLt n<span class="hl opt">][</span>n<span class="hl opt">](</span>z<span class="hl opt">)</span>
+    <span class="hl kwa">val</span> acs <span class="hl opt">=</span> &#64;<span class="hl opt">(</span>pcs | cs<span class="hl opt">)</span>
+    <span class="hl kwa">val</span> aps <span class="hl opt">=</span> &#64;<span class="hl opt">(</span>pps | ps<span class="hl opt">)</span>
+    <span class="hl kwa">val</span> ass <span class="hl opt">=</span> &#64;<span class="hl opt">(</span>pss | ss<span class="hl opt">)</span>
+    <span class="hl kwa">val</span> <span class="hl opt">() =</span> array_init <span class="hl opt">(</span>acs<span class="hl opt">,</span> n<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">)</span>
+    <span class="hl kwa">val</span> <span class="hl opt">() =</span> array_init <span class="hl opt">(</span>aps<span class="hl opt">,</span> n<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">)</span>
+    var ans <span class="hl opt">:</span> result <span class="hl opt">=</span> &#64;<span class="hl opt">{</span> maxFlips <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> checksum <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl opt">}</span>
+    <span class="hl kwa">val</span> <span class="hl opt">() =</span> fannkuch <span class="hl opt">(</span>acs<span class="hl opt">,</span> aps<span class="hl opt">,</span> ass<span class="hl opt">,</span> n<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> ans<span class="hl opt">)</span>
+    prval <span class="hl opt">() =</span> pcs <span class="hl opt">:=</span> acs<span class="hl num">.0</span>
+    prval <span class="hl opt">() =</span> pps <span class="hl opt">:=</span> aps<span class="hl num">.0</span>
+    prval <span class="hl opt">() =</span> pss <span class="hl opt">:=</span> ass<span class="hl num">.0</span>
+<span class="hl kwa">in</span>
+    printf <span class="hl opt">(</span><span class="hl str">&quot;%i</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> &#64;<span class="hl opt">(</span>ans<span class="hl opt">.</span>checksum<span class="hl opt">));</span>
+    printf <span class="hl opt">(</span><span class="hl str">&quot;Pfannkuchen(%i) = %i</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> &#64;<span class="hl opt">(</span>int1_of_size1 <span class="hl opt">(</span>n<span class="hl opt">),</span> ans<span class="hl opt">.</span>maxFlips<span class="hl opt">))</span>
+<span class="hl kwa">end</span>
+
+<span class="hl com">(* ****** ****** *)</span>
+

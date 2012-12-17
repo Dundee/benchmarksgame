@@ -1,0 +1,58 @@
+
+Fri, 17 Aug 2012 23:18:05 GMT
+
+MAKE:
+mv knucleotide.clojure-2.clojure knucleotide.clj
+/usr/local/src/jdk1.7.0_06/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.4.0/clojure-1.4.0.jar clojure.lang.Compile knucleotide
+Compiling knucleotide to .
+knucleotide.clj:117 recur arg for primitive local: key is not matching primitive, had: Object, needed: long
+Auto-boxing loop arg: key
+Warning: *default-modified-pmap-num-threads* not declared dynamic and thus is not dynamically rebindable, but its name suggests otherwise. Please either indicate ^:dynamic *default-modified-pmap-num-threads* or change the name. (knucleotide.clj:180)
+2.74s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/src/jdk1.7.0_06/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts -Xmx1024m -cp .:/usr/local/src/clojure-1.4.0/clojure-1.4.0.jar knucleotide 0 < knucleotide-input25000000.txt
+
+PROGRAM OUTPUT:
+A 30.295
+T 30.151
+C 19.800
+G 19.754
+
+AA 9.177
+TA 9.132
+AT 9.131
+TT 9.091
+CA 6.002
+AC 6.001
+AG 5.987
+GA 5.984
+CT 5.971
+TC 5.971
+GT 5.957
+TG 5.956
+CC 3.917
+GC 3.911
+CG 3.909
+GG 3.902
+
+1471758	GGT
+446535	GGTA
+47336	GGTATT
+893	GGTATTTTAATT
+893	GGTATTTTAATTTATAGT
+
+Starting part 0
+Starting part 5
+Starting part 6
+Starting part 1
+Starting part 2
+Starting part 3
+Finished part 1
+Finished part 0
+Starting part 4
+Finished part 2
+Finished part 3
+Finished part 6
+Finished part 5
+Finished part 4

@@ -1,0 +1,16 @@
+
+Fri, 06 Jan 2012 05:46:59 GMT
+
+MAKE:
+/usr/local/src/intel/bin/ifort -O3 -fast fannkuchredux.ifc-2.f90 -o fannkuchredux.ifc-2.ifc_run
+ipo: remark #11001: performing single-file optimizations
+ipo: remark #11006: generating object file /tmp/ipo_ifortDHou8a.o
+rm fannkuchredux.ifc-2.f90
+0.37s to complete and log all make actions
+
+COMMAND LINE:
+./fannkuchredux.ifc-2.ifc_run 12
+
+PROGRAM OUTPUT:
+3968050
+Pfannkuchen(12) = 65

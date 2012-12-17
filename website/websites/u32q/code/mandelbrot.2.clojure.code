@@ -1,0 +1,168 @@
+<span class="hl slc">;;   The Computer Language Benchmarks Game</span>
+<span class="hl slc">;;   http://shootout.alioth.debian.org/</span>
+
+<span class="hl slc">;; contributed by Andy Fingerhut</span>
+
+<span class="hl slc">;; The function 'dot' is based on suggestions and improvements made by</span>
+<span class="hl slc">;; these people posting to the Clojure Google group in April, 2009:</span>
+<span class="hl slc">;; dmitri.sotnikov, William D. Lipe, Paul Stadig, michael.messinides</span>
+<span class="hl slc">;; David Sletten, John Harrop</span>
+
+<span class="hl opt">(</span><span class="hl kwa">ns</span> mandelbrot
+  <span class="hl opt">(:</span>gen-class<span class="hl opt">)</span>
+  <span class="hl opt">(:</span>import <span class="hl opt">(</span><span class="hl kwa">java</span>.io BufferedOutputStream<span class="hl opt">)))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">def</span> max-iterations <span class="hl num">50</span><span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">def</span> limit-square <span class="hl opt">(</span><span class="hl kwa">double</span> <span class="hl num">4.0</span><span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> dot <span class="hl opt">[</span>r i<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>f2 <span class="hl opt">(</span><span class="hl kwa">double</span> <span class="hl num">2.0</span><span class="hl opt">)</span>
+        limit-square <span class="hl opt">(</span><span class="hl kwa">double</span> limit-square<span class="hl opt">)</span>
+        iterations-remaining <span class="hl opt">(</span><span class="hl kwa">int</span> max-iterations<span class="hl opt">)</span>
+        pr <span class="hl opt">(</span><span class="hl kwa">double</span> r<span class="hl opt">)</span>
+        pi <span class="hl opt">(</span><span class="hl kwa">double</span> i<span class="hl opt">)]</span>
+    <span class="hl slc">;; The loop below is similar to the one in the Perl subroutine dot</span>
+    <span class="hl slc">;; in mandelbrot.perl, with these name correspondences:</span>
+    <span class="hl slc">;; pr &lt;-&gt; Cr, pi &lt;-&gt; Ci, zi &lt;-&gt; Zi, zr &lt;-&gt; Zr, zr2 &lt;-&gt; Tr, zi2 &lt;-&gt; Ti</span>
+    <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>zr <span class="hl opt">(</span><span class="hl kwa">double</span> <span class="hl num">0.0</span><span class="hl opt">)</span>
+           zi <span class="hl opt">(</span><span class="hl kwa">double</span> <span class="hl num">0.0</span><span class="hl opt">)</span>
+           i <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> iterations-remaining<span class="hl opt">))]</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>zr2 <span class="hl opt">(*</span> zr zr<span class="hl opt">)</span>
+            zi2 <span class="hl opt">(*</span> zi zi<span class="hl opt">)]</span>
+        <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">and</span> <span class="hl opt">(</span><span class="hl kwa">not</span> <span class="hl opt">(</span><span class="hl kwa">zero</span>? i<span class="hl opt">))</span>
+                 <span class="hl opt">(&lt; (+</span> zr2 zi2<span class="hl opt">)</span> limit-square<span class="hl opt">))</span>
+          <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(+ (</span><span class="hl kwa">-</span> zr2 zi2<span class="hl opt">)</span> pr<span class="hl opt">)</span>
+                 <span class="hl opt">(+ (* (*</span> f2 zr<span class="hl opt">)</span> zi<span class="hl opt">)</span> pi<span class="hl opt">)</span>
+                 <span class="hl opt">(</span><span class="hl kwa">unchecked-dec</span> i<span class="hl opt">))</span>
+          <span class="hl opt">(</span><span class="hl kwa">zero</span>? i<span class="hl opt">))))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> index-to-val <span class="hl opt">[</span>i scale-fac offset<span class="hl opt">]</span>
+  <span class="hl opt">(+ (*</span> i scale-fac<span class="hl opt">)</span> offset<span class="hl opt">))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> ubyte
+  <span class="hl opt">[</span>val<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(&gt;=</span> val <span class="hl num">128</span><span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">byte</span> <span class="hl opt">(</span><span class="hl kwa">-</span> val <span class="hl num">256</span><span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">byte</span> val<span class="hl opt">)))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> compute-row
+  <span class="hl opt">[</span>x-vals y<span class="hl opt">]</span>
+    <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>b <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">0</span><span class="hl opt">)</span>
+           num-filled-bits <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">0</span><span class="hl opt">)</span>
+           result <span class="hl opt">(</span><span class="hl kwa">transient</span> <span class="hl opt">[])</span>
+           x-vals x-vals<span class="hl opt">]</span>
+      <span class="hl opt">(</span><span class="hl kwa">if-let</span> <span class="hl opt">[</span>s <span class="hl opt">(</span><span class="hl kwa">seq</span> x-vals<span class="hl opt">)]</span>
+        <span class="hl slc">;; then</span>
+        <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>new-bit <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">dot</span> <span class="hl opt">(</span><span class="hl kwa">first</span> s<span class="hl opt">)</span> y<span class="hl opt">)</span> <span class="hl num">1 0</span><span class="hl opt">))</span>
+              new-b <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(+ (</span><span class="hl kwa">bit-shift-left</span> b <span class="hl num">1</span><span class="hl opt">)</span> new-bit<span class="hl opt">))]</span>
+          <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(==</span> num-filled-bits <span class="hl num">7</span><span class="hl opt">)</span>
+            <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">0</span><span class="hl opt">)</span>
+                   <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">0</span><span class="hl opt">)</span>
+                   <span class="hl opt">(</span><span class="hl kwa">conj</span><span class="hl opt">!</span> result <span class="hl opt">(</span><span class="hl kwa">ubyte</span> new-b<span class="hl opt">))</span>
+                   <span class="hl opt">(</span><span class="hl kwa">rest</span> s<span class="hl opt">))</span>
+            <span class="hl opt">(</span><span class="hl kwa">recur</span> new-b
+                   <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> num-filled-bits<span class="hl opt">))</span>
+                   result
+                   <span class="hl opt">(</span><span class="hl kwa">rest</span> s<span class="hl opt">))))</span>
+        <span class="hl slc">;; else</span>
+        <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">zero</span>? num-filled-bits<span class="hl opt">)</span>
+          <span class="hl opt">(</span><span class="hl kwa">persistent</span><span class="hl opt">!</span> result<span class="hl opt">)</span>
+          <span class="hl opt">(</span><span class="hl kwa">persistent</span><span class="hl opt">! (</span><span class="hl kwa">conj</span><span class="hl opt">!</span> result
+                              <span class="hl opt">(</span><span class="hl kwa">ubyte</span> <span class="hl opt">(</span><span class="hl kwa">bit-shift-left</span> b <span class="hl opt">(</span><span class="hl kwa">-</span> <span class="hl num">8</span> num-filled-bits<span class="hl opt">)))))</span>
+          <span class="hl opt">))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> my-lazy-map
+  <span class="hl opt">[</span>f coll<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">lazy-seq</span>
+    <span class="hl opt">(</span><span class="hl kwa">when-let</span> <span class="hl opt">[</span>s <span class="hl opt">(</span><span class="hl kwa">seq</span> coll<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">cons</span> <span class="hl opt">(</span><span class="hl kwa">f</span> <span class="hl opt">(</span><span class="hl kwa">first</span> s<span class="hl opt">)) (</span><span class="hl kwa">my-lazy-map</span> f <span class="hl opt">(</span><span class="hl kwa">rest</span> s<span class="hl opt">))))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> modified-pmap
+<span class="hl slc">;   &quot;Like pmap from Clojure 1.1, but with only as much parallelism as</span>
+<span class="hl slc">;   there are available processors.  Uses my-lazy-map instead of map</span>
+<span class="hl slc">;   from core.clj, since that version of map can use unwanted additional</span>
+<span class="hl slc">;   parallelism for chunked collections, like ranges.&quot;</span>
+  <span class="hl opt">([</span>num-threads f coll<span class="hl opt">]</span>
+     <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(==</span> num-threads <span class="hl num">1</span><span class="hl opt">)</span>
+       <span class="hl opt">(</span><span class="hl kwa">map</span> f coll<span class="hl opt">)</span>
+       <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>n <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(&gt;=</span> num-threads <span class="hl num">2</span><span class="hl opt">) (</span><span class="hl kwa">dec</span> num-threads<span class="hl opt">)</span> <span class="hl num">1</span><span class="hl opt">)</span>
+             rets <span class="hl opt">(</span><span class="hl kwa">my-lazy-map</span> <span class="hl opt">#(</span><span class="hl kwa">future</span> <span class="hl opt">(</span><span class="hl kwa">f</span> %<span class="hl opt">))</span> coll<span class="hl opt">)</span>
+             step <span class="hl opt">(</span><span class="hl kwa">fn</span> step <span class="hl opt">[[</span>x <span class="hl opt">&amp;</span> xs <span class="hl opt">:</span>as vs<span class="hl opt">]</span> fs<span class="hl opt">]</span>
+                    <span class="hl opt">(</span><span class="hl kwa">lazy-seq</span>
+                      <span class="hl opt">(</span><span class="hl kwa">if-let</span> <span class="hl opt">[</span>s <span class="hl opt">(</span><span class="hl kwa">seq</span> fs<span class="hl opt">)]</span>
+                        <span class="hl opt">(</span><span class="hl kwa">cons</span> <span class="hl opt">(</span><span class="hl kwa">deref</span> x<span class="hl opt">) (</span><span class="hl kwa">step</span> xs <span class="hl opt">(</span><span class="hl kwa">rest</span> s<span class="hl opt">)))</span>
+                        <span class="hl opt">(</span><span class="hl kwa">map</span> deref vs<span class="hl opt">))))]</span>
+         <span class="hl opt">(</span><span class="hl kwa">step</span> rets <span class="hl opt">(</span><span class="hl kwa">drop</span> n rets<span class="hl opt">)))))</span>
+  <span class="hl opt">([</span>num-threads f coll <span class="hl opt">&amp;</span> colls<span class="hl opt">]</span>
+     <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>step <span class="hl opt">(</span><span class="hl kwa">fn</span> step <span class="hl opt">[</span>cs<span class="hl opt">]</span>
+                  <span class="hl opt">(</span><span class="hl kwa">lazy-seq</span>
+                    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>ss <span class="hl opt">(</span><span class="hl kwa">my-lazy-map</span> seq cs<span class="hl opt">)]</span>
+                      <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(</span><span class="hl kwa">every</span>? identity ss<span class="hl opt">)</span>
+                        <span class="hl opt">(</span><span class="hl kwa">cons</span> <span class="hl opt">(</span><span class="hl kwa">my-lazy-map</span> first ss<span class="hl opt">)</span>
+                              <span class="hl opt">(</span><span class="hl kwa">step</span> <span class="hl opt">(</span><span class="hl kwa">my-lazy-map</span> rest ss<span class="hl opt">)))))))]</span>
+       <span class="hl opt">(</span><span class="hl kwa">modified-pmap</span> num-threads <span class="hl opt">#(</span><span class="hl kwa">apply</span> f %<span class="hl opt">) (</span><span class="hl kwa">step</span> <span class="hl opt">(</span><span class="hl kwa">cons</span> coll colls<span class="hl opt">))))))</span>
+  
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> compute-rows <span class="hl opt">[</span>size num-threads<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>two-over-size <span class="hl opt">(</span><span class="hl kwa">double</span> <span class="hl opt">(/</span> <span class="hl num">2.0</span> size<span class="hl opt">))</span>
+        x-offset <span class="hl opt">(</span><span class="hl kwa">double</span> -<span class="hl num">1.5</span><span class="hl opt">)</span>
+        y-offset <span class="hl opt">(</span><span class="hl kwa">double</span> -<span class="hl num">1.0</span><span class="hl opt">)</span>
+        x-vals <span class="hl opt">(</span><span class="hl kwa">map</span> <span class="hl opt">#(</span><span class="hl kwa">index-to-val</span> % two-over-size x-offset<span class="hl opt">) (</span><span class="hl kwa">range</span> size<span class="hl opt">))]</span>
+    <span class="hl opt">(</span><span class="hl kwa">modified-pmap</span> num-threads
+                   <span class="hl opt">#(</span><span class="hl kwa">compute-row</span> x-vals
+                                 <span class="hl opt">(</span><span class="hl kwa">index-to-val</span> % two-over-size y-offset<span class="hl opt">))</span>
+                   <span class="hl opt">(</span><span class="hl kwa">range</span> size<span class="hl opt">))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> do-mandelbrot <span class="hl opt">[</span>size num-threads<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>rows <span class="hl opt">(</span><span class="hl kwa">compute-rows</span> size num-threads<span class="hl opt">)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">println</span> <span class="hl str">&quot;P4&quot;</span><span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">println</span> <span class="hl opt">(</span><span class="hl kwa">format</span> <span class="hl str">&quot;%d %d&quot;</span> size size<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>ostream <span class="hl opt">(</span><span class="hl kwa">BufferedOutputStream</span>. System<span class="hl opt">/</span>out<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">doseq</span> <span class="hl opt">[</span>r rows<span class="hl opt">]</span>
+        <span class="hl opt">(</span>. ostream write <span class="hl opt">(</span><span class="hl kwa">into-array</span> Byte<span class="hl opt">/</span>TYPE r<span class="hl opt">)</span> <span class="hl num">0</span> <span class="hl opt">(</span><span class="hl kwa">count</span> r<span class="hl opt">)))</span>
+      <span class="hl opt">(</span>. ostream close<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">flush</span><span class="hl opt">)))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">def</span> <span class="hl opt">*</span>default-modified-pmap-num-threads<span class="hl opt">*</span>
+     <span class="hl opt">(+</span> <span class="hl num">2</span> <span class="hl opt">(</span>.. Runtime getRuntime availableProcessors<span class="hl opt">)))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> usage <span class="hl opt">[</span>exit-code<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">println</span> <span class="hl opt">(</span><span class="hl kwa">format</span> <span class="hl str">&quot;usage: %s size [num-threads]&quot;</span>
+                   <span class="hl opt">*</span>file<span class="hl opt">*))</span>
+  <span class="hl opt">(</span><span class="hl kwa">println</span> <span class="hl opt">(</span><span class="hl kwa">format</span> <span class="hl str">&quot;    size must be a positive integer&quot;</span><span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">println</span> <span class="hl opt">(</span><span class="hl kwa">format</span> <span class="hl str">&quot;    num-threads is the maximum threads to use at once&quot;</span><span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">println</span> <span class="hl opt">(</span><span class="hl kwa">format</span> <span class="hl str">&quot;        during the computation.  If 0 or not given, it&quot;</span><span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">println</span> <span class="hl opt">(</span><span class="hl kwa">format</span> <span class="hl str">&quot;        defaults to the number of available cores plus 2,&quot;</span><span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">println</span> <span class="hl opt">(</span><span class="hl kwa">format</span> <span class="hl str">&quot;        which is %d&quot;</span>
+                   <span class="hl opt">*</span>default-modified-pmap-num-threads<span class="hl opt">*))</span>
+  <span class="hl opt">(</span>. System <span class="hl opt">(</span><span class="hl kwa">exit</span> exit-code<span class="hl opt">)))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> -main <span class="hl opt">[&amp;</span> args<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(</span><span class="hl kwa">or</span> <span class="hl opt">(&lt; (</span><span class="hl kwa">count</span> args<span class="hl opt">)</span> <span class="hl num">1</span><span class="hl opt">) (&gt; (</span><span class="hl kwa">count</span> args<span class="hl opt">)</span> <span class="hl num">2</span><span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">usage</span> <span class="hl num">1</span><span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(</span><span class="hl kwa">not</span> <span class="hl opt">(</span><span class="hl kwa">re-matches</span> <span class="hl opt">#</span><span class="hl str">&quot;^\d+$&quot;</span> <span class="hl opt">(</span><span class="hl kwa">nth</span> args <span class="hl num">0</span><span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">usage</span> <span class="hl num">1</span><span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">def</span> size <span class="hl opt">(</span>. Integer valueOf <span class="hl opt">(</span><span class="hl kwa">nth</span> args <span class="hl num">0</span><span class="hl opt">)</span> <span class="hl num">10</span><span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(&lt;</span> size <span class="hl num">1</span><span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">usage</span> <span class="hl num">1</span><span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">def</span> num-threads
+       <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(&gt;= (</span><span class="hl kwa">count</span> args<span class="hl opt">)</span> <span class="hl num">2</span><span class="hl opt">)</span>
+         <span class="hl opt">(</span><span class="hl kwa">do</span>
+           <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(</span><span class="hl kwa">not</span> <span class="hl opt">(</span><span class="hl kwa">re-matches</span> <span class="hl opt">#</span><span class="hl str">&quot;^\d+$&quot;</span> <span class="hl opt">(</span><span class="hl kwa">nth</span> args <span class="hl num">1</span><span class="hl opt">)))</span>
+             <span class="hl opt">(</span><span class="hl kwa">usage</span> <span class="hl num">1</span><span class="hl opt">))</span>
+           <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>n <span class="hl opt">(</span>. Integer valueOf <span class="hl opt">(</span><span class="hl kwa">nth</span> args <span class="hl num">1</span><span class="hl opt">)</span> <span class="hl num">10</span><span class="hl opt">)]</span>
+             <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(==</span> n <span class="hl num">0</span><span class="hl opt">)</span>
+               <span class="hl opt">*</span>default-modified-pmap-num-threads<span class="hl opt">*</span>
+               n<span class="hl opt">)))</span>
+         <span class="hl opt">*</span>default-modified-pmap-num-threads<span class="hl opt">*))</span>
+  <span class="hl opt">(</span><span class="hl kwa">do-mandelbrot</span> size num-threads<span class="hl opt">)</span>
+  <span class="hl opt">(</span>. System <span class="hl opt">(</span><span class="hl kwa">exit</span> <span class="hl num">0</span><span class="hl opt">)))</span>

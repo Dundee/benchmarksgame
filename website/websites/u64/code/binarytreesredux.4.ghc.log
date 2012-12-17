@@ -1,0 +1,22 @@
+
+Sat, 23 Jun 2012 20:57:16 GMT
+
+MAKE:
+mv binarytreesredux.ghc-4.ghc binarytreesredux.ghc-4.hs
+/usr/local/src/ghc-7.4.2/bin/ghc --make -fllvm -O2 -XBangPatterns -rtsopts -funbox-strict-fields binarytreesredux.ghc-4.hs -o binarytreesredux.ghc-4.ghc_run
+[1 of 1] Compiling Main             ( binarytreesredux.ghc-4.hs, binarytreesredux.ghc-4.o )
+Linking binarytreesredux.ghc-4.ghc_run ...
+rm binarytreesredux.ghc-4.hs
+1.35s to complete and log all make actions
+
+COMMAND LINE:
+./binarytreesredux.ghc-4.ghc_run +RTS -H160M -M160M -RTS 20
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Heap exhausted;
+Current maximum heap size is 167772160 bytes (160 MB);
+use `+RTS -M<size>' to increase it.

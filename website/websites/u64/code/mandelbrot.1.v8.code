@@ -1,0 +1,52 @@
+
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com">   contributed by Thomas GODART (based on Greg Buchholz's C program) */</span>
+
+<span class="hl kwa">var</span> w <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> <span class="hl kwa">var</span> h <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> <span class="hl kwa">var</span> bit_num <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl kwa">var</span> byte_acc <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl kwa">var</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> <span class="hl kwa">var</span> iter <span class="hl opt">=</span> <span class="hl num">50</span><span class="hl opt">;</span>
+<span class="hl kwa">var</span> x <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> <span class="hl kwa">var</span> y <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> <span class="hl kwa">var</span> limit2 <span class="hl opt">=</span> <span class="hl num">4</span><span class="hl opt">;</span>
+<span class="hl kwa">var</span> Zr <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> <span class="hl kwa">var</span> Zi <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> <span class="hl kwa">var</span> Cr <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> <span class="hl kwa">var</span> Ci <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> <span class="hl kwa">var</span> Tr <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> <span class="hl kwa">var</span> Ti <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+<span class="hl kwa">var</span> h <span class="hl opt">=</span> <span class="hl num">3000</span><span class="hl opt">;</span>
+<span class="hl kwa">var</span> w <span class="hl opt">=</span> h<span class="hl opt">;</span>
+
+document<span class="hl opt">.</span><span class="hl kwd">write</span> <span class="hl opt">(</span><span class="hl str">&quot;P4</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> <span class="hl opt">+</span> w <span class="hl opt">+</span> <span class="hl str">&quot; &quot;</span> <span class="hl opt">+</span> h <span class="hl opt">+</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">);</span>
+
+<span class="hl kwa">for</span> <span class="hl opt">(</span>y <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl opt">;</span> y <span class="hl opt">&lt;</span> h <span class="hl opt">;</span> y<span class="hl opt">++)</span>
+<span class="hl opt">{</span>
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>x <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl opt">;</span> x <span class="hl opt">&lt;</span> w <span class="hl opt">;</span> x<span class="hl opt">++)</span>
+   <span class="hl opt">{</span>
+      Zr <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> Zi <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> Tr <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> Ti <span class="hl opt">=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+
+      Cr <span class="hl opt">= (</span><span class="hl num">2.0</span> <span class="hl opt">*</span> x <span class="hl opt">/</span> w <span class="hl opt">-</span> <span class="hl num">1.5</span><span class="hl opt">);</span> Ci <span class="hl opt">= (</span><span class="hl num">2.0</span> <span class="hl opt">*</span> y <span class="hl opt">/</span> h <span class="hl opt">-</span> <span class="hl num">1.0</span><span class="hl opt">);</span>
+
+      <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl opt">;</span> i <span class="hl opt">&lt;</span> iter <span class="hl opt">&amp;&amp; (</span>Tr <span class="hl opt">+</span> Ti <span class="hl opt">&lt;=</span> limit2<span class="hl opt">) ;</span> i<span class="hl opt">++)</span>
+      <span class="hl opt">{</span>
+         Zi <span class="hl opt">=</span> <span class="hl num">2.0</span> <span class="hl opt">*</span> Zr <span class="hl opt">*</span> Zi <span class="hl opt">+</span> Ci<span class="hl opt">;</span>
+         Zr <span class="hl opt">=</span> Tr <span class="hl opt">-</span> Ti <span class="hl opt">+</span> Cr<span class="hl opt">;</span>
+         Tr <span class="hl opt">=</span> Zr <span class="hl opt">*</span> Zr<span class="hl opt">;</span>
+         Ti <span class="hl opt">=</span> Zi <span class="hl opt">*</span> Zi<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      byte_acc <span class="hl opt">=</span> byte_acc <span class="hl opt">&lt;&lt;</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>Tr <span class="hl opt">+</span> Ti <span class="hl opt">&lt;=</span> limit2<span class="hl opt">)</span> byte_acc <span class="hl opt">=</span> byte_acc | <span class="hl num">1</span><span class="hl opt">;</span>
+
+      bit_num<span class="hl opt">++;</span>
+
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>bit_num <span class="hl opt">==</span> <span class="hl num">8</span><span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+         document<span class="hl opt">.</span><span class="hl kwd">write</span> <span class="hl opt">(</span>String<span class="hl opt">.</span><span class="hl kwd">fromCharCode</span><span class="hl opt">(</span>byte_acc<span class="hl opt">));</span>
+         byte_acc <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+         bit_num <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">else if</span> <span class="hl opt">(</span>x <span class="hl opt">==</span> w <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+         byte_acc <span class="hl opt">=</span> byte_acc <span class="hl opt">&lt;&lt; (</span><span class="hl num">8</span> <span class="hl opt">-</span> w <span class="hl opt">%</span> <span class="hl num">8</span><span class="hl opt">);</span>
+         document<span class="hl opt">.</span><span class="hl kwd">write</span> <span class="hl opt">(</span>String<span class="hl opt">.</span><span class="hl kwd">fromCharCode</span><span class="hl opt">(</span>byte_acc<span class="hl opt">));</span>
+         byte_acc <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+         bit_num <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>

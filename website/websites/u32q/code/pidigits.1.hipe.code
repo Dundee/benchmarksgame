@@ -1,0 +1,58 @@
+<span class="hl slc">%  The Great Computer Language Shootout</span>
+<span class="hl slc">%   http://shootout.alioth.debian.org/</span>
+<span class="hl slc">%  </span>
+<span class="hl slc">%   contributed by Mark Scandariato</span>
+<span class="hl slc">%</span>
+<span class="hl slc">%   erl -noshell -noinput -run pidigits main 7 </span>
+
+
+<span class="hl opt">-</span><span class="hl kwd">module</span><span class="hl opt">(</span>pidigits<span class="hl opt">).</span>
+<span class="hl opt">-</span><span class="hl kwd">export</span><span class="hl opt">([</span>main<span class="hl opt">/</span><span class="hl num">1</span><span class="hl opt">]).</span>
+
+<span class="hl slc">% conversion</span>
+<span class="hl kwd">is_safe</span><span class="hl opt">(</span>Z<span class="hl opt">,</span> N<span class="hl opt">) -&gt;</span> N <span class="hl opt">==</span> <span class="hl kwd">extr</span><span class="hl opt">(</span>Z<span class="hl opt">,</span> <span class="hl num">4</span><span class="hl opt">).</span>
+<span class="hl kwd">next</span><span class="hl opt">(</span>Z<span class="hl opt">)       -&gt;</span> <span class="hl kwd">extr</span><span class="hl opt">(</span>Z<span class="hl opt">,</span> <span class="hl num">3</span><span class="hl opt">).</span>
+<span class="hl kwd">prod</span><span class="hl opt">(</span>Z<span class="hl opt">,</span> N<span class="hl opt">)    -&gt;</span> <span class="hl kwd">comp</span><span class="hl opt">({</span><span class="hl num">10</span><span class="hl opt">, -</span><span class="hl num">10</span><span class="hl opt">*</span>N<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">},</span> Z<span class="hl opt">).</span>
+<span class="hl kwd">cons</span><span class="hl opt">(</span>Z<span class="hl opt">,</span> Zp<span class="hl opt">)   -&gt;</span> <span class="hl kwd">comp</span><span class="hl opt">(</span>Z<span class="hl opt">,</span> Zp<span class="hl opt">).</span>
+
+<span class="hl slc">% LFT</span>
+<span class="hl opt">-</span><span class="hl kwd">define</span><span class="hl opt">(</span>unit<span class="hl opt">, {</span><span class="hl num">1</span><span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">1</span><span class="hl opt">}).</span>
+<span class="hl kwd">comp</span><span class="hl opt">({</span>Q<span class="hl opt">,</span>R<span class="hl opt">,</span>S<span class="hl opt">,</span>T<span class="hl opt">}, {</span>Qp<span class="hl opt">,</span> Rp<span class="hl opt">,</span> Sp<span class="hl opt">,</span> Tp<span class="hl opt">}) -&gt;</span>
+    <span class="hl opt">{</span>Q<span class="hl opt">*</span>Qp <span class="hl opt">+</span> R<span class="hl opt">*</span>Sp<span class="hl opt">,</span> Q<span class="hl opt">*</span>Rp <span class="hl opt">+</span> R<span class="hl opt">*</span>Tp<span class="hl opt">,</span> S<span class="hl opt">*</span>Qp <span class="hl opt">+</span> T<span class="hl opt">*</span>Sp<span class="hl opt">,</span> S<span class="hl opt">*</span>Rp <span class="hl opt">+</span> T<span class="hl opt">*</span>Tp<span class="hl opt">}.</span>
+<span class="hl kwd">extr</span><span class="hl opt">({</span>Q<span class="hl opt">,</span>R<span class="hl opt">,</span>S<span class="hl opt">,</span>T<span class="hl opt">},</span> X<span class="hl opt">) -&gt; (</span>Q <span class="hl opt">*</span> X <span class="hl opt">+</span> R<span class="hl opt">)</span> <span class="hl kwd">div</span> <span class="hl opt">(</span>S <span class="hl opt">*</span> X <span class="hl opt">+</span> T<span class="hl opt">).</span>
+
+<span class="hl kwd">lft</span><span class="hl opt">(</span>K<span class="hl opt">) -&gt; {</span>K<span class="hl opt">,</span> <span class="hl num">4</span><span class="hl opt">*</span>K<span class="hl opt">+</span><span class="hl num">2</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">*</span>K<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">}.</span>
+
+<span class="hl kwd">stream</span><span class="hl opt">(</span>N<span class="hl opt">) -&gt;</span> <span class="hl kwd">stream</span><span class="hl opt">(</span>N<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> ?unit<span class="hl opt">, []).</span>
+<span class="hl kwd">stream</span><span class="hl opt">(</span>N<span class="hl opt">,</span> N<span class="hl opt">,</span> _<span class="hl opt">,</span> _<span class="hl opt">,</span> P<span class="hl opt">) -&gt;</span> <span class="hl kwd">print</span><span class="hl opt">(</span>N<span class="hl opt">,</span>P<span class="hl opt">);</span>
+<span class="hl kwd">stream</span><span class="hl opt">(</span>N<span class="hl opt">,</span> C<span class="hl opt">,</span> K<span class="hl opt">,</span> Z<span class="hl opt">,</span> P<span class="hl opt">) -&gt;</span>
+    Y <span class="hl opt">=</span> <span class="hl kwd">next</span><span class="hl opt">(</span>Z<span class="hl opt">),</span>
+    <span class="hl kwa">case</span> <span class="hl kwd">is_safe</span><span class="hl opt">(</span>Z<span class="hl opt">,</span> Y<span class="hl opt">)</span> <span class="hl kwa">of</span>
+        true  <span class="hl opt">-&gt;</span>
+            <span class="hl kwd">stream</span><span class="hl opt">(</span>N<span class="hl opt">,</span> C<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">,</span> K<span class="hl opt">,</span> <span class="hl kwd">prod</span><span class="hl opt">(</span>Z<span class="hl opt">,</span>Y<span class="hl opt">),</span> <span class="hl kwd">update</span><span class="hl opt">(</span>C<span class="hl opt">,</span>Y<span class="hl opt">,</span>P<span class="hl opt">));</span>
+        false <span class="hl opt">-&gt;</span>
+            <span class="hl kwd">stream</span><span class="hl opt">(</span>N<span class="hl opt">,</span> C<span class="hl opt">,</span> K<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">,</span> <span class="hl kwd">cons</span><span class="hl opt">(</span>Z<span class="hl opt">,</span> <span class="hl kwd">lft</span><span class="hl opt">(</span>K<span class="hl opt">)),</span> P<span class="hl opt">)</span>
+    <span class="hl kwa">end</span><span class="hl opt">.</span>
+
+
+<span class="hl kwd">update</span><span class="hl opt">(</span>C<span class="hl opt">,</span> D<span class="hl opt">,</span> P<span class="hl opt">)</span> <span class="hl kwa">when</span> C rem <span class="hl num">10</span> <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl opt">,</span> C <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl opt">-&gt;</span>
+    <span class="hl kwd">print</span><span class="hl opt">(</span>C<span class="hl opt">,</span> P<span class="hl opt">),</span>
+    <span class="hl opt">[</span>D<span class="hl opt">];</span>
+
+<span class="hl kwd">update</span><span class="hl opt">(</span>_<span class="hl opt">,</span> D<span class="hl opt">,</span> P<span class="hl opt">) -&gt; [</span>D|P<span class="hl opt">].</span>
+
+
+<span class="hl kwd">print</span><span class="hl opt">(</span>C<span class="hl opt">,</span> P<span class="hl opt">) -&gt;</span> <span class="hl kwd">do_print</span><span class="hl opt">(</span>C<span class="hl opt">,</span> <span class="hl kwc">lists</span><span class="hl opt">:</span><span class="hl kwd">reverse</span><span class="hl opt">(</span>P<span class="hl opt">)).</span>
+
+
+<span class="hl kwd">do_print</span><span class="hl opt">(</span>C<span class="hl opt">, [])</span> <span class="hl kwa">when</span> C rem <span class="hl num">10</span> <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl opt">-&gt;</span> <span class="hl kwc">io</span><span class="hl opt">:</span><span class="hl kwd">fwrite</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">:~p~n&quot;</span><span class="hl opt">, [</span>C<span class="hl opt">]);</span>
+<span class="hl kwd">do_print</span><span class="hl opt">(</span>C<span class="hl opt">, []) -&gt;</span> <span class="hl kwc">io</span><span class="hl opt">:</span><span class="hl kwd">fwrite</span><span class="hl opt">(</span><span class="hl str">&quot;~*.1c:~p~n&quot;</span><span class="hl opt">, [</span><span class="hl num">10</span> <span class="hl opt">-</span> C rem <span class="hl num">10</span><span class="hl opt">,</span> $<span class="hl esc">\t</span><span class="hl opt">,</span> C<span class="hl opt">]);</span>
+<span class="hl kwd">do_print</span><span class="hl opt">(</span>C<span class="hl opt">, [</span>H|T<span class="hl opt">]) -&gt;</span> <span class="hl kwc">io</span><span class="hl opt">:</span><span class="hl kwd">fwrite</span><span class="hl opt">(</span><span class="hl str">&quot;~p&quot;</span><span class="hl opt">, [</span>H<span class="hl opt">]),</span> <span class="hl kwd">do_print</span><span class="hl opt">(</span>C<span class="hl opt">,</span> T<span class="hl opt">).</span>
+
+
+<span class="hl kwd">main</span><span class="hl opt">([</span>Arg<span class="hl opt">]) -&gt;</span>
+    N <span class="hl opt">=</span> <span class="hl kwb">list_to_integer</span><span class="hl opt">(</span>Arg<span class="hl opt">),</span>
+    <span class="hl kwd">main</span><span class="hl opt">(</span>N<span class="hl opt">),</span>
+    <span class="hl kwc">erlang</span><span class="hl opt">:</span><span class="hl kwb">halt</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
+
+<span class="hl kwd">main</span><span class="hl opt">(</span>N<span class="hl opt">)</span> <span class="hl kwa">when</span> N <span class="hl opt">&gt;</span> <span class="hl num">1</span> <span class="hl opt">-&gt;</span> <span class="hl kwd">stream</span><span class="hl opt">(</span>N<span class="hl opt">).</span>

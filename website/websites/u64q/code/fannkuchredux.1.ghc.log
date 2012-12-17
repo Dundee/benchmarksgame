@@ -1,0 +1,17 @@
+
+Fri, 07 Sep 2012 17:02:16 GMT
+
+MAKE:
+mv fannkuchredux.ghc fannkuchredux.hs
+/usr/local/src/ghc-7.6.1/bin/ghc --make -fllvm -O2 -XBangPatterns -threaded -rtsopts  fannkuchredux.hs -o fannkuchredux.ghc_run
+[1 of 1] Compiling Main             ( fannkuchredux.hs, fannkuchredux.o )
+Linking fannkuchredux.ghc_run ...
+rm fannkuchredux.hs
+1.56s to complete and log all make actions
+
+COMMAND LINE:
+./fannkuchredux.ghc_run +RTS -N4 -RTS 12
+
+PROGRAM OUTPUT:
+3968050
+Pfannkuchen(12) = 65

@@ -1,0 +1,112 @@
+
+Fri, 28 Sep 2012 16:47:26 GMT
+
+MAKE:
+/usr/local/src/ats-lang-anairiats-0.2.8/bin/atscc -D_GNU_SOURCE -D_ATS_MULTITHREAD -D_ATS_GCATS -lpthread -pipe -Wall -O3 -fomit-frame-pointer -march=native  knucleotide.dats -o knucleotide.ats-2.ats_run 
+/usr/local/src/ats-lang-anairiats-0.2.8/bin/atsopt --output knucleotide_dats.c --dynamic knucleotide.dats
+/usr/local/src/ats-lang-anairiats-0.2.8/ccomp/runtime/ats_prelude.c: In function ‘ats_pthread_create_detached’:
+/usr/local/src/ats-lang-anairiats-0.2.8/ccomp/runtime/ats_prelude.c:181:3: warning: implicit declaration of function ‘gc_pthread_create’ [-Wimplicit-function-declaration]
+In file included from knucleotide_dats.c:19:0:
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/basics.cats: In function ‘atspre_fprint_newline’:
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/basics.cats:271:11: warning: variable ‘n2’ set but not used [-Wunused-but-set-variable]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/basics.cats:271:7: warning: variable ‘n1’ set but not used [-Wunused-but-set-variable]
+knucleotide_dats.c: In function ‘symtbl_dna_get’:
+knucleotide_dats.c:292:1: warning: label ‘__ats_lab_symtbl_dna_get’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘symtbl_symlen_get’:
+knucleotide_dats.c:308:1: warning: label ‘__ats_lab_symtbl_symlen_get’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘symtbl_symlen_set’:
+knucleotide_dats.c:324:1: warning: label ‘__ats_lab_symtbl_symlen_set’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘_2home_2dunham_2benchmarksgame_onecore_2knucleotide_2tmp_2knucleotide_2edats__symtbl_make’:
+knucleotide_dats.c:346:1: warning: label ‘__ats_lab__2home_2dunham_2benchmarksgame_onecore_2knucleotide_2tmp_2knucleotide_2edats__symtbl_make’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘symtbl_clear’:
+knucleotide_dats.c:376:1: warning: label ‘__ats_lab_symtbl_clear’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘symtbl_search’:
+knucleotide_dats.c:402:1: warning: label ‘__ats_lab_symtbl_search’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘symtbl_insert’:
+knucleotide_dats.c:434:1: warning: label ‘__ats_lab_symtbl_insert’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘_2home_2dunham_2benchmarksgame_onecore_2knucleotide_2tmp_2knucleotide_2edats__symtbl_fold’:
+knucleotide_dats.c:465:1: warning: label ‘__ats_lab__2home_2dunham_2benchmarksgame_onecore_2knucleotide_2tmp_2knucleotide_2edats__symtbl_fold’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘compare_symflt_symflt_8’:
+knucleotide_dats.c:484:1: warning: label ‘__ats_lab_compare_symflt_symflt_8’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘print_free_frqlst_9’:
+knucleotide_dats.c:529:1: warning: label ‘__ats_lab_1_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:512:1: warning: label ‘__ats_lab_0_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:510:1: warning: label ‘__ats_lab_0_0’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘__ats_fun_11’:
+knucleotide_dats.c:545:1: warning: label ‘__ats_lab___ats_fun_11’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘__ats_fun_12’:
+knucleotide_dats.c:582:1: warning: label ‘__ats_lab___ats_fun_12’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘loop_15’:
+knucleotide_dats.c:644:1: warning: label ‘__ats_lab_3_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:632:1: warning: label ‘__ats_lab_2_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:630:1: warning: label ‘__ats_lab_2_0’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘list_vt_length_01584_anairiats_rec_2’:
+knucleotide_dats.c:660:1: warning: label ‘__ats_lab_list_vt_length_01584_anairiats_rec_2’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘loop_17’:
+knucleotide_dats.c:695:1: warning: label ‘__ats_lab_5_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:682:1: warning: label ‘__ats_lab_4_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:680:1: warning: label ‘__ats_lab_4_0’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘array_ptr_initialize_lst_01309_anairiats_rec_2’:
+knucleotide_dats.c:710:1: warning: label ‘__ats_lab_array_ptr_initialize_lst_01309_anairiats_rec_2’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘loop_18’:
+knucleotide_dats.c:749:1: warning: label ‘__ats_lab_7_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:734:1: warning: label ‘__ats_lab_6_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:732:1: warning: label ‘__ats_lab_6_0’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘list_vt_quicksort_01608_anairiats_rec_2’:
+knucleotide_dats.c:772:1: warning: label ‘__ats_lab_list_vt_quicksort_01608_anairiats_rec_2’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘write_frequencies_10’:
+knucleotide_dats.c:805:1: warning: label ‘__ats_lab_write_frequencies_10’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘write_count_19’:
+knucleotide_dats.c:840:1: warning: label ‘__ats_lab_write_count_19’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘is_three_20’:
+knucleotide_dats.c:861:1: warning: label ‘__ats_lab_is_three_20’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘mainats’:
+knucleotide_dats.c:917:1: warning: label ‘__ats_lab_mainats’ defined but not used [-Wunused-label]
+knucleotide_dats.c: At top level:
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/pointer.cats:52:14: warning: ‘atspre_null_ptr’ defined but not used [-Wunused-variable]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/printf.cats:57:1: warning: ‘atspre_fprintf_err’ defined but not used [-Wunused-function]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/printf.cats:69:1: warning: ‘atspre_fprintf_exn’ defined but not used [-Wunused-function]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/printf.cats:105:1: warning: ‘atspre_prerrf_exn’ defined but not used [-Wunused-function]
+/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/string.cats:351:14: warning: ‘atspre_stropt_none’ defined but not used [-Wunused-variable]
+knucleotide_dats.c:246:18: warning: ‘__ats_fun_11_closure_make’ declared ‘static’ but never defined [-Wunused-function]
+knucleotide_dats.c:252:18: warning: ‘__ats_fun_12_closure_make’ declared ‘static’ but never defined [-Wunused-function]
+knucleotide_dats.c: In function ‘__getline’:
+knucleotide_dats.c:1061:9: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+gcc -I/usr/local/src/ats-lang-anairiats-0.2.8/ -I/usr/local/src/ats-lang-anairiats-0.2.8/ccomp/runtime/ -L/usr/local/src/ats-lang-anairiats-0.2.8/ccomp/lib/ /usr/local/src/ats-lang-anairiats-0.2.8/ccomp/runtime/ats_prelude.c -D_GNU_SOURCE -D_ATS_MULTITHREAD -D_ATS_GCATS -lpthread -pipe -Wall -O3 -fomit-frame-pointer -march=native knucleotide_dats.c -o knucleotide.ats-2.ats_run /usr/local/src/ats-lang-anairiats-0.2.8/ccomp/runtime/GCATS/gc_mt.o -lats_mt -lats 
+1.55s to complete and log all make actions
+
+COMMAND LINE:
+./knucleotide.ats-2.ats_run 0 < knucleotide-input25000000.txt
+
+PROGRAM OUTPUT:
+A 30.295
+T 30.151
+C 19.800
+G 19.754
+
+AA 9.177
+TA 9.132
+AT 9.131
+TT 9.091
+CA 6.002
+AC 6.001
+AG 5.987
+GA 5.984
+CT 5.971
+TC 5.971
+GT 5.957
+TG 5.956
+CC 3.917
+GC 3.911
+CG 3.909
+GG 3.902
+
+1471758	GGT
+446535	GGTA
+47336	GGTATT
+893	GGTATTTTAATT
+893	GGTATTTTAATTTATAGT
+
+gc_collect: nother = 0
+gc_collect: nother = 0
+gc_collect: nother = 0

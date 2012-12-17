@@ -1,0 +1,16 @@
+
+Wed, 12 Dec 2012 19:15:39 GMT
+
+MAKE:
+mv nbody.scala nbody.scala
+mv: `nbody.scala' and `nbody.scala' are the same file
+make: [nbody.scala_run] Error 1 (ignored)
+/usr/local/src/scala-2.10.0-RC5/bin/scalac -optimise nbody.scala
+8.02s to complete and log all make actions
+
+COMMAND LINE:
+ /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0-RC5/lib/scala-library.jar nbody 50000000
+
+PROGRAM OUTPUT:
+-0.169075164
+-0.169059907

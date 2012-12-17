@@ -1,0 +1,41 @@
+
+Wed, 03 Oct 2012 22:35:36 GMT
+
+MAKE:
+mv chameneosredux.python3-2.python3 chameneosredux.python3-2.py
+/usr/local/src/Python-3.3.0/bin/python3.3 -OO -c "from py_compile import compile; compile('chameneosredux.python3-2.py')"
+0.06s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/src/Python-3.3.0/bin/python3.3 chameneosredux.python3-2.py 6000000
+
+PROGRAM OUTPUT:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
+ blue red yellow
+3999182 zero
+4000394 zero
+4000424 zero
+ one two zero zero zero zero zero zero
+
+ blue red yellow red yellow blue red yellow red blue
+1199772 zero
+1199844 zero
+1199846 zero
+1199848 zero
+1199894 zero
+1200066 zero
+1200185 zero
+1200190 zero
+1200185 zero
+1200170 zero
+ one two zero zero zero zero zero zero
+

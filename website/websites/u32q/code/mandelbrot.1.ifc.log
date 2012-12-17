@@ -1,0 +1,18 @@
+
+Fri, 06 Jan 2012 03:35:10 GMT
+
+MAKE:
+/usr/local/src/intel/bin/ifort -O3 -fast -openmp mandelbrot.f90 -o mandelbrot.ifc_run
+ipo: remark #11001: performing single-file optimizations
+ipo: remark #11006: generating object file /tmp/ipo_ifortzGbJxw.o
+rm mandelbrot.f90
+0.26s to complete and log all make actions
+
+COMMAND LINE:
+./mandelbrot.ifc_run 1000
+
+UNEXPECTED OUTPUT 
+
+_out 1000_out differ: byte 8984, line 3
+
+(BINARY) PROGRAM OUTPUT NOT SHOWN

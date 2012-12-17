@@ -1,0 +1,76 @@
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://shootout.alioth.debian.org/</span>
+<span class="hl slc">-- Contributed by Jacob Sparre Andersen (with help from Alex Mason)</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- Compile with:</span>
+<span class="hl slc">--    gnatmake -gnat05 -gnatE -gnato -gnatv -gnati1 -gnatf -m -O3 -funroll-loops -funwind-tables -gnatn -fomit-frame-pointer -march=native thread_ring</span>
+
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Command_line<span class="hl opt">;</span>
+
+<span class="hl kwa">procedure</span> ThreadRing <span class="hl kwa">is</span>
+   Ring_Size <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">503</span><span class="hl opt">;</span>
+   <span class="hl kwa">type</span> Ring_Index <span class="hl kwa">is mod</span> Ring_Size<span class="hl opt">;</span>
+
+   <span class="hl kwa">package</span> Ring_Text_IO <span class="hl kwa">is new</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">.</span>Modular_IO <span class="hl opt">(</span>Ring_Index<span class="hl opt">);</span>
+
+   <span class="hl kwa">protected type</span> Store <span class="hl kwa">is</span>
+      <span class="hl kwa">entry</span> Put  <span class="hl opt">(</span>Item <span class="hl opt">:</span> <span class="hl kwa">in</span>     <span class="hl kwb">Integer</span><span class="hl opt">);</span>
+      <span class="hl kwa">entry</span> Take <span class="hl opt">(</span>Item <span class="hl opt">:</span>    <span class="hl kwa">out</span> <span class="hl kwb">Integer</span><span class="hl opt">);</span>
+   <span class="hl kwa">private</span>
+      Value <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      Full  <span class="hl opt">:</span> <span class="hl kwb">Boolean</span> <span class="hl opt">:=</span> <span class="hl kwd">False</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Store<span class="hl opt">;</span>
+
+   <span class="hl kwa">protected body</span> Store <span class="hl kwa">is</span>
+      <span class="hl kwa">entry</span> Put <span class="hl opt">(</span>Item <span class="hl opt">:</span> <span class="hl kwa">in</span>     <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">when not</span> Full <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         Value <span class="hl opt">:=</span> Item<span class="hl opt">;</span>
+         Full <span class="hl opt">:=</span> <span class="hl kwd">True</span><span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Put<span class="hl opt">;</span>
+
+      <span class="hl kwa">entry</span> Take <span class="hl opt">(</span>Item <span class="hl opt">:</span>    <span class="hl kwa">out</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">when</span> Full <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         Item <span class="hl opt">:=</span> Value<span class="hl opt">;</span>
+         Full <span class="hl opt">:=</span> <span class="hl kwd">False</span><span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Take<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Store<span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> Store_Ring <span class="hl kwa">is array</span> <span class="hl opt">(</span>Ring_Index<span class="hl opt">)</span> <span class="hl kwa">of</span> Store<span class="hl opt">;</span>
+   Stores <span class="hl opt">:</span> Store_Ring<span class="hl opt">;</span>
+
+   <span class="hl kwa">task type</span> Node <span class="hl kwa">is</span>
+      <span class="hl kwa">entry</span> Initialize <span class="hl opt">(</span>Identifier  <span class="hl opt">:</span> <span class="hl kwa">in</span>     Ring_Index<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Node<span class="hl opt">;</span>
+
+   <span class="hl kwa">task body</span> Node <span class="hl kwa">is</span>
+      ID    <span class="hl opt">:</span> Ring_Index<span class="hl opt">;</span>
+      Token <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">accept</span> Initialize <span class="hl opt">(</span>Identifier  <span class="hl opt">:</span> <span class="hl kwa">in</span>     Ring_Index<span class="hl opt">)</span> <span class="hl kwa">do</span>
+         ID <span class="hl opt">:=</span> Identifier<span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Initialize<span class="hl opt">;</span>
+
+      <span class="hl kwa">loop</span>
+         Stores <span class="hl opt">(</span>ID<span class="hl opt">).</span>Take <span class="hl opt">(</span>Token<span class="hl opt">);</span>
+
+         <span class="hl kwa">if</span> Token <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl kwa">then</span>
+            Ring_Text_IO<span class="hl opt">.</span>Put <span class="hl opt">(</span>ID<span class="hl opt">,</span> Width <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">);</span>
+            Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">.</span>New_Line<span class="hl opt">;</span>
+         <span class="hl kwa">end if</span><span class="hl opt">;</span>
+
+         Stores <span class="hl opt">(</span>ID <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">).</span>Put <span class="hl opt">(</span>Token <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span>
+
+         <span class="hl kwa">exit when</span> Token <span class="hl opt">&lt;</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Node<span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> Node_Ring <span class="hl kwa">is array</span> <span class="hl opt">(</span>Ring_Index<span class="hl opt">)</span> <span class="hl kwa">of</span> Node<span class="hl opt">;</span>
+   Nodes <span class="hl opt">:</span> Node_Ring<span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+   <span class="hl kwa">for</span> ID <span class="hl kwa">in</span> Nodes<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+      Nodes <span class="hl opt">(</span>ID<span class="hl opt">).</span>Initialize <span class="hl opt">(</span>Identifier <span class="hl opt">=&gt;</span> ID<span class="hl opt">);</span>
+   <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+
+   Stores <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">).</span>Put <span class="hl opt">(</span><span class="hl kwb">Integer</span><span class="hl kwd">'Value</span> <span class="hl opt">(</span>Ada<span class="hl opt">.</span>Command_Line<span class="hl opt">.</span>Argument <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)));</span>
+<span class="hl kwa">end</span> ThreadRing<span class="hl opt">;</span>

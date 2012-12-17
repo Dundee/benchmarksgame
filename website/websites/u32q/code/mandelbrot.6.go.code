@@ -1,0 +1,108 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * Contributed by Martin Koistinen</span>
+<span class="hl com"> * Based on mandelbrot.c contributed by Greg Buchholz and The Go Authors</span>
+<span class="hl com"> * flag.Arg hack by Isaac Gouy</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * Large changes by Bill Broadley, including:</span>
+<span class="hl com"> * 1) Switching the one goroutine per line to one per CPU</span>
+<span class="hl com"> * 2) Replacing gorouting calls with channels</span>
+<span class="hl com"> * 3) Handling out of order results in the file writer.</span>
+<span class="hl com"> */</span>
+
+<span class="hl kwa">package</span> main
+
+<span class="hl kwa">import</span> <span class="hl opt">(</span>
+   <span class="hl str">&quot;bufio&quot;</span>
+   <span class="hl str">&quot;flag&quot;</span>
+   <span class="hl str">&quot;fmt&quot;</span>
+   <span class="hl str">&quot;os&quot;</span>
+   <span class="hl str">&quot;strconv&quot;</span>
+   <span class="hl str">&quot;runtime&quot;</span>
+<span class="hl opt">)</span>
+
+<span class="hl com">/* targeting a q6600 system, one cpu worker per core */</span>
+<span class="hl kwa">const</span> pool <span class="hl opt">=</span> <span class="hl num">4</span>
+
+<span class="hl kwa">const</span> ZERO <span class="hl kwb">float64</span> <span class="hl opt">=</span> <span class="hl num">0</span>
+<span class="hl kwa">const</span> LIMIT <span class="hl opt">=</span> <span class="hl num">2.0</span>
+<span class="hl kwa">const</span> ITER <span class="hl opt">=</span> <span class="hl num">50</span>   <span class="hl slc">// Benchmark parameter</span>
+<span class="hl kwa">const</span> SIZE <span class="hl opt">=</span> <span class="hl num">16000</span>
+
+<span class="hl kwa">var</span> rows <span class="hl opt">[]</span><span class="hl kwb">byte</span>
+<span class="hl kwa">var</span> bytesPerRow <span class="hl kwb">int</span>
+
+<span class="hl slc">// This func is responsible for rendering a row of pixels,</span>
+<span class="hl slc">// and when complete writing it out to the file.</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">renderRow</span><span class="hl opt">(</span>w<span class="hl opt">,</span> h<span class="hl opt">,</span> bytes <span class="hl kwb">int</span><span class="hl opt">,</span> workChan <span class="hl kwa">chan</span> <span class="hl kwb">int</span><span class="hl opt">,</span>iter <span class="hl kwb">int</span><span class="hl opt">,</span> finishChan <span class="hl kwa">chan</span> <span class="hl kwb">bool</span><span class="hl opt">) {</span>
+
+   <span class="hl kwa">var</span> Zr<span class="hl opt">,</span> Zi<span class="hl opt">,</span> Tr<span class="hl opt">,</span> Ti<span class="hl opt">,</span> Cr <span class="hl kwb">float64</span>
+   <span class="hl kwa">var</span> x<span class="hl opt">,</span>i <span class="hl kwb">int</span>
+
+   <span class="hl kwa">for</span> y <span class="hl opt">:=</span> <span class="hl kwa">range</span> workChan <span class="hl opt">{</span>
+
+      offset <span class="hl opt">:=</span> bytesPerRow <span class="hl opt">*</span> y
+      Ci <span class="hl opt">:= (</span><span class="hl num">2</span><span class="hl opt">*</span><span class="hl kwb">float64</span><span class="hl opt">(</span>y<span class="hl opt">)/</span><span class="hl kwb">float64</span><span class="hl opt">(</span>h<span class="hl opt">) -</span> <span class="hl num">1.0</span><span class="hl opt">)</span>
+
+      <span class="hl kwa">for</span> x <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> x <span class="hl opt">&lt;</span> w<span class="hl opt">;</span> x<span class="hl opt">++ {</span>
+         Zr<span class="hl opt">,</span> Zi<span class="hl opt">,</span> Tr<span class="hl opt">,</span> Ti <span class="hl opt">=</span> ZERO<span class="hl opt">,</span> ZERO<span class="hl opt">,</span> ZERO<span class="hl opt">,</span> ZERO
+         Cr <span class="hl opt">= (</span><span class="hl num">2</span><span class="hl opt">*</span><span class="hl kwb">float64</span><span class="hl opt">(</span>x<span class="hl opt">)/</span><span class="hl kwb">float64</span><span class="hl opt">(</span>w<span class="hl opt">) -</span> <span class="hl num">1.5</span><span class="hl opt">)</span>
+
+         <span class="hl kwa">for</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> iter <span class="hl opt">&amp;&amp;</span> Tr<span class="hl opt">+</span>Ti <span class="hl opt">&lt;=</span> LIMIT<span class="hl opt">*</span>LIMIT<span class="hl opt">;</span> i<span class="hl opt">++ {</span>
+            Zi <span class="hl opt">=</span> <span class="hl num">2</span><span class="hl opt">*</span>Zr<span class="hl opt">*</span>Zi <span class="hl opt">+</span> Ci
+            Zr <span class="hl opt">=</span> Tr <span class="hl opt">-</span> Ti <span class="hl opt">+</span> Cr
+            Tr <span class="hl opt">=</span> Zr <span class="hl opt">*</span> Zr
+            Ti <span class="hl opt">=</span> Zi <span class="hl opt">*</span> Zi
+         <span class="hl opt">}</span>
+
+         <span class="hl slc">// Store the value in the array of ints</span>
+         <span class="hl kwa">if</span> Tr<span class="hl opt">+</span>Ti <span class="hl opt">&lt;=</span> LIMIT<span class="hl opt">*</span>LIMIT <span class="hl opt">{</span>
+            rows<span class="hl opt">[</span>offset<span class="hl opt">+</span>x<span class="hl opt">/</span><span class="hl num">8</span><span class="hl opt">]</span> |<span class="hl opt">= (</span><span class="hl kwb">byte</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) &lt;&lt;</span> <span class="hl kwb">uint</span><span class="hl opt">(</span><span class="hl num">7</span><span class="hl opt">-(</span>x<span class="hl opt">%</span><span class="hl num">8</span><span class="hl opt">)))</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+   <span class="hl com">/* tell master I'm finished */</span>
+   finishChan <span class="hl opt">&lt;-</span> <span class="hl kwb">true</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">main</span><span class="hl opt">() {</span>
+   runtime<span class="hl opt">.</span><span class="hl kwd">GOMAXPROCS</span><span class="hl opt">(</span>pool<span class="hl opt">)</span> 
+
+   size <span class="hl opt">:=</span> SIZE   <span class="hl slc">// Contest settings</span>
+   iter <span class="hl opt">:=</span> ITER
+
+   <span class="hl slc">// Get input, if any...</span>
+   flag<span class="hl opt">.</span><span class="hl kwd">Parse</span><span class="hl opt">()</span>
+   <span class="hl kwa">if</span> flag<span class="hl opt">.</span><span class="hl kwd">NArg</span><span class="hl opt">() &gt;</span> <span class="hl num">0</span> <span class="hl opt">{</span>
+      size<span class="hl opt">,</span> _ <span class="hl opt">=</span> strconv<span class="hl opt">.</span><span class="hl kwd">Atoi</span><span class="hl opt">(</span>flag<span class="hl opt">.</span><span class="hl kwd">Arg</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">))</span>
+   <span class="hl opt">}</span>
+   w<span class="hl opt">,</span> h <span class="hl opt">:=</span> size<span class="hl opt">,</span> size
+   bytesPerRow <span class="hl opt">=</span>  w <span class="hl opt">/</span> <span class="hl num">8</span>
+
+   out <span class="hl opt">:=</span> bufio<span class="hl opt">.</span><span class="hl kwd">NewWriter</span><span class="hl opt">(</span>os<span class="hl opt">.</span>Stdout<span class="hl opt">)</span>
+   <span class="hl kwa">defer</span> out<span class="hl opt">.</span><span class="hl kwd">Flush</span><span class="hl opt">()</span>
+   fmt<span class="hl opt">.</span><span class="hl kwd">Fprintf</span><span class="hl opt">(</span>out<span class="hl opt">,</span> <span class="hl str">&quot;P4</span><span class="hl esc">\n</span><span class="hl str">%d %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> w<span class="hl opt">,</span> h<span class="hl opt">)</span>
+
+   rows <span class="hl opt">=</span> <span class="hl kwb">make</span><span class="hl opt">([]</span><span class="hl kwb">byte</span><span class="hl opt">,</span> bytesPerRow<span class="hl opt">*</span>h<span class="hl opt">)</span>
+
+   <span class="hl com">/* global buffer of work for workers, ideally never runs dry */</span>
+   workChan <span class="hl opt">:=</span> <span class="hl kwb">make</span><span class="hl opt">(</span><span class="hl kwa">chan</span> <span class="hl kwb">int</span><span class="hl opt">,</span> pool<span class="hl opt">*</span><span class="hl num">2</span><span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+   <span class="hl com">/* global buffer of results for output, ideally never blocks */</span>
+   finishChan <span class="hl opt">:=</span> <span class="hl kwb">make</span><span class="hl opt">(</span><span class="hl kwa">chan</span> <span class="hl kwb">bool</span><span class="hl opt">)</span>
+   <span class="hl slc">// start pool workers, and assign all work</span>
+   <span class="hl kwa">for</span> y <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> y <span class="hl opt">&lt;</span> size<span class="hl opt">;</span> y<span class="hl opt">++ {</span>
+      <span class="hl kwa">if</span> y <span class="hl opt">&lt;</span> pool <span class="hl opt">{</span>
+         <span class="hl kwa">go</span> <span class="hl kwd">renderRow</span><span class="hl opt">(</span>w<span class="hl opt">,</span> h<span class="hl opt">,</span> bytesPerRow<span class="hl opt">,</span> workChan<span class="hl opt">,</span> iter<span class="hl opt">,</span>finishChan<span class="hl opt">)</span>
+      <span class="hl opt">}</span>
+      workChan <span class="hl opt">&lt;-</span> y
+   <span class="hl opt">}</span>
+   <span class="hl com">/* tell the workers all done */</span>
+   <span class="hl kwb">close</span><span class="hl opt">(</span>workChan<span class="hl opt">)</span>
+   <span class="hl com">/* write for the file workers to finish */</span>
+   <span class="hl kwa">for</span> i<span class="hl opt">:=</span><span class="hl num">0</span><span class="hl opt">;</span>i<span class="hl opt">&lt;</span>pool<span class="hl opt">;</span>i<span class="hl opt">++ {</span>
+      <span class="hl opt">&lt;-</span> finishChan
+   <span class="hl opt">}</span>
+   out<span class="hl opt">.</span><span class="hl kwd">Write</span><span class="hl opt">(</span>rows<span class="hl opt">)</span>
+<span class="hl opt">}</span>

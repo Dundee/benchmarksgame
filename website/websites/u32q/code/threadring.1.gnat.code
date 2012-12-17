@@ -1,0 +1,86 @@
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://shootout.alioth.debian.org/</span>
+<span class="hl slc">-- contributed by Jim Rogers</span>
+
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_Io<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_Io<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Command_Line<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Command_Line<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Integer_Text_IO<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Integer_Text_IO<span class="hl opt">;</span>
+
+<span class="hl kwa">procedure</span> ThreadRing <span class="hl kwa">is</span>
+   
+   <span class="hl kwa">protected</span> Flag <span class="hl kwa">is</span>
+      <span class="hl kwa">procedure</span> Set<span class="hl opt">(</span>Num <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">);</span>
+      <span class="hl kwa">entry</span> Wait<span class="hl opt">(</span>Last <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Positive</span><span class="hl opt">);</span>
+   <span class="hl kwa">private</span>
+      Done <span class="hl opt">:</span> <span class="hl kwb">Boolean</span> <span class="hl opt">:=</span> <span class="hl kwd">False</span><span class="hl opt">;</span>
+      Id <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Flag<span class="hl opt">;</span>
+   <span class="hl kwa">protected body</span> Flag <span class="hl kwa">is</span>
+      <span class="hl kwa">procedure</span> Set<span class="hl opt">(</span>Num <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">)</span> <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         Done <span class="hl opt">:=</span> <span class="hl kwd">True</span><span class="hl opt">;</span>
+         Id <span class="hl opt">:=</span> Num<span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Set<span class="hl opt">;</span>
+      <span class="hl kwa">entry</span> Wait<span class="hl opt">(</span>Last <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Positive</span><span class="hl opt">)</span> <span class="hl kwa">when</span> Done <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         Last <span class="hl opt">:=</span> Id<span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Wait<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Flag<span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> Node<span class="hl opt">;</span>
+   <span class="hl kwa">type</span> Node_Access <span class="hl kwa">is access</span> Node<span class="hl opt">;</span>
+   
+   Ring <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">.</span><span class="hl num">.503</span><span class="hl opt">)</span> <span class="hl kwa">of</span> Node_Access<span class="hl opt">;</span>
+   
+   <span class="hl kwa">task type</span> Node<span class="hl opt">(</span>Id <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">)</span> <span class="hl kwa">is</span>
+      <span class="hl kwa">entry</span> Start<span class="hl opt">(</span>Next <span class="hl opt">:</span> Node_Access<span class="hl opt">);</span>
+      <span class="hl kwa">entry</span> Put<span class="hl opt">(</span>Item <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Natural</span><span class="hl opt">);</span>
+      <span class="hl kwa">entry</span> Stop<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Node<span class="hl opt">;</span>
+   
+   <span class="hl kwa">task body</span> Node <span class="hl kwa">is</span>
+      Val <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+      Next_Node <span class="hl opt">:</span> Node_Access<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">accept</span> Start<span class="hl opt">(</span>Next <span class="hl opt">:</span> Node_Access<span class="hl opt">)</span> <span class="hl kwa">do</span>
+         Next_Node <span class="hl opt">:=</span> Next<span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Start<span class="hl opt">;</span>
+      
+      <span class="hl kwa">loop</span>
+         <span class="hl kwa">select</span>
+            <span class="hl kwa">accept</span> Put<span class="hl opt">(</span>Item <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Natural</span><span class="hl opt">)</span> <span class="hl kwa">do</span>
+               Val <span class="hl opt">:=</span> Item<span class="hl opt">;</span>
+            <span class="hl kwa">end</span> Put<span class="hl opt">;</span>
+         <span class="hl kwa">or</span>
+            <span class="hl kwa">accept</span> Stop<span class="hl opt">;</span>
+            <span class="hl kwa">exit</span><span class="hl opt">;</span>
+         <span class="hl kwa">end select</span><span class="hl opt">;</span>
+         <span class="hl kwa">if</span> Val <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl kwa">then</span>
+            Val <span class="hl opt">:=</span> Val <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+            Next_Node<span class="hl opt">.</span>Put<span class="hl opt">(</span>Val<span class="hl opt">);</span>
+         <span class="hl kwa">else</span>
+            Flag<span class="hl opt">.</span>Set<span class="hl opt">(</span>Id<span class="hl opt">);</span>
+         <span class="hl kwa">end if</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Node<span class="hl opt">;</span>
+   
+   Num_Passes <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+   Last_Node <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+   Num_Passes <span class="hl opt">:=</span> <span class="hl kwb">Natural</span><span class="hl kwd">'Value</span><span class="hl opt">(</span>Argument<span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">));</span>
+   <span class="hl kwa">for</span> I <span class="hl kwa">in</span> Ring<span class="hl kwd">'range</span> <span class="hl kwa">loop</span>
+      Ring<span class="hl opt">(</span>I<span class="hl opt">) :=</span> <span class="hl kwa">new</span> Node<span class="hl opt">(</span>I<span class="hl opt">);</span>
+   <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   Ring<span class="hl opt">(</span>Ring<span class="hl kwd">'Last</span><span class="hl opt">).</span>Start<span class="hl opt">(</span>Ring<span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">));</span>
+   <span class="hl kwa">for</span> I <span class="hl kwa">in</span> Ring<span class="hl kwd">'First</span><span class="hl opt">..</span>Ring<span class="hl kwd">'Last</span> <span class="hl opt">-</span> <span class="hl num">1</span> <span class="hl kwa">loop</span>
+      Ring<span class="hl opt">(</span>I<span class="hl opt">).</span>Start<span class="hl opt">(</span>Ring<span class="hl opt">(</span>I <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">));</span>
+   <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   Ring<span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">).</span>Put<span class="hl opt">(</span>Num_Passes<span class="hl opt">);</span>
+   Flag<span class="hl opt">.</span>Wait<span class="hl opt">(</span>Last_Node<span class="hl opt">);</span>
+   Put<span class="hl opt">(</span>Item <span class="hl opt">=&gt;</span> Last_Node<span class="hl opt">,</span> Width <span class="hl opt">=&gt;</span> <span class="hl num">1</span><span class="hl opt">);</span>
+   New_Line<span class="hl opt">;</span>
+   <span class="hl kwa">for</span> I <span class="hl kwa">in</span> Ring<span class="hl kwd">'range</span> <span class="hl kwa">loop</span>
+      Ring<span class="hl opt">(</span>I<span class="hl opt">).</span>Stop<span class="hl opt">;</span>
+   <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   
+<span class="hl kwa">end</span> ThreadRing<span class="hl opt">;</span>

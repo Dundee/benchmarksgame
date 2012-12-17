@@ -1,0 +1,24 @@
+
+Wed, 24 Oct 2012 01:22:23 GMT
+
+MAKE:
+mv fannkuchredux.fsharp-3.fsharp fannkuchredux.fsharp-3.fs
+/usr/local/bin/fsharpc --target:exe --platform:x86 -O  -o fannkuchredux.fsharp-3.fsharp_run.exe fannkuchredux.fsharp-3.fs
+Microsoft (R) F# 3.0 Compiler version (Mono build)
+Copyright (c) Microsoft Corporation. All Rights Reserved.
+
+/home/dunham/benchmarksgame/fannkuchredux/tmp/fannkuchredux.fsharp-3.fs(10,1): warning FS0221: The declarations in this file will be placed in an implicit module 'Fannkuchredux.fsharp-3' based on the file name 'fannkuchredux.fsharp-3.fs'. However this is not a valid F# identifier, so the contents will not be accessible from other files. Consider renaming the file or adding a 'module' or 'namespace' declaration at the top of the file.
+rm fannkuchredux.fsharp-3.fs
+4.30s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/bin/mono --llvm --gc=sgen fannkuchredux.fsharp-3.fsharp_run.exe 12
+
+PROGRAM OUTPUT:
+3968050
+Pfannkuchen(12) = 65
+
+<premain>: CommandLine Error: Argument 'misched' defined more than once!
+<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
+-simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
+-simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

@@ -1,0 +1,188 @@
+<span class="hl com">(* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Milan Stanojevic, Jul 12 2009</span>
+<span class="hl com">*)</span>
+
+<span class="hl kwa">module</span> <span class="hl kwd">List</span> <span class="hl opt">=</span> <span class="hl kwd">ListLabels</span>
+<span class="hl kwa">module</span> <span class="hl kwd">String</span> <span class="hl opt">=</span> <span class="hl kwd">StringLabels</span>
+
+<span class="hl kwa">open</span> <span class="hl kwd">Printf</span>
+
+<span class="hl kwa">module</span> <span class="hl kwd">Color</span> <span class="hl opt">=</span> <span class="hl kwa">struct</span> 
+  <span class="hl kwa">type</span> t <span class="hl opt">=</span>
+  | <span class="hl kwd">Blue</span>
+  | <span class="hl kwd">Red</span>
+  | <span class="hl kwd">Yellow</span>
+
+  <span class="hl kwa">let</span> complement t t<span class="hl str">' =</span>
+<span class="hl str">  match t, t'</span> <span class="hl kwa">with</span> 
+    | <span class="hl kwd">Blue</span><span class="hl opt">,</span> <span class="hl kwd">Blue</span> <span class="hl opt">-&gt;</span> <span class="hl kwd">Blue</span>
+    | <span class="hl kwd">Blue</span><span class="hl opt">,</span> <span class="hl kwd">Red</span> <span class="hl opt">-&gt;</span> <span class="hl kwd">Yellow</span>
+    | <span class="hl kwd">Blue</span><span class="hl opt">,</span> <span class="hl kwd">Yellow</span> <span class="hl opt">-&gt;</span> <span class="hl kwd">Red</span>
+    | <span class="hl kwd">Red</span><span class="hl opt">,</span> <span class="hl kwd">Blue</span> <span class="hl opt">-&gt;</span> <span class="hl kwd">Yellow</span>
+    | <span class="hl kwd">Red</span><span class="hl opt">,</span> <span class="hl kwd">Red</span> <span class="hl opt">-&gt;</span> <span class="hl kwd">Red</span>
+    | <span class="hl kwd">Red</span><span class="hl opt">,</span> <span class="hl kwd">Yellow</span> <span class="hl opt">-&gt;</span> <span class="hl kwd">Blue</span>
+    | <span class="hl kwd">Yellow</span><span class="hl opt">,</span> <span class="hl kwd">Blue</span> <span class="hl opt">-&gt;</span> <span class="hl kwd">Red</span>
+    | <span class="hl kwd">Yellow</span><span class="hl opt">,</span> <span class="hl kwd">Red</span> <span class="hl opt">-&gt;</span> <span class="hl kwd">Blue</span>
+    | <span class="hl kwd">Yellow</span><span class="hl opt">,</span> <span class="hl kwd">Yellow</span> <span class="hl opt">-&gt;</span> <span class="hl kwd">Yellow</span>
+
+  <span class="hl kwa">let</span> to_string <span class="hl opt">=</span> <span class="hl kwa">function</span>
+    | <span class="hl kwd">Blue</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;blue&quot;</span>
+    | <span class="hl kwd">Red</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;red&quot;</span>
+    | <span class="hl kwd">Yellow</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;yellow&quot;</span>
+
+  <span class="hl kwa">let</span> all <span class="hl opt">= [</span> <span class="hl kwd">Blue</span><span class="hl opt">;</span> <span class="hl kwd">Red</span><span class="hl opt">;</span> <span class="hl kwd">Yellow</span> <span class="hl opt">]</span>
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">module</span> <span class="hl kwd">Meeting_place</span> <span class="hl opt">=</span> <span class="hl kwa">struct</span>
+
+  <span class="hl kwa">type</span> <span class="hl str">'chameneos t = {</span>
+<span class="hl str">    mutable state : [ `Empty | `First of '</span>chameneos | `<span class="hl kwd">Second</span> <span class="hl kwa">of</span> <span class="hl str">'chameneos ];</span>
+<span class="hl str">    mutable meetings_left : int;</span>
+<span class="hl str">    mutex : Mutex.t;</span>
+<span class="hl str">    wait_for_second : Condition.t;</span>
+<span class="hl str">    wait_for_empty : Condition.t;</span>
+<span class="hl str">  }</span>
+<span class="hl str"></span>
+<span class="hl str">  let create n = {</span>
+<span class="hl str">    state = `Empty;</span>
+<span class="hl str">    meetings_left = n;</span>
+<span class="hl str">    mutex = Mutex.create ();</span>
+<span class="hl str">    wait_for_second = Condition.create ();</span>
+<span class="hl str">    wait_for_empty = Condition.create ();</span>
+<span class="hl str">  }</span>
+<span class="hl str"></span>
+<span class="hl str">  let meet t c = </span>
+<span class="hl str">    let rec loop () = </span>
+<span class="hl str">      if t.meetings_left = 0 then begin</span>
+<span class="hl str">        Condition.broadcast t.wait_for_empty;</span>
+<span class="hl str">        None</span>
+<span class="hl str">      end</span>
+<span class="hl str">      else</span>
+<span class="hl str">	match t.state with </span>
+<span class="hl str">	| `Empty -&gt; </span>
+<span class="hl str">	    t.state &lt;- `First c;</span>
+<span class="hl str">	    Condition.wait t.wait_for_second t.mutex;</span>
+<span class="hl str">	    begin</span>
+<span class="hl str">	      match t.state with </span>
+<span class="hl str">	      | `Empty</span>
+<span class="hl str">	      | `First _ -&gt; </span>
+<span class="hl str">		  assert false</span>
+<span class="hl str">	      | `Second c -&gt; </span>
+<span class="hl str">		  t.state &lt;- `Empty;</span>
+<span class="hl str">                  Condition.signal t.wait_for_empty;</span>
+<span class="hl str">                  Condition.signal t.wait_for_empty;</span>
+<span class="hl str">		  Some c</span>
+<span class="hl str">	    end</span>
+<span class="hl str">	| `First c1 -&gt;</span>
+<span class="hl str">	    t.state &lt;- `Second c;</span>
+<span class="hl str">	    t.meetings_left &lt;- t.meetings_left - 1;</span>
+<span class="hl str">	    Condition.signal t.wait_for_second;</span>
+<span class="hl str">	    Some c1</span>
+<span class="hl str">	| `Second _ -&gt;</span>
+<span class="hl str">	    Condition.wait t.wait_for_empty t.mutex;</span>
+<span class="hl str">	    loop ()</span>
+<span class="hl str">    in</span>
+<span class="hl str">    Mutex.lock t.mutex;</span>
+<span class="hl str">    let res = loop () in</span>
+<span class="hl str">    Mutex.unlock t.mutex;</span>
+<span class="hl str">    res</span>
+<span class="hl str">  ;;</span>
+<span class="hl str">end</span>
+<span class="hl str"></span>
+<span class="hl str">module Chameneos = struct </span>
+<span class="hl str">  </span>
+<span class="hl str">  type t = {</span>
+<span class="hl str">    id : int;</span>
+<span class="hl str">    mutable color : Color.t;</span>
+<span class="hl str">    mutable meetings : int;</span>
+<span class="hl str">    mutable meetings_with_self : int;</span>
+<span class="hl str">  }</span>
+<span class="hl str"></span>
+<span class="hl str">  let create = </span>
+<span class="hl str">    let id = ref 0 in</span>
+<span class="hl str">    let new_id () = </span>
+<span class="hl str">      let r = !id in</span>
+<span class="hl str">      id := r + 1;</span>
+<span class="hl str">      r</span>
+<span class="hl str">    in</span>
+<span class="hl str">    fun color -&gt; </span>
+<span class="hl str">      { id = new_id ();</span>
+<span class="hl str">	color = color;</span>
+<span class="hl str">	meetings = 0;</span>
+<span class="hl str">	meetings_with_self = 0;</span>
+<span class="hl str">      }</span>
+<span class="hl str"></span>
+<span class="hl str">  let run t place =</span>
+<span class="hl str">    let rec loop () =</span>
+<span class="hl str">      match Meeting_place.meet place t with </span>
+<span class="hl str">      | None -&gt; ()</span>
+<span class="hl str">      | Some other -&gt; </span>
+<span class="hl str">	  t.meetings &lt;- t.meetings + 1;</span>
+<span class="hl str">	  if t.id = other.id then t.meetings_with_self &lt;- t.meetings_with_self + 1;</span>
+<span class="hl str">	  t.color &lt;- Color.complement t.color other.color;</span>
+<span class="hl str">	  loop () </span>
+<span class="hl str">    in</span>
+<span class="hl str">    Thread.create loop ()</span>
+<span class="hl str">end</span>
+<span class="hl str"></span>
+<span class="hl str">let print_complements () = </span>
+<span class="hl str">  List.iter Color.all ~f:(fun c1 -&gt; </span>
+<span class="hl str">    List.iter Color.all ~f:(fun c2 -&gt;</span>
+<span class="hl str">      printf &quot;%s + %s -&gt; %s</span><span class="hl esc">\n</span><span class="hl str">&quot; </span>
+<span class="hl str">	(Color.to_string c1)</span>
+<span class="hl str">	(Color.to_string c2)</span>
+<span class="hl str">	(Color.to_string (Color.complement c1 c2))));</span>
+<span class="hl str">  printf &quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;;</span>
+<span class="hl str">;;</span>
+<span class="hl str"></span>
+<span class="hl str">let spell_int i = </span>
+<span class="hl str">  let spell_char = function </span>
+<span class="hl str">    | '</span><span class="hl num">0</span><span class="hl str">' -&gt; &quot;zero&quot;</span>
+<span class="hl str">    | '</span><span class="hl num">1</span><span class="hl str">' -&gt; &quot;one&quot;</span>
+<span class="hl str">    | '</span><span class="hl num">2</span><span class="hl str">' -&gt; &quot;two&quot;</span>
+<span class="hl str">    | '</span><span class="hl num">3</span><span class="hl str">' -&gt; &quot;three&quot;</span>
+<span class="hl str">    | '</span><span class="hl num">4</span><span class="hl str">' -&gt; &quot;four&quot;</span>
+<span class="hl str">    | '</span><span class="hl num">5</span><span class="hl str">' -&gt; &quot;five&quot;</span>
+<span class="hl str">    | '</span><span class="hl num">6</span><span class="hl str">' -&gt; &quot;six&quot;</span>
+<span class="hl str">    | '</span><span class="hl num">7</span><span class="hl str">' -&gt; &quot;seven&quot;</span>
+<span class="hl str">    | '</span><span class="hl num">8</span><span class="hl str">' -&gt; &quot;eight&quot;</span>
+<span class="hl str">    | '</span><span class="hl num">9</span><span class="hl str">' -&gt; &quot;nine&quot;</span>
+<span class="hl str">    | x -&gt; failwith &quot;unexpected char&quot;</span>
+<span class="hl str">  in</span>
+<span class="hl str">  let s = string_of_int i in</span>
+<span class="hl str">  String.iter s ~f:(fun c -&gt; printf &quot; %s&quot; (spell_char c));</span>
+<span class="hl str">;;</span>
+<span class="hl str">  </span>
+<span class="hl str">let work colors n = </span>
+<span class="hl str">  let module C = Chameneos in</span>
+<span class="hl str">  List.iter colors ~f:(fun c -&gt; printf &quot; %s&quot; (Color.to_string c)); printf &quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;;</span>
+<span class="hl str">  let place = Meeting_place.create n in</span>
+<span class="hl str">  let cs = List.map colors ~f:Chameneos.create in</span>
+<span class="hl str">  let threads = List.map cs ~f:(fun c -&gt; Chameneos.run c place) in</span>
+<span class="hl str">  List.iter threads ~f:Thread.join;</span>
+<span class="hl str">  let sum_meets = ref 0 in</span>
+<span class="hl str">  List.iter cs ~f:(fun c -&gt;</span>
+<span class="hl str">    printf &quot;%d&quot; c.C.meetings; spell_int c.C.meetings_with_self; printf &quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;;</span>
+<span class="hl str">    sum_meets := !sum_meets + c.C.meetings);</span>
+<span class="hl str">  spell_int !sum_meets; printf &quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;;</span>
+<span class="hl str">;;</span>
+<span class="hl str"></span>
+<span class="hl str"></span>
+<span class="hl str">let main () = </span>
+<span class="hl str">  let n = </span>
+<span class="hl str">    try </span>
+<span class="hl str">      int_of_string (Sys.argv.(1))</span>
+<span class="hl str">    with</span>
+<span class="hl str">    | _ -&gt; 600</span>
+<span class="hl str">  in</span>
+<span class="hl str">  print_complements ();</span>
+<span class="hl str">  let module C = Color in</span>
+<span class="hl str">  work [ C.Blue; C.Red; C.Yellow ] n;</span>
+<span class="hl str">  printf &quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;;</span>
+<span class="hl str">  work [ C.Blue; C.Red; C.Yellow; C.Red; C.Yellow; C.Blue; C.Red; C.Yellow; C.Red; C.Blue ] n;</span>
+<span class="hl str">  printf &quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;;</span>
+<span class="hl str">;;</span>
+<span class="hl str"></span>
+<span class="hl str">let () = main ()</span>

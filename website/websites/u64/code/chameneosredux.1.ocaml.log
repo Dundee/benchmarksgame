@@ -1,0 +1,42 @@
+
+Wed, 24 Oct 2012 22:15:02 GMT
+
+MAKE:
+mv chameneosredux.ocaml chameneosredux.ml
+/usr/local/bin/ocamlopt -noassert -unsafe -fno-PIC -nodynlink -inline 100 -thread unix.cmxa threads.cmxa chameneosredux.ml -o chameneosredux.ocaml_run
+rm chameneosredux.ml
+0.30s to complete and log all make actions
+
+COMMAND LINE:
+./chameneosredux.ocaml_run 6000000
+
+PROGRAM OUTPUT:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
+ blue red yellow
+3997468 zero
+3988257 zero
+4014275 zero
+ one two zero zero zero zero zero zero
+
+ blue red yellow red yellow blue red yellow red blue
+1208754 zero
+1205972 zero
+1202696 zero
+1213893 zero
+1191941 zero
+1190800 zero
+1198009 zero
+1192886 zero
+1202323 zero
+1192726 zero
+ one two zero zero zero zero zero zero
+

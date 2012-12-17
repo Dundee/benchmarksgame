@@ -1,0 +1,192 @@
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://shootout.alioth.debian.org/</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- Contributed by Jim Rogers</span>
+<span class="hl slc">-- Modified by Brian Drummond</span>
+
+<span class="hl kwa">with</span> Treenodes<span class="hl opt">;</span> <span class="hl kwa">use</span> Treenodes<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_Io<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_Io<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Integer_Text_Io<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Integer_Text_Io<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Command_Line<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Command_Line<span class="hl opt">;</span>
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Characters<span class="hl opt">.</span>Latin_1<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Characters<span class="hl opt">.</span>Latin_1<span class="hl opt">;</span>
+
+<span class="hl kwa">procedure</span> Binarytrees <span class="hl kwa">is</span>
+   <span class="hl slc">-- Change &quot;CPUs&quot; to control number of tasks created</span>
+   CPUs <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">Positive</span> <span class="hl opt">:=</span> <span class="hl num">4</span><span class="hl opt">;</span>
+   BlockSize <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span>
+   Min_Depth <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">Positive</span> <span class="hl opt">:=</span> <span class="hl num">4</span><span class="hl opt">;</span>
+   N <span class="hl opt">:</span> <span class="hl kwb">Natural</span> <span class="hl opt">:=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+   Stretch_Tree <span class="hl opt">:</span> TreeNode<span class="hl opt">;</span>
+   Long_Lived_Tree <span class="hl opt">:</span> TreeNode<span class="hl opt">;</span>
+   Max_Depth <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span>
+   Stretch_Depth <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span>
+   Iteration <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span>
+   Iterations <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span>
+   Sum <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   Check <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   Depth <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">task type</span> check_this_depth <span class="hl kwa">is</span>
+      <span class="hl kwa">entry</span> Start<span class="hl opt">(</span>Iteration<span class="hl opt">,</span> Size <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span> To_Depth <span class="hl opt">:</span><span class="hl kwa">in</span> <span class="hl kwb">Natural</span><span class="hl opt">);</span>
+      <span class="hl kwa">entry</span> Complete<span class="hl opt">(</span>Result <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Integer</span><span class="hl opt">);</span>
+   <span class="hl kwa">end</span> check_this_depth<span class="hl opt">;</span>
+
+   <span class="hl kwa">task body</span> check_this_depth <span class="hl kwa">is</span>
+      Check <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      Sum <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      Depth <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+      First <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span>
+      Last <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span>
+      Short_Lived_Tree_1 <span class="hl opt">:</span> TreeNode<span class="hl opt">;</span>
+      Short_Lived_Tree_2 <span class="hl opt">:</span> TreeNode<span class="hl opt">;</span>
+
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">loop</span>
+         <span class="hl kwa">select</span>
+            <span class="hl kwa">accept</span> Start<span class="hl opt">(</span>Iteration<span class="hl opt">,</span> Size <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span> To_Depth <span class="hl opt">:</span><span class="hl kwa">in</span> <span class="hl kwb">Natural</span><span class="hl opt">)</span> <span class="hl kwa">do</span>
+               First <span class="hl opt">:=</span> Iteration<span class="hl opt">;</span>
+               Last <span class="hl opt">:=</span> Iteration <span class="hl opt">+</span> Size <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+               Depth <span class="hl opt">:=</span> To_Depth<span class="hl opt">;</span>
+            <span class="hl kwa">end</span> Start<span class="hl opt">;</span>
+            Check <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+            <span class="hl kwa">for</span> I <span class="hl kwa">in</span> First <span class="hl opt">..</span> Last <span class="hl kwa">loop</span>
+               Short_Lived_Tree_1 <span class="hl opt">:=</span> Bottom_Up_Tree<span class="hl opt">(</span>Item <span class="hl opt">=&gt;</span> I<span class="hl opt">,</span> Depth <span class="hl opt">=&gt;</span> Depth<span class="hl opt">);</span>
+               Short_Lived_Tree_2 <span class="hl opt">:=</span> Bottom_Up_Tree<span class="hl opt">(</span>Item <span class="hl opt">=&gt;-</span>I<span class="hl opt">,</span> Depth <span class="hl opt">=&gt;</span> Depth<span class="hl opt">);</span>
+               Item_Check<span class="hl opt">(</span>Short_Lived_Tree_1<span class="hl opt">,</span> Sum<span class="hl opt">);</span>
+               Check <span class="hl opt">:=</span> Check <span class="hl opt">+</span> Sum<span class="hl opt">;</span>
+               Item_Check<span class="hl opt">(</span>Short_Lived_Tree_2<span class="hl opt">,</span> Sum<span class="hl opt">);</span>
+               Check <span class="hl opt">:=</span> Check <span class="hl opt">+</span> Sum<span class="hl opt">;</span>
+            <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+            <span class="hl kwa">accept</span> Complete<span class="hl opt">(</span>Result <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">do</span>
+               Result <span class="hl opt">:=</span> Check<span class="hl opt">;</span>
+            <span class="hl kwa">end</span> Complete<span class="hl opt">;</span>
+         <span class="hl kwa">or</span>
+            <span class="hl kwa">Terminate</span><span class="hl opt">;</span>
+         <span class="hl kwa">end select</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> check_this_depth<span class="hl opt">;</span>
+
+   <span class="hl kwa">subtype</span> Task_Count <span class="hl kwa">is</span> <span class="hl kwb">positive</span> <span class="hl kwa">range</span> <span class="hl num">1</span> <span class="hl opt">..</span> CPUs<span class="hl opt">;</span>	
+   Tasks <span class="hl opt">:</span> <span class="hl kwa">array</span> <span class="hl opt">(</span>Task_Count<span class="hl opt">)</span> <span class="hl kwa">of</span> check_this_depth<span class="hl opt">;</span>
+
+<span class="hl kwa">begin</span>
+   <span class="hl kwa">if</span> Argument_Count <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl kwa">then</span>
+      N <span class="hl opt">:=</span> <span class="hl kwb">Positive</span><span class="hl kwd">'Value</span><span class="hl opt">(</span>Argument<span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">));</span>
+   <span class="hl kwa">end if</span><span class="hl opt">;</span>
+   Max_Depth <span class="hl opt">:=</span> <span class="hl kwb">Positive</span><span class="hl kwd">'Max</span><span class="hl opt">(</span>Min_Depth <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">,</span> N<span class="hl opt">);</span>
+   Stretch_Depth <span class="hl opt">:=</span> Max_Depth <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+   Stretch_Tree <span class="hl opt">:=</span> Bottom_Up_Tree<span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> Stretch_Depth<span class="hl opt">);</span>
+   Item_Check<span class="hl opt">(</span>Stretch_Tree<span class="hl opt">,</span> Check<span class="hl opt">);</span>
+   Put<span class="hl opt">(</span><span class="hl str">&quot;stretch tree of depth &quot;</span><span class="hl opt">);</span>
+   Put<span class="hl opt">(</span>Item <span class="hl opt">=&gt;</span> Stretch_Depth<span class="hl opt">,</span> Width <span class="hl opt">=&gt;</span> <span class="hl num">1</span><span class="hl opt">);</span>
+   Put<span class="hl opt">(</span>Ht <span class="hl opt">&amp;</span> <span class="hl str">&quot; check: &quot;</span><span class="hl opt">);</span>
+   Put<span class="hl opt">(</span>Item <span class="hl opt">=&gt;</span> Check<span class="hl opt">,</span> Width <span class="hl opt">=&gt;</span> <span class="hl num">1</span><span class="hl opt">);</span>
+   New_Line<span class="hl opt">;</span>
+   
+   Long_Lived_Tree <span class="hl opt">:=</span> Bottom_Up_Tree<span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> Max_Depth<span class="hl opt">);</span>
+   
+   Depth <span class="hl opt">:=</span> Min_Depth<span class="hl opt">;</span>
+   <span class="hl kwa">while</span> Depth <span class="hl opt">&lt;=</span> Max_Depth <span class="hl kwa">loop</span>
+      Iterations <span class="hl opt">:=</span> <span class="hl num">2</span><span class="hl opt">**(</span>Max_Depth <span class="hl opt">-</span> Depth <span class="hl opt">+</span> Min_Depth<span class="hl opt">);</span>
+      Check <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+<span class="hl slc">-- Setup tasking parameters for reasonable task granularity</span>
+<span class="hl slc">-- Too large and we can't balance CPU loads</span>
+<span class="hl slc">-- Too small and we waste time in task switches</span>
+<span class="hl slc">-- Not very critical - anything more complex is probably a waste of effort</span>
+      
+      BlockSize <span class="hl opt">:=</span> <span class="hl num">2</span><span class="hl opt">**</span><span class="hl num">10</span><span class="hl opt">;</span>
+      <span class="hl kwa">if</span> Iterations <span class="hl opt">&lt;</span> BlockSize <span class="hl opt">*</span> CPUs <span class="hl kwa">then</span>
+         BlockSize <span class="hl opt">:=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl kwa">end if</span><span class="hl opt">;</span>
+  
+<span class="hl slc">-- Check that Iterations is a multiple of Blocksize * CPUs</span>
+<span class="hl slc">-- Error out otherwise (dealing with remainder is trivial but tedious)</span>
+      <span class="hl kwa">Pragma</span> Assert<span class="hl opt">(</span>Iterations <span class="hl kwa">mod</span><span class="hl opt">(</span> BlockSize <span class="hl opt">*</span> CPUs<span class="hl opt">) =</span> <span class="hl num">0</span><span class="hl opt">,</span> 
+                            <span class="hl str">&quot;Iteration count not supported!&quot;</span><span class="hl opt">);</span>
+
+      <span class="hl slc">-- for I in 1..Iterations loop  </span>
+      Iteration <span class="hl opt">:=</span> <span class="hl num">1</span><span class="hl opt">;</span>   
+      <span class="hl kwa">while</span> Iteration <span class="hl opt">&lt;=</span> Iterations <span class="hl kwa">loop</span>
+         <span class="hl kwa">for</span> j <span class="hl kwa">in</span> Task_Count <span class="hl kwa">loop</span>
+            Tasks<span class="hl opt">(</span>j<span class="hl opt">).</span>Start<span class="hl opt">(</span>Iteration<span class="hl opt">,</span> Blocksize<span class="hl opt">,</span> Depth<span class="hl opt">);</span>
+            Iteration <span class="hl opt">:=</span> Iteration <span class="hl opt">+</span> BlockSize<span class="hl opt">;</span>
+         <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+         <span class="hl kwa">for</span> j <span class="hl kwa">in</span> Task_Count <span class="hl kwa">loop</span>
+            Tasks<span class="hl opt">(</span>j<span class="hl opt">).</span>Complete<span class="hl opt">(</span>Sum<span class="hl opt">);</span>
+            Check <span class="hl opt">:=</span> Check <span class="hl opt">+</span> Sum<span class="hl opt">;</span>
+         <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      Put<span class="hl opt">(</span>Item <span class="hl opt">=&gt;</span> Iterations <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">,</span> Width <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">);</span>
+      Put<span class="hl opt">(</span>Ht <span class="hl opt">&amp;</span> <span class="hl str">&quot; trees of depth &quot;</span><span class="hl opt">);</span>
+      Put<span class="hl opt">(</span>Item <span class="hl opt">=&gt;</span> Depth<span class="hl opt">,</span> Width <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">);</span>
+      Put<span class="hl opt">(</span>Ht <span class="hl opt">&amp;</span> <span class="hl str">&quot; check: &quot;</span><span class="hl opt">);</span>
+      Put<span class="hl opt">(</span>Item <span class="hl opt">=&gt;</span> Check<span class="hl opt">,</span> Width <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">);</span>
+      New_Line<span class="hl opt">;</span>
+      Depth <span class="hl opt">:=</span> Depth <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">;</span>
+   <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   Put<span class="hl opt">(</span><span class="hl str">&quot;long lived tree of depth &quot;</span><span class="hl opt">);</span>
+   Put<span class="hl opt">(</span>Item <span class="hl opt">=&gt;</span> Max_Depth<span class="hl opt">,</span> Width <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">);</span>
+   Put<span class="hl opt">(</span>Ht <span class="hl opt">&amp;</span> <span class="hl str">&quot; check: &quot;</span><span class="hl opt">);</span>
+   Item_Check<span class="hl opt">(</span>Long_Lived_Tree<span class="hl opt">,</span> Check<span class="hl opt">);</span>
+   Put<span class="hl opt">(</span>Item <span class="hl opt">=&gt;</span> Check<span class="hl opt">,</span> Width <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">);</span>
+   New_Line<span class="hl opt">;</span>
+<span class="hl kwa">end</span> Binarytrees<span class="hl opt">;</span>
+
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://shootout.alioth.debian.org/</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- Contributed by Jim Rogers</span>
+<span class="hl slc">-- Modified by Brian Drummond</span>
+
+<span class="hl kwa">package</span> Treenodes <span class="hl kwa">is</span>
+   <span class="hl kwa">type</span> Treenode <span class="hl kwa">is private</span><span class="hl opt">;</span>
+   <span class="hl kwa">function</span> Bottom_Up_Tree<span class="hl opt">(</span>Item <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span> Depth <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">return</span> Treenode<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> Item_Check<span class="hl opt">(</span>This <span class="hl opt">:</span> <span class="hl kwa">in out</span> Treenode<span class="hl opt">;</span> Sum <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Integer</span><span class="hl opt">);</span>
+<span class="hl kwa">private</span>
+   <span class="hl kwa">type</span> Node<span class="hl opt">;</span>
+   <span class="hl kwa">type</span> Treenode <span class="hl kwa">is access</span> Node<span class="hl opt">;</span>
+   <span class="hl kwa">type</span> Node <span class="hl kwa">is record</span>
+      Left  <span class="hl opt">:</span> Treenode <span class="hl opt">:=</span> <span class="hl kwa">null</span><span class="hl opt">;</span>
+      Right <span class="hl opt">:</span> Treenode <span class="hl opt">:=</span> <span class="hl kwa">null</span><span class="hl opt">;</span>
+      Item  <span class="hl opt">:</span> <span class="hl kwb">Integer</span>  <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> 
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+<span class="hl kwa">end</span> Treenodes<span class="hl opt">;</span>
+
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://shootout.alioth.debian.org/</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- Contributed by Jim Rogers</span>
+<span class="hl slc">-- Modified by Brian Drummond</span>
+
+<span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Unchecked_Deallocation<span class="hl opt">;</span>
+
+<span class="hl kwa">package body</span> Treenodes <span class="hl kwa">is</span>
+   <span class="hl kwa">function</span> Bottom_Up_Tree<span class="hl opt">(</span>Item <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span> Depth <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span>
+      <span class="hl kwa">return</span> Treenode <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">if</span> Depth <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl kwa">then</span>
+         <span class="hl kwa">return new</span> Node<span class="hl str">'(Bottom_Up_Tree((2*Item) -1, Depth -1),</span>
+<span class="hl str">            Bottom_Up_Tree(2 * Item, Depth -1),</span>
+<span class="hl str">            Item);</span>
+<span class="hl str">      else</span>
+<span class="hl str">         return new Node'</span><span class="hl opt">(</span><span class="hl kwa">null</span><span class="hl opt">,</span> <span class="hl kwa">null</span><span class="hl opt">,</span> Item<span class="hl opt">);</span>
+      <span class="hl kwa">end if</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Bottom_Up_Tree<span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Item_Check <span class="hl opt">(</span>This <span class="hl opt">:</span> <span class="hl kwa">in out</span> Treenode<span class="hl opt">;</span> Sum <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">is</span>
+      <span class="hl kwa">procedure</span> Free <span class="hl kwa">is new</span> Ada<span class="hl opt">.</span>Unchecked_Deallocation<span class="hl opt">(</span>Node<span class="hl opt">,</span> Treenode<span class="hl opt">);</span>
+      Left_Sum<span class="hl opt">,</span> Right_Sum <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">if</span> This<span class="hl opt">.</span>Left <span class="hl opt">=</span> <span class="hl kwa">null then</span>
+         Sum <span class="hl opt">:=</span> This<span class="hl opt">.</span>Item<span class="hl opt">;</span>
+      <span class="hl kwa">else</span>
+         Item_Check<span class="hl opt">(</span>This<span class="hl opt">.</span>Left<span class="hl opt">,</span> Left_Sum<span class="hl opt">);</span>
+         Item_Check<span class="hl opt">(</span>This<span class="hl opt">.</span>Right<span class="hl opt">,</span> Right_Sum<span class="hl opt">);</span>
+         Sum <span class="hl opt">:=</span>  This<span class="hl opt">.</span>Item <span class="hl opt">+</span> Left_Sum <span class="hl opt">-</span> Right_Sum<span class="hl opt">;</span>
+      <span class="hl kwa">end if</span><span class="hl opt">;</span>
+      Free<span class="hl opt">(</span>This<span class="hl opt">);</span>      
+   <span class="hl kwa">end</span> Item_Check<span class="hl opt">;</span>
+
+<span class="hl kwa">end</span> Treenodes<span class="hl opt">;</span>
+

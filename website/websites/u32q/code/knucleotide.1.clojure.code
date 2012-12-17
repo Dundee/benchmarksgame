@@ -1,0 +1,117 @@
+<span class="hl slc">;;   The Computer Language Benchmarks Game</span>
+<span class="hl slc">;;   http://shootout.alioth.debian.org/</span>
+
+<span class="hl slc">;; contributed by Andy Fingerhut</span>
+
+<span class="hl opt">(</span><span class="hl kwa">ns</span> knucleotide
+  <span class="hl opt">(:</span>gen-class<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">set</span><span class="hl opt">! *</span>warn-on-reflection<span class="hl opt">*</span> true<span class="hl opt">)</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> fasta-description-line
+<span class="hl slc">;   &quot;Return true when the line l is a FASTA description line&quot;</span>
+  <span class="hl opt">[</span>l<span class="hl opt">]</span>
+  <span class="hl opt">(=</span> \<span class="hl opt">&gt; (</span><span class="hl kwa">first</span> <span class="hl opt">(</span><span class="hl kwa">seq</span> l<span class="hl opt">))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> fasta-description-line-beginning
+<span class="hl slc">;   &quot;Return true when the line l is a FASTA description line that begins</span>
+<span class="hl slc">; with the string desc-str.&quot;</span>
+  <span class="hl opt">[</span>desc-str l<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">and</span> <span class="hl opt">(</span><span class="hl kwa">fasta-description-line</span> l<span class="hl opt">)</span>
+       <span class="hl opt">(=</span> desc-str <span class="hl opt">(</span><span class="hl kwa">subs</span> l <span class="hl num">1</span> <span class="hl opt">(</span><span class="hl kwa">min</span> <span class="hl opt">(</span><span class="hl kwa">count</span> l<span class="hl opt">) (</span><span class="hl kwa">inc</span> <span class="hl opt">(</span><span class="hl kwa">count</span> desc-str<span class="hl opt">)))))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> fasta-dna-str-with-desc-beginning
+<span class="hl slc">;   &quot;Take a sequence of lines from a FASTA format file, and a string</span>
+<span class="hl slc">; desc-str.  Look for a FASTA record with a description that begins with</span>
+<span class="hl slc">; desc-str, and if one is found, return its DNA sequence as a</span>
+<span class="hl slc">; single (potentially quite long) string.  If input file is big, you'll</span>
+<span class="hl slc">; save lots of memory if you call this function in a with-open for the</span>
+<span class="hl slc">; file, and don't hold on to the head of the lines parameter.&quot;</span>
+  <span class="hl opt">[</span>desc-str lines<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">when-let</span> <span class="hl opt">[</span>x <span class="hl opt">(</span><span class="hl kwa">drop-while</span> <span class="hl opt">(</span><span class="hl kwa">fn</span> <span class="hl opt">[</span>l<span class="hl opt">]</span>
+                             <span class="hl opt">(</span><span class="hl kwa">not</span> <span class="hl opt">(</span><span class="hl kwa">fasta-description-line-beginning</span> desc-str
+                                                                    l<span class="hl opt">)))</span>
+                           lines<span class="hl opt">)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">when-let</span> <span class="hl opt">[</span>x <span class="hl opt">(</span><span class="hl kwa">seq</span> x<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>y <span class="hl opt">(</span><span class="hl kwa">take-while</span> <span class="hl opt">(</span><span class="hl kwa">fn</span> <span class="hl opt">[</span>l<span class="hl opt">] (</span><span class="hl kwa">not</span> <span class="hl opt">(</span><span class="hl kwa">fasta-description-line</span> l<span class="hl opt">)))</span>
+                          <span class="hl opt">(</span><span class="hl kwa">map</span> <span class="hl opt">(</span><span class="hl kwa">fn</span> <span class="hl opt">[#</span>^java.lang.String s<span class="hl opt">] (</span>.toUpperCase s<span class="hl opt">))</span>
+                               <span class="hl opt">(</span><span class="hl kwa">rest</span> x<span class="hl opt">)))]</span>
+        <span class="hl opt">(</span><span class="hl kwa">apply</span> str y<span class="hl opt">)))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> all-equal-len-subs
+<span class="hl slc">;   &quot;Returns a sequence of all length len substrings of the string s,</span>
+<span class="hl slc">; if (count s) &gt;= len, otherwise nil.&quot;</span>
+  <span class="hl opt">[</span>len s<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(&gt;= (</span><span class="hl kwa">count</span> s<span class="hl opt">)</span> len<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">map</span> <span class="hl opt">#(</span><span class="hl kwa">subs</span> s % <span class="hl opt">(+</span> % len<span class="hl opt">)) (</span><span class="hl kwa">range</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> <span class="hl opt">(</span><span class="hl kwa">-</span> <span class="hl opt">(</span><span class="hl kwa">count</span> s<span class="hl opt">)</span> len<span class="hl opt">))))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> tally-helper
+  <span class="hl opt">[</span>h things<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">if-let</span> <span class="hl opt">[</span>r <span class="hl opt">(</span><span class="hl kwa">seq</span> things<span class="hl opt">)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>key <span class="hl opt">(</span><span class="hl kwa">first</span> r<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">assoc</span><span class="hl opt">!</span> h key <span class="hl opt">(</span><span class="hl kwa">inc</span> <span class="hl opt">(</span><span class="hl kwa">get</span> h key <span class="hl num">0</span><span class="hl opt">))) (</span><span class="hl kwa">rest</span> r<span class="hl opt">)))</span>
+    h<span class="hl opt">))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> tally
+<span class="hl slc">;   &quot;Take a sequence things, and return a hash map h whose keys are the</span>
+<span class="hl slc">; set of unique objects in the sequence, and where (h obj) is equal to</span>
+<span class="hl slc">; the number of times obj occurs in the sequence.  Splitting it into</span>
+<span class="hl slc">; this and a helper function is a little odd, but when I had a more</span>
+<span class="hl slc">; straightforward single function for this in Clojure 1.1 alpha, it</span>
+<span class="hl slc">; 'kept the head' of the sequence and used excessive memory.&quot;</span>
+  <span class="hl opt">[</span>things<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">persistent</span><span class="hl opt">! (</span><span class="hl kwa">tally-helper</span> <span class="hl opt">(</span><span class="hl kwa">transient</span> <span class="hl opt">{})</span> things<span class="hl opt">)))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> all-tally-to-str
+  <span class="hl opt">[</span>tally<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">with-out-str</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>total <span class="hl opt">(</span><span class="hl kwa">reduce</span> <span class="hl opt">+ (</span><span class="hl kwa">vals</span> tally<span class="hl opt">))]</span>
+      <span class="hl opt">(</span><span class="hl kwa">doseq</span> <span class="hl opt">[</span>k <span class="hl opt">(</span><span class="hl kwa">sort</span> <span class="hl opt">#(&gt;= (</span><span class="hl kwa">tally</span> %<span class="hl num">1</span><span class="hl opt">) (</span><span class="hl kwa">tally</span> %<span class="hl num">2</span><span class="hl opt">))</span> <span class="hl slc">; sort by tally, largest first</span>
+                      <span class="hl opt">(</span><span class="hl kwa">keys</span> tally<span class="hl opt">))]</span>
+        <span class="hl opt">(</span><span class="hl kwa">println</span> <span class="hl opt">(</span><span class="hl kwa">format</span> <span class="hl str">&quot;%s %.3f&quot;</span> k
+                         <span class="hl opt">(</span><span class="hl kwa">double</span> <span class="hl opt">(*</span> <span class="hl num">100</span> <span class="hl opt">(/ (</span><span class="hl kwa">tally</span> k<span class="hl opt">)</span> total<span class="hl opt">)))))))))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> one-tally-to-str
+  <span class="hl opt">[</span>key tally<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">format</span> <span class="hl str">&quot;%d</span><span class="hl esc">\t</span><span class="hl str">%s&quot;</span> <span class="hl opt">(</span><span class="hl kwa">get</span> tally key <span class="hl num">0</span><span class="hl opt">)</span> key<span class="hl opt">))</span>
+
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> -main <span class="hl opt">[&amp;</span> args<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">with-open</span> <span class="hl opt">[</span>br <span class="hl opt">(</span><span class="hl kwa">java</span>.io.BufferedReader. <span class="hl opt">*</span>in<span class="hl opt">*)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>dna-str <span class="hl opt">(</span><span class="hl kwa">fasta-dna-str-with-desc-beginning</span> <span class="hl str">&quot;THREE&quot;</span> <span class="hl opt">(</span><span class="hl kwa">line-seq</span> br<span class="hl opt">))]</span>
+      <span class="hl opt">(</span><span class="hl kwa">flush</span><span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>tally1 <span class="hl opt">(</span><span class="hl kwa">all-tally-to-str</span> <span class="hl opt">(</span><span class="hl kwa">tally</span> <span class="hl opt">(</span><span class="hl kwa">all-equal-len-subs</span> <span class="hl num">1</span> dna-str<span class="hl opt">)))]</span>
+        <span class="hl opt">(</span><span class="hl kwa">println</span> tally1<span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">flush</span><span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>tally2 <span class="hl opt">(</span><span class="hl kwa">all-tally-to-str</span> <span class="hl opt">(</span><span class="hl kwa">tally</span> <span class="hl opt">(</span><span class="hl kwa">all-equal-len-subs</span> <span class="hl num">2</span> dna-str<span class="hl opt">)))]</span>
+        <span class="hl opt">(</span><span class="hl kwa">println</span> tally2<span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">flush</span><span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>tally3 <span class="hl opt">(</span><span class="hl kwa">one-tally-to-str</span> <span class="hl str">&quot;GGT&quot;</span>
+                                     <span class="hl opt">(</span><span class="hl kwa">tally</span> <span class="hl opt">(</span><span class="hl kwa">all-equal-len-subs</span> <span class="hl num">3</span> dna-str<span class="hl opt">)))]</span>
+        <span class="hl opt">(</span><span class="hl kwa">println</span> tally3<span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">flush</span><span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>tally4 <span class="hl opt">(</span><span class="hl kwa">one-tally-to-str</span> <span class="hl str">&quot;GGTA&quot;</span>
+                                     <span class="hl opt">(</span><span class="hl kwa">tally</span> <span class="hl opt">(</span><span class="hl kwa">all-equal-len-subs</span> <span class="hl num">4</span> dna-str<span class="hl opt">)))]</span>
+        <span class="hl opt">(</span><span class="hl kwa">println</span> tally4<span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">flush</span><span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>tally6 <span class="hl opt">(</span><span class="hl kwa">one-tally-to-str</span> <span class="hl str">&quot;GGTATT&quot;</span>
+                                     <span class="hl opt">(</span><span class="hl kwa">tally</span> <span class="hl opt">(</span><span class="hl kwa">all-equal-len-subs</span> <span class="hl num">6</span> dna-str<span class="hl opt">)))]</span>
+        <span class="hl opt">(</span><span class="hl kwa">println</span> tally6<span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">flush</span><span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>tally12 <span class="hl opt">(</span><span class="hl kwa">one-tally-to-str</span> <span class="hl str">&quot;GGTATTTTAATT&quot;</span>
+                                      <span class="hl opt">(</span><span class="hl kwa">tally</span> <span class="hl opt">(</span><span class="hl kwa">all-equal-len-subs</span> <span class="hl num">12</span> dna-str<span class="hl opt">)))]</span>
+        <span class="hl opt">(</span><span class="hl kwa">println</span> tally12<span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">flush</span><span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>tally18 <span class="hl opt">(</span><span class="hl kwa">one-tally-to-str</span> <span class="hl str">&quot;GGTATTTTAATTTATAGT&quot;</span>
+                                      <span class="hl opt">(</span><span class="hl kwa">tally</span> <span class="hl opt">(</span><span class="hl kwa">all-equal-len-subs</span> <span class="hl num">18</span> dna-str<span class="hl opt">)))]</span>
+        <span class="hl opt">(</span><span class="hl kwa">println</span> tally18<span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">flush</span><span class="hl opt">)))</span>
+  <span class="hl opt">(</span>. System <span class="hl opt">(</span><span class="hl kwa">exit</span> <span class="hl num">0</span><span class="hl opt">)))</span>

@@ -1,0 +1,18 @@
+
+Mon, 11 Apr 2011 19:02:14 GMT
+
+MAKE:
+/usr/local/src/ats-lang-anairiats-0.2.4/bin/atscc  -pipe -Wall -O3 -fomit-frame-pointer -march=native  revcomp.dats -o revcomp.ats_run
+/usr/local/src/ats-lang-anairiats-0.2.4/lib/ats-anairiats-0.2.4/bin/atsopt --output revcomp_dats.c --dynamic revcomp.dats
+/home/dunham/benchmarksgame/revcomp/tmp/revcomp.dats: 3929(line=130, offs=12) -- 3951(line=130, offs=34): error(2): none of the static constants referred to by [free_gc_v] is applicable.
+exit(ATS): uncaught exception: ATS_2d0_2e2_2e4_2src_2ats_error_2esats__FatalErrorException(1003)
+exit(ATS): [ccomp_file_to_file(revcomp.dats, revcomp_dats.c)] failed.
+make: [revcomp.ats_run] Error 1 (ignored)
+rm revcomp.dats
+0.12s to complete and log all make actions
+
+COMMAND LINE:
+./revcomp.ats_run 0 < revcomp-input250000.txt
+
+MAKE ERROR 
+

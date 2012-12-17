@@ -1,0 +1,16 @@
+
+Thu, 25 Oct 2012 21:25:42 GMT
+
+MAKE:
+mv spectralnorm.ocaml-3.ocaml spectralnorm.ocaml-3.ml
+/usr/local/bin/ocamlopt -noassert -unsafe -nodynlink -inline 100 unix.cmxa bigarray.cmxa spectralnorm.ocaml-3.ml -o spectralnorm.ocaml-3.ocaml_run
+File "spectralnorm.ocaml-3.ml", line 1:
+Warning 24: bad source file name: "Spectralnorm.ocaml-3" is not a valid module name.
+rm spectralnorm.ocaml-3.ml
+0.32s to complete and log all make actions
+
+COMMAND LINE:
+./spectralnorm.ocaml-3.ocaml_run 5500
+
+PROGRAM OUTPUT:
+1.274224153

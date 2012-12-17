@@ -1,0 +1,48 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Maxim Razin</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">package</span> main
+
+<span class="hl kwa">import</span> <span class="hl opt">(</span>
+    <span class="hl str">&quot;fmt&quot;</span>
+    <span class="hl str">&quot;os&quot;</span>
+    <span class="hl str">&quot;runtime&quot;</span>
+    <span class="hl str">&quot;strconv&quot;</span>
+<span class="hl opt">)</span>
+
+<span class="hl kwa">type</span> Token <span class="hl kwb">int</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">worker</span><span class="hl opt">(</span>id <span class="hl kwb">int</span><span class="hl opt">,</span> in <span class="hl opt">&lt;-</span><span class="hl kwa">chan</span> Token<span class="hl opt">,</span> out <span class="hl kwa">chan</span><span class="hl opt">&lt;-</span> Token<span class="hl opt">,</span> res <span class="hl kwa">chan</span><span class="hl opt">&lt;-</span> <span class="hl kwb">int</span><span class="hl opt">) {</span>
+    <span class="hl kwa">for</span> <span class="hl opt">{</span>
+        t <span class="hl opt">:= &lt;-</span> in
+        <span class="hl kwa">if</span> t<span class="hl opt">==</span><span class="hl num">0</span> <span class="hl opt">{</span>
+            res <span class="hl opt">&lt;-</span> id
+        <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+            out <span class="hl opt">&lt;-</span> t<span class="hl opt">-</span><span class="hl num">1</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">const</span> NThreads <span class="hl opt">=</span> <span class="hl num">503</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">main</span><span class="hl opt">() {</span>
+    runtime<span class="hl opt">.</span><span class="hl kwd">GOMAXPROCS</span><span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">)</span>
+    n <span class="hl opt">:=</span> <span class="hl num">1000</span>
+    <span class="hl kwa">if</span> <span class="hl kwb">len</span><span class="hl opt">(</span>os<span class="hl opt">.</span>Args<span class="hl opt">)&gt;</span><span class="hl num">1</span> <span class="hl opt">{</span> n<span class="hl opt">,</span>_ <span class="hl opt">=</span> strconv<span class="hl opt">.</span><span class="hl kwd">Atoi</span><span class="hl opt">(</span>os<span class="hl opt">.</span>Args<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]) }</span>
+
+    <span class="hl kwa">var</span> channels <span class="hl opt">[</span>NThreads<span class="hl opt">]</span> <span class="hl kwa">chan</span> Token
+    <span class="hl kwa">for</span> i<span class="hl opt">:=</span><span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">&lt;</span>NThreads<span class="hl opt">;</span> i<span class="hl opt">++ {</span> channels<span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl kwb">make</span><span class="hl opt">(</span><span class="hl kwa">chan</span> Token<span class="hl opt">) }</span>
+    res <span class="hl opt">:=</span> <span class="hl kwb">make</span><span class="hl opt">(</span><span class="hl kwa">chan</span> <span class="hl kwb">int</span><span class="hl opt">)</span>
+
+    <span class="hl kwa">for</span> i<span class="hl opt">:=</span><span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">&lt;</span>NThreads<span class="hl opt">;</span> i<span class="hl opt">++ {</span>
+        <span class="hl kwa">go</span> <span class="hl kwd">worker</span><span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">,</span> channels<span class="hl opt">[</span>i<span class="hl opt">],</span> channels<span class="hl opt">[(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)%</span>NThreads<span class="hl opt">],</span> res<span class="hl opt">)</span>
+    <span class="hl opt">}</span>
+
+    channels<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] &lt;-</span> <span class="hl kwd">Token</span><span class="hl opt">(</span>n<span class="hl opt">)</span>
+    r <span class="hl opt">:= &lt;-</span> res
+    fmt<span class="hl opt">.</span><span class="hl kwd">Printf</span><span class="hl opt">(</span><span class="hl str">&quot;%d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span>r<span class="hl opt">)</span>
+    os<span class="hl opt">.</span><span class="hl kwd">Exit</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">)</span>
+<span class="hl opt">}</span>
