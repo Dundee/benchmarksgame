@@ -20,14 +20,14 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 <meta name="HandheldFriendly" content="false" />
 
 <title><?=$PageTitle;?></title>
-<link rel="stylesheet" type="text/css" href="http://shootout.alioth.debian.org/benchmark_css_8oct2012.php" />
-<link rel="stylesheet" type="text/css" href="http://shootout.alioth.debian.org/nohint_css_26jan2011.php" media="screen,print,projection"/>
-<link rel="stylesheet" type="text/css" href="http://shootout.alioth.debian.org/hint_css_26jan2011.php" media="handheld,aural,braille"/>
-<link rel="shortcut icon" href="http://shootout.alioth.debian.org/favicon_ico_11dec2009.php" />
+<link rel="stylesheet" type="text/css" href="http://benchmarksgame.alioth.debian.org/benchmark_css_8oct2012.php" />
+<link rel="stylesheet" type="text/css" href="http://benchmarksgame.alioth.debian.org/nohint_css_26jan2011.php" media="screen,print,projection"/>
+<link rel="stylesheet" type="text/css" href="http://benchmarksgame.alioth.debian.org/hint_css_26jan2011.php" media="handheld,aural,braille"/>
+<link rel="shortcut icon" href="http://benchmarksgame.alioth.debian.org/favicon_ico_11dec2009.php" />
 </head>
 
 <body id="<?=SITE_NAME;?>">
-<p id="hint"><a href="http://shootout.alioth.debian.org/mobile/index.php">/mobile Handheld Friendly website</a></p>
+<p id="hint"><a href="http://benchmarksgame.alioth.debian.org/mobile/index.php">/mobile Handheld Friendly website</a></p>
 
 
 <?
