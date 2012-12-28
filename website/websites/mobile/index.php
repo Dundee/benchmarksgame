@@ -6,9 +6,9 @@
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <meta http-equiv="Content-Style-Type" content="text/css" />
 
-<meta name="robots" content="all" /><meta name="revisit" content="1 days" />
+<meta name="robots" content="all" /><meta name="revisit" content="10 days" />
 
-<meta name="description" content="Compare the time and memory use of programs written in ~24 programming languages to solve ~12 simple tasks. Contribute your own improved programs." />
+<meta name="description" content="Compare the time and memory use of programs written in ~24 programming languages to solve ~12 simple benchmark tasks. Contribute your own improved programs." />
 
 <meta name="viewport" content="width=device-width"/>
 <meta name="HandheldFriendly" content="true" />
