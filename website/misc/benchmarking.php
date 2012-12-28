@@ -16,7 +16,7 @@
 <dd>
 <blockquote><p>"The performance of a benchmark, even if it is derived from a real program, may not help to predict the performance of similar programs that have different hot spots." <br/><a href="http://www.larcenists.org/Twobit/bmcrock.temp.html">Benchmarks are a crock</a></p></blockquote>
 
-<blockquote><p>"It may seem paradoxical to use an interpreted language in a high-throughput environment, but we have found that the CPU time is rarely the limiting factor; the expressibility of the language means that most programs are small and spend most of their time in I/O and native run-time code." <br/><a href="http://labs.google.com/papers/sawzall.html">Interpreting the Data: Parallel Analysis with Sawzall</a> page 27</p></blockquote>
+<blockquote><p>"It may seem paradoxical to use an interpreted language in a high-throughput environment, but we have found that the CPU time is rarely the limiting factor; the expressibility of the language means that most programs are small and spend most of their time in I/O and native run-time code." <br/><a href="http://research.google.com/archive/sawzall-sciprog.pdf">Interpreting the Data: Parallel Analysis with Sawzall</a> page 27 pdf</p></blockquote>
 
 <blockquote><p>"We measure three specific areas of JavaScript runtime behavior: 1) functions and code; 2) heap-allocated objects and data; 3) events and handlers. We find that the benchmarks are <b>not representative</b> of many real websites and that conclusions reached from measuring the benchmarks may be misleading." <br/><a href="http://research.microsoft.com/en-us/projects/jsmeter/">JSMeter: Characterizing Real-World Behavior of JavaScript Programs</a></p></blockquote>
 
