@@ -1,0 +1,52 @@
+https://alioth.debian.org/tracker/index.php?func=detail&aid=304567&group_id=30402&atid=411646
+
+Detailed description
+Click to edit
+A java version using JNI to invoke GMP. Here are the steps to compile an run it.
+Duration for N=2500 is 0.6 secs in comparison to 4.2 secs for the old version.
+
+1. Compile Java source code:
+
+javac pidigits.java
+
+
+2. Compile JNI library - JAVA_HOME must be set correctly for the includes:
+
+g++ -o libjgmplib.so -shared -Wl,-soname,libjgmp.so \
+-O3 -fomit-frame-pointer -march=pentium4 \
+-I$JAVA_HOME/include \
+-I$JAVA_HOME/include/linux \
+GmpInteger.cc -static -lc -lgmp
+
+
+3. Run it (Property java.library.path must be set to path of libjgmplib.so, e.g. the current directory):
+
+java -server -Djava.library.path=. pidigits 27
+or (client is faster this time...)
+java -clilent -Djava.library.path=. pidigits 27
+
+
+
+
+$ gcc GmpUtil.c -I/usr/lib/jvm/java-6-sun/include -I/usr/lib/jvm/java-6-sun/include/linux -shared -o libjpargmp.so -fPIC -Wl,-soname,libjpargmp.so,-lgmp,-lc
+
+
+
+g++ -fPIC -o libjgmplib.so -shared -Wl,-soname,libjgmp.so \
+-O3 -fomit-frame-pointer -march=native \
+-I$JAVA_HOME/include \
+-I$JAVA_HOME/include/linux \
+GmpInteger.cc -static -lc -lgmp
+
+/usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/4.6/crtbeginT.o: relocation R_X86_64_32 against `__DTOR_END__' can not be used when making a shared object; recompile with -fPIC
+/usr/lib/gcc/x86_64-linux-gnu/4.6/crtbeginT.o: could not read symbols: Bad value
+collect2: ld returned 1 exit status
+
+
+
+
+gcc GmpInteger.cc -I/usr/local/src/jdk1.7.0_06/include -I/usr/local/src/jdk1.7.0_06/include/linux -shared -o libjgmplib.so -fPIC -Wl,-soname,libjgmplib.so,-lgmp,-lc
+
+
+
+
