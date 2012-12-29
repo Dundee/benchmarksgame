@@ -1,0 +1,142 @@
+--
+-- The Computer Language Benchmarks Game
+-- http://shootout.alioth.debian.org/
+--
+-- Contributed by Don Stewart
+-- A lazy bytestring solution.
+-- Unnecessary strictness annotations removed by Sterling Clover 2/08
+--
+-- Adding cached version of the list, where the first 4 entries are
+-- lifted into the data constructor by Scott West 03/10
+--
+-- Add:
+-- -optc-mfpmath=sse -optc-msse2
+--
+-- Replace Caching mechanism with Unboxed Arrays by Silvio Frischknecht
+
+module Main where
+
+import System.Environment
+import Data.Word
+import Control.Arrow
+
+import Data.List
+
+import Data.Array.IArray
+import Data.Array.Unboxed
+import Data.Array.Base
+
+import qualified Data.ByteString.Lazy as L
+import qualified Data.ByteString.Lazy.Char8 as C (pack)
+import qualified Data.ByteString as S
+import qualified Data.ByteString.Char8 as BSC
+import Data.ByteString.Internal
+
+main = do
+    n <- getArgs >>= readIO . head
+    writeFasta  "ONE"   "Homo sapiens alu"       (n*2) (L.cycle alu)
+    g <- unfold "TWO"   "IUB ambiguity codes"    (n*3) (mkProbs $ cdfize iubs) 42
+    unfold      "THREE" "Homo sapiens frequency" (n*5) (mkProbs $ cdfize homs) g
+
+------------------------------------------------------------------------
+--
+-- lazily unfold the randomised dna sequences
+--
+
+unfold :: String -> String -> Int -> Probs -> Int -> IO Int
+unfold lab ttl n probs gen =
+    putStrLn (">" ++ lab ++ " " ++ ttl) >> unroll probs n gen
+
+unroll :: Probs -> Int -> Int -> IO Int
+unroll probs = loop
+    where
+        loop 0 r   = return r
+        loop i !r = case S.unfoldrN m (look probs) r of
+                        (s, Just r') -> do
+                            BSC.putStrLn s
+                            loop (i-m) r'
+            where m = min i 60
+
+look :: Probs -> Int -> Maybe (Word8, Int)
+look cr k = Just (choose cr d, j)
+  where (d,j) = rand k
+
+-- Chunk the list into parts, still can represent any list of the
+-- symbol/probability pairs.
+type Probs = (UArray Int Word8,UArray Int Float)
+
+mkProbs :: [(Word8,Float)] -> Probs
+mkProbs list = 
+    (listArray (0, (length list) -1) (map fst list)
+    ,listArray (0, (length list) -1) (map snd list))
+
+cdfize :: [(Word8,Float)] -> [(Word8,Float)]
+cdfize ds = init cdf' ++ [(s, 1.0)]
+    where
+      (s, _) = last cdf'
+      cdf' = (snd . mapAccumL go 0) ds
+      go c (sym, prob) = (c + prob, (sym, c+prob))
+
+choose :: Probs -> Float -> Word8
+choose (vals,probs) rand = choose' start where
+    choose' current
+        | rand <= probs `unsafeAt` current = vals `unsafeAt` current
+        | otherwise = choose' (succ current)
+    (start, end) = bounds probs
+
+------------------------------------------------------------------------
+--
+-- only demand as much of the infinite sequence as we require
+
+writeFasta label title n s = do
+     putStrLn $ ">" ++ label ++ " " ++ title
+     let (t:ts) = L.toChunks s
+     go ts t n
+  where
+     go ss s n
+        | l60 && n60 = BSC.putStrLn l               >> go ss        r (n-60)
+        |        n60 = BSC.putStr s >> BSC.putStrLn a >> go (tail ss) b (n-60)
+        | n <= ln    = BSC.putStrLn (S.take n s)
+        | otherwise  = BSC.putStr s >> BSC.putStrLn (S.take (n-ln) (head ss))
+        where
+            ln   = S.length s
+            l60  = ln >= 60
+            n60  = n  >= 60
+            (l,r) = S.splitAt 60 s
+            (a,b) = S.splitAt (60-ln) (head ss)
+
+------------------------------------------------------------------------
+im, ia, ic :: Int
+im  = 139968
+ia  = 3877
+ic  = 29573
+
+type R = (Float,Int)
+
+rand :: Int -> R
+rand seed = (newran,newseed)
+    where
+        newseed = (seed * ia + ic) `rem` im
+        newran  =  1.0 * fromIntegral newseed / imd
+        imd      = fromIntegral im
+
+------------------------------------------------------------------------
+
+alu = C.pack
+        "GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG\
+        \GAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGAGA\
+        \CCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAAT\
+        \ACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAATCCCA\
+        \GCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTGAACCCGGG\
+        \AGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCC\
+        \AGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAA"
+
+iubs, homs :: [(Word8, Float)]
+iubs = map (c2w *** id)
+        [('a',0.27),('c',0.12),('g',0.12),('t',0.27),('B',0.02)
+        ,('D',0.02),('H',0.02),('K',0.02),('M',0.02),('N',0.02)
+        ,('R',0.02),('S',0.02),('V',0.02),('W',0.02),('Y',0.02)]
+
+homs = map (c2w *** id)
+        [('a',0.3029549426680),('c',0.1979883004921)
+        ,('g',0.1975473066391),('t',0.3015094502008)]
