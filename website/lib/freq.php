@@ -1,13 +1,13 @@
 #!/usr/bin/php
 <?
 
-// Copyright (c) Isaac Gouy 2009-2010
+// Copyright (c) Isaac Gouy 2009-2012
 
 
 // CONSTANTS ////////////////////////////////////////////////
 
-define('HTTP_DIR', '/home/dunham/shootout/website/websites');
-define('DESC_DIR', '/home/dunham/shootout/website/desc');
+define('HTTP_DIR', '/home/dunham/benchmarksgame/website/websites');
+define('DESC_DIR', '/home/dunham/benchmarksgame/website/desc');
 //$Sites = array('gp4','debian','u32');
 $Sites = array('u32');
 
