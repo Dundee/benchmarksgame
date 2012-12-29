@@ -1,0 +1,114 @@
+/*
+   The Great Computer Language Shootout
+   http://shootout.alioth.debian.org/
+
+   contributed by Diederik van Arkel
+   modified by John van Groningen
+*/
+
+module nbody
+
+import StdEnv,LanguageShootout
+
+Start world
+	# n = argi
+	# (nbodies,bodies) = ini_bodies
+	# bodies = offset_momentum bodies
+	# (io,world) = stdio world
+	#! e = energy nbodies bodies
+	#! io = io <<< toStringWith 9 e <<< "\n"
+	#! e = energy nbodies (advance 0 n nbodies 0.01 bodies)
+	= snd (fclose (io <<< toStringWith 9 e <<< "\n") world)
+
+days_per_year :== 365.24
+pi            :== 3.141592653589793
+solar_mass    =: 4.0 * pi * pi
+
+:: Bodies :== (!.{#Real},!.{#Real},!.{#Real},!.{#Real},!.{#Real},!.{#Real},!.{#Real})
+
+advance :: !Int !Int !Int !Real !*Bodies -> .Bodies
+advance i n nbodies dt bodies
+	| i == n = bodies
+	# bodies = advance1 0 1 dt nbodies bodies
+	# bodies = advance2 0 dt nbodies bodies
+	= advance (i+1) n nbodies dt bodies
+where
+	advance1 :: !Int !Int !Real !Int !*Bodies -> *Bodies
+	advance1 i j dt nbodies (xa,ya,za,vxa,vya,vza,massa)
+		| j==nbodies
+		    # j = i+2
+			| j==nbodies
+				= (xa,ya,za,vxa,vya,vza,massa)
+				= advance1 (i+1) j dt nbodies (xa,ya,za,vxa,vya,vza,massa)
+		#! dx = xa.[i] - xa.[j]
+		   dy = ya.[i] - ya.[j]
+           dz = za.[i] - za.[j]
+		# distance2 = dx * dx + dy * dy + dz * dz
+		  distance = sqrt distance2
+		  mag = dt / (distance * distance2)
+        #! mm2 = massa.[j] * mag
+		   vx1 = vxa.[i]; vy1 = vya.[i]; vz1 = vza.[i]
+		# vxa = {vxa & [i]=vx1-dx*mm2}
+		  vya = {vya & [i]=vy1-dy*mm2}
+		  vza = {vza & [i]=vz1-dz*mm2}
+		#! mm1 = massa.[i] * mag
+		   vx2 = vxa.[j]; vy2 = vya.[j]; vz2 = vza.[j]
+        # vxa = {vxa & [j]=vx2+dx*mm1}
+          vya = {vya & [j]=vy2+dy*mm1}
+          vza = {vza & [j]=vz2+dz*mm1}
+		= advance1 i (j+1) dt nbodies (xa,ya,za,vxa,vya,vza,massa)
+
+	advance2 :: !Int !Real !Int *Bodies ->  *Bodies
+	advance2 i dt nbodies (xa,ya,za,vxa,vya,vza,massa)
+		| i == nbodies = (xa,ya,za,vxa,vya,vza,massa)
+		#! x=xa.[i];   y=ya.[i];   z=za.[i]
+		   vx=vxa.[i]; vy=vya.[i]; vz=vza.[i]
+		#  xa={xa & [i]=x + dt*vx}
+		   ya={ya & [i]=y + dt*vy}
+		   za={za & [i]=z + dt*vz}
+		= advance2 (i+1) dt nbodies (xa,ya,za,vxa,vya,vza,massa)
+
+energy :: !Int !Bodies -> Real
+energy nbodies (xa,ya,za,vxa,vya,vza,massa) = seq [energy1 i nbodies \\ i <- [0..nbodies-1]] 0.0 where
+	energy1 i nbodies e
+		#! e = e + 0.5 * massa.[i] * (vxa.[i]*vxa.[i] + vya.[i]*vya.[i] + vza.[i]*vza.[i])
+		= seq [energy2 i j \\ j <- [i+1..nbodies-1]] e
+
+	energy2 i j e
+	    # dx = xa.[i] - xa.[j]; dy = ya.[i] - ya.[j]; dz = za.[i] - za.[j]
+	      distance  = sqrt (dx * dx + dy * dy + dz * dz)
+	    = e - (massa.[i] * massa.[j]) / distance
+
+offset_momentum (xa,ya,za,vxa,vya,vza,massa)
+	#! px = ~ (sum [vx * mass \\ vx<-:vxa & mass<-:massa] / solar_mass)
+	   py = ~ (sum [vy * mass \\ vy<-:vya & mass<-:massa] / solar_mass)
+	   pz = ~ (sum [vz * mass \\ vz<-:vza & mass<-:massa] / solar_mass)
+	= (	xa,ya,za,{vxa & [0]=px},{vya & [0]=py},{vza & [0]=pz},massa)
+
+ini_bodies :: (!Int,!.Bodies)
+ini_bodies
+	# nbodies=5;
+	  bodies = (a,a,a,a,a,a,a) with a=>createArray nbodies 0.0
+	  bodies = add_body bodies 0 0.0 0.0 0.0 0.0 0.0 0.0 1.0 // sun
+	  bodies = add_body bodies 1
+		 4.84143144246472090E+00 -1.16032004402742839E+00 -1.03622044471123109E-01
+		 1.66007664274403694E-03  7.69901118419740425E-03 -6.90460016972063023E-05
+		 9.54791938424326609E-04 // jupiter
+	  bodies = add_body bodies 2
+		 8.34336671824457987E+00  4.12479856412430479E+00 -4.03523417114321381E-01
+		-2.76742510726862411E-03  4.99852801234917238E-03  2.30417297573763929E-05
+		 2.85885980666130812E-04 // saturn
+	  bodies = add_body bodies 3
+		 1.28943695621391310E+01 -1.51111514016986312E+01 -2.23307578892655734E-01
+		 2.96460137564761618E-03  2.37847173959480950E-03 -2.96589568540237556E-05
+		 4.36624404335156298E-05 // uranus
+	  bodies = add_body bodies 4
+		 1.53796971148509165E+01 -2.59193146099879641E+01  1.79258772950371181E-01
+		 2.68067772490389322E-03  1.62824170038242295E-03 -9.51592254519715870E-05
+		 5.15138902046611451E-05 // neptune
+	= (nbodies,bodies) where
+
+	add_body (xa,ya,za,vxa,vya,vza,massa) i x y z vx vy vz mass
+		= ( {xa & [i]=x}, {ya & [i]=y}, {za & [i]=z},
+			{vxa & [i]=vx * days_per_year}, {vya & [i]=vy * days_per_year},
+			{vza & [i]=vz * days_per_year}, {massa & [i]=mass * solar_mass} )

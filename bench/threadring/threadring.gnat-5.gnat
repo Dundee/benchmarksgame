@@ -1,0 +1,292 @@
+-- The Computer Language Benchmarks Game
+-- http://shootout.alioth.debian.org/
+--
+--  Contributed by Brad Moore (13 Aug 2012)
+--
+-- Creates 503 lightweight "virtual" threads, and 503 OS threads which
+-- map to Ada tasks. The Ada tasks are managed by a task pool object.
+-- The task pool implements a work-sharing strategy whereby the current
+-- OS worker thread will try to assign a new work item to itself if no other
+-- work has yet been assigned to the worker, otherwise offers the new work
+-- item to another OS thread.
+
+
+pragma Suppress (All_Checks);
+
+with Ada.Command_Line; use Ada;
+with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
+with Task_Pools;
+
+with Ada.Text_IO; use Ada.Text_IO;
+procedure ThreadRing is
+
+   Worker_Count : constant := 503;
+   Token_Count : Natural := 1000;  -- Default value
+
+   --  Note: Worker_Id wraps around, i.e. 502 links to 0
+   type Worker_Id is mod Worker_Count;
+
+   -- The following type is used for checking completion of the test.
+   protected Thread_Ring_Benchmark is
+      procedure All_Done;
+      entry Wait_For_Completion;
+   private
+      Done : Boolean := False;
+   end Thread_Ring_Benchmark;
+
+   protected body Thread_Ring_Benchmark is
+
+      procedure All_Done is
+      begin
+         Done := True;
+      end All_Done;
+
+      entry Wait_For_Completion when Done is
+      begin
+         null;
+      end Wait_For_Completion;
+   end Thread_Ring_Benchmark;
+
+   --  Client specified virtual thread state information.
+   --  Note this code is actually passing the token between the virtual
+   --  threads, as opposed to each thread inspecting and modifying a global
+   --  variable.
+   type Thread_State is new Task_Pools.Work_Item with
+      record
+         Current_Worker : Worker_Id;
+         Token : Natural;
+      end record;
+
+   overriding
+   procedure Process (Work : in out Thread_State;
+                      Context : Task_Pools.Context_Handle);
+
+   -- The actual worker tasks (OS threads) to do the work
+   Threads : Task_Pools.Task_Pool (Number_Of_Tasks => Worker_Count);
+
+   Next_Worker : Worker_Id := Worker_Id'First;
+
+   function Create_Thread return Thread_State is
+      Current_Worker : constant Worker_Id := Next_Worker;
+   begin
+      Next_Worker := Next_Worker + 1;
+      return (Current_Worker => Current_Worker,
+              Token => <>);
+   end Create_Thread;
+
+   --  An array of virtual threads (or strands) linked in a circular chain
+   Fibers : array (Worker_Id) of aliased Thread_State
+     := (others => Create_Thread);
+
+   overriding
+   procedure Process (Work : in out Thread_State;
+                      Context : Task_Pools.Context_Handle) is
+   begin
+
+      if Work.Token = 0 then
+         Put (Item => Natural (Work.Current_Worker) + 1, Width => 1);
+         Thread_Ring_Benchmark.All_Done;
+      else
+
+         -- Pass the token
+         Fibers (Work.Current_Worker + 1).Token := Work.Token - 1;
+
+         --  Note: Current_Worker wraps around from 502 to 0
+         Threads.Submit
+           (Current_Context => Context,
+            Next_Context => Fibers (Work.Current_Worker + 1)'Unchecked_Access);
+      end if;
+
+   end Process;
+
+begin -- ThreadRing
+
+   if Command_Line.Argument_Count >= 1 then
+      Token_Count := Natural'Value (Command_Line.Argument (1));
+   end if;
+
+   Fibers (Fibers'First).Token := Token_Count;
+
+   Threads.Submit (Next_Context => Fibers (Fibers'First)'Unchecked_Access);
+
+   Thread_Ring_Benchmark.Wait_For_Completion;
+   Threads.Destruct;
+
+end ThreadRing;
+package Task_Pools is
+
+   type Work_Item is abstract tagged;
+   type Work_Handle is access all Work_Item'Class;
+
+   type Work_Item is abstract tagged null record;
+
+   type Context_Handle is access all Work_Handle;
+
+   procedure Process
+     (Work : in out Work_Item;
+      Context : Context_Handle) is abstract;
+   --  A thread context that can include client specified state information
+
+   type Task_Pool (Number_Of_Tasks : Positive) is
+     tagged limited private;
+   --  task pool object type that has a pool of real Ada tasks to
+   --  process virtual thread fibers that are submitted to the pool for
+   --  processing. Each Ada task in the task pool corresponds to an OS threads
+   --  in GNAT
+
+   procedure Submit
+     (Pool : in out Task_Pool;
+      Next_Context : Work_Handle;
+      Current_Context : Context_Handle := null);
+   --  Submit a work item (virtual thread) to the task pool for processing.
+   --  Context should be null unless Submit was invoked from a Work_Item.
+   --  (i.e. Called from a task in the task pool)
+   --  Otherwise, it may be specified as null to signify that the virtual
+   --  thread is to be assigned to a new task in the task pool, or if not
+   --  null should be the current context as passed in to the virtual thread.
+   --  In this case, the new virtual thread will be processed by the same
+   --  Ada task from the task pool that invoked the current virtual thread.
+
+   procedure Destruct (Pool : in out Task_Pool);
+   --  Terminates all tasks in the task pool object. No further Submit calls
+   --  can be issued against the specified task pool object.
+
+private
+
+   subtype Worker_Id is Natural;
+
+   task type Worker (Pool : access Task_Pool := null) is
+   end Worker;
+
+   function Create_Worker (Pool : access Task_Pool) return Worker;
+   --  Creates a task in the task pool
+
+   type Worker_Array is array (Worker_Id range <>) of Worker;
+   --  The Ada tasks in the task pool
+
+   --  A manager to hand off work requests from the client to the task pool
+   protected type Work_Manager is
+
+      entry Wait_For_Work (Work : out Work_Handle);
+      entry Offer_Work (Work : Work_Handle);
+      procedure Shutdown;
+      entry Wait_For_Termination;
+
+   private
+      Offered_Item : Work_Handle := null;
+      Shutting_Down : Boolean := False;
+   end Work_Manager;
+
+   type Task_Pool (Number_Of_Tasks : Positive) is tagged limited
+      record
+         Manager : Work_Manager;
+         Workers : Worker_Array (1 .. Number_Of_Tasks)
+           := (others => Create_Worker (Task_Pool'Access));
+      end record;
+end Task_Pools;
+package body Task_Pools is
+
+   protected body Work_Manager is
+      entry Offer_Work (Work : Work_Handle)
+        when Offered_Item = null is
+      begin
+         Offered_Item := Work;
+      end Offer_Work;
+
+      procedure Shutdown is
+      begin
+         Shutting_Down := True;
+         Offered_Item := null;
+      end Shutdown;
+
+      entry Wait_For_Work (Work : out Work_Handle)
+        when Shutting_Down or else Offered_Item /= null is
+      begin
+         Work := Offered_Item;
+         Offered_Item := null;
+      end Wait_For_Work;
+
+      entry Wait_For_Termination when Wait_For_Work'Count = 0 is
+      begin
+         null;
+      end Wait_For_Termination;
+
+   end Work_Manager;
+
+   task body Worker is
+      Current_Item : Work_Handle := null;
+      Work_Plan : aliased Work_Handle := null;
+   begin
+
+      Pool.Manager.Wait_For_Work (Work_Plan);
+
+      while Work_Plan /= null loop
+
+         Current_Item := Work_Plan;
+         --  Save the virtual thread to be invoked
+
+         Work_Plan := null;
+         --  Clear the virtual thread so we can tell if further
+         --  work was been assigned to the same task
+
+         Current_Item.all.Process (Work_Plan'Unchecked_Access);
+         --  Invoke the virtual thread, passing it the context and
+         --  client specified state
+
+         if Work_Plan = null then
+            -- If the Work_Plan does not have any work, we have to wait
+            -- for another task to offer some work, otherwise, we can
+            -- skip this and proceed directly to process the virtual thread
+            -- that was submitted by the previous invocation of the client
+            -- virtual thread.
+            Pool.Manager.Wait_For_Work (Work_Plan);
+         end if;
+      end loop;
+   end Worker;
+
+   function Create_Worker (Pool : access Task_Pool) return Worker is
+   begin
+      return New_Worker : Worker (Pool)
+      do
+         null;
+      end return;
+   end Create_Worker;
+
+   -------------
+   -- Submit --
+   -------------
+
+   procedure Submit
+     (Pool : in out Task_Pool;
+      Next_Context : Work_Handle;
+      Current_Context : Context_Handle := null) is
+   begin
+      if Current_Context = null then
+         --  Work is either being enqueued by a client (non-worker) task,
+         --  or the client is requesting that a new task from the task pool
+         --  should process the virtual thread, so offer the work to a new
+         --  worker
+         Pool.Manager.Offer_Work (Next_Context);
+      else
+         --  The current task is a worker task
+
+         if Current_Context.all = null then
+            --  No further work has yet been assigned to the current task, so
+            --  give the work to the same task. Note: no synchronization needed
+            --  since current task owns its work.
+            Current_Context.all := Next_Context;
+         else
+            --  Since this task already has something to do next, offer
+            --  the work to another idle worker
+            Pool.Manager.Offer_Work (Next_Context);
+         end if;
+      end if;
+   end Submit;
+
+   procedure Destruct (Pool : in out Task_Pool) is
+   begin
+      Pool.Manager.Shutdown;
+      Pool.Manager.Wait_For_Termination;
+   end Destruct;
+
+end Task_Pools;

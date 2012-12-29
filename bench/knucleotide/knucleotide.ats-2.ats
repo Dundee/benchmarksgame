@@ -1,0 +1,457 @@
+(*
+** The Computer Language Benchmarks Game
+** http://shootout.alioth.debian.org/
+**
+** contributed by Hongwei Xi
+**
+** compilation command:
+**   atscc -O3 k-nucleotide2.dats -o k-nucleotide2 -D_ATS_GCATS
+*)
+
+(* ****** ****** *)
+
+staload "libc/SATS/stdio.sats"
+staload "libc/SATS/stdlib.sats"
+staload "libc/SATS/string.sats"
+staload _(*anonymous*) = "prelude/DATS/array.dats"
+staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
+
+(* ****** ****** *)
+
+// The hashtable implementation is based on linear-probing
+// #include "symtbl.dats"
+
+(* ****** ****** *)
+
+%{^
+
+typedef char *symbol_t ;
+typedef struct { symbol_t sym ; int cnt ; } tblent_t ;
+
+%}
+
+(* ****** ****** *)
+
+abstype dna_t // boxed type
+abst@ype symbol_t = $extype "symbol_t"
+abstype symtbl_t // boxed type
+
+extern fun symtbl_make (dna: dna_t, size: Nat) : symtbl_t
+extern fun symtbl_clear (tbl: symtbl_t) : void = "symtbl_clear"
+
+extern fun symtbl_search (tbl: symtbl_t, name: String) : int
+  = "symtbl_search"
+extern fun symtbl_insert (tbl: symtbl_t, sym: symbol_t, cnt: int) : void
+  = "symtbl_insert"
+
+extern fun symtbl_fold {a:viewt@ype}
+  (tbl: symtbl_t, f: &(symbol_t, int, &a) -<clo> void, res: &a) : void
+
+extern fun symtbl_dna_get (tbl: symtbl_t): dna_t = "symtbl_dna_get"
+extern fun symtbl_symlen_get (tbl: symtbl_t): int = "symtbl_symlen_get"
+extern fun symtbl_symlen_set (tbl: symtbl_t, len: int): void = "symtbl_symlen_set"
+
+(* ****** ****** *)
+
+abst@ype tblent_t = $extype "tblent_t"
+
+viewtypedef symtbl (sz:int, n:int, l:addr) = @{
+  dna= dna_t
+, ptr= ptr l
+, view_arr= @[tblent_t][sz] @ l
+, view_arr_gc= free_gc_v l
+, size= int sz
+, symlen= int
+, nitm= int n
+}
+
+viewtypedef symtbl0 = symtbl (0, 0, null)
+viewtypedef symtbl = [sz,n:nat | sz > 0] [l:addr] symtbl (sz, n, l)
+assume symtbl_t = [l_tbl: addr] (vbox (symtbl @ l_tbl) | ptr l_tbl)
+
+(* ****** ****** *)
+
+implement symtbl_dna_get (tbl) = begin
+  let val (vbox pf_tbl | p_tbl) = tbl in p_tbl->dna end
+end (* end of [symtbl_dna_get] *)
+
+implement symtbl_symlen_get (tbl) = begin
+  let val (vbox pf_tbl | p_tbl) = tbl in p_tbl->symlen end
+end (* end of [symtbl_symlen_get] *)
+
+implement symtbl_symlen_set (tbl, len) = begin
+  let val (vbox pf_tbl | p_tbl) = tbl in p_tbl->symlen := len end
+end (* end of [symtbl_symlen_set] *)
+
+(* ****** ****** *)
+
+extern fun print_symbol (sym: symbol_t, len: int): void = "print_symbol"
+
+%{^
+
+ats_void_type print_symbol
+  (symbol_t sym, ats_int_type len) {
+  while (len > 0) { fputc ( *sym, stdout) ; --len ; ++sym ; }
+  return ;
+}
+
+%}
+
+(* ****** ****** *)
+
+extern fun hash_string {n:nat} (s: string n, n: size_t n):<> uInt
+  = "hash_string"
+  
+extern fun hash_symbol (sym: symbol_t, len: int):<> uInt
+  = "hash_symbol"
+
+%{^
+
+// a commonly used simple hash function
+
+static // inline
+ats_uint_type hash_symbol (symbol_t sym, ats_int_type len) {
+  unsigned int hash_val = 0 ;
+  while (len >= 4) {
+    hash_val += hash_val * 33 ;
+    hash_val += sym[0] << 24 ;
+    hash_val += sym[1] << 16 ;
+    hash_val += sym[2] <<  8 ;
+    hash_val += sym[3] ;
+    sym += 4 ; len -= 4 ;
+  } // end of [while]
+  if (len >= 2) {
+    hash_val = hash_val * 33 + (sym[0] << 8) + sym[1] ;
+    sym += 2 ; len -= 2 ;
+  } // end of [if]
+  if (len >= 1) {
+    hash_val = hash_val * 33 + sym[0] ;
+  } // end of [while]
+  return hash_val ;
+}
+
+static inline
+ats_uint_type
+hash_string (ats_ptr_type str, ats_size_type len) {
+  return hash_symbol (str, len) ;
+}
+
+%}
+
+(* ****** ****** *)
+
+%{^
+
+ats_ptr_type
+tblent_array_make (ats_int_type sz) {
+  return ats_calloc_gc (sz, sizeof(tblent_t)) ;
+} /* end of [tblent_array_make] */
+
+%}
+
+extern fun tblent_array_make {sz: nat} (sz: int sz)
+  :<> [l:addr] (free_gc_v l, array_v (tblent_t, sz, l) | ptr l)
+  = "tblent_array_make"
+
+(* ****** ****** *)
+
+implement symtbl_make (dna, sz) = (pfbox | p_tbl) where {
+  val sz = max (sz, 1)
+  val (pf_tbl_gc, pf_tbl | p_tbl) = ptr_alloc_tsz {symtbl0} (sizeof<symtbl0>)
+  val (pf_arr_gc, pf_arr | p_arr) = tblent_array_make (sz)
+
+  val () = begin
+    p_tbl->dna := dna;
+    p_tbl->ptr := p_arr;
+    p_tbl->view_arr := pf_arr;
+    p_tbl->view_arr_gc := pf_arr_gc;
+    p_tbl->size := sz;
+    p_tbl->symlen := 0;
+    p_tbl->nitm := 0
+  end (* end of [val] *)
+
+  prval () = free_gc_elim (pf_tbl_gc)
+  val (pfbox | ()) = vbox_make_view_ptr (pf_tbl | p_tbl)
+} // symtbl_make
+
+(* ****** ****** *)
+
+extern fun tblent_array_clear {sz:nat} {l:addr}
+  (pf: !array_v (tblent_t, sz, l) | p: ptr l, sz: int sz):<> void
+  = "tblent_array_clear"
+
+%{
+
+ats_void_type
+tblent_array_clear
+  (ats_ptr_type p, ats_int_type sz) {
+  memset (p, 0, sz * sizeof(tblent_t)) ; return ;
+} /* end of [tblent_array_clear] */
+
+%}
+
+implement symtbl_clear (tbl) = () where {
+  val (vbox pf_tbl | p_tbl) = tbl
+  val () = tblent_array_clear (p_tbl->view_arr | p_tbl->ptr, p_tbl->size)
+  val () = p_tbl->nitm := 0
+} (* end of [symtbl_clear] *)
+
+//
+
+(* ****** ****** *)
+
+// linear probing
+extern fun symtbl_search_probe
+  {sz,i:nat | i < sz} {l:addr} (
+  pf: !array_v(tblent_t, sz, l) | p: ptr l, sz: int sz, len: int, name: string, i: int i
+  ) :<> int
+  = "symtbl_search_probe"
+
+%{
+
+ats_int_type symtbl_search_probe
+  (ats_ptr_type p, ats_int_type sz, ats_int_type len, ats_ptr_type name, ats_int_type i) {
+  tblent_t *ent ; symbol_t sym;
+  ent = ((tblent_t*)p) + i ; while (1) {
+    sym = ent->sym ;
+    if (sym == (symbol_t)0) return 0 ; // the entry is unoccupied
+    if (!strncmp (sym, (char*)name, len)) { return ent->cnt ; }
+    i += 1 ;
+    if (i >= sz) { i = 0 ; ent = (tblent_t*)p ; } else ent += 1;
+  } // end of [while]
+} /* end of [symtbl_search_probe] */
+
+%}
+
+implement symtbl_search (tbl, name) = let
+
+val hash_val = hash_string (name, string1_length name)
+(*
+val () = begin
+  prerr "symtbl_search: hash_val = "; prerr hash_val; prerr_newline ()
+end // end [val]
+*)
+val (vbox pf_tbl | p_tbl) = tbl
+val i = hash_val uimod p_tbl->size
+
+in
+
+symtbl_search_probe (
+  p_tbl->view_arr | p_tbl->ptr, p_tbl->size, p_tbl->symlen, name, i
+)
+
+end // end of [symtbl_search]
+
+(* ****** ****** *)
+
+extern fun symtbl_insert_probe {sz,i:nat | i < sz} {l:addr}
+  (pf: !array_v (tblent_t, sz, l) | p: ptr l, sz: int sz, len: int, sym: symbol_t, cnt: int, i: int i)
+  :<> bool = "symtbl_insert_probe"
+
+%{
+
+ats_bool_type symtbl_insert_probe
+  (ats_ptr_type p, ats_int_type sz, ats_int_type len, symbol_t sym, ats_int_type cnt, ats_int_type i) {
+  tblent_t *ent ;
+  ent = ((tblent_t*)p) + i ;
+  while (ent->sym) {
+    if (strncmp (ent->sym, sym, len) == 0) {
+      if (cnt > 0) ent->cnt = cnt ; else ent->cnt += 1 ;
+      return 0 ;
+    }
+    i += 1;
+    if (i >= sz) { i = 0 ; ent = (tblent_t*)p ; } else ent += 1 ;
+  }
+  ent->sym = sym ;
+  if (cnt > 0) ent->cnt = cnt ; else ent->cnt = 1 ;
+  return 1 ;
+}
+
+%}
+
+(* ****** ****** *)
+
+implement symtbl_insert (tbl, sym, cnt) = let
+  val (vbox pf_tbl | p_tbl) = tbl
+  val len = p_tbl->symlen
+  val hash_val = hash_symbol (sym, len)
+  val i = hash_val uimod p_tbl->size
+  val is_new = symtbl_insert_probe
+    (p_tbl->view_arr | p_tbl->ptr, p_tbl->size, len, sym, cnt, i)
+in
+  if is_new then p_tbl->nitm := 1 + p_tbl->nitm else ()
+end // end of [symtbl_insert]
+
+(* ****** ****** *)
+
+extern fun tblent_array_fold
+  {a:viewt@ype} {sz: nat} {l:addr} (
+    pf: !array_v (tblent_t, sz, l)
+  | p: ptr l, sz: int sz, f: &(symbol_t, int, &a) -<clo> void, res: &a
+  ) :<> void
+  = "tblent_array_fold"
+
+%{
+
+ats_void_type tblent_array_fold
+  (ats_ptr_type p, ats_int_type sz, ats_ref_type f, ats_ptr_type res) {
+  int i ; tblent_t *ent ;
+  i = 0 ; ent = (tblent_t*)p ; while (i < sz) {
+    if (!ent->sym) { i += 1; ent += 1; continue ; }
+    ((ats_void_type ( *)(ats_clo_ptr_type, symbol_t, ats_int_type, ats_ptr_type))(ats_closure_fun(f)))(f, ent->sym, ent->cnt, res) ;
+    i += 1 ; ent += 1 ;
+  } // end of [while]
+  return ;
+}
+
+%}
+
+implement symtbl_fold {a} (tbl, f, res) = let
+  val (vbox pf_tbl | p_tbl) = tbl
+in
+  tblent_array_fold {a} (p_tbl->view_arr | p_tbl->ptr, p_tbl->size, f, res)
+end // end of [symtbl_insert]
+
+(* ****** ****** *)
+
+extern fun dna_count {n,k:nat | k <= n}
+  (tbl: symtbl_t, n: size_t n, k: size_t k) : symtbl_t = "dna_count"
+
+typedef symflt = @(symbol_t, float)
+
+fn compare_symflt_symflt // [>=]
+  (x1: &symflt, x2: &symflt):<> Sgn = compare_float_float (x2.1, x1.1)
+// end of [compare_symflt_symflt]
+
+viewtypedef frqlst = List_vt symflt
+
+// print and free
+fun print_free_frqlst
+  (kfs: frqlst, len: int): void = begin case+ kfs of
+  | ~list_vt_cons (kf, kfs) => begin print_symbol (kf.0, len);
+       printf (" %.3f\n", @(double_of kf.1)); print_free_frqlst (kfs, len)
+    end // end of [FRQLSTcons]
+  | ~list_vt_nil () => ()
+end // end of [print_free_frqlst]
+
+fn write_frequencies {n,k:nat | k <= n}
+  (tbl: symtbl_t, n: size_t n, k: size_t k): void = let
+  val tbl = dna_count (tbl, n, k)
+  var total: int = (0: int)
+  var !p_clo = @lam (k: symbol_t, cnt: int, res: &int): void =<clo>
+    (res := res + cnt)
+  val () = symtbl_fold {int} (tbl, !p_clo, total); val ftotal = float_of total
+  var frqs: frqlst = list_vt_nil ()
+  var !p_clo = @lam
+    (k: symbol_t, cnt: int, res: &frqlst): void =<clo> let 
+    val f = (float_of 100) * float_of cnt / ftotal; val kf = @(k, f) in
+    res := list_vt_cons (kf, res)
+  end // end of [f]
+  val () = symtbl_fold {frqlst} (tbl, !p_clo, frqs)
+  val () = list_vt_quicksort (frqs, compare_symflt_symflt)
+in
+  print_free_frqlst (frqs, symtbl_symlen_get tbl)
+end // end of [write_frequencies]
+
+(* ****** ****** *)
+
+fn write_count {n,k:nat}
+  (tbl: symtbl_t, n: size_t n, seq: string k): void = let
+  val k = string1_length seq
+  val () = assert (k <= n)
+  val tbl = dna_count (tbl, n, k)
+  val cnt = symtbl_search (tbl, seq)
+in
+  printf ("%d\t%s\n", @(cnt, seq))
+end // end of [write_count]
+
+(* ****** ****** *)
+
+extern fun getline (): string = "__getline"
+extern fun getrest (sz: &size_t? >> size_t n): #[n:nat] string n = "__getrest"
+
+%{$
+
+#define LINEBUFSZ 1024
+char theLineBuffer[LINEBUFSZ] ;
+ats_ptr_type __getline () {
+  fgets (theLineBuffer, LINEBUFSZ, stdin) ; return theLineBuffer ;
+} /* end of [getline] */
+
+#define RESTBUFSZ (128 * 1024 * 1024)
+char theRestBuffer[RESTBUFSZ] ;
+
+ats_ptr_type __getrest (ats_ref_type p_n) {
+  int c ; size_t i ; char *s ;
+  s = theRestBuffer ; i = 0 ;
+  while ((c = fgetc(stdin)) != EOF) {
+    if (c != '\n') { *s++ = toupper(c) ; i++ ; }
+  }
+  *s = '\000' ; *((size_t*)p_n) = i ;
+  if (i >= RESTBUFSZ) {
+    fprintf (stderr, "exit(ATS): too much data for processing\n") ; exit(1) ;
+  }
+  return theRestBuffer ;
+} /* end of [__getrest] */
+
+%}
+
+(* ****** ****** *)
+
+fun is_three (s: string): bool =
+  if strncmp (s, ">THREE", 6) = 0 then true else false
+// end of [is_three]
+
+(* ****** ****** *)
+
+extern fun dna_of_string (s: string): dna_t = "dna_of_string"
+
+implement main (argc, argv) = let
+  fun dna_three_get
+    (n: &size_t? >> size_t n): #[n:nat] string n = let
+    val s = getline (); val is3 = is_three (s)
+  in
+    if is3 then getrest (n) else dna_three_get (n)
+  end // end of [dna_three_get]
+  var n: size_t // uninitialized
+  val dna_three = dna_three_get (n)
+  val () = assert (n >= 2)
+(*
+  val () = (prerr "main: n = "; prerr n; prerr_newline ())
+*)
+  val dna3 =
+    dna_of_string dna_three where {
+    extern castfn dna_of_string (str: string): dna_t
+  }
+  val dna_table = symtbl_make (dna3, (*393241*)196613(*98317*))
+in
+  write_frequencies (dna_table, n, 1) ; print_newline () ;
+  write_frequencies (dna_table, n, 2) ; print_newline () ;
+  write_count (dna_table, n, "GGT") ;
+  write_count (dna_table, n, "GGTA") ;
+  write_count (dna_table, n, "GGTATT") ;
+  write_count (dna_table, n, "GGTATTTTAATT") ;
+  write_count (dna_table, n, "GGTATTTTAATTTATAGT") ;
+end (* end of [main] *)
+
+(* ****** ****** *)
+
+%{$
+
+ats_ptr_type
+dna_count (ats_ptr_type tbl, ats_size_type n, ats_size_type k) {
+  char *sym ;
+  symtbl_clear (tbl) ;
+  symtbl_symlen_set (tbl, k) ;
+  sym = (char*)symtbl_dna_get (tbl) ;
+  while (n >= k) {
+    symtbl_insert (tbl, sym, 0) ; n -= 1 ; sym += 1 ;
+  }
+  return tbl ;
+}
+
+%}
+
+(* ****** ****** *)
+
+(* end of [k-nucleotide2.dats] *)

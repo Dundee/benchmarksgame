@@ -1,0 +1,124 @@
+-- The Computer Language Benchmarks Game
+-- http://shootout.alioth.debian.org/
+--
+--  Contributed by Francois Fabien (22 mai 2011)
+--
+-- Os threads are Ada tasks. Transfer of control is done synchronously by an
+-- array of semaphores using a predefined Ada package.
+-- The token is a global data that needs no protection since only one
+-- thread at a time will use it.
+--
+--  compile with:
+--    gnatchop threadring.gnat
+--    gnatmake -O3 -gnatn -gnatp -march=native threadring.adb
+-----------------------------------------------------------------------------
+pragma Suppress (All_Checks); -- go for speed not safety
+--
+-- pragmas used for optimization of the run-time. (fairly close to Ravenscar)
+-- restrictions listed by gnatbind
+pragma Restrictions (Simple_Barriers);
+pragma Restrictions (No_Abort_Statements);
+pragma Restrictions (No_Asynchronous_Control);
+pragma Restrictions (No_Calendar);
+pragma Restrictions (No_Delay);
+pragma Restrictions (No_Dynamic_Attachment);
+pragma Restrictions (No_Dynamic_Priorities);
+pragma Restrictions (No_Entry_Queue);
+pragma Restrictions (No_Exception_Registration);
+pragma Restrictions (No_Initialize_Scalars);
+pragma Restrictions (No_Local_Protected_Objects);
+pragma Restrictions (No_Protected_Type_Allocators);
+pragma Restrictions (No_Protected_Types);
+pragma Restrictions (No_Relative_Delay);
+pragma Restrictions (No_Requeue_Statements);
+pragma Restrictions (No_Select_Statements);
+pragma Restrictions (No_Streams);
+pragma Restrictions (No_Task_Allocators);
+pragma Restrictions (No_Task_Attributes_Package);
+pragma Restrictions (No_Task_Hierarchy);
+pragma Restrictions (No_Task_Termination);
+pragma Restrictions (No_Terminate_Alternatives);
+pragma Restrictions (Static_Priorities);
+pragma Restrictions (Static_Storage_Size);
+pragma Restrictions (Immediate_Reclamation);
+pragma Restrictions (Max_Protected_Entries => 0);
+pragma Restrictions (Max_Select_Alternatives => 0);
+pragma Restrictions (Max_Task_Entries => 1);
+pragma Restrictions (Max_Tasks => 503);
+pragma Restrictions (Max_Asynchronous_Select_Nesting => 0);
+
+with Ada.Command_Line, Ada.Synchronous_Task_Control, Interfaces;
+with Threadring_Pool;
+use  Ada, Interfaces, Ada.Command_Line, Threadring_Pool;
+
+pragma Elaborate_All (Threadring_Pool);
+
+procedure Threadring is
+
+begin
+   if Argument_Count > 0 then
+      Token := Integer_32'Value (Argument (1));
+   end if;
+   Synchronous_Task_Control.Set_True (Semaphores (Ring_Index'First));
+
+end Threadring;
+-----
+with Ada.Synchronous_Task_Control, Interfaces;
+use  Ada.Synchronous_Task_Control, Interfaces;
+
+package Threadring_Pool is
+
+   Ring_Size : constant := 503;
+   type Ring_Index is mod Ring_Size;-- 0 to 502
+
+   Semaphores : array (Ring_Index) of Suspension_Object;
+
+   task type Thread is
+      entry Initialize (Identifier : in Ring_Index);
+   end Thread;
+
+   Threads : array (Ring_Index) of Thread;
+
+   Token : Integer_32 := 2 * Ring_Size - 1; --default value for testing
+
+end Threadring_Pool;
+------
+with Ada.Text_IO; use Ada.Text_IO;
+
+package body Threadring_Pool is
+
+   package Int16_IO is new Integer_IO (Integer_16);
+
+   task body Thread is
+      ID, Next : Ring_Index;
+   begin
+      accept Initialize (Identifier : in Ring_Index) do
+         ID   := Identifier;
+         Next := ID + 1;
+         Set_False (Semaphores (ID));
+      end Initialize;
+
+      loop
+         Suspend_Until_True (Semaphores (ID));
+         if Token > 0 then
+            Token := Token - 1;
+            Set_False (Semaphores (ID));
+            Set_True (Semaphores (Next));
+         else
+            exit;
+         end if;
+      end loop;
+
+      if Token = 0 then
+         Int16_IO.Put (Integer_16 (ID) + 1, Width => 0);
+         New_Line;
+         Token := -1;
+      end if;
+      Set_True (Semaphores (Next));
+   end Thread;
+
+begin
+   for T in Threads'Range loop
+      Threads (T).Initialize (Identifier => T);
+   end loop;
+end Threadring_Pool;

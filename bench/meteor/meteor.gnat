@@ -1,0 +1,1145 @@
+-- The Computer Language Benchmarks Game
+-- http://shootout.alioth.debian.org/
+--
+-- Translation of the C++ version of Ben St. John
+-- by Francois Fabien (novembre 2011)
+--  + addition of the incomplete search of solutions.
+--
+-- Expected build command:
+-- gnatchop -w meteor.gnat
+-- gnatmake  -O3 -gnatp -gnatn -f meteor.adb -o meteor.gnat_run -largs -s
+------------------------------------------------------------------------------
+with Ada.Unchecked_Conversion;
+with Interfaces; use Interfaces;
+
+package Meteors is
+
+   N_COL : constant := 5;
+   N_ROW : constant := 10;
+
+   N_ELEM : constant := 5;
+   N_PIECE_TYPE : constant := 10;
+   type Ext_Piecenr is range 0 .. N_PIECE_TYPE;
+   for Ext_Piecenr'Size use 8;
+
+   No_Piece : constant Ext_Piecenr := N_PIECE_TYPE;
+
+   subtype Piecenr is Ext_Piecenr range 0 .. N_PIECE_TYPE - 1;
+
+   N_ORIENT : constant := 12;
+   type ExtOrientation is range -1 .. N_ORIENT - 1;
+   for ExtOrientation'Size use 8;
+   subtype Orientation is ExtOrientation range 0 .. N_ORIENT - 1;
+
+   type Trow is range 0 .. N_ROW - 1;
+   for Trow'Size use 8;
+   type Tcol is range 0 .. N_COL - 1;
+   for Tcol'Size use 8;
+
+   type Parity is (Even, Odd);
+   for Parity'Size use 8;
+   for Parity use (Even => 0, Odd => 1);
+
+   -- warning => First row is Trow = 0 and is even
+   function Row_Parity (R : Trow) return Parity;
+   pragma Inline_Always(Row_Parity);
+   function Parity_to_Row is new Ada.Unchecked_Conversion (Parity, Trow);
+
+
+   type TElement is range 0 .. N_ELEM - 1;
+   for TElement'Size use 8;
+
+   type Dimensions is (dimx, dimy);
+   -- Coordinates of the points of a given element
+   type TPts is array (TElement, Dimensions) of Integer_8;
+
+   type BitVecs is new Unsigned_32;
+
+   function toBitVector (pts : TPts) return BitVecs;
+   pragma Inline(ToBitVector);
+   function setCoordList (vec : in BitVecs) return TPts;
+
+
+   function Get_First_One
+     (V        : BitVecs;
+      Startpos : Natural := 0)
+      return     Natural;
+   pragma Inline(Get_First_One);
+
+   S_FirstOne : constant array (0 .. 31) of Natural := (
+   0, 0, 1, 0,   2, 0, 1, 0,   3, 0, 1, 0,   2, 0, 1, 0,
+   4, 0, 1, 0,   2, 0, 1, 0,   3, 0, 1, 0,   2, 0, 1, 0);
+end Meteors;
+------------------------------------------------------------------------------
+
+package body Meteors is
+
+   function Row_Parity (R : Trow) return Parity is
+      function Unsigned_To_Parity is new Ada.Unchecked_Conversion (
+         Unsigned_8,
+         Parity);
+   begin
+      return Unsigned_To_Parity (Unsigned_8 (R) and 1);
+   end Row_Parity;
+
+   function toBitVector (pts : TPts) return BitVecs is
+      Result : BitVecs := 0;
+      x, y   : Integer_8;
+   begin
+      for Element in TElement'Range loop
+         x      := pts (Element, dimx);
+         y      := pts (Element, dimy);
+         Result := Result or Shift_Left (1, Natural (y * N_COL + x));
+      end loop;
+      return Result;
+   end toBitVector;
+
+   function setCoordList (vec : in BitVecs) return TPts is
+      iPt  : TElement := 0;
+      Mask : BitVecs  := 1;
+      Pts  : TPts;
+
+   begin
+
+      Outer : for y in Trow'Range loop
+         for x in Tcol'Range loop
+            if ((Mask and vec) /= 0) then
+               Pts (iPt, dimx) := Integer_8 (x);
+               Pts (iPt, dimy) := Integer_8 (y);
+               exit Outer when iPt = TElement'Last;
+               iPt := iPt + 1;
+            end if;
+            Mask := Shift_Left (Mask, 1);
+         end loop;
+      end loop Outer;
+      return Pts;
+   end setCoordList;
+
+   function Get_First_One
+     (V        : BitVecs;
+      Startpos : Natural := 0)
+      return     Natural
+   is
+      IPos              : Natural := Startpos;
+      mask              : BitVecs;
+      Result, Resultlow : BitVecs;
+   begin
+      if V = 0 then
+         return 0;
+      end if;
+
+      mask := Shift_Left (16#ff#, Startpos);
+      while (mask and V) = 0 loop
+         mask := Shift_Left (mask, 8);
+         IPos := IPos + 8;
+      end loop;
+
+      Result    := Shift_Right (mask and V, IPos);
+      Resultlow := Result and 16#0f#;
+      if Resultlow /= 0 then
+         IPos := IPos + S_FirstOne (Integer (Resultlow));
+      else
+         IPos := IPos + 4 + S_FirstOne (Integer (Shift_Right (Result, 4)));
+      end if;
+      return IPos;
+   end Get_First_One;
+
+end Meteors;
+------------------------------------------------------------------------------
+--   Operations On Pieces
+------------------------------------------------------------------------------
+package Meteors.Pieces is
+
+   SKIP_PIECE : constant := 5;
+   type Instance is record
+      m_allowed : Unsigned_64 :=0;
+      m_vec     : BitVecs     :=0;
+      m_offset  : Integer_8   :=0;
+   end record;
+
+   type M_Instance_Type is array (Parity) of Instance;
+
+   type Piece is record
+      m_instance : M_Instance_Type;
+   end record;
+
+   s_basePiece : array (Piecenr, Orientation) of Piece;
+
+   BaseVecs : constant array (Piecenr) of BitVecs :=
+     (16#10f#, 16#0cb#,  16#1087#, 16#427#, 16#465#,
+      16#0c7#, 16#8423#, 16#0a7#,  16#187#, 16#08f#);
+
+   function getPiece
+     (IPiece  : Piecenr;
+      iOrient : Orientation;
+      iParity : Parity)
+      return    Instance;
+
+   procedure gen_orientation
+     (vec     : BitVecs;
+      iOrient : Orientation;
+      target  : in out Piece);
+   procedure shiftUpLines (pts : in out TPts; shift : Integer_8);
+   procedure shiftToX0
+     (pts       : in out TPts;
+      Inst      : in out Instance;
+      Offsetrow : Integer_8;
+      W         : out Integer_8);
+   procedure Set_Ok_Positions
+     (Self  : in out Piece;
+      isOdd : Parity;
+      W, H  : Integer_8);
+   procedure Gen_All_Orientations;
+
+   type NPieces_Type is array (Piecenr) of ExtOrientation;
+   type PieceVec_Type is array (Piecenr, Orientation) of BitVecs;
+
+   type OkPieces is record
+      nPieces  : NPieces_Type  := (others => -1); -- -1 for empty piecevec
+      pieceVec : PieceVec_Type := (others => (others => 0));
+   end record;
+
+   g_okPieces        : array (Trow, Tcol) of OkPieces;
+
+end Meteors.Pieces;
+------------------------------------------------------------------------------
+with Meteors.Board; use Meteors.Board;
+package body Meteors.Pieces is
+
+   function floor (top, bottom : Integer_8) return Integer_8 is
+      toZero : Integer_8;
+   begin
+      toZero := top / bottom;
+      --  negative numbers should be rounded down, not towards zero
+      if (toZero * bottom /= top) and ((top < 0) xor (bottom <= 0)) then
+         toZero := toZero - 1;
+      end if;
+      return toZero;
+   end floor;
+
+   function getPiece
+     (IPiece  : Piecenr;
+      iOrient : Orientation;
+      iParity : Parity)
+      return    Instance
+   is
+   begin
+      return s_basePiece (IPiece, iOrient).m_instance (iParity);
+   end getPiece;
+   pragma Inline (getPiece);
+
+   procedure gen_orientation
+     (vec     : BitVecs;
+      iOrient : Orientation;
+      target  : in out Piece)
+   is
+      pts        : TPts;
+      X, Y       : Integer_8;
+      H, W       : Integer_8;
+      Ymin, Ymax : Integer_8;
+      rot        : Orientation;
+      Even_inst  : Instance renames target.m_instance (Even);
+      Odd_inst   : Instance renames target.m_instance (Odd);
+   begin
+      --  get (x,y) coordinates
+      pts := setCoordList (vec);
+
+      -- flip
+      if (iOrient >= 6) then
+         for iPt in TElement'Range loop
+            pts (iPt, dimy) := -pts (iPt, dimy);
+         end loop;
+      end if;
+
+      --  rotate as necessary
+      rot := iOrient mod 6;
+      while rot > 0 loop
+
+         for iPt in TElement'Range loop
+            X := pts (iPt, dimx);
+            Y := pts (iPt, dimy);
+
+            --  I just worked this out by hand. Took a while.
+            pts (iPt, dimx) := floor ((2 * X - 3 * Y + 1), 4);
+            pts (iPt, dimy) := floor ((2 * X + Y + 1), 2);
+         end loop;
+         rot := rot - 1;
+      end loop;
+
+      --  determine vertical shift
+      Ymin := pts (0, dimy);
+      Ymax := Ymin;
+      for iPt in TElement'Range loop
+         Y := pts (iPt, dimy);
+
+         if Y < Ymin then
+            Ymin := Y;
+         elsif Y > Ymax then
+            Ymax := Y;
+         end if;
+      end loop;
+      H := Ymax - Ymin;
+
+      shiftUpLines (pts, Ymin);
+      shiftToX0 (pts, Even_inst, 0, W);
+      Set_Ok_Positions (target, Even, W, H);
+      Even_inst.m_vec :=
+         Shift_Right (Even_inst.m_vec, Natural (Even_inst.m_offset));
+
+      -- shift down one line
+      shiftUpLines (pts, -1);
+      shiftToX0 (pts, Odd_inst, 1, W);
+
+      -- shift the bitmask back one line
+      Odd_inst.m_vec := Shift_Right (Odd_inst.m_vec, N_COL);
+      Set_Ok_Positions (target, Odd, W, H);
+      Odd_inst.m_vec :=
+         Shift_Right (Odd_inst.m_vec, Natural (Odd_inst.m_offset));
+   end gen_orientation;
+
+   procedure shiftUpLines (pts : in out TPts; shift : Integer_8) is
+   begin
+      --  vertical shifts have a twist if shift is odd and Y is odd
+      for iPt in TElement'Range loop
+         if (shift mod 2 = 1) and (pts (iPt, dimy) mod 2) = 1 then
+            pts (iPt, dimx) := pts (iPt, dimx) + 1;
+         end if;
+         pts (iPt, dimy) := pts (iPt, dimy) - shift;
+      end loop;
+   end shiftUpLines;
+
+   procedure shiftToX0
+     (pts       : in out TPts;
+      Inst      : in out Instance;
+      Offsetrow : Integer_8;
+      W         : out Integer_8)
+   is
+      x          : Integer_8;
+      Offset     : Integer_8;
+      Xmin, Xmax : Integer_8 := pts (0, dimx);
+   begin
+      --determine shift
+      for iPt in 1 .. TElement'Last loop
+         x := pts (iPt, dimx);
+         if x < Xmin then
+            Xmin := x;
+         elsif x > Xmax then
+            Xmax := x;
+         end if;
+      end loop;
+
+      Offset := N_ELEM;
+      for iPt in TElement'Range loop
+
+         pts (iPt, dimx) := pts (iPt, dimx) - Xmin;
+         --  check offset -- leftmost cell on top line
+         if (pts (iPt, dimy) = Offsetrow) and
+            (pts (iPt, dimx) < Offset)
+         then
+            Offset := pts (iPt, dimx);
+         end if;
+      end loop;
+
+      Inst.m_offset := Offset;
+      Inst.m_vec    := toBitVector (pts);
+      W             := Xmax - Xmin;
+   end shiftToX0;
+
+   procedure Set_Ok_Positions
+     (Self  : in out Piece;
+      isOdd : Parity;
+      W, H  : Integer_8)
+   is
+      Y        : Integer_8;
+      Inst     : Instance renames Self.m_instance (isOdd);
+      PosMask  : Unsigned_64 :=
+         Shift_Left (1, N_COL * Natural (Parity_to_Row (isOdd)));
+      PieceVec : BitVecs;
+   begin
+      Inst.m_allowed := 0;
+
+      Y := Integer_8 (Parity_to_Row (isOdd));
+      while Y < N_ROW - H loop
+
+         if Inst.m_offset /= 0 then
+            PosMask := Shift_Left (PosMask, Natural (Inst.m_offset));
+         end if;
+
+         for Xpos in 0 .. (N_COL - 1 - Inst.m_offset) loop
+            --  check if the new position is on the board
+
+            if Xpos < (N_COL - W) then
+               --move it to the desired location
+               PieceVec := Shift_Left (Inst.m_vec, Natural (Xpos));
+               if not Has_Bad_Islands_Single (PieceVec, Trow (Y)) then
+                  -- position is allowed
+                  Inst.m_allowed := Inst.m_allowed or PosMask;
+               end if;
+            end if;
+            PosMask := Shift_Left (PosMask, 1);
+         end loop;
+
+         exit when (Y > N_ROW - 3);
+         Y       := Y + 2;
+         PosMask := Shift_Left (PosMask, N_COL);
+      end loop;
+
+   end Set_Ok_Positions;
+
+   procedure Gen_All_Orientations is
+      refpiece  : BitVecs;
+      n, npiece : Unsigned_8 := 0;
+      Mask      : Unsigned_64;
+      Inst      : Instance;
+   begin
+      -- Filling s_basePiece
+      for iPiece in Piecenr'Range loop
+         refpiece := BaseVecs (iPiece);
+         for iOrient in Orientation'Range loop
+            declare
+               P : Piece renames s_basePiece (iPiece, iOrient);
+            begin
+               gen_orientation (refpiece, iOrient, P);
+               if (iPiece = SKIP_PIECE) and
+                  ((Unsigned_8 (iOrient / 3) and 1) /= 0)
+               then
+                  P.m_instance (Even).m_allowed := 0;
+                  P.m_instance (Odd).m_allowed  := 0;
+               end if;
+            end;
+         end loop;
+      end loop;
+
+      -- Filling array g_okPieces
+      for iPiece in Piecenr'Range loop
+         for iOrient in Orientation'Range loop
+
+            Mask := 1;
+            for iRow in Trow'Range loop
+               Inst := getPiece (iPiece, iOrient, Row_Parity (iRow));
+               for iCol in Tcol'Range loop
+                  declare
+                     Allowed : OkPieces renames g_okPieces (iRow, iCol);
+                     nPiece  : ExtOrientation renames Allowed.nPieces (iPiece);
+                  begin
+                     if ((Inst.m_allowed and Mask) /= 0) then
+                        nPiece                            := nPiece + 1;
+                        Allowed.pieceVec (iPiece, nPiece) :=
+                           Shift_Left (Inst.m_vec, Natural (iCol));
+                     end if;
+                  end;
+                  Mask := Shift_Left (Mask, 1);
+               end loop;
+            end loop;
+
+         end loop;
+      end loop;
+   end Gen_All_Orientations;
+
+end Meteors.Pieces;
+------------------------------------------------------------------------------
+--   Operations On Board
+------------------------------------------------------------------------------
+with Meteors.Pieces;   use Meteors.Pieces;
+with Meteors.Solution; use Meteors.Solution;
+
+package Meteors.Board is
+
+   L_EDGE_MASK : constant BitVecs :=
+      2#0100_0010_0001_0000_1000_0100_0010_0001#;
+   R_EDGE_MASK : constant BitVecs := Shift_Left (L_EDGE_MASK, 4);
+   TOP_ROW     : constant BitVecs := Shift_Left (1, N_COL) - 1;
+   ROW_0_MASK  : constant BitVecs :=
+      TOP_ROW or
+      Shift_Left (TOP_ROW, 10) or
+      Shift_Left (TOP_ROW, 20) or
+      Shift_Left (TOP_ROW, 30);
+   ROW_1_MASK  : constant BitVecs := Shift_Left (ROW_0_MASK, 5);
+   BOARD_MASK  : constant BitVecs := Shift_Left (1, 30) - 1;
+   LAST_ROW    : constant BitVecs := Shift_Left (TOP_ROW, 5 * N_COL);
+
+   type Goodbad is (Good, Bad, Always_Bad);
+
+   type Fixed is (Open, Closed);
+
+   type Has_Bad_Array is array (Fixed, Parity) of BitVecs;
+   type Is_Known_Array is array (Fixed, Parity) of BitVecs;
+   type AlwaysBad_Array is array (Parity) of BitVecs;
+
+   type islandinfo is record
+      has_bad   : Has_Bad_Array   := (others => (others => 0));
+      is_known  : Is_Known_Array  := (others => (others => 0));
+      alwaysBad : AlwaysBad_Array := (others => 0);
+   end record;
+
+   MAX_ISLAND_OFFSET : constant := 1024;
+   g_islandInfo      : array (0 .. MAX_ISLAND_OFFSET - 1) of islandinfo;
+
+   procedure badregion
+     (to_fill : in out BitVecs;
+      rnew    : BitVecs;
+      Isbad   : out Boolean);
+
+   function Has_Bad_Islands (boardVec : BitVecs; row : Trow) return Goodbad;
+
+   function Calc_Bad_Islands
+     (boardVec : BitVecs;
+      row      : Trow)
+      return     Goodbad;
+
+   procedure Calc_Always_Bad;
+
+   function Has_Bad_Islands_Single
+     (boardVec : BitVecs;
+      row      : Trow)
+      return     Boolean;
+
+   procedure Gen_All_Solutions
+     (boardVec     : BitVecs;
+      placedPieces : BitVecs;
+      Row          : Trow);
+
+   procedure Record_Solution (s : in out Soln);
+
+   m_minSoln            : Soln := init (N_PIECE_TYPE);
+   m_curSoln, m_maxSoln : Soln := init (0);
+
+   M_NSoln   : Natural := 0;
+   Max_NSoln : Natural := 3000; -- above 2098
+
+   g_firstRegion : constant array (0 .. 31) of BitVecs := (
+      16#00#, 16#01#, 16#02#, 16#03#,   16#04#, 16#01#, 16#06#, 16#07#,
+      16#08#, 16#01#, 16#02#, 16#03#,   16#0c#, 16#01#, 16#0e#, 16#0f#,
+
+      16#10#, 16#01#, 16#02#, 16#03#,   16#04#, 16#01#, 16#06#, 16#07#,
+      16#18#, 16#01#, 16#02#, 16#03#,   16#1c#, 16#01#, 16#1e#, 16#1f#);
+
+   g_flip : constant array (0 .. 31) of BitVecs := (
+     16#00#, 16#10#, 16#08#, 16#18#, 16#04#, 16#14#, 16#0c#, 16#1c#,
+     16#02#, 16#12#, 16#0a#, 16#1a#, 16#06#, 16#16#, 16#0e#, 16#1e#,
+
+     16#01#, 16#11#, 16#09#, 16#19#, 16#05#, 16#15#, 16#0d#, 16#1d#,
+     16#03#, 16#13#, 16#0b#, 16#1b#, 16#07#, 16#17#, 16#0f#, 16#1f#);
+
+end Meteors.Board;
+------------------------------------------------------------------------------
+with Meteors.Solution; use Meteors.Solution;
+with Meteors.Pieces;   use Meteors.Pieces;
+
+package body Meteors.Board is
+
+   procedure badregion
+     (to_fill : in out BitVecs;
+      rnew    : BitVecs;
+      Isbad   : out Boolean)
+   is
+      function count_ones (v : BitVecs) return Integer_8 is
+         Result : Integer_8 := 0;
+         Vect   : BitVecs   := v;
+      begin
+         while Vect /= 0 loop
+            Result := Result + 1;
+            Vect   := Vect and (Vect - 1);
+         end loop;
+         return Result;
+      end count_ones;
+
+      lrnew                   : BitVecs := rnew;
+      region                  : BitVecs;
+      Even_Region, Odd_Region : BitVecs;
+      ncells                  : Integer_8;
+
+   begin
+      --  Grow empty region, until it doesn't change any more.
+      loop
+         region      := lrnew;
+         Even_Region := region and (ROW_0_MASK and not L_EDGE_MASK);
+         Odd_Region  := region and (ROW_1_MASK and not R_EDGE_MASK);
+         --  simple grow up/down
+         lrnew := lrnew or Shift_Right (region, N_COL);
+         lrnew := lrnew or Shift_Left (region, N_COL);
+
+         --  grow right/left
+         lrnew := lrnew or Shift_Right (region and not L_EDGE_MASK, 1);
+         lrnew := lrnew or Shift_Left (region and not R_EDGE_MASK, 1);
+
+         --  tricky growth
+         lrnew := lrnew or Shift_Right (Even_Region, N_COL + 1);
+         lrnew := lrnew or Shift_Left (Even_Region, N_COL - 1);
+         lrnew := lrnew or Shift_Right (Odd_Region, N_COL - 1);
+         lrnew := lrnew or Shift_Left (Odd_Region, N_COL + 1);
+         --clamp against existing pieces
+         lrnew := lrnew and to_fill;
+         exit when (lrnew = to_fill) or (lrnew = region);
+      end loop;
+
+      --  Subtract empty region from board.
+      to_fill := to_fill xor lrnew;
+      ncells  := count_ones (to_fill);
+      Isbad   := (ncells mod N_ELEM) /= 0;
+   end badregion;
+
+   function Has_Bad_Islands (boardVec : BitVecs; row : Trow) return Goodbad is
+      iInfo         : Natural;
+      Mask, lastrow : BitVecs;
+      isodd         : Parity;
+      isclosed      : Fixed;
+      lboardVec     : BitVecs := boardVec;
+
+      lrow   : Trow := row;
+      Result : Goodbad;
+   begin
+      --  skip over any filled rows
+      while (lboardVec and TOP_ROW) = TOP_ROW loop
+         lboardVec := Shift_Right (lboardVec, N_COL);
+         if lrow = Trow'Last then -- the board is filled
+            return Good;
+         else
+            lrow := lrow + 1;
+         end if;
+      end loop;
+
+      iInfo := Natural (lboardVec and (Shift_Left (1, 2 * N_COL) - 1));
+      declare
+         info : islandinfo renames g_islandInfo (iInfo);
+      begin
+         lastrow := Shift_Right (lboardVec, 2 * N_COL) and TOP_ROW;
+         Mask    := Shift_Left (1, Natural (lastrow));
+         isodd   := Row_Parity (lrow);
+
+         if (info.alwaysBad (isodd) and Mask) /= 0 then
+            return Bad;
+         end if;
+
+         if (lboardVec and Shift_Left (TOP_ROW, N_COL * 3)) /= 0 then
+            return Calc_Bad_Islands (lboardVec, lrow);
+         end if;
+         if lrow > 6 then -- we track 3 rows
+            isclosed := Closed;
+         else
+            isclosed := Open;
+         end if;
+         declare
+            Isknownvector : BitVecs renames info.is_known (isclosed, isodd);
+            badislevector : BitVecs renames info.has_bad (isclosed, isodd);
+         begin
+            if (Isknownvector and Mask) /= 0 then
+               if (badislevector and Mask) = 0 then
+                  return Good;
+               else
+                  return Bad;
+               end if;
+            end if;
+
+            if lboardVec = 0 then
+               return Good;
+            end if;
+
+            Result        := Calc_Bad_Islands (lboardVec, lrow);
+            Isknownvector := Isknownvector or Mask;
+            if Result /= Good then
+               badislevector := badislevector or Mask;
+            end if;
+         end;
+         return Result;
+      end;
+   end Has_Bad_Islands;
+
+   function Calc_Bad_Islands
+     (boardVec : BitVecs;
+      row      : Trow)
+      return     Goodbad
+   is
+      tofill, boardmask, bottom, startregion : BitVecs;
+      Boardmaskshift                         : Natural;
+      filled                                 : Boolean;
+      Lrow                                   : Trow := row;
+      Isbad                                  : Boolean;
+      Ipos                                   : Natural;
+   begin
+      tofill := not boardVec;
+      --  Compensate for odd rows.
+      if Row_Parity (Lrow) = Odd then
+         Lrow   := Lrow - 1;
+         tofill := Shift_Left (tofill, N_COL);
+      end if;
+
+      boardmask := BOARD_MASK; --  all but the first two bits
+
+      if Lrow > 4 then
+         Boardmaskshift := Natural (Lrow - 4) * N_COL;
+         boardmask      := Shift_Right (boardmask, Boardmaskshift);
+      end if;
+      tofill := tofill and boardmask;
+
+      --  a little pre-work to speed things up
+      bottom := Shift_Left (TOP_ROW, 5 * N_COL);
+      filled := (bottom and tofill) = bottom;
+      while (bottom and tofill) = bottom loop
+         tofill := tofill xor bottom;
+         bottom := Shift_Right (bottom, N_COL);
+      end loop;
+
+      if filled or (Lrow < 4) then
+         startregion := bottom and tofill;
+      else
+         startregion := g_firstRegion (Natural (tofill and TOP_ROW));
+         if startregion = 0 then
+            startregion := Shift_Right (tofill, N_COL) and TOP_ROW;
+            startregion := g_firstRegion (Natural (startregion));
+            startregion := Shift_Left (startregion, N_COL);
+         end if;
+         startregion := startregion or
+                        (Shift_Right (startregion, N_COL) and tofill);
+      end if;
+
+      while tofill /= 0 loop
+         badregion (tofill, startregion, Isbad);
+         if Isbad then
+            if tofill /= 0 then
+               return Always_Bad;
+            else
+               return Bad;
+            end if;
+         end if;
+         Ipos        := Get_First_One (tofill);
+         startregion := Shift_Left (1, Ipos);
+      end loop;
+
+      return Good;
+   end Calc_Bad_Islands;
+
+   procedure Calc_Always_Bad is
+
+      function Flip_Two_Rows (Bits : Integer) return Integer is
+         result  : Integer := 0;
+         Flipped : BitVecs := Shift_Right (BitVecs (Bits), N_COL);
+         interim : BitVecs := BitVecs (Bits) and TOP_ROW;
+      begin
+         Flipped := Shift_Left (g_flip (Natural (Flipped)), N_COL);
+         result  := Integer (Flipped or g_flip (Natural (interim)));
+         return result;
+      end Flip_Two_Rows;
+
+      procedure Markbad
+        (Info   : in out islandinfo;
+         Mask   : in BitVecs;
+         Eo     : in Parity;
+         Always : in Boolean)
+      is
+      begin
+         Info.has_bad (Open, Eo)   := Info.has_bad (Open, Eo) or Mask;
+         Info.has_bad (Closed, Eo) := Info.has_bad (Closed, Eo) or Mask;
+         if Always then
+            Info.alwaysBad (Eo) := Info.alwaysBad (Eo) and Mask;
+         end if;
+      end Markbad;
+
+      Mask, Flipmask, boardvec : BitVecs;
+      hasbad                   : Goodbad;
+      always                   : Boolean;
+
+   begin
+      for iWord in 1 .. MAX_ISLAND_OFFSET - 1 loop
+         declare
+            IsleInfo : islandinfo renames g_islandInfo (iWord);
+            flipped  : islandinfo renames g_islandInfo (Flip_Two_Rows
+                                                           (iWord));
+         begin
+            Mask := 1;
+            for i in 0 .. 31 loop
+
+               boardvec := Shift_Left (BitVecs (i), 2 * N_COL) or
+                           BitVecs (iWord);
+
+               if ((IsleInfo.is_known (Open, Even) and Mask) = 0) then
+                  hasbad := Calc_Bad_Islands (boardvec, 0);
+                  if hasbad /= Good then
+                     always := (hasbad = Always_Bad);
+                     Markbad (IsleInfo, Mask, Even, always);
+                     Flipmask := Shift_Left (1, Natural (g_flip (i)));
+                     Markbad (flipped, Flipmask, Odd, always);
+                  end if;
+               end if;
+               Mask := Shift_Left (Mask, 1);
+            end loop;
+            IsleInfo.is_known (Open, Even) := BitVecs (BitVecs'Last);
+            flipped.is_known (Open, Odd)   := BitVecs (BitVecs'Last);
+
+         end;
+      end loop;
+   end Calc_Always_Bad;
+
+   function has_bad_islands_single
+     (boardVec : BitVecs;
+      row      : Trow)
+      return     Boolean
+   is
+      Isbad                          : Boolean;
+      tofill, startregion, boardmask : BitVecs;
+      isodd                          : Boolean := Row_Parity (row) = Odd;
+      lrow                           : Trow    := row;
+      Ipos                           : Natural;
+   begin
+      tofill := not boardVec;
+      if isodd then
+         lrow   := lrow - 1;
+         tofill := Shift_Left (tofill, N_COL);--  shift to even aligned
+         tofill := tofill or TOP_ROW;
+      end if;
+
+      startregion := TOP_ROW;
+      boardmask   := BOARD_MASK; --  all but the first two bits
+
+      if lrow >= 4 then
+         boardmask := Shift_Right (boardmask, Natural (lrow - 4) * N_COL);
+      elsif isodd or (lrow = 0) then
+         startregion := LAST_ROW;
+      end if;
+
+      tofill      := tofill and boardmask;
+      startregion := startregion and tofill;
+
+      while tofill /= 0 loop
+         badregion (tofill, startregion, Isbad);
+         if Isbad then
+            return True;
+         end if;
+         Ipos        := Get_First_One (tofill);
+         startregion := Shift_Left (1, Ipos);
+      end loop;
+      return False;
+   end has_bad_islands_single;
+
+   procedure Gen_All_Solutions
+     (boardVec     : BitVecs;
+      placedPieces : BitVecs;
+      Row          : Trow)
+   is
+
+      l_boardVec     : BitVecs := boardVec;
+      l_placedPieces : BitVecs := placedPieces;
+      l_Row          : Trow    := Row;
+
+      ALL_PIECE_MASK : constant BitVecs := 2#11_1111_1111#;
+
+      INextFill           : Tcol;
+      ipiece              : Piecenr;
+      Piecemask, piecevec : BitVecs;
+   begin
+      while (l_boardVec and TOP_ROW) = TOP_ROW loop
+         l_boardVec := Shift_Right (l_boardVec, N_COL);
+         l_Row      := l_Row + 1;
+      end loop;
+
+      INextFill :=
+        Tcol (S_FirstOne (Natural ((not l_boardVec) and TOP_ROW)));
+      declare
+         Allowed : OkPieces renames g_okPieces (l_Row, INextFill);
+      begin
+         ipiece    := Piecenr (Get_First_One (not l_placedPieces));
+         Piecemask := Shift_Left (1, Natural (ipiece));
+         loop
+
+         -- go on only if we've not already used this piece
+            if (Piecemask and l_placedPieces) = 0 then
+               l_placedPieces := l_placedPieces or Piecemask;
+
+               for Iorient in 0 .. Allowed.nPieces (ipiece) loop
+                  piecevec := Allowed.pieceVec (ipiece, Iorient);
+
+                  --check if piece conflicts with other pieces
+                  if (piecevec and l_boardVec) = 0 then
+                     -- add the piece to the board
+                     l_boardVec := l_boardVec or piecevec;
+                     if Has_Bad_Islands (l_boardVec, l_Row) = Good then
+
+                        pushPiece (m_curSoln, piecevec, ipiece, l_Row);
+                        -- recur or record solution
+                        if (l_placedPieces /= ALL_PIECE_MASK) then
+                           Gen_All_Solutions
+                             (l_boardVec,
+                              l_placedPieces,
+                              l_Row);
+                        else
+                           Record_Solution (m_curSoln);
+                           popPiece (m_curSoln);
+                           return;
+                        end if;
+                        if M_NSoln >= Max_NSoln then
+                           return;
+                        end if;
+                        popPiece (m_curSoln);
+                     end if;
+                     -- remove the piece before continuing with a new piece
+                     l_boardVec := l_boardVec xor piecevec;
+                  end if;
+               end loop;
+
+               l_placedPieces := l_placedPieces xor Piecemask;
+            end if;
+            exit when ipiece = Piecenr'Last;
+            ipiece    := ipiece + 1;
+            Piecemask := Shift_Left (Piecemask, 1);
+         end loop;
+      end;
+   end Gen_All_Solutions;
+
+   procedure record_solution (S : in out Soln) is
+      spun : Soln;
+   begin
+      setCells (s);
+      M_NSoln := M_NSoln + 2; --  add solution and its rotation
+
+      if isEmpty (m_minSoln) then
+         m_minSoln := s;
+         m_maxSoln := s;
+         return;
+      end if;
+
+      if s < m_minSoln then
+         m_minSoln := s;
+      elsif m_maxSoln < s then
+         m_maxSoln := s;
+      end if;
+
+      spin (s, spun);
+      if spun < m_minSoln then
+         m_minSoln := spun;
+      elsif m_maxSoln < spun then
+         m_maxSoln := spun;
+      end if;
+   end record_solution;
+
+end Meteors.Board;
+------------------------------------------------------------------------------
+--   Operations on Solutions
+------------------------------------------------------------------------------
+package Meteors.Solution is
+
+   type Soln is private;
+
+   procedure setCells (Self : in out Soln);
+   -- Left and right must be synched by setcells before comparaison.
+   function "<" (Left : Soln; Right : Soln) return Boolean;
+   function init (value : Ext_Piecenr := No_Piece) return Soln;
+   procedure spin (Self : in out Soln; spun : out Soln);
+
+   function isEmpty (Self : Soln) return Boolean;
+
+   procedure popPiece (Self : in out Soln);
+   pragma Inline (popPiece);
+
+   procedure pushPiece
+     (Self     : in out Soln;
+      A_vec    : BitVecs;
+      A_iPiece : Piecenr;
+      A_row    : Trow);
+   pragma Inline (pushPiece);
+
+   procedure Output (Nbr_Sol : Natural; Smin, Smax : Soln);
+
+private
+   type Spieces is record
+      bitvec : BitVecs;
+      ipiece : Piecenr;
+      row    : Trow;
+   end record;
+
+   type M_Pieces_Type is array (Piecenr) of Spieces;
+   type M_Cells_Type is array (Trow, Tcol) of Ext_Piecenr;
+
+   type Soln is record
+      m_pieces  : M_Pieces_Type;
+      m_nPiece  : Ext_Piecenr := 0;
+      m_cells   : M_Cells_Type;
+      m_synched : Boolean     := True;
+   end record;
+
+end Meteors.Solution;
+------------------------------------------------------------------------------
+with Ada.Streams.Stream_IO; use Ada.Streams.Stream_IO;
+with Unchecked_Conversion;
+with Ada.Text_IO;           use Ada.Text_IO;
+
+package body Meteors.Solution is
+
+   procedure setCells (Self : in out Soln) is
+      nNewcells : Natural;
+   begin
+      if Self.m_synched then
+         return;
+      end if;
+      for iPiece in 0 .. Self.m_nPiece - 1 loop
+         declare
+            P         : Spieces renames Self.m_pieces (iPiece);
+            Vec       : BitVecs     := P.bitvec;
+            pID       : Ext_Piecenr := P.ipiece;
+            RowOffset : Trow        := P.row;
+         begin
+            nNewcells := 0;
+            Outer : for y in RowOffset .. Trow'Last loop
+               for x in Tcol'Range loop
+                  if ((Vec and 1) /= 0) then
+                     Self.m_cells (y, x) := pID;
+                     nNewcells           := nNewcells + 1;
+                     exit Outer when nNewcells = N_ELEM;
+                  end if;
+                  Vec := Shift_Right (Vec, 1);
+               end loop;
+            end loop Outer;
+         end;
+      end loop;
+      Self.m_synched := True;
+   end setCells;
+
+   function "<" (Left : Soln; Right : Soln) return Boolean is
+      lval, rval : Ext_Piecenr;
+   begin
+      if not (Left.m_synched and Right.m_synched) then
+         raise Constraint_Error;
+      end if;
+      if Left.m_pieces (0).ipiece /= Right.m_pieces (0).ipiece then
+         return Left.m_pieces (0).ipiece < Right.m_pieces (0).ipiece;
+      end if;
+
+      for y in Trow'Range loop
+         for x in Tcol'Range loop
+            lval := Left.m_cells (y, x);
+            rval := Right.m_cells (y, x);
+            if lval /= rval then
+               return lval < rval;
+            end if;
+         end loop;
+      end loop;
+      --  solutions are equal
+      return False;
+   end "<";
+
+   function init (value : Ext_Piecenr := No_Piece) return Soln is
+      Self : Soln;
+   begin
+      for I in Trow'Range loop
+         for J in Tcol'Range loop
+            Self.m_cells (I, J) := value;
+         end loop;
+      end loop;
+      Self.m_synched := True;
+      Self.m_nPiece  := 0;
+      return Self;
+   end init;
+
+   procedure spin (Self : in out Soln; spun : out Soln) is
+   begin
+      setCells (Self);
+      --  swap cells
+      for y in Trow'Range loop
+         for x in Tcol'Range loop
+            spun.m_cells (y, x) :=
+              Self.m_cells (Trow'Last - y, Tcol'Last - x);
+         end loop;
+      end loop;
+      --  swap first and last pieces (the rest aren't used)
+      spun.m_pieces (0).ipiece := Self.m_pieces (Piecenr'Last).ipiece;
+      spun.m_synched           := True;
+   end spin;
+
+   function isEmpty (Self : Soln) return Boolean is
+   begin
+      return (Self.m_nPiece = 0);
+   end isEmpty;
+
+   procedure popPiece (Self : in out Soln) is
+   begin
+      Self.m_nPiece  := Self.m_nPiece - 1;
+      Self.m_synched := False;
+   end popPiece;
+
+   procedure pushPiece
+     (Self     : in out Soln;
+      A_vec    : in BitVecs;
+      A_iPiece : in Piecenr;
+      A_row    : in Trow)
+   is
+
+      P : Spieces renames Self.m_pieces (Self.m_nPiece);
+   begin
+      P.bitvec       := A_vec;
+      P.ipiece       := A_iPiece;
+      P.row          := A_row;
+      Self.m_nPiece  := Self.m_nPiece + 1;
+      Self.m_synched := False;
+   end pushPiece;
+
+   procedure Output (Nbr_Sol : Natural; Smin, Smax : Soln) is
+      use Ada.Streams, ASCII;
+
+      package Int_IO is new Integer_IO (Integer);
+
+      subtype Item is String (1 .. 254);
+
+      subtype Index is Stream_Element_Offset range
+         Stream_Element_Offset (Item'First) ..
+         Stream_Element_Offset (Item'Last);
+      subtype XBytes is Stream_Element_Array (Index);
+      function To_Bytes is new Unchecked_Conversion (
+         Source => Item,
+         Target => XBytes);
+
+      Stdout : Stream_IO.File_Type;
+      Result : Item;
+
+      function To_String (S : Soln) return String is
+         N   : Natural := 0;
+         Res : String (1 .. 116);
+      begin
+         for I in Trow'Range loop
+            if (I mod 2) = 1 then--  indent every second line
+               N       := N + 1;
+               Res (N) := ' ';
+            end if;
+
+            for J in Tcol'Range loop
+               N := N + 1;
+               Int_IO.Put (Res (N .. N), Integer (S.m_cells (I, J)));
+               N       := N + 1;
+               Res (N) := ' ';
+            end loop;
+            N       := N + 1;
+            Res (N) := LF;
+         end loop;
+         N       := N + 1;
+         Res (N) := LF;
+         return Res;
+      end To_String;
+
+   begin
+      Int_IO.Put (Result (1 .. 4), Nbr_Sol);
+      Result (5 .. 22)    := (" solutions found" & LF & LF);
+      Result (23 .. 138)  := (To_String (Smin));
+      Result (139 .. 254) := (To_String (Smax));
+
+      Stream_IO.Open (File => Stdout, Mode => Out_File, Name => "/dev/stdout");
+      Stream_IO.Write (Stdout, To_Bytes (Result));
+      Stream_IO.Close (Stdout);
+   end Output;
+
+end Meteors.Solution;
+------------------------------------------------------------------------------
+with Meteors;          use Meteors;
+with Meteors.Pieces;
+with Meteors.Solution; use Meteors.Solution;
+with Meteors.Board;    use Meteors.Board;
+with Ada.Command_Line; use Ada.Command_Line;
+
+procedure Meteor is
+begin
+   if Argument_Count > 0 then
+      --Program will search only max number of solutions.
+      Max_NSoln := Natural'Value (Argument (1));
+   end if;
+   Pieces.Gen_All_Orientations;
+   Calc_Always_Bad;
+   Gen_All_Solutions (0, 0, 0);
+   Output (M_NSoln, m_minSoln, m_maxSoln);
+end Meteor;

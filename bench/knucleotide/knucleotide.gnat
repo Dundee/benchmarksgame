@@ -1,0 +1,888 @@
+--  The Computer Language Benchmarks Game
+--  http://shootout.alioth.debian.org/
+--
+--  Contributed by Martin Krischik
+--  Modified by Georg Bauhaus and Jonathan Parker (Oct 2012)
+
+--  Uses representation for compacting. Idea for uppercasing on the
+--  fly taken from Rikard Mustajärvi's Java program.
+
+pragma Profile (Ravenscar);
+
+with Data_Input;          use Data_Input;
+with Data;                use Data;
+with Statistics.Setup;    use Statistics;
+with Statistics.Aux;
+with GNAT.OS_Lib;
+
+procedure KNucleotide is
+   Input_Text : Writable_String_Access;
+begin
+   Input_Text  := new String'(Read);
+   Setup.Buffer := To_Compressed (Plain_View (Input_Text));
+   Free (Input_Text);
+
+   Aux.Unlock;
+   Aux.Print_When_Finished;
+
+   GNAT.OS_Lib.OS_Exit (0);
+end KNucleotide;
+
+package Statistics is
+   pragma Pure;
+   type Fragment_Lengths is range 1 .. 18;
+end Statistics;
+
+with Statistics.Work;
+with Data.Text_Fragments;
+with Interfaces;
+with Ada.Unchecked_Conversion;
+package Statistics.Setup is
+
+   generic function UC renames Ada.Unchecked_Conversion;
+
+   subtype U8 is Interfaces.Unsigned_8;
+   subtype U16 is Interfaces.Unsigned_16;
+   subtype U32 is Interfaces.Unsigned_32;
+   subtype U64 is Interfaces.Unsigned_64;
+
+   type F is array (Fragment_Lengths range <>) of Data.Symbol;
+   for F'Component_Size use Data.Symbol'Size;
+
+   subtype FX1 is Fragment_Lengths range 1 .. 1;
+   type F1 is new F (FX1);
+   for F1'Size use U8'Size;
+   function To_U is new UC (F1, U8);
+
+   subtype FX2 is Fragment_Lengths range 1 .. 2;
+   type F2 is new F (FX2);
+   for F2'Size use U8'Size;
+   function To_U is new UC (F2, U8);
+
+   subtype FX3 is Fragment_Lengths range 1 .. 3;
+   type F3 is new F (FX3);
+   for F3'Size use U8'Size;
+   function To_U is new UC (F3, U8);
+
+   subtype FX4 is Fragment_Lengths range 1 .. 4;
+   type F4 is new F (FX4);
+   for F4'Size use U8'Size;
+   function To_U is new UC (F4, U8);
+
+   subtype FX6 is Fragment_Lengths range 1 .. 6;
+   type F6 is new F (FX6);
+   for F6'Size use U16'Size;
+   function To_U is new UC (F6, U16);
+
+   subtype FX12 is Fragment_Lengths range 1 .. 12;
+   type F12 is new F (FX12);
+   for F12'Size use U32'Size;
+   function To_U is new UC (F12, U32);
+
+   subtype FX18 is Fragment_Lengths range 1 .. 18;
+   type F18 is new F (FX18);
+   for F18'Size use U64'Size;
+   function To_U is new UC (F18, U64);
+
+   package Fragments_1 is new Data.Text_Fragments (FX1, F1, U8);
+   package Fragments_2 is new Data.Text_Fragments (FX2, F2, U8);
+   package Fragments_3 is new Data.Text_Fragments (FX3, F3, U8);
+   package Fragments_4 is new Data.Text_Fragments (FX4, F4, U8);
+   package Fragments_6 is new Data.Text_Fragments (FX6, F6, U16);
+   package Fragments_12 is new Data.Text_Fragments (FX12, F12, U32);
+   package Fragments_18 is new Data.Text_Fragments (FX18, F18, U64);
+
+   package Work_On_1 is new Work (Fragments_1);
+   package Work_On_2 is new Work (Fragments_2);
+   package Work_On_3 is new Work (Fragments_3);
+   package Work_On_4 is new Work (Fragments_4);
+   package Work_On_6 is new Work (Fragments_6);
+   package Work_On_12 is new Work (Fragments_12);
+   package Work_On_18 is new Work (Fragments_18);
+
+   Buffer : aliased Data.Compressed_View;
+
+   Worker_1 : Work_On_1.Counting_Job (Buffer'Access, 1, null);
+   Worker_2 : Work_On_2.Counting_Job (Buffer'Access, 2, null);
+   Worker_3 : Work_On_3.Counting_Job (Buffer'Access, 3, new F3'("GGT"));
+   Worker_4 : Work_On_4.Counting_Job (Buffer'Access, 4, new F4'("GGTA"));
+   Worker_6 : Work_On_6.Counting_Job (Buffer'Access, 6, new F6'("GGTATT"));
+   Worker_12 : Work_On_12.Counting_Job
+     (Buffer'Access, 12, new F12'("GGTATTTTAATT"));
+   Worker_18 : Work_On_18.Counting_Job
+     (Buffer'Access, 18, new F18'("GGTATTTTAATTTATAGT"));
+
+end Statistics.Setup;
+
+package Data is
+
+   pragma Preelaborate (Data);
+
+   type Symbol is ('A', 'C', 'G', 'T');
+   for Symbol'Size use 2;
+
+   type Compressed is array (Positive range <>) of Symbol;
+   for Compressed'Component_Size use Symbol'Size;
+
+   type Translation_Table is array (Character range <>) of Symbol;
+   To_Symbol : constant Translation_Table ('A' .. 't') :=
+     ('A' => 'A', 'a' => 'A',
+      'C' => 'C', 'c' => 'C',
+      'G' => 'G', 'g' => 'G',
+      'T' => 'T', 't' => 'T', others => 'A');
+
+   type Elbat_Noitalsnart is array (Symbol range <>) of Character;
+   To_Character : constant Elbat_Noitalsnart ('A' .. 'T') :=
+     ('A' => 'A',
+      'C' => 'C',
+      'G' => 'G',
+      'T' => 'T');
+
+   type Plain_View is access constant String;
+   type Compressed_View is access constant Compressed;
+
+   function To_Compressed (Buffer : Plain_View) return Compressed_View;
+
+end Data;
+
+package body Data is
+
+   type Compressed_Access is access Compressed;
+
+   function To_Compressed (Buffer : Plain_View) return Compressed_View is
+      Result : constant Compressed_Access := new Compressed (Buffer'Range);
+   begin
+      for K in Buffer'Range loop
+         Result (K) := To_Symbol (Buffer (K));
+      end loop;
+      return Compressed_View (Result);
+   end To_Compressed;
+
+end Data;
+
+with Statistics;    use Statistics;
+with Ada.Containers;
+generic
+   type Fragment_Index is new Fragment_Lengths;
+   type Compact is array (Fragment_Index) of Symbol;
+   type Rep_Type is mod <>;
+   with function To_U (S : Compact) return Rep_Type is <>;
+package Data.Text_Fragments is
+
+   pragma Preelaborate (Text_Fragments);
+
+   type Fragment is array (Fragment_Index) of Character;
+
+   function Hash (Key : Compact) return Ada.Containers.Hash_Type;
+   function Eq (Left, Right : Compact) return Boolean;
+   function "=" (Left, Right : Compact) return Boolean is abstract;
+
+   function To_Fragment (Source : Compact) return Fragment;
+
+end Data.Text_Fragments;
+
+package body Data.Text_Fragments is
+
+   Size : constant Fragment_Index := Fragment_Index'Last;
+
+   function Hash (Key : Compact) return Ada.Containers.Hash_Type is
+      subtype HT is Ada.Containers.Hash_Type;
+      pragma Assert (HT'Size <= 32);
+   begin
+      if    Size <=  4 then return HT (To_U (Key) and 16#FF#);
+      elsif Size <=  8 then return HT (To_U (Key) and 16#FFFF#);
+      elsif Size <= 16 then return HT (To_U (Key));
+      else
+         return HT (To_U (Key) and 16#FFFF_FFFF#);
+      end if;
+   end Hash;
+
+   function Eq (Left, Right : Compact) return Boolean is
+   begin
+      if    Size <=  4 then
+         return (To_U (Left) and 16#FF#) = (To_U (Right) and 16#FF#);
+      elsif Size <=  8 then
+         return (To_U (Left) and 16#FFFF#) = (To_U (Right) and 16#FFFF#);
+      elsif Size <= 16 then
+         return To_U (Left) = To_U (Right);
+      else
+         return To_U (Left) = To_U (Right);
+      end if;
+   end Eq;
+
+   function To_Fragment (Source : Compact) return Fragment is
+      Result : Fragment;
+   begin
+      for K in Source'Range loop
+         Result (K) := To_Character (Source (K));
+      end loop;
+      return Result;
+   end To_Fragment;
+
+end Data.Text_Fragments;
+
+with Data.Text_Fragments;
+generic
+   with package Fragments is new Data.Text_Fragments (<>);
+package Statistics.Calculator is
+
+   use Fragments;
+
+   --  Elements used to store inside hash table:
+
+   type Element_Type is private;
+   type Element_Access is access Element_Type;
+   for Element_Access'Storage_Size use 16#40_00_00#;
+
+   --  Iteration:
+
+   function Get_First return Element_Access;
+   function Get_Next return Element_Access;
+
+   --  Key and value:
+
+   function Count_Of (Element : not null Element_Access) return Natural;
+   function Fragment_Of (Element : not null Element_Access) return Compact;
+
+   --  Calculate frequency of occurrences of the nucleotides:
+
+   procedure Get_Frequencies_Big (Buffer : Data.Compressed);
+   procedure Get_Frequencies_Small (Buffer : Data.Compressed);
+
+   function Occurrences (Nucleotide_Fragment : Compact) return Natural;
+   procedure Get_Totals (Total : out Natural; Count : out Natural);
+
+private
+   type Element_Type is record
+      Count : Natural := 0;
+      Key   : Compact;
+      Next  : Element_Access;
+   end record;
+end Statistics.Calculator;
+
+with GNAT.HTable;
+with Ada.Containers;
+with Ada.Unchecked_Conversion;
+with Interfaces;
+
+package body Statistics.Calculator is
+
+   --  Prepare table.
+
+   Log_Table_Size : constant Natural :=
+     Natural'Min (Natural (Fragment'Last) * 2 + 4, 17);
+
+   Table_Size     : constant Natural := 2 ** Log_Table_Size;
+
+   subtype Hash_Type is Natural range 0 .. Table_Size - 1;
+
+   function Hash (Key : Compact) return Hash_Type is
+      use type Ada.Containers.Hash_Type;
+   begin
+      return Hash_Type (Fragments.Hash (Key)
+                           mod Ada.Containers.Hash_Type (Table_Size));
+   end Hash;
+
+   function Next (E : Element_Access) return Element_Access is
+   begin
+      return E.all.Next;
+   end Next;
+
+   procedure Set_Next (E : Element_Access; Next_Element : Element_Access) is
+   begin
+      E.all.Next := Next_Element;
+   end Set_Next;
+
+   function Get_Key (E : not null Element_Access) return Compact is
+   begin
+      return E.all.Key;
+   end Get_Key;
+
+   package Table is new GNAT.HTable.Static_HTable
+     (Header_Num => Hash_Type,
+      Element    => Element_Type,
+      Elmt_Ptr   => Element_Access,
+      Null_Ptr   => null,
+      Key        => Compact,
+      Hash       => Hash,
+      Equal      => Fragments.Eq,
+      Set_Next   => Set_Next,
+      Next       => Next,
+      Get_Key    => Get_Key);
+
+   --  Counting
+
+   function To_Compact is new Ada.Unchecked_Conversion (Rep_Type, Compact);
+
+   Bits_per_Fragment : constant Positive :=
+     Data.Symbol'Size * Fragments.Compact'Length;
+
+   generic
+      type U is mod <>;
+   procedure TAdd (Value : U);
+   procedure TAdd (Value : U) is
+      Key : constant Compact := To_Compact (Rep_Type (Value));
+      Element : constant Element_Access := Table.Get (Key);
+   begin
+      if Element /= null then
+         Element.all.Count := Natural'Succ (Element.all.Count);
+      else
+         Table.Set (new Element_Type'(Count => 1,
+                                      Key => Key,
+                                      Next => null));
+      end if;
+   end TAdd;
+
+   generic
+      type U is mod <>;
+      with function Shift_Left (Value : U; Amount : Natural) return U is <>;
+      with function Shift_Right (Value : U; Amount : Natural) return U is <>;
+   procedure Get_Frequencies (Buffer : Data.Compressed);
+   procedure Get_Frequencies (Buffer : Data.Compressed) is
+
+      procedure Add_to_Table is new TAdd (U);
+
+      S : constant          := Data.Symbol'Size;
+      W : constant Positive := U'Size / 16 - 1;
+      Symbols_per_U : constant Positive := U'Size / S;
+      No_of_U       : constant Natural  := (S * Buffer'Length) /  U'Size;
+      Mask          : constant U        := 2**Bits_per_Fragment - 1;
+
+      Overlay       : array (1 .. No_of_U) of U;
+      pragma Import (Ada, Overlay);
+      for Overlay'Address use Buffer (Buffer'First)'Address;
+      Bits          : U;
+   begin
+      Bits := Overlay (Overlay'First);
+      for K in  2 .. Overlay'Last  loop
+         for HW in 0 .. W loop
+            for j in 1 .. 16/S loop
+               Add_to_Table (Bits and Mask);
+               Bits := Shift_Right (Bits, S);
+            end loop;
+            Bits := Shift_Left (Shift_Right (Overlay (K), HW * 16),
+                                W * 16) or Bits;
+         end loop;
+      end loop;
+
+      for j in 1 .. Symbols_per_U - Compact'Length + 1 loop
+         Add_to_Table (Bits and Mask);
+         Bits := Shift_Right (Bits, S);
+      end loop;
+
+      for k in Symbols_per_U * No_of_U + 1 - Compact'Length + 1
+        .. Buffer'Length - Compact'Length + 1
+      loop
+         Add_to_Table (U (Fragments.To_U
+                           (Compact (Buffer (k .. k + Compact'Length - 1)))));
+      end loop;
+   end Get_Frequencies;
+
+   use Interfaces;
+   procedure FSmall is new Get_Frequencies (Unsigned_32);
+   procedure FBig is new Get_Frequencies (Unsigned_64);
+
+   procedure Get_Frequencies_Small (Buffer : Data.Compressed) renames FSmall;
+   procedure Get_Frequencies_Big (Buffer : Data.Compressed) renames FBig;
+
+   function Count_Of (Element : not null Element_Access) return Natural is
+   begin
+      return Element.all.Count;
+   end Count_Of;
+
+   function Occurrences (Nucleotide_Fragment : Compact) return Natural is
+      The_Element : constant Element_Access := Table.Get (Nucleotide_Fragment);
+   begin
+      if The_Element /= null then
+         return The_Element.all.Count;
+      else
+         return 0;
+      end if;
+   end Occurrences;
+
+   function Get_First return Element_Access renames Table.Get_First;
+   function Get_Next return Element_Access renames Table.Get_Next;
+
+   procedure Get_Totals (Total : out Natural; Count : out Natural) is
+      The_Element : Element_Access := Table.Get_First;
+   begin
+      Total := 0;
+      Count := 0;
+      while The_Element /= null loop
+         Total       := Total + The_Element.all.Count;
+         Count       := Count + 1;
+         The_Element := Table.Get_Next;
+      end loop;
+   end Get_Totals;
+
+   function Fragment_Of (Element : not null Element_Access) return Compact is
+   begin
+      return Element.all.Key;
+   end Fragment_Of;
+
+end Statistics.Calculator;
+
+package Statistics.Aux is
+
+   pragma Elaborate_Body (Aux);
+
+   type Summary is abstract tagged limited null record;
+   type Report is access constant Summary'Class;
+
+   procedure Print (Info : Summary) is abstract;
+
+   protected Printer is
+      procedure Log_Percent (L : Fragment_Lengths; Result : Report);
+      procedure Log_Count (L : Fragment_Lengths; Result : Report);
+   end Printer;
+
+   procedure Print_When_Finished;
+
+   --  Tasks will start once their suspension objects become true:
+   procedure Unlock;
+   procedure Wait (Lock_Number : Fragment_Lengths);
+
+end Statistics.Aux;
+
+with Ada.Synchronous_Task_Control;    use Ada.Synchronous_Task_Control;
+package body Statistics.Aux is
+
+   type Task_ID is range 1 .. 7;
+
+   Lock  : array (Task_ID) of Suspension_Object;
+   Ready : Suspension_Object;
+
+   Percents : array (Fragment_Lengths range 1 .. 2) of Report;
+   Counts   : array (Fragment_Lengths range 3 .. 18) of Report;
+
+   Selection : constant array (Task_ID) of Fragment_Lengths :=
+     (1, 2, 3, 4, 6, 12, 18);
+
+   function All_Present return Boolean is
+   begin
+      for K in Selection'First .. Selection'First + 1 loop
+         if Percents (Selection (K)) = null then
+            return False;
+         end if;
+      end loop;
+      for K in Selection'First + 2 .. Selection'Last loop
+         if Counts (Selection (K)) = null then
+            return False;
+         end if;
+      end loop;
+      return True;
+   end All_Present;
+
+   protected body Printer is
+
+      procedure Log_Percent (L : Fragment_Lengths; Result : Report) is
+      begin
+         Percents (L) := Result;
+         if All_Present then
+            Set_True (Ready);
+         end if;
+      end Log_Percent;
+
+      procedure Log_Count (L : Fragment_Lengths; Result : Report) is
+      begin
+         Counts (L) := Result;
+         if All_Present then
+            Set_True (Ready);
+         end if;
+      end Log_Count;
+
+   end Printer;
+
+   procedure Print_When_Finished is
+   begin
+      Suspend_Until_True (Ready);
+      for K in Selection'First .. Selection'First + 1 loop
+         Percents (Selection (K)).Print;
+      end loop;
+      for K in Selection'First + 2 .. Selection'Last loop
+         Counts (Selection (K)).Print;
+      end loop;
+   end Print_When_Finished;
+
+   procedure Unlock is
+   begin
+      for Id in Lock'Range loop
+         Set_True (Lock (Id));
+      end loop;
+   end Unlock;
+
+   procedure Wait (Lock_Number : Fragment_Lengths) is
+      Id_Map : constant array (Fragment_Lengths) of Task_ID :=
+        (1, 2, 3, 4, 5, 5, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7);
+   begin
+      Suspend_Until_True (Lock (Id_Map (Lock_Number)));
+   end Wait;
+
+end Statistics.Aux;
+
+with Data.Text_Fragments;
+with System;
+generic
+   with package Fragments is new Data.Text_Fragments (<>);
+package Statistics.Work is
+
+   pragma Elaborate_Body (Work);
+
+   task type Counting_Job
+     (Buffer : access constant Data.Compressed_View;
+      Length : Fragment_Lengths;
+      Nucleotide_Fragment : access constant Fragments.Compact)
+   is
+      pragma Storage_Size (2**18);
+      pragma Priority (Positive'Min
+                         (System.Default_Priority + Positive (Length),
+                          System.Max_Priority));
+   end Counting_Job;
+
+end Statistics.Work;
+
+with Ada.Containers.Generic_Constrained_Array_Sort;
+with Ada.Text_IO, Ada.Float_Text_IO, Ada.Integer_Text_IO;
+with Ada.Characters.Latin_1;
+with Statistics.Aux;
+with Statistics.Calculator;
+
+package body Statistics.Work is
+
+   package Stats is new Statistics.Calculator (Fragments);
+
+   type Summary_Data is array (Natural range <>) of Stats.Element_Access;
+
+   type Summary_Info (Num_Table_Entries : Natural;
+                      Sum_of_Counts     : Natural) is new Aux.Summary with
+      record
+         Data : Summary_Data (1 .. Num_Table_Entries);
+      end record;
+
+   overriding
+   procedure Print (Info : Summary_Info) is
+   begin
+      for I in 1 .. Info.Data'Last loop
+         Ada.Text_IO.Put
+           (String (Fragments.To_Fragment
+                      (Stats.Fragment_Of (Info.Data (I)))) & ' ');
+         Ada.Float_Text_IO.Put
+           (Item => (100.0
+                       * Float (Stats.Count_Of (Info.Data (I)))
+                       / Float (Info.Sum_of_Counts)),
+            Fore => 1,
+            Aft  => 3,
+            Exp  => 0);
+         Ada.Text_IO.New_Line;
+      end loop;
+      Ada.Text_IO.New_Line;
+   end Print;
+
+   type Fragment_Info is new Aux.Summary with
+      record
+         Counted : Natural;
+         Nucleotide_Fragment : Fragments.Fragment;
+      end record;
+
+   overriding
+   procedure Print (Info : Fragment_Info) is
+   begin
+      Ada.Integer_Text_IO.Put
+        (Item => Info.Counted,
+         Width => 1);
+      Ada.Text_IO.Put (Ada.Characters.Latin_1.HT);
+      Ada.Text_IO.Put_Line (String (Info.Nucleotide_Fragment));
+   end Print;
+
+   Num_Table_Entries : Natural;
+   Sum_of_Counts     : Natural;
+
+   procedure Perform_Counting (Buffer : Data.Compressed) is
+   begin
+      if Fragments.Compact'Length >= 12 then
+         Stats.Get_Frequencies_Big (Buffer);
+      else
+         Stats.Get_Frequencies_Small (Buffer);
+         if Fragments.Compact'Length <= 2 then
+            Stats.Get_Totals
+              (Total => Sum_of_Counts,
+               Count => Num_Table_Entries);
+         end if;
+      end if;
+   end Perform_Counting;
+
+   procedure Write_Percent (Nucleotide_Length : Fragment_Lengths) is
+      use Fragments;
+      subtype Index is Natural range 1 .. Num_Table_Entries;
+      subtype List_of_Results is Summary_Data (Index);
+
+      Sheet : List_of_Results;
+
+      function Less_Than (Left, Right : Stats.Element_Access) return Boolean is
+      begin
+         return Stats.Count_Of (Left) > Stats.Count_Of (Right);
+      end Less_Than;
+
+      procedure Sort is new Ada.Containers.Generic_Constrained_Array_Sort
+        (Index_Type   => Index,
+         Element_Type => Stats.Element_Access,
+         Array_Type   => List_of_Results,
+         "<"          => Less_Than);
+
+   begin
+      Sheet (1) := Stats.Get_First;
+      for I in 2 .. Sheet'Last loop
+         Sheet (I) := Stats.Get_Next;
+      end loop;
+
+      Sort (Sheet);
+
+      Aux.Printer.Log_Percent
+        (Nucleotide_Length,
+         new Summary_Info'(Num_Table_Entries,
+                           Sum_of_Counts,
+                           Sheet));
+   end Write_Percent;
+
+   procedure Write_Count (Nucleotide_Fragment : Fragments.Compact) is
+      No_of_Occurrences : constant Natural :=
+        Stats.Occurrences (Nucleotide_Fragment);
+   begin
+      Aux.Printer.Log_Count
+        (Nucleotide_Fragment'Length,
+         new Fragment_Info'(No_of_Occurrences,
+                            Fragments.To_Fragment (Nucleotide_Fragment)));
+   end Write_Count;
+
+
+   task body Counting_Job is
+   begin
+      Aux.Wait (Lock_Number => Length);
+
+      Perform_Counting (Buffer.all.all);
+
+      case Length is
+         when 1 | 2 =>
+            Write_Percent (Length);
+
+         when 3 | 4 | 6 | 12 | 18 =>
+            Write_Count (Nucleotide_Fragment.all);
+
+         when others =>
+            raise Program_Error;
+      end case;
+
+   end Counting_Job;
+
+end Statistics.Work;
+
+with Ada.Unchecked_Deallocation;
+package Data_Input is
+
+   --  Read data from Standard_Input and return section THREE as String:
+
+   function Read return String;
+
+   type Writable_String_Access is access all String;
+   procedure Free is new Ada.Unchecked_Deallocation
+     (String, Writable_String_Access);
+
+end Data_Input;
+
+with Ada.IO_Exceptions;
+with Ada.Strings.Unbounded;
+with Line_IO;
+
+package body Data_Input is
+
+   use Ada.Strings;
+
+   Data_Buffer : Unbounded.Unbounded_String := Unbounded.Null_Unbounded_String;
+
+   Section_Marker : constant Character := '>';
+   Section        : constant String    := Section_Marker & "THREE";
+
+   --  Read next data section until EOF oder a line beginning with > is found.
+
+   procedure Read_Section is
+      Buffer     : Writable_String_Access;
+      Read_First : Natural;
+      Read_Last  : Natural;
+   begin
+      Buffer := new String (1 .. 1024 * 1024 * 16);
+      Get_Data : loop
+         Read_First := Buffer'First;
+         Read_Last  := Buffer'First - 1;
+         --  fill Buffer and append to Data_Buffer when filled
+         loop
+            declare
+               Line : String renames Line_IO.Get_Line;
+            begin
+               Read_Last := Read_First + Line'Length - 1;
+               if Read_Last >= Buffer'Last then
+                  Unbounded.Append
+                    (Data_Buffer, New_Item => Buffer (1 .. Read_First - 1));
+                  Unbounded.Append (Data_Buffer, New_Item => Line);
+                  exit;
+               end if;
+               Buffer (Read_First .. Read_Last) := Line;
+            end;
+            exit Get_Data when Buffer (Read_First) = Section_Marker;
+            Read_First := Read_Last + 1;
+         end loop;
+      end loop Get_Data;
+      Unbounded.Append (Data_Buffer, Buffer (1 .. Read_Last));
+      Free (Buffer);
+   exception
+      when Ada.IO_Exceptions.End_Error =>
+         Unbounded.Append (Data_Buffer, Buffer (1 .. Read_Last));
+         Free (Buffer);
+   end Read_Section;
+
+   --  Skip data on Standard_Input until ">THREE" is found
+
+   procedure Skip_To_Section is
+   begin
+      loop
+         declare
+            Line : constant String := Line_IO.Get_Line;
+         begin
+            exit when Line (1) = Section (1)
+              and then Line (Section'Range) = Section;
+         end;
+      end loop;
+   end Skip_To_Section;
+
+   function Read return String is
+   begin
+      Skip_To_Section;
+      Read_Section;
+      return Unbounded.To_String (Data_Buffer);
+   end Read;
+
+end Data_Input;
+
+package Line_IO is
+
+   pragma Elaborate_Body (Line_IO);
+
+   Separator : constant String := (1 => ASCII.LF);  --  ends a line
+
+   function Get_Line return String;
+
+end Line_IO;
+
+with Ada.Streams.Stream_IO;
+package body Line_IO is
+
+   use Ada.Streams;
+
+   Stdin : Stream_IO.File_Type;
+
+   --  Declarations associated with filling a text buffer.
+
+   BUFSIZ : constant := 8_192 * 2;
+   pragma Assert (Character'Size = Stream_Element'Size);
+
+   SL : constant Natural := Separator'Length;
+
+   subtype Extended_Buffer_Index is Positive range 1 .. BUFSIZ + SL;
+   subtype Buffer_Index is Extended_Buffer_Index
+     range Extended_Buffer_Index'First .. Extended_Buffer_Index'Last - SL;
+   subtype Extended_Bytes_Index is Stream_Element_Offset
+     range 1 .. Stream_Element_Offset (Extended_Buffer_Index'Last);
+   subtype Bytes_Index is Extended_Bytes_Index
+     range Extended_Bytes_Index'First
+     .. (Extended_Bytes_Index'Last - Stream_Element_Offset (SL));
+
+   subtype Buffer_Data is String (Extended_Buffer_Index);
+   subtype Buffer_Bytes is Stream_Element_Array (Extended_Bytes_Index);
+
+   Buffer : Buffer_Data;
+   Bytes  : Buffer_Bytes;
+   for Bytes'Address use Buffer'Address;
+   pragma Import (Ada, Bytes);
+
+   --  start of next substring and last valid character in buffer
+   Position : Natural range 0 .. Extended_Buffer_Index'Last;
+   Last     : Natural range 0 .. Buffer_Index'Last;
+   End_of_Input : Boolean;
+
+   function Get_Line return String is
+
+      procedure Reload is
+         --  fill Buffer with bytes available
+         Last_Filled : Stream_Element_Offset;
+      begin
+         if Last < Buffer_Index'Last then
+            raise Stream_IO.End_Error;
+         end if;
+         Stream_IO.Read (Stdin,
+           Item => Bytes (Bytes_Index),
+           Last => Last_Filled);
+         Last := Natural (Last_Filled);
+         Position := 1;
+         Buffer (Last + 1 .. Last + SL) := Separator;
+      end Reload;
+
+      function Separator_Position return Natural is
+         --   index of next Separator (may be sentinel)
+         K : Extended_Buffer_Index := Position;
+      begin
+         loop
+            if Buffer (K) = Separator (1) then
+               exit;
+            elsif Buffer (K+1) = Separator (1) then
+               K := K + 1; exit;
+            else
+               K := K + 2;
+            end if;
+         end loop;
+         return K;
+      end Separator_Position;
+
+      Next_Separator : Natural range 0 .. Extended_Buffer_Index'Last;
+   begin  --  Get_Line
+
+      if End_of_Input then
+         raise Stream_IO.End_Error;
+      end if;
+
+      Next_Separator := Separator_Position;
+
+      if Next_Separator > Last then
+         declare
+            Result : constant String := Buffer (Position .. Last);
+            subtype XString is String (1 .. Last - Position + 1);
+         begin
+            begin
+               Reload;
+               return XString (Result) & Get_Line;
+            exception
+               when Stream_IO.End_Error =>
+                  End_of_Input := True;
+                  return XString (Result);
+            end;
+         end;
+      else
+         declare
+            Result : String renames Buffer (Position .. Next_Separator - 1);
+            subtype XString is String (1 .. Next_Separator - Position);
+         begin
+            Position := Next_Separator + SL;
+            return XString (Result);
+         end;
+      end if;
+
+   end Get_Line;
+
+begin
+   Stream_IO.Open (Stdin,
+     Mode => Stream_IO.In_File,
+     Name => "/dev/stdin");
+
+   Buffer (Buffer_Index'Last + 1 .. Buffer'Last) := Separator;
+   Position := Buffer_Index'Last + 1;
+   Last := Buffer_Index'Last;
+   End_of_Input := False;
+end Line_IO;

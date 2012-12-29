@@ -1,0 +1,198 @@
+(*
+ * The Computer Language Shootout
+ * http://shootout.alioth.debian.org/
+ *
+ * contributed by Christophe TROESTLER
+ * modified by Matías Giovannini
+ * modified by Ethan Burns
+ *)
+
+module Z = struct
+  let lg n =
+    let open Int64 in
+    let x = ref (of_int n)
+    and r = ref 0 in
+    if logand !x 0xffffffff00000000L <> 0L then (x := shift_right_logical !x 32; r := !r + 32);
+    if logand !x 0x00000000ffff0000L <> 0L then (x := shift_right_logical !x 16; r := !r + 16);
+    if logand !x 0x000000000000ff00L <> 0L then (x := shift_right_logical !x  8; r := !r +  8);
+    if logand !x 0x00000000000000f0L <> 0L then (x := shift_right_logical !x  4; r := !r +  4);
+    if logand !x 0x000000000000000cL <> 0L then (x := shift_right_logical !x  2; r := !r +  2);
+    if logand !x 0x0000000000000002L <> 0L then                                  r := !r +  1 ;
+    !r
+
+  let next_pow2_int n =
+    1 lsl (lg (n + pred (1 lsl (lg n))))
+
+  let len_int = Sys.word_size - 2
+
+  let sgn_int n = (n asr len_int) - ((-n) asr len_int)
+
+  open Nat
+
+  let set_abs_digit_nat r o n =
+    set_digit_nat r o (n lxor (n asr len_int));
+    ignore (incr_nat r o 1 (n lsr len_int))
+
+  type z = {
+    (* inv: sign == 0 === is_zero_nat repr 0 (length_nat repr) *)
+    mutable sign : int;
+    (* inv: size == num_digits_nat repr 0 (length_nat repr) *)
+    mutable size : int;
+    mutable repr : nat;
+  }
+
+  let make len =
+    { sign = 0; size = 1; repr = make_nat len; }
+
+  let of_int n =
+    let i = make 1 in
+    set_abs_digit_nat i.repr 0 n;
+    i.sign <- sgn_int n;
+    i
+
+  let neg i = i.sign <- -i.sign
+
+  let clear i =
+    set_to_zero_nat i.repr 0 (length_nat i.repr);
+    i.sign <- 0;
+    i.size <- 1
+
+  let set i j =
+    let capa = length_nat i.repr in
+    if j.size > capa then
+      i.repr <- create_nat j.size
+    else if j.size < capa then
+      set_to_zero_nat i.repr j.size (capa - j.size);
+    blit_nat i.repr 0 j.repr 0 j.size;
+    i.sign <- j.sign;
+    i.size <- j.size
+
+  let ensure_capacity i size =
+    let capa = length_nat i.repr in
+    if size > capa then begin
+      let capa = next_pow2_int size in
+      let repr = create_nat capa in
+      blit_nat repr 0 i.repr 0 i.size;
+      set_to_zero_nat repr i.size (capa - i.size);
+      i.repr <- repr
+    end
+
+  let carryin c i =
+    (* [i] might not be normal, since this function is internal *)
+    let size = i.size + 1 in
+    ensure_capacity i size;
+    set_digit_nat i.repr i.size c;
+    i.size <- size
+
+  let addsub ~doadd i j =
+    let cmp = compare_nat i.repr 0 i.size j.repr 0 j.size in
+    if cmp < 0 then begin
+      (* Denormalize i to j's length *)
+      ensure_capacity i j.size;
+      i.size <- j.size
+    end;
+    if doadd then begin
+      let c = add_nat i.repr 0 i.size j.repr 0 j.size 0 in
+      if c != 0 then carryin c i
+    end else begin
+      let c = sub_nat i.repr 0 i.size j.repr 0 j.size 1 in
+      if c == 0 then begin
+        complement_nat i.repr 0 i.size;
+        ignore (incr_nat i.repr 0 i.size 1);
+        i.sign <- -i.sign
+      end;
+      (* Normalize *)
+      i.size <- num_digits_nat i.repr 0 i.size;
+      if is_zero_nat i.repr 0 i.size then i.sign <- 0
+    end
+
+  let add i j =
+    if j.sign == 0 then () else
+    if i.sign == 0 then set i j else
+    addsub ~doadd:(i.sign == j.sign) i j
+  and sub i j =
+    if j.sign == 0 then () else
+    if i.sign == 0 then (set i j; neg i) else
+    addsub ~doadd:(i.sign != j.sign) i j
+
+  let temp = create_nat 1
+
+  let imul i n =
+    if n <= 0 then failwith "imul";
+    set_abs_digit_nat temp 0 (n - 1);
+    let c = mult_digit_nat i.repr 0 i.size i.repr 0 i.size temp 0 in
+    if c != 0 then carryin c i
+
+  let idiv i j =
+    if compare_nat i.repr 0 i.size j.repr 0 j.size < 0 then 0 else begin
+      if compare_digits_nat i.repr (i.size-1) j.repr (j.size-1) >= 0 then
+        carryin 0 i;
+      if i.size != j.size + 1 then failwith "idiv"; (* multidigit *)
+      div_nat i.repr 0 i.size j.repr 0 j.size;
+      i.sign * j.sign * nth_digit_nat i.repr j.size
+    end
+end
+
+let u, v = Z.(make 1, make 1)
+
+let extract i n a d =
+  let open Z in
+  set  u n;
+  imul u i;
+  add  u a;
+  idiv u d
+
+let produce i n a d =
+  let open Z in
+  if i != 0 then begin
+    set  u d;
+    imul u i;
+    sub  a u
+  end;
+  imul n 10;
+  imul a 10
+
+and consume i n a d =
+  let open Z in
+  let j = 2*i + 1 in
+  set  u n;
+  add  u n;
+  add  a u;
+  imul n i;
+  imul a j;
+  imul d j
+
+let pi num =
+  let cnt = ref 0
+  and pos = ref 0 in
+  let end_row () =
+    print_string  "\t:";
+    print_int     !cnt;
+    print_newline ();
+    pos := 0
+  in
+  let show d =
+    print_char (char_of_int (d + 48));
+    incr cnt;
+    incr pos;
+    if !pos == 10 then end_row ();
+    if !cnt == num then begin
+      if !pos != 0 then begin
+        print_string (String.make (10 - !pos) ' ');
+        end_row ()
+      end;
+      raise Exit
+    end
+  in
+  let numer = Z.of_int 1
+  and accum = Z.of_int 0
+  and denom = Z.of_int 1
+  and i     = ref 1 in
+  try while true do
+    let d = extract 3 numer accum denom in
+    if d == extract 4 numer accum denom
+    then (show d;  produce d numer accum denom)
+    else (consume !i numer accum denom; incr i)
+  done with Exit -> ()
+
+let () = pi (try int_of_string (Array.get Sys.argv 1) with _ -> 27)

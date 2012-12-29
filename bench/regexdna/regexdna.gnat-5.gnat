@@ -1,0 +1,550 @@
+--  The Computer Language Benchmarks Game
+--  http://shootout.alioth.debian.org/
+--
+--  Contributed by Jim Rogers
+--  Modified by Georg Bauhaus
+--  Updated by Georg Bauhaus in July 2012
+--
+--  Some ideas are from Fancois Fabien's program
+--  This version uses the GNAT Spitbol Pattern matching libraries
+--  rather than the more commonly used Unix-style regex libraries
+
+with GNAT.Spitbol.Patterns;     use GNAT.Spitbol.Patterns,
+                                    GNAT.Spitbol;
+
+package DNA is
+
+   subtype Variant_Index is Positive range 1 .. 9;
+   Variant_Labels : constant array (Variant_Index) of VString := (
+      V ("agggtaaa|tttaccct"),
+      V ("[cgt]gggtaaa|tttaccc[acg]"),
+      V ("a[act]ggtaaa|tttacc[agt]t"),
+      V ("ag[act]gtaaa|tttac[agt]ct"),
+      V ("agg[act]taaa|ttta[agt]cct"),
+      V ("aggg[acg]aaa|ttt[cgt]ccct"),
+      V ("agggt[cgt]aa|tt[acg]accct"),
+      V ("agggta[cgt]a|t[acg]taccct"),
+      V ("agggtaa[cgt]|[acg]ttaccct"));
+
+   Variant_Patterns : constant array (Variant_Index) of Pattern :=
+     ( --  corresponding alternations in SPITBOL notation
+       1 => ((BreakX ("a") & "agggtaaa") or
+             (BreakX ("t") & "tttaccct") or
+             Cancel),
+       2 => ((BreakX ("cgt") & Any ("cgt") & "gggtaaa") or
+             (BreakX ("t") & "tttaccc" & Any ("acg")) or
+             Cancel),
+       3 => ((BreakX ("a") & "a" & Any ("act") & "ggtaaa") or
+             (BreakX ("t") & "tttacc" & Any ("agt") & "t") or
+             Cancel),
+       4 => ((BreakX ("a") & "ag" & Any ("act") & "gtaaa") or
+             (BreakX ("t") & "tttac" & Any ("agt") & "ct") or
+             Cancel),
+       5 => ((BreakX ("a") & "agg" & Any ("act") & "taaa") or
+             (BreakX ("t") & "ttta" & Any ("agt") & "cct") or
+             Cancel),
+       6 => ((BreakX ("a") & "aggg" & Any ("acg") & "aaa") or
+             (BreakX ("t") & "ttt" & Any ("cgt") & "ccct") or
+             Cancel),
+       7 => ((BreakX ("a") & "agggt" & Any ("cgt") & "aa") or
+             (BreakX ("t") & "tt" & Any ("acg") & "accct") or
+             Cancel),
+       8 => ((BreakX ("a") & "agggta" & Any ("cgt") & "a") or
+             (BreakX ("t") & "t" & Any ("acg") & "taccct") or
+             Cancel),
+       9 => ((BreakX ("a") & "agggtaa" & Any ("cgt")) or
+             (BreakX ("acg") & Any ("acg") & "ttaccct") or
+             Cancel));
+
+   type Iub is
+      record
+         Code         : Character;
+         Alternatives : VString;
+         Size         : Positive;
+      end record;
+
+   type Codes_Index is
+     ('B', 'D', 'H', 'K', 'M', 'N', 'R', 'S', 'V', 'W', 'Y');
+   for Codes_Index'Size use Character'Size;
+   for Codes_Index use
+     (Character'Pos ('B'),
+      Character'Pos ('D'),
+      Character'Pos ('H'),
+      Character'Pos ('K'),
+      Character'Pos ('M'),
+      Character'Pos ('N'),
+      Character'Pos ('R'),
+      Character'Pos ('S'),
+      Character'Pos ('V'),
+      Character'Pos ('W'),
+      Character'Pos ('Y'));
+   type Codes_Array is array (Codes_Index) of Iub;
+   Codes : constant Codes_Array := (
+      ('B', V ("(c|g|t)"), 7),
+      ('D', V ("(a|g|t)"), 7),
+      ('H', V ("(a|c|t)"), 7),
+      ('K', V ("(g|t)"), 5),
+      ('M', V ("(a|c)"), 5),
+      ('N', V ("(a|c|g|t)"), 9),
+      ('R', V ("(a|g)"), 5),
+      ('S', V ("(c|g)"), 5),
+      ('V', V ("(a|c|g)"), 7),
+      ('W', V ("(a|t)"), 5),
+      ('Y', V ("(c|t)"), 5));
+
+end DNA;
+
+with Ada.Text_IO;          use Ada.Text_IO;
+with Ada.Integer_Text_IO;  use Ada.Integer_Text_IO;
+with Ada.Strings.Unbounded;
+with GNAT.Spitbol;         use GNAT.Spitbol;
+
+with DNA.Aux;
+with DNA.Matching;
+with DNA.Replacing;        use DNA;
+with Block_Input;
+with Preprocessing;        use Preprocessing;
+
+procedure Regexdna is
+
+   package U renames Ada.Strings.Unbounded;
+
+   function Length (Item : Aux.Lines) return Natural;
+   --  length after replacements have been done
+
+   Max_Size : constant Positive := 51_000_000;
+
+   Initial_Length : Natural := 0;
+   Code_Length : Natural;
+   Num_Lines : Natural;
+   Input_Text : String_Access;
+   Sequence : String_Access;
+
+   function Length (Item : Aux.Lines) return Natural is
+      Sum : Natural := 0;
+   begin
+      for I in Item'Range loop
+         Sum := Sum + Item (I).Last;
+      end loop;
+      return Sum;
+   end Length;
+
+begin  -- Regexdna
+   Input_Text := new String (1 .. Max_Size);
+
+   --  Read FASTA Sequence
+   Block_Input.Open_Stdin;
+   Block_Input.Read (Input_Text.all, Last => Initial_Length);
+   Block_Input.Close_Stdin;
+
+   Sequence := new String (1 .. Initial_Length);
+
+   --  remove unwanted elements
+   Removal.Run (Raw => Aux.Read_Only_String (Input_Text),
+                Clean => Sequence,
+                Last => Initial_Length);
+   Removal.Done (Last => Code_Length);
+
+   U.Free (Input_Text);
+
+   Matching_Part :
+   declare
+      Worker : array (Variant_Index) of Matching.Service
+        (Sequence => Aux.Read_Only_String (Sequence));
+      Count  : Natural;
+   begin
+      --  assign tasks
+      for Variant in Variant_Index loop
+         Worker (Variant).Match_Variant (Variant);
+      end loop;
+
+      --  print counts for patterns
+      for Variant in Variant_Index loop
+         Worker (Variant).Done (Count);
+         Put (S (Variant_Labels (Variant)) & " ");
+         Put (Item => Count, Width => 1);
+         New_Line;
+      end loop;
+   end Matching_Part;
+
+   --  regex substitution
+
+   Num_Lines := Code_Length / Aux.Split_Length;
+   if Code_Length mod Aux.Split_Length > 1 then
+      Num_Lines := Num_Lines + 1;
+   end if;
+
+   Replacing_Part :
+   declare
+      Number_Of_Cores : constant Positive := Replacing.Number_Of_Tasks;
+      type Sequence_Lines_Access is access Aux.Lines;
+      Sequence_Lines_Pointer : constant Sequence_Lines_Access :=
+        new Aux.Lines (1 .. Num_Lines);
+      Sequence_Lines : Aux.Lines renames Sequence_Lines_Pointer.all;
+      Worker : array (1 .. Number_Of_Cores) of Replacing.Service
+        (Sequence_Lines => Sequence_Lines_Pointer);
+
+      procedure Distribute_Sequence;
+      --  places subsequences for Worker tasks in Sequence_Lines
+
+      procedure Distribute_Sequence is
+         Low, Sub_Len : Natural;
+      begin
+         Low := 1;
+         Sub_Len := Aux.Split_Length;
+         for I in Sequence_Lines'Range loop
+            declare
+               S : Aux.String_Pointer renames Sequence_Lines (I);
+            begin
+               if Low + Sub_Len > Code_Length then
+                  Sub_Len := Code_Length - Low + 1;
+               end if;
+               S.Data (1 .. Sub_Len) := Sequence (Low .. Low + Sub_Len - 1);
+               S.Last := Sub_Len;
+               Low := Low + Sub_Len;
+            end;
+         end loop;
+         U.Free (Sequence);
+      end Distribute_Sequence;
+
+   begin
+      Distribute_Sequence;
+
+      --  assign tasks
+      for X in Worker'Range loop
+         Worker (X).Replace
+           (First => X,
+            Step => Worker'Length);
+      end loop;
+
+      --  wait for results and report
+      for X in Worker'Range loop
+         Worker (X).Done;
+      end loop;
+      New_Line;
+      Put (Item => Initial_Length, Width => 1);
+      New_Line;
+      Put (Item => Code_Length, Width => 1);
+      New_Line;
+      Put (Item => Length (Sequence_Lines), Width => 1);
+      New_Line;
+   end Replacing_Part;
+
+end Regexdna;
+
+package DNA.Aux is
+
+   type Read_Only_String is access constant String;
+
+   Split_Length : constant := 40000;
+   Max_Length : constant := 2 * Split_Length + Split_Length / 2;
+
+   type String_Pointer is limited
+     record
+        Data : String (1 .. Max_Length);
+        Last : Natural := 0;
+     end record;
+
+   type Lines is array (Positive range <>) of String_Pointer;
+
+end DNA.Aux;
+
+with Ada.Strings.Unbounded;
+with DNA.Aux;
+package Preprocessing is
+
+   --  removal of line feeds and FASTA sequence descriptions
+
+   subtype String_Access is Ada.Strings.Unbounded.String_Access;
+
+   Separator  : constant String := (1 => ASCII.LF);
+
+   task Removal is
+      pragma Storage_Size (2**16);
+      entry Run (Raw   : DNA.Aux.Read_Only_String;
+                 Clean : String_Access;
+                 Last  : Natural);
+      entry Done (Last : out Natural);
+      --  number of characters after removal
+   end Removal;
+
+end Preprocessing;
+
+with GNAT.Spitbol.Patterns;    use GNAT.Spitbol.Patterns;
+
+package body Preprocessing is
+
+   task body Removal is
+
+      function Transfer return Boolean;
+      --  transfers "good" substrings to the resulting sequence
+
+      Input_Text : DNA.Aux.Read_Only_String;
+      Sequence   : String_Access;
+      Start, Stop : aliased Natural := 0;
+      Last : Natural := 0;
+      Tail : Natural := 0;
+      --  Tail is also the value for Removal.Done.Last
+      Limit : Natural;
+
+      function Transfer return Boolean is
+      begin
+         if Start > Last then
+            Sequence (Tail + 1 ..
+                      Tail + 1 + (Start - Last) - 1) :=
+              Input_Text (Last + 1 .. Start);
+            Tail := Tail + (Start - Last);
+         end if;
+         Last := Stop;
+         return Stop >= Limit;
+      end Transfer;
+
+      Unwanted : constant Pattern :=
+        Setcur (Start'Access)
+        & (('>' & Break (Separator)) or Separator)
+        & Setcur (Stop'Access)
+        & (+Transfer'Unrestricted_Access);
+
+   begin
+      accept Run
+        (Raw   : DNA.Aux.Read_Only_String;
+         Clean : String_Access;
+         Last  : Natural)
+      do
+         Input_Text := Raw;
+         Sequence := Clean;
+         Limit := Last;
+      end Run;
+
+      Match (Subject => Input_Text (1 .. Limit),
+             Pat => Unwanted);
+
+      accept Done (Last : out Natural) do
+         Last := Tail;
+      end Done;
+   end Removal;
+
+end Preprocessing;
+
+with DNA.Aux;
+
+package DNA.Matching is
+
+   task type Service (Sequence : Aux.Read_Only_String) is
+      --  perform matching one pattern concurrently
+
+      entry Match_Variant (Variant : Variant_Index);
+      entry Done (Count : out Natural);
+   end Service;
+
+end DNA.Matching;
+
+package body DNA.Matching is
+
+   task body Service is
+
+      function Inc_Count return Boolean;
+      --  count another occurrence of a pattern
+
+      Count : Natural;
+
+      function Inc_Count return Boolean is
+      begin
+         Count := Count + 1;
+         return False;
+      end Inc_Count;
+
+      Variant : Variant_Index;
+
+   begin  --  Service
+      accept Match_Variant (Variant : Variant_Index) do
+         Service.Variant := Variant;
+      end Match_Variant;
+
+      Count := 0;
+      Match (Subject => Sequence.all,
+             Pat => (Variant_Patterns (Variant)
+                     & (+Inc_Count'Unrestricted_Access)));
+
+      accept Done (Count : out Natural) do
+         Done.Count := Service.Count;
+      end Done;
+   end Service;
+
+end DNA.Matching;
+
+with DNA.Aux;
+package DNA.Replacing is
+
+   task type Service (Sequence_Lines : access Aux.Lines) is
+      --  replace in one bunch of lines
+
+      entry Replace (First, Step : Positive);
+      entry Done;
+   end Service;
+
+   Number_Of_Tasks : constant := 4;
+
+end DNA.Replacing;
+
+with Ada.Strings.Unbounded;
+with Ada.Unchecked_Conversion;
+
+package body DNA.Replacing is
+
+   function To_Code is new Ada.Unchecked_Conversion
+     (Source => Character,
+      Target => Codes_Index);
+
+   function Code_Set return String;
+   --  "BDHKMNRSVWY", made from the actual Codes table
+
+   function Code_Set return String is
+      Result : String (1 .. Codes_Index'Pos (Codes'Last) + 1);
+   begin
+      for C in Codes'Range loop
+         Result (Codes_Index'Pos (C) + 1) := Codes (C).Code;
+      end loop;
+      return Result;
+   end Code_Set;
+
+   task body Service is
+
+      function Next_Replacement return Boolean;
+      --  transfers the replacement text for the next match
+
+      function Final_Replacement return Boolean;
+      --  transfers remaining text after the last match
+
+      use Ada.Strings.Unbounded;
+
+      Tail        : Positive;
+      Start, Stop : aliased Natural;
+      Substitute  : constant String_Access := new String (1 .. Aux.Max_Length);
+      I : Positive;
+      First, Step : Positive;
+
+      function Next_Replacement return Boolean
+      is
+         C : constant Codes_Index := To_Code (Sequence_Lines (I).Data (Stop));
+         L : constant Positive := Codes (C).Size;
+      begin
+         Substitute (Tail .. Tail + (Stop - 1 - Start) - 1) :=
+           Sequence_Lines (I).Data (Start + 1 .. Stop - 1);
+         Tail  := Tail + (Stop - 1 - Start);
+
+         Substitute (Tail .. Tail + L - 1) := S (Codes (C).Alternatives);
+         Tail  := Tail + L;
+         Start := Stop;
+
+         return False;
+      end Next_Replacement;
+
+      function Final_Replacement return Boolean is
+      begin
+         Substitute (Tail .. Tail + (Stop - Start) - 1) :=
+           Sequence_Lines (I).Data (Start + 1 .. Stop);
+         Tail := Tail + (Stop - Start);
+         return True;
+      end Final_Replacement;
+
+      Suffix : constant Pattern :=
+        Rest
+        & Setcur (Stop'Access)
+        & (+Final_Replacement'Unrestricted_Access);
+
+      Code : constant Pattern :=
+        (BreakX (Code_Set)
+         & Len (1)
+         & Setcur (Stop'Access)
+         & (+Next_Replacement'Unrestricted_Access)) or (Suffix & Cancel);
+
+   begin  -- Service
+      accept Replace (First, Step : Positive) do
+         Service.First := First;
+         Service.Step := Step;
+      end Replace;
+
+      I := First;
+      while I <= Sequence_Lines'Last loop
+         declare
+            S : Aux.String_Pointer renames Sequence_Lines (I);
+         begin
+            Tail := Substitute'First;
+            Start := 0;
+            Stop := 0;
+            Match (Subject => S.Data (1 .. S.Last), Pat => Code);
+            S.Data (1 .. Tail - 1) := Substitute (1 .. Tail - 1);
+            S.Last := Tail - 1;
+            I := I + Step;
+         end;
+      end loop;
+
+      accept Done;
+   end Service;
+
+end DNA.Replacing;
+
+package Block_Input is
+
+   procedure Read (Item : in out String; Last : out Natural);
+
+   procedure Open_Stdin;
+
+   procedure Close_Stdin;
+
+   pragma Inline (Read);
+
+end Block_Input;
+
+with Ada.Streams.Stream_IO;
+with Unchecked_Conversion;
+
+package body Block_Input is
+
+   use Ada.Streams;
+
+   Stdin : Stream_IO.File_Type;
+
+   procedure Read (Item : in out String; Last : out Natural) is
+
+      Block_Size : constant := 16 * 1024;
+
+      subtype Index is Stream_Element_Offset range
+        Stream_Element_Offset (1) .. Stream_Element_Offset (Block_Size);
+      subtype XString is String (1 .. Block_Size);
+      subtype XBytes is Stream_Element_Array (Index);
+      function To_String is new Unchecked_Conversion (
+                                                      Source => XBytes,
+                                                      Target => XString);
+
+      One_Block : XBytes;
+      Str_Block : XString;
+      Final     : Stream_Element_Offset;
+      Start     : Natural := Item'First;
+      Stop      : Natural := 0;
+   begin
+      while not Stream_IO.End_Of_File (Stdin) loop
+         Stream_IO.Read (Stdin, One_Block, Final);
+         Str_Block            := To_String (One_Block);
+         Stop                 := Start + Natural (Final) - 1;
+         Item (Start .. Stop) := Str_Block (1 .. Natural (Final));
+         Start                := Stop + 1;
+      end loop;
+      Last := Stop;
+   end Read;
+
+   procedure Open_Stdin is
+   begin
+      Stream_IO.Open
+        (File => Stdin,
+         Mode => Stream_IO.In_File,
+         Name => "/dev/stdin");
+   end Open_Stdin;
+
+   procedure Close_Stdin is
+   begin
+      Stream_IO.Close (Stdin);
+   end Close_Stdin;
+
+end Block_Input;

@@ -1,0 +1,106 @@
+-- The Computer Language Benchmarks Game
+-- http://shootout.alioth.debian.org/
+--
+--  Contributed by Francois Fabien (23 octobre 2011)
+--
+-- Os threads are Ada tasks. Transfer of control is done synchronously by an
+-- array of semaphores using a predefined Ada package.
+-- The token is a global data that needs no protection since only one
+-- thread at a time will use it.
+--
+-- Directives are in the source code, so compile only with:
+--    gnatchop threadring.gnat
+--    gnatmake -O3 -gnatn -march=native threadring.adb
+-----------------------------------------------------------------------------
+pragma Suppress (All_Checks); -- go for speed not safety
+--
+-- pragmas used for optimization of the run-time.
+pragma Restrictions (No_Abort_Statements);
+pragma Restrictions (Max_Asynchronous_Select_Nesting => 0);
+
+-----------------------------------------------------------------------------
+
+with Ada.Command_Line;             use Ada.Command_Line;
+with Ada.Synchronous_Task_Control; use Ada;
+with Threadring_Pool;              use Threadring_Pool;
+
+pragma Elaborate_All (Threadring_Pool);
+
+procedure Threadring is
+   -- GNU ld will remove unused sections; GNAT specific
+   pragma Linker_Options ("-Wl,--gc-sections");
+
+begin
+   if Argument_Count > 0 then
+      Token := Tokens'Value (Argument (1));
+   end if;
+   Synchronous_Task_Control.Set_True (Semaphores (Ring_Nbr'First));
+
+end Threadring;
+-----------------------------------------------------------------------------
+
+with Ada.Synchronous_Task_Control; use Ada, Ada.Synchronous_Task_Control;
+
+package Threadring_Pool is
+
+   Ring_Size : constant := 503;
+   type Ring_Nbr is range 1 .. Ring_Size;
+
+   type Tokens is range -1 .. +(2 ** 31 - 1);
+   ---- -1 => flag for task termination
+   for Tokens'Size use 32;
+
+   Token : Tokens := 2 * Ring_Size - 1; -- default value for testing
+
+   Semaphores : array (Ring_Nbr) of Suspension_Object;
+
+private
+
+   task type Threads is
+      entry Initialize (Identifier : in Ring_Nbr);
+   end Threads;
+
+   Ring : array (Ring_Nbr) of Threads;
+
+end Threadring_Pool;
+-----------------------------------------------------------------------------
+
+with Ada.Text_IO; use Ada.Text_IO;
+
+package body Threadring_Pool is
+
+   package Ring_IO is new Integer_IO (Ring_Nbr);
+
+   task body Threads is
+      ID, Next : Ring_Nbr;
+   begin
+      accept Initialize (Identifier : in Ring_Nbr) do
+         ID   := Identifier;
+         Next := ID mod Ring_Size + 1;
+         Set_False (Semaphores (ID));
+      end Initialize;
+
+      loop
+         Suspend_Until_True (Semaphores (ID));
+         Set_False (Semaphores (ID));
+         if Token > 0 then
+            Token := Token - 1;
+            Set_True (Semaphores (Next));
+         else
+            exit;
+         end if;
+      end loop;
+
+      if Token = 0 then
+         Ring_IO.Put (ID, Width => 0);
+         New_Line;
+         Token := -1;
+      end if;
+      Set_True (Semaphores (Next));
+   end Threads;
+
+begin
+   for T in Ring'Range loop
+      Ring (T).Initialize (Identifier => T);
+   end loop;
+end Threadring_Pool;

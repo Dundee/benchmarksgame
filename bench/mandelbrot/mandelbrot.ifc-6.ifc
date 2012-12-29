@@ -1,0 +1,129 @@
+! The Computer Language Benchmarks Game
+! http://shootout.alioth.debian.org/
+!
+! Code by A. Jirnyi. Modified from contributions by
+!   Jason Blevins, Greg Bucholz, Simon Geard
+!   and George R. Gonzalez
+!
+! Compilation:
+!  1 Core: ifort -fast mandelbrot.f90
+!  2+Core: ifort -fast -openmp mandelbrot.f90
+
+program mandelbrot
+  use iso_fortran_env
+  implicit none
+  integer, parameter :: dp = kind(1.0d0) 
+  integer, parameter :: bsize = 8
+  integer, parameter :: i8 = selected_int_kind(2)
+  integer, parameter :: iter = 50
+  real(dp), parameter  :: limit2 = 4.0_dp
+  integer(1), parameter :: EOL = 10
+
+  real(dp), parameter:: xmin = -1.5, xmax = 0.5, ymin = -1, ymax = 1
+
+  character(len=8) argv
+  character(len=20) line1,line2
+
+  integer :: w, h, i, ix, iy
+  integer(i8), dimension(:,:), allocatable :: buf
+  real(dp), dimension(:), allocatable:: xgrid
+  real(dp) :: dx, dy, Ci
+  real(dp), dimension(bsize) :: Zr,Zi,Tr,Ti,Cr
+
+  ! Just a fancy way to say "integer(2)" :)
+  !  int(1) will also work, but with a warning.
+  !  it may also be (very) slightly slower, or slightly faster,
+  !  depending on the machine and compiler version...
+  integer, parameter :: i16 = &
+       selected_int_kind(ceiling(log10(real(2**(bsize+1)-1))))
+  integer(i16), parameter, dimension(bsize) :: &
+       shifter = [(2**(bsize-i),i=1,bsize)] 
+  integer(i8), dimension(bsize) :: in_m  
+
+  logical :: checknext = .true.
+
+  call getarg(1,argv)
+  read(argv,*) w
+  h = w
+  if(mod(w,bsize) /= 0) then
+     write(error_unit,'(a,i2)') 'Sorry, grid size must be a multiple of',bsize
+     stop
+  end if
+
+  ! not very portable, but about 1 sec. faster with ifort...
+  close(output_unit)
+  open(unit=output_unit, access='stream',form='unformatted',buffered='yes')
+
+  allocate(buf(0:ceiling(w/dble(bsize))-1,0:h-1))
+  allocate(xgrid(w))
+
+  dx = (xmax - xmin) / w
+  dy = (ymax - ymin) / h
+
+  ! grid over x
+  do ix = 1,w
+     xgrid(ix) = dx * (ix-1) + xmin
+  end do
+
+  !$omp parallel do default(shared) private(i,iy,ix,Ci,Cr,Zi,Zr,Ti,Tr,in_m,checknext) schedule(static,1)
+  do iy = 0,h-1
+
+     Ci = dy * iy + ymin
+     checknext = .true.
+     
+     do ix = 0,w-bsize,bsize
+
+        Cr = xgrid(ix+1:ix+bsize); 
+        Zi = 0.0_dp; Zr = 0.0_dp; 
+        Ti = 0.0_dp; Tr = 0.0_dp; 
+        in_m = 1
+
+        if(checknext) then
+
+           ! likely OUT: iterate with checking
+           do i = 1, iter
+              call update
+              where ( (Tr+Ti) > limit2 ) in_m = 0          
+              if(sum(in_m)==0) exit
+           end do
+           
+           checknext = sum(in_m) /= bsize
+
+        else
+
+           ! likely IN: iterate without checking
+           do i = 1, iter
+              call update
+           end do
+
+           Tr = Tr+Ti
+
+           ! overflow can occur, so check for that
+           where ( isnan(Tr) .or. (Tr > limit2) ) in_m = 0          
+           checknext = sum(in_m) < bsize  
+
+        end if
+
+        buf(ix/bsize,iy) = dot_product(shifter, in_m) 
+
+     end do
+  end do
+  !$omp end parallel do 
+  
+  write(line1,'(a)') 'P4'
+  write(line2,'(i0,a,i0)') w,' ',h
+  write(output_unit) trim(line1),EOL,trim(line2),EOL,buf
+
+  deallocate(buf)
+  deallocate(xgrid)
+
+contains
+
+  subroutine update
+    Zi = 2.0 * Zr * Zi + Ci
+    Zr = Tr - Ti + Cr
+    Ti = Zi * Zi
+    Tr = Zr * Zr
+  end subroutine update
+
+end program mandelbrot

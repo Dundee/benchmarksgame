@@ -1,0 +1,179 @@
+; The Computer Language Benchmarks Game
+; http://shootout.alioth.debian.org/
+;
+; contributed by Kenneth Jonsson
+;
+; Each chameneos is its own agent and the agent state contains number
+; of meetings, number of meetings with self and current color.
+; The meeting point is implemented as a agent, where the state
+; contains, among other things, number of meetings left to do.
+;
+; Build with
+; $ java -Dclojure.compile.path=. -cp ${CLASSPATH} clojure.lang.Compile chameneosredux
+;
+; run with
+; $ java -server -XX:+TieredCompilation -XX:+AggressiveOpts -cp ${CLASSPATH} chameneosredux 6000000
+;
+; where ${CLASSPATH} includes the current directory and the jar files
+; for clojure core and clojure contrib
+;
+
+(ns chameneosredux (:gen-class))
+
+(defn num->spell-out-str [n]
+  "Converts a number to a string, ex 123 -> \" one two three\""
+  (reduce (fn [s i] (str s " " (condp = i
+                                        \0 "zero"
+                                        \1 "one"
+                                        \2 "two"
+                                        \3 "three"
+                                        \4 "four"
+                                        \5 "five"
+                                        \6 "six"
+                                        \7 "seven"
+                                        \8 "eight"
+                                        \9 "nine")))
+          ""
+          (pr-str n)))
+
+; Colors are defined as a map containing a string representation of
+; the color and a function that knows how to complement itself with
+; another color.
+(declare *blue* *red* *yellow*)
+(def *blue*   {:complement #(condp = %
+                             *red*    *yellow*
+                             *yellow* *red*
+                             *blue*   *blue*)
+               :str "blue"})
+(def *red*    {:complement #(condp = %
+                             *blue*   *yellow*
+                             *yellow* *blue*
+                             *red*    *red*)
+               :str "red"})
+(def *yellow* {:complement #(condp = %
+                             *red*    *blue*
+                             *blue*   *red*
+                             *yellow* *yellow*)
+               :str "yellow"})
+
+(defn print-color-table []
+  "Prints all possible color conversions to stdout"
+  (let [colors [*blue* *red* *yellow*] ]
+    (doseq [colPair (for [x colors y colors] [x y])]
+      (let [[col1 col2] colPair
+	    new-col ((:complement col1) col2)]
+        (println (:str col1) "+" (:str col2) "->" (:str new-col)))))
+  (println))
+
+
+; Agent that prints the result, used to restore order between games
+; running simultanious. Results will be printed in the order they
+; where started with \"run-game\".
+(def *in-order* (agent {:id 1}))
+
+(defn print-result [s result]
+  (if (nil? result)
+    s
+    (let [[id colors creatures] result]
+      (if (< (:id s) id)
+        (assoc s :results (sort (conj (:results s) result)))
+        (if (nil? creatures)
+          ; No more games are running, shutdown
+          (shutdown-agents)
+          (do
+            ; Print starting colors
+            (doseq [col colors]
+              (print "" (:str col)))
+            (println)
+            ; Print number of meetings done by each creature
+            (doseq [c creatures]
+              (println (str (:meetings @c)
+                            (num->spell-out-str (:met-self @c)))))
+            ; Spell out the total number of meetings.
+            (println (num->spell-out-str (reduce (fn [sum c]
+                                                   (+ sum (:meetings @c)))
+                                                 0
+                                                 creatures)))
+            (println)
+            ; Check if there are more results to print
+            (recur (assoc s
+                     :id (inc (:id s))
+                     :results (rest (:results s)))
+                   (first (:results s)))))))))
+
+
+; Functions run in the context of the agent assigned to the meeting
+; place, ; i.e. *agent* is the agent for the meeting place.
+(declare met-with)
+
+(defn meet [m creature]
+  "Meeting place is either empty and the creature must wait or a
+   meeting takes place and the creatures leave"
+  (if (zero? (:meetings-left m))
+    ; No more meetings left
+    m
+    (if (nil? (:waiting m))
+      ; No other creature here, need to wait
+      (assoc m :waiting creature)
+       ; Creature is here, lets meet. Each creature will update its
+       ; own state in the context of its agent
+      (let [new-ml (dec (:meetings-left m))
+            waiting-creature (:waiting m)]
+        (send creature
+              met-with
+              (:color @waiting-creature)
+              (= creature waiting-creature)
+              *agent*)
+        (send waiting-creature
+              met-with
+              (:color @creature)
+              (= creature waiting-creature)
+              *agent*)
+        (if (zero? new-ml)
+          ; We are done, schedule a print of the results
+          (send *in-order* print-result [(:id m) (:start-colors m) (:creatures m)]))
+        (assoc m :meetings-left new-ml :waiting nil)))))
+
+
+; Functions run in the context of the agent assigned to each creature
+; i.e. *agent* is the agent for a chameneos.
+(defn met-with [creature other-col met-self meeting-place]
+  "Switch color based on the color of the creature met"
+  (send meeting-place meet *agent*)
+  {:meetings (inc (:meetings creature))
+   :color ((:complement (:color creature)) other-col)
+   :met-self (+ (:met-self creature) (if met-self 1 0))})
+
+
+; Functions run in the main thread
+(def *game-id* (atom 0))
+
+(defn run-game [n & colors]
+  "Runs a single meeting game, each game has its own set of agents for
+   chameneos and the meeting place"
+  (let [creatures (for [col colors] (agent {:color col
+                                            :meetings 0
+                                            :met-self 0}))
+        meeting-place (agent {:id (swap! *game-id* inc)
+                              :start-colors colors
+                              :creatures creatures
+                              :meetings-left n})]
+    (doseq [creature creatures]
+      (send meeting-place meet creature))))
+
+(defn no-more-games []
+  "No more games will be run, this process will be terminated when all
+  games started with \"run-game\" has finished"
+  (send *in-order* print-result [(swap! *game-id* inc) nil nil]))
+
+(defn -main [& args]
+  (let [num-meetings (if (empty? args)
+                       0
+                       (Integer/parseInt (first args)))]
+    (print-color-table)
+    (run-game num-meetings
+	      *blue* *red* *yellow*)
+    (run-game num-meetings
+	      *blue* *red* *yellow* *red* *yellow* *blue* *red*
+	      *yellow* *red* *blue*)
+    (no-more-games)))
