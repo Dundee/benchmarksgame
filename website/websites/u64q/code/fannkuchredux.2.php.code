@@ -1,0 +1,67 @@
+<span class="hl opt">&lt;</span>?php 
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com">   </span>
+<span class="hl com">   contributed by Isaac Gouy, transliterated from Mike Pall's Lua program </span>
+<span class="hl com">   further optimization by Oleksii Prudkyi</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwc">$n</span> <span class="hl opt">= (</span><span class="hl kwb">int</span><span class="hl opt">)</span><span class="hl kwc">$argv</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">];</span>
+<span class="hl kwc">$s</span> <span class="hl opt">=</span> <span class="hl kwd">range</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwc">$n</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span>
+<span class="hl kwc">$i</span> <span class="hl opt">=</span> <span class="hl kwc">$maxflips</span> <span class="hl opt">=</span> <span class="hl kwc">$checksum</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> 
+<span class="hl kwc">$sign</span> <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span> 
+<span class="hl kwc">$m</span> <span class="hl opt">=</span> <span class="hl kwc">$n</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+<span class="hl kwc">$p</span> <span class="hl opt">=</span> <span class="hl kwc">$q</span> <span class="hl opt">=</span> <span class="hl kwc">$s</span><span class="hl opt">;</span>
+<span class="hl kwa">do</span> <span class="hl opt">{</span>
+   <span class="hl slc">// Copy and flip.</span>
+   <span class="hl kwc">$q0</span> <span class="hl opt">=</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">];</span>
+   <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwc">$q0</span> <span class="hl opt">!=</span> <span class="hl num">0</span><span class="hl opt">){</span>
+      <span class="hl kwc">$q</span> <span class="hl opt">=</span> <span class="hl kwc">$p</span><span class="hl opt">;</span>
+      <span class="hl kwc">$flips</span> <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl kwa">do</span> <span class="hl opt">{</span> 
+         <span class="hl kwc">$qq</span> <span class="hl opt">=</span> <span class="hl kwc">$q</span><span class="hl opt">[</span><span class="hl kwc">$q0</span><span class="hl opt">];</span> 
+         <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwc">$qq</span> <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl opt">){</span>
+            <span class="hl kwc">$checksum</span> +<span class="hl opt">=</span> <span class="hl kwc">$sign</span><span class="hl opt">*</span><span class="hl kwc">$flips</span><span class="hl opt">;</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwc">$flips</span> <span class="hl opt">&gt;</span> <span class="hl kwc">$maxflips</span><span class="hl opt">)</span> <span class="hl kwc">$maxflips</span> <span class="hl opt">=</span> <span class="hl kwc">$flips</span><span class="hl opt">;</span>
+            <span class="hl kwa">break</span><span class="hl opt">;</span> 
+         <span class="hl opt">}</span> 
+         <span class="hl kwc">$q</span><span class="hl opt">[</span><span class="hl kwc">$q0</span><span class="hl opt">] =</span> <span class="hl kwc">$q0</span><span class="hl opt">;</span> 
+         <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwc">$q0</span> <span class="hl opt">&gt;=</span> <span class="hl num">3</span><span class="hl opt">){</span>
+            <span class="hl kwc">$i</span> <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span> <span class="hl kwc">$j</span> <span class="hl opt">=</span> <span class="hl kwc">$q0</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+            <span class="hl kwa">do</span> <span class="hl opt">{</span> 
+               <span class="hl kwc">$t</span> <span class="hl opt">=</span> <span class="hl kwc">$q</span><span class="hl opt">[</span><span class="hl kwc">$i</span><span class="hl opt">];</span> 
+               <span class="hl kwc">$q</span><span class="hl opt">[</span><span class="hl kwc">$i</span><span class="hl opt">] =</span> <span class="hl kwc">$q</span><span class="hl opt">[</span><span class="hl kwc">$j</span><span class="hl opt">];</span> 
+               <span class="hl kwc">$q</span><span class="hl opt">[</span><span class="hl kwc">$j</span><span class="hl opt">] =</span> <span class="hl kwc">$t</span><span class="hl opt">;</span> 
+               ++<span class="hl kwc">$i</span><span class="hl opt">;</span>
+               <span class="hl opt">--</span><span class="hl kwc">$j</span><span class="hl opt">;</span>
+            <span class="hl opt">}</span> <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl kwc">$i</span> <span class="hl opt">&lt;</span> <span class="hl kwc">$j</span><span class="hl opt">);</span> 
+         <span class="hl opt">}</span>
+         <span class="hl kwc">$q0</span> <span class="hl opt">=</span> <span class="hl kwc">$qq</span><span class="hl opt">;</span> 
+         ++<span class="hl kwc">$flips</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span> <span class="hl kwa">while</span> <span class="hl opt">(</span>true<span class="hl opt">);</span> 
+   <span class="hl opt">}</span>
+   <span class="hl slc">// Permute.</span>
+   <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwc">$sign</span> <span class="hl opt">==</span> <span class="hl num">1</span><span class="hl opt">){</span>
+      <span class="hl kwc">$t</span> <span class="hl opt">=</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">];</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] =</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">];</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] =</span> <span class="hl kwc">$t</span><span class="hl opt">;</span> <span class="hl kwc">$sign</span> <span class="hl opt">= -</span><span class="hl num">1</span><span class="hl opt">;</span> <span class="hl slc">// Rotate 0&lt;-1.</span>
+   <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span> 
+      <span class="hl kwc">$t</span> <span class="hl opt">=</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">];</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] =</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">];</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">] =</span> <span class="hl kwc">$t</span><span class="hl opt">;</span> <span class="hl kwc">$sign</span> <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>  <span class="hl slc">// Rotate 1&lt;-2.</span>
+      <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwc">$i</span><span class="hl opt">=</span><span class="hl num">2</span><span class="hl opt">;</span> <span class="hl kwc">$i</span><span class="hl opt">&lt;</span><span class="hl kwc">$n</span><span class="hl opt">; ){</span> 
+         <span class="hl kwc">$sx</span> <span class="hl opt">= &amp;</span><span class="hl kwc">$s</span><span class="hl opt">[</span><span class="hl kwc">$i</span><span class="hl opt">];</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwc">$sx</span> <span class="hl opt">!=</span> <span class="hl num">0</span><span class="hl opt">)</span>
+         <span class="hl opt">{</span>
+            <span class="hl opt">--</span><span class="hl kwc">$sx</span><span class="hl opt">;</span> 
+            <span class="hl kwa">break</span><span class="hl opt">;</span> 
+         <span class="hl opt">}</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwc">$i</span> <span class="hl opt">==</span> <span class="hl kwc">$m</span><span class="hl opt">){</span>
+            <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%d</span><span class="hl esc">\n</span><span class="hl str">Pfannkuchen(%d) = %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> <span class="hl kwc">$checksum</span><span class="hl opt">,</span> <span class="hl kwc">$n</span><span class="hl opt">,</span> <span class="hl kwc">$maxflips</span><span class="hl opt">);</span><span class="hl slc">// Out of permutations.</span>
+            <span class="hl kwa">return</span><span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+         <span class="hl kwc">$s</span><span class="hl opt">[</span><span class="hl kwc">$i</span><span class="hl opt">] =</span> <span class="hl kwc">$i</span><span class="hl opt">;</span>
+         <span class="hl slc">// Rotate 0&lt;-...&lt;-i+1.</span>
+         <span class="hl kwc">$t</span> <span class="hl opt">=</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">];</span> 
+         <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwc">$j</span><span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> <span class="hl kwc">$j</span><span class="hl opt">&lt;=</span><span class="hl kwc">$i</span><span class="hl opt">; ){</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl kwc">$j</span>++<span class="hl opt">] =</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl kwc">$j</span><span class="hl opt">]; }</span> 
+         ++<span class="hl kwc">$i</span><span class="hl opt">;</span>
+         <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl kwc">$i</span><span class="hl opt">] =</span> <span class="hl kwc">$t</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span> <span class="hl kwa">while</span> <span class="hl opt">(</span>true<span class="hl opt">);</span>
