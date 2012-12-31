@@ -1,0 +1,66 @@
+<span class="hl com">/* </span>
+<span class="hl com"> * The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * Contributed by Mr Ledrug</span>
+<span class="hl com">*/</span>
+
+<span class="hl ppc">#include &lt;stdio.h&gt;</span>
+<span class="hl ppc">#include &lt;stdlib.h&gt;</span>
+<span class="hl ppc">#include &lt;gmp.h&gt;</span>
+
+mpz_t tmp1<span class="hl opt">,</span> tmp2<span class="hl opt">,</span> acc<span class="hl opt">,</span> den<span class="hl opt">,</span> num<span class="hl opt">;</span>
+<span class="hl kwc">typedef</span> <span class="hl kwb">unsigned int</span> ui<span class="hl opt">;</span>
+
+ui <span class="hl kwd">extract_digit</span><span class="hl opt">(</span>ui nth<span class="hl opt">) {</span>
+   <span class="hl slc">// joggling between tmp1 and tmp2, so GMP won't have to use temp buffers</span>
+   <span class="hl kwd">mpz_mul_ui</span><span class="hl opt">(</span>tmp1<span class="hl opt">,</span> num<span class="hl opt">,</span> nth<span class="hl opt">);</span>
+   <span class="hl kwd">mpz_add</span><span class="hl opt">(</span>tmp2<span class="hl opt">,</span> tmp1<span class="hl opt">,</span> acc<span class="hl opt">);</span>
+   <span class="hl kwd">mpz_tdiv_q</span><span class="hl opt">(</span>tmp1<span class="hl opt">,</span> tmp2<span class="hl opt">,</span> den<span class="hl opt">);</span>
+
+   <span class="hl kwa">return</span> <span class="hl kwd">mpz_get_ui</span><span class="hl opt">(</span>tmp1<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">eliminate_digit</span><span class="hl opt">(</span>ui d<span class="hl opt">) {</span>
+   <span class="hl kwd">mpz_submul_ui</span><span class="hl opt">(</span>acc<span class="hl opt">,</span> den<span class="hl opt">,</span> d<span class="hl opt">);</span>
+   <span class="hl kwd">mpz_mul_ui</span><span class="hl opt">(</span>acc<span class="hl opt">,</span> acc<span class="hl opt">,</span> <span class="hl num">10</span><span class="hl opt">);</span>
+   <span class="hl kwd">mpz_mul_ui</span><span class="hl opt">(</span>num<span class="hl opt">,</span> num<span class="hl opt">,</span> <span class="hl num">10</span><span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">next_term</span><span class="hl opt">(</span>ui k<span class="hl opt">) {</span>
+   ui k2 <span class="hl opt">=</span> k <span class="hl opt">*</span> <span class="hl num">2U</span> <span class="hl opt">+</span> <span class="hl num">1U</span><span class="hl opt">;</span>
+
+   <span class="hl kwd">mpz_addmul_ui</span><span class="hl opt">(</span>acc<span class="hl opt">,</span> num<span class="hl opt">,</span> <span class="hl num">2U</span><span class="hl opt">);</span>
+   <span class="hl kwd">mpz_mul_ui</span><span class="hl opt">(</span>acc<span class="hl opt">,</span> acc<span class="hl opt">,</span> k2<span class="hl opt">);</span>
+   <span class="hl kwd">mpz_mul_ui</span><span class="hl opt">(</span>den<span class="hl opt">,</span> den<span class="hl opt">,</span> k2<span class="hl opt">);</span>
+   <span class="hl kwd">mpz_mul_ui</span><span class="hl opt">(</span>num<span class="hl opt">,</span> num<span class="hl opt">,</span> k<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">int</span> <span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">int</span> argc<span class="hl opt">,</span> <span class="hl kwb">char</span> <span class="hl opt">**</span>argv<span class="hl opt">) {</span>
+   ui d<span class="hl opt">,</span> k<span class="hl opt">,</span> i<span class="hl opt">;</span>
+   <span class="hl kwb">int</span> n <span class="hl opt">=</span> <span class="hl kwd">atoi</span><span class="hl opt">(</span>argv<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]);</span>
+
+   <span class="hl kwd">mpz_init</span><span class="hl opt">(</span>tmp1<span class="hl opt">);</span>
+   <span class="hl kwd">mpz_init</span><span class="hl opt">(</span>tmp2<span class="hl opt">);</span>
+
+   <span class="hl kwd">mpz_init_set_ui</span><span class="hl opt">(</span>acc<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+   <span class="hl kwd">mpz_init_set_ui</span><span class="hl opt">(</span>den<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">);</span>
+   <span class="hl kwd">mpz_init_set_ui</span><span class="hl opt">(</span>num<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> k <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> n<span class="hl opt">;) {</span>
+      <span class="hl kwd">next_term</span><span class="hl opt">(++</span>k<span class="hl opt">);</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwd">mpz_cmp</span><span class="hl opt">(</span>num<span class="hl opt">,</span> acc<span class="hl opt">) &gt;</span> <span class="hl num">0</span><span class="hl opt">)</span>
+         <span class="hl kwa">continue</span><span class="hl opt">;</span>
+
+      d <span class="hl opt">=</span> <span class="hl kwd">extract_digit</span><span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">);</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>d <span class="hl opt">!=</span> <span class="hl kwd">extract_digit</span><span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">))</span>
+         <span class="hl kwa">continue</span><span class="hl opt">;</span>
+
+      <span class="hl kwd">putchar</span><span class="hl opt">(</span><span class="hl str">'0'</span> <span class="hl opt">+</span> d<span class="hl opt">);</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(++</span>i <span class="hl opt">%</span> <span class="hl num">10</span> <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl opt">)</span>
+         <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">:%u</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> i<span class="hl opt">);</span>
+      <span class="hl kwd">eliminate_digit</span><span class="hl opt">(</span>d<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>

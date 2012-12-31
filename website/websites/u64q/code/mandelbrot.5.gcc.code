@@ -1,0 +1,141 @@
+<span class="hl com">/* </span>
+<span class="hl com"> * The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * Contributed by Mr Ledrug</span>
+<span class="hl com">*/</span>
+
+<span class="hl ppc">#define _GNU_SOURCE</span>
+<span class="hl ppc">#include &lt;stdio.h&gt;</span>
+<span class="hl ppc">#include &lt;stdlib.h&gt;</span>
+<span class="hl ppc">#include &lt;string.h&gt;</span>
+<span class="hl ppc">#include &lt;unistd.h&gt;</span>
+<span class="hl ppc">#include &lt;sched.h&gt;</span>
+<span class="hl ppc">#include &lt;pthread.h&gt;</span>
+<span class="hl ppc">#include &lt;stdint.h&gt;</span>
+
+<span class="hl ppc">#define MAX_ITER 50</span>
+<span class="hl kwc">typedef</span> <span class="hl kwb">uint8_t</span> byte<span class="hl opt">;</span>
+
+<span class="hl kwb">size_t</span> w<span class="hl opt">,</span> h<span class="hl opt">,</span> row_bytes<span class="hl opt">;</span>
+<span class="hl kwb">int</span> ncpus<span class="hl opt">;</span>
+byte <span class="hl opt">*</span>buf<span class="hl opt">;</span>
+
+<span class="hl kwb">double</span> xmin <span class="hl opt">= -</span><span class="hl num">1.5</span><span class="hl opt">,</span> xmax <span class="hl opt">=</span> <span class="hl num">.5</span><span class="hl opt">,</span> ymin <span class="hl opt">= -</span><span class="hl num">1</span><span class="hl opt">,</span> ymax <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+<span class="hl kwb">double</span> dx<span class="hl opt">,</span> dy<span class="hl opt">;</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">calc_row</span><span class="hl opt">(</span><span class="hl kwb">size_t</span> row<span class="hl opt">) {</span>
+   byte <span class="hl opt">*</span>pos <span class="hl opt">=</span> buf <span class="hl opt">+</span> row <span class="hl opt">*</span> row_bytes<span class="hl opt">;</span>
+
+   <span class="hl kwb">double</span> cx<span class="hl opt">,</span> cy <span class="hl opt">=</span> ymin <span class="hl opt">+</span> row <span class="hl opt">*</span> dy<span class="hl opt">;</span>
+
+   byte mask <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl opt">&lt;&lt;</span> <span class="hl num">7</span><span class="hl opt">;</span>
+   <span class="hl kwb">size_t</span> i<span class="hl opt">,</span> row_bits <span class="hl opt">=</span> row_bytes <span class="hl opt">*</span> <span class="hl num">8</span><span class="hl opt">;</span>
+
+   <span class="hl kwb">int</span> bound <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> row_bits<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+      cx <span class="hl opt">=</span> xmin <span class="hl opt">+</span> i <span class="hl opt">*</span> dx<span class="hl opt">;</span>
+      <span class="hl kwb">double</span> zx <span class="hl opt">=</span> cx<span class="hl opt">,</span> zy <span class="hl opt">=</span> cy<span class="hl opt">;</span>
+
+      <span class="hl kwb">int</span> iter<span class="hl opt">;</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>bound<span class="hl opt">) {</span>
+         <span class="hl kwb">double</span> p <span class="hl opt">=</span> cx <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>cy <span class="hl opt">*</span> cy <span class="hl opt">+</span> p <span class="hl opt">*</span> p <span class="hl opt">&lt;</span> <span class="hl num">1</span><span class="hl opt">./</span><span class="hl num">16</span><span class="hl opt">)</span>
+            <span class="hl kwa">goto</span> skip<span class="hl opt">;</span>
+
+         p <span class="hl opt">=</span> cy <span class="hl opt">*</span> cy <span class="hl opt">+ (</span>cx <span class="hl opt">-</span> <span class="hl num">0.25</span><span class="hl opt">) * (</span>cx <span class="hl opt">-</span> <span class="hl num">0.25</span><span class="hl opt">);</span>
+         <span class="hl kwa">if</span> <span class="hl opt">((</span>p <span class="hl opt">* (</span>p <span class="hl opt">+</span> cx <span class="hl opt">-</span> <span class="hl num">0.25</span><span class="hl opt">)) *</span> <span class="hl num">4</span> <span class="hl opt">&lt;</span> cy <span class="hl opt">*</span> cy<span class="hl opt">)</span>
+            <span class="hl kwa">goto</span> skip<span class="hl opt">;</span>
+
+         <span class="hl kwa">for</span> <span class="hl opt">(</span>iter <span class="hl opt">=</span> MAX_ITER <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span> iter<span class="hl opt">--; ) {</span>
+            <span class="hl kwb">double</span> x2 <span class="hl opt">=</span> zx <span class="hl opt">*</span> zx<span class="hl opt">,</span> y2 <span class="hl opt">=</span> zy <span class="hl opt">*</span> zy<span class="hl opt">;</span>
+            zy <span class="hl opt">=</span> cy <span class="hl opt">+</span> zx <span class="hl opt">*</span> zy <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">;</span>
+            zx <span class="hl opt">=</span> cx <span class="hl opt">+</span> x2 <span class="hl opt">-</span> y2<span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+         bound <span class="hl opt">= (</span>zx <span class="hl opt">*</span> zx <span class="hl opt">+</span> zy <span class="hl opt">*</span> zy<span class="hl opt">) &lt;=</span> <span class="hl num">4</span><span class="hl opt">;</span>
+
+      <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+         <span class="hl kwa">for</span> <span class="hl opt">(</span>iter <span class="hl opt">=</span> MAX_ITER<span class="hl opt">;</span> iter<span class="hl opt">--; ) {</span>
+            <span class="hl kwb">double</span> x2 <span class="hl opt">=</span> zx <span class="hl opt">*</span> zx<span class="hl opt">,</span> y2 <span class="hl opt">=</span> zy <span class="hl opt">*</span> zy<span class="hl opt">;</span>
+
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>x2 <span class="hl opt">+</span> y2 <span class="hl opt">&gt;</span> <span class="hl num">4</span><span class="hl opt">)</span> <span class="hl kwa">goto</span> skip<span class="hl opt">;</span>
+
+            zy <span class="hl opt">=</span> cy <span class="hl opt">+</span> zx <span class="hl opt">*</span> zy <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">;</span>
+            zx <span class="hl opt">=</span> cx <span class="hl opt">+</span> x2 <span class="hl opt">-</span> y2<span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+         bound <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+skip<span class="hl opt">:</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>bound<span class="hl opt">) *</span>pos <span class="hl opt">|=</span> mask<span class="hl opt">;</span>
+      mask <span class="hl opt">&gt;&gt;=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(!</span>mask<span class="hl opt">) {</span>
+         mask <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl opt">&lt;&lt;</span> <span class="hl num">7</span><span class="hl opt">;</span>
+         pos<span class="hl opt">++;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">size_t</span> next_row<span class="hl opt">;</span>
+<span class="hl kwb">void</span> <span class="hl opt">*</span><span class="hl kwd">thread_entry</span><span class="hl opt">(</span><span class="hl kwb">void</span> <span class="hl opt">*</span>dummy<span class="hl opt">) {</span>
+   <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) {</span>
+      <span class="hl kwb">size_t</span> r <span class="hl opt">=</span> next_row<span class="hl opt">;</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(!</span><span class="hl kwd">__sync_bool_compare_and_swap</span><span class="hl opt">(&amp;</span>next_row<span class="hl opt">,</span> r<span class="hl opt">,</span> r <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)) {</span>
+         <span class="hl kwc">volatile</span> <span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">3000</span><span class="hl opt">;</span>
+         <span class="hl kwa">while</span> <span class="hl opt">(</span>i<span class="hl opt">--);</span>
+         <span class="hl kwd">sched_yield</span><span class="hl opt">();</span>
+         <span class="hl kwa">continue</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>r <span class="hl opt">&gt;=</span> h<span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwd">calc_row</span><span class="hl opt">(</span>r<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">int</span> <span class="hl kwd">get_cpus</span><span class="hl opt">(</span><span class="hl kwb">void</span><span class="hl opt">) {</span>
+   cpu_set_t ct<span class="hl opt">;</span>
+   <span class="hl kwd">sched_getaffinity</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span>ct<span class="hl opt">), &amp;</span>ct<span class="hl opt">);</span>
+   <span class="hl kwb">int</span> i<span class="hl opt">,</span> cnt <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> <span class="hl num">16</span><span class="hl opt">;</span> i<span class="hl opt">++)</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwd">CPU_ISSET</span><span class="hl opt">(</span>i<span class="hl opt">, &amp;</span>ct<span class="hl opt">))</span>
+         cnt<span class="hl opt">++;</span>
+   <span class="hl kwa">return</span> cnt<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">int</span> <span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">int</span> artc<span class="hl opt">,</span> <span class="hl kwb">char</span> <span class="hl opt">**</span>argv<span class="hl opt">) {</span>
+   ncpus <span class="hl opt">=</span> <span class="hl kwd">get_cpus</span><span class="hl opt">();</span>
+
+   w <span class="hl opt">=</span> <span class="hl kwd">atoi</span><span class="hl opt">(</span>argv<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]);</span>
+   w <span class="hl opt">= (</span>w <span class="hl opt">+</span> <span class="hl num">7</span><span class="hl opt">) /</span> <span class="hl num">8</span> <span class="hl opt">*</span> <span class="hl num">8</span><span class="hl opt">;</span>
+   row_bytes <span class="hl opt">=</span> w <span class="hl opt">/</span> <span class="hl num">8</span><span class="hl opt">;</span>
+
+   dx <span class="hl opt">= (</span>xmax <span class="hl opt">-</span> xmin<span class="hl opt">) /</span> w<span class="hl opt">;</span>
+   dy <span class="hl opt">= (</span>ymax <span class="hl opt">-</span> ymin<span class="hl opt">) /</span> w<span class="hl opt">;</span>
+
+   h <span class="hl opt">=</span> w <span class="hl opt">/</span> <span class="hl num">2</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+
+   <span class="hl kwb">size_t</span> n_bytes <span class="hl opt">=</span> h <span class="hl opt">*</span> row_bytes<span class="hl opt">;</span>
+   buf <span class="hl opt">=</span> <span class="hl kwd">calloc</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span> n_bytes<span class="hl opt">);</span>
+
+   <span class="hl kwb">int</span> i<span class="hl opt">;</span>
+   pthread_t tid<span class="hl opt">[</span><span class="hl num">16</span><span class="hl opt">];</span>
+
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> ncpus<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+      <span class="hl kwd">pthread_create</span><span class="hl opt">(</span>tid <span class="hl opt">+</span> i<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> thread_entry<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> ncpus<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+      <span class="hl kwd">pthread_join</span><span class="hl opt">(</span>tid<span class="hl opt">[</span>i<span class="hl opt">],</span> <span class="hl num">0</span><span class="hl opt">);</span>
+
+   <span class="hl kwb">char</span> header<span class="hl opt">[</span><span class="hl num">100</span><span class="hl opt">];</span>
+   <span class="hl kwd">sprintf</span><span class="hl opt">(</span>header<span class="hl opt">,</span> <span class="hl str">&quot;P4</span><span class="hl esc">\n</span><span class="hl str">%d %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">, (</span><span class="hl kwb">int</span><span class="hl opt">)</span>w<span class="hl opt">, (</span><span class="hl kwb">int</span><span class="hl opt">)</span>w<span class="hl opt">);</span>
+
+   <span class="hl kwb">int</span> fd <span class="hl opt">=</span> <span class="hl kwd">fileno</span><span class="hl opt">(</span>stdout<span class="hl opt">);</span>
+   <span class="hl kwd">write</span><span class="hl opt">(</span>fd<span class="hl opt">,</span> header<span class="hl opt">,</span> <span class="hl kwd">strlen</span><span class="hl opt">(</span>header<span class="hl opt">));</span>
+   <span class="hl kwd">write</span><span class="hl opt">(</span>fd<span class="hl opt">,</span> buf<span class="hl opt">,</span> n_bytes<span class="hl opt">);</span>
+
+   h<span class="hl opt">--;</span>
+   <span class="hl kwa">while</span> <span class="hl opt">(</span>h<span class="hl opt">-- &gt;</span> <span class="hl num">1</span><span class="hl opt">)</span>
+      <span class="hl kwd">write</span><span class="hl opt">(</span>fd<span class="hl opt">,</span> buf <span class="hl opt">+</span> h <span class="hl opt">*</span> row_bytes<span class="hl opt">,</span> row_bytes<span class="hl opt">);</span>
+
+   <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>

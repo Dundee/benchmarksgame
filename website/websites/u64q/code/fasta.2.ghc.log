@@ -1,0 +1,62 @@
+
+Mon, 31 Dec 2012 20:13:19 GMT
+
+MAKE:
+mv fasta.ghc-2.ghc fasta.ghc-2.hs
+/usr/local/src/ghc-7.6.1/bin/ghc --make -fllvm -O2 -XBangPatterns -threaded -rtsopts -funbox-strict-fields fasta.ghc-2.hs -o fasta.ghc-2.ghc_run
+[1 of 1] Compiling Main             ( fasta.ghc-2.hs, fasta.ghc-2.o )
+
+fasta.ghc-2.hs:18:14:
+    Couldn't match expected type `B.ByteString'
+                with actual type `[Char]'
+    In the first argument of `writeAlu', namely
+      `">ONE Homo sapiens alu"'
+    In a stmt of a 'do' block:
+      writeAlu
+        ">ONE Homo sapiens alu" (L.take (fromIntegral n * 2) (L.cycle alu))
+    In the expression:
+      do { n <- getArgs >>= readIO . head;
+           writeAlu
+             ">ONE Homo sapiens alu"
+             (L.take (fromIntegral n * 2) (L.cycle alu));
+           make ">TWO IUB ambiguity codes" (n * 3) iub 42
+           >>=
+             void . make ">THREE Homo sapiens frequency" (n * 5) homosapiens }
+
+fasta.ghc-2.hs:18:74:
+    Couldn't match expected type `L.ByteString'
+                with actual type `[Char]'
+    In the first argument of `L.cycle', namely `alu'
+    In the second argument of `L.take', namely `(L.cycle alu)'
+    In the second argument of `writeAlu', namely
+      `(L.take (fromIntegral n * 2) (L.cycle alu))'
+
+fasta.ghc-2.hs:19:10:
+    Couldn't match expected type `B.ByteString'
+                with actual type `[Char]'
+    In the first argument of `make', namely
+      `">TWO IUB ambiguity codes"'
+    In the first argument of `(>>=)', namely
+      `make ">TWO IUB ambiguity codes" (n * 3) iub 42'
+    In a stmt of a 'do' block:
+      make ">TWO IUB ambiguity codes" (n * 3) iub 42
+      >>= void . make ">THREE Homo sapiens frequency" (n * 5) homosapiens
+
+fasta.ghc-2.hs:20:19:
+    Couldn't match expected type `B.ByteString'
+                with actual type `[Char]'
+    In the first argument of `make', namely
+      `">THREE Homo sapiens frequency"'
+    In the second argument of `(.)', namely
+      `make ">THREE Homo sapiens frequency" (n * 5) homosapiens'
+    In the second argument of `(>>=)', namely
+      `void . make ">THREE Homo sapiens frequency" (n * 5) homosapiens'
+make: [fasta.ghc-2.ghc_run] Error 1 (ignored)
+rm fasta.ghc-2.hs
+3.01s to complete and log all make actions
+
+COMMAND LINE:
+./fasta.ghc-2.ghc_run +RTS -N4 -RTS 250000
+
+MAKE ERROR 
+
