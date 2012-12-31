@@ -1,13 +1,10 @@
 
-Fri, 06 Jan 2012 02:58:35 GMT
+Mon, 31 Dec 2012 18:11:42 GMT
 
 MAKE:
-/usr/local/src/intel/bin/ifort -O3 -fast -u -what binarytrees.f90 -o binarytrees.ifc_run
- Intel(R) Fortran 12.1-2085
-ipo: remark #11001: performing single-file optimizations
-ipo: remark #11006: generating object file /tmp/ipo_ifortyaeavb.o
+/usr/local/src/intel/bin/ifort -O3 -xHost -openmp -static-intel -ip -lapr-1 binarytrees.f90 -o binarytrees.ifc_run
 rm binarytrees.f90
-2.93s to complete and log all make actions
+0.32s to complete and log all make actions
 
 COMMAND LINE:
 ./binarytrees.ifc_run 20
