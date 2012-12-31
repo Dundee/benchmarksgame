@@ -1,0 +1,37 @@
+
+Mon, 31 Dec 2012 23:03:42 GMT
+
+MAKE:
+mv revcomp.scala-7.scala revcomp.scala
+/usr/local/src/scala-2.9.2/bin/scalac -optimise revcomp.scala
+revcomp.scala:8: error: not found: object akka
+import akka.actor._
+       ^
+revcomp.scala:43: error: missing parameter type for expanded function
+The argument types of an anonymous function must be fully known. (SLS 8.5)
+Expected type was: ?
+  def receive = {case _ =>}
+                ^
+revcomp.scala:49: error: missing parameter type for expanded function
+The argument types of an anonymous function must be fully known. (SLS 8.5)
+Expected type was: ?
+  def receive = {
+                ^
+revcomp.scala:77: error: missing parameter type for expanded function
+The argument types of an anonymous function must be fully known. (SLS 8.5)
+Expected type was: ?
+  def receive = {
+                ^
+four errors found
+make: [revcomp.scala-7.scala_run] Error 1 (ignored)
+3.29s to complete and log all make actions
+
+COMMAND LINE:
+ /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.9.2/lib/scala-library.jar revcomp 0 < revcomp-input250000.txt
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Error: Could not find or load main class revcomp
