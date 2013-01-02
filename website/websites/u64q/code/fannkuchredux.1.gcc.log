@@ -1,10 +1,10 @@
 
-Sun, 29 Apr 2012 02:45:16 GMT
+Wed, 02 Jan 2013 01:54:03 GMT
 
 MAKE:
-/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native  fannkuchredux.c -o fannkuchredux.gcc_run 
+/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread fannkuchredux.c -o fannkuchredux.gcc_run 
 rm fannkuchredux.c
-0.10s to complete and log all make actions
+0.11s to complete and log all make actions
 
 COMMAND LINE:
 ./fannkuchredux.gcc_run 12

@@ -392,7 +392,7 @@
       row2_shift <span class="hl opt">= ((</span>row2 <span class="hl opt">&lt;&lt;</span> <span class="hl num">1</span><span class="hl opt">) &amp;</span> ROW_MASK<span class="hl opt">) |</span> <span class="hl num">0x01</span><span class="hl opt">;</span>
    <span class="hl kwa">else</span>
       row2_shift <span class="hl opt">= (</span>row2 <span class="hl opt">&gt;&gt;</span> <span class="hl num">1</span><span class="hl opt">) |</span> <span class="hl num">0x10</span><span class="hl opt">;</span>
-   block <span class="hl opt">= ((</span>row1 ^ row2<span class="hl opt">) &amp;</span> row2<span class="hl opt">) &amp; ((</span>row1 ^ row2_shift<span class="hl opt">) &amp;</span> row2_shift<span class="hl opt">);</span>
+   block <span class="hl opt">= ((</span>row1 <span class="hl opt">^</span> row2<span class="hl opt">) &amp;</span> row2<span class="hl opt">) &amp; ((</span>row1 <span class="hl opt">^</span> row2_shift<span class="hl opt">) &amp;</span> row2_shift<span class="hl opt">);</span>
    <span class="hl com">/* Test for groups of 0's */</span>
    in_zeroes <span class="hl opt">=</span> FALSE<span class="hl opt">;</span>
    group_okay <span class="hl opt">=</span> FALSE<span class="hl opt">;</span>
@@ -537,7 +537,7 @@
       piece_no_mask <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl opt">&lt;&lt;</span> piece<span class="hl opt">;</span>
       <span class="hl kwa">if</span><span class="hl opt">(!(</span>avail <span class="hl opt">&amp;</span> piece_no_mask<span class="hl opt">))</span>
          <span class="hl kwa">continue</span><span class="hl opt">;</span>
-      avail ^<span class="hl opt">=</span> piece_no_mask<span class="hl opt">;</span>
+      avail <span class="hl opt">^=</span> piece_no_mask<span class="hl opt">;</span>
       max_rots <span class="hl opt">=</span> piece_counts<span class="hl opt">[</span>piece<span class="hl opt">][</span>cell<span class="hl opt">];</span>
       piece_mask <span class="hl opt">=</span> pieces<span class="hl opt">[</span>piece<span class="hl opt">][</span>cell<span class="hl opt">];</span>
       <span class="hl kwa">for</span><span class="hl opt">(</span>rotation <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> rotation <span class="hl opt">&lt;</span> max_rots<span class="hl opt">;</span> rotation<span class="hl opt">++) {</span>
@@ -547,16 +547,16 @@
             <span class="hl kwa">if</span><span class="hl opt">(</span>depth <span class="hl opt">==</span> <span class="hl num">9</span><span class="hl opt">) {</span>
                <span class="hl com">/* Solution found!!!!!11!!ONE! */</span>
                <span class="hl kwd">record_solution</span><span class="hl opt">();</span>
-               avail ^<span class="hl opt">=</span> piece_no_mask<span class="hl opt">;</span>
+               avail <span class="hl opt">^=</span> piece_no_mask<span class="hl opt">;</span>
                <span class="hl kwa">return</span><span class="hl opt">;</span>
             <span class="hl opt">}</span>
             board <span class="hl opt">|= *(</span>piece_mask <span class="hl opt">+</span> rotation<span class="hl opt">);</span>
             <span class="hl kwa">if</span><span class="hl opt">(!</span><span class="hl kwd">boardHasIslands</span><span class="hl opt">(</span>next_cell<span class="hl opt">[</span>piece<span class="hl opt">][</span>cell<span class="hl opt">][</span>rotation<span class="hl opt">]))</span>
                <span class="hl kwd">solve</span><span class="hl opt">(</span>depth <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">,</span> next_cell<span class="hl opt">[</span>piece<span class="hl opt">][</span>cell<span class="hl opt">][</span>rotation<span class="hl opt">]);</span>
-            board ^<span class="hl opt">= *(</span>piece_mask <span class="hl opt">+</span> rotation<span class="hl opt">);</span>
+            board <span class="hl opt">^= *(</span>piece_mask <span class="hl opt">+</span> rotation<span class="hl opt">);</span>
          <span class="hl opt">}</span>
       <span class="hl opt">}</span>
-      avail ^<span class="hl opt">=</span> piece_no_mask<span class="hl opt">;</span>
+      avail <span class="hl opt">^=</span> piece_no_mask<span class="hl opt">;</span>
    <span class="hl opt">}</span>
 <span class="hl opt">}</span>
 

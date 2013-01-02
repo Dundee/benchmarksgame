@@ -1,10 +1,10 @@
 
-Sun, 29 Apr 2012 14:24:29 GMT
+Wed, 02 Jan 2013 02:22:44 GMT
 
 MAKE:
-/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native  regexdna.gcc-2.c -o regexdna.gcc-2.gcc_run -lpcre
+/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -fopenmp regexdna.gcc-2.c -o regexdna.gcc-2.gcc_run -lpcre
 rm regexdna.gcc-2.c
-0.13s to complete and log all make actions
+0.11s to complete and log all make actions
 
 COMMAND LINE:
 ./regexdna.gcc-2.gcc_run 0 < regexdna-input5000000.txt
