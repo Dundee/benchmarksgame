@@ -40,6 +40,7 @@ if (!isset($L2)){
 
 if ($T=='all'){
    if ($L=='all'){
+      $LinkRelCanonical = '<link rel="canonical" href="which-programs-are-fastest.php" />';
       require_once(LIB_PATH.'boxplot.php');
    } else {
       if ($L!=$L2){
