@@ -283,7 +283,7 @@ $About->set('Version', HtmlFragment(VERSION_PATH.$L.SEPARATOR.'version.php'));
 
 $MetaKeywords = '<meta name="description" content="The speed of '.$LangName.' programs versus the speed of '.$LangName2.' programs ('.PLATFORM_NAME.')." />';
          
-$metaRobots = '<meta name="robots" content="index,follow,noarchive" />';
+$metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
 
 
 // TEMPLATE VARS ////////////////////////////////////////////////

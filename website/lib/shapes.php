@@ -166,11 +166,8 @@ $Body->set('Data', TimeSizeShapes(DATA_PATH.$DataSet.'.csv', $Tests, $Langs, $In
 $faqUrl = CORE_SITE.'more.php';
 $bannerUrl = CORE_SITE;
 
-if (SITE_NAME == 'u32' || SITE_NAME == 'u32q' || SITE_NAME == 'u64' || SITE_NAME == 'u64q'){
-   $metaRobots = '<meta name="robots" content="all" />';
-} else {
-   $metaRobots = '<meta name="robots" content="noindex,nofollow,noarchive" />';
-}
+$metaRobots = '<meta name="robots" content="index,follow,noarchive" />';
+
 $metaKeywords = '<meta name="description" content="Look for patterns in Code-used Time-used Shapes ('.PLATFORM_NAME.') for programs written in ~24 different programming languages." />';
 
 // TEMPLATE VARS ////////////////////////////////////////////////
