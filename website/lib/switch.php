@@ -47,38 +47,38 @@ if ($T=='all'){
 
          // canonical links for Google
          $clinks = array(
-            "gnat" => "http://benchmarksgame.alioth.debian.org/u64q/ada.php",
-            "ats" => "http://benchmarksgame.alioth.debian.org/u64q/ats.php",
-            "gcc" => "http://benchmarksgame.alioth.debian.org/u64q/c.php",
-            "clean" => "http://benchmarksgame.alioth.debian.org/u64/clean.php",
-            "csharp" => "http://benchmarksgame.alioth.debian.org/u64q/csharp.php",
-            "gpp" => "http://benchmarksgame.alioth.debian.org/u64q/cpp.php",
-            "clojure" => "http://benchmarksgame.alioth.debian.org/u64q/clojure.php",
-            "dart" => "http://benchmarksgame.alioth.debian.org/u64q/dart.php",
-            "hipe" => "http://benchmarksgame.alioth.debian.org/u64q/erlang.php",
-            "fsharp" => "http://benchmarksgame.alioth.debian.org/u64q/fsharp.php",
-            "ifc" => "http://benchmarksgame.alioth.debian.org/u64q/fortran.php",
-            "go" => "http://benchmarksgame.alioth.debian.org/u64q/go.php",
-            "ghc" => "http://benchmarksgame.alioth.debian.org/u64q/haskell.php",
-            "java" => "http://benchmarksgame.alioth.debian.org/u64q/java.php",
-            "v8" => "http://benchmarksgame.alioth.debian.org/u64/javascript.php",
-            "sbcl" => "http://benchmarksgame.alioth.debian.org/u64q/lisp.php",
-            "lua" => "http://benchmarksgame.alioth.debian.org/u64/lua.php",
-            "oz" => "http://benchmarksgame.alioth.debian.org/u32/oz.php",
-            "ocaml" => "http://benchmarksgame.alioth.debian.org/u64q/ocaml.php",
-            "fpascal" => "http://benchmarksgame.alioth.debian.org/u64q/fpascal.php",
-            "perl" => "http://benchmarksgame.alioth.debian.org/u64q/perl.php",
-            "php" => "http://benchmarksgame.alioth.debian.org/u64q/php.php",
-            "python3" => "http://benchmarksgame.alioth.debian.org/u64q/python.php",
-            "racket" => "http://benchmarksgame.alioth.debian.org/u64q/racket.php",
-            "yarv" => "http://benchmarksgame.alioth.debian.org/u64q/ruby.php",
-            "jruby" => "http://benchmarksgame.alioth.debian.org/u64q/jruby.php",
-            "scala" => "http://benchmarksgame.alioth.debian.org/u64q/scala.php",
-            "vw" => "http://benchmarksgame.alioth.debian.org/u64/smalltalk.php"
+            "gnat" => "u64q/ada.php",
+            "ats" => "u64q/ats.php",
+            "gcc" => "u64q/c.php",
+            "clean" => "u64/clean.php",
+            "csharp" => "u64q/csharp.php",
+            "gpp" => "u64q/cpp.php",
+            "clojure" => "u64q/clojure.php",
+            "dart" => "u64q/dart.php",
+            "hipe" => "u64q/erlang.php",
+            "fsharp" => "u64q/fsharp.php",
+            "ifc" => "u64q/fortran.php",
+            "go" => "u64q/go.php",
+            "ghc" => "u64q/haskell.php",
+            "java" => "u64q/java.php",
+            "v8" => "u64/javascript.php",
+            "sbcl" => "u64q/lisp.php",
+            "lua" => "u64/lua.php",
+            "oz" => "u32/oz.php",
+            "ocaml" => "u64q/ocaml.php",
+            "fpascal" => "u64q/fpascal.php",
+            "perl" => "u64q/perl.php",
+            "php" => "u64q/php.php",
+            "python3" => "u64q/python.php",
+            "racket" => "u64q/racket.php",
+            "yarv" => "u64q/ruby.php",
+            "jruby" => "u64q/jruby.php",
+            "scala" => "u64q/scala.php",
+            "vw" => "u64/smalltalk.php"
          );
 
          if (isset($clinks[$L])){
-            $LinkRelCanonical = '<link rel="canonical" href="'.$clinks[$L].'" />';
+            $LinkRelCanonical = '<link rel="canonical" href="http://benchmarksgame.alioth.debian.org/'.$clinks[$L].'" />';
          }
 
          require_once(LIB_PATH.'compare.php');
