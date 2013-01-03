@@ -83,6 +83,9 @@ if ($T=='all'){
 
          require_once(LIB_PATH.'compare.php');
       } else {
+
+        $LinkRelCanonical = '<link rel="canonical" href="measurements.php?lang='.$L.'" />';
+
         require_once(LIB_PATH.'measurements.php');
       }
    }
