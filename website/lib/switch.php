@@ -90,28 +90,6 @@ if ($T=='all'){
       }
    }
 } elseif ($L=='all'){
-
-         // canonical links for Google
-         $clinks = array(
-            "binarytrees" => "performance.php?test=binarytrees",
-            "binarytreesredux" => "performance.php?test=binarytreesredux",
-            "chameneosredux" => "performance.php?test=chameneosredux",
-            "fannkuchredux" => "performance.php?test=fannkuchredux",
-            "fasta" => "performance.php?test=fasta",
-            "fastaredux" => "performance.php?test=fastaredux",
-            "knucleotide" => "performance.php?test=knucleotide",
-            "mandelbrot" => "performance.php?test=mandelbrot",
-            "meteor" => "performance.php?test=meteor",
-            "nbody" => "performance.php?test=nbody",
-            "pidigits" => "performance.php?test=pidigits",
-            "regexdna" => "performance.php?test=regexdna",
-            "revcomp" => "performance.php?test=revcomp",
-            "spectralnorm" => "performance.php?test=spectralnorm",
-            "threadring" => "performance.php?test=threadring"
-         );
-
-   $LinkRelCanonical = '<link rel="canonical" href="http://benchmarksgame.alioth.debian.org/u32/'.$clinks[$T].'" />';
-
    require_once(LIB_PATH.'performance.php');
 } else {
    require_once(LIB_PATH.'program.php');

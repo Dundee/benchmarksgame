@@ -234,7 +234,7 @@ $Body->set('About', $About->fetch($AboutTemplateName));
 $Page->set('PageBody', $Body->fetch($TemplateName));
 $Page->set('Robots', $metaRobots);
 $Page->set('MetaKeywords', $MetaKeywords);
-$Page->set('LinkCanonical', $LinkRelCanonical);
+$Page->set('LinkCanonical', '<link rel="canonical" href="http://benchmarksgame.alioth.debian.org/u32/performance.php?test='.$T.'" />');
 $Page->set('PageId', $PageId);
 
 echo $Page->fetch('page.tpl.php');
