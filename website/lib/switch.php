@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) Isaac Gouy 2010-2011
+// Copyright (c) Isaac Gouy 2010-2013
 
 // DATA LAYOUT ///////////////////////////////////////////////////
 
