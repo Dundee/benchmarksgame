@@ -74,7 +74,7 @@ if ($T=='all'){
             "vw" => "http://benchmarksgame.alioth.debian.org/u64/smalltalk.php"
          );
 
-         if (isset($clinks[$L]){
+         if (isset($clinks[$L])){
             $cl = $clinks[$L];
             //$LinkRelCanonical = '<link rel="canonical" href="'.$cl.'" />';
          }
