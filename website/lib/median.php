@@ -178,7 +178,7 @@ $Data = BoxplotData(DATA_PATH.'data.csv',$Tests,$Langs,$Incl,$Excl,$SLangs);
 // META ////////////////////////////////////////////////
 
 $metaRobots = '<meta name="robots" content="index,follow,noarchive" />';
-$MetaKeywords = '<meta name="description" content="Compare the performance of ~24 programming languages. Contribute faster more elegant programs. And please don'."'".'t jump to conclusions!" />';
+$MetaKeywords = '<meta name="description" content="Which of these programming language implementations have the fastest benchmark programs?" />';
 
 // TEMPLATE VARS ////////////////////////////////////////////////
 

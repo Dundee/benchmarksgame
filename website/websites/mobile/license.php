@@ -27,7 +27,7 @@ h1 { font-weight: bold; font-size: smaller; }
 
 <p>This is a specific instance of the <a href="http://www.opensource.org/licenses/bsd-license.php" title="Open Source Initiative (OSI)">Open Source Initiative (OSI) BSD license template</a>.</p>
 <p>&nbsp;Revised BSD license</p>
-<p>Copyright &#169; 2004-2011 Brent Fulgham</p>
+<p>Copyright &#169; 2004-2013 Brent Fulgham</p>
 <p>All rights reserved.</p> 
 
 <p>Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</p>
