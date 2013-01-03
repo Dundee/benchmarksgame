@@ -110,7 +110,7 @@ if ($T=='all'){
             "threadring" => "performance.php?test=threadring"
          );
 
-   $LinkRelCanonical = '<link rel="canonical" href="'.$clinks[$T].'" />';
+   $LinkRelCanonical = '<link rel="canonical" href="http://benchmarksgame.alioth.debian.org/u32/'.$clinks[$T].'" />';
 
    require_once(LIB_PATH.'performance.php');
 } else {
