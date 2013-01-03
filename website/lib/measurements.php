@@ -83,7 +83,7 @@ $About->set('Version', HtmlFragment(VERSION_PATH.$L.SEPARATOR.'version.php'));
 
 // META ////////////////////////////////////////////////
 
-$MetaKeywords = '<meta name="description" content="Performance measurements for all the '.$LangName.' programs implementing ~12 flawed benchmarks ('.PLATFORM_NAME.')." />';
+$MetaKeywords = '<meta name="description" content="Performance measurements for all the '.$LangName.' programs implementing ~12 simple benchmark tasks, ('.PLATFORM_NAME.')." />';
 
 $metaRobots = '<meta name="robots" content="noindex,nofollow,noarchive" />';
 
