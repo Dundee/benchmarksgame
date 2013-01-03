@@ -16,7 +16,7 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <meta http-equiv="Content-Style-Type" content="text/css" />
 
-<meta name="robots" content="index,follow,noarchive" /><meta name="revisit" content="14 days" />
+<meta name="robots" content="index,follow,archive" /><meta name="revisit" content="14 days" />
 
 <meta name="description" content="Compare the time and memory use of programs written in ~24 programming languages to solve ~12 simple benchmark tasks. Contribute your own improved programs." />
 
