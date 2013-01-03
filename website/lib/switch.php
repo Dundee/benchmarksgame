@@ -75,8 +75,7 @@ if ($T=='all'){
          );
 
          if (isset($clinks[$L])){
-            $cl = $clinks[$L];
-            $LinkRelCanonical = '<link rel="canonical" href="'.$cl.'" />';
+            $LinkRelCanonical = '<link rel="canonical" href="'.$clinks[$L].'" />';
          }
 
          require_once(LIB_PATH.'compare.php');

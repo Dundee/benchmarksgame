@@ -309,6 +309,7 @@ $Body->set('About', $About->fetch($AboutTemplateName));
 $Page->set('PageBody', $Body->fetch($TemplateName));
 $Page->set('Robots', $metaRobots);
 $Page->set('MetaKeywords', $MetaKeywords);
+$Page->set('LinkCanonical', $LinkRelCanonical);
 $Page->set('PageId', $PageId);
 
 echo $Page->fetch('page.tpl.php');
