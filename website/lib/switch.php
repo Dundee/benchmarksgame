@@ -46,7 +46,7 @@ if ($T=='all'){
       if ($L!=$L2){
 
          // canonical links for Google
-         $clinks = array(
+         $links = array(
             "gnat" => "http://benchmarksgame.alioth.debian.org/u64q/ada.php",
             "ats" => "http://benchmarksgame.alioth.debian.org/u64q/ats.php",
             "gcc" => "http://benchmarksgame.alioth.debian.org/u64q/c.php",
@@ -74,10 +74,9 @@ if ($T=='all'){
             "vw" => "http://benchmarksgame.alioth.debian.org/u64/smalltalk.php"
          );
 
-         //if (isset($clinks[$L]){
-         //   $cl = $clinks[$L];
-            //$LinkRelCanonical = '<link rel="canonical" href="'.$cl.'" />';
-         //}
+         if (isset($links[$L]){
+            $LinkRelCanonical = '<link rel="canonical" href="'.$links[$L].'" />';
+         }
 
          require_once(LIB_PATH.'compare.php');
       } else {
