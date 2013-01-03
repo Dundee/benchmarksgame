@@ -66,7 +66,7 @@ if ($T=='all'){
             "lua" => "u64/lua.php",
             "oz" => "u32/oz.php",
             "ocaml" => "u64q/ocaml.php",
-            "fpascal" => "u64q/fpascal.php",
+            "fpascal" => "u64q/pascal.php",
             "perl" => "u64q/perl.php",
             "php" => "u64q/php.php",
             "python3" => "u64q/python.php",
