@@ -261,7 +261,7 @@ $V2 = HtmlFragment(VERSION_PATH.$L2.SEPARATOR.'version.php');
 
 $MetaKeywords = '<meta name="description" content="The speed of '.$LangName.' programs vs the speed of '.$LangName2.' programs ('.PLATFORM_NAME.')." />';
          
-$metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
+$metaRobots = '<meta name="robots" content="noindex,nofollow,noarchive" />';
 
 // TEMPLATE VARS ////////////////////////////////////////////////
 
