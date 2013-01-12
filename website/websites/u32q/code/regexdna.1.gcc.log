@@ -1,10 +1,10 @@
 
-Sun, 29 Apr 2012 15:38:32 GMT
+Sat, 12 Jan 2013 04:28:26 GMT
 
 MAKE:
 /usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread -I/usr/include/tcl8.4 `pkg-config --cflags --libs glib-2.0` regexdna.c -o regexdna.gcc_run -ltcl8.4 -lglib-2.0
 rm regexdna.c
-0.50s to complete and log all make actions
+0.42s to complete and log all make actions
 
 COMMAND LINE:
 ./regexdna.gcc_run 0 < regexdna-input5000000.txt
