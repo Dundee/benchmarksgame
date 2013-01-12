@@ -1,15 +1,15 @@
 
-Sat, 28 Apr 2012 20:09:53 GMT
+Sat, 12 Jan 2013 01:23:15 GMT
 
 MAKE:
 /usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -std=c99 -mfpmath=sse -msse3 fasta.gcc-4.c -o fasta.gcc-4.gcc_run 
 fasta.gcc-4.c: In function ‘repeat_fasta’:
-fasta.gcc-4.c:53:7: warning: implicit declaration of function ‘fwrite_unlocked’ [-Wimplicit-function-declaration]
-fasta.gcc-4.c:54:7: warning: implicit declaration of function ‘putchar_unlocked’ [-Wimplicit-function-declaration]
+fasta.gcc-4.c:54:7: warning: implicit declaration of function ‘fwrite_unlocked’ [-Wimplicit-function-declaration]
+fasta.gcc-4.c:55:7: warning: implicit declaration of function ‘putchar_unlocked’ [-Wimplicit-function-declaration]
 fasta.gcc-4.c: In function ‘main’:
-fasta.gcc-4.c:134:5: warning: implicit declaration of function ‘fputs_unlocked’ [-Wimplicit-function-declaration]
+fasta.gcc-4.c:135:5: warning: implicit declaration of function ‘fputs_unlocked’ [-Wimplicit-function-declaration]
 rm fasta.gcc-4.c
-0.09s to complete and log all make actions
+0.11s to complete and log all make actions
 
 COMMAND LINE:
 ./fasta.gcc-4.gcc_run 25000000
