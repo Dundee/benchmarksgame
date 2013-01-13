@@ -1,11 +1,11 @@
 
-Sat, 28 Apr 2012 21:22:07 GMT
+Sat, 12 Jan 2013 22:08:20 GMT
 
 MAKE:
-/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse2 -fopenmp -mfpmath=sse -msse2 spectralnorm.gpp-2.c++ -o spectralnorm.gpp-2.c++.o &&  \
+/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse2 -fopenmp -O0 spectralnorm.gpp-2.c++ -o spectralnorm.gpp-2.c++.o &&  \
         /usr/bin/g++ spectralnorm.gpp-2.c++.o -o spectralnorm.gpp-2.gpp_run -fopenmp 
 rm spectralnorm.gpp-2.c++
-0.29s to complete and log all make actions
+0.24s to complete and log all make actions
 
 COMMAND LINE:
 ./spectralnorm.gpp-2.gpp_run 5500

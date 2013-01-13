@@ -1,37 +1,32 @@
 
-Mon, 31 Dec 2012 23:03:42 GMT
+Sat, 12 Jan 2013 21:56:06 GMT
 
 MAKE:
 mv revcomp.scala-7.scala revcomp.scala
-/usr/local/src/scala-2.9.2/bin/scalac -optimise revcomp.scala
-revcomp.scala:8: error: not found: object akka
-import akka.actor._
-       ^
-revcomp.scala:43: error: missing parameter type for expanded function
-The argument types of an anonymous function must be fully known. (SLS 8.5)
-Expected type was: ?
-  def receive = {case _ =>}
-                ^
-revcomp.scala:49: error: missing parameter type for expanded function
-The argument types of an anonymous function must be fully known. (SLS 8.5)
-Expected type was: ?
-  def receive = {
-                ^
-revcomp.scala:77: error: missing parameter type for expanded function
-The argument types of an anonymous function must be fully known. (SLS 8.5)
-Expected type was: ?
-  def receive = {
-                ^
-four errors found
-make: [revcomp.scala-7.scala_run] Error 1 (ignored)
-3.29s to complete and log all make actions
+/usr/local/src/scala-2.10.0/bin/scalac -optimise revcomp.scala
+8.52s to complete and log all make actions
 
 COMMAND LINE:
- /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.9.2/lib/scala-library.jar revcomp 0 < revcomp-input250000.txt
+ /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar revcomp 0 < revcomp-input250000.txt
 
 PROGRAM FAILED 
 
 
 PROGRAM OUTPUT:
 
-Error: Could not find or load main class revcomp
+Exception in thread "main" java.lang.NoClassDefFoundError: akka/actor/ActorRef
+	at java.lang.Class.getDeclaredMethods0(Native Method)
+	at java.lang.Class.privateGetDeclaredMethods(Class.java:2442)
+	at java.lang.Class.getMethod0(Class.java:2685)
+	at java.lang.Class.getMethod(Class.java:1620)
+	at sun.launcher.LauncherHelper.getMainMethod(LauncherHelper.java:494)
+	at sun.launcher.LauncherHelper.checkAndLoadMain(LauncherHelper.java:486)
+Caused by: java.lang.ClassNotFoundException: akka.actor.ActorRef
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:366)
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:355)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:354)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:423)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:356)
+	... 6 more

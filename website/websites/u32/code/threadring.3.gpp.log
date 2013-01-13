@@ -1,19 +1,16 @@
 
-Sun, 29 Apr 2012 16:47:44 GMT
+Sat, 12 Jan 2013 22:30:20 GMT
 
 MAKE:
 /usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native   threadring.gpp-3.c++ -o threadring.gpp-3.c++.o &&  \
         /usr/bin/g++ threadring.gpp-3.c++.o -o threadring.gpp-3.gpp_run -lboost_system -lpthread 
 rm threadring.gpp-3.c++
-2.43s to complete and log all make actions
+2.65s to complete and log all make actions
 
 COMMAND LINE:
-./threadring.gpp-3.gpp_run 5000000
+./threadring.gpp-3.gpp_run 500000
 
-PROGRAM FAILED 
+TIMED OUT after 300s
 
 
 PROGRAM OUTPUT:
-
-terminate called after throwing an instance of 'St9bad_alloc'
-  what():  std::bad_alloc

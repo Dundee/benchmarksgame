@@ -1,5 +1,5 @@
 
-Fri, 18 May 2012 03:24:38 GMT
+Sat, 12 Jan 2013 05:49:26 GMT
 
 MAKE:
 /usr/bin/gnatchop -r -w threadring.gnat-2.gnat
@@ -9,7 +9,7 @@ splitting threadring.gnat-2.gnat into:
 gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp threadring.adb
 gnatbind -x threadring.ali
 gnatlink threadring.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o threadring.gnat-2.gnat_run
-0.47s to complete and log all make actions
+0.48s to complete and log all make actions
 
 COMMAND LINE:
 ./threadring.gnat-2.gnat_run 50000000

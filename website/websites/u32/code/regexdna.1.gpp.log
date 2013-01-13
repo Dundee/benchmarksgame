@@ -1,11 +1,11 @@
 
-Sat, 20 Oct 2012 17:57:04 GMT
+Sat, 12 Jan 2013 21:52:21 GMT
 
 MAKE:
 /usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -I/usr/local/src/re2/re2 regexdna.c++ -o regexdna.c++.o &&  \
         /usr/bin/g++ regexdna.c++.o -o regexdna.gpp_run -lpthread /usr/local/src/re2/obj/libre2.a 
 rm regexdna.c++
-0.54s to complete and log all make actions
+0.58s to complete and log all make actions
 
 COMMAND LINE:
 ./regexdna.gpp_run 0 < regexdna-input5000000.txt

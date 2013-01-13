@@ -1,12 +1,15 @@
 
-Mon, 31 Dec 2012 18:16:33 GMT
+Sat, 12 Jan 2013 18:09:24 GMT
 
 MAKE:
-make: *** No rule to make target `fannkuchredux.gpp-3.gpp', needed by `fannkuchredux.gpp-3.c++'.  Stop.
-0.01s to complete and log all make actions
+/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -std=c++0x fannkuchredux.gpp-3.c++ -o fannkuchredux.gpp-3.c++.o &&  \
+        /usr/bin/g++ fannkuchredux.gpp-3.c++.o -o fannkuchredux.gpp-3.gpp_run -lpthread 
+rm fannkuchredux.gpp-3.c++
+0.57s to complete and log all make actions
 
 COMMAND LINE:
-./fannkuchredux.gpp-3.gpp_run 10
+./fannkuchredux.gpp-3.gpp_run 12
 
-MAKE ERROR 
-
+PROGRAM OUTPUT:
+3968050
+Pfannkuchen(12) = 65

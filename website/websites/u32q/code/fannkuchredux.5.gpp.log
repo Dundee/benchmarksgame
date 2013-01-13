@@ -1,15 +1,457 @@
 
-Sat, 28 Apr 2012 17:09:32 GMT
+Sat, 12 Jan 2013 20:06:01 GMT
 
 MAKE:
 /usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -pthread -flax-vector-conversions fannkuchredux.gpp-5.c++ -o fannkuchredux.gpp-5.c++.o &&  \
         /usr/bin/g++ fannkuchredux.gpp-5.c++.o -o fannkuchredux.gpp-5.gpp_run -lpthread -lboost_thread 
+In file included from /usr/include/boost/thread/detail/platform.hpp:17:0,
+                 from /usr/include/boost/thread/thread.hpp:12,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/config/requires_threads.hpp:29:4: error: #error "Threading support unavaliable: it has been explicitly disabled with BOOST_DISABLE_THREADS"
+In file included from /usr/include/boost/thread/thread.hpp:12:0,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/detail/platform.hpp:67:9: error: #error "Sorry, no boost threads are available for this platform."
+In file included from /usr/include/boost/thread.hpp:13:0,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/thread.hpp:19:2: error: #error "Boost threads unavailable on this platform"
+In file included from /usr/include/boost/thread/detail/thread.hpp:11:0,
+                 from /usr/include/boost/thread/thread.hpp:22,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/mutex.hpp:18:2: error: #error "Boost threads unavailable on this platform"
+In file included from /usr/include/boost/thread/detail/thread.hpp:13:0,
+                 from /usr/include/boost/thread/thread.hpp:22,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/detail/thread_heap_alloc.hpp:19:2: error: #error "Boost threads unavailable on this platform"
+In file included from /usr/include/boost/thread/detail/thread_group.hpp:9:0,
+                 from /usr/include/boost/thread/thread.hpp:24,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/shared_mutex.hpp:18:2: error: #error "Boost threads unavailable on this platform"
+In file included from /usr/include/boost/thread.hpp:14:0,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/condition_variable.hpp:18:2: error: #error "Boost threads unavailable on this platform"
+In file included from /usr/include/boost/thread.hpp:17:0,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/once.hpp:18:2: error: #error "Boost threads unavailable on this platform"
+In file included from /usr/include/boost/thread.hpp:18:0,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/recursive_mutex.hpp:18:2: error: #error "Boost threads unavailable on this platform"
+In file included from /usr/include/boost/thread/thread.hpp:22:0,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/detail/thread.hpp:40:9: error: expected class-name before ‘{’ token
+/usr/include/boost/thread/detail/thread.hpp:68:9: error: expected class-name before ‘{’ token
+/usr/include/boost/thread/detail/thread.hpp:88:9: error: expected class-name before ‘{’ token
+/usr/include/boost/thread/detail/thread.hpp:113:17: error: ‘mutex’ in namespace ‘boost’ does not name a type
+/usr/include/boost/thread/detail/thread.hpp:114:9: error: ‘thread_data_ptr’ in namespace ‘boost::detail’ does not name a type
+/usr/include/boost/thread/detail/thread.hpp:118:49: error: expected ‘)’ before ‘data’
+/usr/include/boost/thread/detail/thread.hpp:120:9: error: ‘thread_data_ptr’ in namespace ‘boost::detail’ does not name a type
+In file included from /usr/include/boost/thread/thread.hpp:22:0,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/detail/thread.hpp:134:23: error: ‘thread_data_ptr’ in namespace ‘boost::detail’ does not name a type
+/usr/include/boost/thread/detail/thread.hpp:139:23: error: ‘thread_data_ptr’ in namespace ‘boost::detail’ does not name a type
+/usr/include/boost/thread/detail/thread.hpp:319:17: error: ‘thread_data_base’ in namespace ‘boost::detail’ does not name a type
+/usr/include/boost/thread/detail/thread.hpp:320:9: error: ‘native_handle_type’ does not name a type
+/usr/include/boost/thread/detail/thread.hpp: In constructor ‘boost::thread::thread(F, typename boost::disable_if<boost::is_convertible<T&, boost::detail::thread_move_t<T> >, boost::thread::dummy*>::type)’:
+/usr/include/boost/thread/detail/thread.hpp:189:13: error: class ‘boost::thread’ does not have any field named ‘thread_info’
+/usr/include/boost/thread/detail/thread.hpp: In constructor ‘boost::thread::thread(boost::detail::thread_move_t<T>)’:
+/usr/include/boost/thread/detail/thread.hpp:197:13: error: class ‘boost::thread’ does not have any field named ‘thread_info’
+/usr/include/boost/thread/detail/thread.hpp: In constructor ‘boost::thread::thread(boost::detail::thread_move_t<boost::thread>)’:
+/usr/include/boost/thread/detail/thread.hpp:204:13: error: ‘thread_info’ was not declared in this scope
+/usr/include/boost/thread/detail/thread.hpp:204:28: error: ‘class boost::thread’ has no member named ‘thread_info’
+/usr/include/boost/thread/detail/thread.hpp:205:16: error: ‘class boost::thread’ has no member named ‘thread_info’
+/usr/include/boost/thread/detail/thread.hpp: In constructor ‘boost::thread::thread(F, A1)’:
+/usr/include/boost/thread/detail/thread.hpp:237:13: error: class ‘boost::thread’ does not have any field named ‘thread_info’
+/usr/include/boost/thread/detail/thread.hpp: In constructor ‘boost::thread::thread(F, A1, A2)’:
+/usr/include/boost/thread/detail/thread.hpp:243:13: error: class ‘boost::thread’ does not have any field named ‘thread_info’
+/usr/include/boost/thread/detail/thread.hpp: In constructor ‘boost::thread::thread(F, A1, A2, A3)’:
+/usr/include/boost/thread/detail/thread.hpp:250:13: error: class ‘boost::thread’ does not have any field named ‘thread_info’
+/usr/include/boost/thread/detail/thread.hpp: In constructor ‘boost::thread::thread(F, A1, A2, A3, A4)’:
+/usr/include/boost/thread/detail/thread.hpp:257:13: error: class ‘boost::thread’ does not have any field named ‘thread_info’
+/usr/include/boost/thread/detail/thread.hpp: In constructor ‘boost::thread::thread(F, A1, A2, A3, A4, A5)’:
+/usr/include/boost/thread/detail/thread.hpp:264:13: error: class ‘boost::thread’ does not have any field named ‘thread_info’
+/usr/include/boost/thread/detail/thread.hpp: In constructor ‘boost::thread::thread(F, A1, A2, A3, A4, A5, A6)’:
+/usr/include/boost/thread/detail/thread.hpp:271:13: error: class ‘boost::thread’ does not have any field named ‘thread_info’
+/usr/include/boost/thread/detail/thread.hpp: In constructor ‘boost::thread::thread(F, A1, A2, A3, A4, A5, A6, A7)’:
+/usr/include/boost/thread/detail/thread.hpp:278:13: error: class ‘boost::thread’ does not have any field named ‘thread_info’
+/usr/include/boost/thread/detail/thread.hpp: In constructor ‘boost::thread::thread(F, A1, A2, A3, A4, A5, A6, A7, A8)’:
+/usr/include/boost/thread/detail/thread.hpp:285:13: error: class ‘boost::thread’ does not have any field named ‘thread_info’
+/usr/include/boost/thread/detail/thread.hpp: In constructor ‘boost::thread::thread(F, A1, A2, A3, A4, A5, A6, A7, A8, A9)’:
+/usr/include/boost/thread/detail/thread.hpp:292:13: error: class ‘boost::thread’ does not have any field named ‘thread_info’
+/usr/include/boost/thread/detail/thread.hpp: In member function ‘void boost::thread::swap(boost::thread&)’:
+/usr/include/boost/thread/detail/thread.hpp:299:13: error: ‘thread_info’ was not declared in this scope
+/usr/include/boost/thread/detail/thread.hpp:299:32: error: ‘class boost::thread’ has no member named ‘thread_info’
+/usr/include/boost/thread/detail/thread.hpp: In static member function ‘static void boost::thread::yield()’:
+/usr/include/boost/thread/detail/thread.hpp:328:13: error: ‘this_thread’ has not been declared
+/usr/include/boost/thread/detail/thread.hpp: In static member function ‘static void boost::thread::sleep(const system_time&)’:
+/usr/include/boost/thread/detail/thread.hpp:333:13: error: ‘this_thread’ has not been declared
+/usr/include/boost/thread/detail/thread.hpp: In function ‘void boost::this_thread::sleep(const boost::xtime&)’:
+/usr/include/boost/thread/detail/thread.hpp:368:40: error: invalid initialization of reference of type ‘const boost::xtime&’ from expression of type ‘boost::system_time {aka boost::posix_time::ptime}’
+/usr/include/boost/thread/detail/thread.hpp:366:21: error: in passing argument 1 of ‘void boost::this_thread::sleep(const boost::xtime&)’
+/usr/include/boost/thread/detail/thread.hpp: At global scope:
+/usr/include/boost/thread/detail/thread.hpp:375:9: error: ‘thread_data_ptr’ in namespace ‘boost::detail’ does not name a type
+/usr/include/boost/thread/detail/thread.hpp:377:36: error: expected ‘)’ before ‘thread_data_’
+/usr/include/boost/thread/detail/thread.hpp: In constructor ‘boost::thread::id::id()’:
+/usr/include/boost/thread/detail/thread.hpp:384:13: error: class ‘boost::thread::id’ does not have any field named ‘thread_data’
+/usr/include/boost/thread/detail/thread.hpp: In member function ‘bool boost::thread::id::operator==(const boost::thread::id&) const’:
+/usr/include/boost/thread/detail/thread.hpp:389:20: error: ‘thread_data’ was not declared in this scope
+/usr/include/boost/thread/detail/thread.hpp:389:20: note: suggested alternative:
+In file included from /usr/include/boost/thread/thread.hpp:22:0,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/detail/thread.hpp:38:15: note:   ‘boost::detail::thread_data’
+In file included from /usr/include/boost/thread/thread.hpp:22:0,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/detail/thread.hpp:389:35: error: ‘const class boost::thread::id’ has no member named ‘thread_data’
+/usr/include/boost/thread/detail/thread.hpp: In member function ‘bool boost::thread::id::operator!=(const boost::thread::id&) const’:
+/usr/include/boost/thread/detail/thread.hpp:394:20: error: ‘thread_data’ was not declared in this scope
+/usr/include/boost/thread/detail/thread.hpp:394:20: note: suggested alternative:
+In file included from /usr/include/boost/thread/thread.hpp:22:0,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/detail/thread.hpp:38:15: note:   ‘boost::detail::thread_data’
+In file included from /usr/include/boost/thread/thread.hpp:22:0,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/detail/thread.hpp:394:35: error: ‘const class boost::thread::id’ has no member named ‘thread_data’
+/usr/include/boost/thread/detail/thread.hpp: In member function ‘bool boost::thread::id::operator<(const boost::thread::id&) const’:
+/usr/include/boost/thread/detail/thread.hpp:399:20: error: ‘thread_data’ was not declared in this scope
+/usr/include/boost/thread/detail/thread.hpp:399:20: note: suggested alternative:
+In file included from /usr/include/boost/thread/thread.hpp:22:0,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/detail/thread.hpp:38:15: note:   ‘boost::detail::thread_data’
+In file included from /usr/include/boost/thread/thread.hpp:22:0,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/detail/thread.hpp:399:34: error: ‘const class boost::thread::id’ has no member named ‘thread_data’
+/usr/include/boost/thread/detail/thread.hpp: In member function ‘bool boost::thread::id::operator>(const boost::thread::id&) const’:
+/usr/include/boost/thread/detail/thread.hpp:404:22: error: ‘const class boost::thread::id’ has no member named ‘thread_data’
+/usr/include/boost/thread/detail/thread.hpp:404:34: error: ‘thread_data’ was not declared in this scope
+/usr/include/boost/thread/detail/thread.hpp:404:34: note: suggested alternative:
+In file included from /usr/include/boost/thread/thread.hpp:22:0,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/detail/thread.hpp:38:15: note:   ‘boost::detail::thread_data’
+In file included from /usr/include/boost/thread/thread.hpp:22:0,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/detail/thread.hpp: In member function ‘bool boost::thread::id::operator<=(const boost::thread::id&) const’:
+/usr/include/boost/thread/detail/thread.hpp:409:24: error: ‘const class boost::thread::id’ has no member named ‘thread_data’
+/usr/include/boost/thread/detail/thread.hpp:409:36: error: ‘thread_data’ was not declared in this scope
+/usr/include/boost/thread/detail/thread.hpp:409:36: note: suggested alternative:
+In file included from /usr/include/boost/thread/thread.hpp:22:0,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/detail/thread.hpp:38:15: note:   ‘boost::detail::thread_data’
+In file included from /usr/include/boost/thread/thread.hpp:22:0,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/detail/thread.hpp: In member function ‘bool boost::thread::id::operator>=(const boost::thread::id&) const’:
+/usr/include/boost/thread/detail/thread.hpp:414:22: error: ‘thread_data’ was not declared in this scope
+/usr/include/boost/thread/detail/thread.hpp:414:22: note: suggested alternative:
+In file included from /usr/include/boost/thread/thread.hpp:22:0,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/detail/thread.hpp:38:15: note:   ‘boost::detail::thread_data’
+In file included from /usr/include/boost/thread/thread.hpp:22:0,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/detail/thread.hpp:414:36: error: ‘const class boost::thread::id’ has no member named ‘thread_data’
+/usr/include/boost/thread/detail/thread.hpp: In function ‘std::basic_ostream<_CharT, _Traits>& boost::operator<<(std::basic_ostream<_CharT, _Traits>&, const boost::thread::id&)’:
+/usr/include/boost/thread/detail/thread.hpp:421:18: error: ‘const class boost::thread::id’ has no member named ‘thread_data’
+/usr/include/boost/thread/detail/thread.hpp:423:30: error: ‘const class boost::thread::id’ has no member named ‘thread_data’
+/usr/include/boost/thread/detail/thread.hpp: In function ‘void boost::this_thread::at_thread_exit(F)’:
+/usr/include/boost/thread/detail/thread.hpp:475:71: error: ‘heap_new’ is not a member of ‘boost::detail’
+/usr/include/boost/thread/detail/thread.hpp:475:120: error: expected primary-expression before ‘>’ token
+In file included from /usr/include/boost/thread/thread.hpp:24:0,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/detail/thread_group.hpp: At global scope:
+/usr/include/boost/thread/detail/thread_group.hpp:95:17: error: ‘shared_mutex’ does not name a type
+/usr/include/boost/thread/detail/thread_group.hpp: In member function ‘boost::thread* boost::thread_group::create_thread(F)’:
+/usr/include/boost/thread/detail/thread_group.hpp:38:13: error: ‘lock_guard’ is not a member of ‘boost’
+/usr/include/boost/thread/detail/thread_group.hpp:38:31: error: ‘shared_mutex’ was not declared in this scope
+/usr/include/boost/thread/detail/thread_group.hpp:38:51: error: ‘m’ was not declared in this scope
+/usr/include/boost/thread/detail/thread_group.hpp:38:52: error: there are no arguments to ‘guard’ that depend on a template parameter, so a declaration of ‘guard’ must be available [-fpermissive]
+/usr/include/boost/thread/detail/thread_group.hpp:38:52: note: (if you use ‘-fpermissive’, G++ will accept your code, but allowing the use of an undeclared name is deprecated)
+/usr/include/boost/thread/detail/thread_group.hpp: In member function ‘void boost::thread_group::add_thread(boost::thread*)’:
+/usr/include/boost/thread/detail/thread_group.hpp:48:17: error: ‘lock_guard’ is not a member of ‘boost’
+/usr/include/boost/thread/detail/thread_group.hpp:48:35: error: ‘shared_mutex’ was not declared in this scope
+/usr/include/boost/thread/detail/thread_group.hpp:48:55: error: ‘m’ was not declared in this scope
+/usr/include/boost/thread/detail/thread_group.hpp:48:56: error: ‘guard’ was not declared in this scope
+/usr/include/boost/thread/detail/thread_group.hpp: In member function ‘void boost::thread_group::remove_thread(boost::thread*)’:
+/usr/include/boost/thread/detail/thread_group.hpp:55:13: error: ‘lock_guard’ is not a member of ‘boost’
+/usr/include/boost/thread/detail/thread_group.hpp:55:31: error: ‘shared_mutex’ was not declared in this scope
+/usr/include/boost/thread/detail/thread_group.hpp:55:51: error: ‘m’ was not declared in this scope
+/usr/include/boost/thread/detail/thread_group.hpp:55:52: error: ‘guard’ was not declared in this scope
+/usr/include/boost/thread/detail/thread_group.hpp: In member function ‘void boost::thread_group::join_all()’:
+/usr/include/boost/thread/detail/thread_group.hpp:65:13: error: ‘shared_lock’ is not a member of ‘boost’
+/usr/include/boost/thread/detail/thread_group.hpp:65:32: error: ‘shared_mutex’ was not declared in this scope
+/usr/include/boost/thread/detail/thread_group.hpp:65:52: error: ‘m’ was not declared in this scope
+/usr/include/boost/thread/detail/thread_group.hpp:65:53: error: ‘guard’ was not declared in this scope
+/usr/include/boost/thread/detail/thread_group.hpp: In member function ‘void boost::thread_group::interrupt_all()’:
+/usr/include/boost/thread/detail/thread_group.hpp:77:13: error: ‘shared_lock’ is not a member of ‘boost’
+/usr/include/boost/thread/detail/thread_group.hpp:77:32: error: ‘shared_mutex’ was not declared in this scope
+/usr/include/boost/thread/detail/thread_group.hpp:77:52: error: ‘m’ was not declared in this scope
+/usr/include/boost/thread/detail/thread_group.hpp:77:53: error: ‘guard’ was not declared in this scope
+/usr/include/boost/thread/detail/thread_group.hpp: In member function ‘size_t boost::thread_group::size() const’:
+/usr/include/boost/thread/detail/thread_group.hpp:89:13: error: ‘shared_lock’ is not a member of ‘boost’
+/usr/include/boost/thread/detail/thread_group.hpp:89:32: error: ‘shared_mutex’ was not declared in this scope
+/usr/include/boost/thread/detail/thread_group.hpp:89:52: error: ‘m’ was not declared in this scope
+/usr/include/boost/thread/detail/thread_group.hpp:89:53: error: ‘guard’ was not declared in this scope
+In file included from /usr/include/boost/thread.hpp:17:0,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/once.hpp: At global scope:
+/usr/include/boost/thread/once.hpp:25:42: error: variable or field ‘call_once’ declared void
+/usr/include/boost/thread/once.hpp:25:34: error: ‘func’ was not declared in this scope
+/usr/include/boost/thread/once.hpp:25:42: error: ‘once_flag’ was not declared in this scope
+/usr/include/boost/thread/once.hpp:25:53: error: ‘flag’ was not declared in this scope
+In file included from /usr/include/boost/thread.hpp:19:0,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/tss.hpp: In constructor ‘boost::thread_specific_ptr<T>::thread_specific_ptr()’:
+/usr/include/boost/thread/tss.hpp:66:21: error: ‘heap_new’ is not a member of ‘boost::detail’
+/usr/include/boost/thread/tss.hpp:66:49: error: expected primary-expression before ‘>’ token
+/usr/include/boost/thread/tss.hpp:66:51: error: expected primary-expression before ‘)’ token
+/usr/include/boost/thread/tss.hpp:66:53: error: ‘do_heap_delete’ is not a member of ‘boost::detail’
+/usr/include/boost/thread/tss.hpp:66:87: error: expected primary-expression before ‘>’ token
+/usr/include/boost/thread/tss.hpp:66:89: error: expected primary-expression before ‘)’ token
+/usr/include/boost/thread/tss.hpp: In constructor ‘boost::thread_specific_ptr<T>::thread_specific_ptr(void (*)(T*))’:
+/usr/include/boost/thread/tss.hpp:72:31: error: ‘heap_new’ is not a member of ‘boost::detail’
+/usr/include/boost/thread/tss.hpp:72:75: error: expected primary-expression before ‘>’ token
+/usr/include/boost/thread/tss.hpp:72:84: error: ‘do_heap_delete’ is not a member of ‘boost::detail’
+/usr/include/boost/thread/tss.hpp:72:134: error: expected primary-expression before ‘>’ token
+/usr/include/boost/thread/tss.hpp:72:136: error: expected primary-expression before ‘)’ token
+In file included from /usr/include/boost/thread.hpp:23:0,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/barrier.hpp: At global scope:
+/usr/include/boost/thread/barrier.hpp:52:9: error: ‘mutex’ does not name a type
+/usr/include/boost/thread/barrier.hpp:53:9: error: ‘condition_variable’ does not name a type
+/usr/include/boost/thread/barrier.hpp: In member function ‘bool boost::barrier::wait()’:
+/usr/include/boost/thread/barrier.hpp:35:20: error: ‘boost::mutex’ has not been declared
+/usr/include/boost/thread/barrier.hpp:35:39: error: expected ‘;’ before ‘lock’
+/usr/include/boost/thread/barrier.hpp:42:17: error: ‘m_cond’ was not declared in this scope
+/usr/include/boost/thread/barrier.hpp:47:17: error: ‘m_cond’ was not declared in this scope
+In file included from /usr/include/boost/thread.hpp:24:0,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/future.hpp: At global scope:
+/usr/include/boost/thread/future.hpp:93:13: error: ‘mutex’ in namespace ‘boost’ does not name a type
+/usr/include/boost/thread/future.hpp:94:13: error: ‘condition_variable’ in namespace ‘boost’ does not name a type
+/usr/include/boost/thread/future.hpp:95:31: error: ‘condition_variable_any’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:95:31: error: ‘condition_variable_any’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:95:61: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:95:61: error: template argument 2 is invalid
+/usr/include/boost/thread/future.hpp:105:26: error: invalid use of ‘::’
+/usr/include/boost/thread/future.hpp:105:26: error: expected ‘;’ at end of member declaration
+/usr/include/boost/thread/future.hpp:105:67: error: ‘boost::condition_variable_any’ has not been declared
+/usr/include/boost/thread/future.hpp:112:41: error: ‘waiter_list’ is not a class or namespace
+/usr/include/boost/thread/future.hpp:112:63: error: expected ‘,’ or ‘...’ before ‘it’
+/usr/include/boost/thread/future.hpp:131:36: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:131:36: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:131:48: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:133:45: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:133:45: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:133:57: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:144:49: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:144:49: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:144:61: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp: In member function ‘int boost::detail::future_object_base::register_external_waiter(int&)’:
+/usr/include/boost/thread/future.hpp:107:36: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:107:36: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:107:48: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:107:54: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp:107:55: error: ‘mutex’ was not declared in this scope
+/usr/include/boost/thread/future.hpp:109:41: error: request for member ‘insert’ in ‘((boost::detail::future_object_base*)this)->boost::detail::future_object_base::external_waiters’, which is of non-class type ‘boost::detail::future_object_base::waiter_list {aka int}’
+/usr/include/boost/thread/future.hpp:109:65: error: request for member ‘end’ in ‘((boost::detail::future_object_base*)this)->boost::detail::future_object_base::external_waiters’, which is of non-class type ‘boost::detail::future_object_base::waiter_list {aka int}’
+/usr/include/boost/thread/future.hpp: In member function ‘void boost::detail::future_object_base::remove_external_waiter(int)’:
+/usr/include/boost/thread/future.hpp:114:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:114:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:114:47: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:114:53: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp:114:54: error: ‘mutex’ was not declared in this scope
+/usr/include/boost/thread/future.hpp:115:34: error: request for member ‘erase’ in ‘((boost::detail::future_object_base*)this)->boost::detail::future_object_base::external_waiters’, which is of non-class type ‘boost::detail::future_object_base::waiter_list {aka int}’
+/usr/include/boost/thread/future.hpp:115:40: error: ‘it’ was not declared in this scope
+/usr/include/boost/thread/future.hpp: In member function ‘void boost::detail::future_object_base::mark_finished_internal()’:
+/usr/include/boost/thread/future.hpp:121:17: error: ‘waiters’ was not declared in this scope
+/usr/include/boost/thread/future.hpp:122:34: error: invalid use of qualified-name ‘::const_iterator’
+/usr/include/boost/thread/future.hpp:122:49: error: expected ‘;’ before ‘it’
+/usr/include/boost/thread/future.hpp:122:49: error: ‘it’ was not declared in this scope
+/usr/include/boost/thread/future.hpp:122:69: error: request for member ‘begin’ in ‘((boost::detail::future_object_base*)this)->boost::detail::future_object_base::external_waiters’, which is of non-class type ‘boost::detail::future_object_base::waiter_list {aka int}’
+/usr/include/boost/thread/future.hpp:123:25: error: ‘end’ was not declared in this scope
+/usr/include/boost/thread/future.hpp:123:46: error: request for member ‘end’ in ‘((boost::detail::future_object_base*)this)->boost::detail::future_object_base::external_waiters’, which is of non-class type ‘boost::detail::future_object_base::waiter_list {aka int}’
+/usr/include/boost/thread/future.hpp:123:59: error: expected ‘)’ before ‘;’ token
+/usr/include/boost/thread/future.hpp:123:62: error: ‘it’ was not declared in this scope
+/usr/include/boost/thread/future.hpp:123:64: error: expected ‘;’ before ‘)’ token
+/usr/include/boost/thread/future.hpp: In constructor ‘boost::detail::future_object_base::relocker::relocker(int&)’:
+/usr/include/boost/thread/future.hpp:136:26: error: request for member ‘unlock’ in ‘((boost::detail::future_object_base::relocker*)this)->boost::detail::future_object_base::relocker::lock’, which is of non-class type ‘int’
+/usr/include/boost/thread/future.hpp: In destructor ‘boost::detail::future_object_base::relocker::~relocker()’:
+/usr/include/boost/thread/future.hpp:140:26: error: request for member ‘lock’ in ‘((boost::detail::future_object_base::relocker*)this)->boost::detail::future_object_base::relocker::lock’, which is of non-class type ‘int’
+/usr/include/boost/thread/future.hpp: In member function ‘void boost::detail::future_object_base::wait(bool)’:
+/usr/include/boost/thread/future.hpp:157:36: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:157:36: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:157:48: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:157:54: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp:157:55: error: ‘mutex’ was not declared in this scope
+/usr/include/boost/thread/future.hpp:161:21: error: ‘waiters’ was not declared in this scope
+/usr/include/boost/thread/future.hpp: In member function ‘bool boost::detail::future_object_base::timed_wait_until(const system_time&)’:
+/usr/include/boost/thread/future.hpp:171:36: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:171:36: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:171:48: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:171:54: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp:171:55: error: ‘mutex’ was not declared in this scope
+/usr/include/boost/thread/future.hpp:175:40: error: ‘waiters’ was not declared in this scope
+/usr/include/boost/thread/future.hpp: In member function ‘void boost::detail::future_object_base::mark_exceptional_finish()’:
+/usr/include/boost/thread/future.hpp:191:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:191:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:191:47: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:191:53: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp:191:54: error: ‘mutex’ was not declared in this scope
+/usr/include/boost/thread/future.hpp: In member function ‘bool boost::detail::future_object_base::has_value()’:
+/usr/include/boost/thread/future.hpp:197:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:197:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:197:47: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:197:53: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp:197:54: error: ‘mutex’ was not declared in this scope
+/usr/include/boost/thread/future.hpp: In member function ‘bool boost::detail::future_object_base::has_exception()’:
+/usr/include/boost/thread/future.hpp:202:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:202:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:202:47: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:202:53: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp:202:54: error: ‘mutex’ was not declared in this scope
+In file included from /usr/include/boost/thread.hpp:24:0,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/future.hpp: In member function ‘void boost::detail::future_object<T>::mark_finished_with_result(boost::detail::future_object<T>::source_reference_type)’:
+/usr/include/boost/thread/future.hpp:314:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:314:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:314:47: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:314:53: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp:314:54: error: ‘mutex’ was not declared in this scope
+/usr/include/boost/thread/future.hpp: In member function ‘void boost::detail::future_object<T>::mark_finished_with_result(boost::detail::future_object<T>::rvalue_source_type)’:
+/usr/include/boost/thread/future.hpp:319:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:319:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:319:47: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:319:53: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp:319:54: error: ‘mutex’ was not declared in this scope
+/usr/include/boost/thread/future.hpp: In member function ‘boost::future_state::state boost::detail::future_object<T>::get_state()’:
+/usr/include/boost/thread/future.hpp:331:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:331:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:331:47: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:331:54: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp:331:55: error: ‘mutex’ was not declared in this scope
+/usr/include/boost/thread/future.hpp: In member function ‘void boost::detail::future_object<void>::mark_finished_with_result()’:
+/usr/include/boost/thread/future.hpp:361:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:361:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:361:47: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:361:53: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp:361:54: error: ‘mutex’ was not declared in this scope
+/usr/include/boost/thread/future.hpp: In member function ‘boost::future_state::state boost::detail::future_object<void>::get_state()’:
+/usr/include/boost/thread/future.hpp:372:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:372:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:372:47: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:372:54: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp:372:55: error: ‘mutex’ was not declared in this scope
+/usr/include/boost/thread/future.hpp: At global scope:
+/usr/include/boost/thread/future.hpp:393:58: error: invalid use of ‘::’
+/usr/include/boost/thread/future.hpp:393:58: error: expected ‘;’ at end of member declaration
+/usr/include/boost/thread/future.hpp:393:67: error: ‘wait_iterator’ does not name a type
+/usr/include/boost/thread/future.hpp:397:63: error: ‘boost::detail::future_object_base::waiter_list’ is not a class or namespace
+/usr/include/boost/thread/future.hpp:397:85: error: expected ‘,’ or ‘...’ before ‘wait_iterator_’
+/usr/include/boost/thread/future.hpp:407:56: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:407:56: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:407:68: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:407:70: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:432:13: error: ‘condition_variable_any’ in namespace ‘boost’ does not name a type
+/usr/include/boost/thread/future.hpp: In constructor ‘boost::detail::future_waiter::registered_waiter::registered_waiter(const boost::shared_ptr<boost::detail::future_object_base>&, int)’:
+/usr/include/boost/thread/future.hpp:399:37: error: class ‘boost::detail::future_waiter::registered_waiter’ does not have any field named ‘wait_iterator’
+/usr/include/boost/thread/future.hpp:399:51: error: ‘wait_iterator_’ was not declared in this scope
+/usr/include/boost/thread/future.hpp:399:73: error: ‘index_’ was not declared in this scope
+/usr/include/boost/thread/future.hpp: In constructor ‘boost::detail::future_waiter::all_futures_lock::all_futures_lock(std::vector<boost::detail::future_waiter::registered_waiter>&)’:
+/usr/include/boost/thread/future.hpp:410:72: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:410:72: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:410:84: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:410:92: error: invalid conversion from ‘int*’ to ‘int’ [-fpermissive]
+/usr/include/boost/thread/future.hpp:414:32: error: invalid types ‘int[unsigned int]’ for array subscript
+/usr/include/boost/thread/future.hpp:414:53: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:414:53: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:414:65: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:414:86: error: ‘struct boost::detail::future_object_base’ has no member named ‘mutex’
+/usr/include/boost/thread/future.hpp: In member function ‘void boost::detail::future_waiter::all_futures_lock::lock()’:
+/usr/include/boost/thread/future.hpp:420:39: error: request for member ‘get’ in ‘((boost::detail::future_waiter::all_futures_lock*)this)->boost::detail::future_waiter::all_futures_lock::locks’, which is of non-class type ‘int’
+/usr/include/boost/thread/future.hpp:420:51: error: request for member ‘get’ in ‘((boost::detail::future_waiter::all_futures_lock*)this)->boost::detail::future_waiter::all_futures_lock::locks’, which is of non-class type ‘int’
+/usr/include/boost/thread/future.hpp: In member function ‘void boost::detail::future_waiter::all_futures_lock::unlock()’:
+/usr/include/boost/thread/future.hpp:427:32: error: invalid types ‘int[unsigned int]’ for array subscript
+/usr/include/boost/thread/future.hpp: In member function ‘void boost::detail::future_waiter::add(F&)’:
+/usr/include/boost/thread/future.hpp:446:101: error: ‘cv’ was not declared in this scope
+/usr/include/boost/thread/future.hpp: In member function ‘unsigned int boost::detail::future_waiter::wait()’:
+/usr/include/boost/thread/future.hpp:463:21: error: ‘cv’ was not declared in this scope
+/usr/include/boost/thread/future.hpp: In destructor ‘boost::detail::future_waiter::~future_waiter()’:
+/usr/include/boost/thread/future.hpp:471:74: error: ‘struct boost::detail::future_waiter::registered_waiter’ has no member named ‘wait_iterator’
+/usr/include/boost/thread/future.hpp: In destructor ‘boost::promise<R>::~promise()’:
+/usr/include/boost/thread/future.hpp:922:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:922:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:922:47: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:922:53: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp: In member function ‘void boost::promise<R>::set_value(typename boost::detail::future_traits<T>::source_reference_type)’:
+/usr/include/boost/thread/future.hpp:986:31: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:986:31: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:986:43: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:986:49: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp: In member function ‘void boost::promise<R>::set_value(typename boost::detail::future_traits<T>::rvalue_source_type)’:
+/usr/include/boost/thread/future.hpp:998:31: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:998:31: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:998:43: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:998:49: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp: In member function ‘void boost::promise<R>::set_exception(boost::exception_ptr)’:
+/usr/include/boost/thread/future.hpp:1009:31: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:1009:31: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:1009:43: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:1009:49: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp: In destructor ‘boost::promise<void>::~promise()’:
+/usr/include/boost/thread/future.hpp:1056:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:1056:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:1056:47: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:1056:53: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp:1056:62: error: ‘struct boost::detail::future_object<void>’ has no member named ‘mutex’
+/usr/include/boost/thread/future.hpp: In member function ‘void boost::promise<void>::set_value()’:
+/usr/include/boost/thread/future.hpp:1121:31: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:1121:31: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:1121:43: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:1121:49: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp:1121:58: error: ‘struct boost::detail::future_object<void>’ has no member named ‘mutex’
+/usr/include/boost/thread/future.hpp: In member function ‘void boost::promise<void>::set_exception(boost::exception_ptr)’:
+/usr/include/boost/thread/future.hpp:1132:31: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:1132:31: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:1132:43: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:1132:49: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp:1132:58: error: ‘struct boost::detail::future_object<void>’ has no member named ‘mutex’
+/usr/include/boost/thread/future.hpp: In member function ‘void boost::detail::task_base<R>::run()’:
+/usr/include/boost/thread/future.hpp:1164:39: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:1164:39: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:1164:51: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:1164:55: error: invalid type in declaration before ‘(’ token
+/usr/include/boost/thread/future.hpp: In member function ‘void boost::detail::task_base<R>::owner_destroyed()’:
+/usr/include/boost/thread/future.hpp:1176:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:1176:35: error: ‘mutex’ is not a member of ‘boost’
+/usr/include/boost/thread/future.hpp:1176:47: error: template argument 1 is invalid
+/usr/include/boost/thread/future.hpp:1176:51: error: invalid type in declaration before ‘(’ token
+In file included from /usr/include/boost/thread/thread.hpp:24:0,
+                 from /usr/include/boost/thread.hpp:13,
+                 from fannkuchredux.gpp-5.c++:19:
+/usr/include/boost/thread/detail/thread_group.hpp: In instantiation of ‘boost::thread* boost::thread_group::create_thread(F) [with F = boost::reference_wrapper<Task>]’:
+fannkuchredux.gpp-5.c++:158:32:   required from here
+/usr/include/boost/thread/detail/thread_group.hpp:38:13: error: ‘guard’ was not declared in this scope
+make: [fannkuchredux.gpp-5.gpp_run] Error 1 (ignored)
 rm fannkuchredux.gpp-5.c++
-1.69s to complete and log all make actions
+5.27s to complete and log all make actions
 
 COMMAND LINE:
-./fannkuchredux.gpp-5.gpp_run 12
+./fannkuchredux.gpp-5.gpp_run 10
 
-PROGRAM OUTPUT:
-3968050
-Pfannkuchen(12) = 65
+MAKE ERROR 
+

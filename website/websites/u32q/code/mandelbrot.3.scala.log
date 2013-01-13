@@ -1,12 +1,27 @@
 
-Thu, 16 Aug 2012 03:35:31 GMT
+Sat, 12 Jan 2013 18:25:57 GMT
 
 MAKE:
 mv mandelbrot.scala-3.scala mandelbrot.scala
-/usr/local/src/scala-2.9.2/bin/scalac -optimise mandelbrot.scala
-7.73s to complete and log all make actions
+/usr/local/src/scala-2.10.0/bin/scalac -optimise mandelbrot.scala
+6.72s to complete and log all make actions
 
 COMMAND LINE:
- /usr/local/src/jdk1.7.0_06/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.9.2/lib/scala-library.jar mandelbrot 16000
+ /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar mandelbrot 1000
+
+PROGRAM FAILED 
+
 
 (BINARY) PROGRAM OUTPUT NOT SHOWN
+
+Exception in thread "main" java.lang.NoClassDefFoundError: scala/actors/Actor
+	at mandelbrot.main(mandelbrot.scala)
+Caused by: java.lang.ClassNotFoundException: scala.actors.Actor
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:366)
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:355)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:354)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:423)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:356)
+	... 1 more

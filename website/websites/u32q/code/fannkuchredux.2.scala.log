@@ -1,15 +1,13 @@
 
-Thu, 16 Aug 2012 02:52:28 GMT
+Sat, 12 Jan 2013 18:14:49 GMT
 
 MAKE:
 mv fannkuchredux.scala-2.scala fannkuchredux.scala
-/usr/local/src/scala-2.9.2/bin/scalac -optimise fannkuchredux.scala
-warning: there were 1 deprecation warnings; re-run with -deprecation for details
-one warning found
-8.21s to complete and log all make actions
+/usr/local/src/scala-2.10.0/bin/scalac -optimise fannkuchredux.scala
+6.64s to complete and log all make actions
 
 COMMAND LINE:
- /usr/local/src/jdk1.7.0_06/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.9.2/lib/scala-library.jar fannkuchredux 12
+ /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar fannkuchredux 12
 
 PROGRAM OUTPUT:
 3968050
