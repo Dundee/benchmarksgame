@@ -1,14 +1,17 @@
 
-Mon, 17 Oct 2011 22:54:10 GMT
+Sat, 12 Jan 2013 12:09:13 GMT
 
 MAKE:
 /usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native -pthread  threadring.gpp-4.c++ -o threadring.gpp-4.c++.o &&  \
         /usr/bin/g++ threadring.gpp-4.c++.o -o threadring.gpp-4.gpp_run -lboost_system -lpthread 
+threadring.gpp-4.c++:23:32: fatal error: boost/scoped_ptr.hpp: No such file or directory
+compilation terminated.
+make: [threadring.gpp-4.gpp_run] Error 1 (ignored)
 rm threadring.gpp-4.c++
-1.61s to complete and log all make actions
+0.09s to complete and log all make actions
 
 COMMAND LINE:
-./threadring.gpp-4.gpp_run 50000000
+./threadring.gpp-4.gpp_run 500000
 
-PROGRAM OUTPUT:
-292
+MAKE ERROR 
+

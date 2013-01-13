@@ -191,7 +191,7 @@
       <span class="hl kwb">static char</span> names<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">][</span>N<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">],</span> table<span class="hl opt">[</span><span class="hl num">4</span><span class="hl opt">] = {</span> <span class="hl str">'A'</span><span class="hl opt">,</span> <span class="hl str">'C'</span><span class="hl opt">,</span> <span class="hl str">'T'</span><span class="hl opt">,</span> <span class="hl str">'G'</span> <span class="hl opt">};</span>
       <span class="hl kwb">static</span> u32 on <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
       u64 bits <span class="hl opt">=</span> packed<span class="hl opt">;</span>
-      on ^<span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      on <span class="hl opt">^=</span> <span class="hl num">1</span><span class="hl opt">;</span>
       <span class="hl kwa">for</span> <span class="hl opt">(</span> u32 i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> N<span class="hl opt">;</span> i<span class="hl opt">++,</span> bits <span class="hl opt">&gt;&gt;=</span> <span class="hl num">2</span> <span class="hl opt">)</span>
          names<span class="hl opt">[</span>on<span class="hl opt">][</span>i<span class="hl opt">] =</span> table<span class="hl opt">[</span>bits <span class="hl opt">&amp;</span> <span class="hl num">3</span><span class="hl opt">];</span>
       names<span class="hl opt">[</span>on<span class="hl opt">][</span>N<span class="hl opt">] =</span> <span class="hl num">0</span><span class="hl opt">;</span>

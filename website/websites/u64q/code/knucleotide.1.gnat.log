@@ -1,5 +1,5 @@
 
-Mon, 29 Oct 2012 17:37:40 GMT
+Sat, 12 Jan 2013 08:23:20 GMT
 
 MAKE:
 /usr/bin/gnatchop -r -w knucleotide.gnat
@@ -34,7 +34,7 @@ gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp st
 gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp statistics-work.adb
 gnatbind -x knucleotide.ali
 gnatlink knucleotide.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o knucleotide.gnat_run
-8.14s to complete and log all make actions
+4.31s to complete and log all make actions
 
 COMMAND LINE:
 ./knucleotide.gnat_run 0 < knucleotide-input25000000.txt

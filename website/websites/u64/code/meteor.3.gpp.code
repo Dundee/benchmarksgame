@@ -555,7 +555,7 @@ Board<span class="hl opt">::</span><span class="hl kwd">Board</span><span class=
    <span class="hl kwa">while</span> <span class="hl opt">((</span>rNew <span class="hl opt">!=</span> toFill<span class="hl opt">) &amp;&amp; (</span>rNew <span class="hl opt">!=</span> region<span class="hl opt">));</span>
 
    <span class="hl slc">// subtract empty region from board</span>
-   toFill ^<span class="hl opt">=</span> rNew<span class="hl opt">;</span>
+   toFill <span class="hl opt">^=</span> rNew<span class="hl opt">;</span>
 
    TUInt32 nEmptyCells <span class="hl opt">=</span> <span class="hl kwd">countOnes</span><span class="hl opt">(</span>toFill<span class="hl opt">);</span>
    <span class="hl kwa">if</span> <span class="hl opt">(</span>nEmptyCells <span class="hl opt">%</span> Piece<span class="hl opt">::</span>N_ELEM <span class="hl opt">!=</span> <span class="hl num">0</span><span class="hl opt">)</span>
@@ -622,7 +622,7 @@ Board<span class="hl opt">::</span><span class="hl kwd">Board</span><span class=
    BitVec bottom <span class="hl opt">= (</span>TOP_ROW <span class="hl opt">&lt;&lt; (</span><span class="hl num">5</span> <span class="hl opt">*</span> N_COL<span class="hl opt">));</span>
    <span class="hl kwb">bool</span> filled <span class="hl opt">= ((</span>bottom <span class="hl opt">&amp;</span> toFill<span class="hl opt">) ==</span> bottom<span class="hl opt">);</span>
    <span class="hl kwa">while</span> <span class="hl opt">((</span>bottom <span class="hl opt">&amp;</span> toFill<span class="hl opt">) ==</span> bottom<span class="hl opt">) {</span>
-      toFill ^<span class="hl opt">=</span> bottom<span class="hl opt">;</span>
+      toFill <span class="hl opt">^=</span> bottom<span class="hl opt">;</span>
       bottom <span class="hl opt">&gt;&gt;=</span> N_COL<span class="hl opt">;</span>
    <span class="hl opt">}</span>
 
@@ -711,7 +711,7 @@ Board<span class="hl opt">::</span><span class="hl kwd">Board</span><span class=
 
          <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwd">hasBadIslands</span><span class="hl opt">(</span>boardVec<span class="hl opt">,</span> row<span class="hl opt">)) {</span>
             <span class="hl slc">// remove the piece from the board vector</span>
-            boardVec ^<span class="hl opt">=</span> pieceVec<span class="hl opt">;</span>
+            boardVec <span class="hl opt">^=</span> pieceVec<span class="hl opt">;</span>
             <span class="hl kwa">continue</span><span class="hl opt">;</span>
          <span class="hl opt">}</span>
 
@@ -726,7 +726,7 @@ Board<span class="hl opt">::</span><span class="hl kwd">Board</span><span class=
             <span class="hl kwd">recordSolution</span><span class="hl opt">(</span>m_curSolution<span class="hl opt">);</span>
 
          <span class="hl slc">// remove the piece before continuing with a new piece</span>
-         boardVec ^<span class="hl opt">=</span> pieceVec<span class="hl opt">;</span>
+         boardVec <span class="hl opt">^=</span> pieceVec<span class="hl opt">;</span>
          m_curSolution<span class="hl opt">.</span><span class="hl kwd">removeLastPiece</span><span class="hl opt">();</span>
       <span class="hl opt">}</span>
 

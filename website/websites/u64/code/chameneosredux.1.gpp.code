@@ -52,7 +52,7 @@
 
 <span class="hl kwb">enum</span> COLOR <span class="hl opt">{</span>   BLUE <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span>   RED <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">,</span>   YELLOW <span class="hl opt">=</span> <span class="hl num">2</span>   <span class="hl opt">};</span>
 COLOR 
-<span class="hl kwc">operator</span> ^ <span class="hl opt">(</span>COLOR c1<span class="hl opt">,</span> COLOR c2<span class="hl opt">)</span>
+<span class="hl kwc">operator</span> <span class="hl opt">^ (</span>COLOR c1<span class="hl opt">,</span> COLOR c2<span class="hl opt">)</span>
 <span class="hl opt">{</span>
    <span class="hl kwa">switch</span> <span class="hl opt">(</span>c1<span class="hl opt">)</span>   <span class="hl slc">// game rule</span>
    <span class="hl opt">{</span>
@@ -215,7 +215,7 @@ std<span class="hl opt">::</span>string
       <span class="hl opt">++</span>count_<span class="hl opt">;</span>
       <span class="hl opt">++</span>other<span class="hl opt">.</span>count_<span class="hl opt">;</span>
 
-      COLOR new_color   <span class="hl opt">=</span> <span class="hl kwa">this</span><span class="hl opt">-&gt;</span>color_ ^ other<span class="hl opt">.</span>color_<span class="hl opt">;</span>
+      COLOR new_color   <span class="hl opt">=</span> <span class="hl kwa">this</span><span class="hl opt">-&gt;</span>color_ <span class="hl opt">^</span> other<span class="hl opt">.</span>color_<span class="hl opt">;</span>
       other<span class="hl opt">.</span>color_   <span class="hl opt">=</span> color_   <span class="hl opt">=</span> new_color<span class="hl opt">;</span>
 
       <span class="hl slc">// submit another meeting request, for current creature + other creature.</span>
@@ -295,7 +295,7 @@ std<span class="hl opt">::</span>string
    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> c1 <span class="hl opt">=</span> BLUE<span class="hl opt">;</span> c1 <span class="hl opt">&lt;=</span> YELLOW<span class="hl opt">; ++</span>c1<span class="hl opt">)</span>
    <span class="hl opt">{</span>
       <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> c2 <span class="hl opt">=</span> BLUE<span class="hl opt">;</span> c2 <span class="hl opt">&lt;=</span> YELLOW<span class="hl opt">; ++</span>c2<span class="hl opt">)</span>
-         std<span class="hl opt">::</span>cout <span class="hl opt">&lt;&lt; (</span>fmt <span class="hl opt">% (</span>COLOR<span class="hl opt">)</span>c1 <span class="hl opt">% (</span>COLOR<span class="hl opt">)</span>c2 <span class="hl opt">% ((</span>COLOR<span class="hl opt">)</span>c1 ^ <span class="hl opt">(</span>COLOR<span class="hl opt">)</span>c2<span class="hl opt">));</span>
+         std<span class="hl opt">::</span>cout <span class="hl opt">&lt;&lt; (</span>fmt <span class="hl opt">% (</span>COLOR<span class="hl opt">)</span>c1 <span class="hl opt">% (</span>COLOR<span class="hl opt">)</span>c2 <span class="hl opt">% ((</span>COLOR<span class="hl opt">)</span>c1 <span class="hl opt">^ (</span>COLOR<span class="hl opt">)</span>c2<span class="hl opt">));</span>
    <span class="hl opt">}</span>
 
    std<span class="hl opt">::</span>cout <span class="hl opt">&lt;&lt;</span> std<span class="hl opt">::</span>endl<span class="hl opt">;</span>

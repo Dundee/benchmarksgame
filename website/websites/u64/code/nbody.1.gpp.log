@@ -1,11 +1,11 @@
 
-Mon, 17 Oct 2011 11:56:00 GMT
+Sat, 12 Jan 2013 11:26:35 GMT
 
 MAKE:
-/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native -lm -mfpmath=sse -msse2 --std=c++0x -mfpmath=sse -msse3 nbody.c++ -o nbody.c++.o &&  \
+/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 --std=c++0x nbody.c++ -o nbody.c++.o &&  \
         /usr/bin/g++ nbody.c++.o -o nbody.gpp_run  
 rm nbody.c++
-0.27s to complete and log all make actions
+0.29s to complete and log all make actions
 
 COMMAND LINE:
 ./nbody.gpp_run 50000000

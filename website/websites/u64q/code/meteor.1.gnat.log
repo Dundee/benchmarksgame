@@ -1,5 +1,5 @@
 
-Mon, 21 May 2012 19:37:12 GMT
+Sat, 12 Jan 2013 08:40:27 GMT
 
 MAKE:
 /usr/bin/gnatchop -r -w meteor.gnat
@@ -22,7 +22,7 @@ meteor.gnat:229:04: warning: pragma appears too late, ignored
 gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp meteors-solution.adb
 gnatbind -x meteor.ali
 gnatlink meteor.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o meteor.gnat_run
-1.47s to complete and log all make actions
+1.48s to complete and log all make actions
 
 COMMAND LINE:
 ./meteor.gnat_run 2098

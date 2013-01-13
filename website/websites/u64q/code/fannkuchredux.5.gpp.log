@@ -1,15 +1,17 @@
 
-Sun, 29 Apr 2012 02:54:03 GMT
+Sat, 12 Jan 2013 08:09:01 GMT
 
 MAKE:
-/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -pthread -flax-vector-conversions fannkuchredux.gpp-5.c++ -o fannkuchredux.gpp-5.c++.o &&  \
-        /usr/bin/g++ fannkuchredux.gpp-5.c++.o -o fannkuchredux.gpp-5.gpp_run -lpthread -lboost_thread 
+/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -std=c++0x fannkuchredux.gpp-5.c++ -o fannkuchredux.gpp-5.c++.o &&  \
+        /usr/bin/g++ fannkuchredux.gpp-5.c++.o -o fannkuchredux.gpp-5.gpp_run -lpthread 
+fannkuchredux.gpp-5.c++:19:28: fatal error: boost/thread.hpp: No such file or directory
+compilation terminated.
+make: [fannkuchredux.gpp-5.gpp_run] Error 1 (ignored)
 rm fannkuchredux.gpp-5.c++
-2.35s to complete and log all make actions
+0.30s to complete and log all make actions
 
 COMMAND LINE:
-./fannkuchredux.gpp-5.gpp_run 12
+./fannkuchredux.gpp-5.gpp_run 10
 
-PROGRAM OUTPUT:
-3968050
-Pfannkuchen(12) = 65
+MAKE ERROR 
+

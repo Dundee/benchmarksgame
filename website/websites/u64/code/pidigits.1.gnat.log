@@ -1,5 +1,5 @@
 
-Fri, 18 May 2012 01:35:27 GMT
+Sat, 12 Jan 2013 11:29:52 GMT
 
 MAKE:
 /usr/bin/gnatchop -r -w pidigits.gnat
@@ -9,7 +9,7 @@ splitting pidigits.gnat into:
 gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp pidigits.adb
 gnatbind -x pidigits.ali
 gnatlink pidigits.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o pidigits.gnat_run
-0.31s to complete and log all make actions
+0.32s to complete and log all make actions
 
 COMMAND LINE:
 ./pidigits.gnat_run 10000

@@ -1,2 +1,2 @@
 <p>GNAT 4.6</p>
-<p>gcc version 4.6.3 (Ubuntu/Linaro 4.6.3-1ubuntu5)</p>
+<p>gcc version 4.7.2 (Ubuntu/Linaro 4.7.2-2ubuntu1)</p>
