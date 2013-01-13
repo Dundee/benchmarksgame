@@ -1,13 +1,37 @@
 
-Fri, 15 Jun 2012 23:38:37 GMT
+Sun, 13 Jan 2013 05:18:33 GMT
 
 MAKE:
 mv spectralnorm.scala-4.scala spectralnorm.scala
-/usr/local/src/scala-2.9.2/bin/scalac spectralnorm.scala
-7.73s to complete and log all make actions
+/usr/local/src/scala-2.10.0/bin/scalac spectralnorm.scala
+warning: there were 2 deprecation warnings; re-run with -deprecation for details
+one warning found
+6.65s to complete and log all make actions
 
 COMMAND LINE:
- /usr/local/src/jdk1.7.0_05/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.9.2/lib/scala-library.jar spectralnorm 5500
+ /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar spectralnorm 500
+
+PROGRAM FAILED 
+
 
 PROGRAM OUTPUT:
-1.274224153
+
+Exception in thread "main" java.lang.NoClassDefFoundError: scala/actors/Future
+	at RecursiveSpectralNorm$$anonfun$fastATimesVector$1.apply$mcVI$sp(spectralnorm.scala:81)
+	at scala.collection.immutable.Range.foreach$mVc$sp(Range.scala:142)
+	at RecursiveSpectralNorm.fastATimesVector(spectralnorm.scala:80)
+	at RecursiveSpectralNorm.computeATransposeTimesATimesVec(spectralnorm.scala:103)
+	at RecursiveSpectralNorm.updateUandV(spectralnorm.scala:109)
+	at RecursiveSpectralNorm.approximateHelper$1(spectralnorm.scala:138)
+	at RecursiveSpectralNorm.approximate(spectralnorm.scala:141)
+	at spectralnorm$.main(spectralnorm.scala:15)
+	at spectralnorm.main(spectralnorm.scala)
+Caused by: java.lang.ClassNotFoundException: scala.actors.Future
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:366)
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:355)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:354)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:423)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:356)
+	... 9 more

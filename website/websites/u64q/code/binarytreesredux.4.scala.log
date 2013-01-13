@@ -1,17 +1,17 @@
 
-Wed, 12 Dec 2012 18:22:10 GMT
+Sun, 13 Jan 2013 03:26:04 GMT
 
 MAKE:
 mv binarytreesredux.scala-4.scala binarytreesredux.scala
-/usr/local/src/scala-2.10.0-RC5/bin/scalac -optimise binarytreesredux.scala
+/usr/local/src/scala-2.10.0/bin/scalac -optimise binarytreesredux.scala
 binarytreesredux.scala:12: warning: This catches all Throwables. If this is really intended, use `case _ : Throwable` to clear this warning.
     val n = try{ args(0).toInt } catch { case _ => 1 }
                                               ^
 one warning found
-5.71s to complete and log all make actions
+5.68s to complete and log all make actions
 
 COMMAND LINE:
- /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts -Xms128m -Xmx128m -Xbootclasspath/a:/usr/local/src/scala-2.10.0-RC5/lib/scala-library.jar binarytreesredux 20
+ /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts -Xms128m -Xmx128m -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar binarytreesredux 20
 
 PROGRAM OUTPUT:
 stretch tree of depth 21	 check: -1

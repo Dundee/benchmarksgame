@@ -1,13 +1,13 @@
 
-Fri, 15 Jun 2012 21:08:33 GMT
+Sun, 13 Jan 2013 04:24:55 GMT
 
 MAKE:
 mv chameneosredux.scala-2.scala chameneosredux.scala
-/usr/local/src/scala-2.9.2/bin/scalac chameneosredux.scala
-7.80s to complete and log all make actions
+/usr/local/src/scala-2.10.0/bin/scalac chameneosredux.scala
+7.69s to complete and log all make actions
 
 COMMAND LINE:
- /usr/local/src/jdk1.7.0_05/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.9.2/lib/scala-library.jar chameneosredux 6000000
+ /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar chameneosredux 6000000
 
 PROGRAM OUTPUT:
 blue + blue -> blue
@@ -21,21 +21,21 @@ yellow + red -> blue
 yellow + yellow -> yellow
 
  blue red yellow
-4002508 zero
-3994380 zero
-4003112 zero
+3991289 zero
+4003925 zero
+4004786 zero
 one two zero zero zero zero zero zero
 
  blue red yellow red yellow blue red yellow red blue
-1199151 zero
-1210716 zero
-1214402 zero
-1193085 zero
-1200436 zero
-1206046 zero
-1196750 zero
-1193357 zero
-1189191 zero
-1196866 zero
+1200950 zero
+1208437 zero
+1204496 zero
+1209734 zero
+1195169 zero
+1178936 zero
+1198739 zero
+1200973 zero
+1206427 zero
+1196139 zero
 one two zero zero zero zero zero zero
 

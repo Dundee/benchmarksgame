@@ -1,15 +1,19 @@
 
-Fri, 15 Jun 2012 21:05:00 GMT
+Sun, 13 Jan 2013 04:11:05 GMT
 
 MAKE:
 mv binarytrees.scala binarytrees.scala
 mv: `binarytrees.scala' and `binarytrees.scala' are the same file
 make: [binarytrees.scala_run] Error 1 (ignored)
-/usr/local/src/scala-2.9.2/bin/scalac binarytrees.scala
-5.10s to complete and log all make actions
+/usr/local/src/scala-2.10.0/bin/scalac binarytrees.scala
+binarytrees.scala:33: warning: This catches all Throwables. If this is really intended, use `case _ : Throwable` to clear this warning.
+    val n = try{ args(0).toInt } catch { case _ => 1 }
+                                              ^
+one warning found
+5.33s to complete and log all make actions
 
 COMMAND LINE:
- /usr/local/src/jdk1.7.0_05/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.9.2/lib/scala-library.jar binarytrees 20
+ /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar binarytrees 20
 
 PROGRAM OUTPUT:
 stretch tree of depth 21	 check: -1
