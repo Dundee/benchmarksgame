@@ -1,8 +1,9 @@
 /*
  * The Computer Language Benchmarks Game
- * http://shootout.alioth.debian.org/
+ * http://benchmarksgame.alioth.debian.org/
  * contributed by Rex Kerr
  * algorithm follows Java version #4 by Anthony Donnefort
+ * removed deprecated api by Benedikt Nordhoff
  */
 
 object revcomp extends java.io.ByteArrayOutputStream {
@@ -12,7 +13,7 @@ object revcomp extends java.io.ByteArrayOutputStream {
   for (i <- 0 to 127) { table(i) = i.toByte }
   for ((i,o) <- "ACGTUMRWSYKVHDB".toList zip "TGCAAKYWSRMBDHVN".toList) {
     table(i) = o.toByte
-    table(i.toLowerCase) = o.toByte
+    table(i.toLower) = o.toByte
   }
 
   def rcOut = {
