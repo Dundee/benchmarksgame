@@ -1,0 +1,1 @@
+<p>The program rewrites the regular expressions as string variants and then uses <a href="http://www.erlang.org/eeps/eep-0031.html">sub-string search and replace</a> (ala Boyer-More and Aho-Corassick).</a></p>
