@@ -1,0 +1,381 @@
+<span class="hl com">/* </span>
+<span class="hl com"> * The Computer Language Benchmarks Game </span>
+<span class="hl com"> * http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * Contributed by Mr Ledrug</span>
+<span class="hl com">*/</span>
+
+<span class="hl ppc">#include &lt;stdio.h&gt;</span>
+<span class="hl ppc">#include &lt;stdlib.h&gt;</span>
+<span class="hl ppc">#include &lt;string.h&gt;</span>
+<span class="hl ppc">#include &lt;unistd.h&gt;</span>
+<span class="hl ppc">#include &lt;ctype.h&gt;</span>
+<span class="hl ppc">#include &lt;stdint.h&gt;</span>
+<span class="hl ppc">#include &lt;pthread.h&gt;</span>
+
+<span class="hl kwc">typedef</span> <span class="hl kwb">unsigned char</span> byte<span class="hl opt">;</span>
+byte <span class="hl opt">*</span> input<span class="hl opt">;</span>
+<span class="hl kwb">size_t</span> input_len<span class="hl opt">;</span>
+
+byte trans<span class="hl opt">[</span><span class="hl num">128</span><span class="hl opt">];</span>
+<span class="hl kwb">const char</span> <span class="hl opt">*</span>codes <span class="hl opt">=</span> <span class="hl str">&quot;ACGT&quot;</span><span class="hl opt">;</span>
+
+<span class="hl slc">// read in all the &quot;acgt&quot;s and translate them to numbers 0-3</span>
+<span class="hl kwb">void</span> <span class="hl kwd">get_input</span><span class="hl opt">(</span><span class="hl kwb">void</span><span class="hl opt">) {</span>
+   <span class="hl kwb">int</span> fd <span class="hl opt">=</span> <span class="hl kwd">fileno</span><span class="hl opt">(</span>stdin<span class="hl opt">);</span>
+   <span class="hl kwb">size_t</span> buflen <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">&lt;&lt;</span><span class="hl num">20</span><span class="hl opt">,</span> len<span class="hl opt">,</span> i<span class="hl opt">,</span> section <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+   input <span class="hl opt">=</span> <span class="hl kwd">malloc</span><span class="hl opt">(</span>buflen <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">);</span>
+   input_len <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) {</span>
+      len <span class="hl opt">=</span> <span class="hl kwd">read</span><span class="hl opt">(</span>fd<span class="hl opt">,</span> input<span class="hl opt">,</span> buflen<span class="hl opt">);</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> len<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>input<span class="hl opt">[</span>i<span class="hl opt">] ==</span> <span class="hl str">'&gt;'</span> <span class="hl opt">&amp;&amp; ++</span>section <span class="hl opt">==</span> <span class="hl num">3</span><span class="hl opt">)</span>
+            <span class="hl kwa">goto</span> found<span class="hl opt">;</span>
+
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>len <span class="hl opt">&lt;</span> buflen<span class="hl opt">)</span> <span class="hl kwa">return</span><span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+found<span class="hl opt">:</span>
+   input_len <span class="hl opt">=</span> buflen <span class="hl opt">-</span> i<span class="hl opt">;</span>
+   <span class="hl kwd">memmove</span><span class="hl opt">(</span>input<span class="hl opt">,</span> input <span class="hl opt">+</span> i<span class="hl opt">,</span> input_len<span class="hl opt">);</span>
+   input<span class="hl opt">[</span>input_len<span class="hl opt">] =</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) {</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>buflen <span class="hl opt">&lt;</span> input_len <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">) {</span>
+         buflen <span class="hl opt">*=</span> <span class="hl num">2</span><span class="hl opt">;</span>
+         input <span class="hl opt">=</span> <span class="hl kwd">realloc</span><span class="hl opt">(</span>input<span class="hl opt">,</span> buflen <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+
+      len <span class="hl opt">=</span> <span class="hl kwd">read</span><span class="hl opt">(</span>fd<span class="hl opt">,</span> input <span class="hl opt">+</span> input_len<span class="hl opt">,</span> buflen <span class="hl opt">-</span> input_len<span class="hl opt">);</span>
+      input_len <span class="hl opt">+=</span> len<span class="hl opt">;</span>
+      input<span class="hl opt">[</span>input_len<span class="hl opt">] =</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>input_len <span class="hl opt">&lt;</span> buflen<span class="hl opt">) {</span>
+         byte <span class="hl opt">*</span>in <span class="hl opt">=</span> input<span class="hl opt">, *</span>ptr <span class="hl opt">=</span> input<span class="hl opt">;</span>
+         <span class="hl kwb">int</span> c<span class="hl opt">;</span>
+
+         <span class="hl kwa">while</span> <span class="hl opt">(*</span>in <span class="hl opt">&amp;&amp; *</span>in <span class="hl opt">!=</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">)</span> in<span class="hl opt">++;</span>
+
+         <span class="hl kwa">while</span> <span class="hl opt">((</span>c <span class="hl opt">= *</span>in<span class="hl opt">++))</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>c <span class="hl opt">!=</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">)</span>
+               <span class="hl opt">*</span>ptr<span class="hl opt">++ =</span> trans<span class="hl opt">[</span>c<span class="hl opt">];</span>
+
+         input_len <span class="hl opt">=</span> ptr <span class="hl opt">-</span> input<span class="hl opt">;</span>
+         input<span class="hl opt">[</span>input_len<span class="hl opt">] =</span> <span class="hl num">0</span><span class="hl opt">;</span>
+         <span class="hl kwa">return</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl ppc">#define SIMPLE_MAX 8</span>
+<span class="hl kwc">typedef</span> <span class="hl kwb">struct</span> <span class="hl opt">{</span> <span class="hl kwb">int</span> key<span class="hl opt">,</span> count<span class="hl opt">; }</span> count_t<span class="hl opt">;</span>
+count_t <span class="hl opt">*</span>counts<span class="hl opt">[</span>SIMPLE_MAX <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">];</span>
+
+<span class="hl kwc">typedef</span> <span class="hl kwb">uint64_t</span> hkey_t<span class="hl opt">;</span>
+<span class="hl kwc">typedef</span> <span class="hl kwb">struct</span> <span class="hl opt">{</span>
+   hkey_t key<span class="hl opt">;</span>
+   <span class="hl kwb">int</span> count<span class="hl opt">;</span>
+<span class="hl opt">}</span> hrec_t<span class="hl opt">;</span>
+
+<span class="hl kwc">typedef</span> <span class="hl kwb">struct</span> <span class="hl opt">{</span>
+   <span class="hl kwb">int</span> size<span class="hl opt">,</span> cap<span class="hl opt">,</span> limit<span class="hl opt">,</span> mask<span class="hl opt">;</span>
+   hrec_t <span class="hl opt">*</span>table<span class="hl opt">;</span>
+   pthread_mutex_t lock<span class="hl opt">;</span>
+<span class="hl opt">}</span> ht_table<span class="hl opt">;</span>
+
+ht_table tables<span class="hl opt">[</span><span class="hl num">19</span><span class="hl opt">];</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">ht_init</span><span class="hl opt">(</span>ht_table <span class="hl opt">*</span>t<span class="hl opt">) {</span>
+   t<span class="hl opt">-&gt;</span>size <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   t<span class="hl opt">-&gt;</span>cap <span class="hl opt">=</span> <span class="hl num">8</span><span class="hl opt">;</span>
+   t<span class="hl opt">-&gt;</span>limit <span class="hl opt">=</span> t<span class="hl opt">-&gt;</span>cap <span class="hl opt">/</span> <span class="hl num">2</span><span class="hl opt">;</span>
+   t<span class="hl opt">-&gt;</span>mask <span class="hl opt">=</span> t<span class="hl opt">-&gt;</span>cap <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+   t<span class="hl opt">-&gt;</span>table <span class="hl opt">=</span> <span class="hl kwd">calloc</span><span class="hl opt">(</span>t<span class="hl opt">-&gt;</span>cap<span class="hl opt">,</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span>hrec_t<span class="hl opt">));</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">extend_htable</span><span class="hl opt">(</span>ht_table <span class="hl opt">*</span>t<span class="hl opt">) {</span>
+   <span class="hl kwb">int</span> i<span class="hl opt">;</span>
+   <span class="hl kwb">int</span> new_cap <span class="hl opt">=</span> t<span class="hl opt">-&gt;</span>cap <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">;</span>
+   t<span class="hl opt">-&gt;</span>limit <span class="hl opt">=</span> new_cap <span class="hl opt">/</span> <span class="hl num">2</span><span class="hl opt">;</span>
+   t<span class="hl opt">-&gt;</span>mask <span class="hl opt">=</span> new_cap <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+
+   hrec_t <span class="hl opt">*</span><span class="hl kwa">new</span> <span class="hl opt">=</span> <span class="hl kwd">calloc</span><span class="hl opt">(</span>new_cap<span class="hl opt">,</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span>hrec_t<span class="hl opt">));</span>
+   hrec_t <span class="hl opt">*</span>old <span class="hl opt">=</span> t<span class="hl opt">-&gt;</span>table<span class="hl opt">;</span>
+
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> t<span class="hl opt">-&gt;</span>cap<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(!</span>old<span class="hl opt">[</span>i<span class="hl opt">].</span>count<span class="hl opt">)</span> <span class="hl kwa">continue</span><span class="hl opt">;</span>
+      hrec_t <span class="hl opt">*</span>p <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl opt">+ (</span>old<span class="hl opt">[</span>i<span class="hl opt">].</span>key <span class="hl opt">&amp;</span> t<span class="hl opt">-&gt;</span>mask<span class="hl opt">);</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(!</span>p<span class="hl opt">-&gt;</span>count<span class="hl opt">) {</span>
+         <span class="hl opt">*</span>p <span class="hl opt">=</span> old<span class="hl opt">[</span>i<span class="hl opt">];</span>
+         <span class="hl kwa">continue</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) {</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(--</span>p <span class="hl opt">&lt;</span> <span class="hl kwa">new</span><span class="hl opt">)</span>
+            p <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl opt">+</span> t<span class="hl opt">-&gt;</span>mask<span class="hl opt">;</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>p<span class="hl opt">-&gt;</span>count<span class="hl opt">)</span> <span class="hl kwa">continue</span><span class="hl opt">;</span>
+         <span class="hl opt">*</span>p <span class="hl opt">=</span> old<span class="hl opt">[</span>i<span class="hl opt">];</span>
+         <span class="hl kwa">break</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+   t<span class="hl opt">-&gt;</span>table <span class="hl opt">=</span> <span class="hl kwa">new</span><span class="hl opt">;</span>
+   t<span class="hl opt">-&gt;</span>cap <span class="hl opt">=</span> new_cap<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl slc">// after each thread finished a slice, lock and update the overall table</span>
+<span class="hl kwb">void</span> <span class="hl kwd">hash_merge</span><span class="hl opt">(</span>ht_table <span class="hl opt">*</span>a<span class="hl opt">,</span> ht_table <span class="hl opt">*</span>b<span class="hl opt">) {</span>
+   <span class="hl kwb">int</span> i<span class="hl opt">;</span>
+   hrec_t <span class="hl opt">*</span>in<span class="hl opt">;</span>
+
+   <span class="hl kwd">pthread_mutex_lock</span><span class="hl opt">(&amp;</span>a<span class="hl opt">-&gt;</span>lock<span class="hl opt">);</span>
+
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> in <span class="hl opt">=</span> b<span class="hl opt">-&gt;</span>table<span class="hl opt">;</span> i <span class="hl opt">&lt;</span> b<span class="hl opt">-&gt;</span>cap<span class="hl opt">;</span> i<span class="hl opt">++,</span> in<span class="hl opt">++) {</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(!</span>in<span class="hl opt">-&gt;</span>key<span class="hl opt">)</span> <span class="hl kwa">continue</span><span class="hl opt">;</span>
+      hrec_t <span class="hl opt">*</span>p <span class="hl opt">=</span> a<span class="hl opt">-&gt;</span>table <span class="hl opt">+ (</span>in<span class="hl opt">-&gt;</span>key <span class="hl opt">&amp;</span> a<span class="hl opt">-&gt;</span>mask<span class="hl opt">);</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) {</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(!</span>p<span class="hl opt">-&gt;</span>key<span class="hl opt">) {</span>
+            <span class="hl opt">*</span>p <span class="hl opt">= *</span>in<span class="hl opt">;</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>a<span class="hl opt">-&gt;</span>size<span class="hl opt">++ ==</span> a<span class="hl opt">-&gt;</span>limit<span class="hl opt">)</span>
+               <span class="hl kwd">extend_htable</span><span class="hl opt">(</span>a<span class="hl opt">);</span>
+            <span class="hl kwa">break</span><span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>p<span class="hl opt">-&gt;</span>key <span class="hl opt">==</span> in<span class="hl opt">-&gt;</span>key<span class="hl opt">) {</span>
+            p<span class="hl opt">-&gt;</span>count <span class="hl opt">+=</span> in<span class="hl opt">-&gt;</span>count<span class="hl opt">;</span>
+            <span class="hl kwa">break</span><span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(--</span>p <span class="hl opt">&lt;</span> a<span class="hl opt">-&gt;</span>table<span class="hl opt">)</span>
+            p <span class="hl opt">=</span> a<span class="hl opt">-&gt;</span>table <span class="hl opt">+</span> a<span class="hl opt">-&gt;</span>mask<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwd">pthread_mutex_unlock</span><span class="hl opt">(&amp;</span>a<span class="hl opt">-&gt;</span>lock<span class="hl opt">);</span>
+   <span class="hl kwd">free</span><span class="hl opt">(</span>b<span class="hl opt">-&gt;</span>table<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl slc">// hash key is just len numbers of 2-bit inters joined together</span>
+<span class="hl kwb">void</span> <span class="hl kwd">count_hash</span><span class="hl opt">(</span>byte <span class="hl opt">*</span>s<span class="hl opt">,</span> byte <span class="hl opt">*</span>e<span class="hl opt">,</span> <span class="hl kwb">int</span> len<span class="hl opt">,</span> <span class="hl kwb">int</span> step<span class="hl opt">) {</span>
+   <span class="hl kwb">int</span> i<span class="hl opt">;</span>
+
+   ht_table t<span class="hl opt">;</span>
+   <span class="hl kwd">ht_init</span><span class="hl opt">(&amp;</span>t<span class="hl opt">);</span>
+
+   <span class="hl kwb">void</span> <span class="hl kwd">inc_key</span><span class="hl opt">(</span>hkey_t key<span class="hl opt">) {</span>
+      <span class="hl kwb">int</span> k <span class="hl opt">=</span> key <span class="hl opt">&amp;</span> t<span class="hl opt">.</span>mask<span class="hl opt">;</span>
+      hrec_t <span class="hl opt">*</span>p <span class="hl opt">=</span> t<span class="hl opt">.</span>table <span class="hl opt">+</span> k<span class="hl opt">;</span>
+
+      <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) {</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span>p<span class="hl opt">-&gt;</span>key <span class="hl opt">==</span> key<span class="hl opt">) {</span>
+            p<span class="hl opt">-&gt;</span>count<span class="hl opt">++;</span>
+            <span class="hl kwa">return</span><span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(!</span>p<span class="hl opt">-&gt;</span>key<span class="hl opt">) {</span>
+            p<span class="hl opt">-&gt;</span>key <span class="hl opt">=</span> key<span class="hl opt">;</span>
+            p<span class="hl opt">-&gt;</span>count <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(++</span>t<span class="hl opt">.</span>size <span class="hl opt">==</span> t<span class="hl opt">.</span>limit<span class="hl opt">)</span>
+               <span class="hl kwd">extend_htable</span><span class="hl opt">(&amp;</span>t<span class="hl opt">);</span>
+            <span class="hl kwa">return</span><span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(--</span>p <span class="hl opt">&lt;</span> t<span class="hl opt">.</span>table<span class="hl opt">)</span>
+            p <span class="hl opt">=</span> t<span class="hl opt">.</span>table <span class="hl opt">+</span> t<span class="hl opt">.</span>mask<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   e <span class="hl opt">-=</span> len<span class="hl opt">;</span>
+   <span class="hl kwa">while</span> <span class="hl opt">(</span>s <span class="hl opt">&lt;</span> e<span class="hl opt">) {</span>
+      hkey_t key <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> len<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+         key <span class="hl opt">= (</span>key <span class="hl opt">&lt;&lt;</span> <span class="hl num">2</span><span class="hl opt">) |</span> s<span class="hl opt">[</span>i<span class="hl opt">];</span>
+      <span class="hl kwd">inc_key</span><span class="hl opt">(</span>key <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">);</span>
+      s <span class="hl opt">+=</span> step<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwd">hash_merge</span><span class="hl opt">(</span>tables <span class="hl opt">+</span> len<span class="hl opt">, &amp;</span>t<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl slc">// small sequences just map to array indices</span>
+<span class="hl kwb">void</span> <span class="hl kwd">count_simple</span><span class="hl opt">(</span><span class="hl kwb">int</span> slen<span class="hl opt">) {</span>
+   <span class="hl kwb">int</span> i<span class="hl opt">,</span> k<span class="hl opt">,</span> mask <span class="hl opt">= (</span><span class="hl num">1</span> <span class="hl opt">&lt;&lt; (</span><span class="hl num">2</span> <span class="hl opt">*</span> slen<span class="hl opt">)) -</span> <span class="hl num">1</span><span class="hl opt">;</span>
+   byte <span class="hl opt">*</span>end <span class="hl opt">=</span> input_len <span class="hl opt">+</span> input<span class="hl opt">;</span>
+   byte <span class="hl opt">*</span>s <span class="hl opt">=</span> input<span class="hl opt">;</span>
+
+   <span class="hl kwb">int</span> len <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl opt">&lt;&lt; (</span><span class="hl num">2</span> <span class="hl opt">*</span> slen<span class="hl opt">);</span>
+   count_t <span class="hl opt">*</span>buf <span class="hl opt">=</span> counts<span class="hl opt">[</span>slen<span class="hl opt">] =</span> <span class="hl kwd">malloc</span><span class="hl opt">(</span><span class="hl kwa">sizeof</span><span class="hl opt">(</span>count_t<span class="hl opt">) *</span> len<span class="hl opt">);</span>
+
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> len<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+      buf<span class="hl opt">[</span>i<span class="hl opt">].</span>count <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> buf<span class="hl opt">[</span>i<span class="hl opt">].</span>key <span class="hl opt">=</span> i<span class="hl opt">;</span>
+
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">,</span> k <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> slen<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+      k <span class="hl opt">= (</span>k <span class="hl opt">&lt;&lt;</span> <span class="hl num">2</span><span class="hl opt">) | *</span>s<span class="hl opt">++;</span>
+
+   <span class="hl kwa">while</span> <span class="hl opt">(</span>s <span class="hl opt">&lt;</span> end<span class="hl opt">) {</span>
+      k <span class="hl opt">= ((</span>k <span class="hl opt">&lt;&lt;</span> <span class="hl num">2</span><span class="hl opt">) | *</span>s<span class="hl opt">++) &amp;</span> mask<span class="hl opt">;</span>
+      buf<span class="hl opt">[</span>k<span class="hl opt">].</span>count<span class="hl opt">++;</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwc">typedef</span> <span class="hl kwb">struct</span> work_s <span class="hl opt">{</span>
+   byte <span class="hl opt">*</span>start<span class="hl opt">, *</span>end<span class="hl opt">;</span>
+   <span class="hl kwb">int</span> len<span class="hl opt">,</span> step<span class="hl opt">;</span>
+   <span class="hl kwb">struct</span> work_s <span class="hl opt">*</span>next<span class="hl opt">;</span>
+<span class="hl opt">}</span> work_t<span class="hl opt">;</span>
+
+work_t <span class="hl opt">*</span>jobs<span class="hl opt">;</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">add_work</span><span class="hl opt">(</span>byte <span class="hl opt">*</span>start<span class="hl opt">,</span> byte <span class="hl opt">*</span>end<span class="hl opt">,</span> <span class="hl kwb">int</span> len<span class="hl opt">,</span> <span class="hl kwb">int</span> step<span class="hl opt">) {</span>
+   work_t <span class="hl opt">*</span>w <span class="hl opt">=</span> <span class="hl kwd">malloc</span><span class="hl opt">(</span><span class="hl kwa">sizeof</span><span class="hl opt">(</span>work_t<span class="hl opt">));</span>
+   w<span class="hl opt">-&gt;</span>next <span class="hl opt">=</span> jobs<span class="hl opt">;</span>
+   jobs <span class="hl opt">=</span> w<span class="hl opt">;</span>
+   w<span class="hl opt">-&gt;</span>len <span class="hl opt">=</span> len<span class="hl opt">;</span>
+   w<span class="hl opt">-&gt;</span>start <span class="hl opt">=</span> start<span class="hl opt">;</span>
+   w<span class="hl opt">-&gt;</span>end <span class="hl opt">=</span> end<span class="hl opt">;</span>
+   w<span class="hl opt">-&gt;</span>step <span class="hl opt">=</span> step<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">add_simple_work</span><span class="hl opt">(</span><span class="hl kwb">int</span> len<span class="hl opt">) {</span>
+   <span class="hl kwd">add_work</span><span class="hl opt">(</span>input<span class="hl opt">,</span> input <span class="hl opt">+</span> input_len<span class="hl opt">,</span> len<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">show_works</span><span class="hl opt">(</span><span class="hl kwb">void</span><span class="hl opt">) {</span>
+   work_t <span class="hl opt">*</span>w <span class="hl opt">=</span> jobs<span class="hl opt">;</span>
+   <span class="hl kwa">while</span> <span class="hl opt">(</span>w<span class="hl opt">) {</span>
+      <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;len %d from %p to %p</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> w<span class="hl opt">-&gt;</span>len<span class="hl opt">,</span> w<span class="hl opt">-&gt;</span>start<span class="hl opt">,</span> w<span class="hl opt">-&gt;</span>end<span class="hl opt">);</span>
+      w <span class="hl opt">=</span> w<span class="hl opt">-&gt;</span>next<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl slc">// lock for job control</span>
+pthread_mutex_t mux <span class="hl opt">=</span> PTHREAD_MUTEX_INITIALIZER<span class="hl opt">;</span>
+
+<span class="hl kwb">void</span> <span class="hl opt">*</span><span class="hl kwd">worker</span><span class="hl opt">(</span><span class="hl kwb">void</span> <span class="hl opt">*</span>arg<span class="hl opt">) {</span>
+   <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) {</span>
+      <span class="hl kwd">pthread_mutex_lock</span><span class="hl opt">(&amp;</span>mux<span class="hl opt">);</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(!</span>jobs<span class="hl opt">)</span> <span class="hl kwa">break</span><span class="hl opt">;</span>
+      work_t <span class="hl opt">*</span>w <span class="hl opt">=</span> jobs<span class="hl opt">;</span>
+      jobs <span class="hl opt">=</span> jobs<span class="hl opt">-&gt;</span>next<span class="hl opt">;</span>
+      <span class="hl kwd">pthread_mutex_unlock</span><span class="hl opt">(&amp;</span>mux<span class="hl opt">);</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>w<span class="hl opt">-&gt;</span>len <span class="hl opt">&lt;=</span> SIMPLE_MAX<span class="hl opt">)</span>
+         <span class="hl kwd">count_simple</span><span class="hl opt">(</span>w<span class="hl opt">-&gt;</span>len<span class="hl opt">);</span>
+      <span class="hl kwa">else</span>
+         <span class="hl kwd">count_hash</span><span class="hl opt">(</span>w<span class="hl opt">-&gt;</span>start<span class="hl opt">,</span> w<span class="hl opt">-&gt;</span>end<span class="hl opt">,</span> w<span class="hl opt">-&gt;</span>len<span class="hl opt">,</span> w<span class="hl opt">-&gt;</span>step<span class="hl opt">);</span>
+      <span class="hl kwd">free</span><span class="hl opt">(</span>w<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwd">pthread_mutex_unlock</span><span class="hl opt">(&amp;</span>mux<span class="hl opt">);</span>
+   <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">int</span> <span class="hl kwd">cmp_count</span><span class="hl opt">(</span><span class="hl kwb">const void</span> <span class="hl opt">*</span>a<span class="hl opt">,</span> <span class="hl kwb">const void</span> <span class="hl opt">*</span>b<span class="hl opt">) {</span>
+   <span class="hl kwb">const</span> count_t <span class="hl opt">*</span>aa <span class="hl opt">=</span> a<span class="hl opt">, *</span>bb <span class="hl opt">=</span> b<span class="hl opt">;</span>
+   <span class="hl kwa">if</span> <span class="hl opt">(</span>aa<span class="hl opt">-&gt;</span>count <span class="hl opt">&lt;</span> bb<span class="hl opt">-&gt;</span>count<span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl num">1</span><span class="hl opt">;</span>
+   <span class="hl kwa">if</span> <span class="hl opt">(</span>aa<span class="hl opt">-&gt;</span>count <span class="hl opt">&gt;</span> bb<span class="hl opt">-&gt;</span>count<span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">;</span>
+   <span class="hl kwa">if</span> <span class="hl opt">(</span>aa<span class="hl opt">-&gt;</span>key <span class="hl opt">&lt;</span> bb<span class="hl opt">-&gt;</span>key<span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl num">1</span><span class="hl opt">;</span>
+   <span class="hl kwa">return</span> <span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">key_print</span><span class="hl opt">(</span><span class="hl kwb">int</span> len<span class="hl opt">,</span> <span class="hl kwb">int</span> key<span class="hl opt">) {</span>
+   <span class="hl kwb">char</span> buf<span class="hl opt">[</span><span class="hl num">32</span><span class="hl opt">];</span>
+   buf<span class="hl opt">[</span>len<span class="hl opt">] =</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwa">while</span> <span class="hl opt">(</span>len<span class="hl opt">--) {</span>
+      buf<span class="hl opt">[</span>len<span class="hl opt">] =</span> codes<span class="hl opt">[</span>key <span class="hl opt">&amp;</span> <span class="hl num">3</span><span class="hl opt">];</span>
+      key <span class="hl opt">&gt;&gt;=</span> <span class="hl num">2</span><span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%s&quot;</span><span class="hl opt">,</span> buf<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">void</span> <span class="hl kwd">show_sorted</span><span class="hl opt">(</span><span class="hl kwb">int</span> len<span class="hl opt">) {</span>
+   <span class="hl kwb">size_t</span> size <span class="hl opt">=</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span>count_t<span class="hl opt">) &lt;&lt; (</span><span class="hl num">2</span> <span class="hl opt">*</span> len<span class="hl opt">);</span>
+   count_t <span class="hl opt">*</span>copy <span class="hl opt">=</span> <span class="hl kwd">malloc</span><span class="hl opt">(</span>size<span class="hl opt">);</span>
+   <span class="hl kwd">memcpy</span><span class="hl opt">(</span>copy<span class="hl opt">,</span> counts<span class="hl opt">[</span>len<span class="hl opt">],</span> size<span class="hl opt">);</span>
+   <span class="hl kwd">qsort</span><span class="hl opt">(</span>copy<span class="hl opt">,</span> <span class="hl num">1</span> <span class="hl opt">&lt;&lt; (</span><span class="hl num">2</span> <span class="hl opt">*</span> len<span class="hl opt">),</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span>count_t<span class="hl opt">),</span> cmp_count<span class="hl opt">);</span>
+
+   <span class="hl kwb">int</span> i<span class="hl opt">,</span> sum <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> <span class="hl num">1</span> <span class="hl opt">&lt;&lt; (</span><span class="hl num">2</span> <span class="hl opt">*</span> len<span class="hl opt">);</span> i<span class="hl opt">++)</span>
+      sum <span class="hl opt">+=</span> copy<span class="hl opt">[</span>i<span class="hl opt">].</span>count<span class="hl opt">;</span>
+
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> <span class="hl num">1</span> <span class="hl opt">&lt;&lt; (</span><span class="hl num">2</span> <span class="hl opt">*</span> len<span class="hl opt">);</span> i<span class="hl opt">++) {</span>
+      <span class="hl kwd">key_print</span><span class="hl opt">(</span>len<span class="hl opt">,</span> copy<span class="hl opt">[</span>i<span class="hl opt">].</span>key<span class="hl opt">);</span>
+      <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot; %.3f</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">, (</span><span class="hl kwb">double</span><span class="hl opt">)</span>copy<span class="hl opt">[</span>i<span class="hl opt">].</span>count <span class="hl opt">/</span> sum <span class="hl opt">*</span> <span class="hl num">100</span><span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwd">puts</span><span class="hl opt">(</span><span class="hl str">&quot;&quot;</span><span class="hl opt">);</span>
+
+   <span class="hl kwd">free</span><span class="hl opt">(</span>copy<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">int</span> <span class="hl kwd">count_lookup</span><span class="hl opt">(</span><span class="hl kwb">char</span> <span class="hl opt">*</span>name<span class="hl opt">) {</span>
+   hkey_t key <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwb">char</span> <span class="hl opt">*</span>s <span class="hl opt">=</span> name<span class="hl opt">;</span>
+   <span class="hl kwb">int</span> len <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwa">while</span> <span class="hl opt">(*</span>s<span class="hl opt">) {</span>
+      key <span class="hl opt">= (</span>key <span class="hl opt">&lt;&lt;</span> <span class="hl num">2</span><span class="hl opt">) |</span> trans<span class="hl opt">[(</span><span class="hl kwb">int</span><span class="hl opt">)*</span>s<span class="hl opt">];</span>
+      s<span class="hl opt">++;</span>
+      len<span class="hl opt">++;</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">if</span> <span class="hl opt">(</span>len <span class="hl opt">&lt;=</span> SIMPLE_MAX<span class="hl opt">)</span>
+      <span class="hl kwa">return</span> counts<span class="hl opt">[</span>len<span class="hl opt">][</span>key<span class="hl opt">].</span>count<span class="hl opt">;</span>
+
+   key<span class="hl opt">++;</span>
+   ht_table <span class="hl opt">*</span>t <span class="hl opt">=</span> tables <span class="hl opt">+</span> len<span class="hl opt">;</span>
+   hrec_t <span class="hl opt">*</span>p <span class="hl opt">=</span> t<span class="hl opt">-&gt;</span>table <span class="hl opt">+ (</span>key <span class="hl opt">&amp;</span> t<span class="hl opt">-&gt;</span>mask<span class="hl opt">);</span>
+
+   <span class="hl kwa">while</span> <span class="hl opt">(</span>p<span class="hl opt">-&gt;</span>key<span class="hl opt">) {</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>p<span class="hl opt">-&gt;</span>key <span class="hl opt">==</span> key<span class="hl opt">)</span>
+         <span class="hl kwa">return</span> p<span class="hl opt">-&gt;</span>count<span class="hl opt">;</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(--</span>p <span class="hl opt">&lt;=</span> t<span class="hl opt">-&gt;</span>table<span class="hl opt">)</span>
+         p <span class="hl opt">=</span> t<span class="hl opt">-&gt;</span>table <span class="hl opt">+</span> t<span class="hl opt">-&gt;</span>mask<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">int</span> <span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">void</span><span class="hl opt">) {</span>
+   <span class="hl kwb">int</span> i<span class="hl opt">;</span>
+<span class="hl ppc">#   define N sizeof(l) / sizeof(l[0])</span>
+
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span> codes<span class="hl opt">[</span>i<span class="hl opt">];</span> i<span class="hl opt">++) {</span>
+      trans<span class="hl opt">[</span><span class="hl kwd">toupper</span><span class="hl opt">(</span>codes<span class="hl opt">[</span>i<span class="hl opt">])] =</span> i<span class="hl opt">;</span>
+      trans<span class="hl opt">[</span><span class="hl kwd">tolower</span><span class="hl opt">(</span>codes<span class="hl opt">[</span>i<span class="hl opt">])] =</span> i<span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwd">get_input</span><span class="hl opt">();</span>
+
+   <span class="hl kwb">int</span> n_cpus <span class="hl opt">=</span> <span class="hl kwd">sysconf</span><span class="hl opt">(</span>_SC_NPROCESSORS_ONLN<span class="hl opt">);</span>
+   <span class="hl kwa">if</span> <span class="hl opt">(</span>n_cpus <span class="hl opt">&gt;</span> <span class="hl num">4</span><span class="hl opt">)</span> n_cpus <span class="hl opt">=</span> <span class="hl num">4</span><span class="hl opt">;</span>
+
+   <span class="hl kwd">ht_init</span><span class="hl opt">(</span>tables <span class="hl opt">+</span> <span class="hl num">12</span><span class="hl opt">);</span>
+   <span class="hl kwd">ht_init</span><span class="hl opt">(</span>tables <span class="hl opt">+</span> <span class="hl num">18</span><span class="hl opt">);</span>
+
+   <span class="hl slc">// short sequences are pretty fast anyway, just let each</span>
+   <span class="hl slc">// thread do the whole piece</span>
+   <span class="hl kwd">add_simple_work</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">);</span>
+   <span class="hl kwd">add_simple_work</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">);</span>
+   <span class="hl kwd">add_simple_work</span><span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">);</span>
+   <span class="hl kwd">add_simple_work</span><span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">);</span>
+   <span class="hl kwd">add_simple_work</span><span class="hl opt">(</span><span class="hl num">6</span><span class="hl opt">);</span>
+
+<span class="hl ppc">#define S 16</span>
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> S<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+      <span class="hl kwd">add_work</span><span class="hl opt">(</span>input<span class="hl opt">+</span>i<span class="hl opt">,</span> input <span class="hl opt">+</span> input_len<span class="hl opt">,</span> <span class="hl num">12</span><span class="hl opt">,</span> S<span class="hl opt">);</span>
+      <span class="hl kwd">add_work</span><span class="hl opt">(</span>input<span class="hl opt">+</span>i<span class="hl opt">,</span> input <span class="hl opt">+</span> input_len<span class="hl opt">,</span> <span class="hl num">18</span><span class="hl opt">,</span> S<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwb">char</span> <span class="hl opt">*</span>names<span class="hl opt">[] = {</span> <span class="hl str">&quot;GGT&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTA&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATT&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATTTTAATT&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;GGTATTTTAATTTATAGT&quot;</span><span class="hl opt">,</span> <span class="hl num">0</span> <span class="hl opt">};</span>
+
+   <span class="hl slc">//show_works();</span>
+
+   pthread_t tid<span class="hl opt">[</span><span class="hl num">4</span><span class="hl opt">];</span>
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> n_cpus<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+      <span class="hl kwd">pthread_create</span><span class="hl opt">(</span>tid <span class="hl opt">+</span> i<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> worker<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> n_cpus<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+      <span class="hl kwd">pthread_join</span><span class="hl opt">(</span>tid<span class="hl opt">[</span>i<span class="hl opt">],</span> <span class="hl num">0</span><span class="hl opt">);</span>
+
+   <span class="hl kwd">show_sorted</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">);</span>
+   <span class="hl kwd">show_sorted</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> names<span class="hl opt">[</span>i<span class="hl opt">];</span> i<span class="hl opt">++) {</span>
+      <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%d</span><span class="hl esc">\t</span><span class="hl str">%s</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> <span class="hl kwd">count_lookup</span><span class="hl opt">(</span>names<span class="hl opt">[</span>i<span class="hl opt">]),</span> names<span class="hl opt">[</span>i<span class="hl opt">]);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>

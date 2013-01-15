@@ -1,12 +1,12 @@
 
-Thu, 05 Jan 2012 23:37:13 GMT
+Tue, 15 Jan 2013 07:00:55 GMT
 
 MAKE:
-/usr/local/src/intel/bin/ifort -O3 -fast fasta.ifc-3.f90 -o fasta.ifc-3.ifc_run
+/usr/local/src/intel/bin/ifort -O3 -fast -opt-streaming-stores always fasta.ifc-3.f90 -o fasta.ifc-3.ifc_run
 ipo: remark #11001: performing single-file optimizations
-ipo: remark #11006: generating object file /tmp/ipo_ifortCW3bRH.o
+ipo: remark #11006: generating object file /tmp/ipo_ifortI6l9ub.o
 rm fasta.ifc-3.f90
-0.83s to complete and log all make actions
+0.74s to complete and log all make actions
 
 COMMAND LINE:
 ./fasta.ifc-3.ifc_run 25000000

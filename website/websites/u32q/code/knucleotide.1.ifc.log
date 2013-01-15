@@ -1,12 +1,12 @@
 
-Fri, 06 Jan 2012 03:16:08 GMT
+Tue, 15 Jan 2013 06:16:54 GMT
 
 MAKE:
-/usr/local/src/intel/bin/ifort -O3 -fast knucleotide.f90 -o knucleotide.ifc_run
+/usr/local/src/intel/bin/ifort -O3 -fast -openmp knucleotide.f90 -o knucleotide.ifc_run
 ipo: remark #11001: performing single-file optimizations
-ipo: remark #11006: generating object file /tmp/ipo_ifort1s4Akj.o
+ipo: remark #11006: generating object file /tmp/ipo_iforttZp0eq.o
 rm knucleotide.f90
-0.51s to complete and log all make actions
+0.74s to complete and log all make actions
 
 COMMAND LINE:
 ./knucleotide.ifc_run 0 < knucleotide-input25000000.txt
