@@ -1,12 +1,12 @@
 
-Fri, 06 Jan 2012 05:04:01 GMT
+Tue, 15 Jan 2013 03:37:17 GMT
 
 MAKE:
-/usr/local/src/intel/bin/ifort -O3 -fast fastaredux.ifc-2.f90 -o fastaredux.ifc-2.ifc_run
+/usr/local/src/intel/bin/ifort -O3 -fast -opt-prefetch=1 fastaredux.ifc-2.f90 -o fastaredux.ifc-2.ifc_run
 ipo: remark #11001: performing single-file optimizations
-ipo: remark #11006: generating object file /tmp/ipo_ifortiE7Sz7.o
+ipo: remark #11006: generating object file /tmp/ipo_ifort0G22Nd.o
 rm fastaredux.ifc-2.f90
-0.26s to complete and log all make actions
+0.32s to complete and log all make actions
 
 COMMAND LINE:
 ./fastaredux.ifc-2.ifc_run 25000000
