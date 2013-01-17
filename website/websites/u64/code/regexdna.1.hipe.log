@@ -1,0 +1,19 @@
+
+Thu, 17 Jan 2013 03:53:37 GMT
+
+MAKE:
+mv regexdna.hipe regexdna.erl
+/usr/local/src/otp_src_R15B_nosmp/bin/erlc +native +"{hipe, [o3]}"  regexdna.erl
+regexdna.erl:47: Warning: regexp:matches/2: removed in R15; use the re module instead
+regexdna.erl:61: Warning: regexp:gsub/3: removed in R15; use the re module instead
+regexdna.erl:69: Warning: regexp:gsub/3: removed in R15; use the re module instead
+rm regexdna.erl
+0.49s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/src/otp_src_R15B_nosmp/bin/erl -smp disable -noshell -run -noinput -run regexdna main 0 < regexdna-input50000.txt
+
+TIMED OUT after 300s
+
+
+PROGRAM OUTPUT:

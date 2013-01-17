@@ -1,0 +1,156 @@
+<span class="hl opt">&lt;</span>?php 
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com">   </span>
+<span class="hl com">   multicore version </span>
+<span class="hl com">   algorithm is based on Java 6 source code by Oleg Mazurov</span>
+<span class="hl com">   fork/shared mem is based on mandelbrot.php-3 </span>
+<span class="hl com">   contributed by Oleksii Prudkyi</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwc">$n</span> <span class="hl opt">= (</span><span class="hl kwb">int</span><span class="hl opt">)</span> <span class="hl kwc">$argv</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">];</span>
+<span class="hl kwc">$count_base</span> <span class="hl opt">=</span> <span class="hl kwa">array</span><span class="hl opt">();</span>
+<span class="hl kwc">$p_base</span> <span class="hl opt">=</span> <span class="hl kwd">range</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwc">$n</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span>
+
+<span class="hl kwc">$procs</span> <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+<span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwd">file_exists</span><span class="hl opt">(</span><span class="hl str">'/proc/cpuinfo'</span><span class="hl opt">)) {</span>
+  <span class="hl kwc">$procs</span> <span class="hl opt">=</span> <span class="hl kwd">preg_match_all</span><span class="hl opt">(</span><span class="hl str">'/^processor\s/m'</span><span class="hl opt">,</span> <span class="hl kwd">file_get_contents</span><span class="hl opt">(</span><span class="hl str">'/proc/cpuinfo'</span><span class="hl opt">),</span> <span class="hl kwc">$discard</span><span class="hl opt">);</span>
+<span class="hl opt">}</span>
+<span class="hl kwc">$procs</span> <span class="hl opt">&lt;&lt;=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+
+<span class="hl kwc">$Fact</span> <span class="hl opt">=</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">);</span>
+<span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwc">$i</span> <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl kwc">$j</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> <span class="hl kwc">$i</span> <span class="hl opt">&lt;=</span> <span class="hl kwc">$n</span><span class="hl opt">;</span> <span class="hl kwc">$j</span> <span class="hl opt">=</span> <span class="hl kwc">$i</span>++<span class="hl opt">) {</span>
+   <span class="hl kwc">$Fact</span><span class="hl opt">[</span><span class="hl kwc">$i</span><span class="hl opt">] =</span> <span class="hl kwc">$Fact</span><span class="hl opt">[</span><span class="hl kwc">$j</span><span class="hl opt">] *</span> <span class="hl kwc">$i</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwc">$index</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl kwc">$index_max</span> <span class="hl opt">=</span> <span class="hl kwc">$Fact</span><span class="hl opt">[</span><span class="hl kwc">$n</span><span class="hl opt">];</span>
+<span class="hl kwc">$index_step</span> <span class="hl opt">=</span> <span class="hl kwd">intval</span><span class="hl opt">((</span><span class="hl kwc">$index_max</span> + <span class="hl kwc">$procs</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">) /</span> <span class="hl kwc">$procs</span><span class="hl opt">);</span>
+
+<span class="hl kwc">$shsize</span> <span class="hl opt">=</span> <span class="hl kwc">$procs</span> <span class="hl opt">*</span> <span class="hl num">16</span><span class="hl opt">;</span>
+<span class="hl kwc">$shmop</span> <span class="hl opt">=</span> <span class="hl kwd">shmop_open</span><span class="hl opt">(</span><span class="hl kwd">ftok</span><span class="hl opt">(</span>__FILE__<span class="hl opt">,</span> <span class="hl kwd">chr</span><span class="hl opt">(</span><span class="hl kwd">time</span><span class="hl opt">() &amp;</span> <span class="hl num">255</span><span class="hl opt">)),</span> <span class="hl str">'c'</span><span class="hl opt">,</span> <span class="hl num">0644</span><span class="hl opt">,</span> <span class="hl kwc">$shsize</span><span class="hl opt">);</span>
+
+<span class="hl kwa">if</span> <span class="hl opt">(!</span><span class="hl kwc">$shmop</span><span class="hl opt">) {</span>
+   <span class="hl kwa">echo</span> <span class="hl str">&quot;faild to shmop_open()</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
+   <span class="hl kwa">exit</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwc">$proc</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> <span class="hl kwc">$proc</span> <span class="hl opt">&lt;</span> <span class="hl kwc">$procs</span><span class="hl opt">;</span> ++<span class="hl kwc">$proc</span><span class="hl opt">,</span> <span class="hl kwc">$index</span> +<span class="hl opt">=</span> <span class="hl kwc">$index_step</span> <span class="hl opt">) {</span>
+   
+   <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$proc</span> <span class="hl opt">&lt;</span> <span class="hl kwc">$procs</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">) {</span>
+      <span class="hl kwc">$pid</span> <span class="hl opt">=</span> <span class="hl kwd">pcntl_fork</span><span class="hl opt">();</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwc">$pid</span> <span class="hl opt">=== -</span><span class="hl num">1</span><span class="hl opt">) {</span>
+         <span class="hl kwa">die</span><span class="hl opt">(</span><span class="hl str">'could not fork'</span><span class="hl opt">);</span>
+      <span class="hl opt">}</span> <span class="hl kwa">else if</span> <span class="hl opt">(</span><span class="hl kwc">$pid</span><span class="hl opt">) {</span>
+         <span class="hl kwa">continue</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwc">$idxMin</span> <span class="hl opt">=</span> <span class="hl kwc">$index</span><span class="hl opt">;</span>
+   <span class="hl kwc">$idxMax</span> <span class="hl opt">=</span> <span class="hl kwd">min</span><span class="hl opt">(</span> <span class="hl kwc">$index_max</span><span class="hl opt">,</span> <span class="hl kwc">$index</span> + <span class="hl kwc">$index_step</span> <span class="hl opt">);</span>
+
+   <span class="hl slc">//firstPermutation( idxMin );</span>
+   <span class="hl kwc">$count</span> <span class="hl opt">=</span> <span class="hl kwc">$count_base</span><span class="hl opt">;</span>
+   <span class="hl kwc">$p</span> <span class="hl opt">=</span> <span class="hl kwc">$p_base</span><span class="hl opt">;</span>
+   <span class="hl kwc">$idx</span> <span class="hl opt">=</span> <span class="hl kwc">$idxMin</span><span class="hl opt">;</span>
+   <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwc">$i</span> <span class="hl opt">=</span> <span class="hl kwc">$n</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span> <span class="hl kwc">$i</span> <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">; --</span><span class="hl kwc">$i</span> <span class="hl opt">) {</span>
+      <span class="hl kwc">$factI</span> <span class="hl opt">=</span> <span class="hl kwc">$Fact</span><span class="hl opt">[</span><span class="hl kwc">$i</span><span class="hl opt">];</span>
+      <span class="hl kwc">$reminder</span> <span class="hl opt">=</span> <span class="hl kwc">$idx</span> % <span class="hl kwc">$factI</span><span class="hl opt">;</span>
+      <span class="hl kwc">$d</span> <span class="hl opt">= ((</span><span class="hl kwc">$idx</span><span class="hl opt">-</span> <span class="hl kwc">$reminder</span><span class="hl opt">) /</span> <span class="hl kwc">$factI</span><span class="hl opt">);</span>
+      <span class="hl kwc">$count</span><span class="hl opt">[</span><span class="hl kwc">$i</span><span class="hl opt">] =</span> <span class="hl kwc">$d</span><span class="hl opt">;</span>
+      <span class="hl kwc">$idx</span> <span class="hl opt">=</span> <span class="hl kwc">$reminder</span><span class="hl opt">;</span>
+
+      <span class="hl kwc">$pp</span> <span class="hl opt">=</span> <span class="hl kwc">$p</span><span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwc">$j</span><span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwc">$jd</span> <span class="hl opt">=</span> <span class="hl kwc">$d</span><span class="hl opt">;</span> <span class="hl kwc">$j</span><span class="hl opt">&lt;=</span><span class="hl kwc">$i</span><span class="hl opt">;</span> ++<span class="hl kwc">$j</span><span class="hl opt">,</span> ++<span class="hl kwc">$jd</span> <span class="hl opt">) {</span>
+         <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl kwc">$j</span><span class="hl opt">] =</span> <span class="hl kwc">$pp</span><span class="hl opt">[(</span><span class="hl kwc">$jd</span> <span class="hl opt">&lt;=</span> <span class="hl kwc">$i</span><span class="hl opt">)</span> ? <span class="hl kwc">$jd</span> <span class="hl opt">:</span><span class="hl kwc">$jd</span><span class="hl opt">-</span><span class="hl kwc">$i</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">];</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwc">$maxflips</span> <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+   <span class="hl kwc">$chksum</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwc">$sign</span> <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+   <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwc">$idx</span> <span class="hl opt">=</span><span class="hl kwc">$idxMin</span><span class="hl opt">;; ) {</span>
+
+      <span class="hl kwc">$first</span> <span class="hl opt">=</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">];</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span> <span class="hl kwc">$first</span> <span class="hl opt">!=</span> <span class="hl num">0</span> <span class="hl opt">) {</span>
+         <span class="hl slc">//int flips = countFlips();</span>
+         <span class="hl kwc">$flips</span> <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl kwc">$first</span><span class="hl opt">] !=</span> <span class="hl num">0</span> <span class="hl opt">) {</span>
+            <span class="hl kwc">$pp</span> <span class="hl opt">=</span> <span class="hl kwc">$p</span><span class="hl opt">;</span>
+            <span class="hl kwc">$p0</span> <span class="hl opt">=</span> <span class="hl kwc">$first</span><span class="hl opt">;</span>
+            <span class="hl kwa">do</span> <span class="hl opt">{</span>
+               ++<span class="hl kwc">$flips</span><span class="hl opt">;</span>
+               <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwc">$p0</span> <span class="hl opt">&gt;=</span> <span class="hl num">3</span><span class="hl opt">){</span>
+                  <span class="hl kwc">$i</span> <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span> <span class="hl kwc">$j</span> <span class="hl opt">=</span> <span class="hl kwc">$p0</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+                  <span class="hl kwa">do</span> <span class="hl opt">{</span> 
+                     <span class="hl kwc">$t</span> <span class="hl opt">=</span> <span class="hl kwc">$pp</span><span class="hl opt">[</span><span class="hl kwc">$i</span><span class="hl opt">];</span> 
+                     <span class="hl kwc">$pp</span><span class="hl opt">[</span><span class="hl kwc">$i</span><span class="hl opt">] =</span> <span class="hl kwc">$pp</span><span class="hl opt">[</span><span class="hl kwc">$j</span><span class="hl opt">];</span> 
+                     <span class="hl kwc">$pp</span><span class="hl opt">[</span><span class="hl kwc">$j</span><span class="hl opt">] =</span> <span class="hl kwc">$t</span><span class="hl opt">;</span> 
+                     ++<span class="hl kwc">$i</span><span class="hl opt">;</span>
+                     <span class="hl opt">--</span><span class="hl kwc">$j</span><span class="hl opt">;</span>
+                  <span class="hl opt">}</span> <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl kwc">$i</span> <span class="hl opt">&lt;</span> <span class="hl kwc">$j</span><span class="hl opt">);</span> 
+               <span class="hl opt">}</span>
+
+               <span class="hl kwc">$t</span> <span class="hl opt">=</span> <span class="hl kwc">$pp</span><span class="hl opt">[</span><span class="hl kwc">$p0</span><span class="hl opt">];</span>
+               <span class="hl kwc">$pp</span><span class="hl opt">[</span><span class="hl kwc">$p0</span><span class="hl opt">] =</span> <span class="hl kwc">$p0</span><span class="hl opt">;</span>
+               <span class="hl kwc">$p0</span> <span class="hl opt">=</span> <span class="hl kwc">$t</span><span class="hl opt">;</span>
+            <span class="hl opt">}</span> <span class="hl kwa">while</span> <span class="hl opt">(</span> <span class="hl kwc">$pp</span><span class="hl opt">[</span><span class="hl kwc">$p0</span><span class="hl opt">] !=</span> <span class="hl num">0</span> <span class="hl opt">);</span>
+         <span class="hl opt">}</span>
+         <span class="hl kwc">$maxflips</span> <span class="hl opt">=</span> <span class="hl kwd">max</span><span class="hl opt">(</span> <span class="hl kwc">$maxflips</span><span class="hl opt">,</span> <span class="hl kwc">$flips</span> <span class="hl opt">);</span>
+         <span class="hl kwc">$chksum</span> +<span class="hl opt">=</span> <span class="hl kwc">$sign</span><span class="hl opt">*</span><span class="hl kwc">$flips</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      ++<span class="hl kwc">$idx</span> <span class="hl opt">;</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span> <span class="hl kwc">$idx</span>  <span class="hl opt">== (</span><span class="hl kwc">$idxMax</span><span class="hl opt">) ) {</span>
+         <span class="hl kwa">break</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwc">$sign</span> <span class="hl opt">==</span> <span class="hl num">1</span><span class="hl opt">){</span>
+         <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] =</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">];</span>
+         <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] =</span> <span class="hl kwc">$first</span><span class="hl opt">;</span>
+         <span class="hl kwc">$sign</span> <span class="hl opt">= -</span><span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+         <span class="hl kwc">$t</span> <span class="hl opt">=</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">];</span> 
+         <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] =</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">];</span> 
+         <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">] =</span> <span class="hl kwc">$t</span><span class="hl opt">;</span> 
+         <span class="hl kwc">$sign</span> <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span> 
+         
+         <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwc">$i</span><span class="hl opt">=</span><span class="hl num">2</span><span class="hl opt">;;){</span> 
+            <span class="hl kwc">$sx</span> <span class="hl opt">= &amp;</span><span class="hl kwc">$count</span><span class="hl opt">[</span><span class="hl kwc">$i</span><span class="hl opt">];</span>
+            ++<span class="hl kwc">$sx</span><span class="hl opt">;</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwc">$sx</span> <span class="hl opt">&lt;=</span> <span class="hl kwc">$i</span><span class="hl opt">) {</span>
+               <span class="hl kwa">break</span><span class="hl opt">;</span> 
+            <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+               <span class="hl kwc">$sx</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+               <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwc">$j</span><span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> <span class="hl kwc">$j</span><span class="hl opt">&lt;=</span><span class="hl kwc">$i</span><span class="hl opt">; ){</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl kwc">$j</span>++<span class="hl opt">] =</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl kwc">$j</span><span class="hl opt">]; }</span> 
+               ++<span class="hl kwc">$i</span><span class="hl opt">;</span>
+               <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl kwc">$i</span><span class="hl opt">] =</span> <span class="hl kwc">$first</span><span class="hl opt">;</span>
+               <span class="hl kwc">$first</span> <span class="hl opt">=</span> <span class="hl kwc">$p</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">];</span> 
+            <span class="hl opt">}</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwc">$written_size</span> <span class="hl opt">=</span> <span class="hl kwd">shmop_write</span><span class="hl opt">(</span><span class="hl kwc">$shmop</span><span class="hl opt">,</span> <span class="hl kwd">pack</span><span class="hl opt">(</span><span class="hl str">&quot;ii&quot;</span><span class="hl opt">,</span> <span class="hl kwc">$maxflips</span><span class="hl opt">,</span> <span class="hl kwc">$chksum</span><span class="hl opt">),</span> <span class="hl kwc">$proc</span> <span class="hl opt">*</span> <span class="hl num">16</span><span class="hl opt">);</span>
+
+   <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$pid</span> <span class="hl opt">===</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+      <span class="hl kwa">exit</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwc">$child</span> <span class="hl opt">=</span> <span class="hl kwc">$procs</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+<span class="hl kwc">$status</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl kwc">$child</span><span class="hl opt">-- &gt;</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+   <span class="hl kwd">pcntl_wait</span><span class="hl opt">(</span><span class="hl kwc">$status</span><span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwc">$offset</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl kwc">$res</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl kwc">$chk</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwc">$proc</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> <span class="hl kwc">$proc</span> <span class="hl opt">&lt;</span> <span class="hl kwc">$procs</span><span class="hl opt">;</span> ++<span class="hl kwc">$proc</span><span class="hl opt">,</span> <span class="hl kwc">$offset</span> +<span class="hl opt">=</span> <span class="hl num">16</span> <span class="hl opt">) {</span>
+   <span class="hl kwa">list</span><span class="hl opt">(</span><span class="hl kwc">$v</span><span class="hl opt">,</span> <span class="hl kwc">$chk_v</span><span class="hl opt">) =</span> <span class="hl kwd">array_values</span><span class="hl opt">(</span><span class="hl kwd">unpack</span><span class="hl opt">(</span><span class="hl str">'ia/ib'</span><span class="hl opt">,</span> <span class="hl kwd">shmop_read</span><span class="hl opt">(</span><span class="hl kwc">$shmop</span><span class="hl opt">,</span> <span class="hl kwc">$offset</span><span class="hl opt">,</span> <span class="hl kwc">$written_size</span><span class="hl opt">)));</span>
+   <span class="hl kwc">$res</span> <span class="hl opt">=</span> <span class="hl kwd">max</span><span class="hl opt">(</span> <span class="hl kwc">$res</span><span class="hl opt">,</span> <span class="hl kwc">$v</span> <span class="hl opt">);</span>
+   <span class="hl kwc">$chk</span> +<span class="hl opt">=</span> <span class="hl kwc">$chk_v</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%d</span><span class="hl esc">\n</span><span class="hl str">Pfannkuchen(%d) = %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> <span class="hl kwc">$chk</span><span class="hl opt">,</span> <span class="hl kwc">$n</span><span class="hl opt">,</span> <span class="hl kwc">$res</span><span class="hl opt">);</span>
+
