@@ -18,7 +18,9 @@ if (!isset($T)){ $T = 'all'; }
 function Alias($l){ // hardcode aliases for old names
    return $l == "python" ? "python3" :
          ($l == "ruby" ? "yarv" :
-         ($l == "javascript" ? "v8" : $l));
+         ($l == "javascript" ? "v8" :
+         ($l == "tracemonkey" ? "v8" :
+         ($l == "luajit" ? "lua" : $l))));
 }
 
 if (isset($_GET['lang'])
