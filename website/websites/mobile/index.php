@@ -36,6 +36,7 @@ h1 { font-weight: bold; font-size: smaller; }
 <li><a href="./compare.php?lang=clojure" title="Compare Clojure and Java elapsed times">Clojure</a></li>
 <li><a href="./csharp.php" title="Compare C# and Java elapsed times">C# Mono</a></li>
 <li><a href="./cpp.php" title="Compare C++ and C elapsed times">C++ GNU</a></li>
+<li><a href="./dart.php" title="Compare Dart and Java elapsed times">Dart</a></li>
 <li><a href="./erlang.php" title="Compare Erlang HiPe and Java elapsed times">Erlang HiPE</a></li>
 <li><a href="./compare.php?lang=fsharp&amp;lang2=csharp" title="Compare F# and C# elapsed times">F# Mono</a></li>
 <li><a href="./fortran.php" title="Compare Fortran and C++ elapsed times">Fortran Intel</a></li>

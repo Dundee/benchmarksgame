@@ -134,6 +134,7 @@ $langs = array(
    array('clojure','Clojure','clojure',$allsites),
    array('csharp','C# Mono','csharp',$allsites),
    array('gpp','C++ g++','cpp',$allsites),
+   array('dart','Dart','dart',$allsites),
    array('hipe','Erlang HiPE','erlang',$allsites),
    array('fsharp','F# Mono','fsharp',$allsites),
    array('ifc','Fortran Intel','fortran',$allsites),
