@@ -15,10 +15,16 @@ if (isset($_GET['test'])
 }
 if (!isset($T)){ $T = 'all'; }
 
+function Alias($l){ // hardcode aliases for old names
+   return $l == "python" ? "python3" :
+         ($l == "ruby" ? "yarv" :
+         ($l == "javascript" ? "v8" : $l));
+}
+
 if (isset($_GET['lang'])
       && strlen($_GET['lang']) && (strlen($_GET['lang']) <= $NAME_LEN)){
    $X = $_GET['lang'];
-   if (ereg("^[a-z0-9]+$",$X)){ $L = $X; }
+   if (ereg("^[a-z0-9]+$",$X)){ $L = Alias($X); }
 }
 if (!isset($L)){ $L = 'all'; }
 
@@ -28,7 +34,7 @@ else {
    if (isset($_GET['lang2'])
          && strlen($_GET['lang2']) && (strlen($_GET['lang2']) <= $NAME_LEN)){
       $X = $_GET['lang2'];
-      if (ereg("^[a-z0-9]+$",$X)){ $L2 = $X; }
+      if (ereg("^[a-z0-9]+$",$X)){ $L2 = Alias($X); }
    }
 }
 if (!isset($L2)){
