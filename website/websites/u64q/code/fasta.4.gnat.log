@@ -1,5 +1,5 @@
 
-Sat, 12 Jan 2013 08:17:56 GMT
+Fri, 18 Jan 2013 07:17:01 GMT
 
 MAKE:
 /usr/bin/gnatchop -r -w fasta.gnat-4.gnat
@@ -12,7 +12,7 @@ gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp fa
 gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp fasta_pck.adb
 gnatbind -x fasta.ali
 gnatlink fasta.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o fasta.gnat-4.gnat_run
-0.47s to complete and log all make actions
+0.46s to complete and log all make actions
 
 COMMAND LINE:
 ./fasta.gnat-4.gnat_run 25000000

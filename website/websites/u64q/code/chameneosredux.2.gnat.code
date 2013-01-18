@@ -1,20 +1,20 @@
 <span class="hl slc">-- The Computer Language Benchmarks Game</span>
-<span class="hl slc">-- http://shootout.alioth.debian.org/</span>
+<span class="hl slc">-- http://benchmarksgame.alioth.debian.org/</span>
 <span class="hl slc">--</span>
-<span class="hl slc">-- Contributed by Pat Rogers</span>
-<span class="hl slc">--</span>
-<span class="hl slc">-- Based on the C++ version by Andrew Moon </span>
-<span class="hl slc">-- and the C version by Dmitry Vyukov</span>
-<span class="hl slc">--</span>
-<span class="hl slc">-- A task (thread) is created for each chameneous.</span>
-<span class="hl slc">-- An atomic compare-and-swap operation is used</span>
-<span class="hl slc">-- for shared state manipulation.  A protected </span>
-<span class="hl slc">-- type is used for completion notification.</span>
-<span class="hl slc">-- A cache-aligned memory allocator is used.</span>
+<span class="hl slc">-- Contributed by Pat Rogers</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- Based on the C++ version by Andrew Moon </span>
+<span class="hl slc">-- and the C version by Dmitry Vyukov</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- A task (thread) is created for each chameneous.</span>
+<span class="hl slc">-- An atomic compare-and-swap operation is used</span>
+<span class="hl slc">-- for shared state manipulation.  A protected </span>
+<span class="hl slc">-- type is used for completion notification.</span>
+<span class="hl slc">-- A cache-aligned memory allocator is used.</span>
 
 
-<span class="hl slc">-- Expected build command:</span>
-<span class="hl slc">-- gnatmake -gnatp  -gnatn  -fstrict-aliasing -O3 -fomit-frame-pointer -march=native -ffunction-sections -fdata-sections -f chameneosredux.adb -o chameneosredux.gnat_run   -largs -Wl,--gc-sections</span>
+<span class="hl slc">-- Expected build command:</span>
+<span class="hl slc">-- gnatmake -gnatp  -gnatn  -fstrict-aliasing -O3 -fomit-frame-pointer -march=native -ffunction-sections -fdata-sections -f chameneosredux.adb -o chameneosredux.gnat_run   -largs -Wl,--gc-sections</span>
 
 
 
@@ -31,9 +31,9 @@
 
    N <span class="hl opt">:</span> Meeting_Count<span class="hl opt">;</span>
 
-   Game1_Creature_Colors <span class="hl opt">:</span> <span class="hl kwa">constant</span> Color_List_Ref <span class="hl opt">:=</span> <span class="hl kwa">new</span> Color_List<span class="hl str">'(Blue, Red, Yellow);</span>
-<span class="hl str"></span>
-<span class="hl str">   Game2_Creature_Colors : constant Color_List_Ref :=</span>
+   Game1_Creature_Colors <span class="hl opt">:</span> <span class="hl kwa">constant</span> Color_List_Ref <span class="hl opt">:=</span> <span class="hl kwa">new</span> Color_List<span class="hl str">'(Blue, Red, Yellow);</span>
+<span class="hl str"></span>
+<span class="hl str">   Game2_Creature_Colors : constant Color_List_Ref :=</span>
 <span class="hl str">      new Color_List'</span><span class="hl opt">(</span>Blue<span class="hl opt">,</span> Red<span class="hl opt">,</span> Yellow<span class="hl opt">,</span> Red<span class="hl opt">,</span> Yellow<span class="hl opt">,</span> Blue<span class="hl opt">,</span> Red<span class="hl opt">,</span> Yellow<span class="hl opt">,</span> Red<span class="hl opt">,</span> Blue<span class="hl opt">);</span>
 
    Game1 <span class="hl opt">:</span> Game <span class="hl opt">(</span>Num_Creatures <span class="hl opt">=&gt;</span> Game1_Creature_Colors<span class="hl kwd">'Length</span><span class="hl opt">);</span>
@@ -49,13 +49,13 @@
       N <span class="hl opt">:=</span> Meeting_Count<span class="hl kwd">'Value</span> <span class="hl opt">(</span>Argument <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">));</span>
    <span class="hl kwa">end if</span><span class="hl opt">;</span>
 
-   <span class="hl kwa">if</span> Processor_Count <span class="hl opt">&lt;</span> <span class="hl num">4</span> <span class="hl kwa">then</span>  <span class="hl slc">-- run the games sequentially</span>
+   <span class="hl kwa">if</span> Processor_Count <span class="hl opt">&lt;</span> <span class="hl num">4</span> <span class="hl kwa">then</span>  <span class="hl slc">-- run the games sequentially</span>
       Game1<span class="hl opt">.</span>Start <span class="hl opt">(</span>Game1_Creature_Colors<span class="hl opt">,</span> N<span class="hl opt">,</span> Slot <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">);</span>
       Game1<span class="hl opt">.</span>Await_Completion<span class="hl opt">;</span>
 
       Game2<span class="hl opt">.</span>Start <span class="hl opt">(</span>Game2_Creature_Colors<span class="hl opt">,</span> N<span class="hl opt">,</span> Slot <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">);</span>
       Game2<span class="hl opt">.</span>Await_Completion<span class="hl opt">;</span>
-   <span class="hl kwa">else</span> <span class="hl slc">-- run the games in parallel</span>
+   <span class="hl kwa">else</span> <span class="hl slc">-- run the games in parallel</span>
       Game1<span class="hl opt">.</span>Start <span class="hl opt">(</span>Game1_Creature_Colors<span class="hl opt">,</span> N<span class="hl opt">,</span> Slot <span class="hl opt">=&gt;</span> <span class="hl num">1</span><span class="hl opt">);</span>
       Game2<span class="hl opt">.</span>Start <span class="hl opt">(</span>Game2_Creature_Colors<span class="hl opt">,</span> N<span class="hl opt">,</span> Slot <span class="hl opt">=&gt;</span> <span class="hl num">2</span><span class="hl opt">);</span>
 
@@ -67,7 +67,7 @@
    Game2<span class="hl opt">.</span>Display<span class="hl opt">;</span>
 <span class="hl kwa">end</span> ChameneosRedux<span class="hl opt">;</span>
 
-<span class="hl slc">-------------------------------------------------------------------------------</span>
+<span class="hl slc">-------------------------------------------------------------------------------</span>
 
 <span class="hl kwa">with</span> Interfaces<span class="hl opt">;</span>                  <span class="hl kwa">use</span> Interfaces<span class="hl opt">;</span>
 <span class="hl kwa">with</span> Cache_Aligned_Storage_Pools<span class="hl opt">;</span> <span class="hl kwa">use</span> Cache_Aligned_Storage_Pools<span class="hl opt">;</span>
@@ -140,9 +140,9 @@
 <span class="hl str">   subtype Meeting_Count is Unsigned_32 range 0 .. Max_Meetings;</span>
 <span class="hl str"></span>
 <span class="hl str">end Chameneos;</span>
-<span class="hl str"></span>
-<span class="hl str">-------------------------------------------------------------------------------</span>
-<span class="hl str"></span>
+<span class="hl str"></span>
+<span class="hl str">-------------------------------------------------------------------------------</span>
+<span class="hl str"></span>
 <span class="hl str">with Chameneos.Meetings;</span>
 <span class="hl str">with Chameneos.Countdown;</span>
 <span class="hl str">with Chameneos.Processors;</span>
@@ -220,7 +220,7 @@
 
 <span class="hl kwa">end</span> Chameneos<span class="hl opt">.</span>Creatures<span class="hl opt">;</span>
 
-<span class="hl slc">-------------------------------------------------------------------------------</span>
+<span class="hl slc">-------------------------------------------------------------------------------</span>
 
 <span class="hl kwa">with</span> Chameneos<span class="hl opt">.</span>Creatures<span class="hl opt">;</span>  <span class="hl kwa">use</span> Chameneos<span class="hl opt">.</span>Creatures<span class="hl opt">;</span>
 <span class="hl kwa">with</span> Chameneos<span class="hl opt">.</span>Meetings<span class="hl opt">;</span>
@@ -260,7 +260,7 @@
 
 <span class="hl kwa">end</span> Chameneos<span class="hl opt">.</span>Games<span class="hl opt">;</span>
 
-<span class="hl slc">-------------------------------------------------------------------------------</span>
+<span class="hl slc">-------------------------------------------------------------------------------</span>
 
 <span class="hl kwa">limited with</span> Chameneos<span class="hl opt">.</span>Creatures<span class="hl opt">;</span>
 
@@ -321,7 +321,7 @@
 
 <span class="hl kwa">end</span> Chameneos<span class="hl opt">.</span>Meetings<span class="hl opt">;</span>
 
-<span class="hl slc">-------------------------------------------------------------------------------</span>
+<span class="hl slc">-------------------------------------------------------------------------------</span>
 
 <span class="hl kwa">with</span> System<span class="hl opt">.</span>Storage_Pools<span class="hl opt">;</span>
 <span class="hl kwa">with</span> System<span class="hl opt">.</span>Storage_Elements<span class="hl opt">;</span>
@@ -333,34 +333,34 @@
 
    <span class="hl kwa">type</span> Cache_Aligned_Storage_Pool <span class="hl kwa">is</span>
      <span class="hl kwa">new</span> SSP<span class="hl opt">.</span>Root_Storage_Pool <span class="hl kwa">with private</span><span class="hl opt">;</span>
-   <span class="hl slc">--  A Cache_Aligned_Storage_Pool is a wrapper for the underlying operating</span>
-   <span class="hl slc">--  system storage allocator. Allocations using pool objects of this type</span>
-   <span class="hl slc">--  will return addresses that are aligned with the cache line size specified</span>
-   <span class="hl slc">--  below.</span>
+   <span class="hl slc">--  A Cache_Aligned_Storage_Pool is a wrapper for the underlying operating</span>
+   <span class="hl slc">--  system storage allocator. Allocations using pool objects of this type</span>
+   <span class="hl slc">--  will return addresses that are aligned with the cache line size specified</span>
+   <span class="hl slc">--  below.</span>
 
    Cache_Line_Size <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">64</span><span class="hl opt">;</span>
-   <span class="hl slc">--  The length of a cache line on this machine.  Change as necessary...</span>
+   <span class="hl slc">--  The length of a cache line on this machine.  Change as necessary...</span>
 
-   <span class="hl slc">--  Allocates a block of storage such that Storage_Address is aligned with</span>
-   <span class="hl slc">--  Cache_Line_Size. Uses the system memory allocator to do the actual</span>
-   <span class="hl slc">--  allocation but asks for more storage than Requested_Size so that an</span>
-   <span class="hl slc">--  aligned address within the allocated block can be found.</span>
+   <span class="hl slc">--  Allocates a block of storage such that Storage_Address is aligned with</span>
+   <span class="hl slc">--  Cache_Line_Size. Uses the system memory allocator to do the actual</span>
+   <span class="hl slc">--  allocation but asks for more storage than Requested_Size so that an</span>
+   <span class="hl slc">--  aligned address within the allocated block can be found.</span>
    <span class="hl kwa">procedure</span> Allocate
      <span class="hl opt">(</span>Pool            <span class="hl opt">:</span> <span class="hl kwa">in out</span> Cache_Aligned_Storage_Pool<span class="hl opt">;</span>
       Storage_Address <span class="hl opt">:</span> <span class="hl kwa">out</span> System<span class="hl opt">.</span>Address<span class="hl opt">;</span>
       Requested_Size  <span class="hl opt">:</span> SSE<span class="hl opt">.</span>Storage_Count<span class="hl opt">;</span>
       Alignment       <span class="hl opt">:</span> SSE<span class="hl opt">.</span>Storage_Count<span class="hl opt">);</span>
 
-   <span class="hl slc">--  Uses the system memory routine to deallocate the entire block of storage</span>
-   <span class="hl slc">--  in which Storage_Address is contained.</span>
+   <span class="hl slc">--  Uses the system memory routine to deallocate the entire block of storage</span>
+   <span class="hl slc">--  in which Storage_Address is contained.</span>
    <span class="hl kwa">procedure</span> Deallocate
      <span class="hl opt">(</span>Pool            <span class="hl opt">:</span> <span class="hl kwa">in out</span> Cache_Aligned_Storage_Pool<span class="hl opt">;</span>
       Storage_Address <span class="hl opt">:</span> System<span class="hl opt">.</span>Address<span class="hl opt">;</span>
       Requested_Size  <span class="hl opt">:</span> SSE<span class="hl opt">.</span>Storage_Count<span class="hl opt">;</span>
       Alignment       <span class="hl opt">:</span> SSE<span class="hl opt">.</span>Storage_Count<span class="hl opt">);</span>
 
-   <span class="hl slc">--  Returns a meaningless number since the system memory allocation and</span>
-   <span class="hl slc">--  deallocation routines are used.</span>
+   <span class="hl slc">--  Returns a meaningless number since the system memory allocation and</span>
+   <span class="hl slc">--  deallocation routines are used.</span>
    <span class="hl kwa">function</span> Storage_Size <span class="hl opt">(</span>Pool <span class="hl opt">:</span> Cache_Aligned_Storage_Pool<span class="hl opt">)</span>
       <span class="hl kwa">return</span> SSE<span class="hl opt">.</span>Storage_Count<span class="hl opt">;</span>
 
@@ -379,11 +379,11 @@
       Alignment       <span class="hl opt">:</span> SSE<span class="hl opt">.</span>Storage_Count<span class="hl opt">);</span>
 
    <span class="hl kwa">type</span> Cache_Aligned_Storage_Pool <span class="hl kwa">is</span>
-     <span class="hl kwa">new</span> SSP<span class="hl opt">.</span>Root_Storage_Pool <span class="hl kwa">with null record</span><span class="hl opt">;</span>  <span class="hl slc">-- just a wrapper...</span>
+     <span class="hl kwa">new</span> SSP<span class="hl opt">.</span>Root_Storage_Pool <span class="hl kwa">with null record</span><span class="hl opt">;</span>  <span class="hl slc">-- just a wrapper...</span>
 
 <span class="hl kwa">end</span> Cache_Aligned_Storage_Pools<span class="hl opt">;</span>
 
-<span class="hl slc">-------------------------------------------------------------------------------</span>
+<span class="hl slc">-------------------------------------------------------------------------------</span>
 
 <span class="hl kwa">package</span> Chameneos<span class="hl opt">.</span>Countdown <span class="hl kwa">is</span>
 
@@ -408,7 +408,7 @@
 
 <span class="hl kwa">end</span> Chameneos<span class="hl opt">.</span>Countdown<span class="hl opt">;</span>
 
-<span class="hl slc">-------------------------------------------------------------------------------</span>
+<span class="hl slc">-------------------------------------------------------------------------------</span>
 
 <span class="hl kwa">with</span> System<span class="hl opt">.</span>Task_Info<span class="hl opt">;</span>     <span class="hl kwa">use</span> System<span class="hl opt">.</span>Task_Info<span class="hl opt">;</span>
 <span class="hl kwa">pragma</span> Warnings <span class="hl opt">(</span>Off<span class="hl opt">);</span>
@@ -449,7 +449,7 @@
 
 <span class="hl kwa">end</span> Chameneos<span class="hl opt">.</span>Processors<span class="hl opt">;</span>
 
-<span class="hl slc">-------------------------------------------------------------------------------</span>
+<span class="hl slc">-------------------------------------------------------------------------------</span>
 
 <span class="hl kwa">with</span> Interfaces<span class="hl opt">;</span>   <span class="hl kwa">use</span> Interfaces<span class="hl opt">;</span>
 
@@ -468,7 +468,7 @@
 
 <span class="hl kwa">end</span> x86_Atomic_Swap_Utils<span class="hl opt">;</span>
 
-<span class="hl slc">-------------------------------------------------------------------------------</span>
+<span class="hl slc">-------------------------------------------------------------------------------</span>
 
 <span class="hl kwa">with</span> GNAT<span class="hl opt">.</span>IO<span class="hl opt">;</span> <span class="hl kwa">use</span> GNAT<span class="hl opt">.</span>IO<span class="hl opt">;</span>
 <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Strings<span class="hl opt">.</span>Unbounded<span class="hl opt">;</span>
@@ -522,7 +522,7 @@
 
 <span class="hl kwa">end</span> Chameneos<span class="hl opt">;</span>
 
-<span class="hl slc">-------------------------------------------------------------------------------</span>
+<span class="hl slc">-------------------------------------------------------------------------------</span>
 
 <span class="hl kwa">with</span> GNAT<span class="hl opt">.</span>IO<span class="hl opt">;</span>  <span class="hl kwa">use</span> GNAT<span class="hl opt">.</span>IO<span class="hl opt">;</span>
 
@@ -673,7 +673,7 @@
 
 <span class="hl kwa">end</span> Chameneos<span class="hl opt">.</span>Creatures<span class="hl opt">;</span>
 
-<span class="hl slc">-------------------------------------------------------------------------------</span>
+<span class="hl slc">-------------------------------------------------------------------------------</span>
 
 <span class="hl kwa">with</span> GNAT<span class="hl opt">.</span>IO<span class="hl opt">;</span>  <span class="hl kwa">use</span> GNAT<span class="hl opt">.</span>IO<span class="hl opt">;</span>
 
@@ -743,7 +743,7 @@
 
 <span class="hl kwa">end</span> Chameneos<span class="hl opt">.</span>Games<span class="hl opt">;</span>
 
-<span class="hl slc">-------------------------------------------------------------------------------</span>
+<span class="hl slc">-------------------------------------------------------------------------------</span>
 
 <span class="hl kwa">with</span> Chameneos<span class="hl opt">.</span>Creatures<span class="hl opt">;</span>
 <span class="hl kwa">with</span> x86_Atomic_Swap_Utils<span class="hl opt">;</span>  <span class="hl kwa">use</span> x86_Atomic_Swap_Utils<span class="hl opt">;</span>
@@ -827,7 +827,7 @@
 
 <span class="hl kwa">end</span> Chameneos<span class="hl opt">.</span>Meetings<span class="hl opt">;</span>
 
-<span class="hl slc">-------------------------------------------------------------------------------</span>
+<span class="hl slc">-------------------------------------------------------------------------------</span>
 
 <span class="hl kwa">package body</span> Chameneos<span class="hl opt">.</span>Countdown <span class="hl kwa">is</span>
 
@@ -859,7 +859,7 @@
 
 <span class="hl kwa">end</span> Chameneos<span class="hl opt">.</span>Countdown<span class="hl opt">;</span>
 
-<span class="hl slc">-------------------------------------------------------------------------------</span>
+<span class="hl slc">-------------------------------------------------------------------------------</span>
 
 <span class="hl kwa">with</span> System<span class="hl opt">.</span>Memory<span class="hl opt">;</span>
 <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Unchecked_Conversion<span class="hl opt">;</span>
@@ -868,9 +868,9 @@
 
    <span class="hl kwa">use</span> System<span class="hl opt">,</span> System<span class="hl opt">.</span>Storage_Elements<span class="hl opt">;</span>
 
-   <span class="hl slc">--  we cannot use System.Address'Size as the modulus so we use the same thing</span>
-   <span class="hl slc">--  that the compiler does (when declaring Address as a modular type in the</span>
-   <span class="hl slc">--  full definition)</span>
+   <span class="hl slc">--  we cannot use System.Address'Size as the modulus so we use the same thing</span>
+   <span class="hl slc">--  that the compiler does (when declaring Address as a modular type in the</span>
+   <span class="hl slc">--  full definition)</span>
    <span class="hl kwa">type</span> Unsigned_Address <span class="hl kwa">is mod</span> System<span class="hl opt">.</span>Memory_Size<span class="hl opt">;</span>
 
    <span class="hl kwa">function</span> As_Unsigned_Address <span class="hl kwa">is new</span> Ada<span class="hl opt">.</span>Unchecked_Conversion
@@ -888,14 +888,14 @@
      <span class="hl opt">(</span>Source <span class="hl opt">=&gt;</span> Address<span class="hl opt">,</span>
       Target <span class="hl opt">=&gt;</span> Address_Pointer<span class="hl opt">);</span>
 
-   <span class="hl slc">--  size of an address in terms of storage units</span>
+   <span class="hl slc">--  size of an address in terms of storage units</span>
    Size_Of_Address <span class="hl opt">:</span> <span class="hl kwa">constant</span> Storage_Offset <span class="hl opt">:=</span> Address<span class="hl kwd">'Size</span> <span class="hl opt">/</span> System<span class="hl opt">.</span>Storage_Unit<span class="hl opt">;</span>
 
    Twice_Cache_Line_Size <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">2</span> <span class="hl opt">*</span> Cache_Line_Size<span class="hl opt">;</span>
 
-   <span class="hl slc">--------------</span>
-   <span class="hl slc">-- Allocate --</span>
-   <span class="hl slc">--------------</span>
+   <span class="hl slc">--------------</span>
+   <span class="hl slc">-- Allocate --</span>
+   <span class="hl slc">--------------</span>
 
    <span class="hl kwa">procedure</span> Allocate
      <span class="hl opt">(</span>Pool            <span class="hl opt">:</span> <span class="hl kwa">in out</span> Cache_Aligned_Storage_Pool<span class="hl opt">;</span>
@@ -912,27 +912,27 @@
       Temp    <span class="hl opt">:</span> Unsigned_Address<span class="hl opt">;</span>
    <span class="hl kwa">begin</span>
       Actual <span class="hl opt">:=</span> Memory<span class="hl opt">.</span>Alloc <span class="hl opt">(</span>Memory<span class="hl opt">.</span>size_t <span class="hl opt">(</span>Requested_Size <span class="hl opt">+</span> Twice_Cache_Line_Size<span class="hl opt">));</span>
-      <span class="hl slc">--  The call to Alloc returns an address whose alignment is compatible</span>
-      <span class="hl slc">--  with the worst case alignment requirement for the machine; thus the</span>
-      <span class="hl slc">--  Alignment argument can be safely ignored.</span>
+      <span class="hl slc">--  The call to Alloc returns an address whose alignment is compatible</span>
+      <span class="hl slc">--  with the worst case alignment requirement for the machine; thus the</span>
+      <span class="hl slc">--  Alignment argument can be safely ignored.</span>
 
       <span class="hl kwa">if</span> Actual <span class="hl opt">=</span> Null_Address <span class="hl kwa">then</span>
          <span class="hl kwa">raise</span> Storage_Error<span class="hl opt">;</span>
       <span class="hl kwa">end if</span><span class="hl opt">;</span>
 
-      <span class="hl slc">--  compute a cache-aligned address within the block allocated</span>
+      <span class="hl slc">--  compute a cache-aligned address within the block allocated</span>
       Temp <span class="hl opt">:=</span> As_Unsigned_Address <span class="hl opt">(</span>Actual <span class="hl opt">+</span> Cache_Line_Size<span class="hl opt">)</span> <span class="hl kwa">and not</span> <span class="hl opt">(</span>Cache_Line_Size <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span>
       Aligned <span class="hl opt">:=</span> As_Address <span class="hl opt">(</span>Temp<span class="hl opt">);</span>
-      <span class="hl slc">--  Put the address of the whole allocated block just before the address</span>
-      <span class="hl slc">--  given to the application so we can deallocate the whole block later</span>
+      <span class="hl slc">--  Put the address of the whole allocated block just before the address</span>
+      <span class="hl slc">--  given to the application so we can deallocate the whole block later</span>
       Header <span class="hl opt">:=</span> Aligned <span class="hl opt">-</span> Size_of_Address<span class="hl opt">;</span>
       As_Address_Pointer <span class="hl opt">(</span>Header<span class="hl opt">).</span><span class="hl kwa">all</span> <span class="hl opt">:=</span> Actual<span class="hl opt">;</span>
       Storage_Address <span class="hl opt">:=</span> Aligned<span class="hl opt">;</span>
    <span class="hl kwa">end</span> Allocate<span class="hl opt">;</span>
 
-   <span class="hl slc">----------------</span>
-   <span class="hl slc">-- Deallocate --</span>
-   <span class="hl slc">----------------</span>
+   <span class="hl slc">----------------</span>
+   <span class="hl slc">-- Deallocate --</span>
+   <span class="hl slc">----------------</span>
 
    <span class="hl kwa">procedure</span> Deallocate
      <span class="hl opt">(</span>Pool            <span class="hl opt">:</span> <span class="hl kwa">in out</span> Cache_Aligned_Storage_Pool<span class="hl opt">;</span>
@@ -952,9 +952,9 @@
       Memory<span class="hl opt">.</span>Free <span class="hl opt">(</span>Actual<span class="hl opt">);</span>
    <span class="hl kwa">end</span> Deallocate<span class="hl opt">;</span>
 
-   <span class="hl slc">------------------</span>
-   <span class="hl slc">-- Storage_Size --</span>
-   <span class="hl slc">------------------</span>
+   <span class="hl slc">------------------</span>
+   <span class="hl slc">-- Storage_Size --</span>
+   <span class="hl slc">------------------</span>
 
    <span class="hl kwa">function</span> Storage_Size
      <span class="hl opt">(</span>Pool  <span class="hl opt">:</span> Cache_Aligned_Storage_Pool<span class="hl opt">)</span>
@@ -965,9 +965,9 @@
       <span class="hl kwa">return</span> SSE<span class="hl opt">.</span>Storage_Count<span class="hl kwd">'Last</span><span class="hl opt">;</span>
    <span class="hl kwa">end</span> Storage_Size<span class="hl opt">;</span>
 
-   <span class="hl slc">------------------</span>
-   <span class="hl slc">-- Allocate_Any --</span>
-   <span class="hl slc">------------------</span>
+   <span class="hl slc">------------------</span>
+   <span class="hl slc">-- Allocate_Any --</span>
+   <span class="hl slc">------------------</span>
 
    <span class="hl kwa">procedure</span> Allocate_Any
      <span class="hl opt">(</span>Pool            <span class="hl opt">:</span> <span class="hl kwa">in out</span> Cache_Aligned_Storage_Pool<span class="hl kwd">'Class</span><span class="hl opt">;</span>
@@ -979,9 +979,9 @@
       Allocate <span class="hl opt">(</span>Pool<span class="hl opt">,</span> Storage_Address<span class="hl opt">,</span> Requested_Size<span class="hl opt">,</span> Alignment<span class="hl opt">);</span>
    <span class="hl kwa">end</span> Allocate_Any<span class="hl opt">;</span>
 
-   <span class="hl slc">--------------------</span>
-   <span class="hl slc">-- Deallocate_Any --</span>
-   <span class="hl slc">--------------------</span>
+   <span class="hl slc">--------------------</span>
+   <span class="hl slc">-- Deallocate_Any --</span>
+   <span class="hl slc">--------------------</span>
 
    <span class="hl kwa">procedure</span> Deallocate_Any
      <span class="hl opt">(</span>Pool            <span class="hl opt">:</span> <span class="hl kwa">in out</span> Cache_Aligned_Storage_Pool<span class="hl kwd">'Class</span><span class="hl opt">;</span>
@@ -995,7 +995,7 @@
 
 <span class="hl kwa">end</span> Cache_Aligned_Storage_Pools<span class="hl opt">;</span>
 
-<span class="hl slc">-------------------------------------------------------------------------------</span>
+<span class="hl slc">-------------------------------------------------------------------------------</span>
 
 <span class="hl kwa">with</span> Interfaces<span class="hl opt">.</span>C<span class="hl opt">;</span>
 
@@ -1089,7 +1089,7 @@
    Define_Affinities_By_Slot<span class="hl opt">;</span>
 <span class="hl kwa">end</span> Chameneos<span class="hl opt">.</span>Processors<span class="hl opt">;</span>
 
-<span class="hl slc">-------------------------------------------------------------------------------</span>
+<span class="hl slc">-------------------------------------------------------------------------------</span>
 
 <span class="hl kwa">with</span> System<span class="hl opt">.</span>Machine_Code<span class="hl opt">;</span>  <span class="hl kwa">use</span> System<span class="hl opt">.</span>Machine_Code<span class="hl opt">;</span>
 

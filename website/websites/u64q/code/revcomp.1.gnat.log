@@ -1,5 +1,5 @@
 
-Sat, 12 Jan 2013 09:04:57 GMT
+Fri, 18 Jan 2013 07:50:50 GMT
 
 MAKE:
 /usr/bin/gnatchop -r -w revcomp.gnat
@@ -7,13 +7,13 @@ splitting revcomp.gnat into:
    revcomp.adb
 /usr/bin/gnatmake -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp -f revcomp.adb -o revcomp.gnat_run 
 gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp revcomp.adb
-revcomp.gnat:95:32: warning: index for "Fasta" may assume lower bound of 1
-revcomp.gnat:95:32: warning: suggested replacement: "Fasta'First"
-revcomp.gnat:96:27: warning: index for "Fasta" may assume lower bound of 1
-revcomp.gnat:96:27: warning: suggested replacement: "Fasta'First"
+revcomp.gnat:97:32: warning: index for "Fasta" may assume lower bound of 1
+revcomp.gnat:97:32: warning: suggested replacement: "Fasta'First"
+revcomp.gnat:98:27: warning: index for "Fasta" may assume lower bound of 1
+revcomp.gnat:98:27: warning: suggested replacement: "Fasta'First"
 gnatbind -x revcomp.ali
 gnatlink revcomp.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o revcomp.gnat_run
-0.33s to complete and log all make actions
+0.61s to complete and log all make actions
 
 COMMAND LINE:
 ./revcomp.gnat_run 0 < revcomp-input25000000.txt

@@ -1,5 +1,5 @@
 
-Sat, 12 Jan 2013 07:50:37 GMT
+Fri, 18 Jan 2013 06:40:25 GMT
 
 MAKE:
 /usr/bin/gnatchop -r -w binarytrees.gnat
@@ -12,7 +12,7 @@ gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp bi
 gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp treenodes.adb
 gnatbind -x binarytrees.ali
 gnatlink binarytrees.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o binarytrees.gnat_run
-0.40s to complete and log all make actions
+0.44s to complete and log all make actions
 
 COMMAND LINE:
 ./binarytrees.gnat_run 20
