@@ -20,7 +20,8 @@ function Alias($l){ // hardcode aliases for old names
          ($l == "ruby" ? "yarv" :
          ($l == "javascript" ? "v8" :
          ($l == "tracemonkey" ? "v8" :
-         ($l == "luajit" ? "lua" : $l))));
+         ($l == "luajit" ? "lua" :
+         ($l == "pypy" ? "python3" : $l)))));
 }
 
 if (isset($_GET['lang'])
