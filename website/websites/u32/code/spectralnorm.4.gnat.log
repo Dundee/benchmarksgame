@@ -1,5 +1,5 @@
 
-Sat, 12 Jan 2013 07:24:41 GMT
+Sat, 19 Jan 2013 09:53:44 GMT
 
 MAKE:
 /usr/bin/gnatchop -r -w spectralnorm.gnat-4.gnat
@@ -28,7 +28,7 @@ gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp sp
 gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp spectral_utils-s.adb
 gnatbind -x spectralnorm.ali
 gnatlink spectralnorm.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o spectralnorm.gnat-4.gnat_run
-1.23s to complete and log all make actions
+1.20s to complete and log all make actions
 
 COMMAND LINE:
 ./spectralnorm.gnat-4.gnat_run 5500
