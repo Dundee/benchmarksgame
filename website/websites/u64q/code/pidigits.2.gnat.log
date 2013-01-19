@@ -1,5 +1,5 @@
 
-Fri, 18 Jan 2013 07:44:28 GMT
+Fri, 18 Jan 2013 06:05:37 GMT
 
 MAKE:
 /usr/bin/gnatchop -r -w pidigits.gnat-2.gnat
@@ -11,7 +11,7 @@ gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp pi
 gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp gmp_mini_bindings.ads
 gnatbind -x pidigits.ali
 gnatlink pidigits.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o pidigits.gnat-2.gnat_run
-0.32s to complete and log all make actions
+0.34s to complete and log all make actions
 
 COMMAND LINE:
 ./pidigits.gnat-2.gnat_run 10000
