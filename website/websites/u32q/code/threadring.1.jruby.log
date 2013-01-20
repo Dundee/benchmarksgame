@@ -1,12 +1,12 @@
 
-Tue, 23 Oct 2012 11:15:32 GMT
+Sat, 19 Jan 2013 22:35:38 GMT
 
 MAKE:
 mv threadring.jruby threadring.rb
 0.01s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/src/jruby-1.7.0/bin/jruby -Xcompile.invokedynamic=true -J-server -J-Xmn512m -J-Xms2048m -J-Xmx2048m threadring.rb 500000
+/usr/local/src/jruby-1.7.2/bin/jruby -Xcompile.invokedynamic=true -J-server -J-Xmn512m -J-Xms2048m -J-Xmx2048m threadring.rb 500000
 
 PROGRAM FAILED 
 
@@ -16,6 +16,6 @@ PROGRAM OUTPUT:
 ThreadError: unable to create new native thread
   initialize at org/jruby/RubyThread.java:382
        start at org/jruby/RubyThread.java:321
-     __for__ at threadring.rb:55
-        each at org/jruby/RubyRange.java:445
-      (root) at threadring.rb:54
+     __for__ at threadring.rb:54
+        each at org/jruby/RubyRange.java:458
+      (root) at threadring.rb:53
