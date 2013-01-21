@@ -1,5 +1,5 @@
 
-Sat, 12 Jan 2013 17:50:13 GMT
+Mon, 21 Jan 2013 04:30:38 GMT
 
 MAKE:
 mv binarytreesredux.scala-4.scala binarytreesredux.scala
@@ -8,10 +8,10 @@ binarytreesredux.scala:12: warning: This catches all Throwables. If this is real
     val n = try{ args(0).toInt } catch { case _ => 1 }
                                               ^
 one warning found
-4.81s to complete and log all make actions
+4.75s to complete and log all make actions
 
 COMMAND LINE:
- /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts -Xms112m -Xmx112m -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar binarytreesredux 20
+ /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts -Xms112m -Xmx112m -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar binarytreesredux 20
 
 PROGRAM OUTPUT:
 stretch tree of depth 21	 check: -1
