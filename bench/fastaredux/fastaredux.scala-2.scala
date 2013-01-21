@@ -1,5 +1,5 @@
 /* The Computer Language Benchmarks Game
-  http://shootout.alioth.debian.org/
+   http://benchmarksgame.alioth.debian.org/
   contributed by Rex Kerr
   based on Scala version by Isaac Gouy
   with optimization tricks from C version by Petr Prokhorenkov

@@ -1,6 +1,5 @@
-/*
- * The Computer Language Benchmarks Game
- * http://shootout.alioth.debian.org/
+/* The Computer Language Benchmarks Game
+   http://benchmarksgame.alioth.debian.org/
  *
  * Scala version contributed by Rex Kerr
  * translated from Java version by Oleg Mazurov, June 2010

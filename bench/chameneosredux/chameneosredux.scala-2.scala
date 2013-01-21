@@ -1,5 +1,5 @@
-/*   The Computer Language Benchmarks Game
-   http://shootout.alioth.debian.org/
+/* The Computer Language Benchmarks Game
+   http://benchmarksgame.alioth.debian.org/
 
    Contributed by Eric Willigers
    Port of Java implementation by Michael Barker and Luzius Meisser

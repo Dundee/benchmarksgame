@@ -1,5 +1,5 @@
 
-Sun, 13 Jan 2013 04:59:26 GMT
+Sun, 20 Jan 2013 18:39:51 GMT
 
 MAKE:
 mv meteor.scala meteor.scala
@@ -11,10 +11,10 @@ meteor.scala:296: error: value first is not a member of Array[String]
                ^
 one error found
 make: [meteor.scala_run] Error 1 (ignored)
-5.35s to complete and log all make actions
+5.40s to complete and log all make actions
 
 COMMAND LINE:
- /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar meteor 2098
+ /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar meteor 2098
 
 PROGRAM FAILED 
 

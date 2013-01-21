@@ -1,17 +1,17 @@
 
-Wed, 12 Dec 2012 19:20:57 GMT
+Sun, 20 Jan 2013 16:01:01 GMT
 
 MAKE:
 mv pidigits.java-2.java pidigits.java
-/usr/local/src/jdk1.7.0_10/bin/javac pidigits.java
+/usr/local/src/jdk1.7.0_11/bin/javac pidigits.java
 0.70s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/src/jdk1.7.0_10/bin/java -Djava.library.path=Include/java -server -XX:+TieredCompilation -XX:+AggressiveOpts pidigits 2000
+/usr/local/src/jdk1.7.0_11/bin/java -Djava.library.path=Include/java -server -XX:+TieredCompilation -XX:+AggressiveOpts pidigits 2000
 
 PROGRAM FAILED 
 
 
 PROGRAM OUTPUT:
 
-/usr/local/src/jdk1.7.0_10/bin/java: symbol lookup error: /home/dunham/shootout/bench/Include/java/libjgmplib.so: undefined symbol: _Znwm
+/usr/local/src/jdk1.7.0_11/bin/java: symbol lookup error: /home/dunham/benchmarksgame/bench/Include/java/libjgmplib.so: undefined symbol: _Znwm

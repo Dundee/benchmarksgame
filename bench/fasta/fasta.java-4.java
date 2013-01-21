@@ -1,6 +1,6 @@
 /*
  * The Computer Language Benchmarks Game
- * http://shootout.alioth.debian.org/
+ * http://benchmarksgame.alioth.debian.org/
  *
  * modified by Mehmet D. AKIN
  * modified by Rikard Mustajärvi

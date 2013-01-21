@@ -1,5 +1,5 @@
 
-Sun, 13 Jan 2013 03:23:19 GMT
+Sun, 20 Jan 2013 14:53:48 GMT
 
 MAKE:
 mv binarytrees.scala-4.scala binarytrees.scala
@@ -8,10 +8,10 @@ binarytrees.scala:12: warning: This catches all Throwables. If this is really in
     val n = try{ args(0).toInt } catch { case _ => 1 }
                                               ^
 one warning found
-11.10s to complete and log all make actions
+11.11s to complete and log all make actions
 
 COMMAND LINE:
- /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar binarytrees 20
+ /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar binarytrees 20
 
 PROGRAM OUTPUT:
 stretch tree of depth 21	 check: -1

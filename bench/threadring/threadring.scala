@@ -1,5 +1,5 @@
 /* The Computer Language Benchmarks Game
-   http://shootout.alioth.debian.org/
+   http://benchmarksgame.alioth.debian.org/
 
    Contributed by Vincent Kraeutler
    updated for 2.8 by Rex Kerr

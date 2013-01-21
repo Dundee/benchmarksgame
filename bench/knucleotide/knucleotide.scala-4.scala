@@ -1,6 +1,5 @@
-/* 
- * The Computer Language Benchmarks Game
- * http://shootout.alioth.debian.org/
+/* The Computer Language Benchmarks Game
+   http://benchmarksgame.alioth.debian.org/
  * contributed by Rex Kerr
  * (based partially on the single-threaded version by Isaac Gouy
  * with fixes from Iulian Dragos and Meiko Rachimow)

@@ -1,5 +1,5 @@
 /*
- * The Computer Language Benchmarks Game
+ * The Computer Language Benchmarks Game 
  * http://benchmarksgame.alioth.debian.org/
  * contributed by Benedikt Nordhoff
  * parallelized adaptation of Scala version #4 by Rex Kerr (Java version #4 by Anthony Donnefort)

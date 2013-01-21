@@ -1,5 +1,5 @@
-/*   The Computer Language Benchmarks Game
-   http://shootout.alioth.debian.org/
+/* The Computer Language Benchmarks Game
+   http://benchmarksgame.alioth.debian.org/
    contributed by Eric Willigers
    based on Java version by The Anh Tran
 */

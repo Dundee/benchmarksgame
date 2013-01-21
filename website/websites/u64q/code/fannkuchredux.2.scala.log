@@ -1,13 +1,13 @@
 
-Sun, 13 Jan 2013 03:31:10 GMT
+Sun, 20 Jan 2013 15:30:31 GMT
 
 MAKE:
 mv fannkuchredux.scala-2.scala fannkuchredux.scala
 /usr/local/src/scala-2.10.0/bin/scalac -optimise fannkuchredux.scala
-7.91s to complete and log all make actions
+7.70s to complete and log all make actions
 
 COMMAND LINE:
- /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar fannkuchredux 12
+ /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar fannkuchredux 12
 
 PROGRAM OUTPUT:
 3968050

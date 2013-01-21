@@ -1,5 +1,5 @@
 /* The Computer Language Benchmarks Game
-   http://shootout.alioth.debian.org/
+   http://benchmarksgame.alioth.debian.org/
    original contributed by Isaac Gouy
    made to use single array and parallelized by Stephen Marsh
    converted to Scala 2.8 by Rex Kerr

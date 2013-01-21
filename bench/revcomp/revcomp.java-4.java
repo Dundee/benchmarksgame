@@ -1,6 +1,6 @@
 /*
  * The Computer Language Benchmarks Game
- * http://shootout.alioth.debian.org/
+ * http://benchmarksgame.alioth.debian.org/
  * contributed by Anthony Donnefort
  * slightly modified to read 82 bytes at a time by Razii
  */

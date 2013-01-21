@@ -1,6 +1,5 @@
-/*
-   The Computer Language Benchmarks Game
-   http://shootout.alioth.debian.org/
+/* The Computer Language Benchmarks Game
+   http://benchmarksgame.alioth.debian.org/
    Based partially on the version by The Anh Tran
    Based on bit encoding idea of C++ contribution of Andrew Moon
    Contributed by Mark Hammons

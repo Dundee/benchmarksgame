@@ -1,5 +1,5 @@
 /*
- * The Computer Language Benchmarks Game 
+ * The Computer Language Benchmarks Game
  * http://benchmarksgame.alioth.debian.org/
  * contributed by Rex Kerr
  * algorithm follows Java version #4 by Anthony Donnefort

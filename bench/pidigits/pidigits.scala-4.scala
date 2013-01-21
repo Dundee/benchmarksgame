@@ -1,6 +1,6 @@
 /* 
  * The Computer Language Benchmarks Game
- * http://shootout.alioth.debian.org/
+ * http://benchmarksgame.alioth.debian.org/
  * contributed by Rex Kerr
  * based on version by John Nilsson as modified by Geoff Reedy
  * GMP wrapping based on Java version by Pall, Kraus, & Sassa

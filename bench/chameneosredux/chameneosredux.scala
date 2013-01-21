@@ -1,5 +1,5 @@
 /* The Computer Language Benchmarks Game
-   http://shootout.alioth.debian.org/
+   http://benchmarksgame.alioth.debian.org/
 
    Scala translation contributed by Rex Kerr;
    based on Java original by Michael Barker.

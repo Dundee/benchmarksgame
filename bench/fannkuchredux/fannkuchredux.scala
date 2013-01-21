@@ -1,5 +1,5 @@
 /* The Computer Language Benchmarks Game
-   http://shootout.alioth.debian.org/
+   http://benchmarksgame.alioth.debian.org/
 
    conversion to Scala by Rex Kerr
    from Java version by Oleg Mazurov and Isaac Gouy

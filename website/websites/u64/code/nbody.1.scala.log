@@ -1,15 +1,15 @@
 
-Sun, 13 Jan 2013 04:59:39 GMT
+Sun, 20 Jan 2013 18:40:06 GMT
 
 MAKE:
 mv nbody.scala nbody.scala
 mv: `nbody.scala' and `nbody.scala' are the same file
 make: [nbody.scala_run] Error 1 (ignored)
 /usr/local/src/scala-2.10.0/bin/scalac nbody.scala
-5.58s to complete and log all make actions
+5.45s to complete and log all make actions
 
 COMMAND LINE:
- /usr/local/src/jdk1.7.0_10/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar nbody 50000000
+ /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar nbody 50000000
 
 PROGRAM OUTPUT:
 -0.169075164

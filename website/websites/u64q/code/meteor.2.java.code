@@ -1,5 +1,5 @@
 <span class="hl com">/* The Computer Language Benchmarks Game</span>
-<span class="hl com">   http://shootout.alioth.debian.org/</span>
+<span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
 <span class="hl com">   transliterated from C++ (Ben St. John) and D (Michael Deardeuff) by Amir K aka Razii</span>
 <span class="hl com">*/</span>
 
@@ -32,7 +32,7 @@
     <span class="hl kwa">static final</span> <span class="hl kwb">int</span> N_ORIENT <span class="hl opt">=</span> <span class="hl num">12</span><span class="hl opt">;</span>
 
 
-<span class="hl slc">//-- Globals -------------------------</span>
+<span class="hl slc">//-- Globals -------------------------</span>
     <span class="hl kwa">static</span> IslandInfo<span class="hl opt">[]</span> g_islandInfo <span class="hl opt">=</span> <span class="hl kwa">new</span> IslandInfo <span class="hl opt">[</span>MAX_ISLAND_OFFSET<span class="hl opt">];</span>
     <span class="hl kwa">static</span> <span class="hl kwb">int</span> g_nIslandInfo <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
     <span class="hl kwa">static</span> OkPieces<span class="hl opt">[][]</span> g_okPieces <span class="hl opt">=</span> <span class="hl kwa">new</span> OkPieces <span class="hl opt">[</span>N_ROW<span class="hl opt">][</span>N_COL<span class="hl opt">];</span>
@@ -67,7 +67,7 @@
 
     <span class="hl kwa">static</span> <span class="hl kwb">int</span> <span class="hl kwd">floor</span><span class="hl opt">(</span><span class="hl kwb">int</span> top<span class="hl opt">,</span> <span class="hl kwb">int</span> bot<span class="hl opt">) {</span>
         <span class="hl kwb">int</span> toZero <span class="hl opt">=</span> top <span class="hl opt">/</span> bot<span class="hl opt">;</span>
-        <span class="hl slc">// negative numbers should be rounded down, not towards zero;</span>
+        <span class="hl slc">// negative numbers should be rounded down, not towards zero;</span>
         <span class="hl kwa">if</span> <span class="hl opt">((</span>toZero <span class="hl opt">*</span> bot <span class="hl opt">!=</span> top<span class="hl opt">) &amp;&amp; ((</span>top <span class="hl opt">&lt;</span> <span class="hl num">0</span><span class="hl opt">) != (</span>bot <span class="hl opt">&lt;=</span> <span class="hl num">0</span><span class="hl opt">)))</span>
             toZero<span class="hl opt">--;</span>
 
@@ -133,7 +133,7 @@
     <span class="hl opt">}</span>
 
 
-<span class="hl slc">//-- Classes -------------------------;</span>
+<span class="hl slc">//-- Classes -------------------------;</span>
 
     <span class="hl kwa">static class</span> OkPieces <span class="hl opt">{</span>
         <span class="hl kwb">byte</span><span class="hl opt">[]</span> nPieces <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>N_PIECE_TYPE<span class="hl opt">];</span>
@@ -208,7 +208,7 @@
                 s<span class="hl opt">.</span>m_pieces<span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl kwa">new</span> <span class="hl kwd">SPiece</span><span class="hl opt">(</span>m_pieces<span class="hl opt">[</span>i<span class="hl opt">]);</span>
 
             s<span class="hl opt">.</span>m_nPiece <span class="hl opt">=</span> m_nPiece<span class="hl opt">;</span>
-            <span class="hl slc">//System.arraycopy(m_cells, 0, s.m_cells, 0, N_CELL);</span>
+            <span class="hl slc">//System.arraycopy(m_cells, 0, s.m_cells, 0, N_CELL);</span>
             <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> N_ROW<span class="hl opt">;</span> i<span class="hl opt">++)</span>
             <span class="hl opt">{</span>
                 <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> j <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> j <span class="hl opt">&lt;</span> N_COL<span class="hl opt">;</span> j <span class="hl opt">++)</span>
@@ -236,7 +236,7 @@
             <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> y <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> y <span class="hl opt">&lt;</span> N_ROW<span class="hl opt">;</span> y<span class="hl opt">++) {</span>
                 <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> x <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> x <span class="hl opt">&lt;</span> N_COL<span class="hl opt">;</span> x<span class="hl opt">++) {</span>
                     <span class="hl kwb">int</span> val <span class="hl opt">=</span> m_cells<span class="hl opt">[</span>y<span class="hl opt">][</span>x<span class="hl opt">];</span>
-                    <span class="hl slc">//if (val == NO_PIECE) result.append('.');</span>
+                    <span class="hl slc">//if (val == NO_PIECE) result.append('.');</span>
                     <span class="hl opt">{</span>
                         result<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span>val<span class="hl opt">);</span>
                     <span class="hl opt">}</span>
@@ -244,7 +244,7 @@
                 <span class="hl opt">}</span>
                 result<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span><span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">);</span>
 
-                <span class="hl slc">// indent every second line</span>
+                <span class="hl slc">// indent every second line</span>
                 <span class="hl kwa">if</span> <span class="hl opt">(</span>y <span class="hl opt">%</span> <span class="hl num">2</span> <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl opt">)</span>
                     result<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span><span class="hl str">&quot; &quot;</span><span class="hl opt">);</span>
             <span class="hl opt">}</span>
@@ -315,7 +315,7 @@
     <span class="hl opt">}</span>
 
 
-<span class="hl slc">//-----------------------</span>
+<span class="hl slc">//-----------------------</span>
     <span class="hl kwa">static class</span> Board <span class="hl opt">{</span>
         <span class="hl kwa">static final</span> <span class="hl kwb">int</span> L_EDGE_MASK <span class="hl opt">=</span> 
                                        <span class="hl opt">((</span><span class="hl num">1</span> <span class="hl opt">&lt;&lt;</span>  <span class="hl num">0</span><span class="hl opt">) | (</span><span class="hl num">1</span> <span class="hl opt">&lt;&lt;</span>  <span class="hl num">5</span><span class="hl opt">) | (</span><span class="hl num">1</span> <span class="hl opt">&lt;&lt;</span> <span class="hl num">10</span><span class="hl opt">) | (</span><span class="hl num">1</span> <span class="hl opt">&lt;&lt;</span> <span class="hl num">15</span><span class="hl opt">) |</span>
@@ -345,20 +345,20 @@
 
         <span class="hl kwa">static</span> <span class="hl kwb">boolean</span> <span class="hl kwd">badRegion</span><span class="hl opt">(</span><span class="hl kwb">int</span><span class="hl opt">[]</span> toFill<span class="hl opt">,</span> <span class="hl kwb">int</span> rNew<span class="hl opt">)</span>
         <span class="hl opt">{</span>
-            <span class="hl slc">// grow empty region, until it doesn't change any more;</span>
+            <span class="hl slc">// grow empty region, until it doesn't change any more;</span>
             <span class="hl kwb">int</span> region<span class="hl opt">;</span>
             <span class="hl kwa">do</span> <span class="hl opt">{</span>
                 region <span class="hl opt">=</span> rNew<span class="hl opt">;</span>
 
-                <span class="hl slc">// simple grow up/down</span>
+                <span class="hl slc">// simple grow up/down</span>
                 rNew <span class="hl opt">|= (</span>region <span class="hl opt">&gt;&gt;</span> N_COL<span class="hl opt">);</span>
                 rNew <span class="hl opt">|= (</span>region <span class="hl opt">&lt;&lt;</span> N_COL<span class="hl opt">);</span>
 
-                <span class="hl slc">// grow right/left</span>
+                <span class="hl slc">// grow right/left</span>
                 rNew <span class="hl opt">|= (</span>region <span class="hl opt">&amp;</span> ~L_EDGE_MASK<span class="hl opt">) &gt;&gt;</span> <span class="hl num">1</span><span class="hl opt">;</span>
                 rNew <span class="hl opt">|= (</span>region <span class="hl opt">&amp;</span> ~R_EDGE_MASK<span class="hl opt">) &lt;&lt;</span> <span class="hl num">1</span><span class="hl opt">;</span>
 
-                <span class="hl slc">// tricky growth</span>
+                <span class="hl slc">// tricky growth</span>
                 <span class="hl kwb">int</span> evenRegion <span class="hl opt">=</span> region <span class="hl opt">&amp; (</span>ROW_0_MASK <span class="hl opt">&amp;</span> ~L_EDGE_MASK<span class="hl opt">);</span>
                 rNew <span class="hl opt">|=</span> evenRegion <span class="hl opt">&gt;&gt; (</span>N_COL <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">);</span>
                 rNew <span class="hl opt">|=</span> evenRegion <span class="hl opt">&lt;&lt; (</span>N_COL <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span>
@@ -366,12 +366,12 @@
                 rNew <span class="hl opt">|=</span> oddRegion <span class="hl opt">&gt;&gt; (</span>N_COL <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span>
                 rNew <span class="hl opt">|=</span> oddRegion <span class="hl opt">&lt;&lt; (</span>N_COL <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">);</span>
 
-                <span class="hl slc">// clamp against existing pieces</span>
+                <span class="hl slc">// clamp against existing pieces</span>
                 rNew <span class="hl opt">&amp;=</span> toFill<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">];</span>
             <span class="hl opt">}</span>
             <span class="hl kwa">while</span> <span class="hl opt">((</span>rNew <span class="hl opt">!=</span> toFill<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]) &amp;&amp; (</span>rNew <span class="hl opt">!=</span> region<span class="hl opt">));</span>
 
-            <span class="hl slc">// subtract empty region from board</span>
+            <span class="hl slc">// subtract empty region from board</span>
             toFill<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]</span> ^<span class="hl opt">=</span> rNew<span class="hl opt">;</span>
 
             <span class="hl kwb">int</span> nCells <span class="hl opt">=</span> <span class="hl kwd">countOnes</span><span class="hl opt">(</span>toFill<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]);</span>
@@ -380,7 +380,7 @@
 
         <span class="hl kwa">static</span> <span class="hl kwb">int</span> <span class="hl kwd">hasBadIslands</span><span class="hl opt">(</span><span class="hl kwb">int</span> boardVec<span class="hl opt">,</span> <span class="hl kwb">int</span> row<span class="hl opt">)</span>
         <span class="hl opt">{</span>
-            <span class="hl slc">// skip over any filled rows</span>
+            <span class="hl slc">// skip over any filled rows</span>
             <span class="hl kwa">while</span> <span class="hl opt">((</span>boardVec <span class="hl opt">&amp;</span> TOP_ROW<span class="hl opt">) ==</span> TOP_ROW<span class="hl opt">) {</span>
                 boardVec <span class="hl opt">&gt;&gt;=</span> N_COL<span class="hl opt">;</span>
                 row<span class="hl opt">++;</span>
@@ -430,7 +430,7 @@
             <span class="hl opt">}</span>
             toFill<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] &amp;=</span> boardMask<span class="hl opt">;</span>
 
-            <span class="hl slc">// a little pre-work to speed things up</span>
+            <span class="hl slc">// a little pre-work to speed things up</span>
             <span class="hl kwb">int</span> bottom <span class="hl opt">= (</span>TOP_ROW <span class="hl opt">&lt;&lt; (</span><span class="hl num">5</span> <span class="hl opt">*</span> N_COL<span class="hl opt">));</span>
             <span class="hl kwb">boolean</span> filled <span class="hl opt">= ((</span>bottom <span class="hl opt">&amp;</span> toFill<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]) ==</span> bottom<span class="hl opt">);</span>
             <span class="hl kwa">while</span> <span class="hl opt">((</span>bottom <span class="hl opt">&amp;</span> toFill<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]) ==</span> bottom<span class="hl opt">) {</span>
@@ -490,13 +490,13 @@
             <span class="hl kwb">boolean</span> isOdd <span class="hl opt">= ((</span>row <span class="hl opt">&amp;</span> <span class="hl num">1</span><span class="hl opt">) !=</span> <span class="hl num">0</span><span class="hl opt">);</span>
             <span class="hl kwa">if</span> <span class="hl opt">(</span>isOdd<span class="hl opt">) {</span>
                 row<span class="hl opt">--;</span>
-                toFill<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] &lt;&lt;=</span> N_COL<span class="hl opt">;</span> <span class="hl slc">// shift to even aligned</span>
+                toFill<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] &lt;&lt;=</span> N_COL<span class="hl opt">;</span> <span class="hl slc">// shift to even aligned</span>
                 toFill<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] |=</span> TOP_ROW<span class="hl opt">;</span>
             <span class="hl opt">}</span>
 
             <span class="hl kwb">int</span> startRegion <span class="hl opt">=</span> TOP_ROW<span class="hl opt">;</span>
             <span class="hl kwb">int</span> lastRow <span class="hl opt">=</span> TOP_ROW <span class="hl opt">&lt;&lt; (</span><span class="hl num">5</span> <span class="hl opt">*</span> N_COL<span class="hl opt">);</span>
-            <span class="hl kwb">int</span> boardMask <span class="hl opt">=</span> BOARD_MASK<span class="hl opt">;</span> <span class="hl slc">// all but the first two bits</span>
+            <span class="hl kwb">int</span> boardMask <span class="hl opt">=</span> BOARD_MASK<span class="hl opt">;</span> <span class="hl slc">// all but the first two bits</span>
             <span class="hl kwa">if</span> <span class="hl opt">(</span>row <span class="hl opt">&gt;=</span> <span class="hl num">4</span><span class="hl opt">)</span>
                 boardMask <span class="hl opt">&gt;&gt;= ((</span>row <span class="hl opt">-</span> <span class="hl num">4</span><span class="hl opt">) *</span> N_COL<span class="hl opt">);</span>
             <span class="hl kwa">else if</span> <span class="hl opt">(</span>isOdd <span class="hl opt">|| (</span>row <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl opt">))</span>
@@ -547,7 +547,7 @@
 
                     m_curSoln<span class="hl opt">.</span><span class="hl kwd">pushPiece</span><span class="hl opt">(</span>pieceVec<span class="hl opt">,</span> iPiece<span class="hl opt">,</span> row<span class="hl opt">);</span>
 
-                    <span class="hl slc">// recur or record solution</span>
+                    <span class="hl slc">// recur or record solution</span>
                     <span class="hl kwa">if</span> <span class="hl opt">(</span>placedPieces <span class="hl opt">!=</span> Piece<span class="hl opt">.</span>ALL_PIECE_MASK<span class="hl opt">)</span>
                         <span class="hl kwd">genAllSolutions</span><span class="hl opt">(</span>boardVec<span class="hl opt">,</span> placedPieces<span class="hl opt">,</span> row<span class="hl opt">);</span>
                     <span class="hl kwa">else</span>
@@ -583,7 +583,7 @@
         <span class="hl opt">}</span>
     <span class="hl opt">}</span>
 
-<span class="hl slc">//----------------------</span>
+<span class="hl slc">//----------------------</span>
     <span class="hl kwa">static class</span> Piece <span class="hl opt">{</span>
         <span class="hl kwa">class</span> Instance <span class="hl opt">{</span>
             <span class="hl kwb">long</span> m_allowed<span class="hl opt">;</span>
@@ -796,10 +796,10 @@
     <span class="hl opt">}</span>
 
 
-<span class="hl slc">//-- Main ---------------------------</span>
+<span class="hl slc">//-- Main ---------------------------</span>
     <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">main</span><span class="hl opt">(</span>String<span class="hl opt">[]</span> args<span class="hl opt">) {</span>
         <span class="hl kwa">if</span> <span class="hl opt">(</span>args<span class="hl opt">.</span>length <span class="hl opt">&gt;</span> <span class="hl num">2</span><span class="hl opt">)</span>
-            System<span class="hl opt">.</span><span class="hl kwd">exit</span><span class="hl opt">(-</span><span class="hl num">1</span><span class="hl opt">);</span> <span class="hl slc">// spec says this is an error;</span>
+            System<span class="hl opt">.</span><span class="hl kwd">exit</span><span class="hl opt">(-</span><span class="hl num">1</span><span class="hl opt">);</span> <span class="hl slc">// spec says this is an error;</span>
 
         <span class="hl kwd">initGlobals</span><span class="hl opt">();</span>
         Board b <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Board</span><span class="hl opt">();</span>

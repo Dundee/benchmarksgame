@@ -1,6 +1,6 @@
 /*
  * The Computer Language Benchmarks Game
- * http://shootout.alioth.debian.org/
+ * http://benchmarksgame.alioth.debian.org/
  *
  * Contributed by Oleg Mazurov, June 2010
  *

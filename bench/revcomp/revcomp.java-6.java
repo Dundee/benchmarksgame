@@ -1,6 +1,6 @@
 /*
  * The Computer Language Benchmarks Game
- * http://shootout.alioth.debian.org/
+ * http://benchmarksgame.alioth.debian.org/
 
  * contributed by Jon Edvardsson
  * added parallel processing to the original
