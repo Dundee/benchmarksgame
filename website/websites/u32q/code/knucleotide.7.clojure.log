@@ -1,14 +1,14 @@
 
-Tue, 04 Sep 2012 06:11:15 GMT
+Tue, 22 Jan 2013 05:23:42 GMT
 
 MAKE:
 mv knucleotide.clojure-7.clojure knucleotide.clj
-/usr/local/src/jdk1.7.0_06/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.4.0/clojure-1.4.0-slim.jar clojure.lang.Compile knucleotide
+/usr/local/src/jdk1.7.0_11/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.4.0/clojure-1.4.0-slim.jar clojure.lang.Compile knucleotide
 Compiling knucleotide to .
-8.97s to complete and log all make actions
+7.03s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/src/jdk1.7.0_06/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts -Xmx1024m -cp .:/usr/local/src/clojure-1.4.0/clojure-1.4.0-slim.jar knucleotide 0 < knucleotide-input25000000.txt
+/usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts -Xmx1024m -cp .:/usr/local/src/clojure-1.4.0/clojure-1.4.0-slim.jar knucleotide 0 < knucleotide-input25000000.txt
 
 PROGRAM OUTPUT:
 A 30.295

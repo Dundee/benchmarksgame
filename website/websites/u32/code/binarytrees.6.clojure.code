@@ -1,12 +1,12 @@
 <span class="hl slc">;; The Computer Language Benchmarks Game</span>
-<span class="hl slc">;; http://shootout.alioth.debian.org/</span>
+<span class="hl slc">;; http://benchmarksgame.alioth.debian.org/</span>
 <span class="hl slc">;</span>
 <span class="hl slc">;; Adapted from the Java -server version</span>
 <span class="hl slc">;</span>
 <span class="hl slc">;; contributed by Marko Kocic</span>
 <span class="hl slc">;; modified by Kenneth Jonsson, restructured to allow usage of 'pmap'</span>
 <span class="hl slc">;; modified by Andy Fingerhut to use faster primitive math ops, and</span>
-<span class="hl slc">;; deftype instead of defrecord for smaller tree nodes.</span>
+<span class="hl slc">;; deftype instead of defrecord for smaller tree nodes.</span>
 <span class="hl slc">;; modified by Mike Anderson to avoid boxing overheads</span>
 
 <span class="hl opt">(</span><span class="hl kwa">ns</span> binarytrees
@@ -15,7 +15,7 @@
 <span class="hl opt">(</span><span class="hl kwa">set</span><span class="hl opt">! *</span>warn-on-reflection<span class="hl opt">*</span> true<span class="hl opt">)</span>
 
 <span class="hl slc">;; These TreeNode's take up noticeably less memory than a similar one</span>
-<span class="hl slc">;; implemented using defrecord.</span>
+<span class="hl slc">;; implemented using defrecord.</span>
 
 <span class="hl opt">(</span><span class="hl kwa">deftype</span> TreeNode <span class="hl opt">[</span>left right ^int item<span class="hl opt">])</span>
 
