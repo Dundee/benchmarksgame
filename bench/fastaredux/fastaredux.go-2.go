@@ -1,5 +1,5 @@
 /* The Computer Language Benchmarks Game
- * http://shootout.alioth.debian.org/
+ * http://benchmarksgame.alioth.debian.org/
  *
  * contributed by The Go Authors.
  * Based on C program by by Petr Prokhorenkov.
