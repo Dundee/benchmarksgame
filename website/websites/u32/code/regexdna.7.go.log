@@ -1,10 +1,10 @@
 
-Tue, 25 Sep 2012 22:40:12 GMT
+Wed, 23 Jan 2013 07:08:09 GMT
 
 MAKE:
 /usr/local/src/go/bin/go tool 8g -o regexdna.go-7.go.8 regexdna.go-7.go && \
 	/usr/local/src/go/bin/go tool 8l -o regexdna.go-7.go_run regexdna.go-7.go.8
-0.61s to complete and log all make actions
+0.28s to complete and log all make actions
 
 COMMAND LINE:
 ./regexdna.go-7.go_run 0 < regexdna-input5000000.txt
@@ -24,11 +24,11 @@ agggta[cgt]a|t[acg]taccct 1608
 agggtaa[cgt]|[acg]ttaccct 2178
 
 runtime: memory allocated by OS (0xb3b80000) not in usable range [0x18600000,0x98600000)
-runtime: out of memory: cannot allocate 47710208-byte block (2129330176 in use)
+runtime: out of memory: cannot allocate 47710208-byte block (2129395712 in use)
 throw: out of memory
 
 goroutine 1 [running]:
-github.com/glenn-brown/golang-pkg-pcre/src/pkg/pcre.Regexp.ReplaceAll(0x20ac3a00, 0x31, 0x31, 0x8ea4888a, 0x18f6b1c, ...)
+github.com/glenn-brown/golang-pkg-pcre/src/pkg/pcre.Regexp.ReplaceAll(0x209b3fc0, 0x31, 0x31, 0x8c9f188a, 0x18f6b1c, ...)
 	github.com/glenn-brown/golang-pkg-pcre/src/pkg/pcre/_obj/_cgo_gotypes.go:444 +0xf4
 main.main()
 	/home/dunham/benchmarksgame_onecore/regexdna/tmp/regexdna.go-7.go:77 +0x3ee

@@ -1,10 +1,10 @@
 
-Tue, 25 Sep 2012 21:38:51 GMT
+Wed, 23 Jan 2013 05:32:06 GMT
 
 MAKE:
 /usr/local/src/go/bin/go tool 8g -o regexdna.go.8 regexdna.go && \
 	/usr/local/src/go/bin/go tool 8l -o regexdna.go_run regexdna.go.8
-0.37s to complete and log all make actions
+0.38s to complete and log all make actions
 
 COMMAND LINE:
 ./regexdna.go_run 0 < regexdna-input5000000.txt
@@ -22,23 +22,23 @@ aggg[acg]aaa|ttt[cgt]ccct 1537
 agggt[cgt]aa|tt[acg]accct 1431
 agggta[cgt]a|t[acg]taccct 1608
 
-runtime: memory allocated by OS (0xb2dd2000) not in usable range [0x18600000,0x98600000)
-runtime: out of memory: cannot allocate 74514432-byte block (2100363264 in use)
+runtime: memory allocated by OS (0xb6b8a000) not in usable range [0x18600000,0x98600000)
+runtime: out of memory: cannot allocate 10027008-byte block (2141061120 in use)
 throw: out of memory
 
 goroutine 12 [running]:
-regexp.(*Regexp).replaceAll(0x18631900, 0x85480000, 0x3bb33a6, 0x470df8e, 0x80e1b04, ...)
-	/usr/local/src/go/src/pkg/regexp/regexp.go:506 +0x141
-regexp.(*Regexp).ReplaceAll(0x18631900, 0x85480000, 0x3bb33a6, 0x470df8e, 0x1b8bb198, ...)
+regexp.(*Regexp).replaceAll(0x1ba69540, 0x938d0000, 0x3d6acd2, 0x470e29c, 0x80e1b04, ...)
+	/usr/local/src/go/src/pkg/regexp/regexp.go:472 +0x247
+regexp.(*Regexp).ReplaceAll(0x1ba69540, 0x938d0000, 0x3d6acd2, 0x470e29c, 0x1b92bbb0, ...)
 	/usr/local/src/go/src/pkg/regexp/regexp.go:528 +0xcb
-main._func_002(0x1861f330, 0x1b9a2570, 0x0)
-	/home/dunham/benchmarksgame/regexdna/tmp/regexdna.go:86 +0xce
+main._func_002(0x1861f4f0, 0x1ba64c10, 0x0)
+	/home/dunham/benchmarksgame_quadcore/regexdna/tmp/regexdna.go:86 +0xce
 created by main.main
-	/home/dunham/benchmarksgame/regexdna/tmp/regexdna.go:89 +0x370
+	/home/dunham/benchmarksgame_quadcore/regexdna/tmp/regexdna.go:89 +0x370
 
 goroutine 1 [chan receive]:
 main.main()
-	/home/dunham/benchmarksgame/regexdna/tmp/regexdna.go:92 +0x3f9
+	/home/dunham/benchmarksgame_quadcore/regexdna/tmp/regexdna.go:92 +0x3f9
 
 goroutine 2 [syscall]:
 created by runtime.main
@@ -46,4 +46,4 @@ created by runtime.main
 
 goroutine 11 [running]:
 created by main.main
-	/home/dunham/benchmarksgame/regexdna/tmp/regexdna.go:79 +0x2e2
+	/home/dunham/benchmarksgame_quadcore/regexdna/tmp/regexdna.go:79 +0x2e2
