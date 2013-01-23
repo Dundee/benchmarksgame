@@ -1,85 +1,89 @@
 
-Thu, 27 Sep 2012 18:00:36 GMT
+Tue, 22 Jan 2013 23:57:26 GMT
 
 MAKE:
-/usr/local/src/ats-lang-anairiats-0.2.8/bin/atscc -D_GNU_SOURCE -D_ATS_MULTITHREAD -lpthread -pipe -Wall -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse2 mandelbrot.dats -o mandelbrot.ats_run 
-/usr/local/src/ats-lang-anairiats-0.2.8/bin/atsopt --output mandelbrot_dats.c --dynamic mandelbrot.dats
+/usr/local/src/ats-lang-anairiats-0.2.9/bin/atscc -D_GNU_SOURCE -D_ATS_MULTITHREAD -lpthread -pipe -Wall -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse2 mandelbrot.dats -o mandelbrot.ats_run 
+/usr/local/src/ats-lang-anairiats-0.2.9/bin/atsopt --output mandelbrot_dats.c --dynamic mandelbrot.dats
 In file included from mandelbrot_dats.c:19:0:
-/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/basics.cats: In function ‘atspre_fprint_newline’:
-/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/basics.cats:271:11: warning: variable ‘n2’ set but not used [-Wunused-but-set-variable]
-/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/basics.cats:271:7: warning: variable ‘n1’ set but not used [-Wunused-but-set-variable]
+/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/basics.cats: In function ‘atspre_fprint_newline’:
+/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/basics.cats:271:11: warning: variable ‘n2’ set but not used [-Wunused-but-set-variable]
+/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/basics.cats:271:7: warning: variable ‘n1’ set but not used [-Wunused-but-set-variable]
 mandelbrot_dats.c: In function ‘fwork_0’:
-mandelbrot_dats.c:309:1: warning: label ‘__ats_lab_fwork_0’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:303:1: warning: label ‘__ats_lab_fwork_0’ defined but not used [-Wunused-label]
 mandelbrot_dats.c: In function ‘loop_3’:
-mandelbrot_dats.c:377:1: warning: label ‘__ats_lab_1_0’ defined but not used [-Wunused-label]
-mandelbrot_dats.c:352:1: warning: label ‘__ats_lab_0_1’ defined but not used [-Wunused-label]
-mandelbrot_dats.c:351:1: warning: label ‘__ats_lab_0_0’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:371:1: warning: label ‘__ats_lab_1_0’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:346:1: warning: label ‘__ats_lab_0_1’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:345:1: warning: label ‘__ats_lab_0_0’ defined but not used [-Wunused-label]
 mandelbrot_dats.c: In function ‘loopv_4’:
-mandelbrot_dats.c:495:1: warning: label ‘__ats_lab_7_0’ defined but not used [-Wunused-label]
-mandelbrot_dats.c:479:1: warning: label ‘__ats_lab_6_1’ defined but not used [-Wunused-label]
-mandelbrot_dats.c:478:1: warning: label ‘__ats_lab_6_0’ defined but not used [-Wunused-label]
-mandelbrot_dats.c:474:1: warning: label ‘__ats_lab_5_0’ defined but not used [-Wunused-label]
-mandelbrot_dats.c:458:1: warning: label ‘__ats_lab_4_0’ defined but not used [-Wunused-label]
-mandelbrot_dats.c:441:1: warning: label ‘__ats_lab_3_1’ defined but not used [-Wunused-label]
-mandelbrot_dats.c:440:1: warning: label ‘__ats_lab_3_0’ defined but not used [-Wunused-label]
-mandelbrot_dats.c:434:1: warning: label ‘__ats_lab_2_1’ defined but not used [-Wunused-label]
-mandelbrot_dats.c:433:1: warning: label ‘__ats_lab_2_0’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:489:1: warning: label ‘__ats_lab_7_0’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:473:1: warning: label ‘__ats_lab_6_1’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:472:1: warning: label ‘__ats_lab_6_0’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:468:1: warning: label ‘__ats_lab_5_0’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:452:1: warning: label ‘__ats_lab_4_0’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:435:1: warning: label ‘__ats_lab_3_1’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:434:1: warning: label ‘__ats_lab_3_0’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:428:1: warning: label ‘__ats_lab_2_1’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:427:1: warning: label ‘__ats_lab_2_0’ defined but not used [-Wunused-label]
 mandelbrot_dats.c: In function ‘test_2’:
-mandelbrot_dats.c:562:1: warning: label ‘__ats_lab_test_2’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:556:1: warning: label ‘__ats_lab_test_2’ defined but not used [-Wunused-label]
 mandelbrot_dats.c: In function ‘output_one_5’:
-mandelbrot_dats.c:652:1: warning: label ‘__ats_lab_9_0’ defined but not used [-Wunused-label]
-mandelbrot_dats.c:636:1: warning: label ‘__ats_lab_8_1’ defined but not used [-Wunused-label]
-mandelbrot_dats.c:635:1: warning: label ‘__ats_lab_8_0’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:646:1: warning: label ‘__ats_lab_9_0’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:630:1: warning: label ‘__ats_lab_8_1’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:629:1: warning: label ‘__ats_lab_8_0’ defined but not used [-Wunused-label]
 mandelbrot_dats.c: In function ‘__ats_fun_7’:
-mandelbrot_dats.c:713:1: warning: label ‘__ats_lab___ats_fun_7’ defined but not used [-Wunused-label]
-mandelbrot_dats.c: In function ‘DEQUEptrnxt_01822_ats_clo_ptr_type’:
-mandelbrot_dats.c:767:1: warning: label ‘__ats_lab_DEQUEptrnxt_01822_ats_clo_ptr_type’ defined but not used [-Wunused-label]
-mandelbrot_dats.c: In function ‘deque_insert_end_01803_ats_clo_ptr_type’:
-mandelbrot_dats.c:796:1: warning: label ‘__ats_lab_deque_insert_end_01803_ats_clo_ptr_type’ defined but not used [-Wunused-label]
-mandelbrot_dats.c: In function ‘queue_insert_01780_ats_clo_ptr_type’:
-mandelbrot_dats.c:817:1: warning: label ‘__ats_lab_queue_insert_01780_ats_clo_ptr_type’ defined but not used [-Wunused-label]
-mandelbrot_dats.c: In function ‘workshop_insert_work_01759_ats_clo_ptr_type’:
-mandelbrot_dats.c:880:1: warning: label ‘__ats_lab_workshop_insert_work_01759_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:707:1: warning: label ‘__ats_lab___ats_fun_7’ defined but not used [-Wunused-label]
+mandelbrot_dats.c: In function ‘DEQUEptrnxt_01823_ats_clo_ptr_type’:
+mandelbrot_dats.c:761:1: warning: label ‘__ats_lab_DEQUEptrnxt_01823_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+mandelbrot_dats.c: In function ‘deque_insert_end_01804_ats_clo_ptr_type’:
+mandelbrot_dats.c:790:1: warning: label ‘__ats_lab_deque_insert_end_01804_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+mandelbrot_dats.c: In function ‘queue_insert_01781_ats_clo_ptr_type’:
+mandelbrot_dats.c:811:1: warning: label ‘__ats_lab_queue_insert_01781_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+mandelbrot_dats.c: In function ‘workshop_insert_work_01760_ats_clo_ptr_type’:
+mandelbrot_dats.c:874:1: warning: label ‘__ats_lab_workshop_insert_work_01760_ats_clo_ptr_type’ defined but not used [-Wunused-label]
 mandelbrot_dats.c: In function ‘mandelbrot_1’:
-mandelbrot_dats.c:968:1: warning: label ‘__ats_lab_mandelbrot_1’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:962:1: warning: label ‘__ats_lab_mandelbrot_1’ defined but not used [-Wunused-label]
 mandelbrot_dats.c: In function ‘ncore_get_13’:
-mandelbrot_dats.c:1025:1: warning: label ‘__ats_lab_11’ defined but not used [-Wunused-label]
-mandelbrot_dats.c:1022:1: warning: label ‘__ats_lab_12’ defined but not used [-Wunused-label]
-mandelbrot_dats.c:999:1: warning: label ‘__ats_lab_ncore_get_13’ defined but not used [-Wunused-label]
-mandelbrot_dats.c: In function ‘workshop_make_01752_ats_clo_ptr_type’:
-mandelbrot_dats.c:1039:1: warning: label ‘__ats_lab_workshop_make_01752_ats_clo_ptr_type’ defined but not used [-Wunused-label]
-mandelbrot_dats.c: In function ‘deque_remove_beg_01806_ats_clo_ptr_type’:
-mandelbrot_dats.c:1059:1: warning: label ‘__ats_lab_deque_remove_beg_01806_ats_clo_ptr_type’ defined but not used [-Wunused-label]
-mandelbrot_dats.c: In function ‘queue_remove_01782_ats_clo_ptr_type’:
-mandelbrot_dats.c:1081:1: warning: label ‘__ats_lab_queue_remove_01782_ats_clo_ptr_type’ defined but not used [-Wunused-label]
-mandelbrot_dats.c: In function ‘workshop_remove_work_01760_ats_clo_ptr_type’:
-mandelbrot_dats.c:1159:1: warning: label ‘__ats_lab_workshop_remove_work_01760_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:1019:1: warning: label ‘__ats_lab_11’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:1016:1: warning: label ‘__ats_lab_12’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:993:1: warning: label ‘__ats_lab_ncore_get_13’ defined but not used [-Wunused-label]
+mandelbrot_dats.c: In function ‘workshop_make_01753_ats_clo_ptr_type’:
+mandelbrot_dats.c:1033:1: warning: label ‘__ats_lab_workshop_make_01753_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+mandelbrot_dats.c: In function ‘deque_remove_beg_01807_ats_clo_ptr_type’:
+mandelbrot_dats.c:1053:1: warning: label ‘__ats_lab_deque_remove_beg_01807_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+mandelbrot_dats.c: In function ‘queue_remove_01783_ats_clo_ptr_type’:
+mandelbrot_dats.c:1075:1: warning: label ‘__ats_lab_queue_remove_01783_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+mandelbrot_dats.c: In function ‘workshop_remove_work_01761_ats_clo_ptr_type’:
+mandelbrot_dats.c:1153:1: warning: label ‘__ats_lab_workshop_remove_work_01761_ats_clo_ptr_type’ defined but not used [-Wunused-label]
 mandelbrot_dats.c: In function ‘worker_19’:
-mandelbrot_dats.c:1258:1: warning: label ‘__ats_lab_15_0’ defined but not used [-Wunused-label]
-mandelbrot_dats.c:1224:1: warning: label ‘__ats_lab_14_0’ defined but not used [-Wunused-label]
-mandelbrot_dats.c:1216:1: warning: label ‘__ats_lab_13_1’ defined but not used [-Wunused-label]
-mandelbrot_dats.c:1215:1: warning: label ‘__ats_lab_13_0’ defined but not used [-Wunused-label]
-mandelbrot_dats.c: In function ‘workshop_add_worker_01757_ats_clo_ptr_type’:
-mandelbrot_dats.c:1302:1: warning: label ‘__ats_lab_workshop_add_worker_01757_ats_clo_ptr_type’ defined but not used [-Wunused-label]
-mandelbrot_dats.c: In function ‘workshop_add_nworker_01758_ats_clo_ptr_type’:
-mandelbrot_dats.c:1355:1: warning: label ‘__ats_lab_workshop_add_nworker_01758_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:1252:1: warning: label ‘__ats_lab_15_0’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:1218:1: warning: label ‘__ats_lab_14_0’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:1210:1: warning: label ‘__ats_lab_13_1’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:1209:1: warning: label ‘__ats_lab_13_0’ defined but not used [-Wunused-label]
+mandelbrot_dats.c: In function ‘workshop_add_worker_01758_ats_clo_ptr_type’:
+mandelbrot_dats.c:1296:1: warning: label ‘__ats_lab_workshop_add_worker_01758_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+mandelbrot_dats.c: In function ‘workshop_add_nworker_01759_ats_clo_ptr_type’:
+mandelbrot_dats.c:1349:1: warning: label ‘__ats_lab_workshop_add_nworker_01759_ats_clo_ptr_type’ defined but not used [-Wunused-label]
 mandelbrot_dats.c: In function ‘mainats’:
-mandelbrot_dats.c:1447:1: warning: label ‘__ats_lab_17’ defined but not used [-Wunused-label]
-mandelbrot_dats.c:1401:1: warning: label ‘__ats_lab_mainats’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:1441:1: warning: label ‘__ats_lab_17’ defined but not used [-Wunused-label]
+mandelbrot_dats.c:1395:1: warning: label ‘__ats_lab_mainats’ defined but not used [-Wunused-label]
+In file included from mandelbrot_dats.c:29:0:
 mandelbrot_dats.c: At top level:
-/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/pointer.cats:52:14: warning: ‘atspre_null_ptr’ defined but not used [-Wunused-variable]
-/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/printf.cats:57:1: warning: ‘atspre_fprintf_err’ defined but not used [-Wunused-function]
-/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/printf.cats:69:1: warning: ‘atspre_fprintf_exn’ defined but not used [-Wunused-function]
-/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/printf.cats:105:1: warning: ‘atspre_prerrf_exn’ defined but not used [-Wunused-function]
-/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/string.cats:351:14: warning: ‘atspre_stropt_none’ defined but not used [-Wunused-variable]
-/usr/local/src/ats-lang-anairiats-0.2.8/libc/CATS/SIMD_v2df.cats:57:15: warning: ‘atslib_v2df_1_1’ defined but not used [-Wunused-variable]
-mandelbrot_dats.c:534:1: warning: ‘loopv_4_closure_make’ defined but not used [-Wunused-function]
-mandelbrot_dats.c:601:1: warning: ‘test_2_closure_make’ defined but not used [-Wunused-function]
-mandelbrot_dats.c:697:1: warning: ‘output_one_5_closure_make’ defined but not used [-Wunused-function]
-mandelbrot_dats.c:948:1: warning: ‘output_all_6_closure_make’ defined but not used [-Wunused-function]
-gcc -I/usr/local/src/ats-lang-anairiats-0.2.8/ -I/usr/local/src/ats-lang-anairiats-0.2.8/ccomp/runtime/ -L/usr/local/src/ats-lang-anairiats-0.2.8/ccomp/lib64/ /usr/local/src/ats-lang-anairiats-0.2.8/ccomp/runtime/ats_prelude.c -D_GNU_SOURCE -D_ATS_MULTITHREAD -lpthread -pipe -Wall -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse2 mandelbrot_dats.c -o mandelbrot.ats_run -lats_mt -lats 
+/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/pointer.cats:52:14: warning: ‘atspre_null_ptr’ defined but not used [-Wunused-variable]
+In file included from mandelbrot_dats.c:30:0:
+/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/printf.cats:57:1: warning: ‘atspre_fprintf_err’ defined but not used [-Wunused-function]
+/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/printf.cats:69:1: warning: ‘atspre_fprintf_exn’ defined but not used [-Wunused-function]
+/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/printf.cats:105:1: warning: ‘atspre_prerrf_exn’ defined but not used [-Wunused-function]
+In file included from mandelbrot_dats.c:33:0:
+/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/string.cats:351:14: warning: ‘atspre_stropt_none’ defined but not used [-Wunused-variable]
+In file included from mandelbrot_dats.c:41:0:
+/usr/local/src/ats-lang-anairiats-0.2.9/libc/CATS/SIMD_v2df.cats:57:15: warning: ‘atslib_v2df_1_1’ defined but not used [-Wunused-variable]
+mandelbrot_dats.c:528:1: warning: ‘loopv_4_closure_make’ defined but not used [-Wunused-function]
+mandelbrot_dats.c:595:1: warning: ‘test_2_closure_make’ defined but not used [-Wunused-function]
+mandelbrot_dats.c:691:1: warning: ‘output_one_5_closure_make’ defined but not used [-Wunused-function]
+mandelbrot_dats.c:942:1: warning: ‘output_all_6_closure_make’ defined but not used [-Wunused-function]
+gcc -I/usr/local/src/ats-lang-anairiats-0.2.9/ -I/usr/local/src/ats-lang-anairiats-0.2.9/ccomp/runtime/ -L/usr/local/src/ats-lang-anairiats-0.2.9/ccomp/lib64/ /usr/local/src/ats-lang-anairiats-0.2.9/ccomp/runtime/ats_prelude.c -D_GNU_SOURCE -D_ATS_MULTITHREAD -lpthread -pipe -Wall -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse2 mandelbrot_dats.c -o mandelbrot.ats_run -lats_mt -lats 
 rm mandelbrot.dats
-0.45s to complete and log all make actions
+0.52s to complete and log all make actions
 
 COMMAND LINE:
 ./mandelbrot.ats_run 16000

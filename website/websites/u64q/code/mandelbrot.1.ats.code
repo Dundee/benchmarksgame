@@ -1,6 +1,6 @@
 <span class="hl com">(*</span>
 <span class="hl com">** The Computer Language Benchmarks Game</span>
-<span class="hl com">** http://shootout.alioth.debian.org/</span>
+<span class="hl com">** http://benchmarksgame.alioth.debian.org/</span>
 <span class="hl com">**</span>
 <span class="hl com">** contributed by Hongwei Xi </span>
 <span class="hl com">**</span>
@@ -63,7 +63,7 @@ viewtypedef <span class="hl kwd">WSptr</span> <span class="hl opt">(</span>l<spa
 <span class="hl ppc">#define i2d double_of_int</span>
 
 <span class="hl opt">%{^</span>
-ATSinline<span class="hl opt">()</span>
+<span class="hl kwd">ATSinline</span><span class="hl opt">()</span>
 ats_void_type output_byte <span class="hl opt">(</span>
   ats_ptr_type <span class="hl kwd">A</span><span class="hl opt">,</span> ats_int_type i<span class="hl opt">,</span> ats_byte_type b
 <span class="hl opt">) {</span>

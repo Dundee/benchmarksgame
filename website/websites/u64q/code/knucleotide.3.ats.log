@@ -1,157 +1,159 @@
 
-Fri, 28 Sep 2012 06:40:56 GMT
+Tue, 22 Jan 2013 19:21:00 GMT
 
 MAKE:
-/usr/local/src/ats-lang-anairiats-0.2.8/bin/atscc -D_GNU_SOURCE -D_ATS_MULTITHREAD -D_ATS_GCATS -lpthread -pipe -Wall -O3 -fomit-frame-pointer -march=native  knucleotide.dats -o knucleotide.ats-3.ats_run 
-/usr/local/src/ats-lang-anairiats-0.2.8/bin/atsopt --output knucleotide_dats.c --dynamic knucleotide.dats
-/usr/local/src/ats-lang-anairiats-0.2.8/ccomp/runtime/ats_prelude.c: In function ‘ats_pthread_create_detached’:
-/usr/local/src/ats-lang-anairiats-0.2.8/ccomp/runtime/ats_prelude.c:181:3: warning: implicit declaration of function ‘gc_pthread_create’ [-Wimplicit-function-declaration]
+/usr/local/src/ats-lang-anairiats-0.2.9/bin/atscc -D_GNU_SOURCE -D_ATS_MULTITHREAD -D_ATS_GCATS -lpthread -pipe -Wall -O3 -fomit-frame-pointer -march=native  knucleotide.dats -o knucleotide.ats-3.ats_run 
+/usr/local/src/ats-lang-anairiats-0.2.9/bin/atsopt --output knucleotide_dats.c --dynamic knucleotide.dats
+/usr/local/src/ats-lang-anairiats-0.2.9/ccomp/runtime/ats_prelude.c: In function ‘ats_pthread_create_detached’:
+/usr/local/src/ats-lang-anairiats-0.2.9/ccomp/runtime/ats_prelude.c:181:3: warning: implicit declaration of function ‘gc_pthread_create’ [-Wimplicit-function-declaration]
 In file included from knucleotide_dats.c:19:0:
-/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/basics.cats: In function ‘atspre_fprint_newline’:
-/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/basics.cats:271:11: warning: variable ‘n2’ set but not used [-Wunused-but-set-variable]
-/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/basics.cats:271:7: warning: variable ‘n1’ set but not used [-Wunused-but-set-variable]
-knucleotide_dats.c: In function ‘hash_key_01944_symbol_t’:
-knucleotide_dats.c:502:1: warning: label ‘__ats_lab_hash_key_01944_symbol_t’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘equal_key_key_01945_symbol_t’:
-knucleotide_dats.c:519:1: warning: label ‘__ats_lab_equal_key_key_01945_symbol_t’ defined but not used [-Wunused-label]
+/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/basics.cats: In function ‘atspre_fprint_newline’:
+/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/basics.cats:271:11: warning: variable ‘n2’ set but not used [-Wunused-but-set-variable]
+/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/basics.cats:271:7: warning: variable ‘n1’ set but not used [-Wunused-but-set-variable]
+knucleotide_dats.c: In function ‘hash_key_01946_symbol_t’:
+knucleotide_dats.c:494:1: warning: label ‘__ats_lab_hash_key_01946_symbol_t’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘equal_key_key_01947_symbol_t’:
+knucleotide_dats.c:511:1: warning: label ‘__ats_lab_equal_key_key_01947_symbol_t’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘hashtbl_ptr_split_0744_symbol_t_2cats_int_type’:
-knucleotide_dats.c:537:1: warning: label ‘__ats_lab_hashtbl_ptr_split_0744_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c:529:1: warning: label ‘__ats_lab_hashtbl_ptr_split_0744_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘chain_search_0681_symbol_t_2cats_int_type’:
-knucleotide_dats.c:582:1: warning: label ‘__ats_lab_3_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:563:1: warning: label ‘__ats_lab_2_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:561:1: warning: label ‘__ats_lab_2_0’ defined but not used [-Wunused-label]
+knucleotide_dats.c:574:1: warning: label ‘__ats_lab_3_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:555:1: warning: label ‘__ats_lab_2_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:553:1: warning: label ‘__ats_lab_2_0’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘hashtbl_ptr_search_ofs_0752_symbol_t_2cats_int_type’:
-knucleotide_dats.c:601:1: warning: label ‘__ats_lab_hashtbl_ptr_search_ofs_0752_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘hashtbl_search_ref_01951_symbol_t_2cats_int_type’:
-knucleotide_dats.c:625:1: warning: label ‘__ats_lab_hashtbl_search_ref_01951_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c:593:1: warning: label ‘__ats_lab_hashtbl_ptr_search_ofs_0752_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘hashtbl_search_ref_01953_symbol_t_2cats_int_type’:
+knucleotide_dats.c:617:1: warning: label ‘__ats_lab_hashtbl_search_ref_01953_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘chain_insert_0690_symbol_t_2cats_int_type’:
-knucleotide_dats.c:647:1: warning: label ‘__ats_lab_chain_insert_0690_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c:639:1: warning: label ‘__ats_lab_chain_insert_0690_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘hashtbl_ptr_insert_ofs_0780_symbol_t_2cats_int_type’:
-knucleotide_dats.c:667:1: warning: label ‘__ats_lab_hashtbl_ptr_insert_ofs_0780_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c:659:1: warning: label ‘__ats_lab_hashtbl_ptr_insert_ofs_0780_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘hashtbl_ptr_insert_chain_0807_symbol_t_2cats_int_type’:
-knucleotide_dats.c:712:1: warning: label ‘__ats_lab_5_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:696:1: warning: label ‘__ats_lab_4_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:694:1: warning: label ‘__ats_lab_4_0’ defined but not used [-Wunused-label]
-knucleotide_dats.c:691:1: warning: label ‘__ats_lab_hashtbl_ptr_insert_chain_0807_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c:704:1: warning: label ‘__ats_lab_5_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:688:1: warning: label ‘__ats_lab_4_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:686:1: warning: label ‘__ats_lab_4_0’ defined but not used [-Wunused-label]
+knucleotide_dats.c:683:1: warning: label ‘__ats_lab_hashtbl_ptr_insert_chain_0807_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘hashtbl_resize_0836_symbol_t_2cats_int_type’:
-knucleotide_dats.c:772:1: warning: label ‘__ats_lab_hashtbl_resize_0836_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c:764:1: warning: label ‘__ats_lab_hashtbl_resize_0836_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘hashtbl_resize_double_0845_symbol_t_2cats_int_type’:
-knucleotide_dats.c:799:1: warning: label ‘__ats_lab_hashtbl_resize_double_0845_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘hashtbl_insert_01952_symbol_t_2cats_int_type’:
-knucleotide_dats.c:835:1: warning: label ‘__ats_lab_hashtbl_insert_01952_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c:791:1: warning: label ‘__ats_lab_hashtbl_resize_double_0845_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘hashtbl_insert_01954_symbol_t_2cats_int_type’:
+knucleotide_dats.c:827:1: warning: label ‘__ats_lab_hashtbl_insert_01954_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘dna_count_one_2’:
-knucleotide_dats.c:904:1: warning: label ‘__ats_lab_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:881:1: warning: label ‘__ats_lab_dna_count_one_2’ defined but not used [-Wunused-label]
+knucleotide_dats.c:896:1: warning: label ‘__ats_lab_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:873:1: warning: label ‘__ats_lab_dna_count_one_2’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘fwork_14’:
-knucleotide_dats.c:923:1: warning: label ‘__ats_lab_fwork_14’ defined but not used [-Wunused-label]
+knucleotide_dats.c:915:1: warning: label ‘__ats_lab_fwork_14’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘__ats_fun_17’:
-knucleotide_dats.c:947:1: warning: label ‘__ats_lab___ats_fun_17’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘DEQUEptrnxt_02054_ats_clo_ptr_type’:
-knucleotide_dats.c:996:1: warning: label ‘__ats_lab_DEQUEptrnxt_02054_ats_clo_ptr_type’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘deque_insert_end_02035_ats_clo_ptr_type’:
-knucleotide_dats.c:1025:1: warning: label ‘__ats_lab_deque_insert_end_02035_ats_clo_ptr_type’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘queue_insert_02012_ats_clo_ptr_type’:
-knucleotide_dats.c:1046:1: warning: label ‘__ats_lab_queue_insert_02012_ats_clo_ptr_type’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘workshop_insert_work_01991_ats_clo_ptr_type’:
-knucleotide_dats.c:1109:1: warning: label ‘__ats_lab_workshop_insert_work_01991_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c:939:1: warning: label ‘__ats_lab___ats_fun_17’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘DEQUEptrnxt_02056_ats_clo_ptr_type’:
+knucleotide_dats.c:988:1: warning: label ‘__ats_lab_DEQUEptrnxt_02056_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘deque_insert_end_02037_ats_clo_ptr_type’:
+knucleotide_dats.c:1017:1: warning: label ‘__ats_lab_deque_insert_end_02037_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘queue_insert_02014_ats_clo_ptr_type’:
+knucleotide_dats.c:1038:1: warning: label ‘__ats_lab_queue_insert_02014_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘workshop_insert_work_01993_ats_clo_ptr_type’:
+knucleotide_dats.c:1101:1: warning: label ‘__ats_lab_workshop_insert_work_01993_ats_clo_ptr_type’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘split_16’:
-knucleotide_dats.c:1132:1: warning: label ‘__ats_lab_split_16’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1124:1: warning: label ‘__ats_lab_split_16’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘dna_count_15’:
-knucleotide_dats.c:1192:1: warning: label ‘__ats_lab_dna_count_15’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1184:1: warning: label ‘__ats_lab_dna_count_15’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘__ats_fun_25’:
-knucleotide_dats.c:1216:1: warning: label ‘__ats_lab___ats_fun_25’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1208:1: warning: label ‘__ats_lab___ats_fun_25’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘chain_foreach_vclo_0705_symbol_t_2cats_int_type’:
-knucleotide_dats.c:1280:1: warning: label ‘__ats_lab_8_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:1266:1: warning: label ‘__ats_lab_7_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:1264:1: warning: label ‘__ats_lab_7_0’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘hashtbl_foreach_vclo_01954_symbol_t_2cats_int_type’:
-knucleotide_dats.c:1329:1: warning: label ‘__ats_lab_hashtbl_foreach_vclo_01954_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1272:1: warning: label ‘__ats_lab_8_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1258:1: warning: label ‘__ats_lab_7_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1256:1: warning: label ‘__ats_lab_7_0’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘hashtbl_foreach_vclo_01956_symbol_t_2cats_int_type’:
+knucleotide_dats.c:1321:1: warning: label ‘__ats_lab_hashtbl_foreach_vclo_01956_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘loop_24’:
-knucleotide_dats.c:1374:1: warning: label ‘__ats_lab_9_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:1357:1: warning: label ‘__ats_lab_6_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:1355:1: warning: label ‘__ats_lab_6_0’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘_2home_2dunham_2benchmarksgame_2knucleotide_2tmp_2knucleotide_2edats__symtbls_merge’:
-knucleotide_dats.c:1408:1: warning: label ‘__ats_lab_11_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:1397:1: warning: label ‘__ats_lab_10_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:1395:1: warning: label ‘__ats_lab_10_0’ defined but not used [-Wunused-label]
-knucleotide_dats.c:1392:1: warning: label ‘__ats_lab__2home_2dunham_2benchmarksgame_2knucleotide_2tmp_2knucleotide_2edats__symtbls_merge’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1366:1: warning: label ‘__ats_lab_9_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1349:1: warning: label ‘__ats_lab_6_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1347:1: warning: label ‘__ats_lab_6_0’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘_2home_2dunham_2benchmarksgame_quadcore_2knucleotide_2tmp_2knucleotide_2edats__symtbls_merge’:
+knucleotide_dats.c:1400:1: warning: label ‘__ats_lab_11_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1389:1: warning: label ‘__ats_lab_10_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1387:1: warning: label ‘__ats_lab_10_0’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1384:1: warning: label ‘__ats_lab__2home_2dunham_2benchmarksgame_quadcore_2knucleotide_2tmp_2knucleotide_2edats__symtbls_merge’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘compare_symflt_symflt_29’:
-knucleotide_dats.c:1426:1: warning: label ‘__ats_lab_compare_symflt_symflt_29’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1418:1: warning: label ‘__ats_lab_compare_symflt_symflt_29’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘print_free_frqlst_30’:
-knucleotide_dats.c:1471:1: warning: label ‘__ats_lab_13_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:1454:1: warning: label ‘__ats_lab_12_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:1452:1: warning: label ‘__ats_lab_12_0’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1463:1: warning: label ‘__ats_lab_13_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1446:1: warning: label ‘__ats_lab_12_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1444:1: warning: label ‘__ats_lab_12_0’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘__ats_fun_32’:
-knucleotide_dats.c:1487:1: warning: label ‘__ats_lab___ats_fun_32’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1479:1: warning: label ‘__ats_lab___ats_fun_32’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘__ats_fun_33’:
-knucleotide_dats.c:1526:1: warning: label ‘__ats_lab___ats_fun_33’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1518:1: warning: label ‘__ats_lab___ats_fun_33’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘loop_36’:
-knucleotide_dats.c:1590:1: warning: label ‘__ats_lab_15_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:1578:1: warning: label ‘__ats_lab_14_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:1576:1: warning: label ‘__ats_lab_14_0’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘list_vt_length_01584_anairiats_rec_4’:
-knucleotide_dats.c:1606:1: warning: label ‘__ats_lab_list_vt_length_01584_anairiats_rec_4’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1582:1: warning: label ‘__ats_lab_15_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1570:1: warning: label ‘__ats_lab_14_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1568:1: warning: label ‘__ats_lab_14_0’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘list_vt_length_01585_anairiats_rec_4’:
+knucleotide_dats.c:1598:1: warning: label ‘__ats_lab_list_vt_length_01585_anairiats_rec_4’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘loop_38’:
-knucleotide_dats.c:1641:1: warning: label ‘__ats_lab_17_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:1628:1: warning: label ‘__ats_lab_16_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:1626:1: warning: label ‘__ats_lab_16_0’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘array_ptr_initialize_lst_01309_anairiats_rec_4’:
-knucleotide_dats.c:1656:1: warning: label ‘__ats_lab_array_ptr_initialize_lst_01309_anairiats_rec_4’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1633:1: warning: label ‘__ats_lab_17_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1620:1: warning: label ‘__ats_lab_16_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1618:1: warning: label ‘__ats_lab_16_0’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘array_ptr_initialize_lst_01310_anairiats_rec_4’:
+knucleotide_dats.c:1648:1: warning: label ‘__ats_lab_array_ptr_initialize_lst_01310_anairiats_rec_4’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘loop_39’:
-knucleotide_dats.c:1695:1: warning: label ‘__ats_lab_19_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:1680:1: warning: label ‘__ats_lab_18_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:1678:1: warning: label ‘__ats_lab_18_0’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘list_vt_quicksort_01608_anairiats_rec_4’:
-knucleotide_dats.c:1718:1: warning: label ‘__ats_lab_list_vt_quicksort_01608_anairiats_rec_4’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1687:1: warning: label ‘__ats_lab_19_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1672:1: warning: label ‘__ats_lab_18_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1670:1: warning: label ‘__ats_lab_18_0’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘list_vt_quicksort_01609_anairiats_rec_4’:
+knucleotide_dats.c:1710:1: warning: label ‘__ats_lab_list_vt_quicksort_01609_anairiats_rec_4’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘write_frequencies_31’:
-knucleotide_dats.c:1758:1: warning: label ‘__ats_lab_write_frequencies_31’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘hashtbl_search_01950_symbol_t_2cats_int_type’:
-knucleotide_dats.c:1798:1: warning: label ‘__ats_lab_hashtbl_search_01950_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1750:1: warning: label ‘__ats_lab_write_frequencies_31’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘hashtbl_search_01952_symbol_t_2cats_int_type’:
+knucleotide_dats.c:1790:1: warning: label ‘__ats_lab_hashtbl_search_01952_symbol_t_2cats_int_type’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘loop_41’:
-knucleotide_dats.c:1853:1: warning: label ‘__ats_lab_21_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:1831:1: warning: label ‘__ats_lab_20_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:1829:1: warning: label ‘__ats_lab_20_0’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1845:1: warning: label ‘__ats_lab_21_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1823:1: warning: label ‘__ats_lab_20_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1821:1: warning: label ‘__ats_lab_20_0’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘write_count_40’:
-knucleotide_dats.c:1877:1: warning: label ‘__ats_lab_write_count_40’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1869:1: warning: label ‘__ats_lab_write_count_40’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘is_three_43’:
-knucleotide_dats.c:1901:1: warning: label ‘__ats_lab_is_three_43’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘_2home_2dunham_2benchmarksgame_2knucleotide_2tmp_2knucleotide_2edats__ncore_get’:
-knucleotide_dats.c:1961:1: warning: label ‘__ats_lab_23’ defined but not used [-Wunused-label]
-knucleotide_dats.c:1958:1: warning: label ‘__ats_lab_24’ defined but not used [-Wunused-label]
-knucleotide_dats.c:1934:1: warning: label ‘__ats_lab__2home_2dunham_2benchmarksgame_2knucleotide_2tmp_2knucleotide_2edats__ncore_get’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘workshop_make_01984_ats_clo_ptr_type’:
-knucleotide_dats.c:1998:1: warning: label ‘__ats_lab_workshop_make_01984_ats_clo_ptr_type’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘deque_remove_beg_02038_ats_clo_ptr_type’:
-knucleotide_dats.c:2018:1: warning: label ‘__ats_lab_deque_remove_beg_02038_ats_clo_ptr_type’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘queue_remove_02014_ats_clo_ptr_type’:
-knucleotide_dats.c:2040:1: warning: label ‘__ats_lab_queue_remove_02014_ats_clo_ptr_type’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘workshop_remove_work_01992_ats_clo_ptr_type’:
-knucleotide_dats.c:2118:1: warning: label ‘__ats_lab_workshop_remove_work_01992_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1893:1: warning: label ‘__ats_lab_is_three_43’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘_2home_2dunham_2benchmarksgame_quadcore_2knucleotide_2tmp_2knucleotide_2edats__ncore_get’:
+knucleotide_dats.c:1953:1: warning: label ‘__ats_lab_23’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1950:1: warning: label ‘__ats_lab_24’ defined but not used [-Wunused-label]
+knucleotide_dats.c:1926:1: warning: label ‘__ats_lab__2home_2dunham_2benchmarksgame_quadcore_2knucleotide_2tmp_2knucleotide_2edats__ncore_get’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘workshop_make_01986_ats_clo_ptr_type’:
+knucleotide_dats.c:1990:1: warning: label ‘__ats_lab_workshop_make_01986_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘deque_remove_beg_02040_ats_clo_ptr_type’:
+knucleotide_dats.c:2010:1: warning: label ‘__ats_lab_deque_remove_beg_02040_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘queue_remove_02016_ats_clo_ptr_type’:
+knucleotide_dats.c:2032:1: warning: label ‘__ats_lab_queue_remove_02016_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘workshop_remove_work_01994_ats_clo_ptr_type’:
+knucleotide_dats.c:2110:1: warning: label ‘__ats_lab_workshop_remove_work_01994_ats_clo_ptr_type’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘worker_51’:
-knucleotide_dats.c:2217:1: warning: label ‘__ats_lab_27_0’ defined but not used [-Wunused-label]
-knucleotide_dats.c:2183:1: warning: label ‘__ats_lab_26_0’ defined but not used [-Wunused-label]
-knucleotide_dats.c:2175:1: warning: label ‘__ats_lab_25_1’ defined but not used [-Wunused-label]
-knucleotide_dats.c:2174:1: warning: label ‘__ats_lab_25_0’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘workshop_add_worker_01989_ats_clo_ptr_type’:
-knucleotide_dats.c:2261:1: warning: label ‘__ats_lab_workshop_add_worker_01989_ats_clo_ptr_type’ defined but not used [-Wunused-label]
-knucleotide_dats.c: In function ‘workshop_add_nworker_01990_ats_clo_ptr_type’:
-knucleotide_dats.c:2314:1: warning: label ‘__ats_lab_workshop_add_nworker_01990_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c:2209:1: warning: label ‘__ats_lab_27_0’ defined but not used [-Wunused-label]
+knucleotide_dats.c:2175:1: warning: label ‘__ats_lab_26_0’ defined but not used [-Wunused-label]
+knucleotide_dats.c:2167:1: warning: label ‘__ats_lab_25_1’ defined but not used [-Wunused-label]
+knucleotide_dats.c:2166:1: warning: label ‘__ats_lab_25_0’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘workshop_add_worker_01991_ats_clo_ptr_type’:
+knucleotide_dats.c:2253:1: warning: label ‘__ats_lab_workshop_add_worker_01991_ats_clo_ptr_type’ defined but not used [-Wunused-label]
+knucleotide_dats.c: In function ‘workshop_add_nworker_01992_ats_clo_ptr_type’:
+knucleotide_dats.c:2306:1: warning: label ‘__ats_lab_workshop_add_nworker_01992_ats_clo_ptr_type’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘mainats’:
-knucleotide_dats.c:2414:1: warning: label ‘__ats_lab_29’ defined but not used [-Wunused-label]
-knucleotide_dats.c:2364:1: warning: label ‘__ats_lab_mainats’ defined but not used [-Wunused-label]
+knucleotide_dats.c:2406:1: warning: label ‘__ats_lab_29’ defined but not used [-Wunused-label]
+knucleotide_dats.c:2356:1: warning: label ‘__ats_lab_mainats’ defined but not used [-Wunused-label]
 knucleotide_dats.c: In function ‘__getline’:
-knucleotide_dats.c:2523:9: warning: unused variable ‘ptr’ [-Wunused-variable]
+knucleotide_dats.c:2515:9: warning: unused variable ‘ptr’ [-Wunused-variable]
+In file included from knucleotide_dats.c:30:0:
 knucleotide_dats.c: At top level:
-/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/printf.cats:57:1: warning: ‘atspre_fprintf_err’ defined but not used [-Wunused-function]
-/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/printf.cats:69:1: warning: ‘atspre_fprintf_exn’ defined but not used [-Wunused-function]
-/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/printf.cats:105:1: warning: ‘atspre_prerrf_exn’ defined but not used [-Wunused-function]
-/usr/local/src/ats-lang-anairiats-0.2.8/prelude/CATS/string.cats:351:14: warning: ‘atspre_stropt_none’ defined but not used [-Wunused-variable]
-knucleotide_dats.c:1171:1: warning: ‘split_16_closure_make’ defined but not used [-Wunused-function]
-knucleotide_dats.c:416:18: warning: ‘__ats_fun_25_closure_make’ declared ‘static’ but never defined [-Wunused-function]
-knucleotide_dats.c:434:18: warning: ‘__ats_fun_32_closure_make’ declared ‘static’ but never defined [-Wunused-function]
-knucleotide_dats.c:440:18: warning: ‘__ats_fun_33_closure_make’ declared ‘static’ but never defined [-Wunused-function]
-gcc -I/usr/local/src/ats-lang-anairiats-0.2.8/ -I/usr/local/src/ats-lang-anairiats-0.2.8/ccomp/runtime/ -L/usr/local/src/ats-lang-anairiats-0.2.8/ccomp/lib64/ /usr/local/src/ats-lang-anairiats-0.2.8/ccomp/runtime/ats_prelude.c -D_GNU_SOURCE -D_ATS_MULTITHREAD -D_ATS_GCATS -lpthread -pipe -Wall -O3 -fomit-frame-pointer -march=native knucleotide_dats.c -o knucleotide.ats-3.ats_run /usr/local/src/ats-lang-anairiats-0.2.8/ccomp/runtime/GCATS/gc_mt.o -lats_mt -lats 
-1.44s to complete and log all make actions
+/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/printf.cats:57:1: warning: ‘atspre_fprintf_err’ defined but not used [-Wunused-function]
+/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/printf.cats:69:1: warning: ‘atspre_fprintf_exn’ defined but not used [-Wunused-function]
+/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/printf.cats:105:1: warning: ‘atspre_prerrf_exn’ defined but not used [-Wunused-function]
+In file included from knucleotide_dats.c:33:0:
+/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/string.cats:351:14: warning: ‘atspre_stropt_none’ defined but not used [-Wunused-variable]
+knucleotide_dats.c:1163:1: warning: ‘split_16_closure_make’ defined but not used [-Wunused-function]
+knucleotide_dats.c:408:18: warning: ‘__ats_fun_25_closure_make’ declared ‘static’ but never defined [-Wunused-function]
+knucleotide_dats.c:426:18: warning: ‘__ats_fun_32_closure_make’ declared ‘static’ but never defined [-Wunused-function]
+knucleotide_dats.c:432:18: warning: ‘__ats_fun_33_closure_make’ declared ‘static’ but never defined [-Wunused-function]
+gcc -I/usr/local/src/ats-lang-anairiats-0.2.9/ -I/usr/local/src/ats-lang-anairiats-0.2.9/ccomp/runtime/ -L/usr/local/src/ats-lang-anairiats-0.2.9/ccomp/lib64/ /usr/local/src/ats-lang-anairiats-0.2.9/ccomp/runtime/ats_prelude.c -D_GNU_SOURCE -D_ATS_MULTITHREAD -D_ATS_GCATS -lpthread -pipe -Wall -O3 -fomit-frame-pointer -march=native knucleotide_dats.c -o knucleotide.ats-3.ats_run /usr/local/src/ats-lang-anairiats-0.2.9/ccomp/runtime/GCATS/gc_mt.o -lats_mt -lats 
+0.96s to complete and log all make actions
 
 COMMAND LINE:
 ./knucleotide.ats-3.ats_run 0 < knucleotide-input25000000.txt
