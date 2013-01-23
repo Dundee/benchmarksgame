@@ -1,7 +1,7 @@
-/*
-The Computer Language Benchmarks Game
-http://shootout.alioth.debian.org/
-Contributed by Matthew Wilson
+/* The Computer Language Benchmarks Game
+   http://benchmarksgame.alioth.debian.org/
+
+   Contributed by Matthew Wilson
 */
 
 var s="";while(!/^>TH/.test(readline()));for(var i;i=readline();s+=i);

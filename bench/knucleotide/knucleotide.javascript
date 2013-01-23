@@ -1,7 +1,7 @@
-/*     
-The Computer Language Shootout   
-http://shootout.alioth.debian.org/  
-Contributed by Jesse Millikan    
+/* The Computer Language Benchmarks Game
+   http://benchmarksgame.alioth.debian.org/
+
+   Contributed by Jesse Millikan    
 */
 
 // Return hash t with frequency in "n"
