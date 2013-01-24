@@ -1,5 +1,5 @@
 
-Mon, 08 Oct 2012 21:22:13 GMT
+Thu, 24 Jan 2013 04:52:01 GMT
 
 MAKE:
 cp: `knucleotide.sbcl-5.sbcl' and `./knucleotide.sbcl-5.sbcl' are the same file
@@ -9,12 +9,12 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### END knucleotide.sbcl-5.sbcl_compile
 
 
-; compiling file "/home/dunham/shootout/bench/knucleotide/knucleotide.sbcl-5.sbcl" (written 18 FEB 2011 09:49:46 AM):
+; compiling file "/home/dunham/benchmarksgame/bench/knucleotide/knucleotide.sbcl-5.sbcl" (written 23 JAN 2013 08:18:18 PM):
 ; compiling (DEFPACKAGE #:K-NUCLEOTIDE ...)
 ; compiling (IN-PACKAGE :K-NUCLEOTIDE)
 ; compiling (DECLAIM (OPTIMIZE # ...))
 ; compiling (DEFMACRO WITH-PACKED-SEQUENCES ...)
-; file: /home/dunham/shootout/bench/knucleotide/knucleotide.sbcl-5.sbcl
+; file: /home/dunham/benchmarksgame/bench/knucleotide/knucleotide.sbcl-5.sbcl
 ; in: DEFMACRO WITH-PACKED-SEQUENCES
 ;     (1- (EXPT 4 LENGTH))
 ; ==>
@@ -130,7 +130,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ;       etc.
 
 ; compiling (DEFMACRO PACK-SEQUENCE ...)
-; file: /home/dunham/shootout/bench/knucleotide/knucleotide.sbcl-5.sbcl
+; file: /home/dunham/benchmarksgame/bench/knucleotide/knucleotide.sbcl-5.sbcl
 ; in: DEFMACRO PACK-SEQUENCE
 ;     (LENGTH SEQUENCE)
 ; 
@@ -146,7 +146,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 
 ; compiling (DEFUN UNPACK-SEQUENCE ...)
 ; compiling (DEFMACRO WITH-PACKED-CACHES-FILL ...)
-; file: /home/dunham/shootout/bench/knucleotide/knucleotide.sbcl-5.sbcl
+; file: /home/dunham/benchmarksgame/bench/knucleotide/knucleotide.sbcl-5.sbcl
 ; in: DEFMACRO WITH-PACKED-CACHES-FILL
 ;     (>= K-NUCLEOTIDE::TICK LENGTH)
 ; --> OR LET IF OR THE = IF 
@@ -203,7 +203,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 
 ; compiling (DEFMACRO WITH-READING-STREAM ...)
 ; compiling (DEFMACRO SKIP-BUFFER-TO ...)
-; file: /home/dunham/shootout/bench/knucleotide/knucleotide.sbcl-5.sbcl
+; file: /home/dunham/benchmarksgame/bench/knucleotide/knucleotide.sbcl-5.sbcl
 ; in: DEFMACRO SKIP-BUFFER-TO
 ;     (LOOP :FOR CHAR :ACROSS (STRING K-NUCLEOTIDE::PATTERN)
 ;           :COLLECT `(K-NUCLEOTIDE::WITH-CURRENT-CHAR (CHAR) (CHAR= CHAR ,CHAR)))
@@ -227,7 +227,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; compiling (DEFUN SEQ-HASH ...)
 ; compiling (SB-EXT:DEFINE-HASH-TABLE-TEST SEQ= ...)
 ; compiling (DEFMACRO WITH-SMART-DNA-HASH ...)
-; file: /home/dunham/shootout/bench/knucleotide/knucleotide.sbcl-5.sbcl
+; file: /home/dunham/benchmarksgame/bench/knucleotide/knucleotide.sbcl-5.sbcl
 ; in: DEFMACRO WITH-SMART-DNA-HASH
 ;     (< K-NUCLEOTIDE::AREA MOST-POSITIVE-FIXNUM)
 ; 
@@ -341,7 +341,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 
 ; compiling (DEFMACRO WITH-PERCENTAGE ...)
 ; compiling (DEFMACRO OBTAIN-SEQ-COUNT ...)
-; file: /home/dunham/shootout/bench/knucleotide/knucleotide.sbcl-5.sbcl
+; file: /home/dunham/benchmarksgame/bench/knucleotide/knucleotide.sbcl-5.sbcl
 ; in: DEFMACRO OBTAIN-SEQ-COUNT
 ;     (LENGTH K-NUCLEOTIDE::SEQ)
 ; 
@@ -357,7 +357,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 
 ; compiling (DEFUN PERFORM-WORK ...)
 ; compiling (DEFUN PRINT-RESULTS ...)
-; file: /home/dunham/shootout/bench/knucleotide/knucleotide.sbcl-5.sbcl
+; file: /home/dunham/benchmarksgame/bench/knucleotide/knucleotide.sbcl-5.sbcl
 ; in: DEFUN PRINT-RESULTS
 ;     (> (SECOND K-NUCLEOTIDE::A) (SECOND K-NUCLEOTIDE::B))
 ; 
@@ -441,19 +441,19 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ;   printed 45 notes
 
 
-; /home/dunham/benchmarksgame/knucleotide/tmp/knucleotide.sbcl-5.fasl written
-; compilation finished in 0:00:00.616
+; /home/dunham/benchmarksgame_quadcore/knucleotide/tmp/knucleotide.sbcl-5.fasl written
+; compilation finished in 0:00:00.579
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 5952 bytes from the read-only space at 0x20000000
-writing 4000 bytes from the static space at 0x20100000
-writing 43188224 bytes from the dynamic space at 0x1000000000
+writing 5952 bytes from the read-only space at 0x0x20000000
+writing 4064 bytes from the static space at 0x0x20100000
+writing 43253760 bytes from the dynamic space at 0x0x1000000000
 done]
 ### START knucleotide.sbcl-5.sbcl_run
 (main) (quit)
 ### END knucleotide.sbcl-5.sbcl_run
 
-0.99s to complete and log all make actions
+0.94s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl  --noinform --core sbcl.core --userinit /dev/null --load knucleotide.sbcl-5.sbcl_run 0 < knucleotide-input25000000.txt

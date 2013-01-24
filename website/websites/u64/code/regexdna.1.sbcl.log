@@ -1,5 +1,5 @@
 
-Tue, 09 Oct 2012 06:09:57 GMT
+Thu, 24 Jan 2013 19:26:30 GMT
 
 MAKE:
 cp: `regexdna.sbcl' and `./regexdna.sbcl' are the same file
@@ -9,7 +9,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### END regexdna.sbcl_compile
 
 
-; compiling file "/home/dunham/shootout/bench/regexdna/regexdna.sbcl" (written 21 FEB 2009 04:20:24 PM):
+; compiling file "/home/dunham/benchmarksgame/bench/regexdna/regexdna.sbcl" (written 23 JAN 2013 08:20:14 PM):
 ; compiling (REQUIRE :ASDF)
 ; compiling (REQUIRE :CL-PPCRE)
 ; compiling (DEFPARAMETER *REGEX-LIST* ...)
@@ -18,26 +18,24 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; compiling (DEFUN MAIN ...)
 
 ; /home/dunham/benchmarksgame_onecore/regexdna/tmp/regexdna.fasl written
-; compilation finished in 0:00:00.547
+; compilation finished in 0:00:00.751
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 5952 bytes from the read-only space at 0x20000000
-writing 4000 bytes from the static space at 0x20100000
-writing 46465024 bytes from the dynamic space at 0x1000000000
+writing 5952 bytes from the read-only space at 0x0x20000000
+writing 4064 bytes from the static space at 0x0x20100000
+writing 46628864 bytes from the dynamic space at 0x0x1000000000
 done]
 ### START regexdna.sbcl_run
 (main) (quit)
 ### END regexdna.sbcl_run
 
-0.96s to complete and log all make actions
+1.17s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl  --noinform --core sbcl.core --userinit /dev/null --load regexdna.sbcl_run 0 < regexdna-input5000000.txt
 
-UNEXPECTED OUTPUT 
+PROGRAM FAILED 
 
-12a13
-> 66800214
 
 PROGRAM OUTPUT:
 agggtaaa|tttaccct 356
@@ -53,25 +51,25 @@ agggtaa[cgt]|[acg]ttaccct 2178
 50833411
 50000000
 
-Heap exhausted during allocation: 27492352 bytes available, 40000032 requested.
+Heap exhausted during allocation: 109772800 bytes available, 245601392 requested.
  Gen StaPg UbSta LaSta LUbSt Boxed Unboxed LB   LUB  !move  Alloc  Waste   Trig    WP  GCs Mem-age
-   0:  3613     0  7455     0   901     0  1221     0     0 69490976 42720 10737418    0   0  0.0000
-   1:     0     0     0     0     0     0     0     0     0        0     0 10737418    0   0  0.0000
-   2:  1428     0     0     0  2483    12     0 24453 20629 882603056 429008  2000000 2465   0  0.5061
+   0:  4859     0 94953     0   767     0  4444  2442     2 250611360 162144 112245198    0   1  0.0000
+   1: 20570     0     0     0  1763     1     0 29886 14416 1036845072 262128 578651038 1752   1  0.5270
+   2:  4091  3151     0     0  1797     4     0 42900 28683 1464441040 321328  2000000 1782   0  0.7197
    3:     0     0     0     0     0     0     0     0     0        0     0  2000000    0   0  0.0000
    4:     0     0     0     0     0     0     0     0     0        0     0  2000000    0   0  0.0000
    5:     0     0     0     0     0     0     0     0     0        0     0  2000000    0   0  0.0000
-   6:     0     0     0     0  1242   176     0     0     0 46465024     0  2000000 1216   0  0.0000
-   Total bytes allocated    = 998559056
-   Dynamic-space-size bytes = 1073741824
+   6:     0     0     0     0  1246   177     0     0     0 46628864     0  2000000 1220   0  0.0000
+   Total bytes allocated    = 2798526336
+   Dynamic-space-size bytes = 3221225472
 GC control variables:
    *GC-INHIBIT* = false
    *GC-PENDING* = true
    *STOP-FOR-GC-PENDING* = false
 
 debugger invoked on a SB-KERNEL::HEAP-EXHAUSTED-ERROR in thread
-#<THREAD "main thread" RUNNING {1002C512D3}>:
+#<THREAD "main thread" RUNNING {1002C792D3}>:
   Heap exhausted (no more space for allocation).
-There are still 27492352 bytes available; the request was for 40000032 bytes.
+There are still 109772800 bytes available; the request was for 245601392 bytes.
 
 PROCEED WITH CAUTION.

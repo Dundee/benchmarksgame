@@ -1,5 +1,5 @@
 
-Mon, 08 Oct 2012 21:53:29 GMT
+Thu, 24 Jan 2013 05:18:25 GMT
 
 MAKE:
 cp: `pidigits.sbcl' and `./pidigits.sbcl' are the same file
@@ -9,7 +9,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### END pidigits.sbcl_compile
 
 
-; compiling file "/home/dunham/shootout/bench/pidigits/pidigits.sbcl" (written 15 DEC 2010 09:35:16 AM):
+; compiling file "/home/dunham/benchmarksgame/bench/pidigits/pidigits.sbcl" (written 23 JAN 2013 08:19:58 PM):
 ; compiling (DECLAIM (OPTIMIZE # ...))
 ; compiling (DEFINE-ALIEN-TYPE MP-LIMB-T ...)
 ; compiling (DEFINE-ALIEN-TYPE MP-BITCNT-T ...)
@@ -22,7 +22,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; compiling (DEFINE-ALIEN-ROUTINE ("__gmpz_init_set_ui" MPZ-INIT-SET-UI) ...)
 ; compiling (DECLAIM (INLINE MPZ-GET-UI))
 ; compiling (DEFINE-ALIEN-ROUTINE ("__gmpz_get_ui" MPZ-GET-UI) ...)
-; file: /home/dunham/shootout/bench/pidigits/pidigits.sbcl
+; file: /home/dunham/benchmarksgame/bench/pidigits/pidigits.sbcl
 ; in: DEFINE-ALIEN-ROUTINE ("__gmpz_get_ui" MPZ-GET-UI)
 ;     (DEFINE-ALIEN-ROUTINE ("__gmpz_get_ui" MPZ-GET-UI) UNSIGNED-LONG
 ;                           (A MPZ-SRCPTR))
@@ -66,7 +66,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; compiling (DEFUN INIT ...)
 ; compiling (DEFUN CLEANUP ...)
 ; compiling (DEFUN EXTRACT-DIGIT ...)
-; file: /home/dunham/shootout/bench/pidigits/pidigits.sbcl
+; file: /home/dunham/benchmarksgame/bench/pidigits/pidigits.sbcl
 ; in: DEFUN EXTRACT-DIGIT
 ;     (MPZ-GET-UI *TMP1*)
 ; --> BLOCK WITH-ALIEN SYMBOL-MACROLET SYMBOL-MACROLET LET SYMBOL-MACROLET 
@@ -84,8 +84,8 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ;   printed 2 notes
 
 
-; /home/dunham/benchmarksgame/pidigits/tmp/pidigits.fasl written
-; compilation finished in 0:00:00.205
+; /home/dunham/benchmarksgame_quadcore/pidigits/tmp/pidigits.fasl written
+; compilation finished in 0:00:00.201
 STYLE-WARNING: Undefined alien: "__gmpz_init"
 STYLE-WARNING: Undefined alien: "__gmpz_init_set_ui"
 STYLE-WARNING: Undefined alien: "__gmpz_get_ui"
@@ -98,15 +98,15 @@ STYLE-WARNING: Undefined alien: "__gmpz_mul_ui"
 STYLE-WARNING: Undefined alien: "__gmpz_submul_ui"
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 5952 bytes from the read-only space at 0x20000000
-writing 4000 bytes from the static space at 0x20100000
-writing 43155456 bytes from the dynamic space at 0x1000000000
+writing 5952 bytes from the read-only space at 0x0x20000000
+writing 4064 bytes from the static space at 0x0x20100000
+writing 43220992 bytes from the dynamic space at 0x0x1000000000
 done]
 ### START pidigits.sbcl_run
 (main) (quit)
 ### END pidigits.sbcl_run
 
-0.56s to complete and log all make actions
+0.55s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl  --noinform --core sbcl.core --userinit /dev/null --load pidigits.sbcl_run 10000

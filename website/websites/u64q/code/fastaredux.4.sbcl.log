@@ -1,5 +1,5 @@
 
-Mon, 08 Oct 2012 21:15:33 GMT
+Thu, 24 Jan 2013 04:50:49 GMT
 
 MAKE:
 cp: `fastaredux.sbcl-4.sbcl' and `./fastaredux.sbcl-4.sbcl' are the same file
@@ -9,7 +9,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### END fastaredux.sbcl-4.sbcl_compile
 
 
-; compiling file "/home/dunham/shootout/bench/fastaredux/fastaredux.sbcl-4.sbcl" (written 21 JUL 2011 10:23:58 AM):
+; compiling file "/home/dunham/benchmarksgame/bench/fastaredux/fastaredux.sbcl-4.sbcl" (written 23 JAN 2013 08:18:00 PM):
 ; compiling (DECLAIM (OPTIMIZE # ...))
 ; compiling (DEFCONSTANT LINE-LENGTH ...)
 ; compiling (DEFCONSTANT OUT-BUFFER-SIZE ...)
@@ -31,7 +31,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; compiling (DEFCONSTANT SCALE ...)
 ; compiling (DEFCONSTANT IM-MINUS-1500 ...)
 ; compiling (DEFUN RANDOM-NEXT ...)
-; file: /home/dunham/shootout/bench/fastaredux/fastaredux.sbcl-4.sbcl
+; file: /home/dunham/benchmarksgame/bench/fastaredux/fastaredux.sbcl-4.sbcl
 ; in: DEFUN RANDOM-NEXT
 ;     (MOD (+ (FX (* LAST IA)) IC) IM)
 ; --> BLOCK LET REM BLOCK MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL TRUNCATE LET* 
@@ -48,11 +48,12 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ;                                                                        &REST T).
 
 ; compiling (LET (# #) ...)
-; file: /home/dunham/shootout/bench/fastaredux/fastaredux.sbcl-4.sbcl
-; in: DEFUN RANDOM-NEXT
-;     (MOD (+ (FX (* LAST IA)) IC) IM)
-; --> BLOCK LET REM BLOCK MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL TRUNCATE LET* 
-; --> LDB SB-KERNEL:%LDB - 
+; file: /home/dunham/benchmarksgame/bench/fastaredux/fastaredux.sbcl-4.sbcl
+; in: DEFUN RANDOM-FASTA-ADD-LINE
+;     (RANDOM-NEXT)
+; --> THE PROGN BLOCK LET SETF SETQ THE THE MOD BLOCK LET REM BLOCK 
+; --> MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL TRUNCATE LET* LDB SB-KERNEL:%LDB 
+; --> - 
 ; ==>
 ;   (* SB-C::QUOT 139968)
 ; 
@@ -69,19 +70,19 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ;   printed 4 notes
 
 
-; /home/dunham/benchmarksgame/fastaredux/tmp/fastaredux.sbcl-4.fasl written
-; compilation finished in 0:00:01.323
+; /home/dunham/benchmarksgame_quadcore/fastaredux/tmp/fastaredux.sbcl-4.fasl written
+; compilation finished in 0:00:01.358
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 5952 bytes from the read-only space at 0x20000000
-writing 4000 bytes from the static space at 0x20100000
-writing 44335104 bytes from the dynamic space at 0x1000000000
+writing 5952 bytes from the read-only space at 0x0x20000000
+writing 4064 bytes from the static space at 0x0x20100000
+writing 44335104 bytes from the dynamic space at 0x0x1000000000
 done]
 ### START fastaredux.sbcl-4.sbcl_run
 (main) (quit)
 ### END fastaredux.sbcl-4.sbcl_run
 
-1.70s to complete and log all make actions
+1.74s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl --dynamic-space-size 500 --noinform --core sbcl.core --userinit /dev/null --load fastaredux.sbcl-4.sbcl_run 25000000

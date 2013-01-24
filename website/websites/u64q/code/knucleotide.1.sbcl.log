@@ -1,5 +1,5 @@
 
-Mon, 08 Oct 2012 21:29:50 GMT
+Thu, 24 Jan 2013 05:05:01 GMT
 
 MAKE:
 cp: `knucleotide.sbcl' and `./knucleotide.sbcl' are the same file
@@ -9,20 +9,20 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### END knucleotide.sbcl_compile
 
 
-; compiling file "/home/dunham/shootout/bench/knucleotide/knucleotide.sbcl" (written 21 FEB 2009 04:21:15 PM):
+; compiling file "/home/dunham/benchmarksgame/bench/knucleotide/knucleotide.sbcl" (written 23 JAN 2013 08:18:38 PM):
 ; compiling (DEFUN READ-DATA ...)
 ; compiling (DEFUN ACCUMULATE-FREQUENCIES ...)
 ; compiling (DEFUN CALCULATE-FREQUENCIES ...)
 ; compiling (DEFUN WRITE-FREQUENCIES ...)
 ; compiling (DEFUN MAIN ...)
 
-; /home/dunham/benchmarksgame/knucleotide/tmp/knucleotide.fasl written
+; /home/dunham/benchmarksgame_quadcore/knucleotide/tmp/knucleotide.fasl written
 ; compilation finished in 0:00:00.063
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 5952 bytes from the read-only space at 0x20000000
-writing 4000 bytes from the static space at 0x20100000
-writing 43122688 bytes from the dynamic space at 0x1000000000
+writing 5952 bytes from the read-only space at 0x0x20000000
+writing 4064 bytes from the static space at 0x0x20100000
+writing 43188224 bytes from the dynamic space at 0x0x1000000000
 done]
 ### START knucleotide.sbcl_run
 (main) (quit)
@@ -68,5 +68,5 @@ PROGRAM OUTPUT:
 
 
 debugger invoked on a TYPE-ERROR in thread
-#<THREAD "main thread" RUNNING {1002921293}>:
+#<THREAD "main thread" RUNNING {1002931323}>:
   The value 1000000 is not of type (MOD 1000000).
