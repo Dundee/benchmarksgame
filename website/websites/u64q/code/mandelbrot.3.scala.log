@@ -1,10 +1,10 @@
 
-Sun, 20 Jan 2013 15:53:46 GMT
+Fri, 25 Jan 2013 21:53:48 GMT
 
 MAKE:
 mv mandelbrot.scala-3.scala mandelbrot.scala
-/usr/local/src/scala-2.10.0/bin/scalac -optimise mandelbrot.scala
-7.73s to complete and log all make actions
+/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 mandelbrot.scala
+7.78s to complete and log all make actions
 
 COMMAND LINE:
  /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar mandelbrot 1000

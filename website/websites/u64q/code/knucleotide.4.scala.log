@@ -1,9 +1,9 @@
 
-Sun, 20 Jan 2013 15:38:05 GMT
+Fri, 25 Jan 2013 21:52:46 GMT
 
 MAKE:
 mv knucleotide.scala-4.scala knucleotide.scala
-/usr/local/src/scala-2.10.0/bin/scalac -optimise knucleotide.scala
+/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 knucleotide.scala
 knucleotide.scala:109: error: wrong number of type arguments for scala.collection.mutable.HashTable, should be 2
 class HashBag extends HashTable[String] {
                       ^
@@ -21,7 +21,7 @@ knucleotide.scala:128: error: not found: value addEntry
     ^
 5 errors found
 make: [knucleotide.scala-4.scala_run] Error 1 (ignored)
-3.90s to complete and log all make actions
+3.79s to complete and log all make actions
 
 COMMAND LINE:
 env JAVA_OPTS=-Xmx3G /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar knucleotide 0 < knucleotide-input250000.txt

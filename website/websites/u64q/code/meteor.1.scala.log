@@ -1,17 +1,17 @@
 
-Sun, 20 Jan 2013 15:55:25 GMT
+Fri, 25 Jan 2013 22:00:42 GMT
 
 MAKE:
 mv meteor.scala meteor.scala
 mv: `meteor.scala' and `meteor.scala' are the same file
 make: [meteor.scala_run] Error 1 (ignored)
-/usr/local/src/scala-2.10.0/bin/scalac -optimise meteor.scala
+/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 meteor.scala
 meteor.scala:296: error: value first is not a member of Array[String]
           args.first.toInt
                ^
 one error found
 make: [meteor.scala_run] Error 1 (ignored)
-5.37s to complete and log all make actions
+5.42s to complete and log all make actions
 
 COMMAND LINE:
  /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar meteor 2098

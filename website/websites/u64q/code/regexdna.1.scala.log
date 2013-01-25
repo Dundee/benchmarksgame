@@ -1,12 +1,12 @@
 
-Sun, 20 Jan 2013 16:06:54 GMT
+Fri, 25 Jan 2013 22:06:37 GMT
 
 MAKE:
 mv regexdna.scala regexdna.scala
 mv: `regexdna.scala' and `regexdna.scala' are the same file
 make: [regexdna.scala_run] Error 1 (ignored)
-/usr/local/src/scala-2.10.0/bin/scalac -optimise regexdna.scala
-5.93s to complete and log all make actions
+/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 regexdna.scala
+6.00s to complete and log all make actions
 
 COMMAND LINE:
 env JAVA_OPTS=-Xmx1024m /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar regexdna 0 < regexdna-input5000000.txt

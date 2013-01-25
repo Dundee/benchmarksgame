@@ -1,12 +1,12 @@
 
-Sun, 20 Jan 2013 16:25:34 GMT
+Fri, 25 Jan 2013 22:17:57 GMT
 
 MAKE:
 mv spectralnorm.scala-4.scala spectralnorm.scala
-/usr/local/src/scala-2.10.0/bin/scalac -optimise spectralnorm.scala
+/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 spectralnorm.scala
 warning: there were 2 deprecation warnings; re-run with -deprecation for details
 one warning found
-7.71s to complete and log all make actions
+7.82s to complete and log all make actions
 
 COMMAND LINE:
  /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar spectralnorm 500
