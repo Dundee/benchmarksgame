@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) Isaac Gouy 2004-2012
+// Copyright (c) Isaac Gouy 2004-2013
 
 // LIBRARIES ////////////////////////////////////////////////
 
@@ -10,7 +10,7 @@ require_once(LIB);
 // TEMPLATE VARS ////////////////////////////////////////////////
 
 $Page = & new Template(LIB_PATH);
-$Page->set('PageTitle', 'More'.BAR.'Computer&nbsp;Language&nbsp;Benchmarks&nbsp;Game');
+$Page->set('PageTitle', 'Play'.BAR.'Computer&nbsp;Language&nbsp;Benchmarks&nbsp;Game');
 $Page->set('BannerTitle', 'The&nbsp;Computer&nbsp;Language&nbsp; <br/>Benchmarks&nbsp;Game');
 $Page->set('FaqTitle', '[[ Conclusions ]]');
 $Page->set('PageBody', BLANK);

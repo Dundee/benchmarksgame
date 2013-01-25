@@ -30,7 +30,7 @@ define('SITE_NAME', 'mobile');
 define('SITE_TITLE','Ubuntu : Intel&#174; Q6600&#174; one core Computer Language Benchmarks Game');
 define('BANNER_TITLE','The Computer Language Benchmarks Game');
 define('PLATFORM_NAME', 'Ubuntu : Intel Q6600 one core');
-define('FAQ_TITLE','[[ More ]]');
+define('FAQ_TITLE','[[ Play ]]');
 define('BAR',' | ');
 define('DASH',' - ');
 define('BLANK','');

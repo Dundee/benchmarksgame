@@ -31,7 +31,7 @@ define('SITE_NAME', 'u32q');
 define('SITE_TITLE','Ubuntu : Intel&#174; Q6600&#174; quad-core Computer Language Benchmarks Game');
 define('BANNER_TITLE','Ubuntu&nbsp;:&nbsp;Intel&#174;&nbsp;Q6600&#174;&nbsp;quad-core<br/>Computer&nbsp;<strong>Language</strong>&nbsp;<strong>Benchmarks</strong>&nbsp;Game&nbsp;');
 define('PLATFORM_NAME', 'Ubuntu : Intel Q6600 quad-core');
-define('FAQ_TITLE','[[ More ]]');
+define('FAQ_TITLE','[[ Play ]]');
 define('BAR',' | ');
 define('DASH',' - ');
 define('BLANK','');

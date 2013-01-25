@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) Isaac Gouy 2004-2012
+// Copyright (c) Isaac Gouy 2004-2013
 
 // LIBRARIES ////////////////////////////////////////////////
 
@@ -47,7 +47,7 @@ $bannerUrl = CORE_SITE;
 $Page = & new Template(LIB_PATH);  
 $Page->set('PageTitle', $T.BAR.'Computer&nbsp;Language&nbsp;Benchmarks&nbsp;Game');
 $Page->set('BannerTitle', 'The&nbsp;Computer&nbsp;Language&nbsp; <br/>Benchmarks&nbsp;Game');
-$Page->set('FaqTitle', '[[ More ]]');
+$Page->set('FaqTitle', '[[ Play ]]');
 $Page->set('BannerUrl', $bannerUrl);
 $Page->set('FaqUrl', $faqUrl);
 $Page->set('PageBody', BLANK);
