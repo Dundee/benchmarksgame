@@ -1,5 +1,5 @@
 
-Mon, 08 Oct 2012 23:32:58 GMT
+Fri, 25 Jan 2013 01:58:51 GMT
 
 MAKE:
 cp: `fasta.sbcl-6.sbcl' and `./fasta.sbcl-6.sbcl' are the same file
@@ -9,7 +9,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### END fasta.sbcl-6.sbcl_compile
 
 
-; compiling file "/home/dunham/shootout/bench/fasta/fasta.sbcl-6.sbcl" (written 12 AUG 2012 09:27:12 AM):
+; compiling file "/home/dunham/benchmarksgame/bench/fasta/fasta.sbcl-6.sbcl" (written 24 JAN 2013 02:01:15 PM):
 ; compiling (DECLAIM (OPTIMIZE # ...))
 ; compiling (DECLAIM (FIXNUM +LINE-LENGTH+ ...))
 ; compiling (DEFCONSTANT +LINE-LENGTH+ ...)
@@ -18,7 +18,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; compiling (DECLAIM (SIMPLE-BASE-STRING *ALU*))
 ; compiling (DEFPARAMETER *ALU* ...)
 ; compiling (DEFUN CUMSUM ...)
-; file: /home/dunham/shootout/bench/fasta/fasta.sbcl-6.sbcl
+; file: /home/dunham/benchmarksgame/bench/fasta/fasta.sbcl-6.sbcl
 ; in: DEFUN CUMSUM
 ;     (INCF C X)
 ; --> LET* 
@@ -62,18 +62,18 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 
 
 ; /home/dunham/benchmarksgame_onecore/fasta/tmp/fasta.sbcl-6.fasl written
-; compilation finished in 0:00:00.238
+; compilation finished in 0:00:00.259
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 3512 bytes from the read-only space at 0x01000000
-writing 2224 bytes from the static space at 0x01100000
-writing 28409856 bytes from the dynamic space at 0x09000000
+writing 3512 bytes from the read-only space at 0x0x1000000
+writing 2256 bytes from the static space at 0x0x1100000
+writing 28426240 bytes from the dynamic space at 0x0x9000000
 done]
 ### START fasta.sbcl-6.sbcl_run
 (main) (quit)
 ### END fasta.sbcl-6.sbcl_run
 
-0.83s to complete and log all make actions
+0.85s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl   --noinform --core sbcl.core --userinit /dev/null --load fasta.sbcl-6.sbcl_run 25000000

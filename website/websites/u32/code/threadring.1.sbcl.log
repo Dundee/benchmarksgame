@@ -1,5 +1,5 @@
 
-Tue, 09 Oct 2012 01:37:35 GMT
+Fri, 25 Jan 2013 05:07:45 GMT
 
 MAKE:
 cp: `threadring.sbcl' and `./threadring.sbcl' are the same file
@@ -9,7 +9,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### END threadring.sbcl_compile
 
 
-; compiling file "/home/dunham/shootout/bench/threadring/threadring.sbcl" (written 17 DEC 2008 05:31:40 PM):
+; compiling file "/home/dunham/benchmarksgame/bench/threadring/threadring.sbcl" (written 24 JAN 2013 02:01:16 PM):
 ; compiling (DEFPARAMETER *MUTEX* ...)
 ; compiling (DEFCONSTANT +THREADS+ ...)
 ; compiling (DEFPARAMETER *COUNTER* ...)
@@ -22,18 +22,18 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; compiling (DEFUN MAIN ...)
 
 ; /home/dunham/benchmarksgame_onecore/threadring/tmp/threadring.fasl written
-; compilation finished in 0:00:00.025
+; compilation finished in 0:00:00.024
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 3512 bytes from the read-only space at 0x01000000
-writing 2224 bytes from the static space at 0x01100000
-writing 28086272 bytes from the dynamic space at 0x09000000
+writing 3512 bytes from the read-only space at 0x0x1000000
+writing 2256 bytes from the static space at 0x0x1100000
+writing 28090368 bytes from the dynamic space at 0x0x9000000
 done]
 ### START threadring.sbcl_run
 (main) (quit)
 ### END threadring.sbcl_run
 
-0.60s to complete and log all make actions
+0.59s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl   --noinform --core sbcl.core --userinit /dev/null --load threadring.sbcl_run 500000

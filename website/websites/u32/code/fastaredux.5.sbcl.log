@@ -1,5 +1,5 @@
 
-Mon, 08 Oct 2012 23:34:59 GMT
+Fri, 25 Jan 2013 02:00:53 GMT
 
 MAKE:
 cp: `fastaredux.sbcl-5.sbcl' and `./fastaredux.sbcl-5.sbcl' are the same file
@@ -9,7 +9,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### END fastaredux.sbcl-5.sbcl_compile
 
 
-; compiling file "/home/dunham/shootout/bench/fastaredux/fastaredux.sbcl-5.sbcl" (written 21 JUL 2011 10:33:34 AM):
+; compiling file "/home/dunham/benchmarksgame/bench/fastaredux/fastaredux.sbcl-5.sbcl" (written 24 JAN 2013 02:01:15 PM):
 ; compiling (DEFMACRO DEFINE-CONSTANT ...)
 ; compiling (DECLAIM (OPTIMIZE # ...))
 ; compiling (DEFCONSTANT LINE-LENGTH ...)
@@ -30,7 +30,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; compiling (DEFCONSTANT IC ...)
 ; compiling (DEFCONSTANT SCALE ...)
 ; compiling (DEFINE-CONSTANT RAND-ARRAY ...)
-; file: /home/dunham/shootout/bench/fastaredux/fastaredux.sbcl-5.sbcl
+; file: /home/dunham/benchmarksgame/bench/fastaredux/fastaredux.sbcl-5.sbcl
 ; in: DEFINE-CONSTANT RAND-ARRAY
 ;     (* LAST IA)
 ; 
@@ -284,7 +284,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ;                                   (SINGLE-FLOAT -139968.0 279936.0)), not a DOUBLE-FLOAT.
 
 ; compiling (DEFINE-CONSTANT AI-ARRAY ...)
-; file: /home/dunham/shootout/bench/fastaredux/fastaredux.sbcl-5.sbcl
+; file: /home/dunham/benchmarksgame/bench/fastaredux/fastaredux.sbcl-5.sbcl
 ; in: DEFINE-CONSTANT AI-ARRAY
 ;     (TRUNCATE (AREF RAND-ARRAY I))
 ; --> TRUNCATE LET 
@@ -334,9 +334,9 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; compilation finished in 0:00:00.195
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 3512 bytes from the read-only space at 0x01000000
-writing 2224 bytes from the static space at 0x01100000
-writing 30232576 bytes from the dynamic space at 0x09000000
+writing 3512 bytes from the read-only space at 0x0x1000000
+writing 2256 bytes from the static space at 0x0x1100000
+writing 30240768 bytes from the dynamic space at 0x0x9000000
 done]
 ### START fastaredux.sbcl-5.sbcl_run
 (main) (quit)

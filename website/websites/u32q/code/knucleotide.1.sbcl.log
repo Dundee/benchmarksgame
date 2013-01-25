@@ -1,5 +1,5 @@
 
-Tue, 09 Oct 2012 02:48:39 GMT
+Thu, 24 Jan 2013 22:55:00 GMT
 
 MAKE:
 cp: `knucleotide.sbcl' and `./knucleotide.sbcl' are the same file
@@ -9,36 +9,64 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### END knucleotide.sbcl_compile
 
 
-; compiling file "/home/dunham/shootout/bench/knucleotide/knucleotide.sbcl" (written 21 FEB 2009 04:21:15 PM):
+; compiling file "/home/dunham/benchmarksgame/bench/knucleotide/knucleotide.sbcl" (written 24 JAN 2013 02:01:15 PM):
 ; compiling (DEFUN READ-DATA ...)
 ; compiling (DEFUN ACCUMULATE-FREQUENCIES ...)
 ; compiling (DEFUN CALCULATE-FREQUENCIES ...)
 ; compiling (DEFUN WRITE-FREQUENCIES ...)
 ; compiling (DEFUN MAIN ...)
 
-; /home/dunham/benchmarksgame/knucleotide/tmp/knucleotide.fasl written
-; compilation finished in 0:00:00.058
+; /home/dunham/benchmarksgame_quadcore/knucleotide/tmp/knucleotide.fasl written
+; compilation finished in 0:00:00.055
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 3512 bytes from the read-only space at 0x01000000
-writing 2224 bytes from the static space at 0x01100000
-writing 28082176 bytes from the dynamic space at 0x09000000
+writing 3512 bytes from the read-only space at 0x0x1000000
+writing 2256 bytes from the static space at 0x0x1100000
+writing 28090368 bytes from the dynamic space at 0x0x9000000
 done]
 ### START knucleotide.sbcl_run
 (main) (quit)
 ### END knucleotide.sbcl_run
 
-0.63s to complete and log all make actions
+0.62s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl  --noinform --core sbcl.core --userinit /dev/null --load knucleotide.sbcl_run 0 < knucleotide-input2500000.txt
 
-TIMED OUT after 600s
+UNEXPECTED OUTPUT 
 
+0a1,27
+> A 30.297
+> T 30.151
+> C 19.798
+> G 19.755
+> 
+> AA 9.177
+> TA 9.133
+> AT 9.131
+> TT 9.091
+> CA 6.002
+> AC 6.001
+> AG 5.987
+> GA 5.984
+> CT 5.971
+> TC 5.971
+> GT 5.957
+> TG 5.956
+> CC 3.917
+> GC 3.910
+> CG 3.909
+> GG 3.903
+> 
+> 147166	GGT
+> 44658	GGTA
+> 4736	GGTATT
+> 89	GGTATTTTAATT
+> 89	GGTATTTTAATTTATAGT
 
 PROGRAM OUTPUT:
 
 
 debugger invoked on a TYPE-ERROR in thread
-#<THREAD "main thread" RUNNING {AAC8AC1}>:
+#<THREAD "main thread" RUNNING {AACAB29}>:
   The value 1000000 is not of type (MOD 1000000).

@@ -1,5 +1,5 @@
 
-Tue, 09 Oct 2012 03:23:07 GMT
+Thu, 24 Jan 2013 23:24:11 GMT
 
 MAKE:
 cp: `mandelbrot.sbcl' and `./mandelbrot.sbcl' are the same file
@@ -9,7 +9,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### END mandelbrot.sbcl_compile
 
 
-; compiling file "/home/dunham/shootout/bench/mandelbrot/mandelbrot.sbcl" (written 28 JUN 2011 07:37:55 AM):
+; compiling file "/home/dunham/benchmarksgame/bench/mandelbrot/mandelbrot.sbcl" (written 24 JAN 2013 02:01:15 PM):
 ; compiling (SETF *EFFICIENCY-NOTE-COST-THRESHOLD* ...)
 ; compiling (SETF *EFFICIENCY-NOTE-LIMIT* ...)
 ; compiling (SETF *INLINE-EXPANSION-LIMIT* ...)
@@ -25,7 +25,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; compiling (DEFCONSTANT +FOUR+ ...)
 ; compiling (DEFCONSTANT +WORKERS+ ...)
 ; compiling (DEFMACRO ESCAPES? ...)
-; file: /home/dunham/shootout/bench/mandelbrot/mandelbrot.sbcl
+; file: /home/dunham/benchmarksgame/bench/mandelbrot/mandelbrot.sbcl
 ; in: DEFMACRO ESCAPES?
 ;     (LOOP VOPS::FOR VOPS::I VOPS::FROM 0 VOPS::BELOW VOPS::N
 ;           VOPS::COLLECTING `(PROGN
@@ -139,7 +139,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 
 ; compiling (DEFUN CALC-ROW ...)
 ; compiling (DEFUN MAIN ...)
-; file: /home/dunham/shootout/bench/mandelbrot/mandelbrot.sbcl
+; file: /home/dunham/benchmarksgame/bench/mandelbrot/mandelbrot.sbcl
 ; in: DEFUN MAIN
 ;     (LAMBDA ()
 ;       (LOOP VOPS::FOR VOPS::Y VOPS::FROM VOPS::START VOPS::TO
@@ -155,7 +155,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ;        :KIND NIL
 ;        :TYPE #<SB-KERNEL:FUN-TYPE #>
 ;        :WHERE-FROM :DEFINED
-;        :VARS NIL {C582CD1}>))
+;        :VARS NIL {BA1B589}>))
 ; 
 ; note: doing float to pointer coercion (cost 13) from INVERSE-H, for:
 ;       the second argument of CLOSURE-INIT
@@ -163,13 +163,13 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; compiling (DECLAIM (INLINE))
 ; compiling (IN-PACKAGE :CL-USER)
 ; compiling (DEFUN MAIN ...)
-; file: /home/dunham/shootout/bench/mandelbrot/mandelbrot.sbcl
-; in: DEFUN VOPS::MAIN
-;     (LAMBDA ()
-;       (LOOP VOPS::FOR VOPS::Y VOPS::FROM VOPS::START VOPS::TO
-;             VOPS::END
-;             DO (VOPS::CALC-ROW VOPS::Y VOPS::N VOPS::BITMAP VOPS::BYTES-PER-ROW
-;                 VOPS::CRVS VOPS::INVERSE-H)))
+; file: /home/dunham/benchmarksgame/bench/mandelbrot/mandelbrot.sbcl
+; in: DEFUN MAIN
+;     (VOPS::MAIN)
+; --> BLOCK LET* LET LET MAPCAR LET LET SB-INT:DO-ANONYMOUS BLOCK LET LOOP 
+; --> BLOCK LET SB-LOOP::WITH-LOOP-LIST-COLLECTION-HEAD LET* SB-LOOP::LOOP-BODY 
+; --> TAGBODY SB-LOOP::LOOP-COLLECT-RPLACD RPLACD LET PROGN SETF 
+; --> SB-KERNEL:%RPLACD SETQ THE LIST CONS SB-THREAD:MAKE-THREAD LET LAMBDA 
 ; --> FUNCTION SB-C::%%ALLOCATE-CLOSURES 
 ; ==>
 ;   (SB-C::%ALLOCATE-CLOSURES
@@ -179,7 +179,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ;        :KIND NIL
 ;        :TYPE #<SB-KERNEL:FUN-TYPE #>
 ;        :WHERE-FROM :DEFINED
-;        :VARS NIL {AE2E969}>))
+;        :VARS NIL {AECF269}>))
 ; 
 ; note: doing float to pointer coercion (cost 13) from VOPS::INVERSE-H, for:
 ;       the second argument of CLOSURE-INIT
@@ -188,19 +188,19 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ;   printed 8 notes
 
 
-; /home/dunham/benchmarksgame/mandelbrot/tmp/mandelbrot.fasl written
-; compilation finished in 0:00:00.637
+; /home/dunham/benchmarksgame_quadcore/mandelbrot/tmp/mandelbrot.fasl written
+; compilation finished in 0:00:00.647
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 3512 bytes from the read-only space at 0x01000000
-writing 2224 bytes from the static space at 0x01100000
-writing 28147712 bytes from the dynamic space at 0x09000000
+writing 3512 bytes from the read-only space at 0x0x1000000
+writing 2256 bytes from the static space at 0x0x1100000
+writing 28147712 bytes from the dynamic space at 0x0x9000000
 done]
 ### START mandelbrot.sbcl_run
 (main) (quit)
 ### END mandelbrot.sbcl_run
 
-1.24s to complete and log all make actions
+1.25s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl  --noinform --core sbcl.core --userinit /dev/null --load mandelbrot.sbcl_run 16000
