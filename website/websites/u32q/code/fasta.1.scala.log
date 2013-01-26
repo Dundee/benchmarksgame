@@ -1,12 +1,12 @@
 
-Mon, 21 Jan 2013 05:02:51 GMT
+Sat, 26 Jan 2013 07:49:16 GMT
 
 MAKE:
 mv fasta.scala fasta.scala
 mv: `fasta.scala' and `fasta.scala' are the same file
 make: [fasta.scala_run] Error 1 (ignored)
-/usr/local/src/scala-2.10.0/bin/scalac -optimise fasta.scala
-5.84s to complete and log all make actions
+/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 fasta.scala
+5.70s to complete and log all make actions
 
 COMMAND LINE:
  /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar fasta 25000000

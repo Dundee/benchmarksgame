@@ -1,14 +1,14 @@
 
-Mon, 21 Jan 2013 05:08:52 GMT
+Sat, 26 Jan 2013 08:17:30 GMT
 
 MAKE:
 mv knucleotide.scala knucleotide.scala
 mv: `knucleotide.scala' and `knucleotide.scala' are the same file
 make: [knucleotide.scala_run] Error 1 (ignored)
-/usr/local/src/scala-2.10.0/bin/scalac -optimise knucleotide.scala
+/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 knucleotide.scala
 warning: there were 3 feature warnings; re-run with -feature for details
 one warning found
-8.67s to complete and log all make actions
+8.79s to complete and log all make actions
 
 COMMAND LINE:
 env JAVA_OPTS=-Xmx3G /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar knucleotide 0 < knucleotide-input250000.txt
