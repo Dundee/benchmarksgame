@@ -1,9 +1,9 @@
 
-Sun, 20 Jan 2013 18:39:42 GMT
+Sat, 26 Jan 2013 04:12:22 GMT
 
 MAKE:
 mv meteor.scala-4.scala meteor.scala
-/usr/local/src/scala-2.10.0/bin/scalac meteor.scala
+/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 meteor.scala
 meteor.scala:157: error: value findIndexOf is not a member of Array[BoardCell]
    def firstEmptyCellIndex() = cells.findIndexOf(c => c.isEmpty)
                                      ^

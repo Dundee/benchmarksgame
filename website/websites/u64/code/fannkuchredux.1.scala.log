@@ -1,12 +1,12 @@
 
-Sun, 20 Jan 2013 17:21:32 GMT
+Sat, 26 Jan 2013 03:39:04 GMT
 
 MAKE:
 mv fannkuchredux.scala fannkuchredux.scala
 mv: `fannkuchredux.scala' and `fannkuchredux.scala' are the same file
 make: [fannkuchredux.scala_run] Error 1 (ignored)
-/usr/local/src/scala-2.10.0/bin/scalac fannkuchredux.scala
-3.92s to complete and log all make actions
+/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 fannkuchredux.scala
+5.61s to complete and log all make actions
 
 COMMAND LINE:
  /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar fannkuchredux 12

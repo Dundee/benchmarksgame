@@ -1,10 +1,10 @@
 
-Sun, 20 Jan 2013 18:14:11 GMT
+Sat, 26 Jan 2013 03:58:16 GMT
 
 MAKE:
 mv knucleotide.scala-6.scala knucleotide.scala
-/usr/local/src/scala-2.10.0/bin/scalac knucleotide.scala
-6.91s to complete and log all make actions
+/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 knucleotide.scala
+8.93s to complete and log all make actions
 
 COMMAND LINE:
 env JAVA_OPTS=-Xmx3G /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar knucleotide 0 < knucleotide-input250000.txt

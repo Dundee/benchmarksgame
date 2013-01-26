@@ -1,12 +1,12 @@
 
-Sun, 20 Jan 2013 18:45:00 GMT
+Sat, 26 Jan 2013 04:16:50 GMT
 
 MAKE:
 mv pidigits.scala-3.scala pidigits.scala
-/usr/local/src/scala-2.10.0/bin/scalac pidigits.scala
+/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 pidigits.scala
 warning: there were 1 feature warnings; re-run with -feature for details
 one warning found
-5.92s to complete and log all make actions
+7.51s to complete and log all make actions
 
 COMMAND LINE:
  /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts -Djava.library.path=Include/java -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar pidigits 10000

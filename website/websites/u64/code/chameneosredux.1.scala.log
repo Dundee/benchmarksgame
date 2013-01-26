@@ -1,11 +1,11 @@
 
-Sun, 20 Jan 2013 17:11:34 GMT
+Sat, 26 Jan 2013 03:38:51 GMT
 
 MAKE:
 mv chameneosredux.scala chameneosredux.scala
 mv: `chameneosredux.scala' and `chameneosredux.scala' are the same file
 make: [chameneosredux.scala_run] Error 1 (ignored)
-/usr/local/src/scala-2.10.0/bin/scalac chameneosredux.scala
+/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 chameneosredux.scala
 chameneosredux.scala:33: error: value foreach is not a member of object chameneosredux.Color
       Color.foreach(c1 => Color.foreach(c2 => {
             ^
@@ -15,7 +15,7 @@ chameneosredux.scala:121: warning: This catches all Throwables. If this is reall
 one warning found
 one error found
 make: [chameneosredux.scala_run] Error 1 (ignored)
-3.64s to complete and log all make actions
+3.75s to complete and log all make actions
 
 COMMAND LINE:
  /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar chameneosredux 60000

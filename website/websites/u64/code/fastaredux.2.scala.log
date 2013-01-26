@@ -1,10 +1,10 @@
 
-Sun, 20 Jan 2013 18:02:28 GMT
+Sat, 26 Jan 2013 03:57:24 GMT
 
 MAKE:
 mv fastaredux.scala-2.scala fastaredux.scala
-/usr/local/src/scala-2.10.0/bin/scalac fastaredux.scala
-6.79s to complete and log all make actions
+/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 fastaredux.scala
+7.95s to complete and log all make actions
 
 COMMAND LINE:
  /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar fastaredux 25000000

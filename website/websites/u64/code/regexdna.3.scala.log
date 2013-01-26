@@ -1,12 +1,13 @@
 
-Sun, 20 Jan 2013 18:56:39 GMT
+Sat, 26 Jan 2013 04:22:23 GMT
 
 MAKE:
 mv regexdna.scala-3.scala regexdna.scala
-/usr/local/src/scala-2.10.0/bin/scalac regexdna.scala
+/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 regexdna.scala
 warning: there were 5 feature warnings; re-run with -feature for details
-one warning found
-5.59s to complete and log all make actions
+warning: there were 8 inliner warnings; re-run with -Yinline-warnings for details
+two warnings found
+6.65s to complete and log all make actions
 
 COMMAND LINE:
 env JAVA_OPTS=-Xmx1024m /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar regexdna 0 < regexdna-input50000.txt
