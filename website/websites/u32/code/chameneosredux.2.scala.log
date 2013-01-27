@@ -1,10 +1,10 @@
 
-Mon, 21 Jan 2013 06:28:35 GMT
+Sat, 26 Jan 2013 13:53:52 GMT
 
 MAKE:
 mv chameneosredux.scala-2.scala chameneosredux.scala
-/usr/local/src/scala-2.10.0/bin/scalac -optimise chameneosredux.scala
-8.31s to complete and log all make actions
+/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 chameneosredux.scala
+8.02s to complete and log all make actions
 
 COMMAND LINE:
  /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar chameneosredux 6000000
@@ -21,21 +21,21 @@ yellow + red -> blue
 yellow + yellow -> yellow
 
  blue red yellow
-3993419 zero
-3986739 zero
-4019842 zero
+4009594 zero
+4030945 zero
+3959461 zero
 one two zero zero zero zero zero zero
 
  blue red yellow red yellow blue red yellow red blue
-1209365 zero
-1198310 zero
-1208422 zero
-1199522 zero
-1197582 zero
-1192214 zero
-1195467 zero
-1197808 zero
-1200868 zero
-1200442 zero
+1209347 zero
+1197571 zero
+1205884 zero
+1194796 zero
+1192754 zero
+1186701 zero
+1191548 zero
+1200805 zero
+1211771 zero
+1208823 zero
 one two zero zero zero zero zero zero
 

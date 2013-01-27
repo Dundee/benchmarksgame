@@ -1,11 +1,11 @@
 
-Mon, 21 Jan 2013 06:28:25 GMT
+Sat, 26 Jan 2013 13:55:26 GMT
 
 MAKE:
 mv chameneosredux.scala chameneosredux.scala
 mv: `chameneosredux.scala' and `chameneosredux.scala' are the same file
 make: [chameneosredux.scala_run] Error 1 (ignored)
-/usr/local/src/scala-2.10.0/bin/scalac -optimise chameneosredux.scala
+/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 chameneosredux.scala
 chameneosredux.scala:33: error: value foreach is not a member of object chameneosredux.Color
       Color.foreach(c1 => Color.foreach(c2 => {
             ^
