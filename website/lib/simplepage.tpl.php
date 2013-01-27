@@ -29,6 +29,6 @@ h1 { font-weight: bold; font-size: smaller; }
 
 <p>And please don't jump to conclusions! "The performance of a benchmark, even if it is derived from a real program, may not help to predict the performance of similar programs that have different hot spots."</p>
 
-<p>&nbsp; <a href="http://benchmarksgame.alioth.debian.org/mobile/">Home</a> &nbsp; <a href="http://benchmarksgame.alioth.debian.org/mobile/license.php">License</a> &nbsp; <a href="http://benchmarksgame.alioth.debian.org/mobile/more.php">Play</a> &nbsp;</p>
+<p>&nbsp; <a href="http://benchmarksgame.alioth.debian.org/mobile/">Home</a> &nbsp; <a href="http://benchmarksgame.alioth.debian.org/mobile/license.php">License</a> &nbsp; <a href="http://benchmarksgame.alioth.debian.org/mobile/play.php">Play</a> &nbsp;</p>
 </body>
 </html>

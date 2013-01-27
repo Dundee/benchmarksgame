@@ -59,7 +59,7 @@ h1 { font-weight: bold; font-size: smaller; }
 <li><a href="./smalltalk.php" title="Compare Smalltalk and Java elapsed times">Smalltalk VisualWorks</a></li>
 </ul>
 
-<p>&nbsp; <a href="http://benchmarksgame.alioth.debian.org/mobile/license.php">License</a> &nbsp; <a href="http://benchmarksgame.alioth.debian.org/mobile/more.php">More</a> &nbsp;</p>
+<p>&nbsp; <a href="http://benchmarksgame.alioth.debian.org/mobile/license.php">License</a> &nbsp; <a href="http://benchmarksgame.alioth.debian.org/mobile/play.php">More</a> &nbsp;</p>
 
 </body>
 </html>

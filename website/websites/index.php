@@ -35,7 +35,7 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 <p id="hint"><a href="http://benchmarksgame.alioth.debian.org/mobile/index.php">/mobile Handheld Friendly website</a></p>
 
 <table class="banner"><tr>
-<td><h1><a>The&nbsp;Computer&nbsp;<strong>Language</strong>&nbsp; <br/><strong>Benchmarks</strong>&nbsp;Game</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://benchmarksgame.alioth.debian.org/more.php" title="How programs were measured. FAQs. How to contribute programs.">[[ Play ]]</a></h1></td>
+<td><h1><a>The&nbsp;Computer&nbsp;<strong>Language</strong>&nbsp; <br/><strong>Benchmarks</strong>&nbsp;Game</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://benchmarksgame.alioth.debian.org/play.php" title="How programs were measured. FAQs. How to contribute programs.">[[ Play ]]</a></h1></td>
 </tr></table>
 
 <div id="sitemap">
@@ -191,7 +191,7 @@ PrintHeaders();
 </table>
 
 
-<p class="imgfooter">&nbsp; <a href="http://benchmarksgame.alioth.debian.org/mobile/index.php" title="Handheld Friendly website">Mobile</a> &nbsp; <a href="http://benchmarksgame.alioth.debian.org/dont-jump-to-conclusions.php">Conclusions</a> &nbsp; <a href="http://benchmarksgame.alioth.debian.org/license.php">License</a> &nbsp; <a href="http://benchmarksgame.alioth.debian.org/more.php">Play</a> &nbsp;</p>
+<p class="imgfooter">&nbsp; <a href="http://benchmarksgame.alioth.debian.org/mobile/index.php" title="Handheld Friendly website">Mobile</a> &nbsp; <a href="http://benchmarksgame.alioth.debian.org/dont-jump-to-conclusions.php">Conclusions</a> &nbsp; <a href="http://benchmarksgame.alioth.debian.org/license.php">License</a> &nbsp; <a href="http://benchmarksgame.alioth.debian.org/play.php">Play</a> &nbsp;</p>
 
 </div>
 
