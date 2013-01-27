@@ -189,7 +189,7 @@ $TestName = $Tests[$T][TEST_NAME];
 $Title = $TestName.' benchmark';
 
 $bannerUrl = CORE_SITE;
-$faqUrl = CORE_SITE.'more.php';
+$faqUrl = CORE_SITE.'play.php';
 
 
 // DATA ////////////////////////////////////////////////

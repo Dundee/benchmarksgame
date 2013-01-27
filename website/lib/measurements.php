@@ -63,7 +63,7 @@ $LangName = $Langs[$L][LANG_FULL];
 $Title = $LangName.' measurements';
 
 $bannerUrl = CORE_SITE;
-$faqUrl = CORE_SITE.'more.php';
+$faqUrl = CORE_SITE.'play.php';
 
 
 // DATA ////////////////////////////////////////////////

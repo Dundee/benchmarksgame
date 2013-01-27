@@ -163,7 +163,7 @@ if (! file_exists(ABOUT_PATH.$AboutTemplateName)){ $AboutTemplateName = 'blank-a
 $Body->set('DataSet', $DataSet);
 $Body->set('Data', TimeSizeShapes(DATA_PATH.$DataSet.'.csv', $Tests, $Langs, $Incl, $Excl));
 
-$faqUrl = CORE_SITE.'more.php';
+$faqUrl = CORE_SITE.'play.php';
 $bannerUrl = CORE_SITE;
 
 $metaRobots = '<meta name="robots" content="index,follow,noarchive" />';

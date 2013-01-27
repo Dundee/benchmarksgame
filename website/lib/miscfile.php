@@ -39,7 +39,7 @@ if (SITE_NAME == 'core' || SITE_NAME == 'u32' || SITE_NAME == 'u32q' || SITE_NAM
    $metaRobots = '<meta name="robots" content="noindex,nofollow,noarchive" />';
 }
 
-$faqUrl = CORE_SITE.'more.php';
+$faqUrl = CORE_SITE.'play.php';
 $bannerUrl = CORE_SITE;
 
 // TEMPLATE VARS ////////////////////////////////////////////////

@@ -173,7 +173,7 @@ $mark = $mark.' '.SITE_NAME;
 $Title = 'Which programs are fastest?';
 
 $bannerUrl = CORE_SITE;
-$faqUrl = CORE_SITE.'more.php';
+$faqUrl = CORE_SITE.'play.php';
 
 
 // DATA ////////////////////////////////////////////////

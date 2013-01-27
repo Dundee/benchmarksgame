@@ -261,7 +261,7 @@ $LangName2 = $Langs[$L2][LANG_FULL];
 $Title = $LangName.'&nbsp;speed&nbsp;&#247;&nbsp;'.$LangName2.'&nbsp;speed';
 
 $bannerUrl = CORE_SITE;
-$faqUrl = CORE_SITE.'more.php';
+$faqUrl = CORE_SITE.'play.php';
 
 
 // DATA ////////////////////////////////////////////////

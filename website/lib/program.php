@@ -138,7 +138,7 @@ $LangName = $Langs[$L][LANG_FULL];
 $Title = $TestName.' '.$LangName.IdName($I).' program';
 
 $bannerUrl = CORE_SITE;
-$faqUrl = CORE_SITE.'more.php';
+$faqUrl = CORE_SITE.'play.php';
 
 
 // ABOUT ////////////////////////////////////////////////

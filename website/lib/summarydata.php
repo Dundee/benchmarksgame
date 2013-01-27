@@ -118,7 +118,7 @@ $mark = $mark.' '.SITE_NAME;
 
 $MetaKeywords = '';
 
-$faqUrl = CORE_SITE.'more.php';
+$faqUrl = CORE_SITE.'play.php';
 $bannerUrl = CORE_SITE;
 
 

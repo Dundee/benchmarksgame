@@ -62,7 +62,7 @@ $mark = MarkTime();
 $mark = $mark.' '.SITE_NAME;
 $Title = 'Which programs are best?';
 
-$faqUrl = CORE_SITE.'more.php';
+$faqUrl = CORE_SITE.'play.php';
 $bannerUrl = CORE_SITE;
 
 // DATA ////////////////////////////////////////////////

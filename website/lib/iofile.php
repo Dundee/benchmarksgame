@@ -36,7 +36,7 @@ elseif ($F == 'output'){ $Title = $TestName.' output file'; }
 elseif ($F == 'extra'){ $Title = $TestName.' file'; }
 else { $Title = $TestName; }
 
-$faqUrl = CORE_SITE.'more.php';
+$faqUrl = CORE_SITE.'play.php';
 $bannerUrl = CORE_SITE;
 
 
