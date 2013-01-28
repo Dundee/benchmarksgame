@@ -1,5 +1,6 @@
-<?php /* The Great Computer Language Shootout
-   http://shootout.alioth.debian.org/
+<?php 
+/* The Computer Language Benchmarks Game
+   http://benchmarksgame.alioth.debian.org/
 
    contributed by Peter Baltruschat
 */

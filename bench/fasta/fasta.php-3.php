@@ -1,6 +1,6 @@
 <?php
 /* The Computer Language Benchmarks Game
-   http://shootout.alioth.debian.org/
+   http://benchmarksgame.alioth.debian.org/
 
    contributed by Wing-Chung Leung
    modified by Isaac Gouy

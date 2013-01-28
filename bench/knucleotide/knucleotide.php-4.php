@@ -1,7 +1,7 @@
 <?
 /* 
    The Computer Language Benchmarks Game
-   http://shootout.alioth.debian.org/
+   http://benchmarksgame.alioth.debian.org/
 
    contributed by Damien Bonvillain
    fixed by Isaac Gouy

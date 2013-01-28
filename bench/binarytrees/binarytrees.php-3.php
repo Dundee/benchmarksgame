@@ -1,6 +1,6 @@
 <?php 
 /* The Computer Language Benchmarks Game
-   http://shootout.alioth.debian.org/
+   http://benchmarksgame.alioth.debian.org/
 
    contributed by Peter Baltruschat
    modified by Levi Cameron

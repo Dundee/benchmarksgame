@@ -1,6 +1,6 @@
 <?php 
 /* The Computer Language Benchmarks Game
-   http://shootout.alioth.debian.org/
+   http://benchmarksgame.alioth.debian.org/
 
    contributed by Oleksii Prudkyi
    port from pidigits.lua-5.lua (Mike Pall, Wim Couwenberg)
