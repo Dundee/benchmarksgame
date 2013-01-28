@@ -1,7 +1,7 @@
 <?php
 #
 # The Computer Language Benchmarks Game
-# http://shootout.alioth.debian.org/
+# http://benchmarksgame.alioth.debian.org/
 #
 # reverse complement in PHP
 # contributed by Danny Sauer
