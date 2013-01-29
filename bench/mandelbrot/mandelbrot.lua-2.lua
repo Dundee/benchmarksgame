@@ -1,5 +1,5 @@
--- The Computer Language Shootout
--- http://shootout.alioth.debian.org/
+-- The Computer Language Benchmarks Game
+-- http://benchmarksgame.alioth.debian.org/
 -- contributed by Mike Pall
 
 local width = tonumber(arg and arg[1]) or 100

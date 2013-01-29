@@ -1,5 +1,5 @@
 -- The Computer Language Benchmarks Game
--- http://shootout.alioth.debian.org/
+-- http://benchmarksgame.alioth.debian.org/
 -- contributed by Mike Pall
 -- requires LGMP "A GMP package for Lua 5.1"
 -- with matrix optimization, courtesy of Wim Couwenberg
