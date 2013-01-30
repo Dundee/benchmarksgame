@@ -6,17 +6,17 @@
 <dl>
 
 
-<dt><a href="#measure" name="measure">&nbsp;How programs were measured</a></dt>
+<dt><a href="#measure" name="measure">&nbsp;How programs are measured</a></dt>
 <dd>
 <dl>
 <dt><a href="#process" name="process">The Process</a></dt>
 <dd>
 <ol>
-<li>Each program was run and measured at the smallest input value, program output redirected to a file and compared to expected output. As long as the output matched expected output, the program was then run and measured at the next larger input value until measurements had been made at every input value.</li>
+<li>Each program is run and measured at the smallest input value, program output redirected to a file and compared to expected output. As long as the output matched expected output, the program is then run and measured at the next larger input value until measurements have been made at every input value.</li>
 
-<li>If the program gave the expected output within an arbitrary cutoff time (120 seconds) the program was measured again (5 more times) with output redirected to /dev/null.</li>
+<li>If the program gives the expected output within an arbitrary cutoff time (120 seconds) the program is measured again (5 more times) with output redirected to /dev/null.</li>
 
-<li>If the program didn't give the expected output within an arbitrary timeout (usually one hour) the program was forced to quit. If measurements at a smaller input value had been successful within an arbitrary cutoff time (120 seconds), the program was measured again (5 more times) at that smaller input value, with output redirected to /dev/null.</li>
+<li>If the program doesn't give the expected output within an arbitrary timeout (usually one hour) the program is forced to quit. If measurements at a smaller input value have been successful within an arbitrary cutoff time (120 seconds), the program is measured again (5 more times) at that smaller input value, with output redirected to /dev/null.</li>
 
 <li>The measurements shown on the website are either
 <ul><li>within the arbitrary cutoff - the lowest time and highest memory use from 6 measurements</li>
@@ -26,35 +26,35 @@
 </ol>
 </dd>
 
-<dt><a href="#time" name="time">How did you measure <strong>Time-used?</strong></a></dt>
+<dt><a href="#time" name="time">How do you measure <strong>Time-used?</strong></a></dt>
 <dd>
-<p>Each program was run as a child-process of a Python script using <a href="http://docs.python.org/library/subprocess.html#popen-objects">Popen</a>.</p>
+<p>Each program is run as a child-process of a Python script using <a href="http://docs.python.org/library/subprocess.html#popen-objects">Popen</a>.</p>
 <ul>
-<li><b>CPU&nbsp;secs</b>: The script child-process usr+sys rusage time was taken using <a href="http://docs.python.org/library/os.html?highlight=os.wait3#os.wait3">os.wait3</a><br /></li>
-<li><b>Elapsed&nbsp;secs</b>: The time was taken before forking the child-process and after the child-process exits, using <a href="http://docs.python.org/library/time.html?highlight=time.time#time.time">time.time()</a></li>
+<li><b>CPU&nbsp;secs</b>: The script child-process usr+sys rusage time is taken using <a href="http://docs.python.org/library/os.html?highlight=os.wait3#os.wait3">os.wait3</a><br /></li>
+<li><b>Elapsed&nbsp;secs</b>: The time is taken before forking the child-process and after the child-process exits, using <a href="http://docs.python.org/library/time.html?highlight=time.time#time.time">time.time()</a></li>
 </ul>
 <p><strong>Time measurements include program startup time - see <a href="#java">&darr;&nbsp;What about Java&#174; VM warm-up?</a></strong></p>
 <p><i>On win32 -</i></p>
 <ul>
 <li><i>CPU&nbsp;secs: QueryInformationJobObject(hJob,JobObjectBasicAccountingInformation) <a href="http://msdn.microsoft.com/en-us/library/ms684143(VS.85).aspx">TotalKernelTime+TotalUserTime</a><br /></i></li>
-<li><i>Elapsed&nbsp;secs: The time was taken before forking the child-process and after the child-process exits, using <a href="http://msdn.microsoft.com/en-us/library/ms644904(VS.85).aspx">QueryPerformanceCounter</a></i></li>
+<li><i>Elapsed&nbsp;secs: The time is taken before forking the child-process and after the child-process exits, using <a href="http://msdn.microsoft.com/en-us/library/ms644904(VS.85).aspx">QueryPerformanceCounter</a></i></li>
 </ul>
 </dd>
 
-<dt><a href="#memory" name="memory">How did you measure <strong>Memory-used?</strong></a></dt>
+<dt><a href="#memory" name="memory">How do you measure <strong>Memory-used?</strong></a></dt>
 <dd><p>By sampling GLIBTOP_PROC_MEM_RESIDENT for the program and it's child processes every 0.2 seconds. Obviously those measurements are unlikely to be reliable for programs that run for less than 0.2 seconds.</p>
 <p><i>On win32 - QueryInformationJobObject(hJob,JobObjectExtendedLimitInformation) <a href="http://msdn.microsoft.com/en-us/library/ms684156(VS.85).aspx">PeakJobMemoryUsed</a></i></p>
 </dd>
 
-<dt><a href="#gzbytes" name="gzbytes">How did you measure <strong>Code-used?</strong></a></dt>
-<dd><p>We started with the source-code markup you can see, removed comments, removed duplicate whitespace characters, and then applied minimum GZip compression. The Code-used measurement is the size in bytes of that GZip compressed source-code file.</p>
+<dt><a href="#gzbytes" name="gzbytes">How do you measure <strong>Code-used?</strong></a></dt>
+<dd><p>We start with the source-code markup you can see, remove comments, remove duplicate whitespace characters, and then apply minimum GZip compression. The Code-used measurement is the size in bytes of that GZip compressed source-code file.</p>
 <p>Thanks to Brian Hurt for the idea of using <em>size of compressed source code</em> instead of <em>lines of code</em>.</p>
 <p>(Note: There is some evidence that <a href="http://my.safaribooksonline.com/book/software-engineering-and-development/9780596808310/general-principles-of-searching-for-and-using-evidence/herraiz_hassan_metrics">complexity metrics don't provide any more information than SLoC or LoC</a>.)</p>
 </dd>
 
-<dt><a href="#cpuload" name="cpuload">How did you measure <b>&asymp; CPU Load?</b></a></dt>
-<dd><p>The GTop cpu idle and GTop cpu total were taken before forking the child-process and after the child-process exits, The percentages represent the proportion of cpu not-idle to cpu total for each core.</p>
-<p><i>On win32 - GetSystemTimes <a href="http://msdn.microsoft.com/en-us/library/ms724400(VS.85).aspx">UserTime and IdleTime</a> were taken before forking the child-process and after the child-process exits. The percentage represents the proportion of TotalUserTime to UserTime+IdleTime (because that's like the percentage you'll see in Task Manager).</i></p>
+<dt><a href="#cpuload" name="cpuload">How do you measure <b>&asymp; CPU Load?</b></a></dt>
+<dd><p>The GTop cpu idle and GTop cpu total are taken before forking the child-process and after the child-process exits, The percentages represent the proportion of cpu not-idle to cpu total for each core.</p>
+<p><i>On win32 - GetSystemTimes <a href="http://msdn.microsoft.com/en-us/library/ms724400(VS.85).aspx">UserTime and IdleTime</a> are taken before forking the child-process and after the child-process exits. The percentage represents the proportion of TotalUserTime to UserTime+IdleTime (because that's like the percentage you'll see in Task Manager).</i></p>
 </dd>
 
 
