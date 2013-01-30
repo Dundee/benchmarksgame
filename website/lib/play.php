@@ -17,9 +17,9 @@ $Page->set('PageBody', BLANK);
 
 $Body = & new Template(LIB_PATH);
 $Body->set('Download', DOWNLOAD_PATH);
-$Body->set('Changed', filemtime(LIB_PATH.'more.tpl.php'));
+$Body->set('Changed', filemtime(LIB_PATH.'play.tpl.php'));
 
-$Page->set('PageBody', $Body->fetch('more.tpl.php'));
+$Page->set('PageBody', $Body->fetch('play.tpl.php'));
 
 
 $metaRobots = '<meta name="robots" content="all" /><meta name="revisit" content="10 days" />';

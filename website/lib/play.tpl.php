@@ -12,7 +12,7 @@
 <dt><a href="#process" name="process">The Process</a></dt>
 <dd>
 <ol>
-<li>Each program is run and measured at the smallest input value, program output redirected to a file and compared to expected output. As long as the output matched expected output, the program is then run and measured at the next larger input value until measurements have been made at every input value.</li>
+<li>Each program is run and measured at the smallest input value, program output redirected to a file and compared to expected output. As long as the output matches expected output, the program is then run and measured at the next larger input value until measurements have been made at every input value.</li>
 
 <li>If the program gives the expected output within an arbitrary cutoff time (120 seconds) the program is measured again (5 more times) with output redirected to /dev/null.</li>
 
