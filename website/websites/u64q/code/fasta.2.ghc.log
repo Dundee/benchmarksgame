@@ -1,9 +1,9 @@
 
-Mon, 31 Dec 2012 20:13:19 GMT
+Thu, 31 Jan 2013 00:43:01 GMT
 
 MAKE:
 mv fasta.ghc-2.ghc fasta.ghc-2.hs
-/usr/local/src/ghc-7.6.1/bin/ghc --make -fllvm -O2 -XBangPatterns -threaded -rtsopts -funbox-strict-fields fasta.ghc-2.hs -o fasta.ghc-2.ghc_run
+/usr/local/src/ghc-7.6.2/bin/ghc --make -fllvm -O2 -XBangPatterns -threaded -rtsopts -funbox-strict-fields fasta.ghc-2.hs -o fasta.ghc-2.ghc_run
 [1 of 1] Compiling Main             ( fasta.ghc-2.hs, fasta.ghc-2.o )
 
 fasta.ghc-2.hs:18:14:
@@ -53,7 +53,7 @@ fasta.ghc-2.hs:20:19:
       `void . make ">THREE Homo sapiens frequency" (n * 5) homosapiens'
 make: [fasta.ghc-2.ghc_run] Error 1 (ignored)
 rm fasta.ghc-2.hs
-3.01s to complete and log all make actions
+0.28s to complete and log all make actions
 
 COMMAND LINE:
 ./fasta.ghc-2.ghc_run +RTS -N4 -RTS 250000
