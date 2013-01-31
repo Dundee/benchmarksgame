@@ -1,9 +1,9 @@
 
-Fri, 07 Sep 2012 19:26:37 GMT
+Thu, 31 Jan 2013 08:29:31 GMT
 
 MAKE:
 mv fasta.ghc fasta.hs
-/usr/local/src/ghc-7.6.1/bin/ghc --make -fllvm -O2 -XBangPatterns -rtsopts -funbox-strict-fields fasta.hs -o fasta.ghc_run
+/usr/local/src/ghc-7.6.2/bin/ghc --make -fllvm -O2 -XBangPatterns -rtsopts -funbox-strict-fields fasta.hs -o fasta.ghc_run
 [1 of 1] Compiling Main             ( fasta.hs, fasta.o )
 
 fasta.hs:48:29: Warning:
@@ -27,7 +27,7 @@ fasta.hs:101:38: Warning:
     Deprecated: "Use Data.ByteString.Char8.putStrLn instead. (Functions that rely on ASCII encodings belong in Data.ByteString.Char8)"
 Linking fasta.ghc_run ...
 rm fasta.hs
-2.59s to complete and log all make actions
+2.09s to complete and log all make actions
 
 COMMAND LINE:
 ./fasta.ghc_run  250000

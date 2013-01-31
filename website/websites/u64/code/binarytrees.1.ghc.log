@@ -1,13 +1,13 @@
 
-Fri, 07 Sep 2012 18:57:06 GMT
+Thu, 31 Jan 2013 06:54:54 GMT
 
 MAKE:
 mv binarytrees.ghc binarytrees.hs
-/usr/local/src/ghc-7.6.1/bin/ghc --make -fllvm -O2 -XBangPatterns -rtsopts -funbox-strict-fields binarytrees.hs -o binarytrees.ghc_run
+/usr/local/src/ghc-7.6.2/bin/ghc --make -fllvm -O2 -XBangPatterns -rtsopts -funbox-strict-fields binarytrees.hs -o binarytrees.ghc_run
 [1 of 1] Compiling Main             ( binarytrees.hs, binarytrees.o )
 Linking binarytrees.ghc_run ...
 rm binarytrees.hs
-1.25s to complete and log all make actions
+9.25s to complete and log all make actions
 
 COMMAND LINE:
 ./binarytrees.ghc_run +RTS -K128M -H -RTS 20

@@ -1,9 +1,9 @@
 
-Fri, 07 Sep 2012 19:54:49 GMT
+Thu, 31 Jan 2013 08:57:11 GMT
 
 MAKE:
 mv threadring.ghc threadring.hs
-/usr/local/src/ghc-7.6.1/bin/ghc --make -fllvm -O2 -XBangPatterns -rtsopts -threaded threadring.hs -o threadring.ghc_run
+/usr/local/src/ghc-7.6.2/bin/ghc --make -fllvm -O2 -XBangPatterns -rtsopts -threaded threadring.hs -o threadring.ghc_run
 [1 of 1] Compiling Main             ( threadring.hs, threadring.o )
 
 threadring.hs:16:3: Warning:
@@ -17,7 +17,7 @@ threadring.hs:32:3: Warning:
     Deprecated: "renamed to forkOn"
 Linking threadring.ghc_run ...
 rm threadring.hs
-0.86s to complete and log all make actions
+0.96s to complete and log all make actions
 
 COMMAND LINE:
 ./threadring.ghc_run  50000000
