@@ -1,13 +1,13 @@
 
-Sat, 08 Sep 2012 00:59:10 GMT
+Thu, 31 Jan 2013 04:42:50 GMT
 
 MAKE:
 mv fasta.ghc-4.ghc fasta.ghc-4.hs
-/usr/local/src/ghc-7.6.1/bin/ghc --make -fllvm -O2 -XBangPatterns -threaded -rtsopts -funbox-strict-fields fasta.ghc-4.hs -o fasta.ghc-4.ghc_run
+/usr/local/src/ghc-7.6.2/bin/ghc --make -fllvm -O2 -XBangPatterns -threaded -rtsopts -funbox-strict-fields fasta.ghc-4.hs -o fasta.ghc-4.ghc_run
 [1 of 1] Compiling Main             ( fasta.ghc-4.hs, fasta.ghc-4.o )
 Linking fasta.ghc-4.ghc_run ...
 rm fasta.ghc-4.hs
-1.77s to complete and log all make actions
+1.86s to complete and log all make actions
 
 COMMAND LINE:
 ./fasta.ghc-4.ghc_run +RTS -N4 -RTS 250000

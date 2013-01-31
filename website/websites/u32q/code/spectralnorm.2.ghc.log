@@ -1,13 +1,13 @@
 
-Sat, 08 Sep 2012 01:13:25 GMT
+Thu, 31 Jan 2013 04:54:24 GMT
 
 MAKE:
 mv spectralnorm.ghc-2.ghc spectralnorm.ghc-2.hs
-/usr/local/src/ghc-7.6.1/bin/ghc --make -fllvm -O2 -XBangPatterns -threaded -rtsopts -XMagicHash -fexcess-precision spectralnorm.ghc-2.hs -o spectralnorm.ghc-2.ghc_run
+/usr/local/src/ghc-7.6.2/bin/ghc --make -fllvm -O2 -XBangPatterns -threaded -rtsopts -XMagicHash -fexcess-precision spectralnorm.ghc-2.hs -o spectralnorm.ghc-2.ghc_run
 [1 of 1] Compiling Main             ( spectralnorm.ghc-2.hs, spectralnorm.ghc-2.o )
 Linking spectralnorm.ghc-2.ghc_run ...
 rm spectralnorm.ghc-2.hs
-1.51s to complete and log all make actions
+1.55s to complete and log all make actions
 
 COMMAND LINE:
 ./spectralnorm.ghc-2.ghc_run +RTS -N4 -RTS 5500

@@ -1,13 +1,13 @@
 
-Sat, 08 Sep 2012 01:26:31 GMT
+Thu, 31 Jan 2013 05:02:44 GMT
 
 MAKE:
 mv binarytreesredux.ghc binarytreesredux.hs
-/usr/local/src/ghc-7.6.1/bin/ghc --make -fllvm -O2 -XBangPatterns -rtsopts -funbox-strict-fields binarytreesredux.hs -o binarytreesredux.ghc_run
+/usr/local/src/ghc-7.6.2/bin/ghc --make -fllvm -O2 -XBangPatterns -rtsopts -funbox-strict-fields binarytreesredux.hs -o binarytreesredux.ghc_run
 [1 of 1] Compiling Main             ( binarytreesredux.hs, binarytreesredux.o )
 Linking binarytreesredux.ghc_run ...
 rm binarytreesredux.hs
-1.12s to complete and log all make actions
+1.21s to complete and log all make actions
 
 COMMAND LINE:
 ./binarytreesredux.ghc_run +RTS -H64M -M64M -RTS 20

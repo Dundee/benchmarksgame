@@ -1,13 +1,13 @@
 
-Sat, 08 Sep 2012 01:06:31 GMT
+Thu, 31 Jan 2013 04:47:57 GMT
 
 MAKE:
 mv meteor.ghc-3.ghc meteor.ghc-3.hs
-/usr/local/src/ghc-7.6.1/bin/ghc --make -fllvm -O2 -XBangPatterns -threaded -rtsopts -XScopedTypeVariables -XTypeSynonymInstances -XFlexibleInstances meteor.ghc-3.hs -o meteor.ghc-3.ghc_run
+/usr/local/src/ghc-7.6.2/bin/ghc --make -fllvm -O2 -XBangPatterns -threaded -rtsopts -XScopedTypeVariables -XTypeSynonymInstances -XFlexibleInstances meteor.ghc-3.hs -o meteor.ghc-3.ghc_run
 [1 of 1] Compiling Main             ( meteor.ghc-3.hs, meteor.ghc-3.o )
 Linking meteor.ghc-3.ghc_run ...
 rm meteor.ghc-3.hs
-5.45s to complete and log all make actions
+5.31s to complete and log all make actions
 
 COMMAND LINE:
 ./meteor.ghc-3.ghc_run +RTS -N4 -RTS 2098

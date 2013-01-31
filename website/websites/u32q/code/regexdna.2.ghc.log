@@ -1,13 +1,13 @@
 
-Sat, 08 Sep 2012 01:10:59 GMT
+Thu, 31 Jan 2013 04:52:26 GMT
 
 MAKE:
 mv regexdna.ghc-2.ghc regexdna.ghc-2.hs
-/usr/local/src/ghc-7.6.1/bin/ghc --make -fllvm -O2 -XBangPatterns -threaded -rtsopts  regexdna.ghc-2.hs -o regexdna.ghc-2.ghc_run
+/usr/local/src/ghc-7.6.2/bin/ghc --make -fllvm -O2 -XBangPatterns -threaded -rtsopts  regexdna.ghc-2.hs -o regexdna.ghc-2.ghc_run
 [1 of 1] Compiling Main             ( regexdna.ghc-2.hs, regexdna.ghc-2.o )
 Linking regexdna.ghc-2.ghc_run ...
 rm regexdna.ghc-2.hs
-1.53s to complete and log all make actions
+1.59s to complete and log all make actions
 
 COMMAND LINE:
 ./regexdna.ghc-2.ghc_run +RTS -N4 -H250M -RTS 0 < regexdna-input5000000.txt

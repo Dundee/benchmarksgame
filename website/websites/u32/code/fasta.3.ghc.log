@@ -1,13 +1,13 @@
 
-Sat, 08 Sep 2012 01:45:31 GMT
+Thu, 31 Jan 2013 05:36:15 GMT
 
 MAKE:
 mv fasta.ghc-3.ghc fasta.ghc-3.hs
-/usr/local/src/ghc-7.6.1/bin/ghc --make -fllvm -O2 -XBangPatterns -rtsopts -funbox-strict-fields fasta.ghc-3.hs -o fasta.ghc-3.ghc_run
+/usr/local/src/ghc-7.6.2/bin/ghc --make -fllvm -O2 -XBangPatterns -rtsopts -funbox-strict-fields fasta.ghc-3.hs -o fasta.ghc-3.ghc_run
 [1 of 1] Compiling Main             ( fasta.ghc-3.hs, fasta.ghc-3.o )
 Linking fasta.ghc-3.ghc_run ...
 rm fasta.ghc-3.hs
-1.57s to complete and log all make actions
+1.61s to complete and log all make actions
 
 COMMAND LINE:
 ./fasta.ghc-3.ghc_run  25000000
