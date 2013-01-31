@@ -1,18 +1,49 @@
 
-Thu, 31 Jan 2013 04:15:01 GMT
+Thu, 31 Jan 2013 15:11:04 GMT
 
 MAKE:
 mv chameneosredux.ghc-4.ghc chameneosredux.ghc-4.hs
-/usr/local/src/ghc-7.6.2/bin/ghc --make -fllvm -O2 -XBangPatterns -threaded -rtsopts -XGeneralizedNewtypeDeriving chameneosredux.ghc-4.hs -o chameneosredux.ghc-4.ghc_run
+/usr/local/src/ghc-7.6.2/bin/ghc --make -fllvm -O2 -XBangPatterns -threaded -rtsopts -XCPP -XGeneralizedNewtypeDeriving chameneosredux.ghc-4.hs -o chameneosredux.ghc-4.ghc_run
 [1 of 1] Compiling Main             ( chameneosredux.ghc-4.hs, chameneosredux.ghc-4.o )
 
-chameneosredux.ghc-4.hs:22:2: lexical error at character 'd'
-make: [chameneosredux.ghc-4.ghc_run] Error 1 (ignored)
+chameneosredux.ghc-4.hs:77:21: Warning:
+    In the use of `forkOnIO'
+    (imported from GHC.Conc, but defined in GHC.Conc.Sync):
+    Deprecated: "renamed to forkOn"
+Linking chameneosredux.ghc-4.ghc_run ...
 rm chameneosredux.ghc-4.hs
-0.04s to complete and log all make actions
+7.67s to complete and log all make actions
 
 COMMAND LINE:
-./chameneosredux.ghc-4.ghc_run +RTS -N4 -RTS 60000
+./chameneosredux.ghc-4.ghc_run +RTS -N4 -RTS 6000000
 
-MAKE ERROR 
+PROGRAM OUTPUT:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
+ blue red yellow
+4041658 zero
+3911004 zero
+4047338 zero
+ one two zero zero zero zero zero zero
+
+ blue red yellow red yellow blue red yellow red blue
+1200000 zero
+1200000 zero
+1200000 zero
+1200000 zero
+1200000 zero
+1200000 zero
+1200000 zero
+1200001 zero
+1200000 zero
+1199999 zero
+ one two zero zero zero zero zero zero
 
