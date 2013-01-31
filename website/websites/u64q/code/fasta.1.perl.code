@@ -1,0 +1,100 @@
+<span class="hl slc"># The Computer Language Benchmarks game</span>
+<span class="hl slc"># http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl slc">#</span>
+<span class="hl slc"># contributed by Barry Walsh</span>
+
+<span class="hl slc"># port of fasta.rb #6 </span>
+
+<span class="hl kwa">use</span> strict<span class="hl opt">;</span>
+<span class="hl kwa">use</span> warnings<span class="hl opt">;</span>
+<span class="hl kwa">use</span> feature <span class="hl str">'say'</span><span class="hl opt">;</span>
+
+<span class="hl kwa">use</span> constant IM <span class="hl opt">=&gt;</span> <span class="hl num">139968</span><span class="hl opt">;</span>
+<span class="hl kwa">use</span> constant IA <span class="hl opt">=&gt;</span> <span class="hl num">3877</span><span class="hl opt">;</span>
+<span class="hl kwa">use</span> constant IC <span class="hl opt">=&gt;</span> <span class="hl num">29573</span><span class="hl opt">;</span>
+
+<span class="hl kwc">my</span> <span class="hl kwb">$LAST</span> <span class="hl opt">=</span> <span class="hl num">42</span><span class="hl opt">;</span>
+
+<span class="hl kwc">my</span> <span class="hl kwb">$alu</span> <span class="hl opt">=</span>
+    <span class="hl str">'GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG'</span> <span class="hl opt">.</span>
+    <span class="hl str">'GAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGAGA'</span> <span class="hl opt">.</span>
+    <span class="hl str">'CCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAAT'</span> <span class="hl opt">.</span>
+    <span class="hl str">'ACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAATCCCA'</span> <span class="hl opt">.</span>
+    <span class="hl str">'GCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTGAACCCGGG'</span> <span class="hl opt">.</span>
+    <span class="hl str">'AGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCC'</span> <span class="hl opt">.</span>
+    <span class="hl str">'AGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAA'</span><span class="hl opt">;</span>
+
+<span class="hl kwc">my</span> <span class="hl kwb">$iub</span> <span class="hl opt">= [</span>
+    <span class="hl opt">[</span> <span class="hl str">'a'</span><span class="hl opt">,</span> <span class="hl num">0.27</span> <span class="hl opt">],</span>
+    <span class="hl opt">[</span> <span class="hl str">'c'</span><span class="hl opt">,</span> <span class="hl num">0.12</span> <span class="hl opt">],</span>
+    <span class="hl opt">[</span> <span class="hl str">'g'</span><span class="hl opt">,</span> <span class="hl num">0.12</span> <span class="hl opt">],</span>
+    <span class="hl opt">[</span> <span class="hl str">'t'</span><span class="hl opt">,</span> <span class="hl num">0.27</span> <span class="hl opt">],</span>
+    <span class="hl opt">[</span> <span class="hl str">'B'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">],</span>
+    <span class="hl opt">[</span> <span class="hl str">'D'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">],</span>
+    <span class="hl opt">[</span> <span class="hl str">'H'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">],</span>
+    <span class="hl opt">[</span> <span class="hl str">'K'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">],</span>
+    <span class="hl opt">[</span> <span class="hl str">'M'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">],</span>
+    <span class="hl opt">[</span> <span class="hl str">'N'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">],</span>
+    <span class="hl opt">[</span> <span class="hl str">'R'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">],</span>
+    <span class="hl opt">[</span> <span class="hl str">'S'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">],</span>
+    <span class="hl opt">[</span> <span class="hl str">'V'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">],</span>
+    <span class="hl opt">[</span> <span class="hl str">'W'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">],</span>
+    <span class="hl opt">[</span> <span class="hl str">'Y'</span><span class="hl opt">,</span> <span class="hl num">0.02</span> <span class="hl opt">]</span>
+<span class="hl opt">];</span>
+
+<span class="hl kwc">my</span> <span class="hl kwb">$homosapiens</span> <span class="hl opt">= [</span>
+    <span class="hl opt">[</span> <span class="hl str">'a'</span><span class="hl opt">,</span> <span class="hl num">0.3029549426680</span> <span class="hl opt">],</span>
+    <span class="hl opt">[</span> <span class="hl str">'c'</span><span class="hl opt">,</span> <span class="hl num">0.1979883004921</span> <span class="hl opt">],</span>
+    <span class="hl opt">[</span> <span class="hl str">'g'</span><span class="hl opt">,</span> <span class="hl num">0.1975473066391</span> <span class="hl opt">],</span>
+    <span class="hl opt">[</span> <span class="hl str">'t'</span><span class="hl opt">,</span> <span class="hl num">0.3015094502008</span> <span class="hl opt">]</span>
+<span class="hl opt">];</span>
+
+<span class="hl kwa">sub</span> make_repeat_fasta <span class="hl opt">{</span>
+    <span class="hl kwc">my</span> <span class="hl opt">(</span><span class="hl kwb">$src</span><span class="hl opt">,</span> <span class="hl kwb">$n</span><span class="hl opt">) =</span> <span class="hl kwb">&#64;_</span><span class="hl opt">;</span>
+    <span class="hl kwc">my</span> <span class="hl kwb">$width</span> <span class="hl opt">=</span> <span class="hl kwd">qr/(.{1,60})/</span><span class="hl opt">;</span>
+    <span class="hl kwc">my</span> <span class="hl kwb">$l</span>     <span class="hl opt">=</span> <span class="hl kwc">length</span> <span class="hl kwb">$src</span><span class="hl opt">;</span>
+    <span class="hl kwc">my</span> <span class="hl kwb">$s</span>     <span class="hl opt">=</span> <span class="hl kwb">$src</span> x <span class="hl opt">((</span><span class="hl kwb">$n</span> <span class="hl opt">/</span> <span class="hl kwb">$l</span><span class="hl opt">) +</span> <span class="hl num">1</span><span class="hl opt">);</span>
+    <span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$s</span><span class="hl opt">,</span> <span class="hl kwb">$n</span><span class="hl opt">,</span> <span class="hl kwb">$l</span><span class="hl opt">) =</span> <span class="hl str">''</span><span class="hl opt">;</span>
+
+    <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl kwb">$s</span> <span class="hl opt">=~</span> <span class="hl kwd">m/$width/g</span><span class="hl opt">) {</span> <span class="hl kwc">say</span> <span class="hl kwb">$1</span> <span class="hl opt">}</span>
+<span class="hl slc">#   say for unpack '(a60)*', $s;   # slower than above over larger strings</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">sub</span> make_random_fasta <span class="hl opt">{</span>
+    <span class="hl kwc">my</span> <span class="hl opt">(</span><span class="hl kwb">$table</span><span class="hl opt">,</span> <span class="hl kwb">$n</span><span class="hl opt">) =</span> <span class="hl kwb">&#64;_</span><span class="hl opt">;</span>
+    <span class="hl kwc">my</span> <span class="hl kwb">$rand</span>   <span class="hl opt">=</span> <span class="hl kwc">undef</span><span class="hl opt">;</span>
+    <span class="hl kwc">my</span> <span class="hl kwb">$width</span>  <span class="hl opt">=</span> <span class="hl num">60</span><span class="hl opt">;</span>
+    <span class="hl kwc">my</span> <span class="hl kwb">$prob</span>   <span class="hl opt">=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+
+    <span class="hl kwb">$_</span><span class="hl opt">-&gt;[</span><span class="hl num">1</span><span class="hl opt">] = (</span><span class="hl kwb">$prob</span> <span class="hl opt">+=</span> <span class="hl kwb">$_</span><span class="hl opt">-&gt;[</span><span class="hl num">1</span><span class="hl opt">])</span> <span class="hl kwa">for</span> &#64;<span class="hl kwb">$table</span><span class="hl opt">;</span>
+
+    <span class="hl kwc">my</span> <span class="hl kwb">$collector</span> <span class="hl opt">=</span> <span class="hl str">'$rand = ($LAST = ($LAST * IA + IC) % IM) / IM;'</span><span class="hl opt">;</span>
+    <span class="hl kwb">$collector</span> <span class="hl opt">.=</span> <span class="hl str">&quot;print('$_-&gt;[0]') &amp;&amp; next if $_-&gt;[1] &gt; \$rand;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> <span class="hl kwa">for</span> &#64;<span class="hl kwb">$table</span><span class="hl opt">;</span>
+
+    <span class="hl kwc">my</span> <span class="hl kwb">$code</span> <span class="hl opt">=</span> <span class="hl kwc">q</span><span class="hl opt">{</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">..(</span><span class="hl kwb">$n</span> <span class="hl opt">/</span> <span class="hl kwb">$width</span><span class="hl opt">)) {</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">..</span><span class="hl kwb">$width</span><span class="hl opt">) { !</span>C<span class="hl opt">! }</span>
+            <span class="hl kwc">print</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwb">$n</span> <span class="hl opt">%</span> <span class="hl kwb">$width</span> <span class="hl opt">!=</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl kwb">$n</span> <span class="hl opt">%</span> <span class="hl kwb">$width</span><span class="hl opt">) { !</span>C<span class="hl opt">! }</span>
+            <span class="hl kwc">print</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">};</span>
+    <span class="hl kwb">$code</span> <span class="hl opt">=~</span> <span class="hl kwd">s/!C!/$collector/g</span><span class="hl opt">;</span>
+    <span class="hl kwc">eval</span> <span class="hl kwb">$code</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+
+
+<span class="hl kwc">my</span> <span class="hl kwb">$n</span> <span class="hl opt">=</span> <span class="hl kwb">$ARGV</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] ||</span> <span class="hl num">27</span><span class="hl opt">;</span>
+
+<span class="hl kwc">say</span> <span class="hl str">&quot;&gt;ONE Homo sapiens alu&quot;</span><span class="hl opt">;</span>
+make_repeat_fasta<span class="hl opt">(</span><span class="hl kwb">$alu</span><span class="hl opt">,</span> <span class="hl kwb">$n</span><span class="hl opt">*</span><span class="hl num">2</span><span class="hl opt">);</span>
+
+<span class="hl kwc">say</span> <span class="hl str">&quot;&gt;TWO IUB ambiguity codes&quot;</span><span class="hl opt">;</span>
+make_random_fasta<span class="hl opt">(</span><span class="hl kwb">$iub</span><span class="hl opt">,</span> <span class="hl kwb">$n</span><span class="hl opt">*</span><span class="hl num">3</span><span class="hl opt">);</span>
+
+<span class="hl kwc">say</span> <span class="hl str">&quot;&gt;THREE Homo sapiens frequency&quot;</span><span class="hl opt">;</span>
+make_random_fasta<span class="hl opt">(</span><span class="hl kwb">$homosapiens</span><span class="hl opt">,</span> <span class="hl kwb">$n</span><span class="hl opt">*</span><span class="hl num">5</span><span class="hl opt">);</span>
+
