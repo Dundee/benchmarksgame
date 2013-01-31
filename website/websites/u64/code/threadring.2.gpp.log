@@ -1,17 +1,14 @@
 
-Sat, 12 Jan 2013 11:52:03 GMT
+Thu, 31 Jan 2013 23:22:19 GMT
 
 MAKE:
 /usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native -pthread  threadring.gpp-2.c++ -o threadring.gpp-2.c++.o &&  \
-        /usr/bin/g++ threadring.gpp-2.c++.o -o threadring.gpp-2.gpp_run -lboost_system -lpthread 
-/usr/bin/ld: cannot find -lboost_system
-collect2: error: ld returned 1 exit status
-make: [threadring.gpp-2.gpp_run] Error 1 (ignored)
+        /usr/bin/g++ threadring.gpp-2.c++.o -o threadring.gpp-2.gpp_run -lpthread 
 rm threadring.gpp-2.c++
-0.10s to complete and log all make actions
+0.12s to complete and log all make actions
 
 COMMAND LINE:
-./threadring.gpp-2.gpp_run 500000
+./threadring.gpp-2.gpp_run 50000000
 
-MAKE ERROR 
-
+PROGRAM OUTPUT:
+292

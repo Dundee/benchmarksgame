@@ -1,14 +1,14 @@
 <span class="hl com">/*</span>
 <span class="hl com"> * The Computer Language Benchmarks Game</span>
-<span class="hl com"> * http://shootout.alioth.debian.org/</span>
-<span class="hl com"> * Contributed by Premysl Hruby</span>
-<span class="hl com"> * convert to C++ by The Anh Tran</span>
+<span class="hl com"> * http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"> * Contributed by Premysl Hruby</span>
+<span class="hl com"> * convert to C++ by The Anh Tran</span>
 <span class="hl com"> */</span>
 
-<span class="hl ppc">#include &lt;pthread.h&gt;</span>
-<span class="hl ppc">#include &lt;sched.h&gt;</span>
+<span class="hl ppc">#include &lt;pthread.h&gt;</span>
+<span class="hl ppc">#include &lt;sched.h&gt;</span>
 <span class="hl ppc">#include &lt;cstdio&gt;</span>
-<span class="hl ppc">#include &lt;cstdlib&gt;</span>
+<span class="hl ppc">#include &lt;cstdlib&gt;</span>
 
 <span class="hl kwc">typedef</span> <span class="hl kwb">unsigned int</span> uint<span class="hl opt">;</span>
 
@@ -64,22 +64,22 @@ pthread_t         threadid<span class="hl opt">[</span>NUM_THREADS<span class="h
 
    <span class="hl kwa">for</span> <span class="hl opt">(</span>uint i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> NUM_THREADS<span class="hl opt">;</span> i<span class="hl opt">++)</span> 
    <span class="hl opt">{</span>
-      <span class="hl slc">// init mutex objects</span>
+      <span class="hl slc">// init mutex objects</span>
       <span class="hl kwd">pthread_mutex_init</span><span class="hl opt">( &amp;(</span>mutex<span class="hl opt">[</span>i<span class="hl opt">]),</span> <span class="hl num">0</span><span class="hl opt">);</span>
       <span class="hl kwd">pthread_mutex_lock</span><span class="hl opt">( &amp;(</span>mutex<span class="hl opt">[</span>i<span class="hl opt">]) );</span>
 
-      <span class="hl slc">// manual set stack space &amp; stack size for each thread</span>
-      <span class="hl slc">// to reduce memory usage</span>
+      <span class="hl slc">// manual set stack space &amp; stack size for each thread</span>
+      <span class="hl slc">// to reduce memory usage</span>
       <span class="hl kwd">pthread_attr_setstack</span><span class="hl opt">( &amp;</span>stack_attr<span class="hl opt">, &amp;(</span>stacks<span class="hl opt">[</span>i<span class="hl opt">]),</span> STACK_SIZE <span class="hl opt">);</span>
 
-      <span class="hl slc">// create thread using specified stackspace</span>
+      <span class="hl slc">// create thread using specified stackspace</span>
       <span class="hl kwd">pthread_create</span><span class="hl opt">( &amp;(</span>threadid<span class="hl opt">[</span>i<span class="hl opt">]), &amp;</span>stack_attr<span class="hl opt">, &amp;</span>thread_func<span class="hl opt">,</span> <span class="hl kwa">reinterpret_cast</span><span class="hl opt">&lt;</span><span class="hl kwb">void</span><span class="hl opt">*&gt;(</span>i<span class="hl opt">) );</span>
    <span class="hl opt">}</span>
 
-   <span class="hl slc">// start game</span>
+   <span class="hl slc">// start game</span>
    <span class="hl kwd">pthread_mutex_unlock</span><span class="hl opt">( &amp;(</span>mutex<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]) );</span>
 
-   <span class="hl slc">// wait for result</span>
+   <span class="hl slc">// wait for result</span>
    <span class="hl kwd">pthread_join</span><span class="hl opt">(</span> threadid<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">],</span> <span class="hl num">0</span> <span class="hl opt">);</span>
 
    <span class="hl kwa">return</span> <span class="hl num">1</span><span class="hl opt">;</span>

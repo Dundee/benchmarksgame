@@ -1,7 +1,8 @@
 <span class="hl slc">// The Computer Language Benchmarks Game</span>
-<span class="hl slc">// http://shootout.alioth.debian.org/</span>
+<span class="hl slc">// http://benchmarksgame.alioth.debian.org/</span>
 <span class="hl slc">// contributed by Ben St. John</span>
 <span class="hl slc">// some ideas taken from Kevin Barnes' implementation</span>
+
 <span class="hl com">/* A few key optimizations:</span>
 <span class="hl com">- pre-calcing of all possible orientations of each piece</span>
 <span class="hl com">- pre-calcing of which orientations are possible in each board position</span>
@@ -18,10 +19,10 @@
 <span class="hl com">I'm tempted to get rid of string, and maybe use cstdio.</span>
 <span class="hl com">*/</span>
 
-<span class="hl ppc">#include &lt;cstdio&gt;</span>
-<span class="hl ppc">#include &lt;cstdlib&gt;</span>
-<span class="hl ppc">#include &lt;iostream&gt;</span>
-<span class="hl ppc">#include &lt;string&gt;</span>
+<span class="hl ppc">#include &lt;cstdio&gt;</span>
+<span class="hl ppc">#include &lt;cstdlib&gt;</span>
+<span class="hl ppc">#include &lt;iostream&gt;</span>
+<span class="hl ppc">#include &lt;string&gt;</span>
 <span class="hl ppc">#include &lt;memory.h&gt;</span>
 
 <span class="hl kwa">using namespace</span> std<span class="hl opt">;</span>
