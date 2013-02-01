@@ -1,7 +1,7 @@
 #lang racket/base
 
 ;;   The Computer Language Shootout
-;;   http://shootout.alioth.debian.org/
+;;   http://benchmarksgame.alioth.debian.org/
 (require racket/future racket/require (for-syntax racket/base) racket/port
          racket/place
          (filtered-in (λ (name) (regexp-replace #rx"unsafe-" name ""))
