@@ -88,7 +88,7 @@ if ($Sort=='fullcpu'){
 ?>
 
 
-<h2><a href="#chart" name="chart">&nbsp;<?=$TestName;?>&nbsp;<strong>benchmark</strong></a>&nbsp;<a href="<?=CORE_SITE;?>help.php#inputvalue"><?=$NString;?></a></h2>
+<h2><a href="#chart" name="chart">&nbsp;<?=$TestName;?>&nbsp;<strong>benchmark</strong></a>&nbsp;<a href="<?=CORE_SITE;?>play.php#inputvalue"><?=$NString;?></a></h2>
 
 <p>Each chart bar shows <?=$Chart_intro_1;?>, one <a href="#about" title="Read about the <?=$TestName;?> benchmark">&darr;&nbsp;<b><?=$TestName;?></b></a> <?=$Chart_intro_2;?>.</p>
 
@@ -120,11 +120,11 @@ echo $GZBYTES_sort_td;
 <tr>
 <th>&nbsp;&nbsp;&#215;&nbsp;&nbsp;</th>
 <th>Program&nbsp;Source&nbsp;Code</th>
-<th><a href="<?=CORE_SITE;?>help.php#time" title="? Help">CPU&nbsp;secs</a></th>
-<th><a href="<?=CORE_SITE;?>help.php#time" title="? Help">Elapsed&nbsp;secs</a></th>
-<th><a href="<?=CORE_SITE;?>help.php#memory" title="? Help">Memory&nbsp;KB</a></th>
-<th><a href="<?=CORE_SITE;?>help.php#gzbytes" title="? Help">Code&nbsp;B</a></th>
-<th><a href="<?=CORE_SITE;?>help.php#cpuloadpercent" title="? Help">&asymp;&nbsp;CPU&nbsp;Load</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#time" title="? Help">CPU&nbsp;secs</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#time" title="? Help">Elapsed&nbsp;secs</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#memory" title="? Help">Memory&nbsp;KB</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#gzbytes" title="? Help">Code&nbsp;B</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#cpuloadpercent" title="? Help">&asymp;&nbsp;CPU&nbsp;Load</a></th>
 </tr>
 
 <?
@@ -234,7 +234,7 @@ foreach($Langs as $k => $v){
 
 <?
 if (sizeof($Special)>0){ 
-   printf('<tr><th colspan="7"><a href="%shelp.php#alternative" name="alt" title="? Help">"interesting alternative" programs</a></th></tr>', CORE_SITE);
+   printf('<tr><th colspan="7"><a href="%splay.php#alternative" name="alt" title="? Help">"interesting alternative" programs</a></th></tr>', CORE_SITE);
 
    foreach($Special as $d){
       $k = $d[DATA_LANG];

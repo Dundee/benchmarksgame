@@ -151,9 +151,9 @@ $ExplanatoryHeader = '&nbsp;<strong>'.$LangName.'</strong>&nbsp;<b>used</b> what
 
 <tr>
 <th>Benchmark</th>
-<th><a href="<?=CORE_SITE;?>more.php#time" title="? More">Time</a></th>
-<th><a href="<?=CORE_SITE;?>more.php#memory" title="? More">Memory</a></th>
-<th><a href="<?=CORE_SITE;?>more.php#gzbytes" title="? More">Code</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#time" title="? More">Time</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#memory" title="? More">Memory</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#gzbytes" title="? More">Code</a></th>
 </tr>
 
 
@@ -193,7 +193,7 @@ foreach($sorted as $k => $v){
 <tr><th colspan="8"><?=$ExplanatoryHeader;?></th></tr>
 
 <tr>
-<th><a href="<?=CORE_SITE;?>more.php#time" title="? More">Time-used</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#time" title="? More">Time-used</a></th>
 <th>&nbsp;|-</th>
 <th>&nbsp;|---</th>
 <th>&nbsp;25%</th>
@@ -230,11 +230,11 @@ if ($hasMismatches){
 <table>
 <tr>
 <th>Program&nbsp;Source&nbsp;Code</th>
-<th><a href="<?=CORE_SITE;?>more.php#time" title="? More">CPU&nbsp;secs</a></th>
-<th><a href="<?=CORE_SITE;?>more.php#time" title="? More">Elapsed&nbsp;secs</a></th>
-<th><a href="<?=CORE_SITE;?>more.php#memory" title="? More">Memory&nbsp;KB</a></th>
-<th><a href="<?=CORE_SITE;?>more.php#gzbytes" title="? More">Code&nbsp;B</a></th>
-<th><a href="<?=CORE_SITE;?>more.php#cpuloadpercent" title="? More">&asymp;&nbsp;CPU&nbsp;Load</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#time" title="? More">CPU&nbsp;secs</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#time" title="? More">Elapsed&nbsp;secs</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#memory" title="? More">Memory&nbsp;KB</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#gzbytes" title="? More">Code&nbsp;B</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#cpuloadpercent" title="? More">&asymp;&nbsp;CPU&nbsp;Load</a></th>
 </tr>
 
 <?
