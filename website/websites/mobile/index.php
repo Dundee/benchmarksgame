@@ -32,7 +32,6 @@ h1 { font-weight: bold; font-size: smaller; }
 <li><a href="./ats.php" title="Compare ATS and C++ elapsed times">ATS</a></li>
 <li><a href="./c.php" title="Compare C and C++ elapsed times">C GNU</a></li>
 <li><a href="./compare.php?lang=cint&amp;lang2=gcc" title="Compare interpreted and compiled C elapsed times">CINT</a></li>
-<li><a href="./clean.php" title="Compare Clean and C++ elapsed times">Clean</a></li>
 <li><a href="./compare.php?lang=clojure" title="Compare Clojure and Java elapsed times">Clojure</a></li>
 <li><a href="./csharp.php" title="Compare C# and Java elapsed times">C# Mono</a></li>
 <li><a href="./cpp.php" title="Compare C++ and C elapsed times">C++ GNU</a></li>
@@ -46,7 +45,6 @@ h1 { font-weight: bold; font-size: smaller; }
 <li><a href="./compare.php?lang=v8&amp;lang2=java" title="Compare JavaScript and Java elapsed times">JavaScript V8</a></li>
 <li><a href="./lisp.php" title="Compare SBCL Lisp and Java elapsed times">Lisp SBCL</a></li>
 <li><a href="./compare.php?lang=lua&amp;lang2=v8" title="Compare Lua and JavaScript elapsed times">Lua</a></li>
-<li><a href="./oz.php" title="Compare Mozart/Oz and interpreted Java elapsed times">Mozart/Oz</a></li>
 <li><a href="./ocaml.php" title="Compare OCaml and C++ elapsed times">OCaml</a></li>
 <li><a href="./pascal.php" title="Compare Pascal and C++ elapsed times">Free Pascal</a></li>
 <li><a href="./compare.php?lang=perl&amp;lang2=yarv" title="Compare Perl and Ruby 1.9 elapsed times">Perl</a></li>
