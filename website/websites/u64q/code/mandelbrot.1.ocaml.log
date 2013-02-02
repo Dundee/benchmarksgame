@@ -1,11 +1,11 @@
 
-Wed, 24 Oct 2012 21:09:51 GMT
+Sat, 02 Feb 2013 22:54:17 GMT
 
 MAKE:
 mv mandelbrot.ocaml mandelbrot.ml
 /usr/local/bin/ocamlopt -noassert -unsafe -fno-PIC -nodynlink -inline 100 unix.cmxa mandelbrot.ml -o mandelbrot.ocaml_run
 rm mandelbrot.ml
-0.25s to complete and log all make actions
+0.27s to complete and log all make actions
 
 COMMAND LINE:
 ./mandelbrot.ocaml_run 16000
