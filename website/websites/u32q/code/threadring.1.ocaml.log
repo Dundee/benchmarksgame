@@ -1,18 +1,14 @@
 
-Sun, 28 Oct 2012 07:01:57 GMT
+Sun, 03 Feb 2013 03:29:09 GMT
 
 MAKE:
 mv threadring.ocaml threadring.ml
 /usr/local/bin/ocamlopt -noassert -unsafe -nodynlink -inline 100 -thread unix.cmxa threads.cmxa threadring.ml -o threadring.ocaml_run
 rm threadring.ml
-0.45s to complete and log all make actions
+0.22s to complete and log all make actions
 
 COMMAND LINE:
-./threadring.ocaml_run 500000
-
-PROGRAM FAILED 
-
+./threadring.ocaml_run 50000000
 
 PROGRAM OUTPUT:
-
-Fatal error: exception Sys_error("Thread.create: Resource temporarily unavailable")
+292
