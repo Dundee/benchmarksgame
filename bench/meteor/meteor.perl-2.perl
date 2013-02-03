@@ -1,5 +1,5 @@
 # The Computer Language Benchmarks Game
-# http://shootout.alioth.debian.org/
+# http://benchmarksgame.alioth.debian.org/
 
 # contributed by Daniel Green, 2010-04-30
 # based on python 3 #3

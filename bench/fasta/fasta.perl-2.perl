@@ -1,7 +1,5 @@
-#!/usr/bin/perl
-
-# The Great Computer Language Shootout
-# http://shootout.alioth.debian.org/
+# The Computer Language Benchmarks game
+# http://benchmarksgame.alioth.debian.org/
 #
 # contributed by David Pyke
 # tweaked by Danny Sauer

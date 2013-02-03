@@ -1,5 +1,5 @@
 # The Computer Language Benchmarks Game
-# http://shootout.alioth.debian.org/
+# http://benchmarksgame.alioth.debian.org/
 #
 # Contributed by Bradford Powell
 # Fixed slow print substr-solution, by Kjetil Skotheim

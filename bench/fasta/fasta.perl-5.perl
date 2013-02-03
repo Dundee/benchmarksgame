@@ -1,5 +1,5 @@
 # The Computer Language Benchmarks game
-# http://shootout.alioth.debian.org/
+# http://benchmarksgame.alioth.debian.org/
 #
 # contributed by David Pyke
 # tweaked by Danny Sauer

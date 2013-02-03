@@ -1,5 +1,5 @@
 # The Computer Language Benchmarks Game
-#   http://shootout.alioth.debian.org/
+# http://benchmarksgame.alioth.debian.org/
 #  contributed by Peter Corlett 
 
 # This is really more a classic fork() and Unix IPC implementation, but it

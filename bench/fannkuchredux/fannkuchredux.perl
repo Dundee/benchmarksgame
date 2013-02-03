@@ -1,5 +1,5 @@
 # The Computer Language Benchmarks Game
-# http://shootout.alioth.debian.org/
+# http://benchmarksgame.alioth.debian.org/
 # initial fannkuch port from C by Steve Clark
 #   rewrite by Kalev Soikonen
 #   modified by Kuang-che Wu

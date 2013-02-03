@@ -1,5 +1,5 @@
-# The Computer Language Shootout
-# http://shootout.alioth.debian.org/
+# The Computer Language Benchmarks Game
+# http://benchmarksgame.alioth.debian.org/
 #
 # contributed by Christoph Bauer
 # converted into Perl by Márton Papp

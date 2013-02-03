@@ -1,5 +1,5 @@
 # The Computer Language Benchmarks Game
-#   http://shootout.alioth.debian.org/
+# http://benchmarksgame.alioth.debian.org/
 #
 #   contributed by Robert Bradshaw
 #   modified by Ruud H.G.van Tol

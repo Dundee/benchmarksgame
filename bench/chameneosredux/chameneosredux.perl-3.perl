@@ -1,5 +1,5 @@
 # The Computer Language Benchmarks Game
-# http://shootout.alioth.debian.org/
+# http://benchmarksgame.alioth.debian.org/
 # contributed by Jonathan DePeri 2010/5
 # based on an earlier version by Jesse Millikan
 # uses Perl interpreter threads with pthreads-like cond_wait and cond_signal

@@ -1,5 +1,5 @@
 # The Computer Language Shootout
-# http://shootout.alioth.debian.org/
+# http://benchmarksgame.alioth.debian.org/
 # implemented by Greg Buchholz
 # streamlined by Kalev Soikonen
 

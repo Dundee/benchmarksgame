@@ -1,5 +1,5 @@
 # The Computer Language Benchmarks Game
-# http://shootout.alioth.debian.org/
+# http://benchmarksgame.alioth.debian.org/
 # contributed by Danny Sauer
 # completely rewritten and cleaned up for speed and fun by Mirco Wahab
 # improved STDIN read, regex clean up by Jake Berner
