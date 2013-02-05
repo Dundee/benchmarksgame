@@ -1,0 +1,52 @@
+<span class="hl slc"># The Computer Language Benchmarks Game</span>
+<span class="hl slc"># http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl slc">#</span>
+<span class="hl slc">#   contributed by Robert Bradshaw</span>
+<span class="hl slc">#      modified by Ruud H.G.van Tol</span>
+<span class="hl slc">#      modified by Emanuele Zeppieri</span>
+
+<span class="hl kwa">use</span> strict<span class="hl opt">;</span>
+
+<span class="hl kwa">use</span> Math<span class="hl opt">::</span>BigInt lib <span class="hl opt">=&gt;</span> <span class="hl str">'GMP'</span><span class="hl opt">;</span>
+
+<span class="hl kwc">die</span> <span class="hl str">'Math::BigInt::GMP missing!'</span>
+    <span class="hl kwa">if</span> Math<span class="hl opt">::</span>BigInt<span class="hl opt">-&gt;</span><span class="hl kwd">config</span><span class="hl opt">-&gt;{</span>lib<span class="hl opt">}</span> <span class="hl kwc">ne</span> <span class="hl str">'Math::BigInt::GMP'</span><span class="hl opt">;</span>
+
+<span class="hl kwc">my</span> <span class="hl kwb">$z0</span> <span class="hl opt">=</span> Math<span class="hl opt">::</span>BigInt<span class="hl opt">-&gt;</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">);</span>
+<span class="hl kwc">my</span> <span class="hl kwb">$z1</span> <span class="hl opt">=</span> Math<span class="hl opt">::</span>BigInt<span class="hl opt">-&gt;</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
+<span class="hl kwc">my</span> <span class="hl kwb">$z2</span> <span class="hl opt">=</span> Math<span class="hl opt">::</span>BigInt<span class="hl opt">-&gt;</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">);</span>
+
+<span class="hl kwa">sub</span> extract_digit <span class="hl opt">{</span> <span class="hl kwa">return</span> <span class="hl kwc">scalar</span><span class="hl opt">( (</span><span class="hl kwb">$z0</span> <span class="hl opt">*</span> <span class="hl kwb">$_</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] +</span> <span class="hl kwb">$z1</span><span class="hl opt">) /</span> <span class="hl kwb">$z2</span> <span class="hl opt">) }</span>
+
+<span class="hl kwa">sub</span> compose <span class="hl opt">{</span>
+    <span class="hl kwa">if</span> <span class="hl opt">(</span> <span class="hl kwc">defined</span> <span class="hl kwb">$_</span><span class="hl opt">[</span><span class="hl num">3</span><span class="hl opt">] ) {</span>
+        <span class="hl kwb">$z1</span><span class="hl opt">-&gt;</span><span class="hl kwd">bmul</span><span class="hl opt">(</span> <span class="hl kwb">$_</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] )-&gt;</span><span class="hl kwd">badd</span><span class="hl opt">(</span> <span class="hl kwb">$_</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] *</span> <span class="hl kwb">$z2</span> <span class="hl opt">)</span>
+    <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+        <span class="hl kwb">$z1</span><span class="hl opt">-&gt;</span><span class="hl kwd">bmul</span><span class="hl opt">(</span> <span class="hl kwb">$_</span><span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">] )-&gt;</span><span class="hl kwd">badd</span><span class="hl opt">(</span> <span class="hl kwb">$_</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] *</span> <span class="hl kwb">$z0</span> <span class="hl opt">)</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwb">$z0</span><span class="hl opt">-&gt;</span><span class="hl kwd">bmul</span><span class="hl opt">(</span> <span class="hl kwb">$_</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] );</span>
+    <span class="hl kwb">$z2</span><span class="hl opt">-&gt;</span><span class="hl kwd">bmul</span><span class="hl opt">(</span> <span class="hl kwb">$_</span><span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">] );</span>
+    <span class="hl kwa">return</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwc">my</span> <span class="hl kwb">$n</span> <span class="hl opt">=</span> <span class="hl kwb">$ARGV</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">];</span>
+<span class="hl opt">($,, $</span>\<span class="hl opt">) = (</span><span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">);</span>
+<span class="hl kwc">my</span> <span class="hl opt">(</span><span class="hl kwb">$i</span><span class="hl opt">,</span> <span class="hl kwb">$s</span><span class="hl opt">,</span> <span class="hl kwb">$d</span><span class="hl opt">);</span> <span class="hl kwc">my</span> <span class="hl kwb">$k</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+<span class="hl slc"># main loop</span>
+<span class="hl kwa">for</span> <span class="hl kwb">$i</span> <span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">..</span><span class="hl kwb">$n</span><span class="hl opt">) {</span>
+    <span class="hl kwa">while</span> <span class="hl opt">(</span>
+        <span class="hl kwb">$z0</span><span class="hl opt">-&gt;</span><span class="hl kwd">bcmp</span><span class="hl opt">(</span><span class="hl kwb">$z2</span><span class="hl opt">) ==</span> <span class="hl num">1</span> <span class="hl opt">|| (</span> <span class="hl kwb">$d</span> <span class="hl opt">=</span> extract_digit<span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">) ) !=</span> extract_digit<span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">)</span>
+    <span class="hl opt">) {</span>
+        <span class="hl slc"># y not safe</span>
+        <span class="hl kwb">$k</span><span class="hl opt">++;</span> compose<span class="hl opt">(</span><span class="hl kwb">$k</span><span class="hl opt">,</span> <span class="hl num">4</span><span class="hl opt">*</span><span class="hl kwb">$k</span><span class="hl opt">+</span><span class="hl num">2</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">*</span><span class="hl kwb">$k</span><span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+    <span class="hl opt">}</span>
+    compose<span class="hl opt">(</span><span class="hl num">10</span><span class="hl opt">, -</span><span class="hl num">10</span><span class="hl opt">*</span><span class="hl kwb">$d</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">);</span>
+    <span class="hl kwb">$s</span> <span class="hl opt">.=</span> <span class="hl kwb">$d</span><span class="hl opt">;</span>
+
+    <span class="hl kwa">unless</span> <span class="hl opt">(</span> <span class="hl kwb">$i</span> <span class="hl opt">%</span> <span class="hl num">10</span> <span class="hl opt">) {</span> <span class="hl kwc">print</span> <span class="hl kwb">$s</span><span class="hl opt">,</span> <span class="hl str">&quot;:$i&quot;</span><span class="hl opt">;</span> <span class="hl kwc">undef</span> <span class="hl kwb">$s</span> <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">$s</span> <span class="hl opt">.=</span> <span class="hl str">' '</span> x <span class="hl opt">(</span><span class="hl num">10</span><span class="hl opt">-</span><span class="hl kwb">$i</span><span class="hl opt">)</span> <span class="hl kwa">if</span> <span class="hl kwb">$i</span> <span class="hl opt">=</span> <span class="hl kwb">$n</span> <span class="hl opt">%</span> <span class="hl num">10</span><span class="hl opt">;</span>
+
+<span class="hl kwc">print</span> <span class="hl kwb">$s</span><span class="hl opt">,</span> <span class="hl str">&quot;:$n&quot;</span> <span class="hl kwa">if</span> <span class="hl kwb">$s</span>
