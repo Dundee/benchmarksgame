@@ -1,15 +1,77 @@
 
-Thu, 31 Jan 2013 22:23:02 GMT
+Wed, 06 Feb 2013 03:29:29 GMT
 
 MAKE:
 /usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native   chameneosredux.gpp-5.c++ -o chameneosredux.gpp-5.c++.o &&  \
         /usr/bin/g++ chameneosredux.gpp-5.c++.o -o chameneosredux.gpp-5.gpp_run -lboost_thread -lboost_system 
-/usr/bin/ld: cannot find -lboost_thread
-/usr/bin/ld: cannot find -lboost_system
+chameneosredux.gpp-5.c++.o: In function `Game<3>::Start(int)':
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi3EE5StartEi[_ZN4GameILi3EE5StartEi]+0x4c): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi3EE5StartEi[_ZN4GameILi3EE5StartEi]+0x60): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi3EE5StartEi[_ZN4GameILi3EE5StartEi]+0x8e): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi3EE5StartEi[_ZN4GameILi3EE5StartEi]+0xa5): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi3EE5StartEi[_ZN4GameILi3EE5StartEi]+0xd6): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi3EE5StartEi[_ZN4GameILi3EE5StartEi]+0x150): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi3EE5StartEi[_ZN4GameILi3EE5StartEi]+0x164): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi3EE5StartEi[_ZN4GameILi3EE5StartEi]+0x1ab): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi3EE5StartEi[_ZN4GameILi3EE5StartEi]+0x1c2): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi3EE5StartEi[_ZN4GameILi3EE5StartEi]+0x20c): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi3EE5StartEi[_ZN4GameILi3EE5StartEi]+0x105): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++.o: In function `Game<3>::Wait()':
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi3EE4WaitEv[_ZN4GameILi3EE4WaitEv]+0xb): undefined reference to `pthread_join'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi3EE4WaitEv[_ZN4GameILi3EE4WaitEv]+0x19): undefined reference to `pthread_join'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi3EE4WaitEv[_ZN4GameILi3EE4WaitEv]+0x28): undefined reference to `pthread_join'
+chameneosredux.gpp-5.c++.o: In function `Game<10>::Start(int)':
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x3e): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x52): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x80): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x97): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0xc8): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0xdf): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x110): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x127): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x158): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x16f): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x1a0): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x1b7): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x1e8): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x1ff): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x230): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x247): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x278): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x28f): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x2c0): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x327): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x33b): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x381): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x398): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x3e1): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x3f8): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x441): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x458): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x4a1): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x4b8): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x501): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x518): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x561): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x578): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x5c1): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x5d8): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x621): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x638): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x681): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x2e1): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE5StartEi[_ZN4GameILi10EE5StartEi]+0x6a2): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++.o: In function `Game<10>::Wait()':
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE4WaitEv[_ZN4GameILi10EE4WaitEv]+0xb): undefined reference to `pthread_join'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE4WaitEv[_ZN4GameILi10EE4WaitEv]+0x19): undefined reference to `pthread_join'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE4WaitEv[_ZN4GameILi10EE4WaitEv]+0x27): undefined reference to `pthread_join'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE4WaitEv[_ZN4GameILi10EE4WaitEv]+0x35): undefined reference to `pthread_join'
+chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE4WaitEv[_ZN4GameILi10EE4WaitEv]+0x43): undefined reference to `pthread_join'
+chameneosredux.gpp-5.c++.o:chameneosredux.gpp-5.c++:(.text._ZN4GameILi10EE4WaitEv[_ZN4GameILi10EE4WaitEv]+0x51): more undefined references to `pthread_join' follow
 collect2: error: ld returned 1 exit status
 make: [chameneosredux.gpp-5.gpp_run] Error 1 (ignored)
 rm chameneosredux.gpp-5.c++
-0.63s to complete and log all make actions
+1.85s to complete and log all make actions
 
 COMMAND LINE:
 ./chameneosredux.gpp-5.gpp_run 60000

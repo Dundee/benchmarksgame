@@ -1,17 +1,42 @@
 
-Thu, 31 Jan 2013 22:23:02 GMT
+Wed, 06 Feb 2013 03:29:49 GMT
 
 MAKE:
 /usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native   chameneosredux.c++ -o chameneosredux.c++.o &&  \
         /usr/bin/g++ chameneosredux.c++.o -o chameneosredux.gpp_run -lboost_thread -lboost_system 
-chameneosredux.c++:33:48: fatal error: boost/xpressive/xpressive_static.hpp: No such file or directory
-compilation terminated.
-make: [chameneosredux.gpp_run] Error 1 (ignored)
 rm chameneosredux.c++
-0.24s to complete and log all make actions
+19.47s to complete and log all make actions
 
 COMMAND LINE:
-./chameneosredux.gpp_run 60000
+./chameneosredux.gpp_run 6000000
 
-MAKE ERROR 
+PROGRAM OUTPUT:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
+blue red yellow 
+4191176 zero 
+4168644 zero 
+3640180 zero 
+ one two zero zero zero zero zero zero 
+
+blue red yellow red yellow blue red yellow red blue 
+1097610 zero 
+1171112 zero 
+1182147 zero 
+1256786 zero 
+1222970 zero 
+1230345 zero 
+1075335 zero 
+1182132 zero 
+1184743 zero 
+1396820 zero 
+ one two zero zero zero zero zero zero 
 

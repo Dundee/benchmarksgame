@@ -1,22 +1,22 @@
 <span class="hl slc"># The Computer Language Benchmarks Game</span>
-<span class="hl slc"># http://shootout.alioth.debian.org/</span>
+<span class="hl slc"># http://benchmarksgame.alioth.debian.org/</span>
 <span class="hl slc"># </span>
 <span class="hl slc"># contributed by Emanuele Zeppieri</span>
 <span class="hl slc"># modified by Christian Walde (threads)</span>
 
-<span class="hl kwa">use</span> <span class="hl kwd">threads</span><span class="hl opt">;</span>
+<span class="hl kwa">use</span> threads<span class="hl opt">;</span>
 
 <span class="hl kwa">sub</span> bottomup_tree <span class="hl opt">{</span>
     <span class="hl kwc">my</span> <span class="hl opt">(</span> <span class="hl kwb">$value</span><span class="hl opt">,</span> <span class="hl kwb">$depth</span> <span class="hl opt">) =</span> <span class="hl kwb">&#64;_</span><span class="hl opt">;</span>
     <span class="hl kwa">return</span> <span class="hl kwb">$value</span> <span class="hl kwa">unless</span> <span class="hl kwb">$depth</span><span class="hl opt">;</span>
     <span class="hl kwc">my</span> <span class="hl kwb">$value2</span> <span class="hl opt">=</span> <span class="hl kwb">$value</span> <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">;</span>
     <span class="hl kwb">$depth</span><span class="hl opt">--;</span>
-    <span class="hl kwa">return</span> <span class="hl opt">[</span> <span class="hl kwd">bottomup_tree</span><span class="hl opt">(</span> <span class="hl kwb">$value2</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl kwb">$depth</span> <span class="hl opt">),</span> <span class="hl kwd">bottomup_tree</span><span class="hl opt">(</span> <span class="hl kwb">$value2</span><span class="hl opt">,</span> <span class="hl kwb">$depth</span> <span class="hl opt">),</span> <span class="hl kwb">$value</span> <span class="hl opt">];</span>
+    <span class="hl kwa">return</span> <span class="hl opt">[</span> bottomup_tree<span class="hl opt">(</span> <span class="hl kwb">$value2</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl kwb">$depth</span> <span class="hl opt">),</span> bottomup_tree<span class="hl opt">(</span> <span class="hl kwb">$value2</span><span class="hl opt">,</span> <span class="hl kwb">$depth</span> <span class="hl opt">),</span> <span class="hl kwb">$value</span> <span class="hl opt">];</span>
 <span class="hl opt">}</span>
 
 <span class="hl kwa">sub</span> check_tree <span class="hl opt">{</span>
     <span class="hl kwc">my</span> <span class="hl opt">(</span> <span class="hl kwb">$left</span><span class="hl opt">,</span> <span class="hl kwb">$right</span><span class="hl opt">,</span> <span class="hl kwb">$value</span> <span class="hl opt">) =</span> &#64;<span class="hl opt">{</span> <span class="hl kwb">$_</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] };</span>
-    <span class="hl kwa">return</span> <span class="hl kwb">$value</span> <span class="hl opt">+ (</span> ref <span class="hl kwb">$left</span> ? <span class="hl kwd">check_tree</span><span class="hl opt">(</span> <span class="hl kwb">$left</span> <span class="hl opt">) -</span> <span class="hl kwd">check_tree</span><span class="hl opt">(</span> <span class="hl kwb">$right</span> <span class="hl opt">) :</span> <span class="hl kwb">$left</span> <span class="hl opt">-</span> <span class="hl kwb">$right</span> <span class="hl opt">);</span>
+    <span class="hl kwa">return</span> <span class="hl kwb">$value</span> <span class="hl opt">+ (</span> <span class="hl kwc">ref</span> <span class="hl kwb">$left</span> ? check_tree<span class="hl opt">(</span> <span class="hl kwb">$left</span> <span class="hl opt">) -</span> check_tree<span class="hl opt">(</span> <span class="hl kwb">$right</span> <span class="hl opt">) :</span> <span class="hl kwb">$left</span> <span class="hl opt">-</span> <span class="hl kwb">$right</span> <span class="hl opt">);</span>
 <span class="hl opt">}</span>
 
 <span class="hl kwa">sub</span> depth_iteration <span class="hl opt">{</span>
@@ -26,46 +26,46 @@
     <span class="hl kwc">my</span> <span class="hl kwb">$check</span>      <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
 
     <span class="hl kwa">foreach</span> <span class="hl opt">(</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl kwb">$iterations</span> <span class="hl opt">) {</span>
-        <span class="hl kwb">$check</span> <span class="hl opt">+=</span> <span class="hl kwd">check_tree</span><span class="hl opt">(</span> <span class="hl kwd">bottomup_tree</span><span class="hl opt">(</span> <span class="hl kwb">$_</span><span class="hl opt">,</span>  <span class="hl kwb">$depth</span> <span class="hl opt">) );</span>
-        <span class="hl kwb">$check</span> <span class="hl opt">+=</span> <span class="hl kwd">check_tree</span><span class="hl opt">(</span> <span class="hl kwd">bottomup_tree</span><span class="hl opt">( -</span><span class="hl kwb">$_</span><span class="hl opt">,</span> <span class="hl kwb">$depth</span> <span class="hl opt">) );</span>
+        <span class="hl kwb">$check</span> <span class="hl opt">+=</span> check_tree<span class="hl opt">(</span> bottomup_tree<span class="hl opt">(</span> <span class="hl kwb">$_</span><span class="hl opt">,</span>  <span class="hl kwb">$depth</span> <span class="hl opt">) );</span>
+        <span class="hl kwb">$check</span> <span class="hl opt">+=</span> check_tree<span class="hl opt">(</span> bottomup_tree<span class="hl opt">( -</span><span class="hl kwb">$_</span><span class="hl opt">,</span> <span class="hl kwb">$depth</span> <span class="hl opt">) );</span>
     <span class="hl opt">}</span>
 
     <span class="hl kwa">return</span> <span class="hl opt">(</span> <span class="hl kwb">$depth</span> <span class="hl opt">=&gt; [</span> <span class="hl kwb">$iterations</span><span class="hl opt">,</span> <span class="hl kwb">$depth</span><span class="hl opt">,</span> <span class="hl kwb">$check</span> <span class="hl opt">] );</span>
 <span class="hl opt">}</span>
 
-<span class="hl kwc">my</span> <span class="hl kwb">$max_depth</span> <span class="hl opt">=</span> shift <span class="hl kwb">&#64;ARGV</span><span class="hl opt">;</span>
+<span class="hl kwc">my</span> <span class="hl kwb">$max_depth</span> <span class="hl opt">=</span> <span class="hl kwc">shift</span> <span class="hl kwb">&#64;ARGV</span><span class="hl opt">;</span>
 <span class="hl kwc">my</span> <span class="hl kwb">$min_depth</span> <span class="hl opt">=</span> <span class="hl num">4</span><span class="hl opt">;</span>
 
 <span class="hl kwb">$max_depth</span> <span class="hl opt">=</span> <span class="hl kwb">$min_depth</span> <span class="hl opt">+</span> <span class="hl num">2</span> <span class="hl kwa">if</span> <span class="hl kwb">$min_depth</span> <span class="hl opt">+</span> <span class="hl num">2</span> <span class="hl opt">&gt;</span> <span class="hl kwb">$max_depth</span><span class="hl opt">;</span>
 
 <span class="hl kwc">my</span> <span class="hl kwb">$stretch_depth</span> <span class="hl opt">=</span> <span class="hl kwb">$max_depth</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
-<span class="hl kwc">my</span> <span class="hl kwb">$stretch_tree</span> <span class="hl opt">=</span> <span class="hl kwd">bottomup_tree</span><span class="hl opt">(</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwb">$stretch_depth</span> <span class="hl opt">);</span>
-<span class="hl kwc">print</span> <span class="hl str">&quot;stretch tree of depth $stretch_depth</span><span class="hl esc">\t</span> <span class="hl str">check: &quot;</span><span class="hl opt">,</span> <span class="hl kwd">check_tree</span><span class="hl opt">(</span> <span class="hl kwb">$stretch_tree</span> <span class="hl opt">),</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
-undef <span class="hl kwb">$stretch_tree</span><span class="hl opt">;</span>
+<span class="hl kwc">my</span> <span class="hl kwb">$stretch_tree</span> <span class="hl opt">=</span> bottomup_tree<span class="hl opt">(</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwb">$stretch_depth</span> <span class="hl opt">);</span>
+<span class="hl kwc">print</span> <span class="hl str">&quot;stretch tree of depth $stretch_depth</span><span class="hl esc">\t</span> <span class="hl str">check: &quot;</span><span class="hl opt">,</span> check_tree<span class="hl opt">(</span> <span class="hl kwb">$stretch_tree</span> <span class="hl opt">),</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
+<span class="hl kwc">undef</span> <span class="hl kwb">$stretch_tree</span><span class="hl opt">;</span>
 
-<span class="hl kwc">my</span> <span class="hl kwb">$longlived_tree</span> <span class="hl opt">=</span> <span class="hl kwd">bottomup_tree</span><span class="hl opt">(</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwb">$max_depth</span> <span class="hl opt">);</span>
+<span class="hl kwc">my</span> <span class="hl kwb">$longlived_tree</span> <span class="hl opt">=</span> bottomup_tree<span class="hl opt">(</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwb">$max_depth</span> <span class="hl opt">);</span>
 
 <span class="hl kwc">my</span> <span class="hl kwb">&#64;results</span><span class="hl opt">;</span>
 <span class="hl kwa">for</span> <span class="hl opt">(</span> <span class="hl kwc">my</span> <span class="hl kwb">$depth</span> <span class="hl opt">=</span> <span class="hl kwb">$min_depth</span> <span class="hl opt">;</span> <span class="hl kwb">$depth</span> <span class="hl opt">&lt;=</span> <span class="hl kwb">$max_depth</span> <span class="hl opt">;</span> <span class="hl kwb">$depth</span> <span class="hl opt">+=</span> <span class="hl num">2</span> <span class="hl opt">) {</span>
     <span class="hl kwa">while</span> <span class="hl opt">(</span> <span class="hl num">1</span> <span class="hl opt">) {</span>
-        <span class="hl kwa">last if</span> threads<span class="hl opt">-&gt;</span>list <span class="hl opt">&lt;</span> <span class="hl num">4</span><span class="hl opt">;</span>
-        push <span class="hl kwb">&#64;results</span><span class="hl opt">,</span> <span class="hl kwb">$_</span><span class="hl opt">-&gt;</span>join <span class="hl kwa">for</span> threads<span class="hl opt">-&gt;</span><span class="hl kwd">list</span><span class="hl opt">(</span> threads<span class="hl opt">::</span>joinable <span class="hl opt">);</span>
+        <span class="hl kwa">last if</span> threads<span class="hl opt">-&gt;</span><span class="hl kwd">list</span> <span class="hl opt">&lt;</span> <span class="hl num">4</span><span class="hl opt">;</span>
+        <span class="hl kwc">push</span> <span class="hl kwb">&#64;results</span><span class="hl opt">,</span> <span class="hl kwb">$_</span><span class="hl opt">-&gt;</span><span class="hl kwc">join</span> <span class="hl kwa">for</span> threads<span class="hl opt">-&gt;</span><span class="hl kwd">list</span><span class="hl opt">(</span> threads<span class="hl opt">::</span>joinable <span class="hl opt">);</span>
     <span class="hl opt">}</span>
 
     threads<span class="hl opt">-&gt;</span><span class="hl kwd">create</span><span class="hl opt">(</span>
         <span class="hl opt">{</span> <span class="hl str">'context'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'list'</span><span class="hl opt">,</span> <span class="hl str">'stack_size'</span> <span class="hl opt">=&gt;</span> <span class="hl num">64</span> <span class="hl opt">},</span>    <span class="hl slc">#</span>
-        <span class="hl kwa">sub</span> <span class="hl opt">{</span> <span class="hl kwd">depth_iteration</span><span class="hl opt">(</span> <span class="hl kwb">$depth</span><span class="hl opt">,</span> <span class="hl kwb">$max_depth</span><span class="hl opt">,</span> <span class="hl kwb">$min_depth</span> <span class="hl opt">) }</span>
+        <span class="hl kwa">sub</span> <span class="hl opt">{</span> depth_iteration<span class="hl opt">(</span> <span class="hl kwb">$depth</span><span class="hl opt">,</span> <span class="hl kwb">$max_depth</span><span class="hl opt">,</span> <span class="hl kwb">$min_depth</span> <span class="hl opt">) }</span>
     <span class="hl opt">);</span>
 <span class="hl opt">}</span>
 
-<span class="hl kwa">while</span> <span class="hl opt">(</span> threads<span class="hl opt">-&gt;</span>list <span class="hl opt">) {</span>
-    push <span class="hl kwb">&#64;results</span><span class="hl opt">,</span> <span class="hl kwb">$_</span><span class="hl opt">-&gt;</span>join <span class="hl kwa">for</span> threads<span class="hl opt">-&gt;</span><span class="hl kwd">list</span><span class="hl opt">(</span> threads<span class="hl opt">::</span>joinable <span class="hl opt">);</span>
+<span class="hl kwa">while</span> <span class="hl opt">(</span> threads<span class="hl opt">-&gt;</span><span class="hl kwd">list</span> <span class="hl opt">) {</span>
+    <span class="hl kwc">push</span> <span class="hl kwb">&#64;results</span><span class="hl opt">,</span> <span class="hl kwb">$_</span><span class="hl opt">-&gt;</span><span class="hl kwc">join</span> <span class="hl kwa">for</span> threads<span class="hl opt">-&gt;</span><span class="hl kwd">list</span><span class="hl opt">(</span> threads<span class="hl opt">::</span>joinable <span class="hl opt">);</span>
 <span class="hl opt">}</span>
 
 <span class="hl kwc">my</span> <span class="hl kwb">%results</span> <span class="hl opt">=</span> <span class="hl kwb">&#64;results</span><span class="hl opt">;</span>
-<span class="hl kwa">for</span> <span class="hl kwc">my</span> <span class="hl kwb">$key</span> <span class="hl opt">(</span> sort <span class="hl opt">{</span> <span class="hl kwb">$a</span> <span class="hl opt">&lt;=&gt;</span> <span class="hl kwb">$b</span> <span class="hl opt">}</span> keys <span class="hl kwb">%results</span> <span class="hl opt">) {</span>
+<span class="hl kwa">for</span> <span class="hl kwc">my</span> <span class="hl kwb">$key</span> <span class="hl opt">(</span> <span class="hl kwc">sort</span> <span class="hl opt">{</span> <span class="hl kwb">$a</span> <span class="hl opt">&lt;=&gt;</span> <span class="hl kwb">$b</span> <span class="hl opt">}</span> <span class="hl kwc">keys</span> <span class="hl kwb">%results</span> <span class="hl opt">) {</span>
     <span class="hl kwc">my</span> <span class="hl opt">(</span> <span class="hl kwb">$iterations</span><span class="hl opt">,</span> <span class="hl kwb">$depth</span><span class="hl opt">,</span> <span class="hl kwb">$check</span> <span class="hl opt">) =</span> &#64;<span class="hl opt">{</span> <span class="hl kwb">$results</span><span class="hl opt">{</span><span class="hl kwb">$key</span><span class="hl opt">} };</span>
     <span class="hl kwc">print</span> <span class="hl num">2</span> <span class="hl opt">*</span> <span class="hl kwb">$iterations</span><span class="hl opt">,</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">trees of depth $depth</span><span class="hl esc">\t</span> <span class="hl str">check: &quot;</span><span class="hl opt">,</span> <span class="hl kwb">$check</span><span class="hl opt">,</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
 <span class="hl opt">}</span>
 
-<span class="hl kwc">print</span> <span class="hl str">&quot;long lived tree of depth $max_depth</span><span class="hl esc">\t</span> <span class="hl str">check: &quot;</span><span class="hl opt">,</span> <span class="hl kwd">check_tree</span><span class="hl opt">(</span> <span class="hl kwb">$longlived_tree</span> <span class="hl opt">),</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
+<span class="hl kwc">print</span> <span class="hl str">&quot;long lived tree of depth $max_depth</span><span class="hl esc">\t</span> <span class="hl str">check: &quot;</span><span class="hl opt">,</span> check_tree<span class="hl opt">(</span> <span class="hl kwb">$longlived_tree</span> <span class="hl opt">),</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
