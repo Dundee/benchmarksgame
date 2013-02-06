@@ -1,24 +1,15 @@
 
-Fri, 01 Feb 2013 00:52:04 GMT
+Wed, 06 Feb 2013 20:18:41 GMT
 
 MAKE:
-/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -pthread -flax-vector-conversions fannkuchredux.gpp-3.c++ -o fannkuchredux.gpp-3.c++.o &&  \
-        /usr/bin/g++ fannkuchredux.gpp-3.c++.o -o fannkuchredux.gpp-3.gpp_run -lpthread -lboost_thread 
-fannkuchredux.gpp-3.c++: In function ‘Result fannkuch(int)’:
-fannkuchredux.gpp-3.c++:45:50: warning: lambda expressions only available with -std=c++11 or -std=gnu++11 [enabled by default]
-fannkuchredux.gpp-3.c++:45:51: error: no matching function for call to ‘generate(int_t [16], int_t*, fannkuch(int)::<lambda()>)’
-fannkuchredux.gpp-3.c++:45:51: note: candidate is:
-In file included from /usr/include/c++/4.7/algorithm:63:0,
-                 from fannkuchredux.gpp-3.c++:8:
-/usr/include/c++/4.7/bits/stl_algo.h:5073:5: note: template<class _FIter, class _Generator> void std::generate(_FIter, _FIter, _Generator)
-fannkuchredux.gpp-3.c++:45:51: error: template argument for ‘template<class _FIter, class _Generator> void std::generate(_FIter, _FIter, _Generator)’ uses local type ‘fannkuch(int)::<lambda()>’
-fannkuchredux.gpp-3.c++:45:51: error:   trying to instantiate ‘template<class _FIter, class _Generator> void std::generate(_FIter, _FIter, _Generator)’
-make: [fannkuchredux.gpp-3.gpp_run] Error 1 (ignored)
+/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -std=c++0x fannkuchredux.gpp-3.c++ -o fannkuchredux.gpp-3.c++.o &&  \
+        /usr/bin/g++ fannkuchredux.gpp-3.c++.o -o fannkuchredux.gpp-3.gpp_run -lpthread 
 rm fannkuchredux.gpp-3.c++
-0.12s to complete and log all make actions
+0.57s to complete and log all make actions
 
 COMMAND LINE:
-./fannkuchredux.gpp-3.gpp_run 10
+./fannkuchredux.gpp-3.gpp_run 12
 
-MAKE ERROR 
-
+PROGRAM OUTPUT:
+3968050
+Pfannkuchen(12) = 65
