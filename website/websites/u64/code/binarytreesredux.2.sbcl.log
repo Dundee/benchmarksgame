@@ -1,5 +1,5 @@
 
-Tue, 09 Oct 2012 04:40:24 GMT
+Thu, 07 Feb 2013 19:54:07 GMT
 
 MAKE:
 cp: `binarytreesredux.sbcl-2.sbcl' and `./binarytreesredux.sbcl-2.sbcl' are the same file
@@ -9,12 +9,12 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### END binarytreesredux.sbcl-2.sbcl_compile
 
 
-; compiling file "/home/dunham/shootout/bench/binarytreesredux/binarytreesredux.sbcl-2.sbcl" (written 18 FEB 2011 09:46:01 AM):
+; compiling file "/home/dunham/benchmarksgame/bench/binarytreesredux/binarytreesredux.sbcl-2.sbcl" (written 07 FEB 2013 10:59:55 AM):
 ; compiling (DECLAIM (OPTIMIZE # ...))
 ; compiling (DEFUN BUILD-BTREE ...)
 ; compiling (DEFUN CHECK-NODE ...)
 ; compiling (DEFUN LOOP-DEPTHS ...)
-; file: /home/dunham/shootout/bench/binarytreesredux/binarytreesredux.sbcl-2.sbcl
+; file: /home/dunham/benchmarksgame/bench/binarytreesredux/binarytreesredux.sbcl-2.sbcl
 ; in: DEFUN LOOP-DEPTHS
 ;     (+ MAX-DEPTH MIN-DEPTH (- D))
 ; ==>
@@ -61,24 +61,21 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 
 
 ; /home/dunham/benchmarksgame_onecore/binarytreesredux/tmp/binarytreesredux.sbcl-2.fasl written
-; compilation finished in 0:00:00.027
+; compilation finished in 0:00:00.028
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 5952 bytes from the read-only space at 0x20000000
-writing 4000 bytes from the static space at 0x20100000
-writing 43122688 bytes from the dynamic space at 0x1000000000
+writing 5952 bytes from the read-only space at 0x0x20000000
+writing 4064 bytes from the static space at 0x0x20100000
+writing 43188224 bytes from the dynamic space at 0x0x1000000000
 done]
 ### START binarytreesredux.sbcl-2.sbcl_run
 (main) (quit)
 ### END binarytreesredux.sbcl-2.sbcl_run
 
-0.40s to complete and log all make actions
+0.37s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/sbcl --dynamic-space-size 464 --noinform --core sbcl.core --userinit /dev/null --load binarytreesredux.sbcl-2.sbcl_run 20
-
-TIMED OUT after 600s
-
+/usr/local/bin/sbcl --dynamic-space-size 512 --noinform --core sbcl.core --userinit /dev/null --load binarytreesredux.sbcl-2.sbcl_run 20
 
 PROGRAM OUTPUT:
 stretch tree of depth 21	 check: -1
@@ -90,23 +87,5 @@ stretch tree of depth 21	 check: -1
 2048	 trees of depth 14	 check: -2048
 512	 trees of depth 16	 check: -512
 128	 trees of depth 18	 check: -128
-Welcome to LDB, a low-level debugger for the Lisp runtime environment.
-ldb> 
-Heap exhausted during garbage collection: 0 bytes available, 16 requested.
- Gen StaPg UbSta LaSta LUbSt Boxed Unboxed LB   LUB  !move  Alloc  Waste   Trig    WP  GCs Mem-age
-   0: 13494     0     0     0  1483     0     0     0     0 48562192 32752 29244800    0   1  0.0000
-   1: 14847     0     0     0  4135     0     0     0    29 135364464 131216  4865392 2957   0  1.0806
-   2: 13972     0     0     0  3619     0     0     0    31 118510960 76432  4865392 3588   0  0.5311
-   3:     0     0     0     0     0     0     0     0     0        0     0  4865392    0   0  0.0000
-   4: 10511     0     0     0  4295     0     0     0    35 140678704 59856  2000000 4260   0  0.0000
-   5:     0     0     0     0     0     0     0     0     0        0     0  2000000    0   0  0.0000
-   6:     0     0     0     0  1155   161     0     0     0 43122688     0  2000000 1142   0  0.0000
-   Total bytes allocated    = 486239008
-   Dynamic-space-size bytes = 486539264
-GC control variables:
-   *GC-INHIBIT* = true
-   *GC-PENDING* = in progress
-   *STOP-FOR-GC-PENDING* = false
-fatal error encountered in SBCL pid 2626(tid 140737353971456):
-Heap exhausted, game over.
-
+32	 trees of depth 20	 check: -32
+long lived tree of depth 20	 check: -1

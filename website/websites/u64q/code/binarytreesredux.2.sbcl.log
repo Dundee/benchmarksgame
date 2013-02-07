@@ -1,5 +1,5 @@
 
-Mon, 08 Oct 2012 20:47:04 GMT
+Thu, 07 Feb 2013 19:50:26 GMT
 
 MAKE:
 cp: `binarytreesredux.sbcl-2.sbcl' and `./binarytreesredux.sbcl-2.sbcl' are the same file
@@ -9,12 +9,12 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### END binarytreesredux.sbcl-2.sbcl_compile
 
 
-; compiling file "/home/dunham/shootout/bench/binarytreesredux/binarytreesredux.sbcl-2.sbcl" (written 18 FEB 2011 09:46:01 AM):
+; compiling file "/home/dunham/benchmarksgame/bench/binarytreesredux/binarytreesredux.sbcl-2.sbcl" (written 07 FEB 2013 10:59:55 AM):
 ; compiling (DECLAIM (OPTIMIZE # ...))
 ; compiling (DEFUN BUILD-BTREE ...)
 ; compiling (DEFUN CHECK-NODE ...)
 ; compiling (DEFUN LOOP-DEPTHS ...)
-; file: /home/dunham/shootout/bench/binarytreesredux/binarytreesredux.sbcl-2.sbcl
+; file: /home/dunham/benchmarksgame/bench/binarytreesredux/binarytreesredux.sbcl-2.sbcl
 ; in: DEFUN LOOP-DEPTHS
 ;     (+ MAX-DEPTH MIN-DEPTH (- D))
 ; ==>
@@ -60,22 +60,22 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ;   printed 4 notes
 
 
-; /home/dunham/benchmarksgame/binarytreesredux/tmp/binarytreesredux.sbcl-2.fasl written
-; compilation finished in 0:00:00.029
+; /home/dunham/benchmarksgame_quadcore/binarytreesredux/tmp/binarytreesredux.sbcl-2.fasl written
+; compilation finished in 0:00:00.644
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 5952 bytes from the read-only space at 0x20000000
-writing 4000 bytes from the static space at 0x20100000
-writing 43122688 bytes from the dynamic space at 0x1000000000
+writing 5952 bytes from the read-only space at 0x0x20000000
+writing 4064 bytes from the static space at 0x0x20100000
+writing 43188224 bytes from the dynamic space at 0x0x1000000000
 done]
 ### START binarytreesredux.sbcl-2.sbcl_run
 (main) (quit)
 ### END binarytreesredux.sbcl-2.sbcl_run
 
-0.40s to complete and log all make actions
+4.83s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/sbcl --dynamic-space-size 464 --noinform --core sbcl.core --userinit /dev/null --load binarytreesredux.sbcl-2.sbcl_run 20
+/usr/local/bin/sbcl --dynamic-space-size 512 --noinform --core sbcl.core --userinit /dev/null --load binarytreesredux.sbcl-2.sbcl_run 20
 
 PROGRAM OUTPUT:
 stretch tree of depth 21	 check: -1
