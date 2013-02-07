@@ -1,10 +1,14 @@
-"* The Computer Language Shootout
-    http://shootout.alioth.debian.org/
+"* The Computer Language Benchmarks Game
+    http://benchmarksgame.alioth.debian.org/
     contributed by Paolo Bonzini *"!
 
-!Tests class methodsFor: 'benchmarking'!mandelbrot2: extent to: output   | limit2 m bits zr zi cr ci i tr stepr stepi |   limit2 := 4.0d0.
+!Tests class methodsFor: 'benchmarking'!
+mandelbrot2: extent to: output
+   | limit2 m bits zr zi cr ci i tr stepr stepi |
+   limit2 := 4.0d0.
    m := 50.
-   stepr := 2.0d0 / extent.
+
+   stepr := 2.0d0 / extent.
    stepi := 2.0d0 / extent.
 
    0 to: extent - 1 do: [ :y |
@@ -35,5 +39,15 @@
        ]
    ]! !
 
-!Tests class methodsFor: 'benchmark scripts'!mandelbrot2   | n output |   n := self arg.   (output := self stdout)      nextPutAll: 'P4'; nl; print: n; space; print: n; nl;
-      binary.   self mandelbrot2: n to: output.   ^''! !
+
+!Tests class methodsFor: 'benchmark scripts'!
+mandelbrot2
+   | n output |
+   n := self arg.
+   (output := self stdout)
+      nextPutAll: 'P4'; nl; print: n; space; print: n; nl;
+      binary.
+
+   self mandelbrot2: n to: output.
+   ^''! !
+

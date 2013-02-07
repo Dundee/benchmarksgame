@@ -1,9 +1,10 @@
-<span class="hl com">&quot;* The Computer Language Shootout</span>
-<span class="hl com">    http://shootout.alioth.debian.org/</span>
+<span class="hl com">&quot;* The Computer Language Benchmarks Game</span>
+<span class="hl com">    http://benchmarksgame.alioth.debian.org/</span>
 <span class="hl com">    contributed by Eliot Miranda *&quot;</span><span class="hl opt">!</span>
 
 
-<span class="hl opt">!</span><span class="hl kwc">Tests</span> <span class="hl kwb">class methodsFor:</span> <span class="hl str">'benchmarking'</span><span class="hl opt">!</span>matchPatterns
+<span class="hl opt">!</span><span class="hl kwc">Tests</span> <span class="hl kwb">class methodsFor:</span> <span class="hl str">'benchmarking'</span><span class="hl opt">!</span>
+<span class="hl kwb">matchPatterns</span>
    <span class="hl opt">^#(</span>   <span class="hl str">'agggtaaa|tttaccct'</span>
          <span class="hl str">'[cgt]gggtaaa|tttaccc[acg]'</span>
          <span class="hl str">'a[act]ggtaaa|tttacc[agt]t'</span>
@@ -15,7 +16,8 @@
          <span class="hl str">'agggtaa[cgt]|[acg]ttaccct'</span>
    <span class="hl opt">)! !</span>
 
-<span class="hl opt">!</span><span class="hl kwc">Tests</span> <span class="hl kwb">class methodsFor:</span> <span class="hl str">'benchmarking'</span><span class="hl opt">!</span>substitutionPatterns
+<span class="hl opt">!</span><span class="hl kwc">Tests</span> <span class="hl kwb">class methodsFor:</span> <span class="hl str">'benchmarking'</span><span class="hl opt">!</span>
+<span class="hl kwb">substitutionPatterns</span>
    <span class="hl opt">^#(   #(</span><span class="hl str">'B'</span> <span class="hl str">'(c|g|t)'</span><span class="hl opt">)</span>
          <span class="hl opt">#(</span><span class="hl str">'D'</span> <span class="hl str">'(a|g|t)'</span><span class="hl opt">)</span>
          <span class="hl opt">#(</span><span class="hl str">'H'</span> <span class="hl str">'(a|c|t)'</span><span class="hl opt">)</span>
@@ -29,7 +31,8 @@
          <span class="hl opt">#(</span><span class="hl str">'Y'</span> <span class="hl str">'(c|t)'</span><span class="hl opt">))! !</span>
 
 
-<span class="hl opt">!</span><span class="hl kwc">Tests</span> <span class="hl kwb">class methodsFor:</span> <span class="hl str">'benchmarking'</span><span class="hl opt">!</span><span class="hl kwb">regexDNA:</span> sequence <span class="hl kwb">to:</span> output
+<span class="hl opt">!</span><span class="hl kwc">Tests</span> <span class="hl kwb">class methodsFor:</span> <span class="hl str">'benchmarking'</span><span class="hl opt">!</span>
+<span class="hl kwb">regexDNA:</span> sequence <span class="hl kwb">to:</span> output
    <span class="hl kwd">| s size1 size2 translation |</span>
    size1 <span class="hl opt">:</span><span class="hl kwb">=</span> sequence <span class="hl kwb">size</span><span class="hl opt">.</span>
 
@@ -57,6 +60,10 @@
       nl<span class="hl opt">;</span>
       <span class="hl kwb">print:</span> size1<span class="hl opt">;</span> <span class="hl kwb">nl</span><span class="hl opt">;</span> 
       <span class="hl kwb">print:</span> size2<span class="hl opt">;</span> <span class="hl kwb">nl</span><span class="hl opt">;</span> 
-      <span class="hl kwb">print:</span> s <span class="hl kwb">size</span><span class="hl opt">;</span> <span class="hl kwb">nl</span><span class="hl opt">! !</span><span class="hl opt">!</span><span class="hl kwc">Tests</span> <span class="hl kwb">class methodsFor:</span> <span class="hl str">'benchmark scripts'</span><span class="hl opt">!</span>regexdna
+      <span class="hl kwb">print:</span> s <span class="hl kwb">size</span><span class="hl opt">;</span> <span class="hl kwb">nl</span><span class="hl opt">! !</span>
+
+
+<span class="hl opt">!</span><span class="hl kwc">Tests</span> <span class="hl kwb">class methodsFor:</span> <span class="hl str">'benchmark scripts'</span><span class="hl opt">!</span>
+<span class="hl kwb">regexdna</span>
    <span class="hl kwa">self</span> <span class="hl kwb">regexDNA:</span> <span class="hl kwa">self</span> <span class="hl kwb">stdinSpecial contents to:</span> <span class="hl kwa">self</span> <span class="hl kwb">stdout</span><span class="hl opt">.</span>
    <span class="hl opt">^</span><span class="hl str">''</span> <span class="hl opt">! !</span>

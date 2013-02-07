@@ -1,9 +1,10 @@
-"* The Computer Language Shootout
-    http://shootout.alioth.debian.org/
+"* The Computer Language Benchmarks Game
+    http://benchmarksgame.alioth.debian.org/
     contributed by Eliot Miranda *"!
 
 
-!Tests class methodsFor: 'benchmarking'!matchPatterns
+!Tests class methodsFor: 'benchmarking'!
+matchPatterns
    ^#(   'agggtaaa|tttaccct'
          '[cgt]gggtaaa|tttaccc[acg]'
          'a[act]ggtaaa|tttacc[agt]t'
@@ -15,7 +16,8 @@
          'agggtaa[cgt]|[acg]ttaccct'
    )! !
 
-!Tests class methodsFor: 'benchmarking'!substitutionPatterns
+!Tests class methodsFor: 'benchmarking'!
+substitutionPatterns
    ^#(   #('B' '(c|g|t)')
          #('D' '(a|g|t)')
          #('H' '(a|c|t)')
@@ -29,7 +31,8 @@
          #('Y' '(c|t)'))! !
 
 
-!Tests class methodsFor: 'benchmarking'!regexDNA: sequence to: output
+!Tests class methodsFor: 'benchmarking'!
+regexDNA: sequence to: output
    | s size1 size2 translation |
    size1 := sequence size.
 
@@ -57,6 +60,10 @@
       nl;
       print: size1; nl; 
       print: size2; nl; 
-      print: s size; nl! !!Tests class methodsFor: 'benchmark scripts'!regexdna
+      print: s size; nl! !
+
+
+!Tests class methodsFor: 'benchmark scripts'!
+regexdna
    self regexDNA: self stdinSpecial contents to: self stdout.
    ^'' ! !
