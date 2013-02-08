@@ -1,7 +1,7 @@
 <?
 header("Content-type: image/png");
 
-// Copyright (c) Isaac Gouy 2009-2012
+// Copyright (c) Isaac Gouy 2009-2013
 
 // LIBRARIES ////////////////////////////////////////////////
 
@@ -85,7 +85,7 @@ $chart = new StepChart();
 
 $chart->yscale = 1.7;
 $chart->yAxis(axisPercent(axis10()));
-$chart->xAxis(axisYrMth(),4.5);
+$chart->xAxis(axisYrMth(),4.0);
 
 $chart->steps(GP4,$d[0]);
 $chart->steps(DEBIAN,$d[1]);
