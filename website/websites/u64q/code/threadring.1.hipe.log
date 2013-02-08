@@ -1,14 +1,16 @@
 
-Wed, 11 Apr 2012 19:40:21 GMT
+Fri, 08 Feb 2013 07:25:40 GMT
 
 MAKE:
 mv threadring.hipe threadring.erl
-/usr/local/src/otp_src_R15B/bin/erlc +native +"{hipe, [o3]}" threadring.erl
+/usr/local/src/otp_src_R16A/bin/erlc +native +"{hipe, [o3]}" threadring.erl
 rm threadring.erl
-0.75s to complete and log all make actions
+0.54s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/src/otp_src_R15B/bin/erl -smp enable -noshell -run +t 8192 +ec +K true +P 50000000 +hmbs 1 +hms 4 +sss 4 threadring main 50000000
+/usr/local/src/otp_src_R16A/bin/erl -smp enable -noshell -run +t 8192 +ec +K true +P 50000000 +hmbs 1 +hms 4 +sss 4 threadring main 500000
+
+PROGRAM FAILED 
+
 
 PROGRAM OUTPUT:
-292
