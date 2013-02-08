@@ -1,1 +1,1 @@
-<p>Erlang R14B02 (erts-5.8.3) [source] [64-bit halfword] [smp:4:4] [rq:4] [async-threads:0] [kernel-poll:false]</p>
+<p>Erlang R16A (erts-5.10) [source] [64-bit] [smp:4:4] [async-threads:10] [kernel-poll:false]</p>
