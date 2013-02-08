@@ -1,14 +1,14 @@
 
-Wed, 14 Dec 2011 23:20:12 GMT
+Fri, 08 Feb 2013 02:19:03 GMT
 
 MAKE:
 mv binarytrees.hipe binarytrees.erl
-/usr/local/src/otp_src_R15B/bin/erlc +native +"{hipe, [o3]}"  binarytrees.erl
+/usr/local/src/otp_src_R16A/bin/erlc +native +"{hipe, [o3]}"  binarytrees.erl
 rm binarytrees.erl
-0.56s to complete and log all make actions
+0.58s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/src/otp_src_R15B/bin/erl -smp enable -noshell -run  binarytrees main 20
+/usr/local/src/otp_src_R16A/bin/erl -smp enable -noshell -run  binarytrees main 20
 
 PROGRAM OUTPUT:
 stretch tree of depth 21	 check: -1
