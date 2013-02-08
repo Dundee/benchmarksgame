@@ -85,7 +85,7 @@ $chart = new StepChart();
 
 $chart->yscale = 1.7;
 $chart->yAxis(axisPercent(axis10()));
-$chart->xAxis(axisYrMth(),4.0);
+$chart->xAxis(axisYrMth(),3.9);
 
 $chart->steps(GP4,$d[0]);
 $chart->steps(DEBIAN,$d[1]);
