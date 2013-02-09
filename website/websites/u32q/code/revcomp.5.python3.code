@@ -1,0 +1,25 @@
+<span class="hl slc"># The Computer Language Benchmarks Game</span>
+<span class="hl slc"># http://benchmarksgame.alioth.debian.org/</span>
+
+<span class="hl slc"># contributed by Jacob Lee, Steven Bethard, et al</span>
+<span class="hl slc"># 2to3, fixed by Daniele Varrazzo</span>
+<span class="hl slc"># modified by Daniel Nanz</span>
+<span class="hl slc"># read() input, write in reverse, cleanups by J. Kleint</span>
+
+<span class="hl kwa">import</span> sys
+
+<span class="hl kwa">def</span> <span class="hl kwd">show</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> table<span class="hl opt">,</span> write<span class="hl opt">=</span>sys<span class="hl opt">.</span>stdout<span class="hl opt">.</span><span class="hl kwb">buffer</span><span class="hl opt">.</span>write<span class="hl opt">,</span> nl<span class="hl opt">=</span>b<span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">):</span>
+    header<span class="hl opt">,</span> s <span class="hl opt">=</span> seq<span class="hl opt">.</span><span class="hl kwd">split</span><span class="hl opt">(</span>nl<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">)</span>
+    s <span class="hl opt">=</span> s<span class="hl opt">.</span><span class="hl kwd">translate</span><span class="hl opt">(</span>table<span class="hl opt">,</span> nl<span class="hl opt">)</span>
+    <span class="hl kwd">write</span><span class="hl opt">(</span>b<span class="hl str">'&gt;'</span> <span class="hl opt">+</span> header <span class="hl opt">+</span> nl<span class="hl opt">)</span>
+    <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl kwb">range</span><span class="hl opt">(</span><span class="hl kwb">len</span><span class="hl opt">(</span>s<span class="hl opt">) -</span> <span class="hl num">60</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">, -</span><span class="hl num">1</span><span class="hl opt">, -</span><span class="hl num">60</span><span class="hl opt">):</span>
+        <span class="hl kwd">write</span><span class="hl opt">(</span>s<span class="hl opt">[</span>i <span class="hl opt">+</span> <span class="hl num">60</span><span class="hl opt">:</span>i<span class="hl opt">:-</span><span class="hl num">1</span><span class="hl opt">] +</span> nl<span class="hl opt">)</span>
+    <span class="hl kwd">write</span><span class="hl opt">(</span>s<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">:</span>i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">][::-</span><span class="hl num">1</span><span class="hl opt">] +</span> nl<span class="hl opt">)</span>
+
+<span class="hl kwa">def</span> <span class="hl kwd">main</span><span class="hl opt">():</span>
+    table <span class="hl opt">=</span> bytes<span class="hl opt">.</span><span class="hl kwd">maketrans</span><span class="hl opt">(</span>b<span class="hl str">'ACBDGHKMNSRUTWVYacbdghkmnsrutwvy'</span><span class="hl opt">,</span> 
+                            b<span class="hl str">'TGVHCDMKNSYAAWBRTGVHCDMKNSYAAWBR'</span><span class="hl opt">)</span>
+    <span class="hl kwa">for</span> seq <span class="hl kwa">in</span> sys<span class="hl opt">.</span>stdin<span class="hl opt">.</span><span class="hl kwb">buffer</span><span class="hl opt">.</span><span class="hl kwd">read</span><span class="hl opt">().</span><span class="hl kwd">split</span><span class="hl opt">(</span>b<span class="hl str">'&gt;'</span><span class="hl opt">)[</span><span class="hl num">1</span><span class="hl opt">:]:</span>
+        <span class="hl kwd">show</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> table<span class="hl opt">)</span>
+
+<span class="hl kwd">main</span><span class="hl opt">()</span>
