@@ -1,5 +1,5 @@
 
-Tue, 23 Oct 2012 22:36:47 GMT
+Wed, 13 Feb 2013 12:46:50 GMT
 
 MAKE:
 mv threadring.fsharp-4.fsharp threadring.fsharp-4.fs
@@ -7,9 +7,9 @@ mv threadring.fsharp-4.fsharp threadring.fsharp-4.fs
 Microsoft (R) F# 3.0 Compiler version (Mono build)
 Copyright (c) Microsoft Corporation. All Rights Reserved.
 
-/home/dunham/benchmarksgame_onecore/threadring/tmp/threadring.fsharp-4.fs(17,1): warning FS0221: The declarations in this file will be placed in an implicit module 'Threadring.fsharp-4' based on the file name 'threadring.fsharp-4.fs'. However this is not a valid F# identifier, so the contents will not be accessible from other files. Consider renaming the file or adding a 'module' or 'namespace' declaration at the top of the file.
+/home/dunham/benchmarksgame_onecore/threadring/tmp/threadring.fsharp-4.fs(16,1): warning FS0221: The declarations in this file will be placed in an implicit module 'Threadring.fsharp-4' based on the file name 'threadring.fsharp-4.fs'. However this is not a valid F# identifier, so the contents will not be accessible from other files. Consider renaming the file or adding a 'module' or 'namespace' declaration at the top of the file.
 rm threadring.fsharp-4.fs
-3.46s to complete and log all make actions
+3.54s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm -O=unsafe threadring.fsharp-4.fsharp_run.exe 50000000

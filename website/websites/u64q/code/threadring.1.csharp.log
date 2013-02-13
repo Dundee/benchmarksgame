@@ -1,11 +1,11 @@
 
-Mon, 22 Oct 2012 06:03:12 GMT
+Wed, 13 Feb 2013 09:16:59 GMT
 
 MAKE:
 mv threadring.csharp threadring.cs
 /usr/local/bin/mcs  -optimize+ -platform:x64 -out:threadring.csharp_run threadring.cs
 rm threadring.cs
-0.19s to complete and log all make actions
+0.22s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm threadring.csharp_run 50000000

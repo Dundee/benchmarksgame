@@ -1,11 +1,11 @@
 
-Mon, 22 Oct 2012 05:21:35 GMT
+Wed, 13 Feb 2013 07:56:57 GMT
 
 MAKE:
 mv nbody.csharp-2.csharp nbody.csharp-2.cs
 /usr/local/bin/mcs -r:/usr/local/lib/mono/4.5/Mono.Simd.dll -optimize+ -platform:x64 -out:nbody.csharp-2.csharp_run nbody.csharp-2.cs
 rm nbody.csharp-2.cs
-0.19s to complete and log all make actions
+0.21s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm nbody.csharp-2.csharp_run 50000000

@@ -1,11 +1,11 @@
 
-Mon, 22 Oct 2012 09:40:27 GMT
+Wed, 13 Feb 2013 12:26:29 GMT
 
 MAKE:
 mv revcomp.csharp revcomp.cs
 /usr/local/bin/mcs  -optimize+ -platform:x64 -out:revcomp.csharp_run revcomp.cs
 rm revcomp.cs
-0.24s to complete and log all make actions
+0.26s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm -O=unsafe revcomp.csharp_run 0 < revcomp-input25000000.txt

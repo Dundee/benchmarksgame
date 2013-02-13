@@ -1,11 +1,11 @@
 
-Mon, 22 Oct 2012 09:05:04 GMT
+Wed, 13 Feb 2013 11:37:16 GMT
 
 MAKE:
 mv nbody.csharp-4.csharp nbody.csharp-4.cs
 /usr/local/bin/mcs -r:/usr/local/lib/mono/4.5/Mono.Simd.dll -optimize+ -platform:x64 -out:nbody.csharp-4.csharp_run nbody.csharp-4.cs
 rm nbody.csharp-4.cs
-0.19s to complete and log all make actions
+0.23s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm -O=unsafe nbody.csharp-4.csharp_run 50000000

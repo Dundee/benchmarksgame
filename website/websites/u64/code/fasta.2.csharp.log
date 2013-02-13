@@ -1,11 +1,11 @@
 
-Mon, 22 Oct 2012 08:07:00 GMT
+Wed, 13 Feb 2013 10:16:19 GMT
 
 MAKE:
 mv fasta.csharp-2.csharp fasta.csharp-2.cs
 /usr/local/bin/mcs  -optimize+ -platform:x64 -out:fasta.csharp-2.csharp_run fasta.csharp-2.cs
 rm fasta.csharp-2.cs
-0.19s to complete and log all make actions
+0.24s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm -O=unsafe fasta.csharp-2.csharp_run 25000000

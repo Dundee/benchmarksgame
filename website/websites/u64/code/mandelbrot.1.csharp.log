@@ -1,11 +1,11 @@
 
-Mon, 22 Oct 2012 08:39:18 GMT
+Wed, 13 Feb 2013 11:04:47 GMT
 
 MAKE:
 mv mandelbrot.csharp mandelbrot.cs
 /usr/local/bin/mcs  -optimize+ -platform:x64 -out:mandelbrot.csharp_run mandelbrot.cs
 rm mandelbrot.cs
-0.19s to complete and log all make actions
+0.23s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm -O=unsafe mandelbrot.csharp_run 16000
