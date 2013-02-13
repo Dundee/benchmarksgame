@@ -70,10 +70,10 @@ $d = array(
  ,array(2012,67,'u32',0.02)
  ,array(2012,68,'u32',0.02)
  ,array(2012,69,'u32',0.06)
- ,array(2012,70,'u32',0.14)
- ,array(2012,71,'u32',0.14)
- ,array(2012,72,'u32',0.14)
- ,array(2013,73,'u33',0.73)
+ ,array(2012,70,'u32',0.06)
+ ,array(2012,71,'u32',0.06)
+ ,array(2012,72,'u32',0.06)
+ ,array(2013,73,'u33',0.66)
  ,array(2013,74,'u33',1.00)
        ) );
        
@@ -85,7 +85,7 @@ $chart = new StepChart();
 
 $chart->yscale = 1.7;
 $chart->yAxis(axisPercent(axis10()));
-$chart->xAxis(axisYrMth(),3.8);
+$chart->xAxis(axisYrMth(),3.9);
 
 $chart->steps(GP4,$d[0]);
 $chart->steps(DEBIAN,$d[1]);
