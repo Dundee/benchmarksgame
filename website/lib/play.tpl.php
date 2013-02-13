@@ -283,9 +283,6 @@ If you're interested in something not shown then <a href="https://alioth.debian.
 <p>Read <a href="#cpuload">&darr;&nbsp;How did you measure &asymp; CPU Load?</a></p>
 </dd>
 
-<dt><a href="#alternative" name="alternative">What does Interesting Alternative Program mean?</a></dt>
-<dd><p>Interesting Alternative Program means that the program doesn't implement the benchmark according to the idiosyncratic rules of The Computer Language Benchmarks Game - mostly, a different algorithm was used - but we felt like showing the program anyway.</p>
-</dd>
 
 <dt><a href="#suffixes" name="suffixes">What do #2 #3 mean?</a></dt>
 <dd><p>Nothing - they are arbitrary suffixes that identify a specific program.</p>
