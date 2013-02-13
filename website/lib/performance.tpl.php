@@ -234,7 +234,7 @@ foreach($Langs as $k => $v){
 
 <?
 if (sizeof($Special)>0){ 
-   printf('<tr><th colspan="7"><a href="%splay.php#alternative" name="alt" title="? Help">"interesting alternative" programs</a></th></tr>', CORE_SITE);
+   printf('<tr><th colspan="7"><a href="%splay.php#alternative" name="alt" title="? Help">"wrong" (different) algorithm, or&#8230;</a></th></tr>', CORE_SITE);
 
    foreach($Special as $d){
       $k = $d[DATA_LANG];
