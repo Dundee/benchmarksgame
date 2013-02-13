@@ -1,11 +1,11 @@
 
-Mon, 22 Oct 2012 20:19:50 GMT
+Tue, 12 Feb 2013 19:48:19 GMT
 
 MAKE:
 mv fastaredux.csharp fastaredux.cs
 /usr/local/bin/mcs  -optimize+ -platform:x86 -out:fastaredux.csharp_run fastaredux.cs
 rm fastaredux.cs
-0.22s to complete and log all make actions
+0.30s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm fastaredux.csharp_run 25000000

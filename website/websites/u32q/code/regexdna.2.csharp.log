@@ -1,11 +1,11 @@
 
-Tue, 23 Oct 2012 10:16:25 GMT
+Wed, 13 Feb 2013 00:02:21 GMT
 
 MAKE:
 mv regexdna.csharp-2.csharp regexdna.csharp-2.cs
 /usr/local/bin/mcs  -optimize+ -platform:x86 -out:regexdna.csharp-2.csharp_run regexdna.csharp-2.cs
 rm regexdna.csharp-2.cs
-0.28s to complete and log all make actions
+0.26s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm --gc=sgen regexdna.csharp-2.csharp_run 0 < regexdna-input5000000.txt

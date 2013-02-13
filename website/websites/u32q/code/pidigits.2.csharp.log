@@ -1,11 +1,11 @@
 
-Tue, 23 Oct 2012 10:04:56 GMT
+Tue, 12 Feb 2013 23:55:58 GMT
 
 MAKE:
 mv pidigits.csharp-2.csharp pidigits.csharp-2.cs
 /usr/local/bin/mcs -r:Mono.Security -optimize+ -platform:x86 -out:pidigits.csharp-2.csharp_run pidigits.csharp-2.cs
 rm pidigits.csharp-2.cs
-0.20s to complete and log all make actions
+0.24s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm --gc=sgen pidigits.csharp-2.csharp_run 10000

@@ -1,11 +1,11 @@
 
-Mon, 22 Oct 2012 21:27:39 GMT
+Tue, 12 Feb 2013 20:49:55 GMT
 
 MAKE:
 mv nbody.csharp-4.csharp nbody.csharp-4.cs
 /usr/local/bin/mcs -r:/usr/local/lib/mono/4.5/Mono.Simd.dll -optimize+ -platform:x86 -out:nbody.csharp-4.csharp_run nbody.csharp-4.cs
 rm nbody.csharp-4.cs
-0.20s to complete and log all make actions
+0.24s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm nbody.csharp-4.csharp_run 500000
@@ -28,14 +28,14 @@ Stacktrace:
 
 Native stacktrace:
 
-	/usr/local/bin/mono() [0x80f07f4]
-	[0xb76ea40c]
-	[0xb76ea424]
-	/lib/i386-linux-gnu/libc.so.6(gsignal+0x4f) [0xb73fd1df]
-	/lib/i386-linux-gnu/libc.so.6(abort+0x175) [0xb7400825]
-	/lib/i386-linux-gnu/libc.so.6(+0x27085) [0xb73f6085]
-	/lib/i386-linux-gnu/libc.so.6(+0x27137) [0xb73f6137]
-	/usr/local/bin/mono() [0x853e8fe]
+	/usr/local/bin/mono() [0x80f5333]
+	[0xb77d840c]
+	[0xb77d8424]
+	/lib/i386-linux-gnu/libc.so.6(gsignal+0x4f) [0xb74e51df]
+	/lib/i386-linux-gnu/libc.so.6(abort+0x175) [0xb74e8825]
+	/lib/i386-linux-gnu/libc.so.6(+0x27085) [0xb74de085]
+	/lib/i386-linux-gnu/libc.so.6(+0x27137) [0xb74de137]
+	/usr/local/bin/mono() [0x854171e]
 
 Debug info from gdb:
 

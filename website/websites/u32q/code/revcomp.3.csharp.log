@@ -1,11 +1,11 @@
 
-Tue, 23 Oct 2012 10:48:16 GMT
+Wed, 13 Feb 2013 00:22:15 GMT
 
 MAKE:
 mv revcomp.csharp-3.csharp revcomp.csharp-3.cs
 /usr/local/bin/mcs  -optimize+ -platform:x86 -out:revcomp.csharp-3.csharp_run revcomp.csharp-3.cs
 rm revcomp.csharp-3.cs
-0.21s to complete and log all make actions
+0.24s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm --gc=sgen revcomp.csharp-3.csharp_run 0 < revcomp-input25000000.txt
