@@ -1,5 +1,5 @@
 
-Wed, 24 Oct 2012 01:43:42 GMT
+Wed, 13 Feb 2013 02:47:37 GMT
 
 MAKE:
 mv mandelbrot.fsharp-2.fsharp mandelbrot.fsharp-2.fs
@@ -7,15 +7,12 @@ mv mandelbrot.fsharp-2.fsharp mandelbrot.fsharp-2.fs
 Microsoft (R) F# 3.0 Compiler version (Mono build)
 Copyright (c) Microsoft Corporation. All Rights Reserved.
 
-/home/dunham/benchmarksgame/mandelbrot/tmp/mandelbrot.fsharp-2.fs(10,1): warning FS0221: The declarations in this file will be placed in an implicit module 'Mandelbrot.fsharp-2' based on the file name 'mandelbrot.fsharp-2.fs'. However this is not a valid F# identifier, so the contents will not be accessible from other files. Consider renaming the file or adding a 'module' or 'namespace' declaration at the top of the file.
+/home/dunham/benchmarksgame_quadcore/mandelbrot/tmp/mandelbrot.fsharp-2.fs(10,1): warning FS0221: The declarations in this file will be placed in an implicit module 'Mandelbrot.fsharp-2' based on the file name 'mandelbrot.fsharp-2.fs'. However this is not a valid F# identifier, so the contents will not be accessible from other files. Consider renaming the file or adding a 'module' or 'namespace' declaration at the top of the file.
 rm mandelbrot.fsharp-2.fs
-4.45s to complete and log all make actions
+4.48s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm --gc=sgen mandelbrot.fsharp-2.fsharp_run.exe 1000
-
-PROGRAM FAILED 
-
+/usr/local/bin/mono --llvm --gc=sgen mandelbrot.fsharp-2.fsharp_run.exe 16000
 
 (BINARY) PROGRAM OUTPUT NOT SHOWN
 
@@ -23,40 +20,3 @@ PROGRAM FAILED
 <premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
 -simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
 -simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
-mono-sgen: mini-llvm-cpp.cpp:128: virtual void* MonoJITMemoryManager::getPointerToNamedFunction(const string&, bool): Assertion `0' failed.
-Stacktrace:
-
-  at <unknown> <0xffffffff>
-  at System.DateTime.get_Year () <0x00016>
-  at System.CurrentSystemTimeZone..ctor (long) <0x00097>
-  at System.TimeZone.get_CurrentTimeZone () <0x000b3>
-  at System.DateTime.get_Now () <0x00097>
-  at Mandelbrot.fsharp-2.main (string[]) <0x00033>
-  at (wrapper runtime-invoke) <Module>.runtime_invoke_int_object (object,intptr,intptr,intptr) <0xffffffff>
-
-Native stacktrace:
-
-	/usr/local/bin/mono-sgen() [0x80f0584]
-	[0xb77de40c]
-	[0xb77de424]
-	/lib/i386-linux-gnu/libc.so.6(gsignal+0x4f) [0xb74f11df]
-	/lib/i386-linux-gnu/libc.so.6(abort+0x175) [0xb74f4825]
-	/lib/i386-linux-gnu/libc.so.6(+0x27085) [0xb74ea085]
-	/lib/i386-linux-gnu/libc.so.6(+0x27137) [0xb74ea137]
-	/usr/local/bin/mono-sgen() [0x812f537]
-	/usr/local/bin/mono-sgen() [0x854c3cd]
-
-Debug info from gdb:
-
-Could not attach to process.  If your uid matches the uid of the target
-process, check the setting of /proc/sys/kernel/yama/ptrace_scope, or try
-again as the root user.  For more details, see /etc/sysctl.d/10-ptrace.conf
-ptrace: Operation not permitted.
-No threads.
-
-=================================================================
-Got a SIGABRT while executing native code. This usually indicates
-a fatal error in the mono runtime or one of the native libraries 
-used by your application.
-=================================================================
-
