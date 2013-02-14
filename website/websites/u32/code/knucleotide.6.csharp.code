@@ -1,7 +1,7 @@
-﻿<span class="hl com">/* The Computer Language Benchmarks Game</span>
-<span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
-<span class="hl com"></span>
-<span class="hl com">   contributed by Eamon Nerbonne</span>
+﻿<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Eamon Nerbonne</span>
 <span class="hl com">*/</span>
 <span class="hl kwa">using</span> System<span class="hl opt">;</span>
 <span class="hl kwa">using</span> System<span class="hl opt">.</span>Collections<span class="hl opt">.</span>Concurrent<span class="hl opt">;</span>
@@ -11,155 +11,157 @@
 <span class="hl kwa">using</span> System<span class="hl opt">.</span>Threading<span class="hl opt">.</span>Tasks<span class="hl opt">;</span>
 
 <span class="hl kwa">static class</span> Program <span class="hl opt">{</span>
-   <span class="hl kwb">const string</span> bases <span class="hl opt">=</span> <span class="hl str">&quot;ACGT&quot;</span><span class="hl opt">;</span>
-   <span class="hl kwa">static</span> <span class="hl kwb">byte</span>?<span class="hl opt">[]</span> toBase <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span>?<span class="hl opt">[</span><span class="hl str">'t'</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">];</span>
+  <span class="hl kwb">const string</span> bases <span class="hl opt">=</span> <span class="hl str">&quot;ACGT&quot;</span><span class="hl opt">;</span>
+  <span class="hl kwa">static</span> <span class="hl kwb">byte</span>?<span class="hl opt">[]</span> toBase <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span>?<span class="hl opt">[</span><span class="hl str">'t'</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">];</span>
 
-   <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">Main</span><span class="hl opt">() {</span>
-      <span class="hl kwa">for</span> <span class="hl opt">(</span>var i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> <span class="hl num">4</span><span class="hl opt">;</span> i<span class="hl opt">++)</span>
-         toBase<span class="hl opt">[</span><span class="hl str">&quot;acgt&quot;</span><span class="hl opt">[</span>i<span class="hl opt">]] = (</span><span class="hl kwb">byte</span><span class="hl opt">)</span>i<span class="hl opt">;</span>
+  <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">Main</span><span class="hl opt">() {</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span>var i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> <span class="hl num">4</span><span class="hl opt">;</span> i<span class="hl opt">++)</span>
+      toBase<span class="hl opt">[</span><span class="hl str">&quot;acgt&quot;</span><span class="hl opt">[</span>i<span class="hl opt">]] = (</span><span class="hl kwb">byte</span><span class="hl opt">)</span>i<span class="hl opt">;</span>
 
-      <span class="hl slc">//Start concurrent workers that will count dna fragments</span>
-      var workers <span class="hl opt">=</span> <span class="hl kwa">new</span><span class="hl opt">[] {</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl num">3</span><span class="hl opt">,</span> <span class="hl num">4</span><span class="hl opt">,</span> <span class="hl num">6</span><span class="hl opt">,</span> <span class="hl num">12</span><span class="hl opt">,</span> <span class="hl num">18</span> <span class="hl opt">}.</span><span class="hl kwd">Select</span><span class="hl opt">(</span>len <span class="hl opt">=&gt; {</span>
-         var queue <span class="hl opt">=</span> <span class="hl kwa">new</span> BlockingCollection<span class="hl opt">&lt;</span><span class="hl kwb">ulong</span><span class="hl opt">[]&gt;(</span><span class="hl num">2</span><span class="hl opt">);</span>
-         <span class="hl kwa">return new</span> <span class="hl opt">{</span>
-            len<span class="hl opt">,</span>
-            queue<span class="hl opt">,</span>
-            task <span class="hl opt">=</span> Task<span class="hl opt">.</span>Factory<span class="hl opt">.</span><span class="hl kwd">StartNew</span><span class="hl opt">(</span>
-               <span class="hl opt">() =&gt;</span>
-                  <span class="hl slc">//use a sparse hash (dictionary) for longer fragments</span>
-                  len <span class="hl opt">&gt;</span> <span class="hl num">8</span> ? <span class="hl kwa">new</span> <span class="hl kwd">Sparse</span><span class="hl opt">(</span>queue<span class="hl opt">,</span> len<span class="hl opt">)</span>
-                  <span class="hl slc">//...and use a dense hash (aka array) for very short fragments.</span>
-                  <span class="hl opt">: (</span>ICounter<span class="hl opt">)</span><span class="hl kwa">new</span> <span class="hl kwd">Dense</span><span class="hl opt">(</span>queue<span class="hl opt">,</span> len<span class="hl opt">),</span>
-               TaskCreationOptions<span class="hl opt">.</span>LongRunning<span class="hl opt">)</span>
-         <span class="hl opt">};</span>
-      <span class="hl opt">}).</span><span class="hl kwd">ToArray</span><span class="hl opt">();</span>
+    <span class="hl slc">//Start concurrent workers that will count dna fragments</span>
+    var workers <span class="hl opt">=</span> <span class="hl kwa">new</span><span class="hl opt">[] {</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl num">3</span><span class="hl opt">,</span> <span class="hl num">4</span><span class="hl opt">,</span> <span class="hl num">6</span><span class="hl opt">,</span> <span class="hl num">12</span><span class="hl opt">,</span> <span class="hl num">18</span> <span class="hl opt">}.</span><span class="hl kwd">Select</span><span class="hl opt">(</span>len <span class="hl opt">=&gt; {</span>
+      var queue <span class="hl opt">=</span> <span class="hl kwa">new</span> BlockingCollection<span class="hl opt">&lt;</span><span class="hl kwb">ulong</span><span class="hl opt">[]&gt;(</span><span class="hl num">2</span><span class="hl opt">);</span>
+      <span class="hl kwa">return new</span> <span class="hl opt">{</span>
+        len<span class="hl opt">,</span>
+        queue<span class="hl opt">,</span>
+        task <span class="hl opt">=</span> Task<span class="hl opt">.</span>Factory<span class="hl opt">.</span><span class="hl kwd">StartNew</span><span class="hl opt">(</span>
+          <span class="hl opt">() =&gt;</span>
+            <span class="hl slc">//use a sparse hash (dictionary) for longer fragments</span>
+            len <span class="hl opt">&gt;</span> <span class="hl num">8</span> ? <span class="hl kwa">new</span> <span class="hl kwd">Sparse</span><span class="hl opt">(</span>queue<span class="hl opt">,</span> len<span class="hl opt">)</span>
+            <span class="hl slc">//...and use a dense hash (aka array) for very short fragments.</span>
+            <span class="hl opt">: (</span>ICounter<span class="hl opt">)</span><span class="hl kwa">new</span> <span class="hl kwd">Dense</span><span class="hl opt">(</span>queue<span class="hl opt">,</span> len<span class="hl opt">),</span>
+          TaskCreationOptions<span class="hl opt">.</span>LongRunning<span class="hl opt">)</span>
+      <span class="hl opt">};</span>
+    <span class="hl opt">}).</span><span class="hl kwd">ToArray</span><span class="hl opt">();</span>
 
-      <span class="hl slc">//Read lines into chunks.  The exact size isn't that important.</span>
-      <span class="hl slc">//Smaller chunks are more concurrent but less CPU efficient.</span>
-      <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var chunk <span class="hl kwa">in</span> <span class="hl kwd">LinesToChunks</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">&lt;&lt;</span> <span class="hl num">18</span><span class="hl opt">))</span>
-         <span class="hl slc">//Pass chunks into concurrent consumers; add to last workers first</span>
-         <span class="hl slc">//as a minor threading optimization.</span>
-         <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var w <span class="hl kwa">in</span> workers<span class="hl opt">.</span><span class="hl kwd">Reverse</span><span class="hl opt">())</span>
-            w<span class="hl opt">.</span>queue<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>chunk<span class="hl opt">);</span>
-
+    <span class="hl slc">//Read lines into chunks.  The exact size isn't that important.</span>
+    <span class="hl slc">//Smaller chunks are more concurrent but less CPU efficient.</span>
+    <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var chunk <span class="hl kwa">in</span> <span class="hl kwd">LinesToChunks</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">&lt;&lt;</span> <span class="hl num">18</span><span class="hl opt">))</span>
+      <span class="hl slc">//Pass chunks into concurrent consumers; add to last workers first</span>
+      <span class="hl slc">//as a minor threading optimization.</span>
       <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var w <span class="hl kwa">in</span> workers<span class="hl opt">.</span><span class="hl kwd">Reverse</span><span class="hl opt">())</span>
-         w<span class="hl opt">.</span>queue<span class="hl opt">.</span><span class="hl kwd">CompleteAdding</span><span class="hl opt">();</span>
+        w<span class="hl opt">.</span>queue<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>chunk<span class="hl opt">);</span>
 
-      <span class="hl slc">//Show output for each consumer</span>
-      <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var w <span class="hl kwa">in</span> workers<span class="hl opt">) {</span>
-         <span class="hl kwa">if</span> <span class="hl opt">(</span>w<span class="hl opt">.</span>len <span class="hl opt">&lt;</span> <span class="hl num">3</span><span class="hl opt">)</span>
-            Console<span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(((</span>Dense<span class="hl opt">)</span>w<span class="hl opt">.</span>task<span class="hl opt">.</span>Result<span class="hl opt">).</span><span class="hl kwd">Summary</span><span class="hl opt">(</span>w<span class="hl opt">.</span>len<span class="hl opt">));</span>
-         <span class="hl kwa">else</span> <span class="hl opt">{</span>
-            var dna <span class="hl opt">=</span> <span class="hl str">&quot;ggtattttaatttatagt&quot;</span><span class="hl opt">.</span><span class="hl kwd">Substring</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> w<span class="hl opt">.</span>len<span class="hl opt">);</span>
-            Console<span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(</span>
-               w<span class="hl opt">.</span>task<span class="hl opt">.</span>Result<span class="hl opt">.</span><span class="hl kwd">Count</span><span class="hl opt">(</span>dna<span class="hl opt">.</span><span class="hl kwd">Aggregate</span><span class="hl opt">(</span><span class="hl num">0ul</span><span class="hl opt">,</span>
-                     <span class="hl opt">(</span>v<span class="hl opt">,</span> c<span class="hl opt">) =&gt;</span> v <span class="hl opt">&lt;&lt;</span> <span class="hl num">2</span> | toBase<span class="hl opt">[</span>c<span class="hl opt">].</span>Value<span class="hl opt">))</span>
-               <span class="hl opt">+</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">&quot;</span> <span class="hl opt">+</span> dna<span class="hl opt">.</span><span class="hl kwd">ToUpper</span><span class="hl opt">()</span>
-            <span class="hl opt">);</span>
-         <span class="hl opt">}</span>
+    <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var w <span class="hl kwa">in</span> workers<span class="hl opt">.</span><span class="hl kwd">Reverse</span><span class="hl opt">())</span>
+      w<span class="hl opt">.</span>queue<span class="hl opt">.</span><span class="hl kwd">CompleteAdding</span><span class="hl opt">();</span>
+
+    <span class="hl slc">//Show output for each consumer</span>
+    <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var w <span class="hl kwa">in</span> workers<span class="hl opt">) {</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>w<span class="hl opt">.</span>len <span class="hl opt">&lt;</span> <span class="hl num">3</span><span class="hl opt">)</span>
+        Console<span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(((</span>Dense<span class="hl opt">)</span>w<span class="hl opt">.</span>task<span class="hl opt">.</span>Result<span class="hl opt">).</span><span class="hl kwd">Summary</span><span class="hl opt">(</span>w<span class="hl opt">.</span>len<span class="hl opt">));</span>
+      <span class="hl kwa">else</span> <span class="hl opt">{</span>
+        var dna <span class="hl opt">=</span> <span class="hl str">&quot;ggtattttaatttatagt&quot;</span><span class="hl opt">.</span><span class="hl kwd">Substring</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> w<span class="hl opt">.</span>len<span class="hl opt">);</span>
+        Console<span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(</span>
+          w<span class="hl opt">.</span>task<span class="hl opt">.</span>Result<span class="hl opt">.</span><span class="hl kwd">Count</span><span class="hl opt">(</span>dna<span class="hl opt">.</span><span class="hl kwd">Aggregate</span><span class="hl opt">(</span><span class="hl num">0ul</span><span class="hl opt">,</span>
+              <span class="hl opt">(</span>v<span class="hl opt">,</span> c<span class="hl opt">) =&gt;</span> v <span class="hl opt">&lt;&lt;</span> <span class="hl num">2</span> | toBase<span class="hl opt">[</span>c<span class="hl opt">].</span>Value<span class="hl opt">))</span>
+          <span class="hl opt">+</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">&quot;</span> <span class="hl opt">+</span> dna<span class="hl opt">.</span><span class="hl kwd">ToUpper</span><span class="hl opt">()</span>
+        <span class="hl opt">);</span>
       <span class="hl opt">}</span>
-   <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+  <span class="hl opt">}</span>
 
-   <span class="hl kwa">static</span> IEnumerable<span class="hl opt">&lt;</span><span class="hl kwb">ulong</span><span class="hl opt">[]&gt;</span> <span class="hl kwd">LinesToChunks</span><span class="hl opt">(</span><span class="hl kwb">int</span> size<span class="hl opt">) {</span>
-      <span class="hl kwb">string</span> line<span class="hl opt">;</span>
-      <span class="hl kwa">while</span> <span class="hl opt">((</span>line <span class="hl opt">=</span> Console<span class="hl opt">.</span><span class="hl kwd">ReadLine</span><span class="hl opt">()) !=</span> <span class="hl kwa">null</span><span class="hl opt">)</span>
-         <span class="hl kwa">if</span> <span class="hl opt">(</span>line<span class="hl opt">.</span><span class="hl kwd">StartsWith</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;THREE&quot;</span><span class="hl opt">))</span>
-            <span class="hl kwa">break</span><span class="hl opt">;</span>
+  <span class="hl kwa">static</span> IEnumerable<span class="hl opt">&lt;</span><span class="hl kwb">ulong</span><span class="hl opt">[]&gt;</span> <span class="hl kwd">LinesToChunks</span><span class="hl opt">(</span><span class="hl kwb">int</span> size<span class="hl opt">) {</span>
+    <span class="hl kwb">string</span> line<span class="hl opt">;</span>
+    <span class="hl kwa">while</span> <span class="hl opt">((</span>line <span class="hl opt">=</span> Console<span class="hl opt">.</span><span class="hl kwd">ReadLine</span><span class="hl opt">()) !=</span> <span class="hl kwa">null</span><span class="hl opt">)</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>line<span class="hl opt">.</span><span class="hl kwd">StartsWith</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;THREE&quot;</span><span class="hl opt">))</span>
+        <span class="hl kwa">break</span><span class="hl opt">;</span>
 
-      <span class="hl slc">//we just skipped all lines upto section three</span>
+    <span class="hl slc">//we just skipped all lines upto section three</span>
 
+    <span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    var arr <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">ulong</span><span class="hl opt">[</span>size<span class="hl opt">];</span>
+    <span class="hl kwb">ulong</span> dna <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+    <span class="hl kwa">while</span> <span class="hl opt">((</span>line <span class="hl opt">=</span> Console<span class="hl opt">.</span><span class="hl kwd">ReadLine</span><span class="hl opt">()) !=</span> <span class="hl kwa">null</span><span class="hl opt">)</span>
+      <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var c <span class="hl kwa">in</span> line<span class="hl opt">) {</span>
+        dna <span class="hl opt">=</span> dna <span class="hl opt">&lt;&lt;</span> <span class="hl num">2</span> | toBase<span class="hl opt">[</span>c<span class="hl opt">].</span>Value<span class="hl opt">;</span>
+        arr<span class="hl opt">[</span>i<span class="hl opt">++] =</span> dna<span class="hl opt">;</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>i <span class="hl opt">==</span> size<span class="hl opt">) {</span>
+          <span class="hl slc">//ok, our batch is full, so yield it to consumers.</span>
+          yield <span class="hl kwa">return</span> arr<span class="hl opt">;</span>
+          i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+          arr <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">ulong</span><span class="hl opt">[</span>size<span class="hl opt">];</span>
+        <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>i <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+      <span class="hl slc">//last batch isn't entirely full, but don't forget it.</span>
+      Array<span class="hl opt">.</span><span class="hl kwd">Resize</span><span class="hl opt">(</span><span class="hl kwa">ref</span> arr<span class="hl opt">,</span> i<span class="hl opt">);</span>
+      yield <span class="hl kwa">return</span> arr<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwb">struct</span> Dense <span class="hl opt">:</span> ICounter <span class="hl opt">{</span>
+    <span class="hl kwa">public</span> <span class="hl kwd">Dense</span><span class="hl opt">(</span>BlockingCollection<span class="hl opt">&lt;</span><span class="hl kwb">ulong</span><span class="hl opt">[]&gt;</span> seq<span class="hl opt">,</span> <span class="hl kwb">int</span> len<span class="hl opt">) {</span>
+      counts <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">int</span><span class="hl opt">[</span><span class="hl num">1</span> <span class="hl opt">&lt;&lt;</span> len <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">];</span>
+      <span class="hl kwb">int</span> mask <span class="hl opt">= (</span><span class="hl num">1</span> <span class="hl opt">&lt;&lt;</span> len <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">) -</span> <span class="hl num">1</span><span class="hl opt">;</span>
       <span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
-      var arr <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">ulong</span><span class="hl opt">[</span>size<span class="hl opt">];</span>
-      <span class="hl kwb">ulong</span> dna <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
 
-      <span class="hl kwa">while</span> <span class="hl opt">((</span>line <span class="hl opt">=</span> Console<span class="hl opt">.</span><span class="hl kwd">ReadLine</span><span class="hl opt">()) !=</span> <span class="hl kwa">null</span><span class="hl opt">)</span>
-         <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var c <span class="hl kwa">in</span> line<span class="hl opt">) {</span>
-            dna <span class="hl opt">=</span> dna <span class="hl opt">&lt;&lt;</span> <span class="hl num">2</span> | toBase<span class="hl opt">[</span>c<span class="hl opt">].</span>Value<span class="hl opt">;</span>
-            arr<span class="hl opt">[</span>i<span class="hl opt">++] =</span> dna<span class="hl opt">;</span>
-            <span class="hl kwa">if</span> <span class="hl opt">(</span>i <span class="hl opt">==</span> size<span class="hl opt">) {</span>
-               <span class="hl slc">//ok, our batch is full, so yield it to consumers.</span>
-               yield <span class="hl kwa">return</span> arr<span class="hl opt">;</span>
-               i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
-               arr <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">ulong</span><span class="hl opt">[</span>size<span class="hl opt">];</span>
-            <span class="hl opt">}</span>
-         <span class="hl opt">}</span>
+      <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var arr <span class="hl kwa">in</span> seq<span class="hl opt">.</span><span class="hl kwd">GetConsumingEnumerable</span><span class="hl opt">())</span>
+        <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var dna <span class="hl kwa">in</span> arr<span class="hl opt">) {</span>
+          i<span class="hl opt">++;</span>
+          <span class="hl kwa">if</span> <span class="hl opt">(</span>i <span class="hl opt">&gt;=</span> len<span class="hl opt">)</span> <span class="hl slc">//only count dna if its already long enough</span>
+            counts<span class="hl opt">[(</span><span class="hl kwb">int</span><span class="hl opt">)</span>dna <span class="hl opt">&amp;</span> mask<span class="hl opt">]++;</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwb">int</span><span class="hl opt">[]</span> counts<span class="hl opt">;</span>
+    <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">Count</span><span class="hl opt">(</span><span class="hl kwb">ulong</span> dna<span class="hl opt">) {</span> <span class="hl kwa">return</span> counts<span class="hl opt">[(</span><span class="hl kwb">int</span><span class="hl opt">)</span>dna<span class="hl opt">]; }</span>
+    <span class="hl kwa">public</span> <span class="hl kwb">string</span> <span class="hl kwd">Summary</span><span class="hl opt">(</span><span class="hl kwb">int</span> len<span class="hl opt">) {</span>
+      var scale <span class="hl opt">=</span> <span class="hl num">100.0</span> <span class="hl opt">/</span> counts<span class="hl opt">.</span><span class="hl kwd">Sum</span><span class="hl opt">();</span>
+      <span class="hl kwa">return</span> <span class="hl kwb">string</span><span class="hl opt">.</span><span class="hl kwd">Concat</span><span class="hl opt">(</span>
+        counts<span class="hl opt">.</span><span class="hl kwd">Select</span><span class="hl opt">((</span>c<span class="hl opt">,</span> dna<span class="hl opt">) =&gt;</span> <span class="hl kwa">new</span> <span class="hl opt">{</span>
+          p <span class="hl opt">=</span> c <span class="hl opt">*</span> scale<span class="hl opt">,</span>
+          dna <span class="hl opt">=</span> <span class="hl kwb">string</span><span class="hl opt">.</span><span class="hl kwd">Concat</span><span class="hl opt">(</span>Enumerable<span class="hl opt">.</span><span class="hl kwd">Range</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> len<span class="hl opt">).</span><span class="hl kwd">Reverse</span><span class="hl opt">()</span>
+                  <span class="hl opt">.</span><span class="hl kwd">Select</span><span class="hl opt">(</span>i <span class="hl opt">=&gt;</span> bases<span class="hl opt">[</span>dna <span class="hl opt">&gt;&gt;</span> i <span class="hl opt">*</span> <span class="hl num">2</span> <span class="hl opt">&amp;</span> <span class="hl num">3</span><span class="hl opt">]))</span>
+        <span class="hl opt">})</span>
+          <span class="hl opt">.</span><span class="hl kwd">OrderByDescending</span><span class="hl opt">(</span>x <span class="hl opt">=&gt;</span> x<span class="hl opt">.</span>p<span class="hl opt">).</span><span class="hl kwd">ThenBy</span><span class="hl opt">(</span>x <span class="hl opt">=&gt;</span> x<span class="hl opt">.</span>dna<span class="hl opt">)</span>
+          <span class="hl opt">.</span><span class="hl kwd">Select</span><span class="hl opt">(</span>x <span class="hl opt">=&gt;</span> x<span class="hl opt">.</span>dna <span class="hl opt">+</span> <span class="hl str">&quot; &quot;</span> <span class="hl opt">+</span> x<span class="hl opt">.</span>p<span class="hl opt">.</span><span class="hl kwd">ToString</span><span class="hl opt">(</span><span class="hl str">&quot;f3&quot;</span><span class="hl opt">) +</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+  <span class="hl opt">}</span>
 
-      <span class="hl kwa">if</span> <span class="hl opt">(</span>i <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">) {</span>
-         <span class="hl slc">//last batch isn't entirely full, but don't forget it.</span>
-         Array<span class="hl opt">.</span><span class="hl kwd">Resize</span><span class="hl opt">(</span><span class="hl kwa">ref</span> arr<span class="hl opt">,</span> i<span class="hl opt">);</span>
-         yield <span class="hl kwa">return</span> arr<span class="hl opt">;</span>
-      <span class="hl opt">}</span>
-   <span class="hl opt">}</span>
+  <span class="hl kwb">struct</span> Sparse <span class="hl opt">:</span> ICounter <span class="hl opt">{</span>
+    <span class="hl kwa">public</span> <span class="hl kwd">Sparse</span><span class="hl opt">(</span>BlockingCollection<span class="hl opt">&lt;</span><span class="hl kwb">ulong</span><span class="hl opt">[]&gt;</span> seq<span class="hl opt">,</span> <span class="hl kwb">int</span> len<span class="hl opt">) {</span>
+      var mask <span class="hl opt">= (</span><span class="hl num">1ul</span> <span class="hl opt">&lt;&lt;</span> len <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">) -</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      var first <span class="hl opt">=</span> seq<span class="hl opt">.</span><span class="hl kwd">GetConsumingEnumerable</span><span class="hl opt">().</span><span class="hl kwd">First</span><span class="hl opt">();</span>
+      
+      counts <span class="hl opt">=</span> Enumerable<span class="hl opt">.</span><span class="hl kwd">Range</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> Environment<span class="hl opt">.</span>ProcessorCount<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">&gt;&gt;</span><span class="hl num">1</span><span class="hl opt">).</span><span class="hl kwd">Select</span><span class="hl opt">(</span>p <span class="hl opt">=&gt;</span>
+        Task<span class="hl opt">.</span>Factory<span class="hl opt">.</span><span class="hl kwd">StartNew</span><span class="hl opt">(() =&gt; {</span>
+          var d <span class="hl opt">=</span> <span class="hl kwa">new</span> Dictionary<span class="hl opt">&lt;</span><span class="hl kwb">ulong</span><span class="hl opt">,</span> IntRef<span class="hl opt">&gt;();</span>
+          <span class="hl kwa">if</span> <span class="hl opt">(</span>p <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl opt">)</span>
+            <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var dna <span class="hl kwa">in</span> first<span class="hl opt">.</span><span class="hl kwd">Skip</span><span class="hl opt">(</span>len <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">))</span>
+              <span class="hl slc">//only count dna if its already long enough</span>
+              <span class="hl kwd">Add</span><span class="hl opt">(</span>d<span class="hl opt">,</span> dna <span class="hl opt">&amp;</span> mask<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">);</span>
 
-   <span class="hl kwb">struct</span> Dense <span class="hl opt">:</span> ICounter <span class="hl opt">{</span>
-      <span class="hl kwa">public</span> <span class="hl kwd">Dense</span><span class="hl opt">(</span>BlockingCollection<span class="hl opt">&lt;</span><span class="hl kwb">ulong</span><span class="hl opt">[]&gt;</span> seq<span class="hl opt">,</span> <span class="hl kwb">int</span> len<span class="hl opt">) {</span>
-         counts <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">int</span><span class="hl opt">[</span><span class="hl num">1</span> <span class="hl opt">&lt;&lt;</span> len <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">];</span>
-         <span class="hl kwb">int</span> mask <span class="hl opt">= (</span><span class="hl num">1</span> <span class="hl opt">&lt;&lt;</span> len <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">) -</span> <span class="hl num">1</span><span class="hl opt">;</span>
-         <span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+          <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var arr <span class="hl kwa">in</span> seq<span class="hl opt">.</span><span class="hl kwd">GetConsumingEnumerable</span><span class="hl opt">())</span>
+            <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var dna <span class="hl kwa">in</span> arr<span class="hl opt">)</span>
+              <span class="hl slc">//only count dna if its already long enough</span>
+              <span class="hl kwd">Add</span><span class="hl opt">(</span>d<span class="hl opt">,</span> dna <span class="hl opt">&amp;</span> mask<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">);</span>
+          <span class="hl kwa">return</span> d<span class="hl opt">;</span>
+        <span class="hl opt">})</span>
+      <span class="hl opt">).</span><span class="hl kwd">ToArray</span><span class="hl opt">().</span><span class="hl kwd">Select</span><span class="hl opt">(</span>t <span class="hl opt">=&gt;</span> t<span class="hl opt">.</span>Result<span class="hl opt">).</span><span class="hl kwd">Aggregate</span><span class="hl opt">((</span>a<span class="hl opt">,</span> b<span class="hl opt">) =&gt; {</span>
+        <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var kv <span class="hl kwa">in</span> b<span class="hl opt">)</span>
+          <span class="hl kwd">Add</span><span class="hl opt">(</span>a<span class="hl opt">,</span> kv<span class="hl opt">.</span>Key<span class="hl opt">,</span> kv<span class="hl opt">.</span>Value<span class="hl opt">.</span>val<span class="hl opt">);</span>
+        <span class="hl kwa">return</span> a<span class="hl opt">;</span>
+      <span class="hl opt">});</span>
+    <span class="hl opt">}</span>
+    Dictionary<span class="hl opt">&lt;</span><span class="hl kwb">ulong</span><span class="hl opt">,</span> IntRef<span class="hl opt">&gt;</span> counts<span class="hl opt">;</span>
+    <span class="hl kwa">static</span> <span class="hl kwb">void</span> <span class="hl kwd">Add</span><span class="hl opt">(</span>Dictionary<span class="hl opt">&lt;</span><span class="hl kwb">ulong</span><span class="hl opt">,</span> IntRef<span class="hl opt">&gt;</span> dict<span class="hl opt">,</span> <span class="hl kwb">ulong</span> dna<span class="hl opt">,</span> <span class="hl kwb">int</span> x<span class="hl opt">) {</span>
+      IntRef count<span class="hl opt">;</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(!</span>dict<span class="hl opt">.</span><span class="hl kwd">TryGetValue</span><span class="hl opt">(</span>dna<span class="hl opt">,</span> out count<span class="hl opt">))</span>
+        dict<span class="hl opt">[</span>dna<span class="hl opt">] =</span> <span class="hl kwa">new</span> IntRef <span class="hl opt">{</span> val <span class="hl opt">=</span> x <span class="hl opt">};</span>
+      <span class="hl kwa">else</span>
+        count<span class="hl opt">.</span>val <span class="hl opt">+=</span> x<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
 
-         <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var arr <span class="hl kwa">in</span> seq<span class="hl opt">.</span><span class="hl kwd">GetConsumingEnumerable</span><span class="hl opt">())</span>
-            <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var dna <span class="hl kwa">in</span> arr<span class="hl opt">) {</span>
-               i<span class="hl opt">++;</span>
-               <span class="hl kwa">if</span> <span class="hl opt">(</span>i <span class="hl opt">&gt;=</span> len<span class="hl opt">)</span> <span class="hl slc">//only count dna if its already long enough</span>
-                  counts<span class="hl opt">[(</span><span class="hl kwb">int</span><span class="hl opt">)</span>dna <span class="hl opt">&amp;</span> mask<span class="hl opt">]++;</span>
-            <span class="hl opt">}</span>
-      <span class="hl opt">}</span>
-      <span class="hl kwb">int</span><span class="hl opt">[]</span> counts<span class="hl opt">;</span>
-      <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">Count</span><span class="hl opt">(</span><span class="hl kwb">ulong</span> dna<span class="hl opt">) {</span> <span class="hl kwa">return</span> counts<span class="hl opt">[(</span><span class="hl kwb">int</span><span class="hl opt">)</span>dna<span class="hl opt">]; }</span>
-      <span class="hl kwa">public</span> <span class="hl kwb">string</span> <span class="hl kwd">Summary</span><span class="hl opt">(</span><span class="hl kwb">int</span> len<span class="hl opt">) {</span>
-         var scale <span class="hl opt">=</span> <span class="hl num">100.0</span> <span class="hl opt">/</span> counts<span class="hl opt">.</span><span class="hl kwd">Sum</span><span class="hl opt">();</span>
-         <span class="hl kwa">return</span> <span class="hl kwb">string</span><span class="hl opt">.</span><span class="hl kwd">Concat</span><span class="hl opt">(</span>
-            counts<span class="hl opt">.</span><span class="hl kwd">Select</span><span class="hl opt">((</span>c<span class="hl opt">,</span> dna<span class="hl opt">) =&gt;</span> <span class="hl kwa">new</span> <span class="hl opt">{</span>
-               p <span class="hl opt">=</span> c <span class="hl opt">*</span> scale<span class="hl opt">,</span>
-               dna <span class="hl opt">=</span> <span class="hl kwb">string</span><span class="hl opt">.</span><span class="hl kwd">Concat</span><span class="hl opt">(</span>Enumerable<span class="hl opt">.</span><span class="hl kwd">Range</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> len<span class="hl opt">).</span><span class="hl kwd">Reverse</span><span class="hl opt">()</span>
-                           <span class="hl opt">.</span><span class="hl kwd">Select</span><span class="hl opt">(</span>i <span class="hl opt">=&gt;</span> bases<span class="hl opt">[</span>dna <span class="hl opt">&gt;&gt;</span> i <span class="hl opt">*</span> <span class="hl num">2</span> <span class="hl opt">&amp;</span> <span class="hl num">3</span><span class="hl opt">]))</span>
-            <span class="hl opt">})</span>
-               <span class="hl opt">.</span><span class="hl kwd">OrderByDescending</span><span class="hl opt">(</span>x <span class="hl opt">=&gt;</span> x<span class="hl opt">.</span>p<span class="hl opt">).</span><span class="hl kwd">ThenBy</span><span class="hl opt">(</span>x <span class="hl opt">=&gt;</span> x<span class="hl opt">.</span>dna<span class="hl opt">)</span>
-               <span class="hl opt">.</span><span class="hl kwd">Select</span><span class="hl opt">(</span>x <span class="hl opt">=&gt;</span> x<span class="hl opt">.</span>dna <span class="hl opt">+</span> <span class="hl str">&quot; &quot;</span> <span class="hl opt">+</span> x<span class="hl opt">.</span>p<span class="hl opt">.</span><span class="hl kwd">ToString</span><span class="hl opt">(</span><span class="hl str">&quot;f3&quot;</span><span class="hl opt">) +</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">)</span>
-            <span class="hl opt">);</span>
-      <span class="hl opt">}</span>
-   <span class="hl opt">}</span>
-
-   <span class="hl kwb">struct</span> Sparse <span class="hl opt">:</span> ICounter <span class="hl opt">{</span>
-      <span class="hl kwa">public</span> <span class="hl kwd">Sparse</span><span class="hl opt">(</span>BlockingCollection<span class="hl opt">&lt;</span><span class="hl kwb">ulong</span><span class="hl opt">[]&gt;</span> seq<span class="hl opt">,</span> <span class="hl kwb">int</span> len<span class="hl opt">) {</span>
-         var mask <span class="hl opt">= (</span><span class="hl num">1ul</span> <span class="hl opt">&lt;&lt;</span> len <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">) -</span> <span class="hl num">1</span><span class="hl opt">;</span>
-         var first <span class="hl opt">=</span> seq<span class="hl opt">.</span><span class="hl kwd">GetConsumingEnumerable</span><span class="hl opt">().</span><span class="hl kwd">First</span><span class="hl opt">();</span>
-
-         counts <span class="hl opt">=</span> Enumerable<span class="hl opt">.</span><span class="hl kwd">Range</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> Environment<span class="hl opt">.</span>ProcessorCount <span class="hl opt">/</span> <span class="hl num">2</span><span class="hl opt">).</span><span class="hl kwd">AsParallel</span><span class="hl opt">().</span><span class="hl kwd">Select</span><span class="hl opt">(</span>p <span class="hl opt">=&gt; {</span>
-            var d <span class="hl opt">=</span> <span class="hl kwa">new</span> Dictionary<span class="hl opt">&lt;</span><span class="hl kwb">ulong</span><span class="hl opt">,</span> IntRef<span class="hl opt">&gt;();</span>
-            <span class="hl kwa">if</span> <span class="hl opt">(</span>p <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl opt">)</span>
-               <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var dna <span class="hl kwa">in</span> first<span class="hl opt">.</span><span class="hl kwd">Skip</span><span class="hl opt">(</span>len <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">))</span>
-                  <span class="hl slc">//only count dna if its already long enough</span>
-                  <span class="hl kwd">Add</span><span class="hl opt">(</span>d<span class="hl opt">,</span> dna <span class="hl opt">&amp;</span> mask<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">);</span>
-
-            <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var arr <span class="hl kwa">in</span> seq<span class="hl opt">.</span><span class="hl kwd">GetConsumingEnumerable</span><span class="hl opt">())</span>
-               <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var dna <span class="hl kwa">in</span> arr<span class="hl opt">)</span>
-                  <span class="hl slc">//only count dna if its already long enough</span>
-                  <span class="hl kwd">Add</span><span class="hl opt">(</span>d<span class="hl opt">,</span> dna <span class="hl opt">&amp;</span> mask<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">);</span>
-            <span class="hl kwa">return</span> d<span class="hl opt">;</span>
-         <span class="hl opt">}).</span><span class="hl kwd">Aggregate</span><span class="hl opt">((</span>a<span class="hl opt">,</span> b<span class="hl opt">) =&gt; {</span>
-            <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var kv <span class="hl kwa">in</span> b<span class="hl opt">)</span>
-               <span class="hl kwd">Add</span><span class="hl opt">(</span>a<span class="hl opt">,</span> kv<span class="hl opt">.</span>Key<span class="hl opt">,</span> kv<span class="hl opt">.</span>Value<span class="hl opt">.</span>val<span class="hl opt">);</span>
-            <span class="hl kwa">return</span> a<span class="hl opt">;</span>
-         <span class="hl opt">});</span>
-      <span class="hl opt">}</span>
-      Dictionary<span class="hl opt">&lt;</span><span class="hl kwb">ulong</span><span class="hl opt">,</span> IntRef<span class="hl opt">&gt;</span> counts<span class="hl opt">;</span>
-      <span class="hl kwa">static</span> <span class="hl kwb">void</span> <span class="hl kwd">Add</span><span class="hl opt">(</span>Dictionary<span class="hl opt">&lt;</span><span class="hl kwb">ulong</span><span class="hl opt">,</span> IntRef<span class="hl opt">&gt;</span> dict<span class="hl opt">,</span> <span class="hl kwb">ulong</span> dna<span class="hl opt">,</span> <span class="hl kwb">int</span> x<span class="hl opt">) {</span>
-         IntRef count<span class="hl opt">;</span>
-         <span class="hl kwa">if</span> <span class="hl opt">(!</span>dict<span class="hl opt">.</span><span class="hl kwd">TryGetValue</span><span class="hl opt">(</span>dna<span class="hl opt">,</span> out count<span class="hl opt">))</span>
-            dict<span class="hl opt">[</span>dna<span class="hl opt">] =</span> <span class="hl kwa">new</span> IntRef <span class="hl opt">{</span> val <span class="hl opt">=</span> x <span class="hl opt">};</span>
-         <span class="hl kwa">else</span>
-            count<span class="hl opt">.</span>val <span class="hl opt">+=</span> x<span class="hl opt">;</span>
-      <span class="hl opt">}</span>
-
-      <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">Count</span><span class="hl opt">(</span><span class="hl kwb">ulong</span> dna<span class="hl opt">) {</span>
-         IntRef count<span class="hl opt">;</span>
-         <span class="hl kwa">return</span> counts<span class="hl opt">.</span><span class="hl kwd">TryGetValue</span><span class="hl opt">(</span>dna<span class="hl opt">,</span> out count<span class="hl opt">)</span> ? count<span class="hl opt">.</span>val <span class="hl opt">:</span> <span class="hl num">0</span><span class="hl opt">;</span>
-      <span class="hl opt">}</span>
-   <span class="hl opt">}</span>
-   <span class="hl kwa">class</span> IntRef <span class="hl opt">{</span> <span class="hl kwa">public</span> <span class="hl kwb">int</span> val<span class="hl opt">; }</span>
-   <span class="hl kwa">interface</span> ICounter <span class="hl opt">{</span>
-      <span class="hl slc">//void Add(ulong dna);</span>
-      <span class="hl kwb">int</span> <span class="hl kwd">Count</span><span class="hl opt">(</span><span class="hl kwb">ulong</span> dna<span class="hl opt">);</span>
-   <span class="hl opt">}</span>
+    <span class="hl kwa">public</span> <span class="hl kwb">int</span> <span class="hl kwd">Count</span><span class="hl opt">(</span><span class="hl kwb">ulong</span> dna<span class="hl opt">) {</span>
+      IntRef count<span class="hl opt">;</span>
+      <span class="hl kwa">return</span> counts<span class="hl opt">.</span><span class="hl kwd">TryGetValue</span><span class="hl opt">(</span>dna<span class="hl opt">,</span> out count<span class="hl opt">)</span> ? count<span class="hl opt">.</span>val <span class="hl opt">:</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+  <span class="hl opt">}</span>
+  <span class="hl kwa">class</span> IntRef <span class="hl opt">{</span> <span class="hl kwa">public</span> <span class="hl kwb">int</span> val<span class="hl opt">; }</span>
+  <span class="hl kwa">interface</span> ICounter <span class="hl opt">{</span>
+    <span class="hl slc">//void Add(ulong dna);</span>
+    <span class="hl kwb">int</span> <span class="hl kwd">Count</span><span class="hl opt">(</span><span class="hl kwb">ulong</span> dna<span class="hl opt">);</span>
+  <span class="hl opt">}</span>
 <span class="hl opt">}</span>
