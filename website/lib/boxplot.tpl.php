@@ -1,4 +1,4 @@
-<?   // Copyright (c) Isaac Gouy 2009-2012 ?>
+<?   // Copyright (c) Isaac Gouy 2009-2013 ?>
 
 <?
    MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang);
@@ -24,7 +24,7 @@
 
 <h2><a href="<?=$pageUrl;?>#chart" name="chart">&nbsp;<strong>Which programs are fastest?</strong></a></h2>
 
-<p>This <a href="http://mathworld.wolfram.com/Box-and-WhiskerPlot.html">box plot</a> shows <em>how many times slower</em>, the fastest benchmark <strong>programs</strong> for selected language implementations were, compared to the fastest <strong>programs</strong>.</p>
+<p>This <a href="http://mathworld.wolfram.com/Box-and-WhiskerPlot.html">box plot</a> shows <em>how many times slower</em>, the fastest benchmark <strong>programs</strong> for selected programming language implementations were, compared to the fastest <strong>programs</strong>.</p>
 
 <p><img src="<?=$chart;?>?<?='s='.Encode($stats);?>&amp;<?='m='.Encode($Mark);?>&amp;<?='w='.Encode($labels);?>"
    alt=""
@@ -35,7 +35,7 @@
 
 <p>These are not the only programming languages. These are not the only compilers and interpreters. These are not the only programs that could be written. These are not the only tasks that could be solved. <a href="<?=CORE_SITE;?>dont-jump-to-conclusions.php"><strong>These are just 10 tiny examples.</strong></a></p>
 
-<p><em>How many times slower</em>, the fastest benchmark <em>programs</em> for selected language implementations were, compared to the fastest <em>programs</em>.</p>
+<p><em>How many times slower</em>, the fastest benchmark <em>programs</em> for programming selected language implementations were, compared to the fastest <em>programs</em>.</p>
 
 <form method="get" action="which-programs-are-fastest.php">
 
