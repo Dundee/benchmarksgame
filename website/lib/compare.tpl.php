@@ -1,4 +1,4 @@
-<?   // Copyright (c) Isaac Gouy 2004-2012
+<?   // Copyright (c) Isaac Gouy 2004-2013
 
 
 // FUNCTIONS ///////////////////////////////////////////
@@ -151,9 +151,9 @@ $ExplanatoryHeader = '&nbsp;<strong>'.$LangName.'</strong>&nbsp;<b>used</b> what
 
 <tr>
 <th>Benchmark</th>
-<th><a href="<?=CORE_SITE;?>play.php#time" title="? More">Time</a></th>
-<th><a href="<?=CORE_SITE;?>play.php#memory" title="? More">Memory</a></th>
-<th><a href="<?=CORE_SITE;?>play.php#gzbytes" title="? More">Code</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#time" title="How do you measure program Elapsed secs?">Time</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#memory" title="How do you measure program Memory KB?">Memory</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#gzbytes" title="How do you measure program Source Code Bytes?">Code</a></th>
 </tr>
 
 
@@ -230,11 +230,11 @@ if ($hasMismatches){
 <table>
 <tr>
 <th>Program&nbsp;Source&nbsp;Code</th>
-<th><a href="<?=CORE_SITE;?>play.php#time" title="? More">CPU&nbsp;secs</a></th>
-<th><a href="<?=CORE_SITE;?>play.php#time" title="? More">Elapsed&nbsp;secs</a></th>
-<th><a href="<?=CORE_SITE;?>play.php#memory" title="? More">Memory&nbsp;KB</a></th>
-<th><a href="<?=CORE_SITE;?>play.php#gzbytes" title="? More">Code&nbsp;B</a></th>
-<th><a href="<?=CORE_SITE;?>play.php#cpuloadpercent" title="? More">&asymp;&nbsp;CPU&nbsp;Load</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#time" title="How do you measure program CPU secs?">CPU&nbsp;secs</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#time" title="How do you measure program Elapsed secs?">Elapsed&nbsp;secs</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#memory" title="How do you measure program Memory KB?">Memory&nbsp;KB</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#gzbytes" title="How do you measure program Source Code Bytes?">Code&nbsp;B</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#cpuloadpercent" title="How do you measure CPU Load?">&asymp;&nbsp;CPU&nbsp;Load</a></th>
 </tr>
 
 <?

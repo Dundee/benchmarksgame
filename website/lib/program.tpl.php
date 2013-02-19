@@ -1,4 +1,4 @@
-<?   // Copyright (c) Isaac Gouy 2004-2012 ?>
+<?   // Copyright (c) Isaac Gouy 2004-2013 ?>
 
 <? 
 MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang);
@@ -14,12 +14,12 @@ $LangName = $Langs[$SelectedLang][LANG_FULL];
 <table>
 <colgroup span="4" class="num"></colgroup>
 <tr>
-<th><a href="<?=CORE_SITE;?>play.php#inputvalue" title="? Help">&nbsp;N&nbsp;</a></th>
-<th><a href="<?=CORE_SITE;?>play.php#time" title="? Help">CPU&nbsp;secs</a></th>
-<th><a href="<?=CORE_SITE;?>play.php#time" title="? Help">Elapsed&nbsp;secs</a></th>
-<th><a href="<?=CORE_SITE;?>play.php#memory" title="? Help">Memory&nbsp;KB</a></th>
-<th><a href="<?=CORE_SITE;?>play.php#gzbytes" title="? Help">Code&nbsp;B</a></th>
-<th><a href="<?=CORE_SITE;?>play.php#cpuloadpercent" title="? Help">&asymp;&nbsp;CPU&nbsp;Load</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#process" title="How do you measure the programs?">&nbsp;N&nbsp;</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#time" title="How do you measure program CPU secs?">CPU&nbsp;secs</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#time" title="How do you measure program Elapsed secs?">Elapsed&nbsp;secs</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#memory" title="How do you measure program Memory KB?">Memory&nbsp;KB</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#gzbytes" title="How do you measure program Source Code Bytes?">Code&nbsp;B</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#cpuloadpercent" title="How do you measure CPU Load?">&asymp;&nbsp;CPU&nbsp;Load</a></th>
 </tr>
 <?
 

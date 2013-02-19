@@ -1,4 +1,4 @@
-<?   // Copyright (c) Isaac Gouy 2004-2012 ?>
+<?   // Copyright (c) Isaac Gouy 2004-2013 ?>
 
 <? 
 // FUNCTIONS ///////////////////////////////////////////
@@ -63,9 +63,9 @@ if ($TestName=='startup'){ $NString = ''; }
 
 // Use the table column headers to emphasize the row sort order
 $CPU_sort_td = '<td><a href="performance.php?test='.$SelectedTest.'&amp;sort=fullcpu" title="Sort by CPU Time secs">sort</a></td>';
-$MEM_sort_td = '<td><a href="performance.php?test='.$SelectedTest.'&amp;sort=kb" title="Sort by Memory-used KB">sort</a></td>';
+$MEM_sort_td = '<td><a href="performance.php?test='.$SelectedTest.'&amp;sort=kb" title="Sort by Memory KB">sort</a></td>';
 $ELAPSED_sort_td = '<td><a href="performance.php?test='.$SelectedTest.'&amp;sort=elapsed" title="Sort by Elapsed Time secs">sort</a></td>';
-$GZBYTES_sort_td = '<td><a href="performance.php?test='.$SelectedTest.'&amp;sort=gz" title="Sort by Code-used Bytes">sort</a></td>';
+$GZBYTES_sort_td = '<td><a href="performance.php?test='.$SelectedTest.'&amp;sort=gz" title="Sort by Source Code Bytes">sort</a></td>';
 
 if ($Sort=='fullcpu'){
    $CPU_sort_td = '<td>&nbsp;</td>';
@@ -120,11 +120,11 @@ echo $GZBYTES_sort_td;
 <tr>
 <th>&nbsp;&nbsp;&#215;&nbsp;&nbsp;</th>
 <th>Program&nbsp;Source&nbsp;Code</th>
-<th><a href="<?=CORE_SITE;?>play.php#time" title="? Help">CPU&nbsp;secs</a></th>
-<th><a href="<?=CORE_SITE;?>play.php#time" title="? Help">Elapsed&nbsp;secs</a></th>
-<th><a href="<?=CORE_SITE;?>play.php#memory" title="? Help">Memory&nbsp;KB</a></th>
-<th><a href="<?=CORE_SITE;?>play.php#gzbytes" title="? Help">Code&nbsp;B</a></th>
-<th><a href="<?=CORE_SITE;?>play.php#cpuloadpercent" title="? Help">&asymp;&nbsp;CPU&nbsp;Load</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#time" title="How do you measure program CPU secs?">CPU&nbsp;secs</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#time" title="How do you measure program Elapsed secs?">Elapsed&nbsp;secs</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#memory" title="How do you measure program Memory KB?">Memory&nbsp;KB</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#gzbytes" title="How do you measure program Source Code Bytes?">Code&nbsp;B</a></th>
+<th><a href="<?=CORE_SITE;?>play.php#cpuloadpercent" title="How do you measure CPU Load?">&asymp;&nbsp;CPU&nbsp;Load</a></th>
 </tr>
 
 <?
