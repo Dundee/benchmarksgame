@@ -45,7 +45,7 @@ collect2: ld returned 1 exit status
 
 
 
-gcc GmpInteger.cc -I/usr/local/src/jdk1.7.0_06/include -I/usr/local/src/jdk1.7.0_06/include/linux -shared -o libjgmplib.so -fPIC -Wl,-soname,libjgmplib.so,-lgmp,-lc
+gcc GmpInteger.cc -I/usr/local/src/jdk1.7.0_11/include -I/usr/local/src/jdk1.7.0_11/include/linux -shared -o libjgmplib.so -fPIC -Wl,-soname,libjgmplib.so,-lgmp,-lc
 
 
 
