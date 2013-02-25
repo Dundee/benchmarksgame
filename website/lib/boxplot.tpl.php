@@ -24,7 +24,7 @@
 
 <h2><a href="<?=$pageUrl;?>#chart" name="chart">&nbsp;<strong>Which programs are fastest?</strong></a></h2>
 
-<p>Please don't use this summary page to compare 2 language implementations -- use the direct comparison, for example <a href="ruby.php">Ruby 2 :: Python 3</a>.</p>
+<p>Please don't use this summary page to compare 2 language implementations -- <b>use the direct comparison</b>, for example <a href="ruby.php">Ruby 2 :: Python 3</a>.</p>
 
 
 <p>This <a href="http://mathworld.wolfram.com/Box-and-WhiskerPlot.html">box plot</a> shows <em>how many times slower</em>, the fastest benchmark programs for selected programming language implementations were, <em>compared to the fastest programs</em>.</p>
