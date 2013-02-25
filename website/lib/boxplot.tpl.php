@@ -50,7 +50,7 @@
 
 <tr>
 <th>&nbsp;</th>
-<th>compare 2</th>
+<th>side-by-side comparisons</th>
 <th><a href="<?=$pageUrl;?>#about">&nbsp;|-</a></th>
 <th><a href="<?=$pageUrl;?>#about">&nbsp;|---</a></th>
 <th><a href="<?=$pageUrl;?>#about">&nbsp;25%</a></th>
