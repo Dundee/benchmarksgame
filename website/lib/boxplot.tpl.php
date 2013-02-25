@@ -76,9 +76,9 @@ foreach($score as $k => $v){
    printf('<td class="score"><p><input type="checkbox" name="%s" %s /></p></td>', $k, $checked); echo "\n";
 
    if (isset($Langs[$k][LANG_SPECIALURL]) && !empty($Langs[$k][LANG_SPECIALURL])){
-      printf('<td><a href="%s.php" title="Compare %s program performance against other programs">%s</a></td>', $Langs[$k][LANG_SPECIALURL],$Name,$HtmlName); 
+      printf('<td><a href="%s.php" title="Compare %s programs with programs written in a different programming language">%s</a></td>', $Langs[$k][LANG_SPECIALURL],$Name,$HtmlName); 
    } else {
-      printf('<td><a href="compare.php?lang=%s" title="Compare %s program performance against other programs">%s</a></td>', $k,$Name,$HtmlName);
+      printf('<td><a href="compare.php?lang=%s" title="Compare %s programs with programs written in a different programming language">%s</a></td>', $k,$Name,$HtmlName);
    }
    echo "\n";
 
