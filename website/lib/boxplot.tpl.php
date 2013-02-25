@@ -24,7 +24,10 @@
 
 <h2><a href="<?=$pageUrl;?>#chart" name="chart">&nbsp;<strong>Which programs are fastest?</strong></a></h2>
 
-<p>This <a href="http://mathworld.wolfram.com/Box-and-WhiskerPlot.html">box plot</a> shows <em>how many times slower</em>, the fastest benchmark <strong>programs</strong> for selected programming language implementations were, compared to the fastest <strong>programs</strong>.</p>
+<p>Please don't use this summary page to compare 2 language implementations -- use the direct comparison, for example <a href="ruby.php">Ruby 2 :: Python 3</a>.</p>
+
+
+<p>This <a href="http://mathworld.wolfram.com/Box-and-WhiskerPlot.html">box plot</a> shows <em>how many times slower</em>, the fastest benchmark programs for selected programming language implementations were, <em>compared to the fastest programs</em>.</p>
 
 <p><img src="<?=$chart;?>?<?='s='.Encode($stats);?>&amp;<?='m='.Encode($Mark);?>&amp;<?='w='.Encode($labels);?>"
    alt=""
@@ -35,7 +38,7 @@
 
 <p>These are not the only programming languages. These are not the only compilers and interpreters. These are not the only programs that could be written. These are not the only tasks that could be solved. <a href="<?=CORE_SITE;?>dont-jump-to-conclusions.php"><strong>These are just 10 tiny examples.</strong></a></p>
 
-<p><em>How many times slower</em>, the fastest benchmark <em>programs</em> for programming selected language implementations were, compared to the fastest <em>programs</em>.</p>
+<p><em>How many times slower</em>, the fastest benchmark programs for selected programming language implementations were, <em>compared to the fastest programs</em>.</p>
 
 <form method="get" action="which-programs-are-fastest.php">
 
@@ -50,7 +53,7 @@
 
 <tr>
 <th>&nbsp;</th>
-<th>direct comparisons</th>
+<th>compare 2</th>
 <th><a href="<?=$pageUrl;?>#about">&nbsp;|-</a></th>
 <th><a href="<?=$pageUrl;?>#about">&nbsp;|---</a></th>
 <th><a href="<?=$pageUrl;?>#about">&nbsp;25%</a></th>
