@@ -27,7 +27,7 @@
 <p>Please don't use this summary page to compare 2 programming language implementations -- <b>use the direct comparison</b>, for example <a href="jruby.php" title="Are the JRuby programs faster than the Ruby programs?">JRuby :: Ruby</a>.</p>
 
 
-<p>This <a href="http://mathworld.wolfram.com/Box-and-WhiskerPlot.html">box plot</a> shows <em>how many times slower</em>, the fastest benchmark programs for selected programming language implementations were, <em>compared to the fastest programs</em>.</p>
+<p>This box plot shows <em>how many times slower</em>, the fastest benchmark programs for selected programming language implementations were, <em>compared to the fastest programs</em>.</p>
 
 <p><img src="<?=$chart;?>?<?='s='.Encode($stats);?>&amp;<?='m='.Encode($Mark);?>&amp;<?='w='.Encode($labels);?>"
    alt=""
