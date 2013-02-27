@@ -40,7 +40,9 @@
 
 <p>These are not the only programming languages. These are not the only compilers and interpreters. These are not the only programs that could be written. These are not the only tasks that could be solved. <a href="<?=CORE_SITE;?>dont-jump-to-conclusions.php"><strong>These are just 10 tiny examples.</strong></a></p>
 
-<p><em>How many times slower</em>, the fastest benchmark programs for selected programming language implementations were, <em>compared to the fastest programs</em>.</p>
+<p>Please don't use this summary page to compare median values -- <b>use the direct comparison</b> to <em>compare 2</em> programming language implementations.</p>
+
+<p>This table shows <em>how many times slower</em>, the fastest benchmark programs for selected programming language implementations were, <em>compared to the fastest programs</em>.</p>
 
 <form method="get" action="which-programs-are-fastest.php">
 
