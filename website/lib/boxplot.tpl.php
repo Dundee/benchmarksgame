@@ -86,7 +86,7 @@ foreach($score as $k => $v){
    }
    echo "\n";
 
-   printf('<td>%0.2f</td><td>%0.2f</td><td>%0.2f</td><td class="sort">%0.2f</td><td>%0.2f</td><td>%0.2f</td><td>%0.2f</td>',
+   printf('<td>%0.2f</td><td>%0.2f</td><td>%0.2f</td><td>%0.2f</td><td>%0.2f</td><td>%0.2f</td><td>%0.2f</td>',
       $v[STAT_MIN], $v[STAT_XLOWER], $v[STAT_LOWER], $v[STAT_MEDIAN],
       $v[STAT_UPPER], $v[STAT_XUPPER], $v[STAT_MAX]); echo "\n";
    echo "</tr>\n";
