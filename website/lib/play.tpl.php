@@ -61,7 +61,7 @@
 <dt><a href="#machine" name="machine">What hardware and OS do you measure the programs on?</a></dt>
 <dd>
 <p><b>Quad-core 2.4Ghz Intel<sup>&#174;</sup> Q6600<sup>&#174;</sup></b> with 4GB of RAM and 250GB SATA II disk drive.</p>
-<p><b>Ubuntu&#8482; 12.10</b> Kernel Linux 3.2.0-35-generic</p>
+<p><b>Ubuntu&#8482; 12.10</b> Kernel Linux 3.5.0-25-generic</p>
 </dd>
 
 

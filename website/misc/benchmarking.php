@@ -120,7 +120,7 @@
 <li><a href="http://moscova.inria.fr/~zappa/projects/liketypes/paper.pdf">Integrating Typed and Untyped Code in a Scripting Language</a> pdf</li>  
 <li><a href="http://www.springerlink.com/index/P4U0851W34180N74.pdf">Inline Caching Meets Quickening</a> pdf</li> 
 </ul>
-<p>Having a collection of programs that implement the same tasks in different programming languages is at least convenient. Presumably convenience is why Bjarne Stroustrup refers to the benchmarks game (to support his point about run time typing) in <a href="http://www2.research.att.com/~bs/Computer-Jan12.pdf">"Software Development for Infrastructure"</a> pdf, IEEE Computer, January 2012.</p>
+<p>Having a collection of programs that implement the same tasks in different programming languages is at least convenient. Presumably convenience is why Bjarne Stroustrup refers to the benchmarks game (to support his point about run time typing) in <a href="http://www.stroustrup.com/Software-for-infrastructure.pdf">"Software Development for Infrastructure"</a> pdf, IEEE Computer, January 2012.</p>
 </dd>
 
 <dd>
