@@ -140,7 +140,7 @@
 <h2><a href="#shapes" name="shapes">&nbsp;<?=$Title;?>&nbsp;[<?=$Mark;?>]</a></h2>
 <p>From <em>more-concise at page left</em> to less-concise at the right, from slower at page top to <em>faster at the bottom</em>.</p>
 
-<p>These scatter plots show the fastest programs contributed for each programming language implementation, measured on this computer -- so they don't show <a href="#shortest">&darr;&nbsp;slower more-concise programs</a> that still seem relatively fast.</p>
+<p>These scatter plots show the fastest programs contributed for each programming language implementation, measured on this computer -- so they don't show <a href="#shortest" title="Shortest C++ programs">&darr;&nbsp;slower more-concise programs</a> that still seem relatively fast.</p>
 
 <p>These are not the only programs that could be written. These are not the only programming languages. These are not the only compilers and interpreters. These are not the only tasks that could be solved. <a href="<?=CORE_SITE;?>dont-jump-to-conclusions.php"><strong>These are just 10 tiny examples.</strong></a></p>
 
