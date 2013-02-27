@@ -1,1 +1,1 @@
-<p>There are other ways to analyse and present this data: look for patterns in <a href="code-used-time-used-shapes.php">Code-used Time-used Shapes</a> or ask <a href="which-programs-are-best.php">Which programs are best?</a> or take the <a href="summarydata.php">Summary Data</a> and do your own analysis!</p>
+<p>There are other ways to analyse and present this data: look for patterns in <a href="code-used-time-used-shapes.php">Code-used Time-used Shapes</a> or take the <a href="summarydata.php">Summary Data</a> and do your own analysis!</p>
