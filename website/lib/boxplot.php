@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) Isaac Gouy 2010-2012
+// Copyright (c) Isaac Gouy 2010-2013
 
 // LIBRARIES ////////////////////////////////////////////////
 
@@ -23,23 +23,13 @@ define('STATS_N',7);
 
 // FUNCTIONS ///////////////////////////////////////////
 
-function SelectedLangs($Langs, $Action){
-   $w = array(); $wd = array();
-   foreach($Langs as $lang){
-      $link = $lang[LANG_LINK];
-      if (isset($_GET[$link])){ $w[$link] = 1; }
-      if ($lang[LANG_SELECT]){ $wd[$link] = 1; }
-   }
-   if ($Action=='reset'||sizeof($w)<=0){ $w = $wd; }
-   return $w;
+
+function BoxplotData($FileName,$Tests,$Langs,$Incl,$Excl,$HasHeading=TRUE){
+
+   return FullScores( FullRatios($FileName,$Tests,$Langs,$Incl,$Excl,$HasHeading) );
 }
 
-function BoxplotData($FileName,$Tests,$Langs,$Incl,$Excl,$SLangs,$HasHeading=TRUE){
-
-   return FullScores( $SLangs, FullRatios($FileName,$Tests,$Langs,$Incl,$Excl,$SLangs,$HasHeading) );
-}
-
-function FullRatios($FileName,$Tests,$Langs,$Incl,$Excl,$SLangs,$HasHeading=TRUE){
+function FullRatios($FileName,$Tests,$Langs,$Incl,$Excl,$HasHeading=TRUE){
    $time_mins = array();
    foreach($Tests as $k => $v){ $time_mins[$k] = 360000.0; } // 100 hours
    $data = array();
@@ -94,7 +84,7 @@ function FullRatios($FileName,$Tests,$Langs,$Incl,$Excl,$SLangs,$HasHeading=TRUE
 }
 
 
-function FullScores($SLangs,$ratios){
+function FullScores($ratios){
   $score = array();
   foreach($ratios as $k => $s){
      $score[$k] = Percentiles($s);
@@ -106,12 +96,10 @@ function FullScores($SLangs,$ratios){
    $allowed = array();
    $count = 0; $max = 15;
    foreach($score as $k => $test){
-      if (isset($SLangs[$k])){
-         $labels[] = $k;
-         $stats[] = $test;
-         $allowed[$k] = 1;
-         $count++;
-      }
+      $labels[] = $k;
+      $stats[] = $test;
+      $allowed[$k] = 1;
+      $count++;
       if ($count == $max){ break; }
    }
    return array($score,$labels,$stats,$allowed);
@@ -163,8 +151,6 @@ list($Incl,$Excl) = WhiteListInEx();
 $Tests = WhiteListUnique('test.csv',$Incl); // assume test.csv in name order
 $Langs = WhiteListUnique('lang.csv',$Incl); // assume lang.csv in name order
 
-$SLangs = SelectedLangs($Langs, $Action);
-
 
 // HEADER ////////////////////////////////////////////////
 
@@ -178,7 +164,7 @@ $faqUrl = CORE_SITE.'play.php';
 
 // DATA ////////////////////////////////////////////////
 
-$Data = BoxplotData(DATA_PATH.'data.csv',$Tests,$Langs,$Incl,$Excl,$SLangs);
+$Data = BoxplotData(DATA_PATH.'data.csv',$Tests,$Langs,$Incl,$Excl);
 
 $timeUsed = 'Elapsed secs';
 
