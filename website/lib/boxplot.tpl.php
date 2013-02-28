@@ -10,8 +10,8 @@
    $labels1 = array();
    $stats1 = array();
 
-   $m = min($n,23);
-   for ($i=8; $i<$m; $i++){
+   $m = min($n,25);
+   for ($i=10; $i<$m; $i++){
       $labels1[] = $labels[$i];
       $stats1[] = $stats[$i];
    }
