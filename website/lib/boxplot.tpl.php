@@ -6,6 +6,16 @@
    list($labels,$stats) = $Data;
    unset($Data);  
 
+   $n = sizeof($stats);
+   $labels1 = array();
+   $stats1 = array();
+
+   for ($i=7; $i<22; $i++){
+      $labels1[] = $labels[$i];
+      $stats1[] = $stats[$i];
+   }
+
+
    $pageUrl = CORE_SITE.SITE_NAME.'/which-programs-are-fastest.php';
    $chart = 'chartbox.php';
 ?>
@@ -31,7 +41,7 @@
 
 <p>Note which boxes have no overlap, note which boxes overlap completely; note which are tight, note which spread too much for confidence.</p>
 
-<p><img src="<?=$chart;?>?<?='s='.Encode($stats);?>&amp;<?='m='.Encode($Mark);?>&amp;<?='w='.Encode($labels);?>"
+<p><img src="<?=$chart;?>?<?='s='.Encode($stats1);?>&amp;<?='m='.Encode($Mark);?>&amp;<?='w='.Encode($labels1);?>"
    alt=""
    title=""
    width="480" height="300"
