@@ -38,51 +38,6 @@
  /></p>
 
 
-<p>These are not the only programming languages. These are not the only compilers and interpreters. These are not the only programs that could be written. These are not the only tasks that could be solved. <a href="<?=CORE_SITE;?>dont-jump-to-conclusions.php"><strong>These are just 10 tiny examples.</strong></a></p>
-
-<p>Please don't use this summary page to compare median values -- <b>use the direct comparison</b> to <em>compare 2</em> programming language implementations.</p>
-
-<p>This table shows <em>how many times slower</em>, the fastest benchmark programs for selected programming language implementations were, <em>compared to the fastest programs</em>.</p>
-
-<table>
-<colgroup span="1" class="txt"></colgroup>
-<colgroup span="7" class="num"></colgroup>
-
-<tr>
-<th>compare 2</th>
-<th><a href="<?=$pageUrl;?>#about">&nbsp;|-</a></th>
-<th><a href="<?=$pageUrl;?>#about">&nbsp;|---</a></th>
-<th><a href="<?=$pageUrl;?>#about">&nbsp;25%</a></th>
-<th><a href="<?=$pageUrl;?>#about">median</a></th>
-<th><a href="<?=$pageUrl;?>#about">&nbsp;75%</a></th>
-<th><a href="<?=$pageUrl;?>#about">&nbsp;---|</a></th>
-<th><a href="<?=$pageUrl;?>#about">&nbsp;-|</a></th>
-</tr>
-
-
-<?
-foreach($score as $k => $v){
-   $Name = $Langs[$k][LANG_FULL];
-   $HtmlName = $Langs[$k][LANG_HTML];
-
-   printf('<tr>');
-
-   if (isset($Langs[$k][LANG_SPECIALURL]) && !empty($Langs[$k][LANG_SPECIALURL])){
-      printf('<td><a href="%s.php" title="Are the %s programs faster than programs in some other programming language?">%s</a></td>', $Langs[$k][LANG_SPECIALURL],$Name,$HtmlName); 
-   } else {
-      printf('<td><a href="compare.php?lang=%s" title="Are the %s programs faster than programs in some other programming language?">%s</a></td>', $k,$Name,$HtmlName);
-   }
-   echo "\n";
-
-   printf('<td>%0.2f</td><td>%0.2f</td><td>%0.2f</td><td>%0.2f</td><td>%0.2f</td><td>%0.2f</td><td>%0.2f</td>',
-      $v[STAT_MIN], $v[STAT_XLOWER], $v[STAT_LOWER], $v[STAT_MEDIAN],
-      $v[STAT_UPPER], $v[STAT_XUPPER], $v[STAT_MAX]); echo "\n";
-   echo "</tr>\n";
-}
-?>
-
-</table>
-
 <h3><a href="<?=$pageUrl;?>#about" name="about">&nbsp;</a></h3>
 <?=$About;?>
 
