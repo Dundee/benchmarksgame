@@ -58,7 +58,7 @@
  /></p>
 
 
-<p><img src="<?=$chart;?>?<?='s='.Encode($stats);?>&amp;<?='m='.Encode($Mark);?>&amp;<?='w='.Encode($labels);?>"
+<p><img src="<?=$chart;?>?<?='s='.Encode($stats2);?>&amp;<?='m='.Encode($Mark);?>&amp;<?='w='.Encode($labels2);?>"
    alt=""
    title=""
    width="480" height="300"
