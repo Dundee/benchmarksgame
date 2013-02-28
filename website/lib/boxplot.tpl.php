@@ -6,15 +6,25 @@
    list($labels,$stats) = $Data;
    unset($Data);  
 
-   $n = sizeof($stats);
+   $n = sizeof($stats); $m = $n - 8;
    $labels1 = array();
    $stats1 = array();
 
-   for ($i=7; $i<22; $i++){
+   for ($i=8; $i<20; $i++){
       $labels1[] = $labels[$i];
       $stats1[] = $stats[$i];
    }
 
+   for ($i=0; $i<7; $i++){
+      $labels2[] = $labels[$i];
+      $stats2[] = $stats[$i];
+   }
+   for ($m=8; $i<$n; $i++){
+      $labels2[] = $labels[$i];
+      $stats2[] = $stats[$i];
+   }
+   unset($labels); 
+   unset($stats); 
 
    $pageUrl = CORE_SITE.SITE_NAME.'/which-programs-are-fastest.php';
    $chart = 'chartbox.php';

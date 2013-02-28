@@ -93,11 +93,11 @@ function FullScores($ratios){
 
    $labels = array();
    $stats = array();
-   $count = 0; $max = 15;
+   //$count = 0; $max = 15;
    foreach($score as $k => $test){
       $labels[] = $k;
       $stats[] = $test;
-      $count++;
+      //$count++;
       //if ($count == $max){ break; }
    }
    return array($labels,$stats);
