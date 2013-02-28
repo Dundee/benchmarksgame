@@ -20,8 +20,8 @@
       $stats2[] = $stats[$i];
    }
    for ($m=8; $i<$n; $i++){
-      $labels2[] = $labels[$i];
-      $stats2[] = $stats[$i];
+      //$labels2[] = $labels[$i];
+      //$stats2[] = $stats[$i];
    }
    unset($labels); 
    unset($stats); 
