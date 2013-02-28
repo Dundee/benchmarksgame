@@ -6,11 +6,12 @@
    list($labels,$stats) = $Data;
    unset($Data);  
 
-   $n = sizeof($stats); $m = $n - 6;
+   $n = sizeof($stats); 
    $labels1 = array();
    $stats1 = array();
 
-   for ($i=8; $i<23; $i++){
+   $m = min($n,23);
+   for ($i=8; $i<$m; $i++){
       $labels1[] = $labels[$i];
       $stats1[] = $stats[$i];
    }
@@ -19,6 +20,7 @@
       $labels2[] = $labels[$i];
       $stats2[] = $stats[$i];
    }
+   $m = $n - 6;
    for ($i=$m; $i<$n; $i++){
       $labels2[] = $labels[$i];
       $stats2[] = $stats[$i];
