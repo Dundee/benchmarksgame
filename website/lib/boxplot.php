@@ -94,15 +94,15 @@ function FullScores($ratios){
    $labels = array();
    $stats = array();
    //$allowed = array();
-   //$count = 0; $max = 15;
+   $count = 0; $max = 15;
    foreach($score as $k => $test){
       $labels[] = $k;
       $stats[] = $test;
       //$allowed[$k] = 1;
-      //$count++;
-      //if ($count == $max){ break; }
+      $count++;
+      if ($count == $max){ break; }
    }
-   return array($labels,$stats);
+   return array($score,$labels,$stats);
 }
 
 function CompareMedian($a, $b){
