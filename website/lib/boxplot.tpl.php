@@ -6,6 +6,8 @@
    list($labels,$stats) = $Data;
    unset($Data);  
 
+   // make 2 charts -- middle data & first+last data
+
    $n = sizeof($stats); 
    $labels1 = array();
    $stats1 = array();
