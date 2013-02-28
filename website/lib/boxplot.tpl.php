@@ -68,6 +68,9 @@
    width="480" height="300"
  /></p>
 
+<p>These are not the only compilers and interpreters. These are not the only programs that could be written. These are not the only tasks that could be solved. <a href="<?=CORE_SITE;?>dont-jump-to-conclusions.php"><strong>These are just 10 tiny examples.</strong></a></p>
+
+<p>Please don't obsess over tiny differences the median values.</p>
 
 <h3><a href="<?=$pageUrl;?>#about" name="about">&nbsp;</a></h3>
 <?=$About;?>
