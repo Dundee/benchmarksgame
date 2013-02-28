@@ -6,7 +6,7 @@
    list($labels,$stats) = $Data;
    unset($Data);  
 
-   $n = sizeof($stats); $m = $n - 8;
+   $n = sizeof($stats); $m = $n - 10;
    $labels1 = array();
    $stats1 = array();
 
@@ -15,7 +15,7 @@
       $stats1[] = $stats[$i];
    }
 
-   for ($i=0; $i<7; $i++){
+   for ($i=0; $i<9; $i++){
       $labels2[] = $labels[$i];
       $stats2[] = $stats[$i];
    }
