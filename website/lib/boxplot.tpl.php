@@ -6,7 +6,7 @@
    list($labels,$stats) = $Data;
    unset($Data);  
 
-   $n = sizeof($stats); $m = $n - 10;
+   $n = sizeof($stats); $m = $n - 6;
    $labels1 = array();
    $stats1 = array();
 
