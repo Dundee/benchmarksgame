@@ -3,7 +3,7 @@
 <?
    MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang);
 
-   list($score,$labels,$stats) = $Data;
+   list($labels,$stats) = $Data;
    unset($Data);  
 
    $pageUrl = CORE_SITE.SITE_NAME.'/which-programs-are-fastest.php';

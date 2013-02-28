@@ -98,7 +98,7 @@ function FullScores($ratios){
       $labels[] = $k;
       $stats[] = $test;
       $count++;
-      if ($count == $max){ break; }
+      //if ($count == $max){ break; }
    }
    return array($labels,$stats);
 }
