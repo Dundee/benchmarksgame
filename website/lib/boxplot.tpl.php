@@ -10,7 +10,7 @@
    $labels1 = array();
    $stats1 = array();
 
-   for ($i=8; $i<20; $i++){
+   for ($i=8; $i<23; $i++){
       $labels1[] = $labels[$i];
       $stats1[] = $stats[$i];
    }
