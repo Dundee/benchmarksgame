@@ -1,15 +1,15 @@
 
-Tue, 22 Jan 2013 08:17:49 GMT
+Mon, 04 Mar 2013 05:00:53 GMT
 
 MAKE:
 mv threadring.clojure threadring.clj
-/usr/local/src/jdk1.7.0_11/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.4.0/clojure-1.4.0-slim.jar: clojure.lang.Compile threadring
+/usr/local/src/jdk1.7.0_11/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.5.0/clojure-1.5.0-slim.jar: clojure.lang.Compile threadring
 Compiling threadring to .
-Reflection warning, threadring.clj:37 - call to valueOf can't be resolved.
-5.04s to complete and log all make actions
+Reflection warning, threadring.clj:37:24 - call to valueOf can't be resolved.
+5.22s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -cp .:/usr/local/src/clojure-1.4.0/clojure-1.4.0-slim.jar: threadring 50000000
+/usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -cp .:/usr/local/src/clojure-1.5.0/clojure-1.5.0-slim.jar: threadring 50000000
 
 PROGRAM OUTPUT:
 292
