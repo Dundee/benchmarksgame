@@ -1,16 +1,14 @@
 
-Fri, 08 Feb 2013 01:17:30 GMT
+Mon, 04 Mar 2013 23:18:05 GMT
 
 MAKE:
 mv threadring.hipe threadring.erl
-/usr/local/src/otp_src_R16A_nosmp/bin/erlc +native +"{hipe, [o3]}"  threadring.erl
+/usr/local/src/otp_src_R16B_nosmp/bin/erlc +native +"{hipe, [o3]}"  threadring.erl
 rm threadring.erl
-0.49s to complete and log all make actions
+0.48s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/src/otp_src_R16A_nosmp/bin/erl -smp disable -noshell -run +t 8192 +ec +K true +P 50000000 +hmbs 1 +hms 4 +sss 4 threadring main 50000000
+/usr/local/src/otp_src_R16B_nosmp/bin/erl -smp disable -noshell -run +t 8192 +ec +K true +P 50000000 +hmbs 1 +hms 4 +sss 4 threadring main 50000000
 
 PROGRAM OUTPUT:
 292
-
-inet_gethost[8534]: WARNING:Malformed reply (header) from worker process 8535.

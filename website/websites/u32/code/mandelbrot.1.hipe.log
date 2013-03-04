@@ -1,13 +1,13 @@
 
-Thu, 07 Feb 2013 23:37:09 GMT
+Mon, 04 Mar 2013 22:18:13 GMT
 
 MAKE:
 mv mandelbrot.hipe mandelbrot.erl
-/usr/local/src/otp_src_R16A_nosmp/bin/erlc +native +"{hipe, [o3]}"  mandelbrot.erl
+/usr/local/src/otp_src_R16B_nosmp/bin/erlc +native +"{hipe, [o3]}"  mandelbrot.erl
 rm mandelbrot.erl
-0.75s to complete and log all make actions
+0.77s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/src/otp_src_R16A_nosmp/bin/erl -smp disable -noshell -run  mandelbrot main 16000
+/usr/local/src/otp_src_R16B_nosmp/bin/erl -smp disable -noshell -run  mandelbrot main 16000
 
 (BINARY) PROGRAM OUTPUT NOT SHOWN
