@@ -78,19 +78,6 @@ function PrintHeaders(){
 
 PrintHeaders();
 
-$page = array(
-    array('which-programs-are-fastest.php','Which programs are fastest?','Which of these language implementations have the fastest benchmark programs?')
-   );
-
-foreach($page as $p){
-   printf('<tr>');
-   foreach($sites as $s){
-      printf('<td><a href="http://benchmarksgame.alioth.debian.org/%s/%s" title="%s">%s</a></td>', $s, $p[0], $p[2], $p[1] );
-   }
-   echo "</tr>";
-}
-
-
 $basesite = array('u32');
 $onecoresites = array('u32','u64');
 $u32sites = array('u32','u32q');
@@ -184,6 +171,18 @@ foreach($tests as $t){
 }
 
 PrintHeaders();
+
+$page = array(
+    array('which-programs-are-fastest.php','Which programs are fastest?','Which of these language implementations have the fastest benchmark programs?')
+   );
+
+foreach($page as $p){
+   printf('<tr>');
+   foreach($sites as $s){
+      printf('<td><a href="http://benchmarksgame.alioth.debian.org/%s/%s" title="%s">%s</a></td>', $s, $p[0], $p[2], $p[1] );
+   }
+   echo "</tr>";
+}
 
 ?>
 
