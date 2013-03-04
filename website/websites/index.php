@@ -90,36 +90,6 @@ foreach($page as $p){
    echo "</tr>";
 }
 
-$tests = array(
-   array('nbody','n-body','Perform an N-body simulation of the Jovian planets')
-   ,array('fannkuchredux','fannkuch-redux','Repeatedly access a tiny integer-sequence')
-   ,array('meteor','meteor-contest','Search for solutions to shape packing puzzle')
-   ,array('fasta','fasta','Generate and write random DNA sequences')
-   ,array('spectralnorm','spectral-norm','Calculate an eigenvalue using the power method')
-   ,array('revcomp','reverse-complement','Read DNA sequences and write their reverse-complement')
-   ,array('mandelbrot','mandelbrot','Generate a Mandelbrot set and write a portable bitmap')
-   ,array('knucleotide','k-nucleotide','Repeatedly update hashtables and k-nucleotide strings')
-   ,array('regexdna','regex-dna','Match DNA 8-mers and substitute nucleotides for IUB code')
-   ,array('pidigits','pidigits','Calculate the digits of Pi with streaming arbitrary-precision arithmetic')
-   ,array('chameneosredux','chameneos-redux','Repeatedly perform symmetrical thread rendezvous requests')
-   ,array('threadring','thread-ring','Repeatedly switch from thread to thread passing one token')
-   ,array('binarytrees','binary-trees','Allocate and deallocate many many binary trees')
-   );
-
-foreach($tests as $t){
-   printf('<tr>');
-   foreach($sites as $s){
-      if ($s=='u64q'){
-         printf('<td><a href="http://benchmarksgame.alioth.debian.org/%s/performance.php?test=%s">%s</a></td>', $s, $t[0], $t[2] );
-      } else {
-         printf('<td><a href="http://benchmarksgame.alioth.debian.org/%s/performance.php?test=%s" title="%s">%s</a></td>', $s, $t[0], $t[2], $t[1] );
-      }
-   }
-   printf('</tr>');
-}
-
-
-PrintHeaders();
 
 $basesite = array('u32');
 $onecoresites = array('u32','u64');
@@ -177,6 +147,37 @@ foreach($langs as $lang){
       }
       else {
          printf('<td>&nbsp;</td>');
+      }
+   }
+   printf('</tr>');
+}
+
+
+PrintHeaders();
+
+$tests = array(
+   array('nbody','n-body','Perform an N-body simulation of the Jovian planets')
+   ,array('fannkuchredux','fannkuch-redux','Repeatedly access a tiny integer-sequence')
+   ,array('meteor','meteor-contest','Search for solutions to shape packing puzzle')
+   ,array('fasta','fasta','Generate and write random DNA sequences')
+   ,array('spectralnorm','spectral-norm','Calculate an eigenvalue using the power method')
+   ,array('revcomp','reverse-complement','Read DNA sequences and write their reverse-complement')
+   ,array('mandelbrot','mandelbrot','Generate a Mandelbrot set and write a portable bitmap')
+   ,array('knucleotide','k-nucleotide','Repeatedly update hashtables and k-nucleotide strings')
+   ,array('regexdna','regex-dna','Match DNA 8-mers and substitute nucleotides for IUB code')
+   ,array('pidigits','pidigits','Calculate the digits of Pi with streaming arbitrary-precision arithmetic')
+   ,array('chameneosredux','chameneos-redux','Repeatedly perform symmetrical thread rendezvous requests')
+   ,array('threadring','thread-ring','Repeatedly switch from thread to thread passing one token')
+   ,array('binarytrees','binary-trees','Allocate and deallocate many many binary trees')
+   );
+
+foreach($tests as $t){
+   printf('<tr>');
+   foreach($sites as $s){
+      if ($s=='u64q'){
+         printf('<td><a href="http://benchmarksgame.alioth.debian.org/%s/performance.php?test=%s">%s</a></td>', $s, $t[0], $t[2] );
+      } else {
+         printf('<td><a href="http://benchmarksgame.alioth.debian.org/%s/performance.php?test=%s" title="%s">%s</a></td>', $s, $t[0], $t[2], $t[1] );
       }
    }
    printf('</tr>');
