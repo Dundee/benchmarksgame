@@ -1,0 +1,75 @@
+<span class="hl opt">#</span>lang racket<span class="hl opt">/</span>base
+
+<span class="hl opt">(</span><span class="hl kwa">require</span> racket<span class="hl opt">/</span>unsafe<span class="hl opt">/</span>ops<span class="hl opt">)</span>
+
+<span class="hl slc">;;; The Computer Language Benchmarks Game</span>
+<span class="hl slc">;;; http://benchmarksgame.alioth.debian.org/</span>
+
+<span class="hl slc">;; Written by Dima Dorfman, 2004</span>
+<span class="hl slc">;; Slightly improved by Sven Hartrumpf, 2005-2006</span>
+<span class="hl slc">;; Ever-so-slightly tweaked for MzScheme by Brent Fulgham</span>
+<span class="hl slc">;; PLT-ized for v4.0 by Matthew</span>
+<span class="hl slc">;; Updated by Danny Yoo and Matthias Felleisen</span>
+
+<span class="hl opt">(</span><span class="hl kwa">require</span> racket<span class="hl opt">/</span>cmdline<span class="hl opt">)</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> <span class="hl opt">(</span><span class="hl kwa">fannkuch</span> n<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">([</span>pi <span class="hl opt">(</span><span class="hl kwa">list-</span><span class="hl opt">&gt;</span>vector 
+             <span class="hl opt">(</span><span class="hl kwa">for</span><span class="hl opt">/</span>list <span class="hl opt">([</span>i <span class="hl opt">(</span><span class="hl kwa">in-range</span> n<span class="hl opt">)])</span> i<span class="hl opt">))]</span>
+        <span class="hl opt">[</span>tmp <span class="hl opt">(</span><span class="hl kwa">make-vector</span> n<span class="hl opt">)]</span>
+        <span class="hl opt">[</span>count <span class="hl opt">(</span><span class="hl kwa">make-vector</span> n<span class="hl opt">)])</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> loop <span class="hl opt">([</span>flips <span class="hl num">0</span><span class="hl opt">]</span>
+               <span class="hl opt">[</span>perms <span class="hl num">0</span><span class="hl opt">]</span>
+               <span class="hl opt">[</span>r n<span class="hl opt">]</span>
+               <span class="hl opt">[</span>checksum <span class="hl num">0</span><span class="hl opt">]</span>
+               <span class="hl opt">[</span>even-parity? <span class="hl opt">#</span>t<span class="hl opt">])</span>
+      <span class="hl opt">(</span><span class="hl kwa">for</span> <span class="hl opt">([</span>i <span class="hl opt">(</span><span class="hl kwa">in-range</span> r<span class="hl opt">)])</span>
+        <span class="hl opt">(</span><span class="hl kwa">unsafe-vector-set</span><span class="hl opt">!</span> count i <span class="hl opt">(</span><span class="hl kwa">unsafe-fx</span><span class="hl opt">+</span> <span class="hl num">1</span> i<span class="hl opt">)))</span>
+      <span class="hl opt">(</span><span class="hl kwa">let</span><span class="hl opt">* ((</span><span class="hl kwa">next-flips</span> <span class="hl opt">(</span><span class="hl kwa">count-flips</span> pi tmp<span class="hl opt">))</span>
+             <span class="hl opt">(</span><span class="hl kwa">flips2</span> <span class="hl opt">(</span><span class="hl kwa">max</span> next-flips flips<span class="hl opt">))</span>
+             <span class="hl opt">(</span><span class="hl kwa">next-checksum</span> <span class="hl opt">(</span><span class="hl kwa">unsafe-fx</span><span class="hl opt">+</span> checksum <span class="hl opt">(</span><span class="hl kwa">if</span> even-parity? next-flips <span class="hl opt">(</span><span class="hl kwa">unsafe-fx-</span> <span class="hl num">0</span> next-flips<span class="hl opt">)))))</span>
+        <span class="hl opt">(</span><span class="hl kwa">let</span> loop2 <span class="hl opt">([</span>r <span class="hl num">1</span><span class="hl opt">])</span>
+          <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">unsafe-fx</span><span class="hl opt">=</span> r n<span class="hl opt">)</span>
+              <span class="hl opt">(</span><span class="hl kwa">values</span> flips2 next-checksum<span class="hl opt">)</span>
+              <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">perm0</span> <span class="hl opt">(</span><span class="hl kwa">unsafe-vector-ref</span> pi <span class="hl num">0</span><span class="hl opt">)))</span>
+                <span class="hl opt">(</span><span class="hl kwa">for</span> <span class="hl opt">([</span>i <span class="hl opt">(</span><span class="hl kwa">in-range</span> r<span class="hl opt">)])</span>
+                  <span class="hl opt">(</span><span class="hl kwa">unsafe-vector-set</span><span class="hl opt">!</span> pi i <span class="hl opt">(</span><span class="hl kwa">unsafe-vector-ref</span> pi <span class="hl opt">(</span><span class="hl kwa">unsafe-fx</span><span class="hl opt">+</span> <span class="hl num">1</span> i<span class="hl opt">))))</span>
+                <span class="hl opt">(</span><span class="hl kwa">unsafe-vector-set</span><span class="hl opt">!</span> pi r perm0<span class="hl opt">)</span>
+                <span class="hl opt">(</span><span class="hl kwa">unsafe-vector-set</span><span class="hl opt">!</span> count r <span class="hl opt">(</span><span class="hl kwa">unsafe-fx-</span> <span class="hl opt">(</span><span class="hl kwa">unsafe-vector-ref</span> count r<span class="hl opt">)</span> <span class="hl num">1</span><span class="hl opt">))</span>
+                <span class="hl opt">(</span><span class="hl kwa">cond</span>
+                  <span class="hl opt">[(&lt;= (</span><span class="hl kwa">unsafe-vector-ref</span> count r<span class="hl opt">)</span> <span class="hl num">0</span><span class="hl opt">)</span>
+                   <span class="hl opt">(</span><span class="hl kwa">loop2</span> <span class="hl opt">(</span><span class="hl kwa">unsafe-fx</span><span class="hl opt">+</span> <span class="hl num">1</span> r<span class="hl opt">))]</span>
+                  <span class="hl opt">[</span>else <span class="hl opt">(</span><span class="hl kwa">loop</span> flips2 
+                              <span class="hl opt">(</span><span class="hl kwa">unsafe-fx</span><span class="hl opt">+</span> <span class="hl num">1</span> perms<span class="hl opt">)</span>
+                              r 
+                              next-checksum
+                              <span class="hl opt">(</span><span class="hl kwa">not</span> even-parity?<span class="hl opt">))]))))))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> <span class="hl opt">(</span><span class="hl kwa">count-flips</span> pi rho<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">vector-copy</span><span class="hl opt">!</span> rho <span class="hl num">0</span> pi<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> loop <span class="hl opt">([</span>i <span class="hl num">0</span><span class="hl opt">])</span>
+    <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">unsafe-fx</span><span class="hl opt">= (</span><span class="hl kwa">unsafe-vector-ref</span> rho <span class="hl num">0</span><span class="hl opt">)</span> <span class="hl num">0</span><span class="hl opt">)</span>
+        i
+        <span class="hl opt">(</span><span class="hl kwa">begin</span>
+          <span class="hl opt">(</span><span class="hl kwa">vector-reverse-slice</span><span class="hl opt">!</span> rho <span class="hl num">0</span> <span class="hl opt">(</span><span class="hl kwa">unsafe-fx</span><span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl opt">(</span><span class="hl kwa">unsafe-vector-ref</span> rho <span class="hl num">0</span><span class="hl opt">)))</span>
+          <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">(</span><span class="hl kwa">unsafe-fx</span><span class="hl opt">+</span> <span class="hl num">1</span> i<span class="hl opt">))))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define</span> <span class="hl opt">(</span><span class="hl kwa">vector-reverse-slice</span><span class="hl opt">!</span> v i j<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> loop <span class="hl opt">([</span>i i<span class="hl opt">]</span>
+             <span class="hl opt">[</span>j <span class="hl opt">(</span><span class="hl kwa">unsafe-fx-</span> j <span class="hl num">1</span><span class="hl opt">)])</span>
+    <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(</span><span class="hl kwa">unsafe-fx</span><span class="hl opt">&gt;</span> j i<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">vector-swap</span><span class="hl opt">!</span> v i j<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">(</span><span class="hl kwa">unsafe-fx</span><span class="hl opt">+</span> <span class="hl num">1</span> i<span class="hl opt">) (</span><span class="hl kwa">unsafe-fx-</span> j <span class="hl num">1</span><span class="hl opt">)))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">define-syntax-rule</span> <span class="hl opt">(</span><span class="hl kwa">vector-swap</span><span class="hl opt">!</span> v i j<span class="hl opt">)</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">((</span><span class="hl kwa">t</span> <span class="hl opt">(</span><span class="hl kwa">unsafe-vector-ref</span> v i<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">unsafe-vector-set</span><span class="hl opt">!</span> v i <span class="hl opt">(</span><span class="hl kwa">unsafe-vector-ref</span> v j<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">unsafe-vector-set</span><span class="hl opt">!</span> v j t<span class="hl opt">)))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">command-line</span> <span class="hl opt">#:</span>args <span class="hl opt">(</span><span class="hl kwa">n</span><span class="hl opt">)</span>
+              <span class="hl opt">(</span><span class="hl kwa">define-values</span> <span class="hl opt">(</span><span class="hl kwa">answer</span> checksum<span class="hl opt">)</span>
+                <span class="hl opt">(</span><span class="hl kwa">fannkuch</span> <span class="hl opt">(</span><span class="hl kwa">string-</span><span class="hl opt">&gt;</span>number n<span class="hl opt">)))</span>
+              <span class="hl opt">(</span><span class="hl kwa">printf</span> <span class="hl str">&quot;~a</span><span class="hl esc">\n</span><span class="hl str">Pfannkuchen(~a) = ~a</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> 
+                      checksum
+                      n 
+                      answer<span class="hl opt">))</span>

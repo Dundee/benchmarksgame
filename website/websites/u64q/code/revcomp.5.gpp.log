@@ -1,0 +1,30 @@
+
+Mon, 04 Mar 2013 16:58:09 GMT
+
+MAKE:
+/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native   revcomp.gpp-5.c++ -o revcomp.gpp-5.c++.o &&  \
+        /usr/bin/g++ revcomp.gpp-5.c++.o -o revcomp.gpp-5.gpp_run  
+revcomp.gpp-5.c++: In function ‘void print_reverse(const string&, Out&)’:
+revcomp.gpp-5.c++:44:16: error: ‘rend’ does not name a type
+revcomp.gpp-5.c++:46:15: error: ‘i’ does not name a type
+revcomp.gpp-5.c++:46:38: error: expected ‘;’ before ‘i’
+revcomp.gpp-5.c++:46:38: error: ‘i’ was not declared in this scope
+revcomp.gpp-5.c++:46:43: error: ‘rend’ was not declared in this scope
+revcomp.gpp-5.c++: In function ‘int main()’:
+revcomp.gpp-5.c++:62:18: error: ‘nullptr’ was not declared in this scope
+revcomp.gpp-5.c++:65:10: error: ‘out’ does not name a type
+revcomp.gpp-5.c++:74:28: error: ISO C++ forbids declaration of ‘c’ with no type [-fpermissive]
+revcomp.gpp-5.c++:74:32: error: range-based ‘for’ loops are not allowed in C++98 mode
+revcomp.gpp-5.c++:76:41: error: ‘out’ was not declared in this scope
+revcomp.gpp-5.c++:92:20: error: ISO C++ forbids declaration of ‘c’ with no type [-fpermissive]
+revcomp.gpp-5.c++:92:24: error: range-based ‘for’ loops are not allowed in C++98 mode
+revcomp.gpp-5.c++:94:33: error: ‘out’ was not declared in this scope
+make: [revcomp.gpp-5.gpp_run] Error 1 (ignored)
+rm revcomp.gpp-5.c++
+1.95s to complete and log all make actions
+
+COMMAND LINE:
+./revcomp.gpp-5.gpp_run 0 < revcomp-input250000.txt
+
+MAKE ERROR 
+
