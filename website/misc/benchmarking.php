@@ -121,16 +121,7 @@
 <li><a href="http://moscova.inria.fr/~zappa/projects/liketypes/paper.pdf">Integrating Typed and Untyped Code in a Scripting Language</a> pdf</li>  
 <li><a href="http://www.springerlink.com/index/P4U0851W34180N74.pdf">Inline Caching Meets Quickening</a> pdf</li> 
 </ul>
-<p>Having a collection of programs that implement the same tasks in different programming languages is at least convenient. Presumably convenience is why Bjarne Stroustrup refers to the benchmarks game (to support his p
-    From: Matthew Wilson <diakopter@gmail.com>
-    To: Isaac Gouy <igouy2@yahoo.com>
-    Sent: Friday, March 1, 2013 12:32 PM
-    Subject: paper using shootout game
-
-    maybe you are interested..
-    http://www.lirmm.fr/~ducour/Doc-objets/ECOOP2012/APPLC/geneticsandcode_paper_2.pdf
-
-oint about run time typing) in <a href="http://www.stroustrup.com/Software-for-infrastructure.pdf">"Software Development for Infrastructure"</a> pdf, IEEE Computer, January 2012.</p>
+<p>Having a collection of programs that implement the same tasks in different programming languages is at least convenient. Presumably convenience is why Bjarne Stroustrup refers to the benchmarks game (to support his point about run time typing) in <a href="http://www.stroustrup.com/Software-for-infrastructure.pdf">"Software Development for Infrastructure"</a> pdf, IEEE Computer, January 2012.</p>
 </dd>
 
 <dd>
