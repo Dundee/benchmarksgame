@@ -1,14 +1,14 @@
 
-Tue, 22 Jan 2013 04:23:30 GMT
+Mon, 04 Mar 2013 07:33:06 GMT
 
 MAKE:
 mv pidigits.clojure-2.clojure pidigits.clj
-/usr/local/src/jdk1.7.0_11/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.4.0/clojure-1.4.0.jar clojure.lang.Compile pidigits
+/usr/local/src/jdk1.7.0_11/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.5.0/clojure-1.5.0.jar clojure.lang.Compile pidigits
 Compiling pidigits to .
-1.74s to complete and log all make actions
+1.87s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts -Xmx32m -cp .:/usr/local/src/clojure-1.4.0/clojure-1.4.0.jar pidigits 10000
+/usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts -Xmx32m -cp .:/usr/local/src/clojure-1.5.0/clojure-1.5.0.jar pidigits 10000
 
 (TRUNCATED) PROGRAM OUTPUT:
 3141592653	:10

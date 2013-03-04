@@ -1,9 +1,9 @@
 
-Tue, 22 Jan 2013 03:41:40 GMT
+Mon, 04 Mar 2013 06:52:05 GMT
 
 MAKE:
 mv chameneosredux.clojure chameneosredux.clj
-/usr/local/src/jdk1.7.0_11/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.4.0/clojure-1.4.0.jar clojure.lang.Compile chameneosredux
+/usr/local/src/jdk1.7.0_11/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.5.0/clojure-1.5.0.jar clojure.lang.Compile chameneosredux
 Compiling chameneosredux to .
 Warning: *blue* not declared dynamic and thus is not dynamically rebindable, but its name suggests otherwise. Please either indicate ^:dynamic *blue* or change the name. (chameneosredux.clj:42)
 Warning: *red* not declared dynamic and thus is not dynamically rebindable, but its name suggests otherwise. Please either indicate ^:dynamic *red* or change the name. (chameneosredux.clj:42)
@@ -13,10 +13,10 @@ Warning: *red* not declared dynamic and thus is not dynamically rebindable, but 
 Warning: *yellow* not declared dynamic and thus is not dynamically rebindable, but its name suggests otherwise. Please either indicate ^:dynamic *yellow* or change the name. (chameneosredux.clj:53)
 Warning: *in-order* not declared dynamic and thus is not dynamically rebindable, but its name suggests otherwise. Please either indicate ^:dynamic *in-order* or change the name. (chameneosredux.clj:72)
 Warning: *game-id* not declared dynamic and thus is not dynamically rebindable, but its name suggests otherwise. Please either indicate ^:dynamic *game-id* or change the name. (chameneosredux.clj:149)
-2.41s to complete and log all make actions
+2.54s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -cp .:/usr/local/src/clojure-1.4.0/clojure-1.4.0.jar chameneosredux 6000000
+/usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -cp .:/usr/local/src/clojure-1.5.0/clojure-1.5.0.jar chameneosredux 6000000
 
 PROGRAM OUTPUT:
 blue + blue -> blue
@@ -30,21 +30,21 @@ yellow + red -> blue
 yellow + yellow -> yellow
 
  blue red yellow
-3977278 zero
-4041017 zero
-3981705 zero
+3973988 zero
+4015981 zero
+4010030 zero
  one two zero zero zero zero zero zero
 
  blue red yellow red yellow blue red yellow red blue
-1216122 zero
-1197758 zero
-1200136 zero
-1199752 zero
-1209444 zero
-1191519 zero
-1192747 zero
-1206989 zero
-1185023 zero
-1200510 zero
+1199251 zero
+1216527 zero
+1204359 zero
+1210120 zero
+1174861 zero
+1199191 zero
+1204697 zero
+1200648 zero
+1198051 zero
+1192295 zero
  one two zero zero zero zero zero zero
 
