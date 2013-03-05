@@ -1,0 +1,2 @@
+<p>"Two things are possibly cheats: (a) the code checks if a pixel is inside the largest circle or cardioid, and skip the iterations if so because it would not escape. (b) the code only calculates half of the image, then flips it about the x-axis to produce the other half.</p><p>These are valid optimizations if we are only interested in generating the image, but if comparing language features/implementations is the sole purpose of the benchmark game, then they could be considered cheats, particularly item (b), since it reduces workload by half."</p>
+
