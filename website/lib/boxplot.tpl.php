@@ -53,7 +53,7 @@
 
 <p>This box plot shows <em>how many times slower</em>, the fastest benchmark programs for selected programming language implementations were, <em>compared to the fastest programs</em>.</p>
 
-<p>Note which boxes have no overlap, note which boxes overlap completely; note which are tight, note which spread too much for confidence.</p>
+<p>Note which boxes have no overlap, note which boxes overlap completely; note which show little midspread, note which spread across too large a range of values for confidence.</p>
 
 <p><img src="<?=$chart;?>?<?='s='.Encode($stats1);?>&amp;<?='m='.Encode($Mark);?>&amp;<?='w='.Encode($labels1);?>"
    alt=""
