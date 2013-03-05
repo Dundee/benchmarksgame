@@ -1,14 +1,14 @@
 
-Fri, 08 Feb 2013 06:28:56 GMT
+Tue, 05 Mar 2013 00:39:36 GMT
 
 MAKE:
 mv fannkuchredux.hipe fannkuchredux.erl
-/usr/local/src/otp_src_R16A/bin/erlc +native +"{hipe, [o3]}" fannkuchredux.erl
+/usr/local/src/otp_src_R16B/bin/erlc +native +"{hipe, [o3]}" fannkuchredux.erl
 rm fannkuchredux.erl
 1.20s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/src/otp_src_R16A/bin/erl -smp enable -noshell -run  fannkuchredux main 12
+/usr/local/src/otp_src_R16B/bin/erl -smp enable -noshell -run  fannkuchredux main 12
 
 PROGRAM OUTPUT:
 3968050

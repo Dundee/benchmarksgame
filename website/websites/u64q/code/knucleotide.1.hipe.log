@@ -1,14 +1,14 @@
 
-Fri, 08 Feb 2013 06:41:53 GMT
+Tue, 05 Mar 2013 00:52:34 GMT
 
 MAKE:
 mv knucleotide.hipe knucleotide.erl
-/usr/local/src/otp_src_R16A/bin/erlc +native +"{hipe, [o3]}" knucleotide.erl
+/usr/local/src/otp_src_R16B/bin/erlc +native +"{hipe, [o3]}" knucleotide.erl
 rm knucleotide.erl
-0.64s to complete and log all make actions
+0.66s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/src/otp_src_R16A/bin/erl -smp enable -noshell -run  knucleotide main 0 < knucleotide-input25000000.txt
+/usr/local/src/otp_src_R16B/bin/erl -smp enable -noshell -run  knucleotide main 0 < knucleotide-input25000000.txt
 
 PROGRAM OUTPUT:
 A 30.295
