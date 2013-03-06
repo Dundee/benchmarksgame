@@ -109,7 +109,8 @@
 <dd>
 <p>Quite unexpectedly, some of the tasks shown on the benchmarks game website have become a very modest resource for programming language researchers. For example&nbsp;-</p>
 <ul>
-<li><a href="http://www.lirmm.fr/~ducour/Doc-objets/ECOOP2012/APPLC/geneticsandcode_paper_2.pdf">Code Generator Amelioration Using Genetic Algorithm Techniques</a> pdf</li> 
+<li><a href="https://www.scss.tcd.ie/~mccandjm/papers/pppj_preprint.pdf">Optimizing Interpreters by Tuning Opcode Orderings on Virtual Machines for Modern Architectures (Or: How I Learned to Stop Worrying and Love Hill Climbing)</a> pdf</li> 
+<li><a href="http://www.ics.uci.edu/~ahomescu/happyjit_paper.pdf">HappyJIT: A Tracing JIT Compiler for PHP</a> pdf</li> 
 <li><a href="http://tratt.net/laurie/research/publications/papers/bolz_tratt__the_impact_of_metatracing_on_vm_design_and_implementation.pdf">The Impact of Meta-Tracing on VM Design and Implementation</a> pdf</li> 
 <li><a href="http://www.ccs.neu.edu/racket/pubs/oopsla12-stf.pdf">Optimization Coaching: Optimizers Learn to Communicate with Programmers</a> pdf</li> 
 <li><a href="http://www.slideshare.net/jandot/l-fu-dao-a-novel-programming-language-for-bioinformatics">Dao: a novel programming language for bioinformatics</a> slides</li> 

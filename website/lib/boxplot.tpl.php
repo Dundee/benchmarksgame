@@ -55,6 +55,8 @@
 
 <p>Note which boxes have no overlap, note which boxes overlap completely; note which show little midspread, note which spread across too large a range of values for confidence.</p>
 
+<p>Please don't obsess over tiny differences in median values from such a small number of examples.</p>
+
 <p><img src="<?=$chart;?>?<?='s='.Encode($stats1);?>&amp;<?='m='.Encode($Mark);?>&amp;<?='w='.Encode($labels1);?>"
    alt=""
    title=""
@@ -69,8 +71,6 @@
  /></p>
 
 <p>These are not the only compilers and interpreters. These are not the only programs that could be written. These are not the only tasks that could be solved. <a href="<?=CORE_SITE;?>dont-jump-to-conclusions.php"><strong>These are just 10 tiny examples.</strong></a></p>
-
-<p>Please don't obsess over tiny differences in median values from such a small number of examples.</p>
 
 <h3><a href="<?=$pageUrl;?>#about" name="about">&nbsp;</a></h3>
 <?=$About;?>
