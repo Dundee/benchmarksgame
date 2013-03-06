@@ -388,8 +388,5 @@ language, benchmark, your-name, date, (version)<br />
 </dd>
 
 </dl>
-</dd>
 
-
-</dl>
 
