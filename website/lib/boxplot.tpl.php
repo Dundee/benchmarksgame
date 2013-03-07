@@ -55,7 +55,6 @@
 
 <p>Note which boxes have no overlap, note which boxes overlap completely; note which show little midspread, note which spread across too large a range of values for confidence.</p>
 
-<p>Please don't obsess over tiny differences in median values from such a small number of examples.</p>
 
 <p><img src="<?=$chart;?>?<?='s='.Encode($stats1);?>&amp;<?='m='.Encode($Mark);?>&amp;<?='w='.Encode($labels1);?>"
    alt=""
@@ -63,6 +62,7 @@
    width="480" height="300"
  /></p>
 
+<p>And please don't obsess over tiny differences in median values from such a small number of examples.</p>
 
 <p><img src="<?=$chart;?>?<?='s='.Encode($stats2);?>&amp;<?='m='.Encode($Mark);?>&amp;<?='w='.Encode($labels2);?>"
    alt=""
