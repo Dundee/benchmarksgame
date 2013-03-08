@@ -1,0 +1,70 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Thomas Sahlin</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">import</span> <span class="hl str">'dart:io'</span><span class="hl opt">;</span>
+
+<span class="hl kwa">void</span> <span class="hl kwd">main</span><span class="hl opt">() {</span>
+  <span class="hl kwa">var</span> src   <span class="hl opt">=</span> <span class="hl str">&quot;CGATMKRYVBHD&quot;</span><span class="hl opt">;</span>
+  <span class="hl kwa">var</span> dst   <span class="hl opt">=</span> <span class="hl str">&quot;GCTAKMYRBVDH&quot;</span><span class="hl opt">;</span>
+  <span class="hl kwa">var</span> map   <span class="hl opt">=</span> <span class="hl kwa">new</span> Map<span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">,</span> <span class="hl kwb">int</span><span class="hl opt">&gt;();</span>
+  <span class="hl kwa">var</span> seq   <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">&gt;();</span>
+  
+  <span class="hl slc">// Set up translation map</span>
+  
+  <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> src<span class="hl opt">.</span>length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+    map<span class="hl opt">[</span>src<span class="hl opt">.</span><span class="hl kwd">codeUnitAt</span><span class="hl opt">(</span>i<span class="hl opt">)] =</span> dst<span class="hl opt">.</span><span class="hl kwd">codeUnitAt</span><span class="hl opt">(</span>i<span class="hl opt">);</span>
+  
+  src <span class="hl opt">=</span> src<span class="hl opt">.</span><span class="hl kwd">toLowerCase</span><span class="hl opt">();</span>
+  
+  <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> src<span class="hl opt">.</span>length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+    map<span class="hl opt">[</span>src<span class="hl opt">.</span><span class="hl kwd">codeUnitAt</span><span class="hl opt">(</span>i<span class="hl opt">)] =</span> dst<span class="hl opt">.</span><span class="hl kwd">codeUnitAt</span><span class="hl opt">(</span>i<span class="hl opt">);</span>
+  
+  stdin
+    <span class="hl opt">.</span><span class="hl kwd">transform</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">StringDecoder</span><span class="hl opt">())</span>
+    <span class="hl opt">.</span><span class="hl kwd">transform</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">LineTransformer</span><span class="hl opt">())</span>
+    <span class="hl opt">.</span><span class="hl kwd">listen</span><span class="hl opt">((</span>String line<span class="hl opt">) {</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>line<span class="hl opt">.</span><span class="hl kwd">startsWith</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;&quot;</span><span class="hl opt">)) {</span>
+        <span class="hl slc">// Comment line - output the previous sequence and the comment</span>
+        
+        <span class="hl kwd">printSeq</span><span class="hl opt">(</span>seq<span class="hl opt">);</span>
+        <span class="hl kwd">print</span><span class="hl opt">(</span>line<span class="hl opt">);</span>
+
+        <span class="hl slc">// Start a new sequence</span>
+        
+        seq<span class="hl opt">.</span><span class="hl kwd">clear</span><span class="hl opt">();</span>
+      <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+        <span class="hl kwa">var</span> bytes <span class="hl opt">=</span> line<span class="hl opt">.</span>codeUnits<span class="hl opt">;</span>
+        
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int byte</span> <span class="hl kwa">in</span> bytes<span class="hl opt">) {</span>
+          <span class="hl kwa">if</span> <span class="hl opt">(</span>map<span class="hl opt">.</span><span class="hl kwd">containsKey</span><span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">))</span>
+            seq<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>map<span class="hl kwc">[byte]</span><span class="hl opt">);</span>
+          <span class="hl kwa">else if</span> <span class="hl opt">(</span><span class="hl kwb">byte</span> <span class="hl opt">!=</span> <span class="hl num">10</span><span class="hl opt">)</span>
+            seq<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span><span class="hl kwb">byte</span><span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+    <span class="hl opt">},</span> onDone<span class="hl opt">: () {</span> <span class="hl kwd">printSeq</span><span class="hl opt">(</span>seq<span class="hl opt">); });</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">void</span> <span class="hl kwd">printSeq</span><span class="hl opt">(</span>List<span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">&gt;</span> bytes<span class="hl opt">) {</span>
+  <span class="hl slc">// Output the sequence in reverse order</span>
+
+  <span class="hl kwa">var</span> line <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">&gt;();</span>
+  
+  <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> bytes<span class="hl opt">.</span>length<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+    line<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>bytes<span class="hl opt">[</span>bytes<span class="hl opt">.</span>length <span class="hl opt">-</span> i <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">]);</span>
+    
+    <span class="hl slc">// Wrap lines at 60 characters</span>
+    
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>line<span class="hl opt">.</span>length <span class="hl opt">==</span> <span class="hl num">60</span><span class="hl opt">)</span>
+    <span class="hl opt">{</span>
+      <span class="hl kwd">print</span><span class="hl opt">(</span><span class="hl kwa">new</span> String<span class="hl opt">.</span><span class="hl kwd">fromCharCodes</span><span class="hl opt">(</span>line<span class="hl opt">));</span>
+      line<span class="hl opt">.</span><span class="hl kwd">clear</span><span class="hl opt">();</span>
+    <span class="hl opt">}</span>
+  <span class="hl opt">}</span>
+  
+  <span class="hl kwa">if</span> <span class="hl opt">(</span>line<span class="hl opt">.</span>length <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">)</span>
+    <span class="hl kwd">print</span><span class="hl opt">(</span><span class="hl kwa">new</span> String<span class="hl opt">.</span><span class="hl kwd">fromCharCodes</span><span class="hl opt">(</span>line<span class="hl opt">));</span>
+<span class="hl opt">}</span>
