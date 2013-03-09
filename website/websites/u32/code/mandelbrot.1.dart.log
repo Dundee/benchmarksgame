@@ -1,7 +1,18 @@
 
-Fri, 18 Jan 2013 01:50:21 GMT
+Fri, 08 Mar 2013 23:08:10 GMT
 
 COMMAND LINE:
-/usr/local/src/dart-sdk/bin/dart mandelbrot.dart 16000
+/usr/local/src/dart-sdk/bin/dart  mandelbrot.dart 1000
+
+PROGRAM FAILED 
+
 
 (BINARY) PROGRAM OUTPUT NOT SHOWN
+
+Unhandled exception:
+No top-level getter or setter 'Futures' declared.
+
+NoSuchMethodError : method not found: 'Futures'
+Receiver: Type: class '::'
+Arguments: []
+#0      main (file:///home/dunham/benchmarksgame_onecore/mandelbrot/tmp/mandelbrot.dart:38:3)
