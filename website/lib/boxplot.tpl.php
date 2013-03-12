@@ -62,7 +62,7 @@
    width="480" height="300"
  /></p>
 
-<p>And please don't obsess over tiny differences in median values from such a small number of examples.</p>
+<p>Please don't obsess over tiny differences in median values from such a small number of examples.</p>
 
 <p><img src="<?=$chart;?>?<?='s='.Encode($stats2);?>&amp;<?='m='.Encode($Mark);?>&amp;<?='w='.Encode($labels2);?>"
    alt=""
