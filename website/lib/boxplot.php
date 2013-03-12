@@ -87,24 +87,38 @@ function FullRatios($FileName,$Tests,$Langs,$Incl,$Excl,$HasHeading=TRUE){
 function FullScores($ratios){
   $score = array();
   foreach($ratios as $k => $s){
-     $score[$k] = Percentiles($s);
+// calculate GeometricMean just to use for sort
+     $score[$k] = array(GeometricMean($s),Percentiles($s));
+//     $score[$k] = Percentiles($s);
   }
-   uasort($score,'CompareMedian');
+   uasort($score,'CompareGeometricMean');
+//   uasort($score,'CompareMedian');
 
    $labels = array();
    $stats = array();
-   //$count = 0; $max = 15;
    foreach($score as $k => $test){
       $labels[] = $k;
-      $stats[] = $test;
-      //$count++;
-      //if ($count == $max){ break; }
+      $stats[] = $test[1];
+//      $stats[] = $test;
    }
    return array($labels,$stats);
 }
 
 function CompareMedian($a, $b){
    return $a[STAT_MEDIAN] < $b[STAT_MEDIAN] ? -1 : 1;
+}
+
+function CompareGeometricMean($a, $b){
+   return $a[0] < $b[0] ? -1 : 1;
+}
+
+
+function GeometricMean($a){
+   $logsum = 0.0;
+   foreach($a as $v){
+      $logsum += log($v);
+   }
+   return exp($logsum/sizeof($a));
 }
 
 
