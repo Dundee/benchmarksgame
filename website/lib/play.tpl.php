@@ -343,13 +343,14 @@ correct result, but also <b>use the same algorithm</b> to calculate that result.
 <ul>
 <li><b>debian issue their own security certificate</b> - your web browser will complain.</li>
 <li>read and accept the <a href="license.php" title="Read the revised BSD license"><b>Revised&nbsp;BSD&nbsp;license</b></a> - all contributed programs are published under this revised BSD license.</li>
-<li><a href="http://alioth.debian.org/account/register.php"><b>create an Alioth ID</b></a> and login.</li>
 </ul>
 
 <p>The Tracker</p>
 <ul>
-<li>After login, go to the <a href="https://alioth.debian.org/tracker/?func=browse&amp;group_id=100815&amp;atid=413122"><b>"Play the Benchmarks Game" Tracker</b></a></li>
-<li>Find and click the "Play the Benchmarks Game: <b>Submit New</b>" link</li>
+<li>Go to the <a href="https://alioth.debian.org/tracker/?func=browse&amp;group_id=100815&amp;atid=413122"><b>"Play the Benchmarks Game" Tracker</b></a></li>
+<li>Click the "Log In" link at the top right of the page.</li>
+<li>(If you don't have an Alioth account click the "[New Account]" link and create your account.)</li>
+<li>Click the "Play the Benchmarks Game" <b>Submit New</b>" link</li>
 <li>Now start from the bottom of the form and work your way up</li>
 </ul>
 
