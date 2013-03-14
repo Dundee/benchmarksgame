@@ -343,10 +343,10 @@ correct result, but also <b>use the same algorithm</b> to calculate that result.
 <p>The Tracker</p>
 <ul>
 <li>Go to the <a href="https://alioth.debian.org/tracker/?func=browse&amp;group_id=100815&amp;atid=413122"><b>"Play the Benchmarks Game" Tracker</b></a></li>
-<li><b>debian issue their own security certificate</b> - your web browser will complain.</li>
+<li>debian issue their own security certificate - your web browser will complain.</li>
 <li>Click the "Log In" link at the top right of the page.</li>
 <li>(If you don't have an Alioth account click the "[New Account]" link and create your account.)</li>
-<li>Click the "Play the Benchmarks Game" <b>Submit New</b>" link</li>
+<li>Click the "Play the Benchmarks Game" "Submit New" link</li>
 <li>You may only attach a program you have written. By attaching a program, you give permission for the program to be published under a <a href="license.php" title="Read the revised BSD license">Revised BSD License</a>.</li>
 <li>Now start from the bottom of the form and work your way up</li>
 </ul>
