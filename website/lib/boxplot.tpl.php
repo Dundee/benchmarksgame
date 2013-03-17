@@ -51,7 +51,7 @@
 <p>Please don't use this summary page to compare 2 programming language implementations -- <b>use the direct comparison</b>, for example <a href="jruby.php" title="Are the JRuby programs faster than the Ruby programs?">-all&nbsp;benchmarks- Ruby&nbsp;JRuby</a>.</p>
 
 
-<p>This box plot shows <em>how many times slower</em>, the fastest benchmark programs for selected programming language implementations were, <em>compared to the fastest programs</em> written in <i>any of the programming languages</i>.</p>
+<p>This box plot shows <em>how many times slower</em>, the fastest benchmark programs for selected programming language implementations were, compared to the fastest programs written in <em>any of the programming languages</em>.</p>
 
 <p>Note which boxes have no overlap, note which boxes overlap completely; note which show little midspread, note which spread across too large a range of values for confidence.</p>
 
