@@ -62,6 +62,7 @@
    width="480" height="300"
  /></p>
 
+<p>These are not the only compilers and interpreters. These are not the only programs that could be written. These are not the only tasks that could be solved. <a href="<?=CORE_SITE;?>dont-jump-to-conclusions.php"><strong>These are just 10 tiny examples.</strong></a></p>
 <p>Please don't obsess over tiny differences in median values from such a small number of examples.</p>
 
 <p><img src="<?=$chart;?>?<?='s='.Encode($stats2);?>&amp;<?='m='.Encode($Mark);?>&amp;<?='w='.Encode($labels2);?>"
