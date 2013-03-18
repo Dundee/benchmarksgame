@@ -53,7 +53,7 @@
 
 <p>This box plot shows <em>how many times slower</em>, the fastest benchmark programs for selected programming language implementations were, compared to the fastest programs written in <em>any of the programming languages</em>.</p>
 
-<p>Note which boxes have no overlap, note which boxes overlap completely; note which show little midspread, note which spread across too large a range of values for confidence.</p>
+<p>Note which boxes have no overlap, note which boxes <b>overlap completely</b>; note which show little midspread, note which spread across too large a range of values for confidence.</p>
 
 
 <p><img src="<?=$chart;?>?<?='s='.Encode($stats1);?>&amp;<?='m='.Encode($Mark);?>&amp;<?='w='.Encode($labels1);?>"
@@ -70,7 +70,9 @@
    width="480" height="300"
  /></p>
 
-<p>These are not the only compilers and interpreters. These are not the only programs that could be written. These are not the only tasks that could be solved. <a href="<?=CORE_SITE;?>dont-jump-to-conclusions.php"><strong>These are just 10 tiny examples.</strong></a></p>
+<p>Please don't obsess about which programming language implementation is shown 10<sup>th</sup> and which is shown 11<sup>th</sup> -- the order would probably be different if it was based on the median scores instead of <a href="http://portal.acm.org/citation.cfm?id=5666.5673" title="How not to lie with statistics: the correct way to summarize benchmark results">the geometric mean</a> scores.</p>
+
+
 
 <h3><a href="<?=$pageUrl;?>#about" name="about">&nbsp;</a></h3>
 <?=$About;?>
