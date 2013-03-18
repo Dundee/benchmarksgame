@@ -1,0 +1,31 @@
+
+Sun, 17 Mar 2013 16:40:58 GMT
+
+MAKE:
+mv regexdna.jruby-4.jruby regexdna.rb
+0.03s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/src/jruby-1.7.2/bin/jruby -Xcompile.invokedynamic=true -J-server -J-Xmn512m -J-Xms2048m -J-Xmx2048m regexdna.rb 0 < regexdna-input50000.txt
+
+UNEXPECTED OUTPUT 
+
+9c9
+< agggtaa[cgt]|[acg]ttaccct 18
+---
+> agggtaa[cgt]|[acg]ttaccct 20
+
+PROGRAM OUTPUT:
+agggtaaa|tttaccct 3
+[cgt]gggtaaa|tttaccc[acg] 12
+a[act]ggtaaa|tttacc[agt]t 43
+ag[act]gtaaa|tttac[agt]ct 27
+agg[act]taaa|ttta[agt]cct 58
+aggg[acg]aaa|ttt[cgt]ccct 16
+agggt[cgt]aa|tt[acg]accct 15
+agggta[cgt]a|t[acg]taccct 18
+agggtaa[cgt]|[acg]ttaccct 18
+
+508411
+500000
+668262
