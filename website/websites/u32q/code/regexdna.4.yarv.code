@@ -1,0 +1,68 @@
+<span class="hl slc"># The Computer Language Benchmarks Game</span>
+<span class="hl slc"># http://benchmarksgame.alioth.debian.org</span>
+<span class="hl slc">#</span>
+<span class="hl slc"># Contributed by Aaron Tavistock</span>
+
+<span class="hl kwa">class</span> Matcher
+  <span class="hl kwa">def</span> <span class="hl kwd">initialize</span><span class="hl opt">(</span>label)
+    <span class="hl kwb">&#64;label</span> <span class="hl opt">=</span> label
+    <span class="hl kwb">&#64;regex</span> <span class="hl opt">=</span> Regexp<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span>label)
+    <span class="hl kwb">&#64;count</span> <span class="hl opt">=</span> <span class="hl num">0</span>
+  <span class="hl kwa">end</span>
+  
+  <span class="hl kwa">def</span> label
+    <span class="hl kwb">&#64;label</span>
+  <span class="hl kwa">end</span>
+  
+  <span class="hl kwa">def</span> <span class="hl kwd">increment_on_match</span><span class="hl opt">(</span>str)
+    <span class="hl kwa">if</span> str<span class="hl opt">.</span><span class="hl kwd">match</span><span class="hl opt">(</span><span class="hl kwb">&#64;regex</span>) 
+      <span class="hl kwb">&#64;count</span> <span class="hl opt">+=</span> <span class="hl num">1</span>
+    <span class="hl kwa">end</span>
+  <span class="hl kwa">end</span>
+ 
+  <span class="hl kwa">def</span> results
+    <span class="hl opt">%[</span><span class="hl slc">#{&#64;label} #{&#64;count}] </span>
+  <span class="hl kwa">end</span>
+<span class="hl kwa">end</span>
+
+seq <span class="hl opt">=</span> <span class="hl kwc">STDIN</span><span class="hl opt">.</span>read
+origin_len <span class="hl opt">=</span> seq<span class="hl opt">.</span>size
+
+seq<span class="hl opt">.</span>gsub<span class="hl opt">!(</span><span class="hl kwc">/&gt;.*\n|\n/</span><span class="hl opt">,</span><span class="hl str">''</span>)
+clean_len <span class="hl opt">=</span> seq<span class="hl opt">.</span>size
+
+matchers <span class="hl opt">= [</span>
+  Matcher<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl str">'agggtaaa|tttaccct'</span>)<span class="hl opt">,</span>
+  Matcher<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl str">'[cgt]gggtaaa|tttaccc[acg]'</span>)<span class="hl opt">,</span>
+  Matcher<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl str">'a[act]ggtaaa|tttacc[agt]t'</span>)<span class="hl opt">,</span>
+  Matcher<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl str">'ag[act]gtaaa|tttac[agt]ct'</span>)<span class="hl opt">,</span>
+  Matcher<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl str">'agg[act]taaa|ttta[agt]cct'</span>)<span class="hl opt">,</span>
+  Matcher<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl str">'aggg[acg]aaa|ttt[cgt]ccct'</span>)<span class="hl opt">,</span>
+  Matcher<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl str">'agggt[cgt]aa|tt[acg]accct'</span>)<span class="hl opt">,</span>
+  Matcher<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl str">'agggta[cgt]a|t[acg]taccct'</span>)<span class="hl opt">,</span>
+  Matcher<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl str">'agggtaa[cgt]|[acg]ttaccct'</span>)
+<span class="hl opt">]</span>
+
+aggregate_regex <span class="hl opt">=</span> Regexp<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span> matchers<span class="hl opt">.</span><span class="hl kwd">map</span><span class="hl opt">(&amp;</span><span class="hl kwc">:label</span>)<span class="hl opt">.</span><span class="hl kwd">join</span><span class="hl opt">(</span><span class="hl str">'|'</span>) )
+seq<span class="hl opt">.</span><span class="hl kwd">gsub</span><span class="hl opt">(</span>aggregate_regex) <span class="hl kwa">do</span> <span class="hl opt">|</span>match_string<span class="hl opt">|</span>
+  matchers<span class="hl opt">.</span>each <span class="hl kwa">do</span> <span class="hl opt">|</span>matcher<span class="hl opt">|</span>
+    <span class="hl kwa">break if</span> matcher<span class="hl opt">.</span><span class="hl kwd">increment_on_match</span><span class="hl opt">(</span>match_string)
+  <span class="hl kwa">end</span>
+<span class="hl kwa">end</span>
+
+replacements <span class="hl opt">= {</span>
+  <span class="hl str">'B'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(c|g|t)'</span><span class="hl opt">,</span> 
+  <span class="hl str">'D'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(a|g|t)'</span><span class="hl opt">,</span> 
+  <span class="hl str">'H'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(a|c|t)'</span><span class="hl opt">,</span> 
+  <span class="hl str">'K'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(g|t)'</span><span class="hl opt">,</span>
+  <span class="hl str">'M'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(a|c)'</span><span class="hl opt">,</span> 
+  <span class="hl str">'N'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(a|c|g|t)'</span><span class="hl opt">,</span> 
+  <span class="hl str">'R'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(a|g)'</span><span class="hl opt">,</span> 
+  <span class="hl str">'S'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(c|t)'</span><span class="hl opt">,</span>
+  <span class="hl str">'V'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(a|c|g)'</span><span class="hl opt">,</span> 
+  <span class="hl str">'W'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(a|t)'</span><span class="hl opt">,</span> 
+  <span class="hl str">'Y'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(c|t)'</span>
+<span class="hl opt">}</span>
+seq<span class="hl opt">.</span>gsub<span class="hl opt">!(</span>Regexp<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span>replacements<span class="hl opt">.</span>keys<span class="hl opt">.</span><span class="hl kwd">join</span><span class="hl opt">(</span><span class="hl str">'|'</span>))<span class="hl opt">,</span> replacements)
+
+puts <span class="hl str">&quot;</span><span class="hl esc">#{matchers.map(&amp;:results).join(&quot;\n&quot;)}</span><span class="hl str">\n\n</span><span class="hl esc">#{origin_len}</span><span class="hl str">\n</span><span class="hl esc">#{clean_len}</span><span class="hl str">\n</span><span class="hl esc">#{seq.size}</span><span class="hl str">&quot;</span>

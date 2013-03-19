@@ -1,0 +1,91 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   Contributed by James Wendel</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">import</span> <span class="hl str">'dart:io'</span><span class="hl opt">;</span>
+
+<span class="hl kwa">void</span> <span class="hl kwd">main</span><span class="hl opt">() {</span>
+  <span class="hl kwa">var</span> src   <span class="hl opt">=</span> <span class="hl str">&quot;CGATMKRYVBHD&quot;</span><span class="hl opt">;</span>
+  <span class="hl kwa">var</span> dst   <span class="hl opt">=</span> <span class="hl str">&quot;GCTAKMYRBVDH&quot;</span><span class="hl opt">;</span>
+  <span class="hl kwa">var</span> tbl   <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">&gt;(</span><span class="hl num">256</span><span class="hl opt">);</span>
+  <span class="hl kwa">var</span> seq   <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">&gt;();</span>
+  
+  <span class="hl slc">// Set up lookup table</span>
+  <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> tbl<span class="hl opt">.</span>length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+    tbl<span class="hl kwc">[i]</span> <span class="hl opt">=</span> i<span class="hl opt">;</span>
+  
+  <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> src<span class="hl opt">.</span>length<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+    tbl<span class="hl opt">[</span>src<span class="hl opt">.</span><span class="hl kwd">codeUnitAt</span><span class="hl opt">(</span>i<span class="hl opt">)]                =</span> dst<span class="hl opt">.</span><span class="hl kwd">codeUnitAt</span><span class="hl opt">(</span>i<span class="hl opt">);</span>
+    tbl<span class="hl opt">[</span>src<span class="hl opt">.</span><span class="hl kwd">toLowerCase</span><span class="hl opt">().</span><span class="hl kwd">codeUnitAt</span><span class="hl opt">(</span>i<span class="hl opt">)]  =</span> dst<span class="hl opt">.</span><span class="hl kwd">codeUnitAt</span><span class="hl opt">(</span>i<span class="hl opt">);</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwa">var</span> buffer <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">&gt;(</span><span class="hl num">60</span><span class="hl opt">);</span>
+  List<span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">&gt;</span> list <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">&gt;();</span>
+  bool commentLine <span class="hl opt">=</span> <span class="hl kwa">false</span><span class="hl opt">;</span>
+  StringBuffer sbuf <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">StringBuffer</span><span class="hl opt">();</span>
+   
+  stdin<span class="hl opt">.</span><span class="hl kwd">listen</span><span class="hl opt">((</span>List<span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">&gt;</span> dataList<span class="hl opt">) {</span>
+    <span class="hl slc">// Loop over all the contents of the buffer so far</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> data <span class="hl kwa">in</span> dataList<span class="hl opt">) {</span>
+      
+      <span class="hl slc">// Check if this is a comment line (and that we aren't already on a comment line)</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>data <span class="hl opt">==</span> <span class="hl num">62</span> <span class="hl opt">&amp;&amp; !</span>commentLine<span class="hl opt">) {</span>
+        <span class="hl kwb">int</span> count <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+        
+        <span class="hl slc">// Print the reverse components for the last block </span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> g <span class="hl kwa">in</span> list<span class="hl opt">.</span>reversed<span class="hl opt">) {</span>
+          <span class="hl kwa">if</span> <span class="hl opt">(</span>count <span class="hl opt">==</span> <span class="hl num">60</span><span class="hl opt">) {</span>
+            sbuf<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span><span class="hl kwa">new</span> String<span class="hl opt">.</span><span class="hl kwd">fromCharCodes</span><span class="hl opt">(</span>buffer<span class="hl opt">.</span><span class="hl kwd">getRange</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> count<span class="hl opt">)));</span>
+            sbuf<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span><span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">);</span>
+            count<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span>
+          <span class="hl opt">}</span> 
+          buffer<span class="hl opt">[</span>count<span class="hl opt">++] =</span> g<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+        <span class="hl slc">// Print any stragling data</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>count <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+          sbuf<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span><span class="hl kwa">new</span> String<span class="hl opt">.</span><span class="hl kwd">fromCharCodes</span><span class="hl opt">(</span>buffer<span class="hl opt">.</span><span class="hl kwd">getRange</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> count<span class="hl opt">)));</span>
+          sbuf<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span><span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+        <span class="hl slc">// Reset the data for the begining of a block of data</span>
+        list<span class="hl opt">.</span><span class="hl kwd">clear</span><span class="hl opt">();</span>
+        commentLine <span class="hl opt">=</span> <span class="hl kwa">true</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span> 
+        
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>commentLine<span class="hl opt">) {</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>data <span class="hl opt">==</span> <span class="hl num">10</span><span class="hl opt">) {</span>
+          sbuf<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span><span class="hl kwa">new</span> String<span class="hl opt">.</span><span class="hl kwd">fromCharCodes</span><span class="hl opt">(</span>list<span class="hl opt">));</span>
+          <span class="hl kwd">print</span><span class="hl opt">(</span>sbuf<span class="hl opt">);</span>
+          sbuf <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">StringBuffer</span><span class="hl opt">();</span>
+          commentLine <span class="hl opt">=</span> <span class="hl kwa">false</span><span class="hl opt">;</span>
+          list<span class="hl opt">.</span><span class="hl kwd">clear</span><span class="hl opt">();</span>
+        <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+          list<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>data<span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+      <span class="hl opt">}</span> <span class="hl kwa">else if</span> <span class="hl opt">(</span>data <span class="hl opt">!=</span> <span class="hl num">10</span><span class="hl opt">) {</span>
+          <span class="hl slc">// Add the complement to the buffer</span>
+          list<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>tbl<span class="hl kwc">[data]</span><span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+  <span class="hl opt">}).</span><span class="hl kwd">onDone</span><span class="hl opt">(() {</span>
+    <span class="hl slc">// Print out anything remaining in the buffers</span>
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>commentLine<span class="hl opt">) {</span>
+      sbuf<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span><span class="hl kwa">new</span> String<span class="hl opt">.</span><span class="hl kwd">fromCharCodes</span><span class="hl opt">(</span>list<span class="hl opt">));</span>
+    <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+      <span class="hl kwb">int</span> count <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> data <span class="hl kwa">in</span> list<span class="hl opt">.</span>reversed<span class="hl opt">) {</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>count <span class="hl opt">==</span> <span class="hl num">60</span><span class="hl opt">) {</span>
+          sbuf<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span><span class="hl kwa">new</span> String<span class="hl opt">.</span><span class="hl kwd">fromCharCodes</span><span class="hl opt">(</span>buffer<span class="hl opt">.</span><span class="hl kwd">getRange</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> count<span class="hl opt">)));</span>
+          sbuf<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span><span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">);</span>
+          count<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span>
+        <span class="hl opt">}</span> 
+        buffer<span class="hl opt">[</span>count<span class="hl opt">++] =</span> data<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>count <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+        sbuf<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span><span class="hl kwa">new</span> String<span class="hl opt">.</span><span class="hl kwd">fromCharCodes</span><span class="hl opt">(</span>buffer<span class="hl opt">.</span><span class="hl kwd">getRange</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> count<span class="hl opt">)));</span>
+      <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwd">print</span><span class="hl opt">(</span>sbuf<span class="hl opt">);</span>
+  <span class="hl opt">});</span>
+<span class="hl opt">}</span>
