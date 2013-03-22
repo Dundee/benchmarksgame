@@ -1,0 +1,65 @@
+<span class="hl slc"># The Computer Language Benchmarks Game</span>
+<span class="hl slc"># http://benchmarksgame.alioth.debian.org</span>
+<span class="hl slc">#</span>
+<span class="hl slc"># contributed by jose fco. gonzalez</span>
+<span class="hl slc"># modified by Sokolov Yura</span>
+<span class="hl slc"># Parallelism by Rick Branson</span>
+<span class="hl slc"># converted to threads on ruby Christian Stone</span>
+
+<span class="hl kwb">$seq</span> <span class="hl opt">=</span> String<span class="hl opt">.</span>new
+
+<span class="hl kwa">def</span> <span class="hl kwd">frequency</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> length)
+  frequencies <span class="hl opt">=</span> Hash<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">0</span>)
+  ns          <span class="hl opt">=</span> seq<span class="hl opt">.</span>length <span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl opt">-</span> length
+  
+  <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl opt">(</span><span class="hl num">0</span> <span class="hl opt">...</span> ns)
+    frequencies<span class="hl opt">[</span>seq<span class="hl opt">[</span>i<span class="hl opt">,</span> length<span class="hl opt">]] +=</span> <span class="hl num">1</span>
+  <span class="hl kwa">end</span>
+  
+  <span class="hl opt">[</span>ns<span class="hl opt">,</span> frequencies<span class="hl opt">]</span>
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">def</span> <span class="hl kwd">sort_by_freq</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> length)
+  ret       <span class="hl opt">=</span> <span class="hl str">&quot;&quot;</span>
+  n<span class="hl opt">,</span> table  <span class="hl opt">=</span> <span class="hl kwd">frequency</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> length)
+
+  table<span class="hl opt">.</span>sort<span class="hl esc">{|a,b| b[1] &lt;=&gt; a[1]}</span><span class="hl opt">.</span>each <span class="hl kwa">do</span> <span class="hl opt">|</span>v<span class="hl opt">|</span>
+      ret <span class="hl opt">+=</span> <span class="hl str">&quot;%s %.3f\n&quot;</span> <span class="hl opt">% [</span>v<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>upcase<span class="hl opt">,((</span>v<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]*</span><span class="hl num">100</span>)<span class="hl opt">.</span>to_f<span class="hl opt">/</span>n)<span class="hl opt">]</span>
+  <span class="hl kwa">end</span>
+  
+  ret <span class="hl opt">+=</span> <span class="hl str">&quot;\n&quot;</span>
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">def</span> <span class="hl kwd">find_seq</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> s)
+  n<span class="hl opt">,</span> table <span class="hl opt">=</span> <span class="hl kwd">frequency</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> s<span class="hl opt">.</span>length)
+  <span class="hl str">&quot;</span><span class="hl esc">#{table[s].to_s}</span><span class="hl str">\t</span><span class="hl esc">#{s.upcase}</span><span class="hl str">\n&quot;</span>
+<span class="hl kwa">end</span>
+
+line <span class="hl opt">=</span> <span class="hl kwc">STDIN</span><span class="hl opt">.</span>gets <span class="hl kwa">while</span> line <span class="hl opt">!</span>~ <span class="hl kwc">/^&gt;THREE/</span>
+line <span class="hl opt">=</span> <span class="hl kwc">STDIN</span><span class="hl opt">.</span>gets
+<span class="hl kwa">while</span> <span class="hl opt">(</span>line <span class="hl opt">!</span>~ <span class="hl kwc">/^&gt;/</span>) <span class="hl opt">&amp;</span> line <span class="hl kwa">do</span>
+    <span class="hl kwb">$seq</span> <span class="hl opt">&lt;&lt;</span> line<span class="hl opt">.</span>chomp
+    line <span class="hl opt">=</span> <span class="hl kwc">STDIN</span><span class="hl opt">.</span>gets
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">class</span> Worker
+  <span class="hl kwa">def</span> <span class="hl kwd">initialize</span><span class="hl opt">(&amp;</span>block)
+    <span class="hl kwb">&#64;t</span> <span class="hl opt">=</span> Thread<span class="hl opt">.</span>new <span class="hl kwa">do</span>
+      Thread<span class="hl opt">.</span>current<span class="hl opt">[</span><span class="hl kwc">:result</span><span class="hl opt">] =</span> <span class="hl kwa">yield</span>
+    <span class="hl kwa">end</span>
+  <span class="hl kwa">end</span>
+  
+  <span class="hl kwa">def</span> result
+    <span class="hl kwb">&#64;t</span><span class="hl opt">.</span>join
+    <span class="hl kwb">&#64;t</span><span class="hl opt">[</span><span class="hl kwc">:result</span><span class="hl opt">]</span>
+  <span class="hl kwa">end</span>
+<span class="hl kwa">end</span>
+
+FREQS   <span class="hl opt">= [</span><span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">]</span>
+NUCLEOS <span class="hl opt">= %</span><span class="hl kwd">w</span><span class="hl opt">(</span>ggt ggta ggtatt ggtattttaatt ggtattttaatttatagt)
+
+workers <span class="hl opt">=</span>   FREQS<span class="hl opt">.</span>map   <span class="hl esc">{ |i| Worker.new { sort_by_freq($seq, i) }</span> <span class="hl opt">}</span>
+workers <span class="hl opt">+=</span>  NUCLEOS<span class="hl opt">.</span>map <span class="hl esc">{ |s| Worker.new { find_seq($seq, s) }</span> <span class="hl opt">}</span>
+  
+results <span class="hl opt">=</span> workers<span class="hl opt">.</span>map <span class="hl esc">{ |w| w.result }</span>
+print results<span class="hl opt">.</span>join
