@@ -3,4 +3,5 @@
 <p>wikibook <a href="http://en.wikibooks.org/wiki/Ada_Programming">Ada Programming</a></p>
 <?=$Version;?>
 <p>Home Page: <a href="https://libre.adacore.com/">The Libre Site</a></p>
-<p>Download: <a href="https://libre.adacore.com/dynamic/download_page">Download GNAT GPL Edition </a></p>
+<p>Download: <a href="http://libre.adacore.com/download/">
+Download GNAT GPL and SPARK GPL Editions</a></p>
