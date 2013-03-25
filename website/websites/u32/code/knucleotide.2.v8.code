@@ -1,0 +1,69 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   Contributed by Jesse Millikan</span>
+<span class="hl com">   Modified by Matt Baker</span>
+<span class="hl com">*/</span>
+
+<span class="hl str">'use strict'</span><span class="hl opt">;</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">frequency</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> length<span class="hl opt">){</span>
+  <span class="hl kwa">var</span> freq <span class="hl opt">= {},</span>
+      n <span class="hl opt">=</span> seq<span class="hl opt">.</span>length <span class="hl opt">-</span> length <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">,</span>
+      sub<span class="hl opt">,</span> i<span class="hl opt">;</span>
+
+  <span class="hl kwa">for</span><span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> n<span class="hl opt">;</span> i<span class="hl opt">++){</span>
+    sub <span class="hl opt">=</span> seq<span class="hl opt">.</span><span class="hl kwd">substr</span><span class="hl opt">(</span>i<span class="hl opt">,</span> length<span class="hl opt">);</span>
+    freq<span class="hl kwc">[sub]</span> <span class="hl opt">= (</span>freq<span class="hl kwc">[sub]</span> || <span class="hl num">0</span><span class="hl opt">) +</span> <span class="hl num">1</span><span class="hl opt">;</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwa">return</span> freq<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+
+<span class="hl kwa">function</span> <span class="hl kwd">sort</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> length<span class="hl opt">){</span>
+  <span class="hl kwa">var</span> f <span class="hl opt">=</span> <span class="hl kwd">frequency</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> length<span class="hl opt">),</span>
+      keys <span class="hl opt">=</span> Object<span class="hl opt">.</span><span class="hl kwd">keys</span><span class="hl opt">(</span>f<span class="hl opt">),</span> 
+      n <span class="hl opt">=</span> seq<span class="hl opt">.</span>length <span class="hl opt">-</span> length <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">,</span>
+      i<span class="hl opt">;</span>
+
+  keys<span class="hl opt">.</span><span class="hl kwd">sort</span><span class="hl opt">(</span><span class="hl kwa">function</span><span class="hl opt">(</span>a<span class="hl opt">,</span> b<span class="hl opt">){</span> <span class="hl kwa">return</span> f<span class="hl kwc">[b]</span> <span class="hl opt">-</span> f<span class="hl kwc">[a]</span><span class="hl opt">; });</span>
+
+  <span class="hl kwa">for</span><span class="hl opt">(</span>i <span class="hl kwa">in</span> keys<span class="hl opt">) {</span>
+    <span class="hl kwd">print</span><span class="hl opt">(</span>keys<span class="hl kwc">[i]</span><span class="hl opt">, (</span>f<span class="hl opt">[</span>keys<span class="hl kwc">[i]</span><span class="hl opt">] *</span> <span class="hl num">100</span> <span class="hl opt">/</span> n<span class="hl opt">).</span><span class="hl kwd">toFixed</span><span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">));</span>
+  <span class="hl opt">}</span>
+  
+  <span class="hl kwd">print</span><span class="hl opt">();</span>
+<span class="hl opt">}</span>
+
+
+<span class="hl kwa">function</span> <span class="hl kwd">find</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> s<span class="hl opt">){</span>
+  <span class="hl kwa">var</span> f <span class="hl opt">=</span> <span class="hl kwd">frequency</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> s<span class="hl opt">.</span>length<span class="hl opt">);</span>
+  <span class="hl kwd">print</span><span class="hl opt">((</span>f<span class="hl kwc">[s]</span> || <span class="hl num">0</span><span class="hl opt">) +</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">&quot;</span> <span class="hl opt">+</span> s<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+
+<span class="hl kwa">function</span> <span class="hl kwd">readSequence</span><span class="hl opt">() {</span>
+  <span class="hl kwa">var</span> lines <span class="hl opt">= [],</span>
+      l<span class="hl opt">;</span>
+
+  <span class="hl kwa">while</span><span class="hl opt">(</span><span class="hl kwd">readline</span><span class="hl opt">().</span><span class="hl kwd">substr</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">6</span><span class="hl opt">) !==</span> <span class="hl str">'&gt;THREE'</span><span class="hl opt">);</span> <span class="hl slc">// no body</span>
+
+  <span class="hl kwa">while</span><span class="hl opt">((</span>l <span class="hl opt">=</span> <span class="hl kwd">readline</span><span class="hl opt">()) &amp;&amp;</span> l<span class="hl kwc">[0]</span> <span class="hl opt">!==</span> <span class="hl str">'&gt;'</span><span class="hl opt">) {</span>
+    lines<span class="hl opt">.</span><span class="hl kwd">push</span><span class="hl opt">(</span>l<span class="hl opt">);</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwa">return</span> lines<span class="hl opt">.</span><span class="hl kwd">join</span><span class="hl opt">(</span><span class="hl str">''</span><span class="hl opt">).</span><span class="hl kwd">toUpperCase</span><span class="hl opt">();</span>
+<span class="hl opt">}</span>
+
+
+<span class="hl kwa">var</span> seq <span class="hl opt">=</span> <span class="hl kwd">readSequence</span><span class="hl opt">();</span>
+
+<span class="hl kwd">sort</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">);</span>
+<span class="hl kwd">sort</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">);</span>
+
+<span class="hl kwd">find</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> <span class="hl str">&quot;GGT&quot;</span><span class="hl opt">);</span>
+<span class="hl kwd">find</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> <span class="hl str">&quot;GGTA&quot;</span><span class="hl opt">);</span>
+<span class="hl kwd">find</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> <span class="hl str">&quot;GGTATT&quot;</span><span class="hl opt">);</span>
+<span class="hl kwd">find</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> <span class="hl str">&quot;GGTATTTTAATT&quot;</span><span class="hl opt">);</span>
+<span class="hl kwd">find</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> <span class="hl str">&quot;GGTATTTTAATTTATAGT&quot;</span><span class="hl opt">);</span>
