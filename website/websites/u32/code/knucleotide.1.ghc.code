@@ -1,0 +1,179 @@
+<span class="hl slc">--</span>
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- Contributed by Branimir Maksimovic</span>
+<span class="hl slc">--</span>
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span>Bits
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span><span class="hl kwb">Char</span>
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span><span class="hl kwb">Int</span>
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span>List
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span><span class="hl kwb">Array</span><span class="hl opt">.</span>Base
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span><span class="hl kwb">Array</span><span class="hl opt">.</span>Unboxed
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span><span class="hl kwb">Array</span><span class="hl opt">.</span><span class="hl kwb">IO</span>
+<span class="hl kwd">import qualified</span> Data<span class="hl opt">.</span>ByteString<span class="hl opt">.</span>Char8 <span class="hl kwd">as</span> S
+<span class="hl kwd">import</span> Foreign<span class="hl opt">.</span>Ptr
+<span class="hl kwd">import</span> Foreign<span class="hl opt">.</span>Storable
+<span class="hl kwd">import</span> Foreign<span class="hl opt">.</span>Marshal<span class="hl opt">.</span>Alloc
+<span class="hl kwd">import</span> Control<span class="hl opt">.</span>Concurrent
+<span class="hl kwd">import</span> Text<span class="hl opt">.</span>Printf
+
+main <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    <span class="hl kwd">let</span> skip <span class="hl opt">=</span> <span class="hl kwd">do</span>
+            l <span class="hl opt">&lt;-</span> S<span class="hl opt">.</span><span class="hl kwc">getLine</span>
+            <span class="hl kwd">if</span> S<span class="hl opt">.</span><span class="hl kwc">isPrefixOf</span> <span class="hl opt">(</span>S<span class="hl opt">.</span>pack <span class="hl str">&quot;&gt;THREE&quot;</span><span class="hl opt">)</span> l
+                <span class="hl kwd">then</span> <span class="hl kwc">return</span> <span class="hl opt">()</span>
+                <span class="hl kwd">else</span> skip
+    skip
+    s <span class="hl opt">&lt;-</span> S<span class="hl opt">.</span><span class="hl kwc">getContents</span>
+    <span class="hl kwd">let</span> content <span class="hl opt">=</span> S<span class="hl opt">.</span><span class="hl kwc">filter</span> <span class="hl opt">((/=) '</span><span class="hl esc">\n</span><span class="hl opt">')</span> s<span class="hl opt">;</span>
+    <span class="hl kwc">mapM_</span> <span class="hl opt">(</span>execute content<span class="hl opt">)</span> actions
+    
+<span class="hl kwd">data</span> Actions <span class="hl opt">=</span> I <span class="hl kwb">Int</span> | S <span class="hl kwb">String</span>
+actions <span class="hl opt">= [</span>I <span class="hl num">1</span><span class="hl opt">,</span>I <span class="hl num">2</span><span class="hl opt">,</span>
+           S <span class="hl str">&quot;GGT&quot;</span><span class="hl opt">,</span>S <span class="hl str">&quot;GGTA&quot;</span><span class="hl opt">,</span>S <span class="hl str">&quot;GGTATT&quot;</span><span class="hl opt">,</span>S <span class="hl str">&quot;GGTATTTTAATT&quot;</span><span class="hl opt">,</span>S <span class="hl str">&quot;GGTATTTTAATTTATAGT&quot;</span><span class="hl opt">]</span>
+execute content <span class="hl opt">(</span>I i<span class="hl opt">) =</span> writeFrequencies content i
+execute content <span class="hl opt">(</span>S s<span class="hl opt">) =</span> writeCount content s
+
+writeFrequencies <span class="hl opt">::</span> S<span class="hl opt">.</span>ByteString <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">()</span>
+writeFrequencies input size <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    ht <span class="hl opt">&lt;-</span> tcalculate input size
+    lst <span class="hl opt">&lt;-</span> Main<span class="hl opt">.</span><span class="hl kwc">foldM</span> <span class="hl opt">(\</span>lst <span class="hl opt">(</span>k<span class="hl opt">,</span>v<span class="hl opt">)-&gt;</span><span class="hl kwd">do</span> 
+        v<span class="hl opt">' &lt;-</span> peek v
+        <span class="hl kwc">return</span> <span class="hl opt">$ (</span>k<span class="hl opt">,</span>v<span class="hl opt">'):</span>lst<span class="hl opt">) []</span> ht
+    <span class="hl kwd">let</span> sorted <span class="hl opt">=</span> <span class="hl kwc">sortBy</span> <span class="hl opt">(\(</span>_<span class="hl opt">,</span>x<span class="hl opt">) (</span>_<span class="hl opt">,</span>y<span class="hl opt">) -&gt;</span> y `<span class="hl kwc">compare</span>` x<span class="hl opt">)</span> lst
+        <span class="hl kwa">sum</span> <span class="hl opt">=</span> <span class="hl kwc">fromIntegral</span> <span class="hl opt">((</span>S<span class="hl opt">.</span><span class="hl kwa">length</span> input<span class="hl opt">) +</span> <span class="hl num">1</span> <span class="hl opt">-</span> size<span class="hl opt">)</span>
+    <span class="hl kwc">mapM_</span> <span class="hl opt">(\(</span>k<span class="hl opt">,</span>v<span class="hl opt">)-&gt;</span> <span class="hl kwd">do</span>
+        printf <span class="hl str">&quot;%s %.3f</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> 
+            <span class="hl opt">(</span>toString k<span class="hl opt">) ((</span><span class="hl num">100</span> <span class="hl opt">* (</span><span class="hl kwc">fromIntegral</span> v<span class="hl opt">)/</span><span class="hl kwa">sum</span><span class="hl opt">)::</span><span class="hl kwb">Double</span><span class="hl opt">))</span> sorted
+    <span class="hl kwc">putChar</span> <span class="hl opt">'</span><span class="hl esc">\n</span><span class="hl opt">'</span>
+
+writeCount <span class="hl opt">::</span> S<span class="hl opt">.</span>ByteString <span class="hl opt">-&gt;</span> <span class="hl kwb">String</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">()</span>
+writeCount input <span class="hl kwa">string</span> <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    <span class="hl kwd">let</span> size <span class="hl opt">=</span> <span class="hl kwa">length string</span>
+        k <span class="hl opt">=</span> T <span class="hl opt">(</span>toNum <span class="hl opt">(</span>S<span class="hl opt">.</span>pack <span class="hl kwa">string</span><span class="hl opt">)</span> <span class="hl num">0</span> size<span class="hl opt">)</span> size
+    ht <span class="hl opt">&lt;-</span> tcalculate input size
+    res <span class="hl opt">&lt;-</span> Main<span class="hl opt">.</span><span class="hl kwc">lookup</span> ht k
+    <span class="hl kwd">case</span> res <span class="hl kwd">of</span> 
+        Nothing <span class="hl opt">-&gt;</span> <span class="hl kwc">putStrLn</span> <span class="hl opt">$</span> <span class="hl kwa">string</span> <span class="hl opt">++</span> <span class="hl str">&quot; not found...&quot;</span>
+        Just v <span class="hl opt">-&gt;</span> <span class="hl kwd">do</span>
+            r <span class="hl opt">&lt;-</span> peek v
+            printf <span class="hl str">&quot;%d</span><span class="hl esc">\t</span><span class="hl str">%s</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> r <span class="hl kwa">string</span>
+
+tcalculate <span class="hl opt">::</span> S<span class="hl opt">.</span>ByteString <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> HM
+tcalculate input size <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    <span class="hl kwd">let</span> 
+        l <span class="hl opt">= [</span><span class="hl num">0</span><span class="hl opt">.</span><span class="hl num">.63</span><span class="hl opt">]</span>
+        actions <span class="hl opt">=</span> <span class="hl kwc">map</span> <span class="hl opt">(\</span>i <span class="hl opt">-&gt; (</span>calculate input i size <span class="hl opt">(</span><span class="hl kwa">length</span> l<span class="hl opt">)))</span> l
+    vars <span class="hl opt">&lt;-</span> <span class="hl kwc">mapM</span> <span class="hl opt">(</span><span class="hl esc">\a</span>ction <span class="hl opt">-&gt;</span> <span class="hl kwd">do</span>
+                    var <span class="hl opt">&lt;-</span> newEmptyMVar
+                    forkIO <span class="hl opt">$</span> <span class="hl kwd">do</span>
+                        answer <span class="hl opt">&lt;-</span> action
+                        putMVar var answer
+                    <span class="hl kwc">return</span> var<span class="hl opt">)</span> actions
+    result <span class="hl opt">&lt;-</span> newTable <span class="hl opt">::</span> <span class="hl kwb">IO</span> HM
+    results <span class="hl opt">&lt;-</span> <span class="hl kwc">mapM</span> takeMVar vars
+    <span class="hl kwc">mapM_</span> <span class="hl opt">(\</span>ht <span class="hl opt">-&gt;</span> Main<span class="hl opt">.</span><span class="hl kwc">foldM</span> <span class="hl opt">(\</span>lst <span class="hl opt">(</span>k<span class="hl opt">,</span>v<span class="hl opt">) -&gt;</span> <span class="hl kwd">do</span> 
+                            res <span class="hl opt">&lt;-</span> Main<span class="hl opt">.</span><span class="hl kwc">lookup</span> lst k
+                            <span class="hl kwd">case</span> res <span class="hl kwd">of</span>
+                                Nothing <span class="hl opt">-&gt;</span> <span class="hl kwd">do</span>
+                                    r1 <span class="hl opt">&lt;-</span> peek v
+                                    r2 <span class="hl opt">&lt;-</span> malloc
+                                    poke r2 r1
+                                    Main<span class="hl opt">.</span><span class="hl kwc">insert</span> lst k r2
+                                Just v1 <span class="hl opt">-&gt;</span> <span class="hl kwd">do</span>
+                                    r1 <span class="hl opt">&lt;-</span> peek v1
+                                    r2 <span class="hl opt">&lt;-</span> peek v
+                                    poke v1 <span class="hl opt">(</span>r1<span class="hl opt">+</span>r2<span class="hl opt">)</span>
+                            <span class="hl kwc">return</span> lst<span class="hl opt">)</span> result ht<span class="hl opt">)</span> results
+    <span class="hl kwc">return</span> result
+
+calculate <span class="hl opt">::</span> S<span class="hl opt">.</span>ByteString <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> HM    
+calculate input beg size incr <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    <span class="hl opt">!</span>ht <span class="hl opt">&lt;-</span> newTable <span class="hl opt">::</span> <span class="hl kwb">IO</span> HM
+    <span class="hl kwd">let</span>
+        calculate<span class="hl opt">'</span> i 
+         | i <span class="hl opt">&gt;= ((</span>S<span class="hl opt">.</span><span class="hl kwa">length</span> input<span class="hl opt">)+</span><span class="hl num">1</span> <span class="hl opt">-</span> size<span class="hl opt">) =</span> <span class="hl kwc">return</span> ht
+         | <span class="hl kwc">otherwise</span> <span class="hl opt">=</span> <span class="hl kwd">do</span>
+            <span class="hl kwd">let</span> k <span class="hl opt">=</span>  T <span class="hl opt">(</span>toNum input i size<span class="hl opt">)</span> size
+            res <span class="hl opt">&lt;-</span> Main<span class="hl opt">.</span><span class="hl kwc">lookup</span> ht k
+            <span class="hl kwd">case</span> res <span class="hl kwd">of</span>
+                Nothing <span class="hl opt">-&gt;</span> <span class="hl kwd">do</span>
+                    <span class="hl opt">!</span>r <span class="hl opt">&lt;-</span> malloc
+                    poke r <span class="hl num">1</span>
+                    Main<span class="hl opt">.</span><span class="hl kwc">insert</span> ht k r
+                Just v <span class="hl opt">-&gt;</span> <span class="hl kwd">do</span> 
+                    <span class="hl opt">!</span>r <span class="hl opt">&lt;-</span> peek v
+                    poke v <span class="hl opt">(</span>r<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+            calculate<span class="hl opt">' (</span>i<span class="hl opt">+</span>incr<span class="hl opt">)</span>
+    calculate<span class="hl opt">'</span> beg
+
+toNum <span class="hl opt">::</span> S<span class="hl opt">.</span>ByteString <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> Int64
+toNum s beg size <span class="hl opt">=</span> toNum<span class="hl opt">'</span> <span class="hl num">0</span> size
+    <span class="hl kwd">where</span>
+        toNum<span class="hl opt">'</span> v <span class="hl num">0</span> <span class="hl opt">=</span> v
+        toNum<span class="hl opt">'</span> v i <span class="hl opt">=</span> toNum<span class="hl opt">' ((</span>v `shiftL` <span class="hl num">2</span><span class="hl opt">) .</span>|<span class="hl opt">.</span> 
+                    <span class="hl opt">(</span>toNumA `unsafeAt` <span class="hl opt">(</span><span class="hl kwc">ord</span> <span class="hl opt">(</span>S<span class="hl opt">.</span><span class="hl kwa">index</span> s <span class="hl opt">(</span>beg<span class="hl opt">+</span>i<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">))))) (</span>i<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span>
+
+toString <span class="hl opt">::</span> T <span class="hl opt">-&gt;</span> <span class="hl kwb">String</span>
+toString <span class="hl opt">(</span>T v s<span class="hl opt">) =</span> toString<span class="hl opt">'</span> v s
+    <span class="hl kwd">where</span>
+        toString<span class="hl opt">'</span> v <span class="hl num">0</span> <span class="hl opt">= []</span>
+        toString<span class="hl opt">'</span> v i <span class="hl opt">=</span> <span class="hl kwd">case</span> v<span class="hl opt">.&amp;</span><span class="hl num">.3</span> <span class="hl kwd">of</span>
+                        <span class="hl num">0</span> <span class="hl opt">-&gt; '</span>A<span class="hl opt">'</span>
+                        <span class="hl num">1</span> <span class="hl opt">-&gt; '</span>C<span class="hl opt">'</span>
+                        <span class="hl num">2</span> <span class="hl opt">-&gt; '</span>T<span class="hl opt">'</span>
+                        <span class="hl num">3</span> <span class="hl opt">-&gt; '</span>G<span class="hl opt">'</span>
+                      <span class="hl opt">:</span> toString<span class="hl opt">' (</span>v `shiftR` <span class="hl num">2</span><span class="hl opt">) (</span>i<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span>
+
+toNumA <span class="hl opt">::</span> UArray <span class="hl kwb">Int</span> Int64
+toNumA <span class="hl opt">=</span> <span class="hl kwa">array</span> <span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">255</span><span class="hl opt">) [(</span><span class="hl kwc">ord</span> <span class="hl opt">'</span>a<span class="hl opt">',</span><span class="hl num">0</span><span class="hl opt">),(</span><span class="hl kwc">ord</span> <span class="hl opt">'</span>c<span class="hl opt">',</span><span class="hl num">1</span><span class="hl opt">),(</span><span class="hl kwc">ord</span> <span class="hl opt">'</span>t<span class="hl opt">',</span><span class="hl num">2</span><span class="hl opt">),(</span><span class="hl kwc">ord</span> <span class="hl opt">'</span>g<span class="hl opt">',</span><span class="hl num">3</span><span class="hl opt">),</span>
+            <span class="hl opt">(</span><span class="hl kwc">ord</span> <span class="hl opt">'</span>A<span class="hl opt">',</span><span class="hl num">0</span><span class="hl opt">),(</span><span class="hl kwc">ord</span> <span class="hl opt">'</span>C<span class="hl opt">',</span><span class="hl num">1</span><span class="hl opt">),(</span><span class="hl kwc">ord</span> <span class="hl opt">'</span>T<span class="hl opt">',</span><span class="hl num">2</span><span class="hl opt">),(</span><span class="hl kwc">ord</span> <span class="hl opt">'</span>G<span class="hl opt">',</span><span class="hl num">3</span><span class="hl opt">)]</span>
+
+<span class="hl kwd">data</span> T <span class="hl opt">=</span> T <span class="hl opt">!</span>Int64 <span class="hl opt">!</span><span class="hl kwb">Int</span>
+<span class="hl kwd">instance</span> Eq T <span class="hl kwd">where</span>
+    <span class="hl opt">(</span>T a _<span class="hl opt">) == (</span>T b _<span class="hl opt">) =</span> a <span class="hl opt">==</span> b
+<span class="hl kwd">class</span> Hash h <span class="hl kwd">where</span>
+    hash <span class="hl opt">::</span> h <span class="hl opt">-&gt;</span> Int64
+<span class="hl kwd">instance</span> Hash T <span class="hl kwd">where</span>
+    hash <span class="hl opt">(</span>T a _<span class="hl opt">) =</span> a
+
+<span class="hl kwd">type</span> HM <span class="hl opt">=</span> HashMap T <span class="hl opt">(</span>Ptr <span class="hl kwb">Int</span><span class="hl opt">)</span>
+<span class="hl kwd">data</span> HashMap k v <span class="hl opt">=</span> HashMap <span class="hl opt">!(</span>IOArray Int64 <span class="hl opt">[(</span>k<span class="hl opt">,</span>v<span class="hl opt">)])</span>
+tsz <span class="hl opt">=</span> <span class="hl num">4096</span>
+newTable <span class="hl opt">::</span> <span class="hl kwb">IO</span> <span class="hl opt">(</span>HashMap k v<span class="hl opt">)</span>
+newTable <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    <span class="hl opt">!</span><span class="hl kwa">array</span> <span class="hl opt">&lt;-</span> newArray <span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,(</span>tsz<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)) []</span>
+    <span class="hl kwc">return</span> <span class="hl opt">$</span> HashMap <span class="hl kwa">array</span>
+
+<span class="hl kwc">lookup</span> <span class="hl opt">:: (</span>Eq k<span class="hl opt">,</span> Hash k<span class="hl opt">)=&gt;</span>HashMap k v <span class="hl opt">-&gt;</span> k <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">(</span><span class="hl kwb">Maybe</span> v<span class="hl opt">)</span>
+<span class="hl kwc">lookup</span> <span class="hl opt">(</span>HashMap a<span class="hl opt">)</span> k <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    <span class="hl kwd">let</span> h <span class="hl opt">=</span> hash k
+    <span class="hl opt">!</span>lst <span class="hl opt">&lt;-</span> readArray a <span class="hl opt">(</span>h <span class="hl opt">.&amp;. (</span>tsz<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">))</span>
+    <span class="hl kwd">let</span>
+        loop <span class="hl opt">[] =</span> <span class="hl kwc">return</span> Nothing
+        loop <span class="hl opt">((!</span>k<span class="hl opt">',!</span>v<span class="hl opt">):</span>xs<span class="hl opt">)</span> 
+            | k <span class="hl opt">/=</span> k<span class="hl opt">' =</span> loop xs
+            | <span class="hl kwc">otherwise</span> <span class="hl opt">=</span> <span class="hl kwc">return</span> <span class="hl opt">$</span> Just v
+    loop lst
+
+<span class="hl kwc">insert</span> <span class="hl opt">:: (</span>Eq k<span class="hl opt">,</span> Hash k<span class="hl opt">)=&gt;</span>HashMap k v <span class="hl opt">-&gt;</span> k <span class="hl opt">-&gt;</span> v <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">()</span>
+<span class="hl kwc">insert</span> <span class="hl opt">(</span>HashMap a<span class="hl opt">)</span> k v <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    <span class="hl kwd">let</span> h <span class="hl opt">=</span> hash k
+    <span class="hl opt">!</span>lst <span class="hl opt">&lt;-</span> readArray a <span class="hl opt">(</span>h <span class="hl opt">.&amp;. (</span>tsz<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">))</span>
+    writeArray a <span class="hl opt">(</span>h <span class="hl opt">.&amp;. (</span>tsz<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)) ((</span>k<span class="hl opt">,</span>v<span class="hl opt">):</span>lst<span class="hl opt">)</span>
+
+<span class="hl kwc">foldM</span> <span class="hl opt">:: (</span> a <span class="hl opt">-&gt; (</span>b<span class="hl opt">,</span>c<span class="hl opt">) -&gt;</span> <span class="hl kwb">IO</span> a<span class="hl opt">) -&gt;</span> a <span class="hl opt">-&gt;</span> HashMap b c <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> a
+<span class="hl kwc">foldM</span> f s <span class="hl opt">(</span>HashMap a<span class="hl opt">) =</span> <span class="hl kwd">do</span>
+    <span class="hl kwd">let</span> 
+        loop <span class="hl num">0</span> s<span class="hl opt">' =</span> <span class="hl kwc">return</span> s<span class="hl opt">'</span>
+        loop i s<span class="hl opt">' =</span> <span class="hl kwd">do</span>
+            <span class="hl opt">!</span>lst <span class="hl opt">&lt;-</span> readArray a <span class="hl opt">(</span>i<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span>
+            <span class="hl kwd">let</span> 
+                loop<span class="hl opt">' []</span> s<span class="hl opt">' =</span> <span class="hl kwc">return</span> s<span class="hl opt">'</span>
+                loop<span class="hl opt">' (</span>x<span class="hl opt">:</span>xs<span class="hl opt">)</span> s<span class="hl opt">' =</span> <span class="hl kwd">do</span>
+                    <span class="hl opt">!</span>s<span class="hl opt">'' &lt;-</span> f s<span class="hl opt">'</span> x
+                    loop<span class="hl opt">'</span> xs s<span class="hl opt">''</span>
+            <span class="hl opt">!</span>s<span class="hl opt">'' &lt;-</span> loop<span class="hl opt">'</span> lst s<span class="hl opt">'</span>
+            loop <span class="hl opt">(</span>i<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span> s<span class="hl opt">''</span>
+    loop tsz s
