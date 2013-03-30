@@ -1,13 +1,13 @@
 
-Wed, 27 Mar 2013 16:17:50 GMT
+Sat, 30 Mar 2013 15:08:43 GMT
 
 MAKE:
 mv knucleotide.ghc knucleotide.hs
-/usr/local/src/ghc-7.6.2/bin/ghc --make -fllvm -O2 -XBangPatterns -threaded -rtsopts  knucleotide.hs -o knucleotide.ghc_run
+/usr/local/src/ghc-7.6.2/bin/ghc --make -fllvm -O2 -XBangPatterns -threaded -rtsopts -funbox-strict-fields knucleotide.hs -o knucleotide.ghc_run
 [1 of 1] Compiling Main             ( knucleotide.hs, knucleotide.o )
 Linking knucleotide.ghc_run ...
 rm knucleotide.hs
-10.02s to complete and log all make actions
+28.69s to complete and log all make actions
 
 COMMAND LINE:
 ./knucleotide.ghc_run +RTS -N4 -K2048M -RTS 0 < knucleotide-input25000000.txt
