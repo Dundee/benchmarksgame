@@ -1,0 +1,191 @@
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl slc">--</span>
+<span class="hl slc">-- Contributed by Branimir Maksimovic</span>
+
+<span class="hl kwd">import</span> Foreign<span class="hl opt">.</span>Ptr
+<span class="hl kwd">import</span> Foreign<span class="hl opt">.</span>Storable
+<span class="hl kwd">import</span> Foreign<span class="hl opt">.</span>Marshal<span class="hl opt">.</span>Alloc
+<span class="hl kwd">import</span> Control<span class="hl opt">.</span>Monad
+<span class="hl kwd">import</span> System<span class="hl opt">.</span>Environment
+<span class="hl kwd">import</span> Text<span class="hl opt">.</span>Printf
+
+main <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    n <span class="hl opt">&lt;-</span> <span class="hl kwc">getArgs</span> <span class="hl opt">&gt;&gt;=</span> <span class="hl kwc">readIO</span><span class="hl opt">.</span><span class="hl kwc">head</span> <span class="hl opt">::</span> <span class="hl kwb">IO Int</span>
+    pPlanets <span class="hl opt">&lt;-</span> fromList planets
+    nbodyInit pPlanets
+    energy pPlanets <span class="hl opt">&gt;&gt;=</span> printf <span class="hl str">&quot;%.9f</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> 
+    run n pPlanets
+    energy pPlanets <span class="hl opt">&gt;&gt;=</span> printf <span class="hl str">&quot;%.9f</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> 
+
+run <span class="hl num">0</span> _ <span class="hl opt">=</span> <span class="hl kwc">return</span> <span class="hl opt">()</span>
+run i p <span class="hl opt">=</span> <span class="hl kwd">do</span>
+        advance p
+        run <span class="hl opt">(</span>i<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)</span> p
+        
+<span class="hl kwd">data</span> Planet <span class="hl opt">=</span> Planet <span class="hl opt">{</span> x<span class="hl opt">,</span>y<span class="hl opt">,</span>z<span class="hl opt">,</span>vx<span class="hl opt">,</span>vy<span class="hl opt">,</span>vz<span class="hl opt">,</span>mass <span class="hl opt">:: !</span><span class="hl kwb">Double</span> <span class="hl opt">}</span> <span class="hl kwd">deriving</span> <span class="hl opt">(</span><span class="hl kwb">Show</span><span class="hl opt">)</span>
+    
+offsetMomentum p <span class="hl opt">(</span>px<span class="hl opt">,</span>py<span class="hl opt">,</span>pz<span class="hl opt">) =</span> p <span class="hl opt">{</span>
+                                   vx <span class="hl opt">= -</span>px <span class="hl opt">/</span> solar_mass<span class="hl opt">,</span>
+                                   vy <span class="hl opt">= -</span>py <span class="hl opt">/</span> solar_mass<span class="hl opt">,</span>
+                                   vz <span class="hl opt">= -</span>pz <span class="hl opt">/</span> solar_mass
+                                <span class="hl opt">}</span>
+
+nbodyInit pPlanets <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    <span class="hl kwd">let</span> <span class="hl kwc">init</span> <span class="hl opt">(</span>px<span class="hl opt">,</span>py<span class="hl opt">,</span>pz<span class="hl opt">)</span> i <span class="hl opt">=</span> <span class="hl kwd">do</span>
+        <span class="hl kwd">if</span> i <span class="hl opt">&lt;</span> <span class="hl kwa">length</span> planets
+            <span class="hl kwd">then do</span>
+                p <span class="hl opt">&lt;-</span> peekElemOff pPlanets i
+                <span class="hl kwc">init</span> <span class="hl opt">(</span>px <span class="hl opt">+</span> vx p <span class="hl opt">*</span> mass p<span class="hl opt">,</span>py <span class="hl opt">+</span> vy p <span class="hl opt">*</span> mass p<span class="hl opt">,</span> pz <span class="hl opt">+</span> vz p <span class="hl opt">*</span> mass p<span class="hl opt">) (</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+            <span class="hl kwd">else</span> <span class="hl kwc">return</span> <span class="hl opt">(</span>px<span class="hl opt">,</span>py<span class="hl opt">,</span>pz<span class="hl opt">)</span>
+    s <span class="hl opt">&lt;-</span> <span class="hl kwc">init</span> <span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">)</span> <span class="hl num">0</span>
+    p <span class="hl opt">&lt;-</span> peek pPlanets
+    poke pPlanets <span class="hl opt">$</span> offsetMomentum p s
+
+squared x y z <span class="hl opt">=</span> x <span class="hl opt">*</span> x <span class="hl opt">+</span> y <span class="hl opt">*</span> y <span class="hl opt">+</span> z <span class="hl opt">*</span> z
+    
+energy pPlanets <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    <span class="hl kwd">let</span>
+        energy<span class="hl opt">'</span> e i <span class="hl opt">=</span> <span class="hl kwd">if</span> i <span class="hl opt">&lt;</span> <span class="hl kwa">length</span> planets
+                    <span class="hl kwd">then do</span>
+                        p <span class="hl opt">&lt;-</span> peekElemOff pPlanets i
+                        e1 <span class="hl opt">&lt;-</span> energy<span class="hl opt">''</span> p <span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span> e
+                        e2 <span class="hl opt">&lt;-</span> energy<span class="hl opt">'</span> e <span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+                        <span class="hl kwc">return</span> <span class="hl opt">$</span> e <span class="hl opt">+</span> <span class="hl num">0.5</span> <span class="hl opt">*</span> mass p <span class="hl opt">*</span> squared <span class="hl opt">(</span>vx p<span class="hl opt">) (</span>vy p<span class="hl opt">) (</span>vz p<span class="hl opt">)+</span>e1<span class="hl opt">+</span>e2
+                    <span class="hl kwd">else</span> <span class="hl kwc">return</span> e
+        energy<span class="hl opt">''</span> p j e <span class="hl opt">=</span> <span class="hl kwd">if</span> j <span class="hl opt">&lt;</span> <span class="hl kwa">length</span> planets
+                        <span class="hl kwd">then do</span>
+                            pj <span class="hl opt">&lt;-</span> peekElemOff pPlanets j
+                            <span class="hl kwd">let</span>
+                                distance <span class="hl opt">=</span> <span class="hl kwc">sqrt</span> <span class="hl opt">$</span> squared dx dy dz
+                                dx <span class="hl opt">=</span> x pj <span class="hl opt">-</span> x p
+                                dy <span class="hl opt">=</span> y pj <span class="hl opt">-</span> y p
+                                dz <span class="hl opt">=</span> z pj <span class="hl opt">-</span> z p
+                            e1 <span class="hl opt">&lt;-</span> energy<span class="hl opt">''</span> p <span class="hl opt">(</span>j<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span> e
+                            <span class="hl kwc">return</span> <span class="hl opt">$</span> e <span class="hl opt">- (</span>mass p <span class="hl opt">*</span> mass pj<span class="hl opt">) /</span> distance <span class="hl opt">+</span> e1
+                        <span class="hl kwd">else</span> <span class="hl kwc">return</span> e
+    energy<span class="hl opt">'</span> <span class="hl num">0.0 0</span>
+
+advance pPlanets <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    <span class="hl kwd">let</span> 
+        advance<span class="hl opt">'</span> i <span class="hl opt">=</span> 
+            <span class="hl kwc">when</span> <span class="hl opt">(</span>i <span class="hl opt">&lt;</span> <span class="hl kwa">length</span> planets<span class="hl opt">) $</span> <span class="hl kwd">do</span>
+                    <span class="hl kwd">let</span>
+                        loop j <span class="hl opt">=</span> <span class="hl kwc">when</span> <span class="hl opt">(</span>j <span class="hl opt">&lt;</span> <span class="hl kwa">length</span> planets<span class="hl opt">) $</span> <span class="hl kwd">do</span>
+                                    ii <span class="hl opt">&lt;-</span> peekElemOff pPlanets i
+                                    jj <span class="hl opt">&lt;-</span> peekElemOff pPlanets j
+                                    <span class="hl kwd">let</span>
+                                        mag <span class="hl opt">=</span> dt <span class="hl opt">/ (</span>dSquared <span class="hl opt">*</span> <span class="hl kwc">sqrt</span> dSquared<span class="hl opt">)</span>
+                                        dSquared <span class="hl opt">=</span> squared dx dy dz
+                                        dx <span class="hl opt">=</span> x ii <span class="hl opt">-</span> x jj
+                                        dy <span class="hl opt">=</span> y ii <span class="hl opt">-</span> y jj
+                                        dz <span class="hl opt">=</span> z ii <span class="hl opt">-</span> z jj
+                                    pokeV pPlanets i ii<span class="hl opt">{</span>
+                                        vx <span class="hl opt">=</span> vx ii <span class="hl opt">-</span> dx <span class="hl opt">*</span> mass jj <span class="hl opt">*</span> mag<span class="hl opt">,</span>
+                                        vy <span class="hl opt">=</span> vy ii <span class="hl opt">-</span> dy <span class="hl opt">*</span> mass jj <span class="hl opt">*</span> mag<span class="hl opt">,</span>
+                                        vz <span class="hl opt">=</span> vz ii <span class="hl opt">-</span> dz <span class="hl opt">*</span> mass jj <span class="hl opt">*</span> mag
+                                        <span class="hl opt">}</span>
+                                    pokeV pPlanets j jj<span class="hl opt">{</span>
+                                        vx <span class="hl opt">=</span> vx jj <span class="hl opt">+</span> dx <span class="hl opt">*</span> mass ii <span class="hl opt">*</span> mag<span class="hl opt">,</span>
+                                        vy <span class="hl opt">=</span> vy jj <span class="hl opt">+</span> dy <span class="hl opt">*</span> mass ii <span class="hl opt">*</span> mag<span class="hl opt">,</span>
+                                        vz <span class="hl opt">=</span> vz jj <span class="hl opt">+</span> dz <span class="hl opt">*</span> mass ii <span class="hl opt">*</span> mag
+                                        <span class="hl opt">}</span>
+                                    loop <span class="hl opt">(</span>j<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+                    loop <span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+                    advance<span class="hl opt">' (</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+        advance<span class="hl opt">''</span> i <span class="hl opt">=</span> <span class="hl kwc">when</span> <span class="hl opt">(</span>i <span class="hl opt">&lt;</span> <span class="hl kwa">length</span> planets<span class="hl opt">) $</span> <span class="hl kwd">do</span>
+                            p <span class="hl opt">&lt;-</span> peekElemOff pPlanets i
+                            pokeC pPlanets i p <span class="hl opt">{</span> 
+                                x <span class="hl opt">=</span> x p <span class="hl opt">+</span> dt <span class="hl opt">*</span> vx p<span class="hl opt">,</span>
+                                y <span class="hl opt">=</span> y p <span class="hl opt">+</span> dt <span class="hl opt">*</span> vy p<span class="hl opt">,</span>
+                                z <span class="hl opt">=</span> z p <span class="hl opt">+</span> dt <span class="hl opt">*</span> vz p
+                                <span class="hl opt">}</span>
+                            advance<span class="hl opt">'' (</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+    advance<span class="hl opt">'</span> <span class="hl num">0</span>
+    advance<span class="hl opt">''</span> <span class="hl num">0</span>
+
+planets <span class="hl opt">= [</span>sun<span class="hl opt">,</span> jupiter<span class="hl opt">,</span> saturn<span class="hl opt">,</span> uranus<span class="hl opt">,</span> neptune<span class="hl opt">]</span>
+    
+sun <span class="hl opt">=</span> Planet <span class="hl opt">{</span>x <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> y <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> z <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span>
+              vx <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> vy <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> vz <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span>
+              mass <span class="hl opt">=</span> solar_mass<span class="hl opt">}</span>
+              
+jupiter <span class="hl opt">=</span> Planet 
+    <span class="hl opt">{</span>x <span class="hl opt">=</span> <span class="hl num">4.84143144246472090e+00</span><span class="hl opt">,</span> y <span class="hl opt">= -</span><span class="hl num">1.16032004402742839e+00</span><span class="hl opt">,</span> z<span class="hl opt">= -</span><span class="hl num">1.03622044471123109e-01</span><span class="hl opt">,</span>
+     vx <span class="hl opt">=</span> <span class="hl num">1.66007664274403694e-03</span><span class="hl opt">*</span>dp<span class="hl opt">,</span> vy <span class="hl opt">=</span> <span class="hl num">7.69901118419740425e-03</span><span class="hl opt">*</span>dp<span class="hl opt">,</span> vz <span class="hl opt">= -</span><span class="hl num">6.90460016972063023e-05</span><span class="hl opt">*</span>dp<span class="hl opt">,</span>
+     mass <span class="hl opt">=</span> <span class="hl num">9.54791938424326609e-04</span> <span class="hl opt">*</span> solar_mass<span class="hl opt">}</span>
+
+saturn <span class="hl opt">=</span> Planet
+    <span class="hl opt">{</span> x <span class="hl opt">=</span> <span class="hl num">8.34336671824457987e+00</span><span class="hl opt">,</span> y <span class="hl opt">=</span> <span class="hl num">4.12479856412430479e+00</span><span class="hl opt">,</span> z <span class="hl opt">= -</span><span class="hl num">4.03523417114321381e-01</span><span class="hl opt">,</span>
+     vx <span class="hl opt">= -</span><span class="hl num">2.76742510726862411e-03</span><span class="hl opt">*</span>dp<span class="hl opt">,</span>  vy <span class="hl opt">=</span> <span class="hl num">4.99852801234917238e-03</span><span class="hl opt">*</span>dp<span class="hl opt">,</span> vz <span class="hl opt">=</span> <span class="hl num">2.30417297573763929e-05</span><span class="hl opt">*</span>dp<span class="hl opt">,</span>
+     mass <span class="hl opt">=</span> <span class="hl num">2.85885980666130812e-04</span> <span class="hl opt">*</span> solar_mass<span class="hl opt">}</span>
+
+uranus <span class="hl opt">=</span> Planet
+    <span class="hl opt">{</span>x <span class="hl opt">=</span> <span class="hl num">1.28943695621391310e+01</span><span class="hl opt">,</span>y <span class="hl opt">= -</span><span class="hl num">1.51111514016986312e+01</span><span class="hl opt">,</span>z <span class="hl opt">= -</span><span class="hl num">2.23307578892655734e-01</span><span class="hl opt">,</span>
+     vx <span class="hl opt">=</span> <span class="hl num">2.96460137564761618e-03</span><span class="hl opt">*</span>dp<span class="hl opt">,</span>vy <span class="hl opt">=</span> <span class="hl num">2.37847173959480950e-03</span><span class="hl opt">*</span>dp<span class="hl opt">,</span> vz <span class="hl opt">= -</span><span class="hl num">2.96589568540237556e-05</span><span class="hl opt">*</span>dp<span class="hl opt">,</span>
+     mass <span class="hl opt">=</span> <span class="hl num">4.36624404335156298e-05</span> <span class="hl opt">*</span> solar_mass<span class="hl opt">}</span>
+
+neptune <span class="hl opt">=</span> Planet
+    <span class="hl opt">{</span>x <span class="hl opt">=</span> <span class="hl num">1.53796971148509165e+01</span><span class="hl opt">,</span>y <span class="hl opt">= -</span><span class="hl num">2.59193146099879641e+01</span><span class="hl opt">,</span>z <span class="hl opt">=</span> <span class="hl num">1.79258772950371181e-01</span><span class="hl opt">,</span>
+     vx <span class="hl opt">=</span> <span class="hl num">2.68067772490389322e-03</span><span class="hl opt">*</span>dp<span class="hl opt">,</span>vy <span class="hl opt">=</span> <span class="hl num">1.62824170038242295e-03</span><span class="hl opt">*</span>dp<span class="hl opt">,</span> vz <span class="hl opt">= -</span><span class="hl num">9.51592254519715870e-05</span><span class="hl opt">*</span>dp<span class="hl opt">,</span>
+     mass <span class="hl opt">=</span> <span class="hl num">5.15138902046611451e-05</span> <span class="hl opt">*</span> solar_mass<span class="hl opt">}</span>
+     
+days_per_year <span class="hl opt">=</span> <span class="hl num">365.24</span>
+solar_mass    <span class="hl opt">=</span> <span class="hl num">4</span> <span class="hl opt">*</span> <span class="hl kwc">pi</span> ^ <span class="hl num">2</span>
+dp <span class="hl opt">=</span> days_per_year
+dt <span class="hl opt">=</span> <span class="hl num">0.01</span>
+
+<span class="hl kwd">instance</span> Storable Planet <span class="hl kwd">where</span>
+    sizeOf _ <span class="hl opt">=</span> <span class="hl num">8</span> <span class="hl opt">*</span> dblSz
+    alignment _ <span class="hl opt">=</span> dblSz
+    peekElemOff p i <span class="hl opt">=</span> peek <span class="hl opt">(</span>plusPtr p <span class="hl opt">(</span>i <span class="hl opt">*</span> sizeOf <span class="hl opt">(</span><span class="hl kwc">undefined</span><span class="hl opt">::</span>Planet<span class="hl opt">)))</span>
+    pokeElemOff p i e <span class="hl opt">=</span> poke <span class="hl opt">(</span>plusPtr p <span class="hl opt">(</span>i <span class="hl opt">*</span> sizeOf e<span class="hl opt">))</span> e
+    peek p <span class="hl opt">=</span> <span class="hl kwd">do</span>
+        x <span class="hl opt">&lt;-</span> peek <span class="hl opt">(</span>offset <span class="hl num">0</span><span class="hl opt">)</span>
+        y <span class="hl opt">&lt;-</span> peek <span class="hl opt">(</span>offset <span class="hl num">1</span><span class="hl opt">)</span>
+        z <span class="hl opt">&lt;-</span> peek <span class="hl opt">(</span>offset <span class="hl num">2</span><span class="hl opt">)</span>
+        vx <span class="hl opt">&lt;-</span> peek <span class="hl opt">(</span>offset <span class="hl num">3</span><span class="hl opt">)</span>
+        vy <span class="hl opt">&lt;-</span> peek <span class="hl opt">(</span>offset <span class="hl num">4</span><span class="hl opt">)</span>
+        vz <span class="hl opt">&lt;-</span> peek <span class="hl opt">(</span>offset <span class="hl num">5</span><span class="hl opt">)</span>
+        mass <span class="hl opt">&lt;-</span> peek <span class="hl opt">(</span>offset <span class="hl num">6</span><span class="hl opt">)</span>
+        <span class="hl kwc">return</span> <span class="hl opt">$</span> Planet <span class="hl opt">{</span>x<span class="hl opt">=</span>x<span class="hl opt">,</span>y<span class="hl opt">=</span>y<span class="hl opt">,</span>z<span class="hl opt">=</span>z<span class="hl opt">,</span>vx<span class="hl opt">=</span>vx<span class="hl opt">,</span>vy<span class="hl opt">=</span>vy<span class="hl opt">,</span>vz<span class="hl opt">=</span>vz<span class="hl opt">,</span>mass<span class="hl opt">=</span>mass<span class="hl opt">}</span>
+            <span class="hl kwd">where</span>
+                offset i <span class="hl opt">=</span> plusPtr <span class="hl opt">(</span>castPtr p<span class="hl opt">::</span>Ptr <span class="hl kwb">Double</span><span class="hl opt">) (</span>i<span class="hl opt">*</span><span class="hl num">8</span><span class="hl opt">)</span>
+    poke p e <span class="hl opt">=</span> <span class="hl kwd">do</span>
+        poke <span class="hl opt">(</span>offset <span class="hl num">0</span><span class="hl opt">) $</span> x e
+        poke <span class="hl opt">(</span>offset <span class="hl num">1</span><span class="hl opt">) $</span> y e
+        poke <span class="hl opt">(</span>offset <span class="hl num">2</span><span class="hl opt">) $</span> z e
+        poke <span class="hl opt">(</span>offset <span class="hl num">3</span><span class="hl opt">) $</span> vx e
+        poke <span class="hl opt">(</span>offset <span class="hl num">4</span><span class="hl opt">) $</span> vy e
+        poke <span class="hl opt">(</span>offset <span class="hl num">5</span><span class="hl opt">) $</span> vz e
+        poke <span class="hl opt">(</span>offset <span class="hl num">6</span><span class="hl opt">) $</span> mass e
+            <span class="hl kwd">where</span>
+                offset i <span class="hl opt">=</span> plusPtr <span class="hl opt">(</span>castPtr p<span class="hl opt">::</span>Ptr <span class="hl kwb">Double</span><span class="hl opt">) (</span>i<span class="hl opt">*</span><span class="hl num">8</span><span class="hl opt">)</span>
+
+dblSz <span class="hl opt">=</span> sizeOf <span class="hl opt">(</span><span class="hl kwc">undefined</span><span class="hl opt">::</span><span class="hl kwb">Double</span><span class="hl opt">)</span>
+
+pokeC p i e <span class="hl opt">=</span> <span class="hl kwd">do</span>
+        poke <span class="hl opt">(</span>offset <span class="hl num">0</span><span class="hl opt">) $</span> x e
+        poke <span class="hl opt">(</span>offset <span class="hl num">1</span><span class="hl opt">) $</span> y e
+        poke <span class="hl opt">(</span>offset <span class="hl num">2</span><span class="hl opt">) $</span> z e
+        <span class="hl kwd">where</span>
+            offset o <span class="hl opt">= (</span>plusPtr <span class="hl opt">(</span>castPtr p<span class="hl opt">::</span>Ptr <span class="hl kwb">Double</span><span class="hl opt">)(</span>o<span class="hl opt">*</span><span class="hl num">8</span><span class="hl opt">+</span>i<span class="hl opt">*</span><span class="hl num">64</span><span class="hl opt">))</span>
+
+pokeV p i e <span class="hl opt">=</span> <span class="hl kwd">do</span>
+        poke <span class="hl opt">(</span>offset <span class="hl num">3</span><span class="hl opt">) $</span> vx e
+        poke <span class="hl opt">(</span>offset <span class="hl num">4</span><span class="hl opt">) $</span> vy e
+        poke <span class="hl opt">(</span>offset <span class="hl num">5</span><span class="hl opt">) $</span> vz e
+        <span class="hl kwd">where</span>
+            offset o <span class="hl opt">= (</span>plusPtr <span class="hl opt">(</span>castPtr p<span class="hl opt">::</span>Ptr <span class="hl kwb">Double</span><span class="hl opt">)(</span>o<span class="hl opt">*</span><span class="hl num">8</span><span class="hl opt">+</span>i<span class="hl opt">*</span><span class="hl num">64</span><span class="hl opt">))</span>
+
+fromList <span class="hl opt">:: [</span>Planet<span class="hl opt">]-&gt;</span><span class="hl kwb">IO</span> <span class="hl opt">(</span>Ptr Planet<span class="hl opt">)</span>
+fromList l <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    <span class="hl kwd">let</span> len <span class="hl opt">=</span> <span class="hl kwa">length</span> l
+    pa <span class="hl opt">&lt;-</span> mallocBytes <span class="hl opt">(</span>len <span class="hl opt">*</span> sizeOf <span class="hl opt">(</span><span class="hl kwc">undefined</span><span class="hl opt">::</span>Planet<span class="hl opt">))</span>
+    <span class="hl kwd">let</span> 
+        loop <span class="hl opt">[]</span> _ <span class="hl opt">=</span> <span class="hl kwc">return</span> <span class="hl opt">()</span>
+        loop <span class="hl opt">(</span>x<span class="hl opt">:</span>xs<span class="hl opt">)</span> i <span class="hl opt">=</span> <span class="hl kwd">do</span>
+                            poke <span class="hl opt">(</span>pa `plusPtr` <span class="hl opt">(</span>i <span class="hl opt">*</span> sizeOf<span class="hl opt">(</span><span class="hl kwc">undefined</span><span class="hl opt">::</span>Planet<span class="hl opt">)))</span> x
+                            loop xs <span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+    loop l <span class="hl num">0</span>
+    <span class="hl kwc">return</span> pa
