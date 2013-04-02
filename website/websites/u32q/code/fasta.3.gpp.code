@@ -1,0 +1,164 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   converted to C++ from D by Rafal Rusin</span>
+<span class="hl com">   modified by Vaclav Haisman</span>
+<span class="hl com">   modified by The Anh to compile with g++ 4.3.2</span>
+<span class="hl com">   modified by Branimir Maksimovic</span>
+<span class="hl com">   modified by Kim Walisch</span>
+<span class="hl com">   modified by Tavis Bohne</span>
+<span class="hl com"></span>
+<span class="hl com">   compiles with gcc fasta.cpp -std=c++11 -O2</span>
+<span class="hl com">*/</span>
+
+<span class="hl ppc">#include &lt;algorithm&gt;</span>
+<span class="hl ppc">#include &lt;array&gt;</span>
+<span class="hl ppc">#include &lt;iostream&gt;</span>
+<span class="hl ppc">#include &lt;numeric&gt;</span>
+
+<span class="hl kwb">struct</span> IUB
+<span class="hl opt">{</span>
+    <span class="hl kwb">float</span> p<span class="hl opt">;</span>
+    <span class="hl kwb">char</span> c<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+std<span class="hl opt">::</span>array<span class="hl opt">&lt;</span><span class="hl kwb">char</span><span class="hl opt">,</span> <span class="hl num">288</span><span class="hl opt">&gt;</span> alu <span class="hl opt">=</span> 
+<span class="hl opt">{</span>
+    <span class="hl str">&quot;GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG&quot;</span>
+    <span class="hl str">&quot;GAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGAGA&quot;</span>
+    <span class="hl str">&quot;CCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAAT&quot;</span>
+    <span class="hl str">&quot;ACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAATCCCA&quot;</span>
+    <span class="hl str">&quot;GCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTGAACCCGGG&quot;</span>
+    <span class="hl str">&quot;AGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCC&quot;</span>
+    <span class="hl str">&quot;AGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAA&quot;</span>
+<span class="hl opt">};</span>
+
+std<span class="hl opt">::</span>array<span class="hl opt">&lt;</span>IUB<span class="hl opt">,</span><span class="hl num">15</span><span class="hl opt">&gt;</span> iub <span class="hl opt">=</span>
+<span class="hl opt">{{</span>
+    <span class="hl opt">{</span> <span class="hl num">0.27</span>f<span class="hl opt">,</span> <span class="hl str">'a'</span> <span class="hl opt">},</span>
+    <span class="hl opt">{</span> <span class="hl num">0.12</span>f<span class="hl opt">,</span> <span class="hl str">'c'</span> <span class="hl opt">},</span>
+    <span class="hl opt">{</span> <span class="hl num">0.12</span>f<span class="hl opt">,</span> <span class="hl str">'g'</span> <span class="hl opt">},</span>
+    <span class="hl opt">{</span> <span class="hl num">0.27</span>f<span class="hl opt">,</span> <span class="hl str">'t'</span> <span class="hl opt">},</span>
+    <span class="hl opt">{</span> <span class="hl num">0.02</span>f<span class="hl opt">,</span> <span class="hl str">'B'</span> <span class="hl opt">},</span>
+    <span class="hl opt">{</span> <span class="hl num">0.02</span>f<span class="hl opt">,</span> <span class="hl str">'D'</span> <span class="hl opt">},</span>
+    <span class="hl opt">{</span> <span class="hl num">0.02</span>f<span class="hl opt">,</span> <span class="hl str">'H'</span> <span class="hl opt">},</span>
+    <span class="hl opt">{</span> <span class="hl num">0.02</span>f<span class="hl opt">,</span> <span class="hl str">'K'</span> <span class="hl opt">},</span>
+    <span class="hl opt">{</span> <span class="hl num">0.02</span>f<span class="hl opt">,</span> <span class="hl str">'M'</span> <span class="hl opt">},</span>
+    <span class="hl opt">{</span> <span class="hl num">0.02</span>f<span class="hl opt">,</span> <span class="hl str">'N'</span> <span class="hl opt">},</span>
+    <span class="hl opt">{</span> <span class="hl num">0.02</span>f<span class="hl opt">,</span> <span class="hl str">'R'</span> <span class="hl opt">},</span>
+    <span class="hl opt">{</span> <span class="hl num">0.02</span>f<span class="hl opt">,</span> <span class="hl str">'S'</span> <span class="hl opt">},</span>
+    <span class="hl opt">{</span> <span class="hl num">0.02</span>f<span class="hl opt">,</span> <span class="hl str">'V'</span> <span class="hl opt">},</span>
+    <span class="hl opt">{</span> <span class="hl num">0.02</span>f<span class="hl opt">,</span> <span class="hl str">'W'</span> <span class="hl opt">},</span>
+    <span class="hl opt">{</span> <span class="hl num">0.02</span>f<span class="hl opt">,</span> <span class="hl str">'Y'</span> <span class="hl opt">}</span>
+<span class="hl opt">}};</span>
+
+std<span class="hl opt">::</span>array<span class="hl opt">&lt;</span>IUB<span class="hl opt">,</span> <span class="hl num">4</span><span class="hl opt">&gt;</span> homosapiens <span class="hl opt">=</span>
+<span class="hl opt">{{</span>
+    <span class="hl opt">{</span> <span class="hl num">0.3029549426680</span>f<span class="hl opt">,</span> <span class="hl str">'a'</span> <span class="hl opt">},</span>
+    <span class="hl opt">{</span> <span class="hl num">0.1979883004921</span>f<span class="hl opt">,</span> <span class="hl str">'c'</span> <span class="hl opt">},</span>
+    <span class="hl opt">{</span> <span class="hl num">0.1975473066391</span>f<span class="hl opt">,</span> <span class="hl str">'g'</span> <span class="hl opt">},</span>
+    <span class="hl opt">{</span> <span class="hl num">0.3015094502008</span>f<span class="hl opt">,</span> <span class="hl str">'t'</span> <span class="hl opt">}</span>
+<span class="hl opt">}};</span>
+
+<span class="hl kwb">float</span> <span class="hl kwd">gen_random</span><span class="hl opt">(</span><span class="hl kwb">float</span> max <span class="hl opt">=</span> <span class="hl num">1.0</span>f<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+    <span class="hl kwb">static const int</span> IM <span class="hl opt">=</span> <span class="hl num">139968</span><span class="hl opt">,</span> IA <span class="hl opt">=</span> <span class="hl num">3877</span><span class="hl opt">,</span> IC <span class="hl opt">=</span> <span class="hl num">29573</span><span class="hl opt">;</span>
+    <span class="hl kwb">static int</span> last <span class="hl opt">=</span> <span class="hl num">42</span><span class="hl opt">;</span>
+    last <span class="hl opt">= (</span>last <span class="hl opt">*</span> IA <span class="hl opt">+</span> IC<span class="hl opt">) %</span> IM<span class="hl opt">;</span>
+    <span class="hl kwa">return</span> max <span class="hl opt">*</span> last <span class="hl opt">* (</span><span class="hl num">1.0</span>f <span class="hl opt">/</span> IM<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwc">template</span><span class="hl opt">&lt;</span><span class="hl kwc">class</span> iterator_type<span class="hl opt">&gt;</span>
+<span class="hl kwc">class</span> repeat_functor_type <span class="hl opt">{</span>
+<span class="hl kwc">public</span><span class="hl opt">:</span>
+    <span class="hl kwd">repeat_functor_type</span><span class="hl opt">(</span>iterator_type first<span class="hl opt">,</span> iterator_type last<span class="hl opt">)</span>
+      <span class="hl opt">:</span> <span class="hl kwd">first</span><span class="hl opt">(</span>first<span class="hl opt">),</span> <span class="hl kwd">current</span><span class="hl opt">(</span>first<span class="hl opt">),</span> <span class="hl kwd">last</span><span class="hl opt">(</span>last<span class="hl opt">)</span>
+    <span class="hl opt">{ }</span>
+    <span class="hl kwb">char</span> <span class="hl kwc">operator</span><span class="hl opt">()()</span>
+    <span class="hl opt">{</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>current <span class="hl opt">==</span> last<span class="hl opt">)</span>
+            current <span class="hl opt">=</span> first<span class="hl opt">;</span>
+        iterator_type p <span class="hl opt">=</span> current<span class="hl opt">;</span>
+        <span class="hl opt">++</span>current<span class="hl opt">;</span>
+        <span class="hl kwa">return</span> <span class="hl opt">*</span>p<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+<span class="hl kwc">private</span><span class="hl opt">:</span>
+    iterator_type first<span class="hl opt">;</span>
+    iterator_type current<span class="hl opt">;</span>
+    iterator_type last<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+<span class="hl kwc">template</span><span class="hl opt">&lt;</span><span class="hl kwc">class</span> iterator_type<span class="hl opt">&gt;</span>
+repeat_functor_type<span class="hl opt">&lt;</span>iterator_type<span class="hl opt">&gt;</span> 
+    <span class="hl kwd">make_repeat_functor</span><span class="hl opt">(</span>iterator_type first<span class="hl opt">,</span> iterator_type last<span class="hl opt">)</span>
+<span class="hl opt">{</span><span class="hl kwa">return</span> repeat_functor_type<span class="hl opt">&lt;</span>iterator_type<span class="hl opt">&gt;(</span>first<span class="hl opt">,</span> last<span class="hl opt">);}</span>
+
+<span class="hl kwc">template</span><span class="hl opt">&lt;</span><span class="hl kwc">class</span> iterator_type<span class="hl opt">&gt;</span>
+<span class="hl kwc">class</span> random_functor_type <span class="hl opt">{</span>
+<span class="hl kwc">public</span><span class="hl opt">:</span>
+    <span class="hl kwd">random_functor_type</span><span class="hl opt">(</span>iterator_type first<span class="hl opt">,</span> iterator_type last<span class="hl opt">)</span>
+      <span class="hl opt">:</span> <span class="hl kwd">first</span><span class="hl opt">(</span>first<span class="hl opt">),</span> <span class="hl kwd">last</span><span class="hl opt">(</span>last<span class="hl opt">)</span>
+    <span class="hl opt">{ }</span>
+    <span class="hl kwb">char</span> <span class="hl kwc">operator</span><span class="hl opt">()()</span>
+    <span class="hl opt">{</span>
+        <span class="hl kwb">const float</span> p <span class="hl opt">=</span> <span class="hl kwd">gen_random</span><span class="hl opt">(</span><span class="hl num">1.0</span>f<span class="hl opt">);</span>
+        <span class="hl kwc">auto</span> result <span class="hl opt">=</span> std<span class="hl opt">::</span><span class="hl kwd">find_if</span><span class="hl opt">(</span>first<span class="hl opt">,</span> last<span class="hl opt">, [</span>p<span class="hl opt">] (</span>IUB i<span class="hl opt">) {</span> <span class="hl kwa">return</span> p <span class="hl opt">&lt;=</span> i<span class="hl opt">.</span>p<span class="hl opt">; });</span>
+        <span class="hl kwa">return</span> result<span class="hl opt">-&gt;</span>c<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+<span class="hl kwc">private</span><span class="hl opt">:</span>
+    iterator_type first<span class="hl opt">;</span>
+    iterator_type last<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+<span class="hl kwc">template</span><span class="hl opt">&lt;</span><span class="hl kwc">class</span> iterator_type<span class="hl opt">&gt;</span>
+random_functor_type<span class="hl opt">&lt;</span>iterator_type<span class="hl opt">&gt;</span> 
+    <span class="hl kwd">make_random_functor</span><span class="hl opt">(</span>iterator_type first<span class="hl opt">,</span> iterator_type last<span class="hl opt">)</span>
+<span class="hl opt">{</span><span class="hl kwa">return</span> random_functor_type<span class="hl opt">&lt;</span>iterator_type<span class="hl opt">&gt;(</span>first<span class="hl opt">,</span> last<span class="hl opt">);}</span>
+
+<span class="hl kwc">template</span><span class="hl opt">&lt;</span><span class="hl kwc">class</span> iterator_type<span class="hl opt">&gt;</span>
+<span class="hl kwb">void</span> <span class="hl kwd">make_cumulative</span><span class="hl opt">(</span>iterator_type first<span class="hl opt">,</span> iterator_type last<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+    std<span class="hl opt">::</span><span class="hl kwd">partial_sum</span><span class="hl opt">(</span>first<span class="hl opt">,</span> last<span class="hl opt">,</span> first<span class="hl opt">,</span>
+        <span class="hl opt">[] (</span>IUB l<span class="hl opt">,</span> IUB r<span class="hl opt">) -&gt;</span> IUB <span class="hl opt">{</span> r<span class="hl opt">.</span>p <span class="hl opt">+=</span> l<span class="hl opt">.</span>p<span class="hl opt">;</span> <span class="hl kwa">return</span> r<span class="hl opt">; });</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwc">template</span> <span class="hl opt">&lt;</span><span class="hl kwc">class</span> F<span class="hl opt">&gt;</span>
+<span class="hl kwb">void</span> <span class="hl kwd">make</span><span class="hl opt">(</span><span class="hl kwb">const char</span><span class="hl opt">*</span> desc<span class="hl opt">,</span> <span class="hl kwb">int</span> n<span class="hl opt">,</span> F functor<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+    std<span class="hl opt">::</span>cout <span class="hl opt">&lt;&lt;</span> <span class="hl str">'&gt;'</span> <span class="hl opt">&lt;&lt;</span> desc <span class="hl opt">&lt;&lt;</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">;</span>
+    <span class="hl kwb">const int</span> MAXLINE <span class="hl opt">=</span> <span class="hl num">60</span><span class="hl opt">;</span>
+    <span class="hl kwb">char</span> line<span class="hl opt">[</span>MAXLINE <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">];</span>
+    <span class="hl kwa">while</span> <span class="hl opt">(</span>n <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">)</span>
+    <span class="hl opt">{</span>
+        <span class="hl kwb">int</span> thisline <span class="hl opt">=</span> n<span class="hl opt">;</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>thisline <span class="hl opt">&gt;</span> MAXLINE<span class="hl opt">)</span> 
+            thisline <span class="hl opt">=</span> MAXLINE<span class="hl opt">;</span>
+
+        <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">&lt;</span>thisline<span class="hl opt">; ++</span>i<span class="hl opt">)</span>
+            line<span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl kwd">functor</span><span class="hl opt">();</span>
+
+        line<span class="hl opt">[</span>thisline<span class="hl opt">] =</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">;</span>
+        std<span class="hl opt">::</span>cout<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span>line<span class="hl opt">,</span> thisline<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">);</span>
+        n <span class="hl opt">-=</span> thisline<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">int</span> <span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">int</span> argc<span class="hl opt">,</span> <span class="hl kwb">char</span> <span class="hl opt">*</span>argv<span class="hl opt">[])</span>
+<span class="hl opt">{</span>
+    <span class="hl kwb">int</span> n <span class="hl opt">=</span> <span class="hl num">1000</span><span class="hl opt">;</span>
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>argc <span class="hl opt">&lt;</span> <span class="hl num">2</span> <span class="hl opt">|| (</span>n <span class="hl opt">=</span> std<span class="hl opt">::</span><span class="hl kwd">atoi</span><span class="hl opt">(</span>argv<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">])) &lt;=</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+        std<span class="hl opt">::</span>cerr <span class="hl opt">&lt;&lt;</span> <span class="hl str">&quot;usage: &quot;</span> <span class="hl opt">&lt;&lt;</span> argv<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] &lt;&lt;</span> <span class="hl str">&quot; length</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
+        <span class="hl kwa">return</span> <span class="hl num">1</span><span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+
+    std<span class="hl opt">::</span>cout<span class="hl opt">.</span><span class="hl kwd">sync_with_stdio</span><span class="hl opt">(</span><span class="hl kwa">false</span><span class="hl opt">);</span>
+    <span class="hl kwd">make_cumulative</span><span class="hl opt">(</span>iub<span class="hl opt">.</span><span class="hl kwd">begin</span><span class="hl opt">(),</span> iub<span class="hl opt">.</span><span class="hl kwd">end</span><span class="hl opt">());</span>
+    <span class="hl kwd">make_cumulative</span><span class="hl opt">(</span>homosapiens<span class="hl opt">.</span><span class="hl kwd">begin</span><span class="hl opt">(),</span> homosapiens<span class="hl opt">.</span><span class="hl kwd">end</span><span class="hl opt">());</span>
+
+    <span class="hl slc">//alu must drop the trailing zero stuck on by string literals :(</span>
+    <span class="hl kwd">make</span><span class="hl opt">(</span><span class="hl str">&quot;ONE Homo sapiens alu&quot;</span>      <span class="hl opt">,</span> n <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">,</span> 
+        <span class="hl kwd">make_repeat_functor</span><span class="hl opt">(</span>alu<span class="hl opt">.</span><span class="hl kwd">begin</span><span class="hl opt">(),</span> alu<span class="hl opt">.</span><span class="hl kwd">end</span><span class="hl opt">()-</span><span class="hl num">1</span><span class="hl opt">));</span> 
+    <span class="hl kwd">make</span><span class="hl opt">(</span><span class="hl str">&quot;TWO IUB ambiguity codes&quot;</span>   <span class="hl opt">,</span> n <span class="hl opt">*</span> <span class="hl num">3</span><span class="hl opt">,</span> 
+        <span class="hl kwd">make_random_functor</span><span class="hl opt">(</span>iub<span class="hl opt">.</span><span class="hl kwd">begin</span><span class="hl opt">(),</span> iub<span class="hl opt">.</span><span class="hl kwd">end</span><span class="hl opt">()));</span>
+    <span class="hl kwd">make</span><span class="hl opt">(</span><span class="hl str">&quot;THREE Homo sapiens frequency&quot;</span><span class="hl opt">,</span> n <span class="hl opt">*</span> <span class="hl num">5</span><span class="hl opt">,</span> 
+        <span class="hl kwd">make_random_functor</span><span class="hl opt">(</span>homosapiens<span class="hl opt">.</span><span class="hl kwd">begin</span><span class="hl opt">(),</span> homosapiens<span class="hl opt">.</span><span class="hl kwd">end</span><span class="hl opt">()));</span>
+    <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
