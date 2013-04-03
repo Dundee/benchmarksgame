@@ -128,6 +128,8 @@ $ExplanatoryHeader = '&nbsp;<strong>'.$LangName.'</strong>&nbsp;<b>used</b> what
 
 <? MkHeadToHeadMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang,$SelectedLang2); ?>
 
+<? if ($LinkCanonical){ echo '<p><g:plusone annotation="none"></g:plusone></p>'; } ?>
+
 
 <h2><a href="#faster-programs-chart" name="faster-programs-chart">&nbsp;1&nbsp;:&nbsp;Are the <strong><?=$LangName;?> programs faster</strong>?</a> <i>At a glance.</i></h2>
 
