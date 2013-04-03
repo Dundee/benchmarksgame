@@ -302,6 +302,7 @@ $Body->set('Excl', $Excl);
 $Body->set('Mark', $mark);
 $Body->set('TimeUsed', $timeUsed);
 $Body->set('Data', $Data );
+$Body->set('LinkCanonical', $LinkRelCanonical);
 
 $About->set('SelectedLang', $L);
 
