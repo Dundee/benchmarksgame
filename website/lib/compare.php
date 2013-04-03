@@ -285,6 +285,8 @@ $MetaKeywords = '<meta name="description" content="The speed of '.$LangName.' pr
          
 $metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
 
+$canonicalPage = empty($LinkRelCanonical);
+
 
 // TEMPLATE VARS ////////////////////////////////////////////////
 
@@ -302,7 +304,7 @@ $Body->set('Excl', $Excl);
 $Body->set('Mark', $mark);
 $Body->set('TimeUsed', $timeUsed);
 $Body->set('Data', $Data );
-$Body->set('LinkCanonical', $LinkRelCanonical);
+$Body->set('CanonicalPage', $canonicalPage);
 
 $About->set('SelectedLang', $L);
 
