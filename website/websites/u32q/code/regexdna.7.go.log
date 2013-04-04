@@ -1,38 +1,15 @@
 
-Wed, 23 Jan 2013 05:30:08 GMT
+Thu, 04 Apr 2013 18:33:55 GMT
 
 MAKE:
 /usr/local/src/go/bin/go tool 8g -o regexdna.go-7.go.8 regexdna.go-7.go && \
 	/usr/local/src/go/bin/go tool 8l -o regexdna.go-7.go_run regexdna.go-7.go.8
-0.35s to complete and log all make actions
+regexdna.go-7.go:12: can't find import: "github.com/glenn-brown/golang-pkg-pcre/src/pkg/pcre"
+make: [regexdna.go-7.go_run] Error 1 (ignored)
+0.03s to complete and log all make actions
 
 COMMAND LINE:
-./regexdna.go-7.go_run 0 < regexdna-input5000000.txt
+./regexdna.go-7.go_run 0 < regexdna-input50000.txt
 
-PROGRAM FAILED 
+MAKE ERROR 
 
-
-PROGRAM OUTPUT:
-agggtaaa|tttaccct 356
-[cgt]gggtaaa|tttaccc[acg] 1250
-a[act]ggtaaa|tttacc[agt]t 4252
-ag[act]gtaaa|tttac[agt]ct 2894
-agg[act]taaa|ttta[agt]cct 5435
-aggg[acg]aaa|ttt[cgt]ccct 1537
-agggt[cgt]aa|tt[acg]accct 1431
-agggta[cgt]a|t[acg]taccct 1608
-agggtaa[cgt]|[acg]ttaccct 2178
-
-runtime: memory allocated by OS (0xb21f0000) not in usable range [0x18600000,0x98600000)
-runtime: out of memory: cannot allocate 74514432-byte block (2119565312 in use)
-throw: out of memory
-
-goroutine 1 [running]:
-github.com/glenn-brown/golang-pkg-pcre/src/pkg/pcre.Regexp.ReplaceAll(0x187e0fc0, 0x31, 0x31, 0x8a023b40, 0x17d7866, ...)
-	github.com/glenn-brown/golang-pkg-pcre/src/pkg/pcre/_obj/_cgo_gotypes.go:447 +0x193
-main.main()
-	/home/dunham/benchmarksgame_quadcore/regexdna/tmp/regexdna.go-7.go:77 +0x3ee
-
-goroutine 2 [syscall]:
-created by runtime.main
-	/usr/local/src/go/src/pkg/runtime/proc.c:221
