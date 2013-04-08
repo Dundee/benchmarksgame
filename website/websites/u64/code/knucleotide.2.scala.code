@@ -199,7 +199,7 @@
     <span class="hl opt">}</span>
     <span class="hl kwa">def</span> <span class="hl kwd">print</span><span class="hl opt">(</span>s<span class="hl opt">:</span> String<span class="hl opt">) {</span>
       <span class="hl kwa">val</span> key <span class="hl opt">=</span> s<span class="hl opt">.</span>getBytes<span class="hl opt">.</span><span class="hl kwd">map</span><span class="hl opt">(</span>x <span class="hl opt">=&gt;</span> <span class="hl kwd">table</span><span class="hl opt">(</span>x <span class="hl opt">&amp;</span> <span class="hl num">0xFF</span><span class="hl opt">).</span>toLong<span class="hl opt">).</span><span class="hl kwd">reduceRight</span><span class="hl opt">((</span>l<span class="hl opt">,</span>r<span class="hl opt">) =&gt;</span> <span class="hl num">4</span><span class="hl opt">*</span>r <span class="hl opt">+</span> l<span class="hl opt">)</span>
-      <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%-7d %s</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span><span class="hl kwa">this</span><span class="hl opt">(</span>key<span class="hl opt">),</span>s<span class="hl opt">)</span>
+      <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%d</span><span class="hl esc">\t</span><span class="hl str">%s</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span><span class="hl kwa">this</span><span class="hl opt">(</span>key<span class="hl opt">),</span>s<span class="hl opt">)</span>
     <span class="hl opt">}</span>
   <span class="hl opt">}</span>
 

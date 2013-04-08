@@ -1,0 +1,82 @@
+<span class="hl slc">// The Computer Language Benchmarks Game</span>
+<span class="hl slc">// http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl slc">//</span>
+<span class="hl slc">// contributed by Elam Kolenovic</span>
+<span class="hl slc">//</span>
+<span class="hl slc">// Changes (2013-04-07):</span>
+<span class="hl slc">//   - removed unnecessary arrays, faster especially on 32 bits</span>
+<span class="hl slc">//   - using putchar instead of iostreams, slightly faster</span>
+<span class="hl slc">//   - using namespace std for readability</span>
+<span class="hl slc">//   - replaced size_t with unsigned</span>
+<span class="hl slc">//   - removed some includes</span>
+
+<span class="hl ppc">#include &lt;cstdio&gt;</span>
+<span class="hl ppc">#include &lt;cstdlib&gt;</span>
+<span class="hl ppc">#include &lt;limits&gt;</span>
+<span class="hl ppc">#include &lt;vector&gt;</span>
+
+<span class="hl kwc">typedef</span> <span class="hl kwb">unsigned char</span> Byte<span class="hl opt">;</span>
+
+<span class="hl kwa">using namespace</span> std<span class="hl opt">;</span>
+
+<span class="hl kwb">int</span> <span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">int</span> argc<span class="hl opt">,</span> <span class="hl kwb">char</span><span class="hl opt">*</span> argv<span class="hl opt">[])</span>
+<span class="hl opt">{</span>
+    <span class="hl kwb">const unsigned</span> N             <span class="hl opt">=</span> <span class="hl kwd">max</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">, (</span>argc <span class="hl opt">&gt;</span> <span class="hl num">1</span><span class="hl opt">)</span> ? <span class="hl kwd">atoi</span><span class="hl opt">(</span>argv<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]) :</span> <span class="hl num">0</span><span class="hl opt">);</span>
+    <span class="hl kwb">const unsigned</span> width         <span class="hl opt">=</span> N<span class="hl opt">;</span>
+    <span class="hl kwb">const unsigned</span> height        <span class="hl opt">=</span> N<span class="hl opt">;</span>
+    <span class="hl kwb">const unsigned</span> maxX          <span class="hl opt">= (</span>width <span class="hl opt">+</span> <span class="hl num">7</span><span class="hl opt">) /</span> <span class="hl num">8</span><span class="hl opt">;</span>
+    <span class="hl kwb">const unsigned</span> maxIterations <span class="hl opt">=</span> <span class="hl num">50</span><span class="hl opt">;</span>
+    <span class="hl kwb">const double</span>   limit         <span class="hl opt">=</span> <span class="hl num">2.0</span><span class="hl opt">;</span>
+    <span class="hl kwb">const double</span>   limitSq       <span class="hl opt">=</span> limit <span class="hl opt">*</span> limit<span class="hl opt">;</span>
+
+    vector<span class="hl opt">&lt;</span>Byte<span class="hl opt">&gt;</span> <span class="hl kwd">data</span><span class="hl opt">(</span>height <span class="hl opt">*</span> maxX<span class="hl opt">);</span>
+
+    <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;P4</span><span class="hl esc">\n</span><span class="hl str">%u %u</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> width<span class="hl opt">,</span> height<span class="hl opt">);</span>
+
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">unsigned</span> y <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> y <span class="hl opt">&lt;</span> height<span class="hl opt">; ++</span>y<span class="hl opt">)</span>
+    <span class="hl opt">{</span>
+        <span class="hl kwb">const double</span> ci0 <span class="hl opt">=</span> <span class="hl num">2.0</span> <span class="hl opt">*</span> y <span class="hl opt">/</span> height <span class="hl opt">-</span> <span class="hl num">1.0</span><span class="hl opt">;</span>
+
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">unsigned</span> x <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> x <span class="hl opt">&lt;</span> maxX<span class="hl opt">; ++</span>x<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            <span class="hl kwb">double</span> cr0<span class="hl opt">[</span><span class="hl num">8</span><span class="hl opt">];</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">unsigned</span> k <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> k <span class="hl opt">&lt;</span> <span class="hl num">8</span><span class="hl opt">; ++</span>k<span class="hl opt">)</span>
+            <span class="hl opt">{</span>
+                cr0<span class="hl opt">[</span>k<span class="hl opt">] =</span> <span class="hl num">2.0</span> <span class="hl opt">* (</span><span class="hl num">8</span> <span class="hl opt">*</span> x <span class="hl opt">+</span> k<span class="hl opt">) /</span> width <span class="hl opt">-</span> <span class="hl num">1.5</span><span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+
+            <span class="hl kwb">double</span> cr<span class="hl opt">[</span><span class="hl num">8</span><span class="hl opt">];</span>
+            <span class="hl kwd">copy</span><span class="hl opt">(</span>cr0<span class="hl opt">,</span> cr0 <span class="hl opt">+</span> <span class="hl num">8</span><span class="hl opt">, &amp;</span>cr<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]);</span>
+
+            <span class="hl kwb">double</span> ci<span class="hl opt">[</span><span class="hl num">8</span><span class="hl opt">];</span>
+            <span class="hl kwd">fill</span><span class="hl opt">(</span>ci<span class="hl opt">,</span> ci <span class="hl opt">+</span> <span class="hl num">8</span><span class="hl opt">,</span> ci0<span class="hl opt">);</span>
+
+            Byte bits <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">unsigned</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> maxIterations <span class="hl opt">&amp;&amp;</span> bits <span class="hl opt">!=</span> <span class="hl num">0xFF</span><span class="hl opt">; ++</span>i<span class="hl opt">)</span>
+            <span class="hl opt">{</span>
+                <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">unsigned</span> k <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> k <span class="hl opt">&lt;</span> <span class="hl num">8</span><span class="hl opt">; ++</span>k<span class="hl opt">)</span>
+                <span class="hl opt">{</span>
+                    <span class="hl kwb">const</span> Byte mask <span class="hl opt">= (</span><span class="hl num">1</span> <span class="hl opt">&lt;&lt; (</span><span class="hl num">7</span> <span class="hl opt">-</span> k<span class="hl opt">));</span>
+                    <span class="hl kwa">if</span> <span class="hl opt">((</span>bits <span class="hl opt">&amp;</span> mask<span class="hl opt">) ==</span> <span class="hl num">0</span><span class="hl opt">)</span>
+                    <span class="hl opt">{</span>
+                        <span class="hl kwb">const double</span> crk  <span class="hl opt">=</span> cr<span class="hl opt">[</span>k<span class="hl opt">];</span>
+                        <span class="hl kwb">const double</span> cik  <span class="hl opt">=</span> ci<span class="hl opt">[</span>k<span class="hl opt">];</span>
+                        <span class="hl kwb">const double</span> cr2k <span class="hl opt">=</span> crk <span class="hl opt">*</span> crk<span class="hl opt">;</span>
+                        <span class="hl kwb">const double</span> ci2k <span class="hl opt">=</span> cik <span class="hl opt">*</span> cik<span class="hl opt">;</span>
+
+                        cr<span class="hl opt">[</span>k<span class="hl opt">] =</span> cr2k <span class="hl opt">-</span> ci2k <span class="hl opt">+</span> cr0<span class="hl opt">[</span>k<span class="hl opt">];</span>
+                        ci<span class="hl opt">[</span>k<span class="hl opt">] =</span> <span class="hl num">2.0</span> <span class="hl opt">*</span> crk <span class="hl opt">*</span> cik <span class="hl opt">+</span> ci0<span class="hl opt">;</span>
+
+                        <span class="hl kwa">if</span> <span class="hl opt">(</span>cr2k <span class="hl opt">+</span> ci2k <span class="hl opt">&gt;</span> limitSq<span class="hl opt">)</span>
+                        <span class="hl opt">{</span>
+                            bits <span class="hl opt">|=</span> mask<span class="hl opt">;</span>
+                        <span class="hl opt">}</span>
+                    <span class="hl opt">}</span>
+                <span class="hl opt">}</span>
+            <span class="hl opt">}</span>
+            <span class="hl kwd">putchar</span><span class="hl opt">(~</span>bits<span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>

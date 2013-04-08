@@ -199,7 +199,7 @@ object knucleotide {
     }
     def print(s: String) {
       val key = s.getBytes.map(x => table(x & 0xFF).toLong).reduceRight((l,r) => 4*r + l)
-      printf("%-7d %s\n",this(key),s)
+      printf("%d\t%s\n",this(key),s)
     }
   }
 
