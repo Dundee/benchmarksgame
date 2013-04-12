@@ -1,2 +1,2 @@
-<p>Python 3.3.0 (default, Sep 29 2012, 09:23:38)</br> 
-[GCC 4.6.3] on linux</p>
+<p>Python 3.3.1 (default, Apr 11 2013, 12:56:47)</br> 
+[GCC 4.7.2] on linux</p>
