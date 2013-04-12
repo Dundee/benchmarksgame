@@ -40,7 +40,7 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 ?>
 
 <table class="banner"><tr>
-<td><h1><a href="<?=$BannerUrl;?>" title="Computer Language Benchmarks Game Home"><?=$BannerTitle;?></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?=$FaqUrl;?>" title="<?=$FaqRollover;?>"><?=$FaqTitle;?></a></h1></td>
+<td><h1><a href="<?=$BannerUrl;?>" title="quad-core and one core, x86 and x64 measurements"><?=$BannerTitle;?></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?=$FaqUrl;?>" title="<?=$FaqRollover;?>"><?=$FaqTitle;?></a></h1></td>
 </tr></table>
 
 <div id="<?=$PageId;?>">
