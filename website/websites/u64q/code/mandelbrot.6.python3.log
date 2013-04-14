@@ -1,11 +1,19 @@
 
-Fri, 22 Mar 2013 22:25:19 GMT
+Sat, 13 Apr 2013 08:29:42 GMT
 
 MAKE:
 mv mandelbrot.python3-6.python3 mandelbrot.python3-6.py
-0.01s to complete and log all make actions
+0.02s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/src/Python-3.3.0/bin/python3.3 mandelbrot.python3-6.py 16000
+/usr/local/src/Python-3.3.1/bin/python3.3 mandelbrot.python3-6.py 1000
+
+PROGRAM FAILED 
+
 
 (BINARY) PROGRAM OUTPUT NOT SHOWN
+
+Traceback (most recent call last):
+  File "mandelbrot.python3-6.py", line 6, in <module>
+    import numpy as np
+ImportError: No module named 'numpy'
