@@ -76,7 +76,7 @@ function MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang,$Id=NULL){
 
 
    if ($Id){
-      echo '<input type="hidden" name="id" value=".$Id.">', "\n";
+      echo '<input type="hidden" name="id" value="'.$Id.'">', "\n";
    }
 
    echo '<input type="submit" value="Show" />', "\n";

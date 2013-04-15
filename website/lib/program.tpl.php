@@ -1,7 +1,7 @@
 <?   // Copyright (c) Isaac Gouy 2004-2013 ?>
 
 <? 
-MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang);
+MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang,$Id);
 $TestName = $Tests[$SelectedTest][TEST_NAME];
 $TestTag = $Tests[$SelectedTest][TEST_TAG];
 $LangName = $Langs[$SelectedLang][LANG_FULL];
