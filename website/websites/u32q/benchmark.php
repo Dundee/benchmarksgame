@@ -7,7 +7,7 @@ if (isset($_GET['data'])
    if ($X=='u32'||($X=='u64q'||($X=='u32q'||($X=='u64')))){ $D = $X; }
 }
 
-if (!isset($D)||($D=='u32q'){
+if (!isset($D)||($D=='u32q')){
    ob_start('ob_gzhandler');
    require_once('config.php');
    require_once(LIB_PATH.'switch.php');
