@@ -54,6 +54,9 @@ function MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang,$Id=NULL){
    }
    echo '</select>', "\n";
 
+   if ($Id){
+      echo '<input type="hidden" name="id" value="'.$Id.'">', "\n";
+   }
 
    $datasets = array(
       array('u32','x86 one core'),
@@ -73,11 +76,6 @@ function MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang,$Id=NULL){
       printf('<option %s value="%s">%s</option>', $Selected,$Link,$Name); echo "\n";
    }
    echo '</select>', "\n";
-
-
-   if ($Id){
-      echo '<input type="hidden" name="id" value="'.$Id.'">', "\n";
-   }
 
    echo '<input type="submit" value="Show" />', "\n";
    echo '</p></form>', "\n";
