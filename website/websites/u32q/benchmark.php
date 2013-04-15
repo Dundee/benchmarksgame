@@ -12,7 +12,7 @@ if (!isset($D)||($D=='u32q')){
    require_once('config.php');
    require_once(LIB_PATH.'switch.php');
 } else {
-   header('Location: http://benchmarksgame.alioth.debian.org/'.$D.'/benchmark.php');
+   header('Location: http://benchmarksgame.alioth.debian.org/'.$D.'/benchmark.php?'.$_SERVER['QUERY_STRING']);
    exit;
 }
 ?>
