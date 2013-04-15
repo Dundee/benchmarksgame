@@ -23,7 +23,7 @@ define('PROGRAM_TIMEOUT',-1);
 
 // MENU ///////////////////////////////////////////////////
 
-function MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang){
+function MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang,$Id=NULL){
    echo '<form method="get" action="benchmark.php">', "\n";
    echo '<p><select name="test">', "\n";
    echo '<option value="all">- all ', TESTS_PHRASE, 's -</option>', "\n";
@@ -73,6 +73,11 @@ function MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang){
       printf('<option %s value="%s">%s</option>', $Selected,$Link,$Name); echo "\n";
    }
    echo '</select>', "\n";
+
+
+   if ($Id){
+      echo '<input type="hidden" name="id" value=".$Id.">', "\n";
+   }
 
    echo '<input type="submit" value="Show" />', "\n";
    echo '</p></form>', "\n";
