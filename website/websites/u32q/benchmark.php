@@ -11,6 +11,9 @@ if (!isset($D)||($D=='u32q')){
    ob_start('ob_gzhandler');
    require_once('config.php');
    require_once(LIB_PATH.'switch.php');
+} else {
+   header('Location: '.CORE_SITE.'/'.$D.'/benchmark.php');
+   exit;
 }
 ?>
 
