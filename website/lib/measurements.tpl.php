@@ -16,25 +16,6 @@ function MkLangsMenuForm($Langs,$SelectedLang,$Action='measurements.php'){
    }
    echo '</select>', "\n";
 
-   $datasets = array(
-      array('u32','x86 one core'),
-      array('u64q','x64 quad-core'),
-      array('u32q','x86 quad-core'),
-      array('u64','x64 one core') );
-
-   echo '<select name="data">', "\n";
-   foreach($datasets as $Row){
-      $Link = $Row[0];
-      $Name = $Row[1];
-      if ($Link==SITE_NAME){
-         $Selected = 'selected="selected"';
-      } else {
-         $Selected = '';
-      }
-      printf('<option %s value="%s">%s</option>', $Selected,$Link,$Name); echo "\n";
-   }
-   echo '</select>', "\n";
-
    echo '<input type="submit" value="Show" />', "\n";
    echo '</p></form>', "\n";
 }
