@@ -1,9 +1,18 @@
 
-Sat, 09 Mar 2013 00:45:30 GMT
+Tue, 16 Apr 2013 19:27:21 GMT
 
 COMMAND LINE:
-/usr/local/src/dart-sdk/bin/dart  nbody.dart-2.dart 50000000
+/usr/local/src/dart-sdk/bin/dart  nbody.dart-2.dart 500000
+
+PROGRAM FAILED 
+
 
 PROGRAM OUTPUT:
--0.169075164
--0.169059907
+
+Unhandled exception:
+'file:///home/dunham/benchmarksgame_quadcore/nbody/tmp/nbody.dart-2.dart': Error: line 12 pos 20: type 'Options' is not loaded
+    var args = new Options().arguments;
+                   ^
+malformed type used.
+#0      main.<anonymous closure> (file:///home/dunham/benchmarksgame_quadcore/nbody/tmp/nbody.dart-2.dart:12:20)
+#1      main (file:///home/dunham/benchmarksgame_quadcore/nbody/tmp/nbody.dart-2.dart:14:4)
