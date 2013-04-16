@@ -61,7 +61,7 @@ int main(int argc, char**argv) {
 
    int i;
    for (i = 0; i < n; i++) u[i] = 1;
-   for (i = 0; i < 8; i++) {
+   for (i = 0; i < 10; i++) {
       mult_AtAv(u, v, n);
       mult_AtAv(v, u, n);
    }
