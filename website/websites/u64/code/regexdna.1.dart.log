@@ -1,10 +1,17 @@
 
-Thu, 17 Jan 2013 12:14:54 GMT
+Tue, 16 Apr 2013 20:07:59 GMT
 
 COMMAND LINE:
-/usr/local/src/dart-sdk/bin/dart regexdna.dart 0 < regexdna-input5000000.txt
+/usr/local/src/dart-sdk/bin/dart  regexdna.dart 0 < regexdna-input50000.txt
 
-TIMED OUT after 3600s
+PROGRAM FAILED 
 
 
 PROGRAM OUTPUT:
+
+Unhandled exception:
+'file:///home/dunham/benchmarksgame_onecore/regexdna/tmp/regexdna.dart': Error: line 12 pos 17: type 'StringInputStream' is not loaded
+  var src = new StringInputStream(stdin);
+                ^
+malformed type used.
+#0      main (file:///home/dunham/benchmarksgame_onecore/regexdna/tmp/regexdna.dart:12:17)
