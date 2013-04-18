@@ -1,0 +1,32 @@
+# The Computer Language Benchmarks Game
+# $Id: 
+
+	benchmarksgame-scm-latest.tar.gz - April 2013
+
+
+
+ AUDIENCE
+
+ Someone who just downloaded the project CVS tarball
+
+
+ WHAT YOU GOT
+
+ 1) benchmarksgame/bench 
+
+ Program source code for programs shown on the benchmarks game website.
+
+
+ 2) benchmarksgame/bencher 
+
+ Python scripts to make repeated measurements of your standalone programs.
+
+
+ 3) benchmarksgame/nanobench 
+
+ Python scripts and configuration used for the benchmarks game measurements.
+
+
+ 4) benchmarksgame/nanobench 
+
+ PHP scripts and configuration used for the benchmarks game website.
