@@ -56,14 +56,14 @@
 
  LOCAL CONFIGURATION
 
- 1) copy, rename and modify - /shootout/nanobench/makefiles/u32q.ini
- 2) copy, rename and modify - /shootout/nanobench/makefiles/u32q.programs.Makefile
+ 1) copy, rename and modify - /benchmarksgame/nanobench/makefiles/u32q.ini
+ 2) copy, rename and modify - /benchmarksgame/nanobench/makefiles/u32q.programs.Makefile
 
  Specifically,
   ROOT DIRS
    'root' is the directory where you want nanobench to put measurements and files.
    'src' is the directory that contains benchmark directories with source code.
-   'nano' is the CVS directory /shootout/nanobench
+   'nano' is the CVS directory /benchmarksgame/nanobench
 
   SWEEP DIRS
    Either remove dat_sweep, code_sweep, log_sweep from *.ini or set them to
@@ -71,7 +71,7 @@
 
   'makefile' should be the path to your renamed *.programs.Makefile
 
- 3) copy, rename and modify the bash script - /shootout/nanobench/nanobench
+ 3) copy, rename and modify the bash script - /benchmarksgame/nanobench/nanobench
 
 
  Generally,
