@@ -7,6 +7,8 @@
 <span class="hl com">   which was transliterated from Mike Pall's Lua program</span>
 <span class="hl com">*/</span>
 
+<span class="hl kwa">import</span> <span class="hl str">'dart:io'</span><span class="hl opt">;</span>
+
 <span class="hl kwd">fannkuch</span><span class="hl opt">(</span>n<span class="hl opt">) {</span>
   <span class="hl kwa">var</span> p <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">&gt;(</span>n<span class="hl opt">),</span> q <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">&gt;(</span>n<span class="hl opt">),</span> s <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">&gt;(</span>n<span class="hl opt">);</span>
   <span class="hl kwb">int</span> sign <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">,</span> maxflips <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> sum <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> m <span class="hl opt">=</span> n<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">;</span>

@@ -6,6 +6,8 @@
    (which was transliterated from Mike Pall's Lua program)
 */
 
+import 'dart:io';
+
 void main(){
   int i = 0, k = 0, ns = 0,
       k1 = 1,

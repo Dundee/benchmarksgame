@@ -4,6 +4,7 @@
    contributed by Usagi Ito
 */
 
+import 'dart:io';
 import 'dart:math' as Math;
 
 main(){

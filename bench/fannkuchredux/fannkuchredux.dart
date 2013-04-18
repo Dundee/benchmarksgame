@@ -6,6 +6,8 @@
    which was transliterated from Mike Pall's Lua program
 */
 
+import 'dart:io';
+
 fannkuch(n) {
   var p = new List<int>(n), q = new List<int>(n), s = new List<int>(n);
   int sign = 1, maxflips = 0, sum = 0, m = n-1;

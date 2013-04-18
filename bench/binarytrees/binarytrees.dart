@@ -4,6 +4,8 @@
    contributed by Jos Hirth, transliterated from Jarkko Miettinen's Java program
 */
 
+import 'dart:io';
+
 final int minDepth = 4;
 
 void main(){
