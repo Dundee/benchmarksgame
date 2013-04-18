@@ -1,5 +1,5 @@
 # The Computer Language Benchmarks Game
-# $Id: 
+# $Id: readme.txt,v 1.2 2013/04/18 15:44:46 igouy-guest Exp $
 
 	benchmarksgame-scm-latest.tar.gz - April 2013
 
