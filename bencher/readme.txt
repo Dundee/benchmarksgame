@@ -1,7 +1,7 @@
 # The Computer Language Benchmarks Game
-# $Id: readme.txt,v 1.1 2012/12/29 19:28:51 igouy-guest Exp $
+# $Id: readme.txt,v 1.2 2013/04/18 16:36:22 igouy-guest Exp $
 
-	bencher - The Computer Language Benchmarks Game - June 2011
+	bencher - June 2011
 
 
 
@@ -71,8 +71,18 @@
  GNU make (to compile programs for compiled languages)
  GNU diff & cmp (to check program output is as expected)
 
- libgtop2 dev files and Python bindings
+ libgtop2 dev files and python-gtop Python bindings
     (for cpu load and resident memory measurement)
+
+ python-gtop has been removed from recent distros, so I use: 
+ 
+    http://packages.ubuntu.com/precise/python-gtop
+
+ :and install with:
+
+    dpkg -i python-gtop_2.32.0+dfsg-1_amd64.deb 
+  
+
 
  [ WIN32 SPECIFIC SOFTWARE RECOMMENDATIONS ]
 
@@ -740,7 +750,7 @@
 * Meanwhile ask questions in the benchmarks game discussion forum *
 * debian issue their own security certificate - your browser will complain *
 
-* https://alioth.debian.org/forum/forum.php?forum_id=999 *
+* https://alioth.debian.org/forum/forum.php?forum_id=2965 *
 
 
 
