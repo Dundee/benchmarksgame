@@ -1,7 +1,7 @@
 # The Computer Language Benchmarks Game
-# $Id: readme.txt,v 1.2 2013/04/18 16:36:22 igouy-guest Exp $
+# $Id: readme.txt,v 1.3 2013/04/18 16:53:52 igouy-guest Exp $
 
-	bencher - June 2011
+	bencher - June 2011, April 2013
 
 
 
@@ -66,7 +66,7 @@
 
 
 
- LINUX SPECIFIC SOFTWARE RECOMMENDATIONS
+ 2.1) LINUX SPECIFIC SOFTWARE RECOMMENDATIONS
  
  GNU make (to compile programs for compiled languages)
  GNU diff & cmp (to check program output is as expected)
@@ -84,7 +84,7 @@
   
 
 
- [ WIN32 SPECIFIC SOFTWARE RECOMMENDATIONS ]
+ 2.2) [ WIN32 SPECIFIC SOFTWARE RECOMMENDATIONS ]
 
  GNU Make for Windows
    see http://gnuwin32.sourceforge.net/packages/make.htm
