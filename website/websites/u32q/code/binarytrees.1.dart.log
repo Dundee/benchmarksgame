@@ -1,18 +1,18 @@
 
-Tue, 16 Apr 2013 19:27:20 GMT
+Thu, 18 Apr 2013 02:27:48 GMT
 
 COMMAND LINE:
-/usr/local/src/dart-sdk/bin/dart  binarytrees.dart 12
-
-PROGRAM FAILED 
-
+/usr/local/src/dart-sdk/bin/dart  binarytrees.dart 20
 
 PROGRAM OUTPUT:
-
-Unhandled exception:
-'file:///home/dunham/benchmarksgame_quadcore/binarytrees/tmp/binarytrees.dart': Error: line 11 pos 20: type 'Options' is not loaded
-    var args = new Options().arguments;
-                   ^
-malformed type used.
-#0      main.<anonymous closure> (file:///home/dunham/benchmarksgame_quadcore/binarytrees/tmp/binarytrees.dart:11:20)
-#1      main (file:///home/dunham/benchmarksgame_quadcore/binarytrees/tmp/binarytrees.dart:13:4)
+stretch tree of depth 21	 check: -1
+2097152	 trees of depth 4	 check: -2097152
+524288	 trees of depth 6	 check: -524288
+131072	 trees of depth 8	 check: -131072
+32768	 trees of depth 10	 check: -32768
+8192	 trees of depth 12	 check: -8192
+2048	 trees of depth 14	 check: -2048
+512	 trees of depth 16	 check: -512
+128	 trees of depth 18	 check: -128
+32	 trees of depth 20	 check: -32
+long lived tree of depth 20	 check: -1
