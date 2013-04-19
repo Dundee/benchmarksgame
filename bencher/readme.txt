@@ -1,5 +1,5 @@
 # The Computer Language Benchmarks Game
-# $Id: readme.txt,v 1.3 2013/04/18 16:53:52 igouy-guest Exp $
+# $Id: readme.txt,v 1.4 2013/04/19 23:21:41 igouy-guest Exp $
 
 	bencher - June 2011, April 2013
 
@@ -11,14 +11,22 @@
  programs - cpu time, elapsed time, resident memory usage, 
  cpu load while a program is running.
 
+ EXPECTATIONS
 
+ First, you are expected to use the bencher script to work through 
+ each of the tutorial steps 1-6 to identify and fix configuration
+ problems. 
 
- 1) REQUIREMENTS
- 2) SOFTWARE RECOMMENDATIONS
- 3) LINUX QUICK START [ WIN32 QUICK START ]
+ 1) REQUIRED SOFTWARE
+ 2) RECOMMENDED SOFTWARE
+ 3) INSTALL
  4) FIXING PROBLEMS
  5) MAKING NEW MEASUREMENTS
  6) LOOKING AT THE MEASUREMENTS
+
+ Second, you are expected to look for answers to other questions in 
+ the examples given in sections 7-15.
+
  7) REMOVE (REINSTALL) 
 
  8) IT'S SIMPLER THAN IT LOOKS 
@@ -34,19 +42,19 @@
 14) HOW TO ADD NEW KINDS OF PROGRAM
 15) HOW TO SET DIFFERENT OPTIONS FOR DIFFERENT KINDS OF PROGRAM
 
+ Third, you are expected to have questions which are not answered here,
+ and you are expected to ask those questions on the benchmarks game
+ discussion forum --
+
+ http://alioth.debian.org/forum/forum.php?forum_id=2965
 
 
- 1) REQUIREMENTS
 
- Willingness to read the README
-
- Willingness to write ini file name=value properties
-
- Willingness to (sometimes) write make commands
+ 1) REQUIRED SOFTWARE
 
  Python 2.5+ (these are Python scripts)
 
- [ WIN32 SPECIFIC REQUIREMENTS ]
+ [ WIN32 SPECIFIC REQUIRED SOFTWARE ]
 
  Python Win32 Extensions (for win32 process monitoring)
    see http://sourceforge.net/projects/pywin32/
@@ -56,7 +64,7 @@
 
 
 
- 2) SOFTWARE RECOMMENDATIONS
+ 2) RECOMMENDED SOFTWARE
 
  ndiff (to check program output more selectively)
     see http://www.math.utah.edu/~beebe/software/ndiff/
@@ -66,11 +74,8 @@
 
 
 
- 2.1) LINUX SPECIFIC SOFTWARE RECOMMENDATIONS
+ 2.1) LINUX SPECIFIC RECOMMENDED SOFTWARE
  
- GNU make (to compile programs for compiled languages)
- GNU diff & cmp (to check program output is as expected)
-
  libgtop2 dev files and python-gtop Python bindings
     (for cpu load and resident memory measurement)
 
@@ -81,10 +86,13 @@
  :and install with:
 
     dpkg -i python-gtop_2.32.0+dfsg-1_amd64.deb 
+
+ GNU make (to compile programs for compiled languages)
+ GNU diff & cmp (to check program output is as expected)
+
   
 
-
- 2.2) [ WIN32 SPECIFIC SOFTWARE RECOMMENDATIONS ]
+ 2.2) [ WIN32 SPECIFIC RECOMMENDED SOFTWARE ]
 
  GNU Make for Windows
    see http://gnuwin32.sourceforge.net/packages/make.htm
@@ -98,7 +106,7 @@
 
 
 
- 3) LINUX QUICK START [ WIN32 QUICK START ]
+ 3) LINUX INSTALL [ WIN32 INSTALL ]
 
  3.1) unzip in ~ directory [ unzip in c:\ ]
 
@@ -113,6 +121,8 @@
     Sun 15:49:01 .....OK .....nbody.java-2.java [3]
     Sun 15:49:03 .....OK .....nbody.python [2]
     Sun 15:49:12 .OK .....regexdna.python [1]
+
+ 3.3) Even if you did not see a problem, read section #4 now.
 
 
 
@@ -160,8 +170,8 @@
      javac nbody.java
      make: javac: Command not found"
 
-    The Java program has not been compiled because the javac cannot 
-    be found. CHECK the [tools] section of bencher/makefiles/my.*.ini 
+    The Java program has not been compiled because javac cannot be
+    found. CHECK the [tools] section of bencher/makefiles/my.*.ini 
     defines the correct path for javac.
 
 
@@ -286,9 +296,9 @@
    MEASUREMENT)" below.
 
 
- 6.4) For more details about how the measurements were made see -
+ 6.4) For more details about how the measurements are made see -
 
-   http://benchmarksgame.alioth.debian.org/help.php#measure 
+   http://benchmarksgame.alioth.debian.org/play.php#measure 
 
 
  6.5) Filter and process the comma separated measurement files with
@@ -740,49 +750,4 @@
    and run with command lines like
 
       ./fannkuchredux.gcc_run 12
-
-
-
-
-
-*** TO BE CONTINUED ***
-
-* Meanwhile ask questions in the benchmarks game discussion forum *
-* debian issue their own security certificate - your browser will complain *
-
-* https://alioth.debian.org/forum/forum.php?forum_id=2965 *
-
-
-
-
-
-
-
- BASIC ASSUMPTIONS
- 
- Program source files are organized by 'benchmark' in different subdirectories,
- and program source files have the same name as the 'benchmark' distinguished
- by file extension, for example:
-
-  programs
-     nbody			subdirectory
-        nbody.python		program source file
-        nbody.gcc		program source file
-        nbody.gcc-2.gcc		program source file
-
-     regexdna			subdirectory
-        regexdna.python		program source file
-        regexdna.gcc		program source file
-        regexdna.perl-2.perl	program source file
-
-
- For each source code subdirectory in programs a matching directory 
- will be created under tmp, containing -
-
-     data subdirectory - compressed measurement files
-     log subdirectory - log text files recording each program build and run
-     tmp subdirectory - files needed to build and measure the current program
-     expected output files for various data input sizes *_out
-
-
 
