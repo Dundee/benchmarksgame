@@ -9,18 +9,17 @@
 
 <span class="hl kwa">void</span> <span class="hl kwd">main</span><span class="hl opt">() {</span>
   <span class="hl kwa">var</span> text <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">StringBuffer</span><span class="hl opt">();</span>
-  <span class="hl kwa">var</span> src <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">StringInputStream</span><span class="hl opt">(</span>stdin<span class="hl opt">);</span>
+  <span class="hl kwa">var</span> src <span class="hl opt">=</span> stdin<span class="hl opt">.</span><span class="hl kwd">transform</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">StringDecoder</span><span class="hl opt">()).</span><span class="hl kwd">transform</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">LineTransformer</span><span class="hl opt">());</span>
 
-  src<span class="hl opt">.</span>onLine <span class="hl opt">= () {</span>
-    <span class="hl kwa">var</span> line <span class="hl opt">=</span> src<span class="hl opt">.</span><span class="hl kwd">readLine</span><span class="hl opt">();</span>
+  src<span class="hl opt">.</span><span class="hl kwd">listen</span><span class="hl opt">((</span>line<span class="hl opt">) {</span>
     <span class="hl kwa">if</span> <span class="hl opt">(</span>line <span class="hl opt">!=</span> <span class="hl kwa">null</span><span class="hl opt">) {</span>
-      text<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>line<span class="hl opt">);</span>
-      text<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span><span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">);</span>
+      text<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span>line<span class="hl opt">);</span>
+      text<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span><span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">);</span>
     <span class="hl opt">}</span>
-  <span class="hl opt">};</span>
-  src<span class="hl opt">.</span>onClosed <span class="hl opt">= () {</span>
+  <span class="hl opt">},</span>
+  onDone<span class="hl opt">: () {</span>
     <span class="hl kwd">regexAllTheThings</span><span class="hl opt">(</span>text<span class="hl opt">.</span><span class="hl kwd">toString</span><span class="hl opt">());</span>
-  <span class="hl opt">};</span>
+  <span class="hl opt">});</span>
 <span class="hl opt">}</span>
 
 <span class="hl kwa">void</span> <span class="hl kwd">regexAllTheThings</span> <span class="hl opt">(</span>String fullText<span class="hl opt">) {</span>
@@ -40,7 +39,7 @@
     <span class="hl opt">];</span>
     <span class="hl kwa">var</span> regexp <span class="hl opt">= [];</span>
     <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwa">var</span> p <span class="hl kwa">in</span> pattern<span class="hl opt">) {</span>
-      regexp<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">RegExp</span><span class="hl opt">(</span>p<span class="hl opt">,</span> ignoreCase<span class="hl opt">:</span> <span class="hl kwa">true</span><span class="hl opt">));</span>
+      regexp<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">RegExp</span><span class="hl opt">(</span>p<span class="hl opt">,</span> caseSensitive<span class="hl opt">:</span> <span class="hl kwa">false</span><span class="hl opt">));</span>
     <span class="hl opt">}</span>
     <span class="hl kwa">return</span> regexp<span class="hl opt">;</span>
   <span class="hl opt">}());</span>
@@ -61,7 +60,7 @@
 
   lengthA <span class="hl opt">=</span> fullText<span class="hl opt">.</span>length<span class="hl opt">;</span>
 
-  fullText <span class="hl opt">=</span> fullText<span class="hl opt">.</span><span class="hl kwd">replaceAll</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">RegExp</span><span class="hl opt">(</span><span class="hl str">'^&gt;.*</span><span class="hl esc">\n</span><span class="hl str">|</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">,</span> multiLine<span class="hl opt">:</span> <span class="hl kwa">true</span><span class="hl opt">),</span> <span class="hl str">''</span><span class="hl opt">);</span> <span class="hl slc">// ridiculously slow with r14669</span>
+  fullText <span class="hl opt">=</span> fullText<span class="hl opt">.</span><span class="hl kwd">replaceAll</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">RegExp</span><span class="hl opt">(</span><span class="hl str">'^&gt;.*</span><span class="hl esc">\n</span><span class="hl str">|</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">,</span> multiLine<span class="hl opt">:</span> <span class="hl kwa">true</span><span class="hl opt">),</span> <span class="hl str">''</span><span class="hl opt">);</span> <span class="hl slc">// still ridiculously slow with r21658</span>
 
   lengthB <span class="hl opt">=</span> fullText<span class="hl opt">.</span>length<span class="hl opt">;</span>
 
