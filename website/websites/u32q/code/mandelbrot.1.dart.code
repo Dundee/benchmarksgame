@@ -8,6 +8,8 @@
 
 <span class="hl kwa">import</span> <span class="hl str">'dart:io'</span><span class="hl opt">;</span>
 <span class="hl kwa">import</span> <span class="hl str">'dart:isolate'</span><span class="hl opt">;</span>
+<span class="hl kwa">import</span> <span class="hl str">'dart:async'</span><span class="hl opt">;</span>
+<span class="hl kwa">import</span> <span class="hl str">'dart:typeddata'</span><span class="hl opt">;</span>
 
 <span class="hl kwa">void</span> <span class="hl kwd">main</span><span class="hl opt">() {</span>
   <span class="hl kwb">int</span> n <span class="hl opt">= ((){</span>
@@ -17,64 +19,79 @@
 
   <span class="hl kwa">var</span> threads <span class="hl opt">=</span> Platform<span class="hl opt">.</span>numberOfProcessors<span class="hl opt">;</span>
   <span class="hl kwa">var</span> ports <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">List</span><span class="hl opt">(</span>threads<span class="hl opt">);</span>
-  <span class="hl kwa">var</span> rowFutures <span class="hl opt">= [];</span>
+  <span class="hl kwa">var</span> segmentFutures <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">List</span><span class="hl opt">(</span>threads<span class="hl opt">);</span>
+  <span class="hl kwb">int</span> lineLen <span class="hl opt">= (</span>n <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">)</span> ~<span class="hl opt">/</span> <span class="hl num">8</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+  <span class="hl kwa">var</span> lines <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span>Int8List<span class="hl opt">&gt;(</span>n<span class="hl opt">);</span>
 
+  <span class="hl kwa">var</span> segmentSize <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">.</span><span class="hl kwd">filled</span><span class="hl opt">(</span>threads<span class="hl opt">,</span> n ~<span class="hl opt">/</span> threads<span class="hl opt">);</span>
+  segmentSize<span class="hl kwc">[0]</span> <span class="hl opt">+=</span> n <span class="hl opt">%</span> threads<span class="hl opt">;</span>
+
+  <span class="hl kwa">var</span> from <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
   <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> threads<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
-    ports<span class="hl kwc">[i]</span> <span class="hl opt">=</span> <span class="hl kwd">spawnFunction</span><span class="hl opt">(</span>calculateRow<span class="hl opt">);</span>
-  <span class="hl opt">}</span>
-
-  <span class="hl kwa">var</span> useThread <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
-  <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> n<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
-    rowFutures<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>ports<span class="hl kwc">[useThread]</span><span class="hl opt">.</span><span class="hl kwd">call</span><span class="hl opt">({</span>
+    <span class="hl kwa">var</span> len <span class="hl opt">=</span> segmentSize<span class="hl kwc">[i]</span><span class="hl opt">;</span>
+    ports<span class="hl kwc">[i]</span> <span class="hl opt">=</span> <span class="hl kwd">spawnFunction</span><span class="hl opt">(</span>calculateSegment<span class="hl opt">);</span>
+    segmentFutures<span class="hl kwc">[i]</span> <span class="hl opt">=</span> ports<span class="hl kwc">[i]</span><span class="hl opt">.</span><span class="hl kwd">call</span><span class="hl opt">({</span>
       <span class="hl str">'n'</span><span class="hl opt">:</span> n<span class="hl opt">,</span>
-      <span class="hl str">'y'</span><span class="hl opt">:</span> i
-    <span class="hl opt">}));</span>
-    useThread<span class="hl opt">++;</span>
-    useThread <span class="hl opt">%=</span> threads<span class="hl opt">;</span>
+      <span class="hl str">'from'</span><span class="hl opt">:</span> from<span class="hl opt">,</span>
+      <span class="hl str">'len'</span><span class="hl opt">:</span> len
+    <span class="hl opt">});</span>
+    from <span class="hl opt">+=</span> len<span class="hl opt">;</span>
   <span class="hl opt">}</span>
 
-  <span class="hl kwd">print</span><span class="hl opt">(</span><span class="hl str">'P4</span><span class="hl esc">\n</span><span class="hl str">$n $n'</span><span class="hl opt">);</span>
+  stdout<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span><span class="hl str">'P4</span><span class="hl esc">\n</span><span class="hl str">$n $n</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">);</span>
 
-  Futures<span class="hl opt">.</span><span class="hl kwd">wait</span><span class="hl opt">(</span>rowFutures<span class="hl opt">).</span><span class="hl kwd">then</span><span class="hl opt">((</span>rows<span class="hl opt">) {</span>
-    <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwa">var</span> row <span class="hl kwa">in</span> rows<span class="hl opt">) {</span>
-      stdout<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span>row<span class="hl opt">);</span>
+  Future<span class="hl opt">.</span><span class="hl kwd">wait</span><span class="hl opt">(</span>segmentFutures<span class="hl opt">).</span><span class="hl kwd">then</span><span class="hl opt">((</span>segments<span class="hl opt">) {</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwa">var</span> segment <span class="hl kwa">in</span> segments<span class="hl opt">) {</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwa">var</span> line <span class="hl kwa">in</span> segment<span class="hl opt">) {</span>
+        stdout<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span>line<span class="hl opt">);</span>
+      <span class="hl opt">}</span>
     <span class="hl opt">}</span>
   <span class="hl opt">});</span>
 <span class="hl opt">}</span>
 
-<span class="hl kwa">void</span> <span class="hl kwd">calculateRow</span> <span class="hl opt">() {</span>
-  port<span class="hl opt">.</span><span class="hl kwd">receive</span><span class="hl opt">((</span>msg<span class="hl opt">,</span> reply<span class="hl opt">) {</span>
+Int8List <span class="hl kwd">calculateLine</span> <span class="hl opt">(</span><span class="hl kwb">int</span> n<span class="hl opt">,</span> <span class="hl kwb">int</span> y<span class="hl opt">) {</span>
+  <span class="hl kwb">int</span> lineLen <span class="hl opt">= (</span>n <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">)</span> ~<span class="hl opt">/</span> <span class="hl num">8</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+
+  <span class="hl kwa">var</span> line <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Int8List</span><span class="hl opt">(</span>lineLen<span class="hl opt">);</span>
+
+  <span class="hl kwb">int</span> xbyte <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> bits <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+  <span class="hl kwb">double</span> ci <span class="hl opt">=</span> y <span class="hl opt">*</span> <span class="hl num">2.0</span> <span class="hl opt">/</span> n <span class="hl opt">-</span> <span class="hl num">1.0</span><span class="hl opt">;</span>
+
+  <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> x <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> x <span class="hl opt">&lt;</span> n<span class="hl opt">;</span> x<span class="hl opt">++) {</span>
+    <span class="hl kwb">double</span> cr <span class="hl opt">=</span> x <span class="hl opt">*</span> <span class="hl num">2.0</span> <span class="hl opt">/</span> n <span class="hl opt">-</span> <span class="hl num">1.5</span><span class="hl opt">;</span>
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>bits <span class="hl opt">&gt;</span> <span class="hl num">0xff</span><span class="hl opt">) {</span>
+      line<span class="hl opt">[</span>xbyte<span class="hl opt">++] =</span> bits<span class="hl opt">;</span>
+      bits <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwb">double</span> zr <span class="hl opt">=</span> cr<span class="hl opt">,</span>
+        zi <span class="hl opt">=</span> ci<span class="hl opt">,</span>
+        tr <span class="hl opt">=</span> cr <span class="hl opt">*</span> cr<span class="hl opt">,</span>
+        ti <span class="hl opt">=</span> ci <span class="hl opt">*</span> ci<span class="hl opt">;</span>
+    <span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">49</span><span class="hl opt">;</span>
+    <span class="hl kwa">do</span> <span class="hl opt">{</span>
+      zi <span class="hl opt">=</span> zr <span class="hl opt">*</span> zi <span class="hl opt">+</span> zr <span class="hl opt">*</span> zi <span class="hl opt">+</span> ci<span class="hl opt">;</span>
+      zr <span class="hl opt">=</span> tr <span class="hl opt">-</span> ti <span class="hl opt">+</span> cr<span class="hl opt">;</span>
+      tr <span class="hl opt">=</span> zr <span class="hl opt">*</span> zr<span class="hl opt">;</span>
+      ti <span class="hl opt">=</span> zi <span class="hl opt">*</span> zi<span class="hl opt">;</span>
+    <span class="hl opt">}</span> <span class="hl kwa">while</span> <span class="hl opt">((</span>tr <span class="hl opt">+</span> ti <span class="hl opt">&lt;=</span> <span class="hl num">4.0</span><span class="hl opt">) &amp;&amp; (--</span>i <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">));</span>
+    bits <span class="hl opt">= (</span>bits <span class="hl opt">&lt;&lt;</span> <span class="hl num">1</span><span class="hl opt">)</span> | <span class="hl opt">(</span>i <span class="hl opt">==</span> <span class="hl num">0</span> ? <span class="hl num">1</span> <span class="hl opt">:</span> <span class="hl num">0</span><span class="hl opt">);</span>
+  <span class="hl opt">}</span> <span class="hl kwa">while</span> <span class="hl opt">(</span>bits <span class="hl opt">&lt;</span> <span class="hl num">0x100</span><span class="hl opt">)</span> bits <span class="hl opt">= (</span>bits <span class="hl opt">&lt;&lt;</span> <span class="hl num">1</span><span class="hl opt">);</span>
+  line<span class="hl kwc">[xbyte]</span> <span class="hl opt">=</span> bits<span class="hl opt">;</span>
+
+  <span class="hl kwa">return</span> line<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">void</span> <span class="hl kwd">calculateSegment</span> <span class="hl opt">() {</span>
+  port<span class="hl opt">.</span><span class="hl kwd">receive</span><span class="hl opt">((</span>msg<span class="hl opt">,</span> replyTo<span class="hl opt">) {</span>
     <span class="hl kwb">int</span> n <span class="hl opt">=</span> msg<span class="hl opt">[</span><span class="hl str">'n'</span><span class="hl opt">];</span>
-    <span class="hl kwb">int</span> y <span class="hl opt">=</span> msg<span class="hl opt">[</span><span class="hl str">'y'</span><span class="hl opt">];</span>
+    <span class="hl kwb">int</span> from <span class="hl opt">=</span> msg<span class="hl opt">[</span><span class="hl str">'from'</span><span class="hl opt">];</span>
+    <span class="hl kwb">int</span> len <span class="hl opt">=</span> msg<span class="hl opt">[</span><span class="hl str">'len'</span><span class="hl opt">];</span>
 
-    <span class="hl kwb">int</span> lineLen <span class="hl opt">= (</span>n <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">)</span> ~<span class="hl opt">/</span> <span class="hl num">8</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+    <span class="hl kwa">var</span> lines <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span>Int8List<span class="hl opt">&gt;(</span>len<span class="hl opt">);</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> len<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+      lines<span class="hl kwc">[i]</span> <span class="hl opt">=</span> <span class="hl kwd">calculateLine</span><span class="hl opt">(</span>n<span class="hl opt">,</span> from <span class="hl opt">+</span> i<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
 
-    <span class="hl kwa">var</span> line <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">&gt;(</span>lineLen<span class="hl opt">);</span>
-
-    <span class="hl kwb">int</span> xbyte <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> bits <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
-    <span class="hl kwb">double</span> ci <span class="hl opt">=</span> y <span class="hl opt">*</span> <span class="hl num">2.0</span> <span class="hl opt">/</span> n <span class="hl opt">-</span> <span class="hl num">1.0</span><span class="hl opt">;</span>
-
-    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> x <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> x <span class="hl opt">&lt;</span> n<span class="hl opt">;</span> x<span class="hl opt">++) {</span>
-      <span class="hl kwb">double</span> cr <span class="hl opt">=</span> x <span class="hl opt">*</span> <span class="hl num">2.0</span> <span class="hl opt">/</span> n <span class="hl opt">-</span> <span class="hl num">1.5</span><span class="hl opt">;</span>
-      <span class="hl kwa">if</span> <span class="hl opt">(</span>bits <span class="hl opt">&gt;</span> <span class="hl num">0xff</span><span class="hl opt">) {</span>
-        line<span class="hl opt">[</span>xbyte<span class="hl opt">++] =</span> bits<span class="hl opt">;</span>
-        bits <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
-      <span class="hl opt">}</span>
-      <span class="hl kwb">double</span> zr <span class="hl opt">=</span> cr<span class="hl opt">,</span>
-          zi <span class="hl opt">=</span> ci<span class="hl opt">,</span>
-          tr <span class="hl opt">=</span> cr <span class="hl opt">*</span> cr<span class="hl opt">,</span>
-          ti <span class="hl opt">=</span> ci <span class="hl opt">*</span> ci<span class="hl opt">;</span>
-      <span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">49</span><span class="hl opt">;</span>
-      <span class="hl kwa">do</span> <span class="hl opt">{</span>
-        zi <span class="hl opt">=</span> zr <span class="hl opt">*</span> zi <span class="hl opt">+</span> zr <span class="hl opt">*</span> zi <span class="hl opt">+</span> ci<span class="hl opt">;</span>
-        zr <span class="hl opt">=</span> tr <span class="hl opt">-</span> ti <span class="hl opt">+</span> cr<span class="hl opt">;</span>
-        tr <span class="hl opt">=</span> zr <span class="hl opt">*</span> zr<span class="hl opt">;</span>
-        ti <span class="hl opt">=</span> zi <span class="hl opt">*</span> zi<span class="hl opt">;</span>
-      <span class="hl opt">}</span> <span class="hl kwa">while</span> <span class="hl opt">((</span>tr <span class="hl opt">+</span> ti <span class="hl opt">&lt;=</span> <span class="hl num">4.0</span><span class="hl opt">) &amp;&amp; (--</span>i <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">));</span>
-      bits <span class="hl opt">= (</span>bits <span class="hl opt">&lt;&lt;</span> <span class="hl num">1</span><span class="hl opt">)</span> | <span class="hl opt">(</span>i <span class="hl opt">==</span> <span class="hl num">0</span> ? <span class="hl num">1</span> <span class="hl opt">:</span> <span class="hl num">0</span><span class="hl opt">);</span>
-    <span class="hl opt">}</span> <span class="hl kwa">while</span> <span class="hl opt">(</span>bits <span class="hl opt">&lt;</span> <span class="hl num">0x100</span><span class="hl opt">)</span> bits <span class="hl opt">= (</span>bits <span class="hl opt">&lt;&lt;</span> <span class="hl num">1</span><span class="hl opt">);</span>
-    line<span class="hl kwc">[xbyte]</span> <span class="hl opt">=</span> bits<span class="hl opt">;</span>
-
-    reply<span class="hl opt">.</span><span class="hl kwd">send</span><span class="hl opt">(</span>line<span class="hl opt">);</span>
+    replyTo<span class="hl opt">.</span><span class="hl kwd">send</span><span class="hl opt">(</span>lines<span class="hl opt">);</span>
   <span class="hl opt">});</span>
 <span class="hl opt">}</span>

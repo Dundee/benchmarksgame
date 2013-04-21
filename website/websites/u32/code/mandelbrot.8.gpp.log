@@ -1,0 +1,13 @@
+
+Sun, 21 Apr 2013 17:13:22 GMT
+
+MAKE:
+/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse2 -fopenmp -mfpmath=sse -msse2 mandelbrot.gpp-8.c++ -o mandelbrot.gpp-8.c++.o &&  \
+        /usr/bin/g++ mandelbrot.gpp-8.c++.o -o mandelbrot.gpp-8.gpp_run -fopenmp 
+rm mandelbrot.gpp-8.c++
+0.34s to complete and log all make actions
+
+COMMAND LINE:
+./mandelbrot.gpp-8.gpp_run 16000
+
+(BINARY) PROGRAM OUTPUT NOT SHOWN
