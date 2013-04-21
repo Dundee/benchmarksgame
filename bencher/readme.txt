@@ -1,5 +1,5 @@
 # The Computer Language Benchmarks Game
-# $Id: readme.txt,v 1.4 2013/04/19 23:21:41 igouy-guest Exp $
+# $Id: readme.txt,v 1.5 2013/04/21 06:02:35 igouy-guest Exp $
 
 	bencher - June 2011, April 2013
 
@@ -13,7 +13,7 @@
 
  EXPECTATIONS
 
- First, you are expected to use the bencher script to work through 
+ Firstly, you are expected to use the bencher script to work through 
  each of the tutorial steps 1-6 to identify and fix configuration
  problems. 
 
@@ -24,12 +24,12 @@
  5) MAKING NEW MEASUREMENTS
  6) LOOKING AT THE MEASUREMENTS
 
- Second, you are expected to look for answers to other questions in 
+ Secondly, you are expected to look for answers to other questions in 
  the examples given in sections 7-15.
 
  7) REMOVE (REINSTALL) 
 
- 8) IT'S SIMPLER THAN IT LOOKS 
+ 8) FILE EXTENSIONS & INI FILE PROPERTIES 
 
  9) HOW TO MEASURE A SEQUENCE OF WORKLOADS (OR JUST ONE WORKLOAD)
 10) HOW TO MAKE REPEATED MEASUREMENTS (OR JUST ONE MEASUREMENT)
@@ -42,7 +42,7 @@
 14) HOW TO ADD NEW KINDS OF PROGRAM
 15) HOW TO SET DIFFERENT OPTIONS FOR DIFFERENT KINDS OF PROGRAM
 
- Third, you are expected to have questions which are not answered here,
+ Thirdly, you are expected to have questions which are not answered here,
  and you are expected to ask those questions on the benchmarks game
  discussion forum --
 
@@ -315,26 +315,27 @@
 
 
 
- 8) IT'S SIMPLER THAN IT LOOKS 
+ 8) FILE EXTENSIONS & INI FILE PROPERTIES
 
    8.1) The source code file extensions and the names for different kinds
       of program link together source code, make command lines, run 
       command lines, measurement records, measurement logs and source code
       markup.
 
-   8.2) Many ini file properties define values that will be substituted when
-      the corresponding names appear in other ini file properties, or in 
-      Makefile commands.
+   8.2) Many bencher/makefiles/my.*.ini properties define values that will be
+      substituted when the corresponding names appear in other properties in the
+      ini file, or in bencher/makefiles/my.*.Makefile commands.
 
-   8.3) Other ini file properties allow you to control which programs will 
-      be measured, how many times they will be measured, and when to timeout.
+   8.3) Other bencher/makefiles/my.*.ini properties allow you to control which
+      programs will be measured, how many times they will be measured, and when
+      to timeout.
 
 
 
  9) HOW TO MEASURE A SEQUENCE OF WORKLOADS (OR JUST ONE WORKLOAD)
 
    9.1) Set one or more input values in the [testrange] section
-      of the ini file. 
+      of bencher/makefiles/my.*.ini 
 
      For example, 5 input values are set for nbody programs and 1 input 
      value is set for regexdna programs -
@@ -343,9 +344,8 @@
         regexdna = 10000 
 
 
-   9.2) To provide program input from a data file redirected to stdin,
-      set a path to the data file in the [testdata] section of the ini 
-      file. 
+   9.2) To provide program input from a data file redirected to stdin, set a path
+      to the data file in the [testdata] section of bencher/makefiles/my.*.ini 
 
       Each of the input values set in the [testrange] section will
       successively be substituted into the data file path - so programs 
@@ -372,7 +372,7 @@
 
 
    9.3) To provide program input from one command line argument, set the 
-      input data value in the [testrange] section of the ini file.
+      input data value in the [testrange] section of bencher/makefiles/my.*.ini
 
       For example
 
@@ -384,7 +384,7 @@
 
       will measure an nbody program firstly with the string '10000' 
       substituted for %A in the command line set in the [commandlines]
-      section of the ini file.
+      section of bencher/makefiles/my.*.ini
 
       Then measure an nbody program with the string '20000' substituted
       for %A in the command line, and then '30000' and then '40000' and
@@ -392,7 +392,7 @@
 
 
    9.4) To measure at just one workload, set just one value in the 
-      [testrange] section of the ini file. 
+      [testrange] section of bencher/makefiles/my.*.ini 
 
       For example
 
@@ -404,15 +404,15 @@
 
 10) HOW TO MAKE REPEATED MEASUREMENTS (OR JUST ONE MEASUREMENT)
 
-   10.1) For example, to make 50 repeated measurements for every input
-      value use these settings in the [measure] section of the ini file:
+   10.1) For example, to make 50 repeated measurements for every input value 
+      use these settings in the [measure] section of bencher/makefiles/my.*.ini
 
         [measure]
         runs = 50
         repeatevery = True
 
    10.2) For example, to make just one measurement for every input value 
-      use these settings in the [measure] section of the ini file:
+      use these settings in the [measure] section of bencher/makefiles/my.*.ini
 
         [measure]
         runs = 1
@@ -457,8 +457,8 @@
 
 12) HOW TO ADD NEW LANGUAGE IMPLEMENTATIONS
 
-12.1) In the [tools] section of the ini file, define a name that will 
-   substitute for the location of the new language implementation.
+12.1) In the [tools] section of bencher/makefiles/my.*.ini, define a name
+   that will substitute for the location of the new language implementation.
     
    For example
 
@@ -471,9 +471,9 @@
    with the new language implementation, for example - python3.
 
 
-12.3) In the [commandlines] section of the ini file, define a command line
-   that will be used to run program source code files that have the new file
-   extension you chose.
+12.3) In the [commandlines] section of bencher/makefiles/my.*.ini, define a
+   command line that will be used to run program source code files that have
+   the new file extension you chose.
     
    For example, for file extension python3
 
@@ -483,8 +483,8 @@
 
 
 12.4.1) EITHER alias existing source code files that have a different file
-   extension with the new file extension, in the [alias] section of the ini
-   file.
+   extension with the new file extension, in the [alias] section of 
+   bencher/makefiles/my.*.ini
 
    For example, re-use all source code files with file extension python but
    make measurements identified with file extension python3 
@@ -515,8 +515,8 @@
 
 13) HOW TO ADD NEW LANGUAGE IMPLEMENTATIONS THAT REQUIRE MAKE
 
-13.1) In the [tools] section of the ini file, define a name that will 
-   substitute for the location of the new language implementation.
+13.1) In the [tools] section of bencher/makefiles/my.*.ini, define a name that
+   will substitute for the location of the new language implementation.
     
    For example
 
@@ -530,9 +530,9 @@
    with the new language implementation, for example - javaxint.
 
 
-13.3) In the [commandlines] section of the ini file, define a command line
-   that will be used to run program source code files that have the new file
-   extension you chose.
+13.3) In the [commandlines] section of bencher/makefiles/my.*.ini, define a 
+   command line that will be used to run program source code files that have
+   the new file extension you chose.
     
    For example, for file extension javaxint
 
@@ -541,8 +541,8 @@
       javaxint = $JDKRUN $JDKFLAGS -server -Xint %T %A
 
 
-13.4) In the [build] section of the ini file, add the new file extension to
-   the list of source code files that require make.
+13.4) In the [build] section of bencher/makefiles/my.*.ini, add the new file
+   extension to the list of source code files that require make.
 
    For example, for file extension javaxint
 
@@ -552,9 +552,8 @@
        java javaxint
 
 
-13.5) In the my.linux.Makefile [ my.win32.Makefile ] file, add a make target 
-   with the commands required to prepare source code files for the new language
-   implementation. 
+13.5) In bencher/makefiles/my.*.Makefile, add a make target with the commands
+   required to prepare source code files for the new language implementation. 
 
    For example, for file extension javaxint
 
@@ -564,8 +563,8 @@
 
 
 13.6.1) EITHER alias existing source code files that have a different file
-   extension with the new file extension, in the [alias] section of the ini
-   file.
+   extension with the new file extension, in the [alias] section of 
+   bencher/makefiles/my.*.ini
 
    For example, re-use all source code files with file extension java but
    make measurements identified with file extension javaxint 
@@ -612,8 +611,9 @@
             fannkuchredux.java (new program source code file)
 
 
-14.3) In the [filters] section of the ini file, add the new subdirectory to
-   the list of onlydirs that will be searched for source code files.
+14.3) In the [filters] section of bencher/makefiles/my.*.ini, add the new
+   subdirectory to the list of onlydirs that will be searched for source code
+   files.
 
    For example, add the subdirectory fannkuchredux
 
@@ -628,7 +628,8 @@
    the command line or a data file redirected to the programs stdin.
 
 14.4.1) To provide a single argument on the command line, set the input values
-   for the new kind of program in the [testrange] section of the ini file.
+   for the new kind of program in the [testrange] section 
+   of bencher/makefiles/my.*.ini
 
    For example, add input values for fannkuchredux
 
@@ -638,8 +639,8 @@
       fannkuchredux = 10 11 12
 
 
-14.4.2) To provide a data file redirected to the programs stdin, set both 
-   a path to the data file in the [testdata] section of the ini file AND
+14.4.2) To provide a data file redirected to the programs stdin, set both a path
+   to the data file in the [testdata] section of bencher/makefiles/my.*.ini AND
    values that will be substituted into the filename AND add the data files
    to a subdirectory of bencher/tmp. 
 
@@ -677,7 +678,7 @@
 
 15) HOW TO SET DIFFERENT OPTIONS FOR DIFFERENT KINDS OF PROGRAM
 
-15.1) Add a section to the ini file
+15.1) Add a section to bencher/makefiles/my.*.ini
 
    For example, for the kind of program called nbody
 
@@ -698,9 +699,9 @@
 
 15.3) Use that property name in a command line
 
-   For example, for the kind of program called nbody substitute the
-   value -Xmx8m into the command line set in the ini file for programs 
-   with file extension java
+   For example, for the kind of program called nbody substitute the value -Xmx8m
+   into the command line set in bencher/makefiles/my.*.ini for programs with file 
+   extension java
 
       [commandlines]
 
@@ -719,9 +720,9 @@
 
 15.4) Use that property name in a make command
 
-   For example, for the kind of program called nbody substitute the
-   value -lm -mfpmath=sse -msse3 into the make command set in the Makefile
-   for programs with file extension gcc
+   For example, for the kind of program called nbody substitute the value 
+   -lm -mfpmath=sse -msse3 into the make command set in 
+   bencher/makefiles/my.*.Makefile for programs with file extension gcc
 
       STD_COPTS := -O3 -fomit-frame-pointer -march=native
 
