@@ -9,18 +9,17 @@ import 'dart:io';
 
 void main() {
   var text = new StringBuffer();
-  var src = new StringInputStream(stdin);
+  var src = stdin.transform(new StringDecoder()).transform(new LineTransformer());
 
-  src.onLine = () {
-    var line = src.readLine();
+  src.listen((line) {
     if (line != null) {
-      text.add(line);
-      text.add('\n');
+      text.write(line);
+      text.write('\n');
     }
-  };
-  src.onClosed = () {
+  },
+  onDone: () {
     regexAllTheThings(text.toString());
-  };
+  });
 }
 
 void regexAllTheThings (String fullText) {
@@ -40,7 +39,7 @@ void regexAllTheThings (String fullText) {
     ];
     var regexp = [];
     for(var p in pattern) {
-      regexp.add(new RegExp(p, ignoreCase: true));
+      regexp.add(new RegExp(p, caseSensitive: false));
     }
     return regexp;
   }());
@@ -61,7 +60,7 @@ void regexAllTheThings (String fullText) {
 
   lengthA = fullText.length;
 
-  fullText = fullText.replaceAll(new RegExp('^>.*\n|\n', multiLine: true), ''); // ridiculously slow with r14669
+  fullText = fullText.replaceAll(new RegExp('^>.*\n|\n', multiLine: true), ''); // still ridiculously slow with r21658
 
   lengthB = fullText.length;
 
