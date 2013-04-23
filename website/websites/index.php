@@ -54,7 +54,7 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 
 <p><strong>Measurement is highly specific</strong> -- the time taken for this <a href="http://benchmarksgame.alioth.debian.org/u32/performance.php?test=nbody#about" title="Read the task description">benchmark task</a>, by this <a href="http://benchmarksgame.alioth.debian.org/u32/program.php?test=nbody&amp;lang=gcc&amp;id=1#sourcecode" title="Read the program source code">toy program</a>, with this <a href="http://benchmarksgame.alioth.debian.org/u32/program.php?test=nbody&amp;lang=gcc&amp;id=1#about"  title="Check the version information">programming language implementation</a>, with these <a href="http://benchmarksgame.alioth.debian.org/u32/program.php?test=nbody&amp;lang=gcc&amp;id=1#log" title="Check the compiler flags and runtime options">options</a>, on this <a href="http://benchmarksgame.alioth.debian.org/more.php#machine" title="What hardware and OS do you measure the programs on?">computer</a>, with these <a href="http://benchmarksgame.alioth.debian.org/u32/program.php?test=nbody&amp;lang=gcc&amp;id=1#measurements" title="">workloads</a>.</p>
 
-<p>Same program, same computer, same workload -- but <a href="http://benchmarksgame.alioth.debian.org/u32/program.php?test=nbody&amp;lang=cint&amp;id=1#measurements" title="">much slower</a>.</p>
+<p>Same toy program, same computer, same workload -- but <a href="http://benchmarksgame.alioth.debian.org/u32/program.php?test=nbody&amp;lang=cint&amp;id=1#measurements" title="">much slower</a>.</p>
 
 <p>Measurement is not prophesy.</p>
 
