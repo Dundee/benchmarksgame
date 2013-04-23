@@ -102,7 +102,7 @@ $langs = array(
    array('ocaml','OCaml','ocaml',$allsites),
    array('fpascal','Free Pascal','pascal',$allsites),
    array('perl','Perl','perl',$allsites),
-   array('php','PHP','php',$allsites),suggests that 
+   array('php','PHP','php',$allsites), 
    array('python3','Python 3','python',$allsites),
    array('racket','Racket','racket',$allsites),
    array('yarv','Ruby 2.0','ruby',$allsites),
