@@ -1,20 +1,18 @@
 
-Sat, 27 Apr 2013 05:16:57 GMT
+Sun, 28 Apr 2013 01:39:51 GMT
 
 MAKE:
-/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread -std=c99 threadring.c -o threadring.gcc_run 
-threadring.c:17:11: error: ‘PTHREAD_STACK_MIN’ undeclared here (not in a function)
+/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread threadring.c -o threadring.gcc_run 
 threadring.c: In function ‘thread’:
 threadring.c:30:12: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
 threadring.c: In function ‘main’:
-threadring.c:66:7: warning: implicit declaration of function ‘pthread_attr_setstack’ [-Wimplicit-function-declaration]
 threadring.c:67:53: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-make: [threadring.gcc_run] Error 1 (ignored)
+threadring.c:72:1: warning: control reaches end of non-void function [-Wreturn-type]
 rm threadring.c
-0.04s to complete and log all make actions
+0.10s to complete and log all make actions
 
 COMMAND LINE:
-./threadring.gcc_run 500000
+./threadring.gcc_run 50000000
 
-MAKE ERROR 
-
+PROGRAM OUTPUT:
+292
