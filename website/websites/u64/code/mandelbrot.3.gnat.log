@@ -1,5 +1,5 @@
 
-Fri, 18 Jan 2013 07:23:46 GMT
+Sat, 27 Apr 2013 23:30:45 GMT
 
 MAKE:
 /usr/bin/gnatchop -r -w mandelbrot.gnat-3.gnat
@@ -9,7 +9,7 @@ splitting mandelbrot.gnat-3.gnat into:
 gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp mandelbrot.adb
 gnatbind -x mandelbrot.ali
 gnatlink mandelbrot.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o mandelbrot.gnat-3.gnat_run
-0.43s to complete and log all make actions
+0.45s to complete and log all make actions
 
 COMMAND LINE:
 ./mandelbrot.gnat-3.gnat_run 16000

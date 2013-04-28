@@ -1,5 +1,5 @@
 
-Fri, 18 Jan 2013 07:38:25 GMT
+Sat, 27 Apr 2013 23:41:53 GMT
 
 MAKE:
 /usr/bin/gnatchop -r -w nbody.gnat
@@ -12,7 +12,7 @@ gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp nb
 gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp nbody_pck.adb
 gnatbind -x nbody.ali
 gnatlink nbody.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o nbody.gnat_run
-0.88s to complete and log all make actions
+0.90s to complete and log all make actions
 
 COMMAND LINE:
 ./nbody.gnat_run 50000000

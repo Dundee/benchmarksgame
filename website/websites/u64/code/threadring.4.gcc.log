@@ -1,13 +1,30 @@
 
-Fri, 11 Jan 2013 21:32:50 GMT
+Sun, 28 Apr 2013 00:35:28 GMT
 
 MAKE:
-/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread -std=c99 threadring.gcc-4.c -o threadring.gcc-4.gcc_run 
+/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread threadring.gcc-4.c -o threadring.gcc-4.gcc_run 
+threadring.gcc-4.c: In function ‘CreateThread’:
+threadring.gcc-4.c:43:33: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘thread’
+threadring.gcc-4.c:43:33: error: ‘thread’ undeclared (first use in this function)
+threadring.gcc-4.c:43:33: note: each undeclared identifier is reported only once for each function it appears in
+threadring.gcc-4.c:52:4: error: incompatible type for argument 1 of ‘__sync_fetch_and_or’
+threadring.gcc-4.c: In function ‘PerformPass’:
+threadring.gcc-4.c:57:33: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘thread’
+threadring.gcc-4.c:57:33: error: ‘thread’ undeclared (first use in this function)
+threadring.gcc-4.c:58:33: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘next_thread’
+threadring.gcc-4.c:58:33: error: ‘next_thread’ undeclared (first use in this function)
+threadring.gcc-4.c:77:10: error: incompatible type for argument 1 of ‘__sync_fetch_and_or’
+threadring.gcc-4.c: In function ‘main’:
+threadring.gcc-4.c:99:33: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘initial_thread’
+threadring.gcc-4.c:99:33: error: ‘initial_thread’ undeclared (first use in this function)
+threadring.gcc-4.c:110:4: error: ‘for’ loop initial declarations are only allowed in C99 mode
+threadring.gcc-4.c:110:4: note: use option -std=c99 or -std=gnu99 to compile your code
+make: [threadring.gcc-4.gcc_run] Error 1 (ignored)
 rm threadring.gcc-4.c
-0.10s to complete and log all make actions
+0.04s to complete and log all make actions
 
 COMMAND LINE:
-./threadring.gcc-4.gcc_run 50000000
+./threadring.gcc-4.gcc_run 500000
 
-PROGRAM OUTPUT:
-292
+MAKE ERROR 
+

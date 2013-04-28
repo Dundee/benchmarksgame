@@ -1,14 +1,18 @@
 
-Fri, 11 Jan 2013 22:51:58 GMT
+Sat, 27 Apr 2013 04:30:02 GMT
 
 MAKE:
-/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread fannkuchredux.gcc-2.c -o fannkuchredux.gcc-2.gcc_run 
+/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -falign-labels=8 fannkuchredux.gcc-2.c -o fannkuchredux.gcc-2.gcc_run 
+/tmp/ccYu3FUd.o: In function `main':
+fannkuchredux.gcc-2.c:(.text.startup+0x13a): undefined reference to `pthread_create'
+fannkuchredux.gcc-2.c:(.text.startup+0x1fa): undefined reference to `pthread_join'
+collect2: error: ld returned 1 exit status
+make: [fannkuchredux.gcc-2.gcc_run] Error 1 (ignored)
 rm fannkuchredux.gcc-2.c
-0.21s to complete and log all make actions
+0.27s to complete and log all make actions
 
 COMMAND LINE:
-./fannkuchredux.gcc-2.gcc_run 12
+./fannkuchredux.gcc-2.gcc_run 10
 
-PROGRAM OUTPUT:
-3968050
-Pfannkuchen(12) = 65
+MAKE ERROR 
+

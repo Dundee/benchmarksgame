@@ -1,31 +1,44 @@
 
-Fri, 11 Jan 2013 23:21:08 GMT
+Sat, 27 Apr 2013 05:07:57 GMT
 
 MAKE:
-/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -fopenmp regexdna.gcc-4.c -o regexdna.gcc-4.gcc_run -lpcre
+/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread -I/usr/include/tcl8.4 `pkg-config --cflags --libs glib-2.0` regexdna.gcc-4.c -o regexdna.gcc-4.gcc_run -ltcl8.4 -lglib-2.0
 regexdna.gcc-4.c: In function ‘Count_Patterns’:
+regexdna.gcc-4.c:99:0: warning: ignoring #pragma omp for [-Wunknown-pragmas]
 regexdna.gcc-4.c:131:10: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has type ‘size_t’ [-Wformat]
+regexdna.gcc-4.c: In function ‘Replace_Patterns’:
+regexdna.gcc-4.c:173:0: warning: ignoring #pragma omp single [-Wunknown-pragmas]
 regexdna.gcc-4.c: In function ‘main’:
+regexdna.gcc-4.c:253:0: warning: ignoring #pragma omp parallel [-Wunknown-pragmas]
 regexdna.gcc-4.c:263:7: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘size_t’ [-Wformat]
 regexdna.gcc-4.c:263:7: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has type ‘size_t’ [-Wformat]
 regexdna.gcc-4.c:263:7: warning: format ‘%d’ expects argument of type ‘int’, but argument 5 has type ‘size_t’ [-Wformat]
+/tmp/cccGHrNM.o: In function `ReadInput_StripHeader':
+regexdna.gcc-4.c:(.text+0xca): undefined reference to `pcre_compile'
+regexdna.gcc-4.c:(.text+0xde): undefined reference to `pcre_study'
+regexdna.gcc-4.c:(.text+0x151): undefined reference to `pcre_exec'
+regexdna.gcc-4.c:(.text+0x18b): undefined reference to `pcre_free'
+regexdna.gcc-4.c:(.text+0x196): undefined reference to `pcre_free'
+/tmp/cccGHrNM.o: In function `Count_Patterns':
+regexdna.gcc-4.c:(.text+0x26d): undefined reference to `pcre_compile'
+regexdna.gcc-4.c:(.text+0x27f): undefined reference to `pcre_study'
+regexdna.gcc-4.c:(.text+0x2c4): undefined reference to `pcre_exec'
+regexdna.gcc-4.c:(.text+0x2e0): undefined reference to `pcre_free'
+regexdna.gcc-4.c:(.text+0x2e9): undefined reference to `pcre_free'
+regexdna.gcc-4.c:(.text+0x30e): undefined reference to `omp_get_num_threads'
+/tmp/cccGHrNM.o: In function `Replace_Patterns':
+regexdna.gcc-4.c:(.text+0x55b): undefined reference to `pcre_compile'
+regexdna.gcc-4.c:(.text+0x56f): undefined reference to `pcre_study'
+regexdna.gcc-4.c:(.text+0x620): undefined reference to `pcre_exec'
+regexdna.gcc-4.c:(.text+0x65f): undefined reference to `pcre_free'
+regexdna.gcc-4.c:(.text+0x66a): undefined reference to `pcre_free'
+collect2: error: ld returned 1 exit status
+make: [regexdna.gcc-4.gcc_run] Error 1 (ignored)
 rm regexdna.gcc-4.c
-0.14s to complete and log all make actions
+0.31s to complete and log all make actions
 
 COMMAND LINE:
-./regexdna.gcc-4.gcc_run 0 < regexdna-input5000000.txt
+./regexdna.gcc-4.gcc_run 0 < regexdna-input50000.txt
 
-PROGRAM OUTPUT:
-agggtaaa|tttaccct 356
-[cgt]gggtaaa|tttaccc[acg] 1250
-a[act]ggtaaa|tttacc[agt]t 4252
-ag[act]gtaaa|tttac[agt]ct 2894
-agg[act]taaa|ttta[agt]cct 5435
-aggg[acg]aaa|ttt[cgt]ccct 1537
-agggt[cgt]aa|tt[acg]accct 1431
-agggta[cgt]a|t[acg]taccct 1608
-agggtaa[cgt]|[acg]ttaccct 2178
+MAKE ERROR 
 
-50833411
-50000000
-66800214

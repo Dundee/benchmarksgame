@@ -1,5 +1,5 @@
 
-Fri, 18 Jan 2013 07:50:26 GMT
+Sun, 28 Apr 2013 00:01:33 GMT
 
 MAKE:
 /usr/bin/gnatchop -r -w revcomp.gnat-2.gnat
@@ -16,7 +16,7 @@ revcomp.gnat-2.gnat:507:07: warning: unreachable code
 gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp text_input.adb
 gnatbind -x revcomp.ali
 gnatlink revcomp.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o revcomp.gnat-2.gnat_run
-0.73s to complete and log all make actions
+1.13s to complete and log all make actions
 
 COMMAND LINE:
 ./revcomp.gnat-2.gnat_run 0 < revcomp-input25000000.txt

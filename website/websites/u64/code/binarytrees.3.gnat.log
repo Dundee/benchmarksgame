@@ -1,5 +1,5 @@
 
-Fri, 18 Jan 2013 06:44:15 GMT
+Sat, 27 Apr 2013 22:51:40 GMT
 
 MAKE:
 /usr/bin/gnatchop -r -w binarytrees.gnat-3.gnat
@@ -7,11 +7,11 @@ splitting binarytrees.gnat-3.gnat into:
    binarytrees.adb
    treenodes.ads
    treenodes.adb
-/usr/bin/gnatmake -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp -f binarytrees.adb -o binarytrees.gnat-3.gnat_run 
+/usr/bin/gnatmake -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp -f binarytrees.adb -o binarytrees.gnat-3.gnat_run -largs -lapr-1
 gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp binarytrees.adb
 gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp treenodes.adb
 gnatbind -x binarytrees.ali
-gnatlink binarytrees.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o binarytrees.gnat-3.gnat_run
+gnatlink binarytrees.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o binarytrees.gnat-3.gnat_run -lapr-1
 0.56s to complete and log all make actions
 
 COMMAND LINE:

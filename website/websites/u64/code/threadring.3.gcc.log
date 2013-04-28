@@ -1,13 +1,20 @@
 
-Fri, 11 Jan 2013 21:35:12 GMT
+Sun, 28 Apr 2013 00:29:24 GMT
 
 MAKE:
-/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread -std=c99 threadring.gcc-3.c -o threadring.gcc-3.gcc_run 
+/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread threadring.gcc-3.c -o threadring.gcc-3.gcc_run 
+threadring.gcc-3.c: In function ‘main’:
+threadring.gcc-3.c:91:5: error: ‘for’ loop initial declarations are only allowed in C99 mode
+threadring.gcc-3.c:91:5: note: use option -std=c99 or -std=gnu99 to compile your code
+threadring.gcc-3.c:112:14: error: conflicting types for ‘i’
+threadring.gcc-3.c:91:19: note: previous definition of ‘i’ was here
+threadring.gcc-3.c:112:5: error: ‘for’ loop initial declarations are only allowed in C99 mode
+make: [threadring.gcc-3.gcc_run] Error 1 (ignored)
 rm threadring.gcc-3.c
-0.12s to complete and log all make actions
+0.09s to complete and log all make actions
 
 COMMAND LINE:
-./threadring.gcc-3.gcc_run 50000000
+./threadring.gcc-3.gcc_run 500000
 
-PROGRAM OUTPUT:
-292
+MAKE ERROR 
+
