@@ -1,2 +1,2 @@
 <p>GNATMAKE 4.6</p>
-<p>gcc version 4.7.2 (Ubuntu/Linaro 4.7.2-2ubuntu1)</p>
+<p>gcc (Ubuntu/Linaro 4.7.3-1ubuntu1) 4.7.3</p>

@@ -1,5 +1,5 @@
 
-Sat, 19 Jan 2013 08:34:42 GMT
+Sat, 27 Apr 2013 18:40:16 GMT
 
 MAKE:
 /usr/bin/gnatchop -r -w threadring.gnat-4.gnat
@@ -12,7 +12,7 @@ gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp th
 gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp threadring_pool.adb
 gnatbind -x threadring.ali
 gnatlink threadring.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o threadring.gnat-4.gnat_run
-0.69s to complete and log all make actions
+0.71s to complete and log all make actions
 
 COMMAND LINE:
 ./threadring.gnat-4.gnat_run 50000000
