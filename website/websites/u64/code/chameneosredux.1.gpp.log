@@ -1,42 +1,19 @@
 
-Wed, 06 Feb 2013 03:29:49 GMT
+Mon, 29 Apr 2013 23:11:36 GMT
 
 MAKE:
 /usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native   chameneosredux.c++ -o chameneosredux.c++.o &&  \
         /usr/bin/g++ chameneosredux.c++.o -o chameneosredux.gpp_run -lboost_thread -lboost_system 
+/usr/bin/ld: chameneosredux.c++.o: undefined reference to symbol 'pthread_key_delete@@GLIBC_2.2.5'
+/usr/bin/ld: note: 'pthread_key_delete@@GLIBC_2.2.5' is defined in DSO /lib/x86_64-linux-gnu/libpthread.so.0 so try adding it to the linker command line
+/lib/x86_64-linux-gnu/libpthread.so.0: could not read symbols: Invalid operation
+collect2: error: ld returned 1 exit status
+make: [chameneosredux.gpp_run] Error 1 (ignored)
 rm chameneosredux.c++
-19.47s to complete and log all make actions
+11.78s to complete and log all make actions
 
 COMMAND LINE:
-./chameneosredux.gpp_run 6000000
+./chameneosredux.gpp_run 60000
 
-PROGRAM OUTPUT:
-blue + blue -> blue
-blue + red -> yellow
-blue + yellow -> red
-red + blue -> yellow
-red + red -> red
-red + yellow -> blue
-yellow + blue -> red
-yellow + red -> blue
-yellow + yellow -> yellow
-
-blue red yellow 
-4191176 zero 
-4168644 zero 
-3640180 zero 
- one two zero zero zero zero zero zero 
-
-blue red yellow red yellow blue red yellow red blue 
-1097610 zero 
-1171112 zero 
-1182147 zero 
-1256786 zero 
-1222970 zero 
-1230345 zero 
-1075335 zero 
-1182132 zero 
-1184743 zero 
-1396820 zero 
- one two zero zero zero zero zero zero 
+MAKE ERROR 
 

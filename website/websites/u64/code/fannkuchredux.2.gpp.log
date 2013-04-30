@@ -1,17 +1,22 @@
 
-Thu, 31 Jan 2013 22:23:03 GMT
+Tue, 30 Apr 2013 00:03:42 GMT
 
 MAKE:
-/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -std=c++0x fannkuchredux.gpp-2.c++ -o fannkuchredux.gpp-2.c++.o &&  \
-        /usr/bin/g++ fannkuchredux.gpp-2.c++.o -o fannkuchredux.gpp-2.gpp_run -lpthread 
-fannkuchredux.gpp-2.c++:20:28: fatal error: boost/thread.hpp: No such file or directory
-compilation terminated.
-make: [fannkuchredux.gpp-2.gpp_run] Error 1 (ignored)
+/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -pthread -flax-vector-conversions fannkuchredux.gpp-2.c++ -o fannkuchredux.gpp-2.c++.o &&  \
+        /usr/bin/g++ fannkuchredux.gpp-2.c++.o -o fannkuchredux.gpp-2.gpp_run -lpthread -lboost_thread 
+fannkuchredux.gpp-2.c++:146:4: warning: always_inline function might not be inlinable [-Wattributes]
+fannkuchredux.gpp-2.c++:133:4: warning: always_inline function might not be inlinable [-Wattributes]
+fannkuchredux.gpp-2.c++:119:3: warning: always_inline function might not be inlinable [-Wattributes]
+fannkuchredux.gpp-2.c++:110:3: warning: always_inline function might not be inlinable [-Wattributes]
+fannkuchredux.gpp-2.c++:101:3: warning: always_inline function might not be inlinable [-Wattributes]
+fannkuchredux.gpp-2.c++:93:3: warning: always_inline function might not be inlinable [-Wattributes]
+fannkuchredux.gpp-2.c++:85:5: warning: always_inline function might not be inlinable [-Wattributes]
 rm fannkuchredux.gpp-2.c++
-0.31s to complete and log all make actions
+3.04s to complete and log all make actions
 
 COMMAND LINE:
-./fannkuchredux.gpp-2.gpp_run 10
+./fannkuchredux.gpp-2.gpp_run 12
 
-MAKE ERROR 
-
+PROGRAM OUTPUT:
+3968050
+Pfannkuchen(12) = 65

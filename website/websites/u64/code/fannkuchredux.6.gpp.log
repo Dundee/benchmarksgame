@@ -1,11 +1,11 @@
 
-Thu, 31 Jan 2013 22:28:56 GMT
+Mon, 29 Apr 2013 19:42:07 GMT
 
 MAKE:
-/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -std=c++0x fannkuchredux.gpp-6.c++ -o fannkuchredux.gpp-6.c++.o &&  \
-        /usr/bin/g++ fannkuchredux.gpp-6.c++.o -o fannkuchredux.gpp-6.gpp_run -lpthread 
+/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -falign-labels=8 fannkuchredux.gpp-6.c++ -o fannkuchredux.gpp-6.c++.o &&  \
+        /usr/bin/g++ fannkuchredux.gpp-6.c++.o -o fannkuchredux.gpp-6.gpp_run  
 rm fannkuchredux.gpp-6.c++
-0.61s to complete and log all make actions
+0.23s to complete and log all make actions
 
 COMMAND LINE:
 ./fannkuchredux.gpp-6.gpp_run 12
