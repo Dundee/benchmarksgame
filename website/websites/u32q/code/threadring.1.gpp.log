@@ -1,11 +1,11 @@
 
-Fri, 01 Feb 2013 02:23:57 GMT
+Tue, 30 Apr 2013 04:35:05 GMT
 
 MAKE:
 /usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native   threadring.c++ -o threadring.c++.o &&  \
         /usr/bin/g++ threadring.c++.o -o threadring.gpp_run -lboost_system -lpthread 
 rm threadring.c++
-0.34s to complete and log all make actions
+0.33s to complete and log all make actions
 
 COMMAND LINE:
 ./threadring.gpp_run 50000000

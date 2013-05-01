@@ -1,11 +1,11 @@
 
-Fri, 01 Feb 2013 02:50:47 GMT
+Tue, 30 Apr 2013 05:07:52 GMT
 
 MAKE:
-/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 --std=c++0x fasta.c++ -o fasta.c++.o &&  \
+/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 --std=c++11 fasta.c++ -o fasta.c++.o &&  \
         /usr/bin/g++ fasta.c++.o -o fasta.gpp_run  
 rm fasta.c++
-0.64s to complete and log all make actions
+0.62s to complete and log all make actions
 
 COMMAND LINE:
 ./fasta.gpp_run 25000000

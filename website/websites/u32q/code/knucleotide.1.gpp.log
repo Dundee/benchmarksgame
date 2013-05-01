@@ -1,18 +1,18 @@
 
-Fri, 01 Feb 2013 00:56:10 GMT
+Tue, 30 Apr 2013 04:01:26 GMT
 
 MAKE:
 /usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -std=c++0x knucleotide.c++ -o knucleotide.c++.o &&  \
         /usr/bin/g++ knucleotide.c++.o -o knucleotide.gpp_run -lpthread 
 knucleotide.c++: In instantiation of ‘void write_frequencies(const Input_T&, std::ostream&) [with int hash_len = 2; Input_T = std::vector<char>; std::ostream = std::basic_ostream<char>]’:
 knucleotide.c++:309:47:   required from here
-knucleotide.c++:186:10: error: no match for ‘operator<’ in ‘std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<2>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&}; typename std::_Bind_helper<std::__is_socketlike<_Func>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>]((* & boost::lambda::{anonymous}::_1)) < std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<2>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<2> >&}; typename std::_Bind_helper<std::__is_socketlike<_Func>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<2> >)>]((* & boost::lambda::{anonymous}::_2))’
+knucleotide.c++:186:10: error: no match for ‘operator<’ in ‘std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<2>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&}; typename std::_Bind_helper<std::__is_socketlike<_Tp>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>]((* & boost::lambda::{anonymous}::_1)) < std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<2>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<2> >&}; typename std::_Bind_helper<std::__is_socketlike<_Tp>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<2> >)>]((* & boost::lambda::{anonymous}::_2))’
 knucleotide.c++:186:10: note: candidates are:
 In file included from /usr/include/boost/lambda/lambda.hpp:26:0,
                  from knucleotide.c++:22:
-/usr/include/boost/lambda/detail/operators.hpp:121:1: note: template<class Arg, class B> const boost::lambda::lambda_functor<boost::lambda::lambda_functor_base<boost::lambda::relational_action<boost::lambda::less_action>, boost::tuples::tuple<boost::lambda::lambda_functor<Arg>, typename boost::lambda::const_copy_argument<const B>::type> > > boost::lambda::operator<(const boost::lambda::lambda_functor<Arg>&, const B&)
+/usr/include/boost/lambda/detail/operators.hpp:121:1: note: template<class Arg, class B> const boost::lambda::lambda_functor<boost::lambda::lambda_functor_base<boost::lambda::relational_action<boost::lambda::less_action>, boost::tuples::tuple<boost::lambda::lambda_functor<T>, typename boost::lambda::const_copy_argument<const B>::type> > > boost::lambda::operator<(const boost::lambda::lambda_functor<T>&, const B&)
 /usr/include/boost/lambda/detail/operators.hpp:121:1: note:   template argument deduction/substitution failed:
-knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const boost::lambda::lambda_functor<Arg>’
+knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const boost::lambda::lambda_functor<T>’
 In file included from /usr/include/boost/lambda/lambda.hpp:26:0,
                  from knucleotide.c++:22:
 /usr/include/boost/lambda/detail/operators.hpp:121:1: note: template<class A, class Arg> const boost::lambda::lambda_functor<boost::lambda::lambda_functor_base<boost::lambda::relational_action<boost::lambda::less_action>, boost::tuples::tuple<typename boost::lambda::const_copy_argument<const A>::type, boost::lambda::lambda_functor<Arg> > > > boost::lambda::operator<(const A&, const boost::lambda::lambda_functor<Arg>&)
@@ -20,9 +20,33 @@ In file included from /usr/include/boost/lambda/lambda.hpp:26:0,
 knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<2> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<2> >)>}’ is not derived from ‘const boost::lambda::lambda_functor<Arg>’
 In file included from /usr/include/boost/lambda/lambda.hpp:26:0,
                  from knucleotide.c++:22:
-/usr/include/boost/lambda/detail/operators.hpp:121:1: note: template<class ArgA, class ArgB> const boost::lambda::lambda_functor<boost::lambda::lambda_functor_base<boost::lambda::relational_action<boost::lambda::less_action>, boost::tuples::tuple<boost::lambda::lambda_functor<Arg>, boost::lambda::lambda_functor<Arg> > > > boost::lambda::operator<(const boost::lambda::lambda_functor<Arg>&, const boost::lambda::lambda_functor<Arg>&)
+/usr/include/boost/lambda/detail/operators.hpp:121:1: note: template<class ArgA, class ArgB> const boost::lambda::lambda_functor<boost::lambda::lambda_functor_base<boost::lambda::relational_action<boost::lambda::less_action>, boost::tuples::tuple<boost::lambda::lambda_functor<T>, boost::lambda::lambda_functor<Arg> > > > boost::lambda::operator<(const boost::lambda::lambda_functor<T>&, const boost::lambda::lambda_functor<Arg>&)
 /usr/include/boost/lambda/detail/operators.hpp:121:1: note:   template argument deduction/substitution failed:
-knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const boost::lambda::lambda_functor<Arg>’
+knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const boost::lambda::lambda_functor<T>’
+In file included from /usr/include/c++/4.7/deque:65:0,
+                 from /usr/include/boost/detail/container_fwd.hpp:89,
+                 from /usr/include/boost/lambda/detail/operator_return_type_traits.hpp:18,
+                 from /usr/include/boost/lambda/lambda.hpp:23,
+                 from knucleotide.c++:22:
+/usr/include/c++/4.7/bits/stl_deque.h:1947:5: note: template<class _Tp, class _Alloc> bool std::operator<(const std::deque<_Tp, _Alloc>&, const std::deque<_Tp, _Alloc>&)
+/usr/include/c++/4.7/bits/stl_deque.h:1947:5: note:   template argument deduction/substitution failed:
+knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::deque<_Tp, _Alloc>’
+In file included from /usr/include/c++/4.7/deque:65:0,
+                 from /usr/include/boost/detail/container_fwd.hpp:89,
+                 from /usr/include/boost/lambda/detail/operator_return_type_traits.hpp:18,
+                 from /usr/include/boost/lambda/lambda.hpp:23,
+                 from knucleotide.c++:22:
+/usr/include/c++/4.7/bits/stl_deque.h:282:5: note: template<class _Tp, class _RefL, class _PtrL, class _RefR, class _PtrR> bool std::operator<(const std::_Deque_iterator<_Tp, _Ref, _Ptr>&, const std::_Deque_iterator<_Tp, _RefR, _PtrR>&)
+/usr/include/c++/4.7/bits/stl_deque.h:282:5: note:   template argument deduction/substitution failed:
+knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::_Deque_iterator<_Tp, _Ref, _Ptr>’
+In file included from /usr/include/c++/4.7/deque:65:0,
+                 from /usr/include/boost/detail/container_fwd.hpp:89,
+                 from /usr/include/boost/lambda/detail/operator_return_type_traits.hpp:18,
+                 from /usr/include/boost/lambda/lambda.hpp:23,
+                 from knucleotide.c++:22:
+/usr/include/c++/4.7/bits/stl_deque.h:274:5: note: template<class _Tp, class _Ref, class _Ptr> bool std::operator<(const std::_Deque_iterator<_Tp, _Ref, _Ptr>&, const std::_Deque_iterator<_Tp, _Ref, _Ptr>&)
+/usr/include/c++/4.7/bits/stl_deque.h:274:5: note:   template argument deduction/substitution failed:
+knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::_Deque_iterator<_Tp, _Ref, _Ptr>’
 In file included from /usr/include/c++/4.7/list:64:0,
                  from /usr/include/c++/4.7/ext/pb_ds/detail/pat_trie_/pat_trie_.hpp:47,
                  from /usr/include/c++/4.7/ext/pb_ds/detail/container_base_dispatch.hpp:73,
@@ -75,16 +99,16 @@ In file included from /usr/include/c++/4.7/memory:87:0,
                  from /usr/include/c++/4.7/ext/pb_ds/detail/standard_policies.hpp:44,
                  from /usr/include/c++/4.7/ext/pb_ds/assoc_container.hpp:47,
                  from knucleotide.c++:18:
-/usr/include/c++/4.7/bits/shared_ptr.h:374:5: note: template<class _Tp> bool std::operator<(std::nullptr_t, const std::shared_ptr<_Tp>&)
+/usr/include/c++/4.7/bits/shared_ptr.h:374:5: note: template<class _Tp> bool std::operator<(std::nullptr_t, const std::shared_ptr<_Tp1>&)
 /usr/include/c++/4.7/bits/shared_ptr.h:374:5: note:   template argument deduction/substitution failed:
-knucleotide.c++:186:10: note:   cannot convert ‘std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<2>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&}; typename std::_Bind_helper<std::__is_socketlike<_Func>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>]((* & boost::lambda::{anonymous}::_1))’ (type ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’) to type ‘std::nullptr_t’
+knucleotide.c++:186:10: note:   cannot convert ‘std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<2>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&}; typename std::_Bind_helper<std::__is_socketlike<_Tp>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>]((* & boost::lambda::{anonymous}::_1))’ (type ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’) to type ‘std::nullptr_t’
 In file included from /usr/include/c++/4.7/memory:87:0,
                  from /usr/include/c++/4.7/ext/pb_ds/detail/standard_policies.hpp:44,
                  from /usr/include/c++/4.7/ext/pb_ds/assoc_container.hpp:47,
                  from knucleotide.c++:18:
-/usr/include/c++/4.7/bits/shared_ptr.h:369:5: note: template<class _Tp> bool std::operator<(const std::shared_ptr<_Tp>&, std::nullptr_t)
+/usr/include/c++/4.7/bits/shared_ptr.h:369:5: note: template<class _Tp> bool std::operator<(const std::shared_ptr<_Tp1>&, std::nullptr_t)
 /usr/include/c++/4.7/bits/shared_ptr.h:369:5: note:   template argument deduction/substitution failed:
-knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::shared_ptr<_Tp>’
+knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::shared_ptr<_Tp1>’
 In file included from /usr/include/c++/4.7/memory:87:0,
                  from /usr/include/c++/4.7/ext/pb_ds/detail/standard_policies.hpp:44,
                  from /usr/include/c++/4.7/ext/pb_ds/assoc_container.hpp:47,
@@ -99,7 +123,7 @@ In file included from /usr/include/c++/4.7/bits/shared_ptr.h:52:0,
                  from knucleotide.c++:18:
 /usr/include/c++/4.7/bits/shared_ptr_base.h:1115:5: note: template<class _Tp, __gnu_cxx::_Lock_policy _Lp> bool std::operator<(std::nullptr_t, const std::__shared_ptr<_Tp, _Lp>&)
 /usr/include/c++/4.7/bits/shared_ptr_base.h:1115:5: note:   template argument deduction/substitution failed:
-knucleotide.c++:186:10: note:   cannot convert ‘std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<2>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&}; typename std::_Bind_helper<std::__is_socketlike<_Func>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>]((* & boost::lambda::{anonymous}::_1))’ (type ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’) to type ‘std::nullptr_t’
+knucleotide.c++:186:10: note:   cannot convert ‘std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<2>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&}; typename std::_Bind_helper<std::__is_socketlike<_Tp>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>]((* & boost::lambda::{anonymous}::_1))’ (type ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’) to type ‘std::nullptr_t’
 In file included from /usr/include/c++/4.7/bits/shared_ptr.h:52:0,
                  from /usr/include/c++/4.7/memory:87,
                  from /usr/include/c++/4.7/ext/pb_ds/detail/standard_policies.hpp:44,
@@ -122,7 +146,7 @@ In file included from /usr/include/c++/4.7/memory:86:0,
                  from knucleotide.c++:18:
 /usr/include/c++/4.7/bits/unique_ptr.h:497:5: note: template<class _Tp, class _Dp> bool std::operator<(std::nullptr_t, const std::unique_ptr<_Tp, _Dp>&)
 /usr/include/c++/4.7/bits/unique_ptr.h:497:5: note:   template argument deduction/substitution failed:
-knucleotide.c++:186:10: note:   cannot convert ‘std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<2>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&}; typename std::_Bind_helper<std::__is_socketlike<_Func>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>]((* & boost::lambda::{anonymous}::_1))’ (type ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’) to type ‘std::nullptr_t’
+knucleotide.c++:186:10: note:   cannot convert ‘std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<2>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&}; typename std::_Bind_helper<std::__is_socketlike<_Tp>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>]((* & boost::lambda::{anonymous}::_1))’ (type ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’) to type ‘std::nullptr_t’
 In file included from /usr/include/c++/4.7/memory:86:0,
                  from /usr/include/c++/4.7/ext/pb_ds/detail/standard_policies.hpp:44,
                  from /usr/include/c++/4.7/ext/pb_ds/assoc_container.hpp:47,
@@ -141,9 +165,9 @@ In file included from /usr/include/c++/4.7/functional:56:0,
                  from /usr/include/c++/4.7/bits/stl_algo.h:68,
                  from /usr/include/c++/4.7/algorithm:63,
                  from knucleotide.c++:10:
-/usr/include/c++/4.7/tuple:808:5: note: template<class ... _TElements, class ... _UElements> bool std::operator<(const std::tuple<_TElements ...>&, const std::tuple<_Elements ...>&)
+/usr/include/c++/4.7/tuple:808:5: note: template<class ... _TElements, class ... _UElements> bool std::operator<(const std::tuple<_Elements ...>&, const std::tuple<_Elements ...>&)
 /usr/include/c++/4.7/tuple:808:5: note:   template argument deduction/substitution failed:
-knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::tuple<_TElements ...>’
+knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::tuple<_Elements ...>’
 In file included from /usr/include/c++/4.7/vector:65:0,
                  from /usr/include/c++/4.7/bits/random.h:34,
                  from /usr/include/c++/4.7/random:50,
@@ -186,15 +210,15 @@ knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pa
 In file included from /usr/include/c++/4.7/bits/stl_algobase.h:68:0,
                  from /usr/include/c++/4.7/algorithm:62,
                  from knucleotide.c++:10:
-/usr/include/c++/4.7/bits/stl_iterator.h:1057:5: note: template<class _IteratorL, class _IteratorR> bool std::operator<(const std::move_iterator<_IteratorL>&, const std::move_iterator<_IteratorR>&)
+/usr/include/c++/4.7/bits/stl_iterator.h:1057:5: note: template<class _IteratorL, class _IteratorR> bool std::operator<(const std::move_iterator<_Iterator>&, const std::move_iterator<_IteratorR>&)
 /usr/include/c++/4.7/bits/stl_iterator.h:1057:5: note:   template argument deduction/substitution failed:
-knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::move_iterator<_IteratorL>’
+knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::move_iterator<_Iterator>’
 In file included from /usr/include/c++/4.7/bits/stl_algobase.h:68:0,
                  from /usr/include/c++/4.7/algorithm:62,
                  from knucleotide.c++:10:
-/usr/include/c++/4.7/bits/stl_iterator.h:349:5: note: template<class _IteratorL, class _IteratorR> bool std::operator<(const std::reverse_iterator<_IteratorL>&, const std::reverse_iterator<_IteratorR>&)
+/usr/include/c++/4.7/bits/stl_iterator.h:349:5: note: template<class _IteratorL, class _IteratorR> bool std::operator<(const std::reverse_iterator<_Iterator>&, const std::reverse_iterator<_IteratorR>&)
 /usr/include/c++/4.7/bits/stl_iterator.h:349:5: note:   template argument deduction/substitution failed:
-knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::reverse_iterator<_IteratorL>’
+knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::reverse_iterator<_Iterator>’
 In file included from /usr/include/c++/4.7/bits/stl_algobase.h:68:0,
                  from /usr/include/c++/4.7/algorithm:62,
                  from knucleotide.c++:10:
@@ -209,13 +233,13 @@ In file included from /usr/include/c++/4.7/utility:72:0,
 knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<2>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<2>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::pair<_T1, _T2>’
 knucleotide.c++: In instantiation of ‘void write_frequencies(const Input_T&, std::ostream&) [with int hash_len = 1; Input_T = std::vector<char>; std::ostream = std::basic_ostream<char>]’:
 knucleotide.c++:310:47:   required from here
-knucleotide.c++:186:10: error: no match for ‘operator<’ in ‘std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<1>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&}; typename std::_Bind_helper<std::__is_socketlike<_Func>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>]((* & boost::lambda::{anonymous}::_1)) < std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<1>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<2> >&}; typename std::_Bind_helper<std::__is_socketlike<_Func>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<2> >)>]((* & boost::lambda::{anonymous}::_2))’
+knucleotide.c++:186:10: error: no match for ‘operator<’ in ‘std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<1>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&}; typename std::_Bind_helper<std::__is_socketlike<_Tp>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>]((* & boost::lambda::{anonymous}::_1)) < std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<1>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<2> >&}; typename std::_Bind_helper<std::__is_socketlike<_Tp>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<2> >)>]((* & boost::lambda::{anonymous}::_2))’
 knucleotide.c++:186:10: note: candidates are:
 In file included from /usr/include/boost/lambda/lambda.hpp:26:0,
                  from knucleotide.c++:22:
-/usr/include/boost/lambda/detail/operators.hpp:121:1: note: template<class Arg, class B> const boost::lambda::lambda_functor<boost::lambda::lambda_functor_base<boost::lambda::relational_action<boost::lambda::less_action>, boost::tuples::tuple<boost::lambda::lambda_functor<Arg>, typename boost::lambda::const_copy_argument<const B>::type> > > boost::lambda::operator<(const boost::lambda::lambda_functor<Arg>&, const B&)
+/usr/include/boost/lambda/detail/operators.hpp:121:1: note: template<class Arg, class B> const boost::lambda::lambda_functor<boost::lambda::lambda_functor_base<boost::lambda::relational_action<boost::lambda::less_action>, boost::tuples::tuple<boost::lambda::lambda_functor<T>, typename boost::lambda::const_copy_argument<const B>::type> > > boost::lambda::operator<(const boost::lambda::lambda_functor<T>&, const B&)
 /usr/include/boost/lambda/detail/operators.hpp:121:1: note:   template argument deduction/substitution failed:
-knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const boost::lambda::lambda_functor<Arg>’
+knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const boost::lambda::lambda_functor<T>’
 In file included from /usr/include/boost/lambda/lambda.hpp:26:0,
                  from knucleotide.c++:22:
 /usr/include/boost/lambda/detail/operators.hpp:121:1: note: template<class A, class Arg> const boost::lambda::lambda_functor<boost::lambda::lambda_functor_base<boost::lambda::relational_action<boost::lambda::less_action>, boost::tuples::tuple<typename boost::lambda::const_copy_argument<const A>::type, boost::lambda::lambda_functor<Arg> > > > boost::lambda::operator<(const A&, const boost::lambda::lambda_functor<Arg>&)
@@ -223,9 +247,33 @@ In file included from /usr/include/boost/lambda/lambda.hpp:26:0,
 knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<2> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<2> >)>}’ is not derived from ‘const boost::lambda::lambda_functor<Arg>’
 In file included from /usr/include/boost/lambda/lambda.hpp:26:0,
                  from knucleotide.c++:22:
-/usr/include/boost/lambda/detail/operators.hpp:121:1: note: template<class ArgA, class ArgB> const boost::lambda::lambda_functor<boost::lambda::lambda_functor_base<boost::lambda::relational_action<boost::lambda::less_action>, boost::tuples::tuple<boost::lambda::lambda_functor<Arg>, boost::lambda::lambda_functor<Arg> > > > boost::lambda::operator<(const boost::lambda::lambda_functor<Arg>&, const boost::lambda::lambda_functor<Arg>&)
+/usr/include/boost/lambda/detail/operators.hpp:121:1: note: template<class ArgA, class ArgB> const boost::lambda::lambda_functor<boost::lambda::lambda_functor_base<boost::lambda::relational_action<boost::lambda::less_action>, boost::tuples::tuple<boost::lambda::lambda_functor<T>, boost::lambda::lambda_functor<Arg> > > > boost::lambda::operator<(const boost::lambda::lambda_functor<T>&, const boost::lambda::lambda_functor<Arg>&)
 /usr/include/boost/lambda/detail/operators.hpp:121:1: note:   template argument deduction/substitution failed:
-knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const boost::lambda::lambda_functor<Arg>’
+knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const boost::lambda::lambda_functor<T>’
+In file included from /usr/include/c++/4.7/deque:65:0,
+                 from /usr/include/boost/detail/container_fwd.hpp:89,
+                 from /usr/include/boost/lambda/detail/operator_return_type_traits.hpp:18,
+                 from /usr/include/boost/lambda/lambda.hpp:23,
+                 from knucleotide.c++:22:
+/usr/include/c++/4.7/bits/stl_deque.h:1947:5: note: template<class _Tp, class _Alloc> bool std::operator<(const std::deque<_Tp, _Alloc>&, const std::deque<_Tp, _Alloc>&)
+/usr/include/c++/4.7/bits/stl_deque.h:1947:5: note:   template argument deduction/substitution failed:
+knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::deque<_Tp, _Alloc>’
+In file included from /usr/include/c++/4.7/deque:65:0,
+                 from /usr/include/boost/detail/container_fwd.hpp:89,
+                 from /usr/include/boost/lambda/detail/operator_return_type_traits.hpp:18,
+                 from /usr/include/boost/lambda/lambda.hpp:23,
+                 from knucleotide.c++:22:
+/usr/include/c++/4.7/bits/stl_deque.h:282:5: note: template<class _Tp, class _RefL, class _PtrL, class _RefR, class _PtrR> bool std::operator<(const std::_Deque_iterator<_Tp, _Ref, _Ptr>&, const std::_Deque_iterator<_Tp, _RefR, _PtrR>&)
+/usr/include/c++/4.7/bits/stl_deque.h:282:5: note:   template argument deduction/substitution failed:
+knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::_Deque_iterator<_Tp, _Ref, _Ptr>’
+In file included from /usr/include/c++/4.7/deque:65:0,
+                 from /usr/include/boost/detail/container_fwd.hpp:89,
+                 from /usr/include/boost/lambda/detail/operator_return_type_traits.hpp:18,
+                 from /usr/include/boost/lambda/lambda.hpp:23,
+                 from knucleotide.c++:22:
+/usr/include/c++/4.7/bits/stl_deque.h:274:5: note: template<class _Tp, class _Ref, class _Ptr> bool std::operator<(const std::_Deque_iterator<_Tp, _Ref, _Ptr>&, const std::_Deque_iterator<_Tp, _Ref, _Ptr>&)
+/usr/include/c++/4.7/bits/stl_deque.h:274:5: note:   template argument deduction/substitution failed:
+knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::_Deque_iterator<_Tp, _Ref, _Ptr>’
 In file included from /usr/include/c++/4.7/list:64:0,
                  from /usr/include/c++/4.7/ext/pb_ds/detail/pat_trie_/pat_trie_.hpp:47,
                  from /usr/include/c++/4.7/ext/pb_ds/detail/container_base_dispatch.hpp:73,
@@ -278,16 +326,16 @@ In file included from /usr/include/c++/4.7/memory:87:0,
                  from /usr/include/c++/4.7/ext/pb_ds/detail/standard_policies.hpp:44,
                  from /usr/include/c++/4.7/ext/pb_ds/assoc_container.hpp:47,
                  from knucleotide.c++:18:
-/usr/include/c++/4.7/bits/shared_ptr.h:374:5: note: template<class _Tp> bool std::operator<(std::nullptr_t, const std::shared_ptr<_Tp>&)
+/usr/include/c++/4.7/bits/shared_ptr.h:374:5: note: template<class _Tp> bool std::operator<(std::nullptr_t, const std::shared_ptr<_Tp1>&)
 /usr/include/c++/4.7/bits/shared_ptr.h:374:5: note:   template argument deduction/substitution failed:
-knucleotide.c++:186:10: note:   cannot convert ‘std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<1>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&}; typename std::_Bind_helper<std::__is_socketlike<_Func>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>]((* & boost::lambda::{anonymous}::_1))’ (type ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’) to type ‘std::nullptr_t’
+knucleotide.c++:186:10: note:   cannot convert ‘std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<1>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&}; typename std::_Bind_helper<std::__is_socketlike<_Tp>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>]((* & boost::lambda::{anonymous}::_1))’ (type ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’) to type ‘std::nullptr_t’
 In file included from /usr/include/c++/4.7/memory:87:0,
                  from /usr/include/c++/4.7/ext/pb_ds/detail/standard_policies.hpp:44,
                  from /usr/include/c++/4.7/ext/pb_ds/assoc_container.hpp:47,
                  from knucleotide.c++:18:
-/usr/include/c++/4.7/bits/shared_ptr.h:369:5: note: template<class _Tp> bool std::operator<(const std::shared_ptr<_Tp>&, std::nullptr_t)
+/usr/include/c++/4.7/bits/shared_ptr.h:369:5: note: template<class _Tp> bool std::operator<(const std::shared_ptr<_Tp1>&, std::nullptr_t)
 /usr/include/c++/4.7/bits/shared_ptr.h:369:5: note:   template argument deduction/substitution failed:
-knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::shared_ptr<_Tp>’
+knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::shared_ptr<_Tp1>’
 In file included from /usr/include/c++/4.7/memory:87:0,
                  from /usr/include/c++/4.7/ext/pb_ds/detail/standard_policies.hpp:44,
                  from /usr/include/c++/4.7/ext/pb_ds/assoc_container.hpp:47,
@@ -302,7 +350,7 @@ In file included from /usr/include/c++/4.7/bits/shared_ptr.h:52:0,
                  from knucleotide.c++:18:
 /usr/include/c++/4.7/bits/shared_ptr_base.h:1115:5: note: template<class _Tp, __gnu_cxx::_Lock_policy _Lp> bool std::operator<(std::nullptr_t, const std::__shared_ptr<_Tp, _Lp>&)
 /usr/include/c++/4.7/bits/shared_ptr_base.h:1115:5: note:   template argument deduction/substitution failed:
-knucleotide.c++:186:10: note:   cannot convert ‘std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<1>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&}; typename std::_Bind_helper<std::__is_socketlike<_Func>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>]((* & boost::lambda::{anonymous}::_1))’ (type ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’) to type ‘std::nullptr_t’
+knucleotide.c++:186:10: note:   cannot convert ‘std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<1>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&}; typename std::_Bind_helper<std::__is_socketlike<_Tp>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>]((* & boost::lambda::{anonymous}::_1))’ (type ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’) to type ‘std::nullptr_t’
 In file included from /usr/include/c++/4.7/bits/shared_ptr.h:52:0,
                  from /usr/include/c++/4.7/memory:87,
                  from /usr/include/c++/4.7/ext/pb_ds/detail/standard_policies.hpp:44,
@@ -325,7 +373,7 @@ In file included from /usr/include/c++/4.7/memory:86:0,
                  from knucleotide.c++:18:
 /usr/include/c++/4.7/bits/unique_ptr.h:497:5: note: template<class _Tp, class _Dp> bool std::operator<(std::nullptr_t, const std::unique_ptr<_Tp, _Dp>&)
 /usr/include/c++/4.7/bits/unique_ptr.h:497:5: note:   template argument deduction/substitution failed:
-knucleotide.c++:186:10: note:   cannot convert ‘std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<1>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&}; typename std::_Bind_helper<std::__is_socketlike<_Func>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>]((* & boost::lambda::{anonymous}::_1))’ (type ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’) to type ‘std::nullptr_t’
+knucleotide.c++:186:10: note:   cannot convert ‘std::bind(_Func&&, _BoundArgs&& ...) [with _Func = unsigned int std::pair<Key_T<1>, unsigned int>::*; _BoundArgs = {const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&}; typename std::_Bind_helper<std::__is_socketlike<_Tp>::value, _Func, _BoundArgs ...>::type = std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>]((* & boost::lambda::{anonymous}::_1))’ (type ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’) to type ‘std::nullptr_t’
 In file included from /usr/include/c++/4.7/memory:86:0,
                  from /usr/include/c++/4.7/ext/pb_ds/detail/standard_policies.hpp:44,
                  from /usr/include/c++/4.7/ext/pb_ds/assoc_container.hpp:47,
@@ -344,9 +392,9 @@ In file included from /usr/include/c++/4.7/functional:56:0,
                  from /usr/include/c++/4.7/bits/stl_algo.h:68,
                  from /usr/include/c++/4.7/algorithm:63,
                  from knucleotide.c++:10:
-/usr/include/c++/4.7/tuple:808:5: note: template<class ... _TElements, class ... _UElements> bool std::operator<(const std::tuple<_TElements ...>&, const std::tuple<_Elements ...>&)
+/usr/include/c++/4.7/tuple:808:5: note: template<class ... _TElements, class ... _UElements> bool std::operator<(const std::tuple<_Elements ...>&, const std::tuple<_Elements ...>&)
 /usr/include/c++/4.7/tuple:808:5: note:   template argument deduction/substitution failed:
-knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::tuple<_TElements ...>’
+knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::tuple<_Elements ...>’
 In file included from /usr/include/c++/4.7/vector:65:0,
                  from /usr/include/c++/4.7/bits/random.h:34,
                  from /usr/include/c++/4.7/random:50,
@@ -389,15 +437,15 @@ knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pa
 In file included from /usr/include/c++/4.7/bits/stl_algobase.h:68:0,
                  from /usr/include/c++/4.7/algorithm:62,
                  from knucleotide.c++:10:
-/usr/include/c++/4.7/bits/stl_iterator.h:1057:5: note: template<class _IteratorL, class _IteratorR> bool std::operator<(const std::move_iterator<_IteratorL>&, const std::move_iterator<_IteratorR>&)
+/usr/include/c++/4.7/bits/stl_iterator.h:1057:5: note: template<class _IteratorL, class _IteratorR> bool std::operator<(const std::move_iterator<_Iterator>&, const std::move_iterator<_IteratorR>&)
 /usr/include/c++/4.7/bits/stl_iterator.h:1057:5: note:   template argument deduction/substitution failed:
-knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::move_iterator<_IteratorL>’
+knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::move_iterator<_Iterator>’
 In file included from /usr/include/c++/4.7/bits/stl_algobase.h:68:0,
                  from /usr/include/c++/4.7/algorithm:62,
                  from knucleotide.c++:10:
-/usr/include/c++/4.7/bits/stl_iterator.h:349:5: note: template<class _IteratorL, class _IteratorR> bool std::operator<(const std::reverse_iterator<_IteratorL>&, const std::reverse_iterator<_IteratorR>&)
+/usr/include/c++/4.7/bits/stl_iterator.h:349:5: note: template<class _IteratorL, class _IteratorR> bool std::operator<(const std::reverse_iterator<_Iterator>&, const std::reverse_iterator<_IteratorR>&)
 /usr/include/c++/4.7/bits/stl_iterator.h:349:5: note:   template argument deduction/substitution failed:
-knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::reverse_iterator<_IteratorL>’
+knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::reverse_iterator<_Iterator>’
 In file included from /usr/include/c++/4.7/bits/stl_algobase.h:68:0,
                  from /usr/include/c++/4.7/algorithm:62,
                  from knucleotide.c++:10:
@@ -412,7 +460,7 @@ In file included from /usr/include/c++/4.7/utility:72:0,
 knucleotide.c++:186:10: note:   ‘std::_Bind_helper<false, unsigned int std::pair<Key_T<1>, unsigned int>::*, const boost::lambda::lambda_functor<boost::lambda::placeholder<1> >&>::type {aka std::_Bind<std::_Mem_fn<unsigned int std::pair<Key_T<1>, unsigned int>::*>(boost::lambda::lambda_functor<boost::lambda::placeholder<1> >)>}’ is not derived from ‘const std::pair<_T1, _T2>’
 make: [knucleotide.gpp_run] Error 1 (ignored)
 rm knucleotide.c++
-2.58s to complete and log all make actions
+3.08s to complete and log all make actions
 
 COMMAND LINE:
 ./knucleotide.gpp_run 0 < knucleotide-input250000.txt
