@@ -1,15 +1,15 @@
-$ gcc -O3 GmpInteger.cc -I/usr/local/src/jdk1.7.0_11/include -I/usr/local/src/jdk1.7.0_11/include/linux -shared -o libjgmplib.so -fPIC -Wl,-soname,libjgmplib.so,-lgmp,-lc
+gcc -O3 GmpInteger.cc -I/usr/local/src/jdk1.7.0_11/include -I/usr/local/src/jdk1.7.0_11/include/linux -shared -o libjgmplib.so -fPIC -Wl,-soname,libjgmplib.so,-lgmp,-lc
 
 
-
-[#312413] Scala pidigits Rex Kerr 2010-03-24 gmp
 
 32 bit
 
 gcc -O2 --shared -o libjpargmp.so -I/usr/local/src/jdk1.7.0_11/include -I/usr/local/src/jdk1.7.0_11/include/linux -lgmp GmpUtil.c
 
+gcc -O3 GmpUtil.c -I/usr/local/src/jdk1.7.0_11/include -I/usr/local/src/jdk1.7.0_11/include/linux -shared -o libjpargmp.so -Wl,-soname,libjpargmp.so,-lgmp,-lc
+
 64 bit
 gcc -O2 -fPIC --shared -o libjpargmp.so -I/usr/local/src/jdk1.7.0_11/include -I/usr/local/src/jdk1.7.0_11/include/linux -lgmp GmpUtil.c
 
-$ gcc -O3 GmpUtil.c -I/usr/local/src/jdk1.7.0_11/include -I/usr/local/src/jdk1.7.0_11/include/linux -shared -o libjpargmp.so -fPIC -Wl,-soname,libjpargmp.so,-lgmp,-lc
+gcc -O3 GmpUtil.c -I/usr/local/src/jdk1.7.0_11/include -I/usr/local/src/jdk1.7.0_11/include/linux -shared -o libjpargmp.so -fPIC -Wl,-soname,libjpargmp.so,-lgmp,-lc
 
