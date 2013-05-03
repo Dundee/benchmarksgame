@@ -1,8 +1,8 @@
 
-Fri, 25 Jan 2013 02:36:27 GMT
+Fri, 03 May 2013 22:34:41 GMT
 
 MAKE:
-cp: `mandelbrot.sbcl' and `./mandelbrot.sbcl' are the same file
+cp: ‘mandelbrot.sbcl’ and ‘./mandelbrot.sbcl’ are the same file
 SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load "mandelbrot.sbcl_compile")'
 ### START mandelbrot.sbcl_compile
 (handler-bind ((sb-ext:defconstant-uneql      (lambda (c) (abort c))))      (load (compile-file "mandelbrot.sbcl" ))) (save-lisp-and-die "sbcl.core" :purify t)
@@ -155,7 +155,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ;        :KIND NIL
 ;        :TYPE #<SB-KERNEL:FUN-TYPE #>
 ;        :WHERE-FROM :DEFINED
-;        :VARS NIL {BA1B589}>))
+;        :VARS NIL {C59C881}>))
 ; 
 ; note: doing float to pointer coercion (cost 13) from INVERSE-H, for:
 ;       the second argument of CLOSURE-INIT
@@ -179,7 +179,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ;        :KIND NIL
 ;        :TYPE #<SB-KERNEL:FUN-TYPE #>
 ;        :WHERE-FROM :DEFINED
-;        :VARS NIL {AECF269}>))
+;        :VARS NIL {AE53809}>))
 ; 
 ; note: doing float to pointer coercion (cost 13) from VOPS::INVERSE-H, for:
 ;       the second argument of CLOSURE-INIT
@@ -189,18 +189,18 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 
 
 ; /home/dunham/benchmarksgame_onecore/mandelbrot/tmp/mandelbrot.fasl written
-; compilation finished in 0:00:00.647
+; compilation finished in 0:00:00.639
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
 writing 3512 bytes from the read-only space at 0x0x1000000
 writing 2256 bytes from the static space at 0x0x1100000
-writing 28147712 bytes from the dynamic space at 0x0x9000000
+writing 28270592 bytes from the dynamic space at 0x0x9000000
 done]
 ### START mandelbrot.sbcl_run
 (main) (quit)
 ### END mandelbrot.sbcl_run
 
-1.26s to complete and log all make actions
+1.24s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl   --noinform --core sbcl.core --userinit /dev/null --load mandelbrot.sbcl_run 16000

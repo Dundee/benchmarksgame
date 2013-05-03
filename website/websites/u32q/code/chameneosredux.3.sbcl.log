@@ -1,8 +1,8 @@
 
-Thu, 24 Jan 2013 22:17:38 GMT
+Fri, 03 May 2013 19:38:38 GMT
 
 MAKE:
-cp: `chameneosredux.sbcl-3.sbcl' and `./chameneosredux.sbcl-3.sbcl' are the same file
+cp: ‘chameneosredux.sbcl-3.sbcl’ and ‘./chameneosredux.sbcl-3.sbcl’ are the same file
 SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load "chameneosredux.sbcl-3.sbcl_compile")'
 ### START chameneosredux.sbcl-3.sbcl_compile
 (handler-bind ((sb-ext:defconstant-uneql      (lambda (c) (abort c))))      (load (compile-file "chameneosredux.sbcl-3.sbcl" ))) (save-lisp-and-die "sbcl.core" :purify t)
@@ -31,18 +31,18 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; compiling (DEFUN MAIN ...)
 
 ; /home/dunham/benchmarksgame_quadcore/chameneosredux/tmp/chameneosredux.sbcl-3.fasl written
-; compilation finished in 0:00:00.222
+; compilation finished in 0:00:00.220
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
 writing 3512 bytes from the read-only space at 0x0x1000000
 writing 2256 bytes from the static space at 0x0x1100000
-writing 28160000 bytes from the dynamic space at 0x0x9000000
+writing 28270592 bytes from the dynamic space at 0x0x9000000
 done]
 ### START chameneosredux.sbcl-3.sbcl_run
 (main) (quit)
 ### END chameneosredux.sbcl-3.sbcl_run
 
-0.83s to complete and log all make actions
+0.80s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl  --noinform --core sbcl.core --userinit /dev/null --load chameneosredux.sbcl-3.sbcl_run 6000000
@@ -59,21 +59,21 @@ yellow + red -> blue
 yellow + yellow -> yellow
 
  blue red yellow
-3299481 zero
-4720142 zero
-3980377 zero
+5446761 zero
+3462752 zero
+3090487 zero
  one two zero zero zero zero zero zero
 
  blue red yellow red yellow blue red yellow red blue
-767320 zero
-1414488 zero
-1278917 zero
-1179558 zero
-1529413 zero
-1395329 zero
-1276484 zero
-1255320 zero
-1029352 zero
-873819 zero
+1324619 zero
+1202075 zero
+1173559 zero
+1428600 zero
+1324511 zero
+1100118 zero
+1092157 zero
+1149483 zero
+1178022 zero
+1026856 zero
  one two zero zero zero zero zero zero
 

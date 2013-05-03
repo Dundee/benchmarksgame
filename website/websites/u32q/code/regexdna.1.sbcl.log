@@ -1,8 +1,8 @@
 
-Thu, 24 Jan 2013 23:41:42 GMT
+Fri, 03 May 2013 20:52:26 GMT
 
 MAKE:
-cp: `regexdna.sbcl' and `./regexdna.sbcl' are the same file
+cp: ‘regexdna.sbcl’ and ‘./regexdna.sbcl’ are the same file
 SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load "regexdna.sbcl_compile")'
 ### START regexdna.sbcl_compile
 (handler-bind ((sb-ext:defconstant-uneql      (lambda (c) (abort c))))      (load (compile-file "regexdna.sbcl" ))) (save-lisp-and-die "sbcl.core" :purify t)
@@ -18,18 +18,18 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; compiling (DEFUN MAIN ...)
 
 ; /home/dunham/benchmarksgame_quadcore/regexdna/tmp/regexdna.fasl written
-; compilation finished in 0:00:00.488
+; compilation finished in 0:00:00.449
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
 writing 3512 bytes from the read-only space at 0x0x1000000
 writing 2256 bytes from the static space at 0x0x1100000
-writing 30425088 bytes from the dynamic space at 0x0x9000000
+writing 30552064 bytes from the dynamic space at 0x0x9000000
 done]
 ### START regexdna.sbcl_run
 (main) (quit)
 ### END regexdna.sbcl_run
 
-1.87s to complete and log all make actions
+1.18s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl --dynamic-space-size 1800 --noinform --core sbcl.core --userinit /dev/null --load regexdna.sbcl_run 0 < regexdna-input5000000.txt
@@ -51,25 +51,25 @@ agggtaa[cgt]|[acg]ttaccct 2178
 50833411
 50000000
 
-Heap exhausted during allocation: 72802304 bytes available, 80001016 requested.
+Heap exhausted during allocation: 206110720 bytes available, 214397856 requested.
  Gen StaPg UbSta LaSta LUbSt Boxed Unboxed LB   LUB  !move  Alloc  Waste   Trig    WP  GCs Mem-age
-   0: 156425     0     0     0 18231     0     0 19532     5 154431432 245816 113285048    0   1  0.0000
-   1:  7443  7444     0     0  3522     2     0 169924 150401 710408376 34632 400485936 3513   1  0.5372
-   2: 27745 27742     0     0  9909    23     0 204544 173844 878412392 81304  2000000 9886   0  0.0000
+   0:     0     0     0     0     3     0     0 27930 27932 114402912 10656 133277280    0   1  0.0000
+   1:     0     0     0     0  4504     1     0 99416 79893 425641472 18944 444515840 4495   1  0.0000
+   2: 27777 27774     0     0  9908    23     0 204544 173843 878411096 78504  2000000 9884   0  0.0000
    3:     0     0     0     0     0     0     0     0     0        0     0  2000000    0   0  0.0000
    4:     0     0     0     0     0     0     0     0     0        0     0  2000000    0   0  0.0000
    5:     0     0     0     0     0     0     0     0     0        0     0  2000000    0   0  0.0000
-   6:     0     0     0     0  6071  1357     0     0     0 30425088     0  2000000 6014   0  0.0000
-   Total bytes allocated    = 1773677288
+   6:     0     0     0     0  6095  1364     0     0     0 30552064     0  2000000 6037   0  0.0000
+   Total bytes allocated    = 1449007544
    Dynamic-space-size bytes = 1887436800
 GC control variables:
    *GC-INHIBIT* = false
-   *GC-PENDING* = false
+   *GC-PENDING* = true
    *STOP-FOR-GC-PENDING* = false
 
 debugger invoked on a SB-KERNEL::HEAP-EXHAUSTED-ERROR in thread
-#<THREAD "main thread" RUNNING {AD04AF9}>:
+#<THREAD "main thread" RUNNING {AD23AE9}>:
   Heap exhausted (no more space for allocation).
-There are still 72802304 bytes available; the request was for 80001016 bytes.
+There are still 206110720 bytes available; the request was for 214397856 bytes.
 
 PROCEED WITH CAUTION.

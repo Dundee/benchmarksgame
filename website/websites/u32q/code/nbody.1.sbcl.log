@@ -1,8 +1,8 @@
 
-Thu, 24 Jan 2013 23:33:01 GMT
+Fri, 03 May 2013 20:43:45 GMT
 
 MAKE:
-cp: `nbody.sbcl' and `./nbody.sbcl' are the same file
+cp: ‘nbody.sbcl’ and ‘./nbody.sbcl’ are the same file
 SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load "nbody.sbcl_compile")'
 ### START nbody.sbcl_compile
 (handler-bind ((sb-ext:defconstant-uneql      (lambda (c) (abort c))))      (load (compile-file "nbody.sbcl" ))) (save-lisp-and-die "sbcl.core" :purify t)
@@ -28,12 +28,12 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; compiling (DEFUN MAIN ...)
 
 ; /home/dunham/benchmarksgame_quadcore/nbody/tmp/nbody.fasl written
-; compilation finished in 0:00:00.165
+; compilation finished in 0:00:00.166
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
 writing 3512 bytes from the read-only space at 0x0x1000000
 writing 2256 bytes from the static space at 0x0x1100000
-writing 28094464 bytes from the dynamic space at 0x0x9000000
+writing 28221440 bytes from the dynamic space at 0x0x9000000
 done]
 ### START nbody.sbcl_run
 (main) (quit)
