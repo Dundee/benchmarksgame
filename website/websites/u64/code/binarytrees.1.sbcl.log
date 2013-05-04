@@ -1,8 +1,8 @@
 
-Thu, 24 Jan 2013 06:04:29 GMT
+Sat, 04 May 2013 00:28:24 GMT
 
 MAKE:
-cp: `binarytrees.sbcl' and `./binarytrees.sbcl' are the same file
+cp: ‘binarytrees.sbcl’ and ‘./binarytrees.sbcl’ are the same file
 SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load "binarytrees.sbcl_compile")'
 ### START binarytrees.sbcl_compile
 (handler-bind ((sb-ext:defconstant-uneql      (lambda (c) (abort c))))      (load (compile-file "binarytrees.sbcl" ))) (save-lisp-and-die "sbcl.core" :purify t)
@@ -16,18 +16,18 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; compiling (DEFUN MAIN ...)
 
 ; /home/dunham/benchmarksgame_onecore/binarytrees/tmp/binarytrees.fasl written
-; compilation finished in 0:00:00.029
+; compilation finished in 0:00:00.741
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
 writing 5952 bytes from the read-only space at 0x0x20000000
 writing 4064 bytes from the static space at 0x0x20100000
-writing 43188224 bytes from the dynamic space at 0x0x1000000000
+writing 43352064 bytes from the dynamic space at 0x0x1000000000
 done]
 ### START binarytrees.sbcl_run
 (main) (quit)
 ### END binarytrees.sbcl_run
 
-0.40s to complete and log all make actions
+2.60s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl  --noinform --core sbcl.core --userinit /dev/null --load binarytrees.sbcl_run 20

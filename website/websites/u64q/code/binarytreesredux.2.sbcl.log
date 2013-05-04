@@ -1,8 +1,8 @@
 
-Thu, 07 Feb 2013 19:50:26 GMT
+Sat, 04 May 2013 03:37:26 GMT
 
 MAKE:
-cp: `binarytreesredux.sbcl-2.sbcl' and `./binarytreesredux.sbcl-2.sbcl' are the same file
+cp: ‘binarytreesredux.sbcl-2.sbcl’ and ‘./binarytreesredux.sbcl-2.sbcl’ are the same file
 SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load "binarytreesredux.sbcl-2.sbcl_compile")'
 ### START binarytreesredux.sbcl-2.sbcl_compile
 (handler-bind ((sb-ext:defconstant-uneql      (lambda (c) (abort c))))      (load (compile-file "binarytreesredux.sbcl-2.sbcl" ))) (save-lisp-and-die "sbcl.core" :purify t)
@@ -61,18 +61,18 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 
 
 ; /home/dunham/benchmarksgame_quadcore/binarytreesredux/tmp/binarytreesredux.sbcl-2.fasl written
-; compilation finished in 0:00:00.644
+; compilation finished in 0:00:00.025
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
 writing 5952 bytes from the read-only space at 0x0x20000000
 writing 4064 bytes from the static space at 0x0x20100000
-writing 43188224 bytes from the dynamic space at 0x0x1000000000
+writing 43352064 bytes from the dynamic space at 0x0x1000000000
 done]
 ### START binarytreesredux.sbcl-2.sbcl_run
 (main) (quit)
 ### END binarytreesredux.sbcl-2.sbcl_run
 
-4.83s to complete and log all make actions
+0.39s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl --dynamic-space-size 512 --noinform --core sbcl.core --userinit /dev/null --load binarytreesredux.sbcl-2.sbcl_run 20
