@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?
 
-// Copyright (c) Isaac Gouy 2009-2012
+// Copyright (c) Isaac Gouy 2009-2013
 
 
 // CONSTANTS ////////////////////////////////////////////////
@@ -33,7 +33,7 @@ function extractLogDates($site){
    foreach ($fs as $each){
       $parts = explode(".",$each);
       $lang = $parts[2];
-      if (isset($sitelist[$lang])){
+      if (isset($sitelist[$lang])&&($lang!='cint')){
          $fp = @fopen($each,"r")
             or die("Couldn't open $each");
 
