@@ -1,0 +1,63 @@
+<span class="hl slc"># The Computer Language Benchmarks Game</span>
+<span class="hl slc"># http://benchmarksgame.alioth.debian.org</span>
+<span class="hl slc"># Contributed by Sokolov Yura</span>
+<span class="hl slc"># Modified by Chris Houhoulis (April 2013):</span>
+<span class="hl slc">#   - made loops uglier to avoid the unnecessary overhead of blocks</span>
+<span class="hl slc">#   - nicer naming for readability</span>
+
+
+
+ARRAY_LENGTH <span class="hl opt">=</span> <span class="hl kwc">ARGV</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>to_i
+
+u <span class="hl opt">=</span> Array<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span>ARRAY_LENGTH<span class="hl opt">,</span> <span class="hl num">1</span>)
+v <span class="hl opt">= []</span>
+
+<span class="hl kwa">def</span> <span class="hl kwd">eval_A</span><span class="hl opt">(</span>i<span class="hl opt">,</span>j)
+  <span class="hl num">1.0</span><span class="hl kwc">/((i+j)*(i+j+1)/</span><span class="hl num">2</span><span class="hl opt">+</span>i<span class="hl opt">+</span><span class="hl num">1</span>)
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">def</span> <span class="hl kwd">vector_times_array</span><span class="hl opt">(</span>vector)
+  arr<span class="hl opt">,</span> i <span class="hl opt">= [],</span> <span class="hl num">0</span>
+  <span class="hl kwa">while</span> i <span class="hl opt">&lt;</span> ARRAY_LENGTH
+    sum<span class="hl opt">,</span> j <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span>
+    <span class="hl kwa">while</span> j <span class="hl opt">&lt;</span> ARRAY_LENGTH
+      sum <span class="hl opt">+=</span> <span class="hl kwd">eval_A</span><span class="hl opt">(</span>i<span class="hl opt">,</span>j) <span class="hl opt">*</span> vector<span class="hl opt">[</span>j<span class="hl opt">]</span>
+      j <span class="hl opt">+=</span> <span class="hl num">1</span>
+    <span class="hl kwa">end</span>
+    arr <span class="hl opt">&lt;&lt;</span> sum
+    i <span class="hl opt">+=</span> <span class="hl num">1</span>
+  <span class="hl kwa">end</span>
+  arr
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">def</span> <span class="hl kwd">vector_times_array_transposed</span><span class="hl opt">(</span>vector)
+  arr<span class="hl opt">,</span> i <span class="hl opt">= [],</span> <span class="hl num">0</span>
+  <span class="hl kwa">while</span> i <span class="hl opt">&lt;</span> ARRAY_LENGTH
+    sum<span class="hl opt">,</span> j <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span>
+    <span class="hl kwa">while</span> j <span class="hl opt">&lt;</span> ARRAY_LENGTH
+      sum <span class="hl opt">+=</span> <span class="hl kwd">eval_A</span><span class="hl opt">(</span>j<span class="hl opt">,</span>i) <span class="hl opt">*</span> vector<span class="hl opt">[</span>j<span class="hl opt">]</span>
+      j <span class="hl opt">+=</span> <span class="hl num">1</span>
+    <span class="hl kwa">end</span>
+    arr <span class="hl opt">&lt;&lt;</span> sum
+    i <span class="hl opt">+=</span> <span class="hl num">1</span>
+  <span class="hl kwa">end</span>
+  arr
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">def</span> <span class="hl kwd">vector_times_array_times_array_transposed</span><span class="hl opt">(</span>vector)
+  <span class="hl kwd">vector_times_array_transposed</span><span class="hl opt">(</span><span class="hl kwd">vector_times_array</span><span class="hl opt">(</span>vector))
+<span class="hl kwa">end</span>
+
+<span class="hl num">10</span><span class="hl opt">.</span>times <span class="hl kwa">do</span>
+  v <span class="hl opt">=</span> <span class="hl kwd">vector_times_array_times_array_transposed</span><span class="hl opt">(</span>u)
+  u <span class="hl opt">=</span> <span class="hl kwd">vector_times_array_times_array_transposed</span><span class="hl opt">(</span>v)
+<span class="hl kwa">end</span>
+
+vBv<span class="hl opt">,</span> vv<span class="hl opt">,</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span>
+<span class="hl kwa">while</span> i <span class="hl opt">&lt;</span> ARRAY_LENGTH
+  vBv <span class="hl opt">+=</span> u<span class="hl opt">[</span>i<span class="hl opt">]*</span>v<span class="hl opt">[</span>i<span class="hl opt">]</span>
+  vv <span class="hl opt">+=</span> v<span class="hl opt">[</span>i<span class="hl opt">]*</span>v<span class="hl opt">[</span>i<span class="hl opt">]</span>
+  i <span class="hl opt">+=</span> <span class="hl num">1</span>
+<span class="hl kwa">end</span>
+
+print <span class="hl str">&quot;%0.9f&quot;</span> <span class="hl opt">% (</span>Math<span class="hl opt">.</span><span class="hl kwd">sqrt</span><span class="hl opt">(</span>vBv<span class="hl opt">/</span>vv))<span class="hl opt">,</span> <span class="hl str">&quot;\n&quot;</span>
