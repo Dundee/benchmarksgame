@@ -1,10 +1,9 @@
 
-Tue, 14 May 2013 02:11:32 GMT
+Tue, 14 May 2013 17:35:55 GMT
 
 MAKE:
-/usr/local/src/go/bin/go tool 6g -o fannkuchredux.go.6 fannkuchredux.go && \
-	/usr/local/src/go/bin/go tool 6l -o fannkuchredux.go_run fannkuchredux.go.6
-0.29s to complete and log all make actions
+/usr/local/src/go/bin/go build -o fannkuchredux.go_run
+0.30s to complete and log all make actions
 
 COMMAND LINE:
 ./fannkuchredux.go_run 12
