@@ -1,5 +1,5 @@
 # The Computer Language Benchmarks Game
-# $Id: u64q.programs.Makefile,v 1.3 2013/01/26 05:40:38 igouy-guest Exp $
+# $Id: u64q.programs.Makefile,v 1.4 2013/05/14 06:22:01 igouy-guest Exp $
 
 # ASSUME each program will build in a clean empty tmpdir
 # ASSUME there's a symlink to the program source in tmpdir
@@ -107,20 +107,7 @@ STD_COPTS := -O3 -fomit-frame-pointer -march=native
 ########################################
 
 %.go_run: %.go $(GO) 
-	-$(GO) tool 6g -o $<.6 $< && \
-	$(GO) tool 6l -o $@ $<.6
-
-
-########################################
-# gccgo
-########################################
-
-%.go: %.gccgo $(GCCGO)
-	-@mv $< $@
-
-%.gccgo_run: %.go $(GCCGO)
-	-$(GCCGO) -c $< -o $<.o &&  \
-	$(GCCGO) $<.o -o $@ -Wl,-R,/usr/local/src/gccgo/lib64
+	-$(GO) build -o $@
 
 
 ########################################
