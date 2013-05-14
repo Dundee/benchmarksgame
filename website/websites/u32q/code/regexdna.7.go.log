@@ -1,15 +1,24 @@
 
-Tue, 14 May 2013 04:13:29 GMT
+Tue, 14 May 2013 05:30:33 GMT
 
 MAKE:
-/usr/local/src/go/bin/go tool 8g -o regexdna.go-7.go.8 regexdna.go-7.go && \
-	/usr/local/src/go/bin/go tool 8l -o regexdna.go-7.go_run regexdna.go-7.go.8
-regexdna.go-7.go:12: can't find import: "github.com/glenn-brown/golang-pkg-pcre/src/pkg/pcre"
-make: [regexdna.go-7.go_run] Error 1 (ignored)
-0.04s to complete and log all make actions
+/usr/local/src/go/bin/go build -o regexdna.go-7.go_run
+0.41s to complete and log all make actions
 
 COMMAND LINE:
-./regexdna.go-7.go_run 0 < regexdna-input50000.txt
+./regexdna.go-7.go_run 0 < regexdna-input5000000.txt
 
-MAKE ERROR 
+PROGRAM OUTPUT:
+agggtaaa|tttaccct 356
+[cgt]gggtaaa|tttaccc[acg] 1250
+a[act]ggtaaa|tttacc[agt]t 4252
+ag[act]gtaaa|tttac[agt]ct 2894
+agg[act]taaa|ttta[agt]cct 5435
+aggg[acg]aaa|ttt[cgt]ccct 1537
+agggt[cgt]aa|tt[acg]accct 1431
+agggta[cgt]a|t[acg]taccct 1608
+agggtaa[cgt]|[acg]ttaccct 2178
 
+50833411
+50000000
+66800214
