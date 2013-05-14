@@ -1,1 +1,1 @@
-<p>8g version go1.0.3</p>
+<p>go version go1.1 linux/386</p>
