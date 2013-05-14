@@ -1,10 +1,9 @@
 
-Tue, 14 May 2013 01:21:46 GMT
+Tue, 14 May 2013 19:01:03 GMT
 
 MAKE:
-/usr/local/src/go/bin/go tool 8g -o fasta.go.8 fasta.go && \
-	/usr/local/src/go/bin/go tool 8l -o fasta.go_run fasta.go.8
-0.32s to complete and log all make actions
+/usr/local/src/go/bin/go build -o fasta.go_run
+0.45s to complete and log all make actions
 
 COMMAND LINE:
 ./fasta.go_run 25000000
