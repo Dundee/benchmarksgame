@@ -39,7 +39,7 @@ h1 { font-weight: bold; font-size: smaller; }
 <li><a href="./erlang.php" title="Compare Erlang HiPe and Java elapsed times">Erlang HiPE</a></li>
 <li><a href="./compare.php?lang=fsharp&amp;lang2=csharp" title="Compare F# and C# elapsed times">F# Mono</a></li>
 <li><a href="./fortran.php" title="Compare Fortran and C++ elapsed times">Fortran Intel</a></li>
-<li><a href="./compare.php?lang=go" title="Compare Go and C elapsed times">Go 8g</a></li>
+<li><a href="./compare.php?lang=go" title="Compare Go and C elapsed times">Go</a></li>
 <li><a href="./haskell.php" title="Compare Haskell and Java elapsed times">Haskell GHC</a></li>
 <li><a href="./java.php" title="Compare Java and C++ elapsed times">Java 7 -server</a></li>
 <li><a href="./compare.php?lang=v8&amp;lang2=java" title="Compare JavaScript and Java elapsed times">JavaScript V8</a></li>

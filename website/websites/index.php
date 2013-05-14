@@ -93,7 +93,7 @@ $langs = array(
    array('hipe','Erlang HiPE','erlang',$allsites),
    array('fsharp','F# Mono','fsharp',$allsites),
    array('ifc','Fortran Intel','fortran',$allsites),
-   array('go','Go 6g 8g','go',$allsites),
+   array('go','Go','go',$allsites),
    array('ghc','Haskell GHC','haskell',$allsites),
    array('java','Java 7','java',$allsites),
    array('v8','JavaScript V8','javascript',$onecoresites),
