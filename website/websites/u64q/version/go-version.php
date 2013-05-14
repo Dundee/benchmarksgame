@@ -1,1 +1,1 @@
-<p>6g version go1.0.3</p>
+<p>go version go1.1 linux/amd64</p>
