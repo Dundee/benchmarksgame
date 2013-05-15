@@ -1,10 +1,9 @@
 
-Tue, 14 May 2013 03:39:13 GMT
+Wed, 15 May 2013 21:40:55 GMT
 
 MAKE:
-/usr/local/src/go/bin/go tool 6g -o threadring.go-5.go.6 threadring.go-5.go && \
-	/usr/local/src/go/bin/go tool 6l -o threadring.go-5.go_run threadring.go-5.go.6
-0.26s to complete and log all make actions
+/usr/local/src/go/bin/go build -o threadring.go-5.go_run
+0.30s to complete and log all make actions
 
 COMMAND LINE:
 ./threadring.go-5.go_run 50000000
