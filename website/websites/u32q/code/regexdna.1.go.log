@@ -1,10 +1,9 @@
 
-Tue, 14 May 2013 04:13:36 GMT
+Wed, 15 May 2013 18:55:33 GMT
 
 MAKE:
-/usr/local/src/go/bin/go tool 8g -o regexdna.go.8 regexdna.go && \
-	/usr/local/src/go/bin/go tool 8l -o regexdna.go_run regexdna.go.8
-0.40s to complete and log all make actions
+/usr/local/src/go/bin/go build -o regexdna.go_run
+0.47s to complete and log all make actions
 
 COMMAND LINE:
 ./regexdna.go_run 0 < regexdna-input5000000.txt
