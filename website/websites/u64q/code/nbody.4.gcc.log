@@ -1,0 +1,14 @@
+
+Thu, 16 May 2013 18:21:41 GMT
+
+MAKE:
+/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 nbody.gcc-4.c -o nbody.gcc-4.gcc_run -lm
+rm nbody.gcc-4.c
+2.53s to complete and log all make actions
+
+COMMAND LINE:
+./nbody.gcc-4.gcc_run 50000000
+
+PROGRAM OUTPUT:
+-0.169075164
+-0.169059907
