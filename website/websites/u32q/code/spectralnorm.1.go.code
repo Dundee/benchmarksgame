@@ -11,9 +11,11 @@
    <span class="hl str">&quot;flag&quot;</span>
    <span class="hl str">&quot;fmt&quot;</span>
    <span class="hl str">&quot;math&quot;</span>
+   <span class="hl str">&quot;strconv&quot;</span>
 <span class="hl opt">)</span>
 
-<span class="hl kwa">var</span> n <span class="hl opt">=</span> flag<span class="hl opt">.</span><span class="hl kwd">Int</span><span class="hl opt">(</span><span class="hl str">&quot;n&quot;</span><span class="hl opt">,</span> <span class="hl num">2000</span><span class="hl opt">,</span> <span class="hl str">&quot;count&quot;</span><span class="hl opt">)</span>
+<span class="hl slc">// var n = flag.Int(&quot;n&quot;, 2000, &quot;count&quot;)</span>
+<span class="hl kwa">var</span> n <span class="hl opt">=</span> <span class="hl num">0</span>
 
 <span class="hl kwa">func</span> <span class="hl kwd">evalA</span><span class="hl opt">(</span>i<span class="hl opt">,</span> j <span class="hl kwb">int</span><span class="hl opt">)</span> <span class="hl kwb">int</span> <span class="hl opt">{</span> <span class="hl kwa">return</span> <span class="hl opt">((</span>i<span class="hl opt">+</span>j<span class="hl opt">)*(</span>i<span class="hl opt">+</span>j<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)/</span><span class="hl num">2</span> <span class="hl opt">+</span> i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">) }</span>
 
@@ -45,8 +47,11 @@
 
 <span class="hl kwa">func</span> <span class="hl kwd">main</span><span class="hl opt">() {</span>
    flag<span class="hl opt">.</span><span class="hl kwd">Parse</span><span class="hl opt">()</span>
+   <span class="hl kwa">if</span> flag<span class="hl opt">.</span><span class="hl kwd">NArg</span><span class="hl opt">() &gt;</span> <span class="hl num">0</span> <span class="hl opt">{</span>
+      n<span class="hl opt">,</span> _ <span class="hl opt">=</span> strconv<span class="hl opt">.</span><span class="hl kwd">Atoi</span><span class="hl opt">(</span>flag<span class="hl opt">.</span><span class="hl kwd">Arg</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">))</span>
+   <span class="hl opt">}</span>
 
-   N <span class="hl opt">:= *</span>n
+   N <span class="hl opt">:=</span> n
    u <span class="hl opt">:=</span> <span class="hl kwb">make</span><span class="hl opt">(</span>Vec<span class="hl opt">,</span> N<span class="hl opt">)</span>
    <span class="hl kwa">for</span> i <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> N<span class="hl opt">;</span> i<span class="hl opt">++ {</span>
       u<span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl num">1</span>
