@@ -11,9 +11,11 @@ import (
    "flag"
    "fmt"
    "math"
+   "strconv"
 )
 
-var n = flag.Int("n", 2000, "count")
+// var n = flag.Int("n", 2000, "count")
+var n = 0
 
 func evalA(i, j int) int { return ((i+j)*(i+j+1)/2 + i + 1) }
 
@@ -45,8 +47,11 @@ func (v Vec) ATimesTransp(u Vec) {
 
 func main() {
    flag.Parse()
+   if flag.NArg() > 0 {
+      n, _ = strconv.Atoi(flag.Arg(0))
+   }
 
-   N := *n
+   N := n
    u := make(Vec, N)
    for i := 0; i < N; i++ {
       u[i] = 1
