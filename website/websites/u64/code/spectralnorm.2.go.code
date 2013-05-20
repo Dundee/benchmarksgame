@@ -1,0 +1,140 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * contributed by chaishushan</span>
+<span class="hl com"> * Based on spectral-norm.go by The Go Authors.</span>
+<span class="hl com"> */</span>
+
+<span class="hl kwa">package</span> main
+
+<span class="hl kwa">import</span> <span class="hl opt">(</span>
+   <span class="hl str">&quot;flag&quot;</span>
+   <span class="hl str">&quot;fmt&quot;</span>
+   <span class="hl str">&quot;math&quot;</span>
+   <span class="hl str">&quot;runtime&quot;</span>
+   <span class="hl str">&quot;strconv&quot;</span>
+   <span class="hl str">&quot;sync&quot;</span>
+<span class="hl opt">)</span>
+
+<span class="hl kwa">var</span> NumCPU <span class="hl opt">=</span> runtime<span class="hl opt">.</span><span class="hl kwd">NumCPU</span><span class="hl opt">()*</span><span class="hl num">2</span>
+<span class="hl kwa">var</span> Num <span class="hl kwb">int</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">init</span><span class="hl opt">() {</span>
+   flag<span class="hl opt">.</span><span class="hl kwd">Parse</span><span class="hl opt">()</span>
+   <span class="hl kwa">if</span> flag<span class="hl opt">.</span><span class="hl kwd">NArg</span><span class="hl opt">() &gt;</span> <span class="hl num">0</span> <span class="hl opt">{</span>
+      Num<span class="hl opt">,</span> _ <span class="hl opt">=</span> strconv<span class="hl opt">.</span><span class="hl kwd">Atoi</span><span class="hl opt">(</span>flag<span class="hl opt">.</span><span class="hl kwd">Arg</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">))</span>
+   <span class="hl opt">}</span>
+   runtime<span class="hl opt">.</span><span class="hl kwd">GOMAXPROCS</span><span class="hl opt">(</span>NumCPU<span class="hl opt">)</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">main</span><span class="hl opt">() {</span>
+   fmt<span class="hl opt">.</span><span class="hl kwd">Printf</span><span class="hl opt">(</span><span class="hl str">&quot;%0.9f</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> <span class="hl kwd">SpectralNorm</span><span class="hl opt">(</span>Num<span class="hl opt">))</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">SpectralNorm</span><span class="hl opt">(</span>n <span class="hl kwb">int</span><span class="hl opt">)</span> <span class="hl kwb">float64</span> <span class="hl opt">{</span>
+   u <span class="hl opt">:=</span> <span class="hl kwb">make</span><span class="hl opt">([]</span><span class="hl kwb">float64</span><span class="hl opt">,</span> n<span class="hl opt">)</span>
+   v <span class="hl opt">:=</span> <span class="hl kwb">make</span><span class="hl opt">([]</span><span class="hl kwb">float64</span><span class="hl opt">,</span> n<span class="hl opt">)</span>
+   t <span class="hl opt">:=</span> <span class="hl kwb">make</span><span class="hl opt">([]</span><span class="hl kwb">float64</span><span class="hl opt">,</span> n<span class="hl opt">)</span>
+
+   <span class="hl kwa">for</span> i <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> n<span class="hl opt">;</span> i<span class="hl opt">++ {</span>
+      u<span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl num">1</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">for</span> i <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> <span class="hl num">10</span><span class="hl opt">;</span> i<span class="hl opt">++ {</span>
+      <span class="hl kwd">mult_AtAv</span><span class="hl opt">(</span>v<span class="hl opt">,</span> u<span class="hl opt">,</span> t<span class="hl opt">)</span>
+      <span class="hl kwd">mult_AtAv</span><span class="hl opt">(</span>u<span class="hl opt">,</span> v<span class="hl opt">,</span> t<span class="hl opt">)</span>
+   <span class="hl opt">}</span>
+
+   dot_uv <span class="hl opt">:=</span> <span class="hl kwd">Dot</span><span class="hl opt">(</span>u<span class="hl opt">,</span> v<span class="hl opt">,</span> n<span class="hl opt">)</span>
+   dot_vv <span class="hl opt">:=</span> <span class="hl kwd">Dot</span><span class="hl opt">(</span>v<span class="hl opt">,</span> v<span class="hl opt">,</span> n<span class="hl opt">)</span>
+
+   <span class="hl kwa">return</span> math<span class="hl opt">.</span><span class="hl kwd">Sqrt</span><span class="hl opt">(</span>dot_uv <span class="hl opt">/</span> dot_vv<span class="hl opt">)</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">mult_AtAv</span><span class="hl opt">(</span>v<span class="hl opt">,</span> u<span class="hl opt">,</span> x <span class="hl opt">[]</span><span class="hl kwb">float64</span><span class="hl opt">) {</span>
+   <span class="hl kwd">mult_Av</span><span class="hl opt">(</span>x<span class="hl opt">,</span> u<span class="hl opt">)</span>
+   <span class="hl kwd">mult_Atv</span><span class="hl opt">(</span>v<span class="hl opt">,</span> x<span class="hl opt">)</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">mult_Av</span><span class="hl opt">(</span>v<span class="hl opt">,</span> u <span class="hl opt">[]</span><span class="hl kwb">float64</span><span class="hl opt">) {</span>
+   <span class="hl kwa">if</span> NumCPU <span class="hl opt">&lt;=</span> <span class="hl num">1</span> <span class="hl opt">{</span>
+      ul <span class="hl opt">:=</span> <span class="hl kwb">len</span><span class="hl opt">(</span>u<span class="hl opt">)</span>
+      <span class="hl kwa">for</span> i <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> <span class="hl kwb">len</span><span class="hl opt">(</span>v<span class="hl opt">);</span> i<span class="hl opt">++ {</span>
+         <span class="hl kwa">var</span> vi <span class="hl kwb">float64</span>
+         <span class="hl kwa">for</span> j <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> j <span class="hl opt">&lt;</span> ul<span class="hl opt">;</span> j<span class="hl opt">++ {</span>
+            vi <span class="hl opt">+=</span> u<span class="hl opt">[</span>j<span class="hl opt">] /</span> <span class="hl kwb">float64</span><span class="hl opt">(</span><span class="hl kwd">A</span><span class="hl opt">(</span>i<span class="hl opt">,</span> j<span class="hl opt">))</span>
+         <span class="hl opt">}</span>
+         v<span class="hl opt">[</span>i<span class="hl opt">] =</span> vi
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+      <span class="hl kwa">var</span> wg sync<span class="hl opt">.</span>WaitGroup
+      <span class="hl kwa">for</span> k <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> k <span class="hl opt">&lt;</span> NumCPU<span class="hl opt">;</span> k<span class="hl opt">++ {</span>
+         wg<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)</span>
+         <span class="hl kwa">go func</span><span class="hl opt">(</span>kk <span class="hl kwb">int</span><span class="hl opt">) {</span>
+            size <span class="hl opt">:= (</span><span class="hl kwb">len</span><span class="hl opt">(</span>v<span class="hl opt">) +</span> NumCPU <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">) /</span> NumCPU
+            start <span class="hl opt">:=</span> size <span class="hl opt">*</span> kk
+            end <span class="hl opt">:=</span> size <span class="hl opt">* (</span>kk <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)</span>
+            <span class="hl kwa">if</span> end <span class="hl opt">&gt;</span> <span class="hl kwb">len</span><span class="hl opt">(</span>v<span class="hl opt">) {</span>
+               end <span class="hl opt">=</span> <span class="hl kwb">len</span><span class="hl opt">(</span>v<span class="hl opt">)</span>
+            <span class="hl opt">}</span>
+            ul <span class="hl opt">:=</span> <span class="hl kwb">len</span><span class="hl opt">(</span>u<span class="hl opt">)</span>
+            <span class="hl kwa">for</span> i <span class="hl opt">:=</span> start<span class="hl opt">;</span> i <span class="hl opt">&lt;</span> end<span class="hl opt">;</span> i<span class="hl opt">++ {</span>
+               <span class="hl kwa">var</span> vi <span class="hl kwb">float64</span>
+               <span class="hl kwa">for</span> j <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> j <span class="hl opt">&lt;</span> ul<span class="hl opt">;</span> j<span class="hl opt">++ {</span>
+                  vi <span class="hl opt">+=</span> u<span class="hl opt">[</span>j<span class="hl opt">] /</span> <span class="hl kwb">float64</span><span class="hl opt">(</span><span class="hl kwd">A</span><span class="hl opt">(</span>i<span class="hl opt">,</span> j<span class="hl opt">))</span>
+               <span class="hl opt">}</span>
+               v<span class="hl opt">[</span>i<span class="hl opt">] =</span> vi
+            <span class="hl opt">}</span>
+            wg<span class="hl opt">.</span><span class="hl kwd">Done</span><span class="hl opt">()</span>
+         <span class="hl opt">}(</span>k<span class="hl opt">)</span>
+      <span class="hl opt">}</span>
+      wg<span class="hl opt">.</span><span class="hl kwd">Wait</span><span class="hl opt">()</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">mult_Atv</span><span class="hl opt">(</span>v<span class="hl opt">,</span> u <span class="hl opt">[]</span><span class="hl kwb">float64</span><span class="hl opt">) {</span>
+   <span class="hl kwa">if</span> NumCPU <span class="hl opt">&lt;=</span> <span class="hl num">1</span> <span class="hl opt">{</span>
+      ul <span class="hl opt">:=</span> <span class="hl kwb">len</span><span class="hl opt">(</span>u<span class="hl opt">)</span>
+      <span class="hl kwa">for</span> i <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> <span class="hl kwb">len</span><span class="hl opt">(</span>v<span class="hl opt">);</span> i<span class="hl opt">++ {</span>
+         <span class="hl kwa">var</span> vi <span class="hl kwb">float64</span>
+         <span class="hl kwa">for</span> j <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> j <span class="hl opt">&lt;</span> ul<span class="hl opt">;</span> j<span class="hl opt">++ {</span>
+            vi <span class="hl opt">+=</span> u<span class="hl opt">[</span>j<span class="hl opt">] /</span> <span class="hl kwb">float64</span><span class="hl opt">(</span><span class="hl kwd">A</span><span class="hl opt">(</span>j<span class="hl opt">,</span> i<span class="hl opt">))</span>
+         <span class="hl opt">}</span>
+         v<span class="hl opt">[</span>i<span class="hl opt">] =</span> vi
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+      <span class="hl kwa">var</span> wg sync<span class="hl opt">.</span>WaitGroup
+      <span class="hl kwa">for</span> k <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> k <span class="hl opt">&lt;</span> NumCPU<span class="hl opt">;</span> k<span class="hl opt">++ {</span>
+         wg<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)</span>
+         <span class="hl kwa">go func</span><span class="hl opt">(</span>kk <span class="hl kwb">int</span><span class="hl opt">) {</span>
+            size <span class="hl opt">:= (</span><span class="hl kwb">len</span><span class="hl opt">(</span>v<span class="hl opt">) +</span> NumCPU <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">) /</span> NumCPU
+            start <span class="hl opt">:=</span> size <span class="hl opt">*</span> kk
+            end <span class="hl opt">:=</span> size <span class="hl opt">* (</span>kk <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)</span>
+            <span class="hl kwa">if</span> end <span class="hl opt">&gt;</span> <span class="hl kwb">len</span><span class="hl opt">(</span>v<span class="hl opt">) {</span>
+               end <span class="hl opt">=</span> <span class="hl kwb">len</span><span class="hl opt">(</span>v<span class="hl opt">)</span>
+            <span class="hl opt">}</span>
+            ul <span class="hl opt">:=</span> <span class="hl kwb">len</span><span class="hl opt">(</span>u<span class="hl opt">)</span>
+            <span class="hl kwa">for</span> i <span class="hl opt">:=</span> start<span class="hl opt">;</span> i <span class="hl opt">&lt;</span> end<span class="hl opt">;</span> i<span class="hl opt">++ {</span>
+               <span class="hl kwa">var</span> vi <span class="hl kwb">float64</span>
+               <span class="hl kwa">for</span> j <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> j <span class="hl opt">&lt;</span> ul<span class="hl opt">;</span> j<span class="hl opt">++ {</span>
+                  vi <span class="hl opt">+=</span> u<span class="hl opt">[</span>j<span class="hl opt">] /</span> <span class="hl kwb">float64</span><span class="hl opt">(</span><span class="hl kwd">A</span><span class="hl opt">(</span>j<span class="hl opt">,</span> i<span class="hl opt">))</span>
+               <span class="hl opt">}</span>
+               v<span class="hl opt">[</span>i<span class="hl opt">] =</span> vi
+            <span class="hl opt">}</span>
+            wg<span class="hl opt">.</span><span class="hl kwd">Done</span><span class="hl opt">()</span>
+         <span class="hl opt">}(</span>k<span class="hl opt">)</span>
+      <span class="hl opt">}</span>
+      wg<span class="hl opt">.</span><span class="hl kwd">Wait</span><span class="hl opt">()</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">Dot</span><span class="hl opt">(</span>v<span class="hl opt">,</span> u <span class="hl opt">[]</span><span class="hl kwb">float64</span><span class="hl opt">,</span> n <span class="hl kwb">int</span><span class="hl opt">)</span> <span class="hl kwb">float64</span> <span class="hl opt">{</span>
+   <span class="hl kwa">var</span> sum <span class="hl kwb">float64</span>
+   <span class="hl kwa">for</span> i <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> n<span class="hl opt">;</span> i<span class="hl opt">++ {</span>
+      sum <span class="hl opt">+=</span> v<span class="hl opt">[</span>i<span class="hl opt">] *</span> u<span class="hl opt">[</span>i<span class="hl opt">]</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">return</span> sum
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">A</span><span class="hl opt">(</span>i<span class="hl opt">,</span> j <span class="hl kwb">int</span><span class="hl opt">)</span> <span class="hl kwb">int</span> <span class="hl opt">{</span>
+   <span class="hl kwa">return</span> <span class="hl opt">((</span>i<span class="hl opt">+</span>j<span class="hl opt">)*(</span>i<span class="hl opt">+</span>j<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)/</span><span class="hl num">2</span> <span class="hl opt">+</span> i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)</span>
+<span class="hl opt">}</span>
