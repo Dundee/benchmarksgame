@@ -1,0 +1,73 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   Contributed by The Anh Tran</span>
+<span class="hl com">   Updated for 2.8 by Rex Kerr</span>
+<span class="hl com">   Modified by Michael Peng for 2.10</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">import</span> scala<span class="hl opt">.</span>concurrent<span class="hl opt">.</span>duration<span class="hl opt">.</span>Duration
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>regex<span class="hl opt">.</span>Pattern
+<span class="hl kwa">import</span> scala<span class="hl opt">.</span>concurrent<span class="hl opt">.</span>_
+<span class="hl kwa">import</span> ExecutionContext<span class="hl opt">.</span>Implicits<span class="hl opt">.</span>global
+<span class="hl kwa">import</span> scala<span class="hl opt">.</span>io<span class="hl opt">.</span>Source
+
+<span class="hl kwa">object</span> regexdna <span class="hl opt">{</span>
+  <span class="hl kwa">def</span> <span class="hl kwd">main</span><span class="hl opt">(</span>args <span class="hl opt">:</span> Array<span class="hl opt">[</span>String<span class="hl opt">]) {</span>
+    <span class="hl slc">// load data from stdin</span>
+    <span class="hl kwa">var</span> initInput <span class="hl opt">=</span> Source<span class="hl opt">.</span>stdin<span class="hl opt">.</span>mkString
+    <span class="hl kwa">val</span> init_len <span class="hl opt">=</span> initInput length
+
+    <span class="hl slc">// strip header &amp; newline</span>
+    <span class="hl kwa">val</span> input <span class="hl opt">=</span> <span class="hl str">&quot;&gt;.*</span><span class="hl esc">\n</span><span class="hl str">|</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">.</span>r <span class="hl kwd">replaceAllIn</span><span class="hl opt">(</span>initInput<span class="hl opt">,</span> <span class="hl str">&quot;&quot;</span><span class="hl opt">)</span>
+    <span class="hl kwa">val</span> strip_len <span class="hl opt">=</span> input length
+
+    <span class="hl slc">// counting patterns</span>
+    <span class="hl kwa">val</span> patterns  <span class="hl opt">=</span> <span class="hl kwd">Seq</span><span class="hl opt">(</span>
+      <span class="hl str">&quot;agggtaaa|tttaccct&quot;</span> <span class="hl opt">,</span>
+      <span class="hl str">&quot;[cgt]gggtaaa|tttaccc[acg]&quot;</span><span class="hl opt">,</span>
+      <span class="hl str">&quot;a[act]ggtaaa|tttacc[agt]t&quot;</span><span class="hl opt">,</span>
+      <span class="hl str">&quot;ag[act]gtaaa|tttac[agt]ct&quot;</span><span class="hl opt">,</span>
+      <span class="hl str">&quot;agg[act]taaa|ttta[agt]cct&quot;</span><span class="hl opt">,</span>
+      <span class="hl str">&quot;aggg[acg]aaa|ttt[cgt]ccct&quot;</span><span class="hl opt">,</span>
+      <span class="hl str">&quot;agggt[cgt]aa|tt[acg]accct&quot;</span><span class="hl opt">,</span>
+      <span class="hl str">&quot;agggta[cgt]a|t[acg]taccct&quot;</span><span class="hl opt">,</span>
+      <span class="hl str">&quot;agggtaa[cgt]|[acg]ttaccct&quot;</span><span class="hl opt">)</span>
+
+    <span class="hl slc">// queue tasks, each task is handled in a separate thread</span>
+    <span class="hl kwa">val</span> count_results  <span class="hl opt">=</span> patterns <span class="hl kwd">map</span><span class="hl opt">(</span> pt <span class="hl opt">=&gt;</span>
+      <span class="hl kwd">future</span><span class="hl opt">(</span>
+        <span class="hl opt">(</span>pt<span class="hl opt">,</span> pt<span class="hl opt">.</span>r<span class="hl opt">.</span><span class="hl kwd">findAllIn</span><span class="hl opt">(</span>input<span class="hl opt">).</span>length<span class="hl opt">)</span>
+      <span class="hl opt">)</span>
+    <span class="hl opt">)</span>
+
+    <span class="hl slc">// replace IUB</span>
+    <span class="hl kwa">val</span> iub <span class="hl opt">=</span> <span class="hl kwd">Map</span><span class="hl opt">(</span>
+      <span class="hl str">&quot;B&quot;</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;(c|g|t)&quot;</span><span class="hl opt">,</span>
+      <span class="hl str">&quot;D&quot;</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;(a|g|t)&quot;</span><span class="hl opt">,</span>
+      <span class="hl str">&quot;H&quot;</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;(a|c|t)&quot;</span><span class="hl opt">,</span>
+      <span class="hl str">&quot;K&quot;</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;(g|t)&quot;</span><span class="hl opt">,</span>
+      <span class="hl str">&quot;M&quot;</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;(a|c)&quot;</span><span class="hl opt">,</span>
+      <span class="hl str">&quot;N&quot;</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;(a|c|g|t)&quot;</span><span class="hl opt">,</span>
+      <span class="hl str">&quot;R&quot;</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;(a|g)&quot;</span><span class="hl opt">,</span>
+      <span class="hl str">&quot;S&quot;</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;(c|g)&quot;</span><span class="hl opt">,</span>
+      <span class="hl str">&quot;V&quot;</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;(a|c|g)&quot;</span><span class="hl opt">,</span>
+      <span class="hl str">&quot;W&quot;</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;(a|t)&quot;</span><span class="hl opt">,</span>
+      <span class="hl str">&quot;Y&quot;</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;(c|t)&quot;</span><span class="hl opt">)</span>
+
+    <span class="hl kwa">val</span> replace_result  <span class="hl opt">= {</span>
+      <span class="hl kwa">val</span> buffer  <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">StringBuffer</span><span class="hl opt">((</span>input<span class="hl opt">.</span>length <span class="hl opt">*</span> <span class="hl num">3</span><span class="hl opt">) /</span> <span class="hl num">2</span><span class="hl opt">)</span>
+      <span class="hl kwa">val</span> matcher  <span class="hl opt">=</span> Pattern compile <span class="hl str">&quot;[BDHKMNRSVWY]&quot;</span> matcher input
+
+      <span class="hl kwa">while</span> <span class="hl opt">(</span> matcher find <span class="hl opt">)</span>
+        matcher <span class="hl kwd">appendReplacement</span><span class="hl opt">(</span> buffer<span class="hl opt">,</span> <span class="hl kwd">iub</span><span class="hl opt">(</span>matcher group<span class="hl opt">))</span>
+
+      matcher appendTail buffer
+      buffer length
+    <span class="hl opt">}</span>
+
+    <span class="hl slc">// print results</span>
+    Await<span class="hl opt">.</span><span class="hl kwd">result</span><span class="hl opt">(</span>Future<span class="hl opt">.</span><span class="hl kwd">sequence</span><span class="hl opt">(</span>count_results<span class="hl opt">),</span> Duration<span class="hl opt">.</span>Inf<span class="hl opt">)</span> <span class="hl kwd">foreach</span> <span class="hl opt">(</span>v <span class="hl opt">=&gt;</span> <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%s %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> v<span class="hl opt">.</span>_1<span class="hl opt">,</span> v<span class="hl opt">.</span>_2<span class="hl opt">))</span>
+    <span class="hl kwd">printf</span><span class="hl opt">(</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">%d</span><span class="hl esc">\n</span><span class="hl str">%d</span><span class="hl esc">\n</span><span class="hl str">%d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> init_len<span class="hl opt">,</span> strip_len<span class="hl opt">,</span> replace_result <span class="hl opt">)</span>
+  <span class="hl opt">}</span>
+<span class="hl opt">}</span>
