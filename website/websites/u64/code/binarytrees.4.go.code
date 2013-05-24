@@ -1,10 +1,11 @@
 <span class="hl com">/* The Computer Language Benchmarks Game</span>
-<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"> * http://benchmarksgame.alioth.debian.org/</span>
 <span class="hl com"> *</span>
-<span class="hl com"> * contributed by The Go Authors.</span>
+<span class="hl com"> * based on Go program by The Go Authors.</span>
 <span class="hl com"> * based on C program by Kevin Carson</span>
 <span class="hl com"> * flag.Arg hack by Isaac Gouy</span>
-<span class="hl com"> * goroutines by Atom</span>
+<span class="hl com"> * modified by Jamil Djadala to use goroutines</span>
+<span class="hl com"> *</span>
 <span class="hl com"> */</span>
 
 <span class="hl kwa">package</span> main
@@ -14,36 +15,15 @@
    <span class="hl str">&quot;fmt&quot;</span>
    <span class="hl str">&quot;runtime&quot;</span>
    <span class="hl str">&quot;strconv&quot;</span>
+   <span class="hl str">&quot;sync&quot;</span>
 <span class="hl opt">)</span>
 
-<span class="hl kwa">const</span> LOG_N_CPU <span class="hl opt">=</span> <span class="hl num">2</span>
-<span class="hl kwa">const</span> N_CPU <span class="hl opt">= (</span><span class="hl num">1</span> <span class="hl opt">&lt;&lt;</span> LOG_N_CPU<span class="hl opt">)</span>
-
-<span class="hl kwa">type</span> Node <span class="hl kwa">struct</span> <span class="hl opt">{</span>
-   item        <span class="hl kwb">int</span>
-   left<span class="hl opt">,</span> right <span class="hl opt">*</span>Node
-<span class="hl opt">}</span>
-
-<span class="hl kwa">func</span> <span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span>item<span class="hl opt">,</span> depth <span class="hl kwb">int</span><span class="hl opt">) *</span>Node <span class="hl opt">{</span>
-   <span class="hl kwa">if</span> depth <span class="hl opt">&lt;=</span> <span class="hl num">0</span> <span class="hl opt">{</span>
-      <span class="hl kwa">return</span> <span class="hl opt">&amp;</span>Node<span class="hl opt">{</span>item<span class="hl opt">:</span> item<span class="hl opt">}</span>
-   <span class="hl opt">}</span>
-   <span class="hl kwa">return</span> <span class="hl opt">&amp;</span>Node<span class="hl opt">{</span>item<span class="hl opt">,</span> <span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">*</span>item<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">,</span> depth<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">),</span> <span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">*</span>item<span class="hl opt">,</span> depth<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)}</span>
-<span class="hl opt">}</span>
-
-<span class="hl kwa">func</span> <span class="hl opt">(</span>n <span class="hl opt">*</span>Node<span class="hl opt">)</span> <span class="hl kwd">itemCheck</span><span class="hl opt">()</span> <span class="hl kwb">int</span> <span class="hl opt">{</span>
-   <span class="hl kwa">if</span> n<span class="hl opt">.</span>left <span class="hl opt">==</span> <span class="hl kwb">nil</span> <span class="hl opt">{</span>
-      <span class="hl kwa">return</span> n<span class="hl opt">.</span>item
-   <span class="hl opt">}</span>
-   <span class="hl kwa">return</span> n<span class="hl opt">.</span>item <span class="hl opt">+</span> n<span class="hl opt">.</span>left<span class="hl opt">.</span><span class="hl kwd">itemCheck</span><span class="hl opt">() -</span> n<span class="hl opt">.</span>right<span class="hl opt">.</span><span class="hl kwd">itemCheck</span><span class="hl opt">()</span>
-<span class="hl opt">}</span>
-
-<span class="hl kwa">const</span> minDepth <span class="hl opt">=</span> <span class="hl num">4</span>
+<span class="hl kwa">var</span> minDepth <span class="hl opt">=</span> <span class="hl num">4</span>
+<span class="hl kwa">var</span> n <span class="hl opt">=</span> <span class="hl num">0</span>
 
 <span class="hl kwa">func</span> <span class="hl kwd">main</span><span class="hl opt">() {</span>
-   runtime<span class="hl opt">.</span><span class="hl kwd">GOMAXPROCS</span><span class="hl opt">(</span>N_CPU<span class="hl opt">)</span>
+   runtime<span class="hl opt">.</span><span class="hl kwd">GOMAXPROCS</span><span class="hl opt">(</span>runtime<span class="hl opt">.</span><span class="hl kwd">NumCPU</span><span class="hl opt">() *</span> <span class="hl num">2</span><span class="hl opt">)</span>
 
-   n <span class="hl opt">:=</span> <span class="hl num">0</span>
    flag<span class="hl opt">.</span><span class="hl kwd">Parse</span><span class="hl opt">()</span>
    <span class="hl kwa">if</span> flag<span class="hl opt">.</span><span class="hl kwd">NArg</span><span class="hl opt">() &gt;</span> <span class="hl num">0</span> <span class="hl opt">{</span>
       n<span class="hl opt">,</span> _ <span class="hl opt">=</span> strconv<span class="hl opt">.</span><span class="hl kwd">Atoi</span><span class="hl opt">(</span>flag<span class="hl opt">.</span><span class="hl kwd">Arg</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">))</span>
@@ -55,36 +35,61 @@
    <span class="hl opt">}</span>
    stretchDepth <span class="hl opt">:=</span> maxDepth <span class="hl opt">+</span> <span class="hl num">1</span>
 
-   <span class="hl opt">{</span>
-      check <span class="hl opt">:=</span> <span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> stretchDepth<span class="hl opt">).</span><span class="hl kwd">itemCheck</span><span class="hl opt">()</span>
-      fmt<span class="hl opt">.</span><span class="hl kwd">Printf</span><span class="hl opt">(</span><span class="hl str">&quot;stretch tree of depth %d</span><span class="hl esc">\t</span> <span class="hl str">check: %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> stretchDepth<span class="hl opt">,</span> check<span class="hl opt">)</span>
-   <span class="hl opt">}</span>
+   check_l <span class="hl opt">:=</span> <span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> stretchDepth<span class="hl opt">).</span><span class="hl kwd">ItemCheck</span><span class="hl opt">()</span>
+   fmt<span class="hl opt">.</span><span class="hl kwd">Printf</span><span class="hl opt">(</span><span class="hl str">&quot;stretch tree of depth %d</span><span class="hl esc">\t</span> <span class="hl str">check: %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> stretchDepth<span class="hl opt">,</span> check_l<span class="hl opt">)</span>
 
    longLivedTree <span class="hl opt">:=</span> <span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> maxDepth<span class="hl opt">)</span>
 
-   outputs <span class="hl opt">:=</span> <span class="hl kwb">make</span><span class="hl opt">(</span><span class="hl kwa">map</span><span class="hl opt">[</span><span class="hl kwb">int</span><span class="hl opt">]</span><span class="hl kwa">chan</span> <span class="hl kwb">string</span><span class="hl opt">)</span>
-   control <span class="hl opt">:=</span> <span class="hl kwb">make</span><span class="hl opt">(</span><span class="hl kwa">chan</span> <span class="hl kwb">byte</span><span class="hl opt">,</span> N_CPU<span class="hl opt">)</span>
-   <span class="hl kwa">for</span> _depth <span class="hl opt">:=</span> minDepth<span class="hl opt">;</span> _depth <span class="hl opt">&lt;=</span> maxDepth<span class="hl opt">;</span> _depth <span class="hl opt">+=</span> <span class="hl num">2</span> <span class="hl opt">{</span>
-      outputs<span class="hl opt">[</span>_depth<span class="hl opt">] =</span> <span class="hl kwb">make</span><span class="hl opt">(</span><span class="hl kwa">chan</span> <span class="hl kwb">string</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">)</span>
-      <span class="hl kwa">go func</span><span class="hl opt">(</span>depth <span class="hl kwb">int</span><span class="hl opt">) {</span>
-         control <span class="hl opt">&lt;-</span> <span class="hl num">0</span>
+   result_trees <span class="hl opt">:=</span> <span class="hl kwb">make</span><span class="hl opt">([]</span><span class="hl kwb">int</span><span class="hl opt">,</span> maxDepth<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+   result_check <span class="hl opt">:=</span> <span class="hl kwb">make</span><span class="hl opt">([]</span><span class="hl kwb">int</span><span class="hl opt">,</span> maxDepth<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
 
+   <span class="hl kwa">var</span> wg sync<span class="hl opt">.</span>WaitGroup
+   <span class="hl kwa">for</span> depth_l <span class="hl opt">:=</span> minDepth<span class="hl opt">;</span> depth_l <span class="hl opt">&lt;=</span> maxDepth<span class="hl opt">;</span> depth_l <span class="hl opt">+=</span> <span class="hl num">2</span> <span class="hl opt">{</span>
+      wg<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)</span>
+      <span class="hl kwa">go func</span><span class="hl opt">(</span>depth <span class="hl kwb">int</span><span class="hl opt">) {</span>
          iterations <span class="hl opt">:=</span> <span class="hl num">1</span> <span class="hl opt">&lt;&lt;</span> <span class="hl kwb">uint</span><span class="hl opt">(</span>maxDepth<span class="hl opt">-</span>depth<span class="hl opt">+</span>minDepth<span class="hl opt">)</span>
          check <span class="hl opt">:=</span> <span class="hl num">0</span>
 
          <span class="hl kwa">for</span> i <span class="hl opt">:=</span> <span class="hl num">1</span><span class="hl opt">;</span> i <span class="hl opt">&lt;=</span> iterations<span class="hl opt">;</span> i<span class="hl opt">++ {</span>
-            check <span class="hl opt">+=</span> <span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span>i<span class="hl opt">,</span> depth<span class="hl opt">).</span><span class="hl kwd">itemCheck</span><span class="hl opt">()</span>
-            check <span class="hl opt">+=</span> <span class="hl kwd">bottomUpTree</span><span class="hl opt">(-</span>i<span class="hl opt">,</span> depth<span class="hl opt">).</span><span class="hl kwd">itemCheck</span><span class="hl opt">()</span>
+            check <span class="hl opt">+=</span> <span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span>i<span class="hl opt">,</span> depth<span class="hl opt">).</span><span class="hl kwd">ItemCheck</span><span class="hl opt">()</span>
+            check <span class="hl opt">+=</span> <span class="hl kwd">bottomUpTree</span><span class="hl opt">(-</span>i<span class="hl opt">,</span> depth<span class="hl opt">).</span><span class="hl kwd">ItemCheck</span><span class="hl opt">()</span>
          <span class="hl opt">}</span>
-         outputs<span class="hl opt">[</span>depth<span class="hl opt">] &lt;-</span> fmt<span class="hl opt">.</span><span class="hl kwd">Sprintf</span><span class="hl opt">(</span><span class="hl str">&quot;%d</span><span class="hl esc">\t</span> <span class="hl str">trees of depth %d</span><span class="hl esc">\t</span> <span class="hl str">check: %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span>
-            iterations<span class="hl opt">*</span><span class="hl num">2</span><span class="hl opt">,</span> depth<span class="hl opt">,</span> check<span class="hl opt">)</span>
+         result_trees<span class="hl opt">[</span>depth<span class="hl opt">] =</span> iterations <span class="hl opt">*</span> <span class="hl num">2</span>
+         result_check<span class="hl opt">[</span>depth<span class="hl opt">] =</span> check
 
-         <span class="hl opt">&lt;-</span>control
-      <span class="hl opt">}(</span>_depth<span class="hl opt">)</span>
+         wg<span class="hl opt">.</span><span class="hl kwd">Done</span><span class="hl opt">()</span>
+      <span class="hl opt">}(</span>depth_l<span class="hl opt">)</span>
    <span class="hl opt">}</span>
+   wg<span class="hl opt">.</span><span class="hl kwd">Wait</span><span class="hl opt">()</span>
+
    <span class="hl kwa">for</span> depth <span class="hl opt">:=</span> minDepth<span class="hl opt">;</span> depth <span class="hl opt">&lt;=</span> maxDepth<span class="hl opt">;</span> depth <span class="hl opt">+=</span> <span class="hl num">2</span> <span class="hl opt">{</span>
-      fmt<span class="hl opt">.</span><span class="hl kwd">Print</span><span class="hl opt">(&lt;-</span>outputs<span class="hl opt">[</span>depth<span class="hl opt">])</span>
+      fmt<span class="hl opt">.</span><span class="hl kwd">Printf</span><span class="hl opt">(</span><span class="hl str">&quot;%d</span><span class="hl esc">\t</span> <span class="hl str">trees of depth %d</span><span class="hl esc">\t</span> <span class="hl str">check: %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span>
+         result_trees<span class="hl opt">[</span>depth<span class="hl opt">],</span> depth<span class="hl opt">,</span> result_check<span class="hl opt">[</span>depth<span class="hl opt">],</span>
+      <span class="hl opt">)</span>
    <span class="hl opt">}</span>
+   fmt<span class="hl opt">.</span><span class="hl kwd">Printf</span><span class="hl opt">(</span><span class="hl str">&quot;long lived tree of depth %d</span><span class="hl esc">\t</span> <span class="hl str">check: %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span>
+      maxDepth<span class="hl opt">,</span> longLivedTree<span class="hl opt">.</span><span class="hl kwd">ItemCheck</span><span class="hl opt">(),</span>
+   <span class="hl opt">)</span>
+<span class="hl opt">}</span>
 
-   fmt<span class="hl opt">.</span><span class="hl kwd">Printf</span><span class="hl opt">(</span><span class="hl str">&quot;long lived tree of depth %d</span><span class="hl esc">\t</span> <span class="hl str">check: %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> maxDepth<span class="hl opt">,</span> longLivedTree<span class="hl opt">.</span><span class="hl kwd">itemCheck</span><span class="hl opt">())</span>
+<span class="hl kwa">func</span> <span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span>item<span class="hl opt">,</span> depth <span class="hl kwb">int</span><span class="hl opt">) *</span>Node <span class="hl opt">{</span>
+   <span class="hl kwa">if</span> depth <span class="hl opt">&lt;=</span> <span class="hl num">0</span> <span class="hl opt">{</span>
+      <span class="hl kwa">return</span> <span class="hl opt">&amp;</span>Node<span class="hl opt">{</span>item<span class="hl opt">,</span> <span class="hl kwb">nil</span><span class="hl opt">,</span> <span class="hl kwb">nil</span><span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">return</span> <span class="hl opt">&amp;</span>Node<span class="hl opt">{</span>item<span class="hl opt">,</span>
+      <span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">*</span>item<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">,</span> depth<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">),</span>
+      <span class="hl kwd">bottomUpTree</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">*</span>item<span class="hl opt">,</span> depth<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">),</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">type</span> Node <span class="hl kwa">struct</span> <span class="hl opt">{</span>
+   item        <span class="hl kwb">int</span>
+   left<span class="hl opt">,</span> right <span class="hl opt">*</span>Node
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl opt">(</span>self <span class="hl opt">*</span>Node<span class="hl opt">)</span> <span class="hl kwd">ItemCheck</span><span class="hl opt">()</span> <span class="hl kwb">int</span> <span class="hl opt">{</span>
+   <span class="hl kwa">if</span> self<span class="hl opt">.</span>left <span class="hl opt">==</span> <span class="hl kwb">nil</span> <span class="hl opt">{</span>
+      <span class="hl kwa">return</span> self<span class="hl opt">.</span>item
+   <span class="hl opt">}</span>
+   <span class="hl kwa">return</span> self<span class="hl opt">.</span>item <span class="hl opt">+</span> self<span class="hl opt">.</span>left<span class="hl opt">.</span><span class="hl kwd">ItemCheck</span><span class="hl opt">() -</span> self<span class="hl opt">.</span>right<span class="hl opt">.</span><span class="hl kwd">ItemCheck</span><span class="hl opt">()</span>
 <span class="hl opt">}</span>
