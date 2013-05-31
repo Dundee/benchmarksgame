@@ -258,7 +258,7 @@ $mark = $mark.' '.SITE_NAME;
 
 $LangName = $Langs[$L][LANG_FULL];
 $LangName2 = $Langs[$L2][LANG_FULL];
-$Title = $LangName.'&nbsp;speed&nbsp;&#247;&nbsp;'.$LangName2.'&nbsp;speed';
+$Title = $LangName.'&nbsp;vs&nbsp;'.$LangName2;
 
 $bannerUrl = CORE_SITE;
 $faqUrl = CORE_SITE.'play.php';
@@ -281,7 +281,7 @@ $About->set('Version', HtmlFragment(VERSION_PATH.$L.SEPARATOR.'version.php'));
 
 // META ////////////////////////////////////////////////
 
-$MetaKeywords = '<meta name="description" content="The speed of '.$LangName.' programs versus the speed of '.$LangName2.' programs ('.PLATFORM_NAME.')." />';
+$MetaKeywords = '<meta name="description" content="'.$LangName.' programs versus '.$LangName2.' programs ('.PLATFORM_NAME.')." />';
          
 $metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
 

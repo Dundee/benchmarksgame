@@ -240,7 +240,7 @@ if (!isset($L2) || $L2 == $L){
 
 $LangName = $Langs[$L][LANG_FULL];
 $LangName2 = $Langs[$L2][LANG_FULL];
-$Title = $LangName.'&nbsp;speed&nbsp;&#247;&nbsp;'.$LangName2.'&nbsp;speed';
+$Title = $LangName.'&nbsp;vs&nbsp;'.$LangName2;
 
 $bannerUrl = CORE_SITE;
 $faqUrl = CORE_SITE.'play.php';
@@ -259,7 +259,7 @@ $V2 = HtmlFragment(VERSION_PATH.$L2.SEPARATOR.'version.php');
 
 // META ////////////////////////////////////////////////
 
-$MetaKeywords = '<meta name="description" content="The speed of '.$LangName.' programs vs the speed of '.$LangName2.' programs ('.PLATFORM_NAME.')." />';
+$MetaKeywords = '<meta name="description" content="'.$LangName.' programs versus '.$LangName2.' programs ('.PLATFORM_NAME.')." />';
          
 $metaRobots = '<meta name="robots" content="noindex,nofollow,noarchive" />';
 
