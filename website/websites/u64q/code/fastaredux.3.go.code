@@ -1,0 +1,182 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * based on Go program by The Go Authors.</span>
+<span class="hl com"> * modified by Chai Shushan</span>
+<span class="hl com"> */</span>
+
+<span class="hl kwa">package</span> main
+
+<span class="hl kwa">import</span> <span class="hl opt">(</span>
+   <span class="hl str">&quot;flag&quot;</span>
+   <span class="hl str">&quot;os&quot;</span>
+   <span class="hl str">&quot;strconv&quot;</span>
+<span class="hl opt">)</span>
+
+<span class="hl kwa">var</span> out <span class="hl opt">=</span> <span class="hl kwb">make</span><span class="hl opt">(</span>buffer<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">32768</span><span class="hl opt">)</span>
+
+<span class="hl slc">//var n = flag.Int(&quot;n&quot;, 1000, &quot;length of result&quot;)</span>
+<span class="hl kwa">var</span> n <span class="hl opt">=</span> <span class="hl num">0</span>
+
+<span class="hl kwa">const</span> Line <span class="hl opt">=</span> <span class="hl num">60</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">Repeat</span><span class="hl opt">(</span>alu <span class="hl opt">[]</span><span class="hl kwb">byte</span><span class="hl opt">,</span> n <span class="hl kwb">int</span><span class="hl opt">) {</span>
+   buf <span class="hl opt">:=</span> <span class="hl kwd">append</span><span class="hl opt">(</span>alu<span class="hl opt">,</span> alu<span class="hl opt">...)</span>
+   off <span class="hl opt">:=</span> <span class="hl num">0</span>
+   <span class="hl kwa">for</span> n <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl opt">{</span>
+      m <span class="hl opt">:=</span> n
+      <span class="hl kwa">if</span> m <span class="hl opt">&gt;</span> Line <span class="hl opt">{</span>
+         m <span class="hl opt">=</span> Line
+      <span class="hl opt">}</span>
+      buf1 <span class="hl opt">:=</span> out<span class="hl opt">.</span><span class="hl kwd">NextWrite</span><span class="hl opt">(</span>m <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)</span>
+      <span class="hl kwd">copy</span><span class="hl opt">(</span>buf1<span class="hl opt">,</span> buf<span class="hl opt">[</span>off<span class="hl opt">:])</span>
+      buf1<span class="hl opt">[</span>m<span class="hl opt">] =</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span>
+      <span class="hl kwa">if</span> off <span class="hl opt">+=</span> m<span class="hl opt">;</span> off <span class="hl opt">&gt;=</span> <span class="hl kwb">len</span><span class="hl opt">(</span>alu<span class="hl opt">) {</span>
+         off <span class="hl opt">-=</span> <span class="hl kwb">len</span><span class="hl opt">(</span>alu<span class="hl opt">)</span>
+      <span class="hl opt">}</span>
+      n <span class="hl opt">-=</span> m
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">const</span> <span class="hl opt">(</span>
+   IM <span class="hl opt">=</span> <span class="hl num">139968</span>
+   IA <span class="hl opt">=</span> <span class="hl num">3877</span>
+   IC <span class="hl opt">=</span> <span class="hl num">29573</span>
+
+   LookupSize          <span class="hl opt">=</span> <span class="hl num">4096</span>
+   LookupScale <span class="hl kwb">float64</span> <span class="hl opt">=</span> LookupSize <span class="hl opt">-</span> <span class="hl num">1</span>
+<span class="hl opt">)</span>
+
+<span class="hl kwa">var</span> rand <span class="hl kwb">uint32</span> <span class="hl opt">=</span> <span class="hl num">42</span>
+
+<span class="hl kwa">type</span> Acid <span class="hl kwa">struct</span> <span class="hl opt">{</span>
+   sym   <span class="hl kwb">byte</span>
+   prob  <span class="hl kwb">float64</span>
+   cprob <span class="hl kwb">float64</span>
+   next  <span class="hl opt">*</span>Acid
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">computeLookup</span><span class="hl opt">(</span>acid <span class="hl opt">[]</span>Acid<span class="hl opt">) *[</span>LookupSize<span class="hl opt">]*</span>Acid <span class="hl opt">{</span>
+   <span class="hl kwa">var</span> lookup <span class="hl opt">[</span>LookupSize<span class="hl opt">]*</span>Acid
+   <span class="hl kwa">var</span> p <span class="hl kwb">float64</span>
+   <span class="hl kwa">for</span> i <span class="hl opt">:=</span> <span class="hl kwa">range</span> acid <span class="hl opt">{</span>
+      p <span class="hl opt">+=</span> acid<span class="hl opt">[</span>i<span class="hl opt">].</span>prob
+      acid<span class="hl opt">[</span>i<span class="hl opt">].</span>cprob <span class="hl opt">=</span> p <span class="hl opt">*</span> LookupScale
+      <span class="hl kwa">if</span> i <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl opt">{</span>
+         acid<span class="hl opt">[</span>i<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">].</span>next <span class="hl opt">= &amp;</span>acid<span class="hl opt">[</span>i<span class="hl opt">]</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+   acid<span class="hl opt">[</span><span class="hl kwb">len</span><span class="hl opt">(</span>acid<span class="hl opt">)-</span><span class="hl num">1</span><span class="hl opt">].</span>cprob <span class="hl opt">=</span> <span class="hl num">1.0</span> <span class="hl opt">*</span> LookupScale
+
+   j <span class="hl opt">:=</span> <span class="hl num">0</span>
+   <span class="hl kwa">for</span> i <span class="hl opt">:=</span> <span class="hl kwa">range</span> lookup <span class="hl opt">{</span>
+      <span class="hl kwa">for</span> acid<span class="hl opt">[</span>j<span class="hl opt">].</span>cprob <span class="hl opt">&lt;</span> <span class="hl kwb">float64</span><span class="hl opt">(</span>i<span class="hl opt">) {</span>
+         j<span class="hl opt">++</span>
+      <span class="hl opt">}</span>
+      lookup<span class="hl opt">[</span>i<span class="hl opt">] = &amp;</span>acid<span class="hl opt">[</span>j<span class="hl opt">]</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">return</span> <span class="hl opt">&amp;</span>lookup
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">Random</span><span class="hl opt">(</span>acid <span class="hl opt">[]</span>Acid<span class="hl opt">,</span> n <span class="hl kwb">int</span><span class="hl opt">) {</span>
+   lookup <span class="hl opt">:=</span> <span class="hl kwd">computeLookup</span><span class="hl opt">(</span>acid<span class="hl opt">)</span>
+   <span class="hl kwa">for</span> n <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl opt">{</span>
+      m <span class="hl opt">:=</span> n
+      <span class="hl kwa">if</span> m <span class="hl opt">&gt;</span> Line <span class="hl opt">{</span>
+         m <span class="hl opt">=</span> Line
+      <span class="hl opt">}</span>
+      buf <span class="hl opt">:=</span> out<span class="hl opt">.</span><span class="hl kwd">NextWrite</span><span class="hl opt">(</span>m <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)</span>
+      f <span class="hl opt">:=</span> LookupScale <span class="hl opt">/</span> IM
+      myrand <span class="hl opt">:=</span> rand
+      <span class="hl kwa">for</span> i <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> m<span class="hl opt">;</span> i<span class="hl opt">++ {</span>
+         myrand <span class="hl opt">= (</span>myrand<span class="hl opt">*</span>IA <span class="hl opt">+</span> IC<span class="hl opt">) %</span> IM
+         r <span class="hl opt">:=</span> <span class="hl kwb">float64</span><span class="hl opt">(</span><span class="hl kwb">int</span><span class="hl opt">(</span>myrand<span class="hl opt">)) *</span> f
+         a <span class="hl opt">:=</span> lookup<span class="hl opt">[</span><span class="hl kwb">int</span><span class="hl opt">(</span>r<span class="hl opt">)]</span>
+         <span class="hl kwa">for</span> a<span class="hl opt">.</span>cprob <span class="hl opt">&lt;</span> r <span class="hl opt">{</span>
+            a <span class="hl opt">=</span> a<span class="hl opt">.</span>next
+         <span class="hl opt">}</span>
+         buf<span class="hl opt">[</span>i<span class="hl opt">] =</span> a<span class="hl opt">.</span>sym
+      <span class="hl opt">}</span>
+      rand <span class="hl opt">=</span> myrand
+      buf<span class="hl opt">[</span>m<span class="hl opt">] =</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span>
+      n <span class="hl opt">-=</span> m
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl kwd">main</span><span class="hl opt">() {</span>
+   <span class="hl kwa">defer</span> out<span class="hl opt">.</span><span class="hl kwd">Flush</span><span class="hl opt">()</span>
+
+   flag<span class="hl opt">.</span><span class="hl kwd">Parse</span><span class="hl opt">()</span>
+   <span class="hl kwa">if</span> flag<span class="hl opt">.</span><span class="hl kwd">NArg</span><span class="hl opt">() &gt;</span> <span class="hl num">0</span> <span class="hl opt">{</span>
+      n<span class="hl opt">,</span> _ <span class="hl opt">=</span> strconv<span class="hl opt">.</span><span class="hl kwd">Atoi</span><span class="hl opt">(</span>flag<span class="hl opt">.</span><span class="hl kwd">Arg</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">))</span>
+   <span class="hl opt">}</span>
+
+   iub <span class="hl opt">:= []</span>Acid<span class="hl opt">{</span>
+      <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.27</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'a'</span><span class="hl opt">},</span>
+      <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.12</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'c'</span><span class="hl opt">},</span>
+      <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.12</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'g'</span><span class="hl opt">},</span>
+      <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.27</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'t'</span><span class="hl opt">},</span>
+      <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.02</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'B'</span><span class="hl opt">},</span>
+      <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.02</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'D'</span><span class="hl opt">},</span>
+      <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.02</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'H'</span><span class="hl opt">},</span>
+      <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.02</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'K'</span><span class="hl opt">},</span>
+      <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.02</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'M'</span><span class="hl opt">},</span>
+      <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.02</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'N'</span><span class="hl opt">},</span>
+      <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.02</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'R'</span><span class="hl opt">},</span>
+      <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.02</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'S'</span><span class="hl opt">},</span>
+      <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.02</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'V'</span><span class="hl opt">},</span>
+      <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.02</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'W'</span><span class="hl opt">},</span>
+      <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.02</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'Y'</span><span class="hl opt">},</span>
+   <span class="hl opt">}</span>
+
+   homosapiens <span class="hl opt">:= []</span>Acid<span class="hl opt">{</span>
+      <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.3029549426680</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'a'</span><span class="hl opt">},</span>
+      <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.1979883004921</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'c'</span><span class="hl opt">},</span>
+      <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.1975473066391</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'g'</span><span class="hl opt">},</span>
+      <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.3015094502008</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'t'</span><span class="hl opt">},</span>
+   <span class="hl opt">}</span>
+
+   alu <span class="hl opt">:= []</span><span class="hl kwb">byte</span><span class="hl opt">(</span>
+      <span class="hl str">&quot;GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG&quot;</span> <span class="hl opt">+</span>
+         <span class="hl str">&quot;GAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGAGA&quot;</span> <span class="hl opt">+</span>
+         <span class="hl str">&quot;CCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAAT&quot;</span> <span class="hl opt">+</span>
+         <span class="hl str">&quot;ACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAATCCCA&quot;</span> <span class="hl opt">+</span>
+         <span class="hl str">&quot;GCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTGAACCCGGG&quot;</span> <span class="hl opt">+</span>
+         <span class="hl str">&quot;AGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCC&quot;</span> <span class="hl opt">+</span>
+         <span class="hl str">&quot;AGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAA&quot;</span><span class="hl opt">)</span>
+
+   out<span class="hl opt">.</span><span class="hl kwd">WriteString</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;ONE Homo sapiens alu</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">)</span>
+   <span class="hl kwd">Repeat</span><span class="hl opt">(</span>alu<span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">*</span>n<span class="hl opt">)</span>
+   out<span class="hl opt">.</span><span class="hl kwd">WriteString</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;TWO IUB ambiguity codes</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">)</span>
+   <span class="hl kwd">Random</span><span class="hl opt">(</span>iub<span class="hl opt">,</span> <span class="hl num">3</span><span class="hl opt">*</span>n<span class="hl opt">)</span>
+   out<span class="hl opt">.</span><span class="hl kwd">WriteString</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;THREE Homo sapiens frequency</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">)</span>
+   <span class="hl kwd">Random</span><span class="hl opt">(</span>homosapiens<span class="hl opt">,</span> <span class="hl num">5</span><span class="hl opt">*</span>n<span class="hl opt">)</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">type</span> buffer <span class="hl opt">[]</span><span class="hl kwb">byte</span>
+
+<span class="hl kwa">func</span> <span class="hl opt">(</span>b <span class="hl opt">*</span>buffer<span class="hl opt">)</span> <span class="hl kwd">Flush</span><span class="hl opt">() {</span>
+   p <span class="hl opt">:= *</span>b
+   <span class="hl kwa">if</span> <span class="hl kwb">len</span><span class="hl opt">(</span>p<span class="hl opt">) &gt;</span> <span class="hl num">0</span> <span class="hl opt">{</span>
+      os<span class="hl opt">.</span>Stdout<span class="hl opt">.</span><span class="hl kwd">Write</span><span class="hl opt">(</span>p<span class="hl opt">)</span>
+   <span class="hl opt">}</span>
+   <span class="hl opt">*</span>b <span class="hl opt">=</span> p<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">:</span><span class="hl num">0</span><span class="hl opt">]</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl opt">(</span>b <span class="hl opt">*</span>buffer<span class="hl opt">)</span> <span class="hl kwd">WriteString</span><span class="hl opt">(</span>s <span class="hl kwb">string</span><span class="hl opt">) {</span>
+   p <span class="hl opt">:=</span> b<span class="hl opt">.</span><span class="hl kwd">NextWrite</span><span class="hl opt">(</span><span class="hl kwb">len</span><span class="hl opt">(</span>s<span class="hl opt">))</span>
+   <span class="hl kwd">copy</span><span class="hl opt">(</span>p<span class="hl opt">,</span> s<span class="hl opt">)</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">func</span> <span class="hl opt">(</span>b <span class="hl opt">*</span>buffer<span class="hl opt">)</span> <span class="hl kwd">NextWrite</span><span class="hl opt">(</span>n <span class="hl kwb">int</span><span class="hl opt">) []</span><span class="hl kwb">byte</span> <span class="hl opt">{</span>
+   p <span class="hl opt">:= *</span>b
+   <span class="hl kwa">if</span> <span class="hl kwb">len</span><span class="hl opt">(</span>p<span class="hl opt">)+</span>n <span class="hl opt">&gt;</span> <span class="hl kwb">cap</span><span class="hl opt">(</span>p<span class="hl opt">) {</span>
+      b<span class="hl opt">.</span><span class="hl kwd">Flush</span><span class="hl opt">()</span>
+      p <span class="hl opt">= *</span>b
+   <span class="hl opt">}</span>
+   out <span class="hl opt">:=</span> p<span class="hl opt">[</span><span class="hl kwb">len</span><span class="hl opt">(</span>p<span class="hl opt">) :</span> <span class="hl kwb">len</span><span class="hl opt">(</span>p<span class="hl opt">)+</span>n<span class="hl opt">]</span>
+   <span class="hl opt">*</span>b <span class="hl opt">=</span> p<span class="hl opt">[:</span><span class="hl kwb">len</span><span class="hl opt">(</span>p<span class="hl opt">)+</span>n<span class="hl opt">]</span>
+   <span class="hl kwa">return</span> out
+<span class="hl opt">}</span>
