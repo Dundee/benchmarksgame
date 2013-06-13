@@ -5,6 +5,7 @@
  * based on C program by Kevin Carson
  * flag.Arg hack by Isaac Gouy
  * modified by Jamil Djadala to use goroutines
+ * modified by Chai Shushan
  *
  */
 
