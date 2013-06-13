@@ -1,9 +1,9 @@
 <span class="hl com">/* The Computer Language Benchmarks Game</span>
-<span class="hl com"> * http://shootout.alioth.debian.org/</span>
+<span class="hl com"> * http://benchmarksgame.alioth.debian.org/</span>
 <span class="hl com"> *</span>
-<span class="hl com"> * contributed by The Go Authors.</span>
-<span class="hl com"> * Based on C program by by Petr Prokhorenkov.</span>
-<span class="hl com"> * flag.Arg hack by Isaac Gouy</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * based on Go program by The Go Authors.</span>
+<span class="hl com"> * modified by Chai Shushan</span>
 <span class="hl com"> */</span>
 
 <span class="hl kwa">package</span> main
@@ -16,7 +16,7 @@
 
 <span class="hl kwa">var</span> out <span class="hl opt">=</span> <span class="hl kwb">make</span><span class="hl opt">(</span>buffer<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">32768</span><span class="hl opt">)</span>
 
-<span class="hl slc">// var n = flag.Int(&quot;n&quot;, 1000, &quot;length of result&quot;)</span>
+<span class="hl slc">//var n = flag.Int(&quot;n&quot;, 1000, &quot;length of result&quot;)</span>
 <span class="hl kwa">var</span> n <span class="hl opt">=</span> <span class="hl num">0</span>
 
 <span class="hl kwa">const</span> Line <span class="hl opt">=</span> <span class="hl num">60</span>
@@ -44,7 +44,7 @@
    IA <span class="hl opt">=</span> <span class="hl num">3877</span>
    IC <span class="hl opt">=</span> <span class="hl num">29573</span>
 
-   LookupSize  <span class="hl opt">=</span> <span class="hl num">4096</span>
+   LookupSize          <span class="hl opt">=</span> <span class="hl num">4096</span>
    LookupScale <span class="hl kwb">float64</span> <span class="hl opt">=</span> LookupSize <span class="hl opt">-</span> <span class="hl num">1</span>
 <span class="hl opt">)</span>
 
@@ -109,7 +109,9 @@
    <span class="hl kwa">defer</span> out<span class="hl opt">.</span><span class="hl kwd">Flush</span><span class="hl opt">()</span>
 
    flag<span class="hl opt">.</span><span class="hl kwd">Parse</span><span class="hl opt">()</span>
-   <span class="hl kwa">if</span> flag<span class="hl opt">.</span><span class="hl kwd">NArg</span><span class="hl opt">() &gt;</span> <span class="hl num">0</span> <span class="hl opt">{</span> n<span class="hl opt">,</span>_ <span class="hl opt">=</span> strconv<span class="hl opt">.</span><span class="hl kwd">Atoi</span><span class="hl opt">(</span> flag<span class="hl opt">.</span><span class="hl kwd">Arg</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">) ) }</span>
+   <span class="hl kwa">if</span> flag<span class="hl opt">.</span><span class="hl kwd">NArg</span><span class="hl opt">() &gt;</span> <span class="hl num">0</span> <span class="hl opt">{</span>
+      n<span class="hl opt">,</span> _ <span class="hl opt">=</span> strconv<span class="hl opt">.</span><span class="hl kwd">Atoi</span><span class="hl opt">(</span>flag<span class="hl opt">.</span><span class="hl kwd">Arg</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">))</span>
+   <span class="hl opt">}</span>
 
    iub <span class="hl opt">:= []</span>Acid<span class="hl opt">{</span>
       <span class="hl opt">{</span>prob<span class="hl opt">:</span> <span class="hl num">0.27</span><span class="hl opt">,</span> sym<span class="hl opt">:</span> <span class="hl str">'a'</span><span class="hl opt">},</span>
@@ -152,7 +154,6 @@
    out<span class="hl opt">.</span><span class="hl kwd">WriteString</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;THREE Homo sapiens frequency</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">)</span>
    <span class="hl kwd">Random</span><span class="hl opt">(</span>homosapiens<span class="hl opt">,</span> <span class="hl num">5</span><span class="hl opt">*</span>n<span class="hl opt">)</span>
 <span class="hl opt">}</span>
-
 
 <span class="hl kwa">type</span> buffer <span class="hl opt">[]</span><span class="hl kwb">byte</span>
 
