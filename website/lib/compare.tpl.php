@@ -35,7 +35,7 @@ function MkHeadToHeadMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang,$Selecte
    }
    echo '</select></p>', "\n";
    
-   echo '<p><strong>&#247;</strong> <select name="lang2">', "\n";
+   echo '<p><strong>vs</strong> <select name="lang2">', "\n";
    foreach($Langs as $Row){
       $Link = $Row[LANG_LINK];
       $Name = $Row[LANG_FULL];
