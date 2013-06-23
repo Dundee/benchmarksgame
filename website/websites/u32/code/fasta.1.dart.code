@@ -5,7 +5,7 @@
 <span class="hl com">*/</span>
 
 <span class="hl kwa">import</span> <span class="hl str">'dart:io'</span><span class="hl opt">;</span>
-<span class="hl kwa">import</span> <span class="hl str">'dart:typeddata'</span><span class="hl opt">;</span>
+<span class="hl kwa">import</span> <span class="hl str">'dart:typed_data'</span><span class="hl opt">;</span>
 
 <span class="hl kwa">const</span> String ALU <span class="hl opt">=</span>
 <span class="hl str">&quot;GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG&quot;</span>
@@ -55,7 +55,7 @@ final Frequency HOMO_SAPIENS <span class="hl opt">=</span> <span class="hl kwa">
     <span class="hl kwa">return</span> max <span class="hl opt">*</span> last <span class="hl opt">*</span> oneOverIM<span class="hl opt">;</span>
   <span class="hl opt">}</span>
 
-  <span class="hl kwd">Frequency</span><span class="hl opt">(</span>List<span class="hl opt">&lt;</span>String<span class="hl opt">&gt;</span> charList<span class="hl opt">,</span> Float64List probList<span class="hl opt">) {</span>
+  <span class="hl kwd">Frequency</span><span class="hl opt">(</span>List<span class="hl opt">&lt;</span>String<span class="hl opt">&gt;</span> charList<span class="hl opt">,</span> List<span class="hl opt">&lt;</span><span class="hl kwb">double</span><span class="hl opt">&gt;</span> probList<span class="hl opt">) {</span>
     chars <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Uint8List</span><span class="hl opt">(</span>charList<span class="hl opt">.</span>length<span class="hl opt">);</span>
     <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> chars<span class="hl opt">.</span>length<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
       chars<span class="hl kwc">[i]</span> <span class="hl opt">=</span> charList<span class="hl kwc">[i]</span><span class="hl opt">.</span><span class="hl kwd">codeUnitAt</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
@@ -182,4 +182,3 @@ final Frequency HOMO_SAPIENS <span class="hl opt">=</span> <span class="hl kwa">
   HOMO_SAPIENS<span class="hl opt">.</span>last <span class="hl opt">=</span> IUB<span class="hl opt">.</span>last<span class="hl opt">;</span>
   <span class="hl kwd">makeRandomFasta</span><span class="hl opt">(</span><span class="hl str">&quot;THREE&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Homo sapiens frequency&quot;</span><span class="hl opt">,</span> HOMO_SAPIENS<span class="hl opt">,</span> n <span class="hl opt">*</span> <span class="hl num">5</span><span class="hl opt">,</span> writer<span class="hl opt">);</span>
 <span class="hl opt">}</span>
-
