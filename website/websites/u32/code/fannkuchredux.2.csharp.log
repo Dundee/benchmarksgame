@@ -1,20 +1,15 @@
 
-Tue, 12 Feb 2013 19:26:06 GMT
+Sat, 22 Jun 2013 19:33:24 GMT
 
 MAKE:
 mv fannkuchredux.csharp-2.csharp fannkuchredux.csharp-2.cs
 /usr/local/bin/mcs  -optimize+ -platform:x86 -out:fannkuchredux.csharp-2.csharp_run fannkuchredux.csharp-2.cs
 rm fannkuchredux.csharp-2.cs
-0.23s to complete and log all make actions
+0.24s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm fannkuchredux.csharp-2.csharp_run 12
+/usr/local/bin/mono --llvm --gc=sgen fannkuchredux.csharp-2.csharp_run 12
 
 PROGRAM OUTPUT:
 3968050
 Pfannkuchen(12) = 65
-
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

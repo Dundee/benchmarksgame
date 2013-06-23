@@ -1,14 +1,14 @@
 
-Tue, 26 Mar 2013 18:32:39 GMT
+Sat, 22 Jun 2013 17:20:10 GMT
 
 MAKE:
 mv binarytrees.csharp binarytrees.cs
 /usr/local/bin/mcs  -optimize+ -platform:x86 -out:binarytrees.csharp_run binarytrees.cs
 rm binarytrees.cs
-2.54s to complete and log all make actions
+3.11s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm --gc=sgen binarytrees.csharp_run 20
+/usr/local/bin/mono --llvm binarytrees.csharp_run 20
 
 PROGRAM OUTPUT:
 stretch tree of depth 21	 check: -1
@@ -22,8 +22,3 @@ stretch tree of depth 21	 check: -1
 128	 trees of depth 18	 check: -128
 32	 trees of depth 20	 check: -32
 long lived tree of depth 20	 check: -1
-
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

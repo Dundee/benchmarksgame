@@ -1,14 +1,14 @@
 
-Tue, 12 Feb 2013 21:15:30 GMT
+Sat, 22 Jun 2013 21:39:32 GMT
 
 MAKE:
 mv regexdna.csharp-6.csharp regexdna.csharp-6.cs
 /usr/local/bin/mcs  -optimize+ -platform:x86 -out:regexdna.csharp-6.csharp_run regexdna.csharp-6.cs
 rm regexdna.csharp-6.cs
-0.30s to complete and log all make actions
+0.27s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm regexdna.csharp-6.csharp_run 0 < regexdna-input5000000.txt
+/usr/local/bin/mono --llvm --gc=sgen regexdna.csharp-6.csharp_run 0 < regexdna-input5000000.txt
 
 PROGRAM OUTPUT:
 agggtaaa|tttaccct 356
@@ -24,8 +24,3 @@ agggtaa[cgt]|[acg]ttaccct 2178
 50833411
 50000000
 66800214
-
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

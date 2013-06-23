@@ -1,20 +1,49 @@
 
-Tue, 12 Feb 2013 23:43:53 GMT
+Sat, 22 Jun 2013 18:31:38 GMT
 
 MAKE:
 mv nbody.csharp-4.csharp nbody.csharp-4.cs
 /usr/local/bin/mcs -r:/usr/local/lib/mono/4.5/Mono.Simd.dll -optimize+ -platform:x86 -out:nbody.csharp-4.csharp_run nbody.csharp-4.cs
 rm nbody.csharp-4.cs
-0.25s to complete and log all make actions
+0.24s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm --gc=sgen nbody.csharp-4.csharp_run 50000000
+/usr/local/bin/mono --llvm nbody.csharp-4.csharp_run 500000
+
+PROGRAM FAILED 
+
 
 PROGRAM OUTPUT:
--0.169075164
--0.169059907
 
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
+mono: /usr/local/src/llvm/include/llvm/ADT/SmallVector.h:143: const_reference llvm::SmallVectorTemplateCommon<unsigned int, void>::operator[](unsigned int) const [T = unsigned int]: Assertion `begin() + idx < end()' failed.
+Stacktrace:
+
+  at <unknown> <0xffffffff>
+  at NBody.NBody.Main (string[]) <0x0004d>
+  at (wrapper runtime-invoke) <Module>.runtime_invoke_void_object (object,intptr,intptr,intptr) <0xffffffff>
+
+Native stacktrace:
+
+	/usr/local/bin/mono() [0x8109bd3]
+	[0xb778c40c]
+	[0xb778c424]
+	/lib/i386-linux-gnu/libc.so.6(gsignal+0x4f) [0xb7478b1f]
+	/lib/i386-linux-gnu/libc.so.6(abort+0x143) [0xb747c0b3]
+	/lib/i386-linux-gnu/libc.so.6(+0x27877) [0xb7471877]
+	/lib/i386-linux-gnu/libc.so.6(+0x27927) [0xb7471927]
+	/usr/local/bin/mono() [0x85507de]
+
+Debug info from gdb:
+
+Could not attach to process.  If your uid matches the uid of the target
+process, check the setting of /proc/sys/kernel/yama/ptrace_scope, or try
+again as the root user.  For more details, see /etc/sysctl.d/10-ptrace.conf
+ptrace: Operation not permitted.
+No threads.
+
+=================================================================
+Got a SIGABRT while executing native code. This usually indicates
+a fatal error in the mono runtime or one of the native libraries 
+used by your application.
+=================================================================
+

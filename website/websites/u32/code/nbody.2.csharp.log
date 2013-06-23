@@ -1,20 +1,15 @@
 
-Tue, 12 Feb 2013 20:54:01 GMT
+Sat, 22 Jun 2013 21:07:59 GMT
 
 MAKE:
 mv nbody.csharp-2.csharp nbody.csharp-2.cs
 /usr/local/bin/mcs -r:/usr/local/lib/mono/4.5/Mono.Simd.dll -optimize+ -platform:x86 -out:nbody.csharp-2.csharp_run nbody.csharp-2.cs
 rm nbody.csharp-2.cs
-0.24s to complete and log all make actions
+0.23s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm nbody.csharp-2.csharp_run 50000000
+/usr/local/bin/mono --llvm --gc=sgen nbody.csharp-2.csharp_run 50000000
 
 PROGRAM OUTPUT:
 -0.169075164
 -0.169059907
-
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
