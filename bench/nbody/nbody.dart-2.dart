@@ -30,13 +30,14 @@ class Body {
 class NBodySystem {
   var bodies;
 
-  const double solarmass = 4 * Math.PI * Math.PI;
-  const double daysPeryear = 365.24;
+  static const double solarmass = 4 * Math.PI * Math.PI;
+  static const double daysPeryear = 365.24;
 
   NBodySystem() {
     bodies = new List<Body>();
     bodies.addAll([
       // Sun
+
       new Body(
         x: 0.0,
         y: 0.0,
@@ -47,6 +48,7 @@ class NBodySystem {
         mass: solarmass
       ),
       // Jupiter
+
       new Body(
         x: 4.84143144246472090e+00,
         y: -1.16032004402742839e+00,
@@ -57,6 +59,7 @@ class NBodySystem {
         mass: 9.54791938424326609e-04 * solarmass
       ),
       // Saturn
+
       new Body(
         x: 8.34336671824457987e+00,
         y: 4.12479856412430479e+00,
@@ -67,6 +70,7 @@ class NBodySystem {
         mass: 2.85885980666130812e-04 * solarmass
       ),
       // Uranus
+
       new Body(
         x: 1.28943695621391310e+01,
         y: -1.51111514016986312e+01,
@@ -77,6 +81,7 @@ class NBodySystem {
         mass: 4.36624404335156298e-05 * solarmass
       ),
       // Neptune
+
       new Body(
         x: 1.53796971148509165e+01,
         y: -2.59193146099879641e+01,

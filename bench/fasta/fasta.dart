@@ -5,7 +5,7 @@
 */
 
 import 'dart:io';
-import 'dart:typeddata';
+import 'dart:typed_data';
 
 const String ALU =
 "GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG"
@@ -55,7 +55,7 @@ class Frequency {
     return max * last * oneOverIM;
   }
 
-  Frequency(List<String> charList, Float64List probList) {
+  Frequency(List<String> charList, List<double> probList) {
     chars = new Uint8List(charList.length);
     for (int i=0; i < chars.length; i++) {
       chars[i] = charList[i].codeUnitAt(0);
@@ -182,4 +182,3 @@ main() {
   HOMO_SAPIENS.last = IUB.last;
   makeRandomFasta("THREE", "Homo sapiens frequency", HOMO_SAPIENS, n * 5, writer);
 }
-

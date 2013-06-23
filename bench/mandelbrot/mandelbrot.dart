@@ -9,7 +9,7 @@
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:async';
-import 'dart:typeddata';
+import 'dart:typed_data';
 
 void main() {
   int n = ((){
@@ -21,7 +21,7 @@ void main() {
   var ports = new List(threads);
   var segmentFutures = new List(threads);
   int lineLen = (n - 1) ~/ 8 + 1;
-  var lines = new List<Int8List>(n);
+  var lines = new List<Uint8List>(n);
 
   var segmentSize = new List.filled(threads, n ~/ threads);
   segmentSize[0] += n % threads;
@@ -49,10 +49,10 @@ void main() {
   });
 }
 
-Int8List calculateLine (int n, int y) {
+Uint8List calculateLine (int n, int y) {
   int lineLen = (n - 1) ~/ 8 + 1;
 
-  var line = new Int8List(lineLen);
+  var line = new Uint8List(lineLen);
 
   int xbyte = 0, bits = 1;
   double ci = y * 2.0 / n - 1.0;
@@ -87,7 +87,7 @@ void calculateSegment () {
     int from = msg['from'];
     int len = msg['len'];
 
-    var lines = new List<Int8List>(len);
+    var lines = new List<Uint8List>(len);
     for (int i = 0; i < len; i++) {
       lines[i] = calculateLine(n, from + i);
     }

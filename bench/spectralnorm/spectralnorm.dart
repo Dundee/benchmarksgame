@@ -6,7 +6,7 @@
 
 import 'dart:math' as Math;
 import 'dart:io';
-import 'dart:typeddata';
+import 'dart:typed_data';
 
 double A(int i, int j) {
   int div = ((i + j) * (i + j + 1) >> 1) + i + 1;
