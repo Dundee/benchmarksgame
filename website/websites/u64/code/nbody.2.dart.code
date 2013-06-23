@@ -30,13 +30,14 @@
 <span class="hl kwa">class</span> NBodySystem <span class="hl opt">{</span>
   <span class="hl kwa">var</span> bodies<span class="hl opt">;</span>
 
-  <span class="hl kwa">const</span> <span class="hl kwb">double</span> solarmass <span class="hl opt">=</span> <span class="hl num">4</span> <span class="hl opt">*</span> Math<span class="hl opt">.</span>PI <span class="hl opt">*</span> Math<span class="hl opt">.</span>PI<span class="hl opt">;</span>
-  <span class="hl kwa">const</span> <span class="hl kwb">double</span> daysPeryear <span class="hl opt">=</span> <span class="hl num">365.24</span><span class="hl opt">;</span>
+  <span class="hl kwb">static</span> <span class="hl kwa">const</span> <span class="hl kwb">double</span> solarmass <span class="hl opt">=</span> <span class="hl num">4</span> <span class="hl opt">*</span> Math<span class="hl opt">.</span>PI <span class="hl opt">*</span> Math<span class="hl opt">.</span>PI<span class="hl opt">;</span>
+  <span class="hl kwb">static</span> <span class="hl kwa">const</span> <span class="hl kwb">double</span> daysPeryear <span class="hl opt">=</span> <span class="hl num">365.24</span><span class="hl opt">;</span>
 
   <span class="hl kwd">NBodySystem</span><span class="hl opt">() {</span>
     bodies <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span>Body<span class="hl opt">&gt;();</span>
     bodies<span class="hl opt">.</span><span class="hl kwd">addAll</span><span class="hl opt">([</span>
       <span class="hl slc">// Sun</span>
+
       <span class="hl kwa">new</span> <span class="hl kwd">Body</span><span class="hl opt">(</span>
         x<span class="hl opt">:</span> <span class="hl num">0.0</span><span class="hl opt">,</span>
         y<span class="hl opt">:</span> <span class="hl num">0.0</span><span class="hl opt">,</span>
@@ -47,6 +48,7 @@
         mass<span class="hl opt">:</span> solarmass
       <span class="hl opt">),</span>
       <span class="hl slc">// Jupiter</span>
+
       <span class="hl kwa">new</span> <span class="hl kwd">Body</span><span class="hl opt">(</span>
         x<span class="hl opt">:</span> <span class="hl num">4.84143144246472090e+00</span><span class="hl opt">,</span>
         y<span class="hl opt">: -</span><span class="hl num">1.16032004402742839e+00</span><span class="hl opt">,</span>
@@ -57,6 +59,7 @@
         mass<span class="hl opt">:</span> <span class="hl num">9.54791938424326609e-04</span> <span class="hl opt">*</span> solarmass
       <span class="hl opt">),</span>
       <span class="hl slc">// Saturn</span>
+
       <span class="hl kwa">new</span> <span class="hl kwd">Body</span><span class="hl opt">(</span>
         x<span class="hl opt">:</span> <span class="hl num">8.34336671824457987e+00</span><span class="hl opt">,</span>
         y<span class="hl opt">:</span> <span class="hl num">4.12479856412430479e+00</span><span class="hl opt">,</span>
@@ -67,6 +70,7 @@
         mass<span class="hl opt">:</span> <span class="hl num">2.85885980666130812e-04</span> <span class="hl opt">*</span> solarmass
       <span class="hl opt">),</span>
       <span class="hl slc">// Uranus</span>
+
       <span class="hl kwa">new</span> <span class="hl kwd">Body</span><span class="hl opt">(</span>
         x<span class="hl opt">:</span> <span class="hl num">1.28943695621391310e+01</span><span class="hl opt">,</span>
         y<span class="hl opt">: -</span><span class="hl num">1.51111514016986312e+01</span><span class="hl opt">,</span>
@@ -77,6 +81,7 @@
         mass<span class="hl opt">:</span> <span class="hl num">4.36624404335156298e-05</span> <span class="hl opt">*</span> solarmass
       <span class="hl opt">),</span>
       <span class="hl slc">// Neptune</span>
+
       <span class="hl kwa">new</span> <span class="hl kwd">Body</span><span class="hl opt">(</span>
         x<span class="hl opt">:</span> <span class="hl num">1.53796971148509165e+01</span><span class="hl opt">,</span>
         y<span class="hl opt">: -</span><span class="hl num">2.59193146099879641e+01</span><span class="hl opt">,</span>

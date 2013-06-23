@@ -6,7 +6,7 @@
 
 <span class="hl kwa">import</span> <span class="hl str">'dart:math'</span> as Math<span class="hl opt">;</span>
 <span class="hl kwa">import</span> <span class="hl str">'dart:io'</span><span class="hl opt">;</span>
-<span class="hl kwa">import</span> <span class="hl str">'dart:typeddata'</span><span class="hl opt">;</span>
+<span class="hl kwa">import</span> <span class="hl str">'dart:typed_data'</span><span class="hl opt">;</span>
 
 <span class="hl kwb">double</span> <span class="hl kwd">A</span><span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">,</span> <span class="hl kwb">int</span> j<span class="hl opt">) {</span>
   <span class="hl kwb">int</span> div <span class="hl opt">= ((</span>i <span class="hl opt">+</span> j<span class="hl opt">) * (</span>i <span class="hl opt">+</span> j <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">) &gt;&gt;</span> <span class="hl num">1</span><span class="hl opt">) +</span> i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>

@@ -9,7 +9,7 @@
 <span class="hl kwa">import</span> <span class="hl str">'dart:io'</span><span class="hl opt">;</span>
 <span class="hl kwa">import</span> <span class="hl str">'dart:isolate'</span><span class="hl opt">;</span>
 <span class="hl kwa">import</span> <span class="hl str">'dart:async'</span><span class="hl opt">;</span>
-<span class="hl kwa">import</span> <span class="hl str">'dart:typeddata'</span><span class="hl opt">;</span>
+<span class="hl kwa">import</span> <span class="hl str">'dart:typed_data'</span><span class="hl opt">;</span>
 
 <span class="hl kwa">void</span> <span class="hl kwd">main</span><span class="hl opt">() {</span>
   <span class="hl kwb">int</span> n <span class="hl opt">= ((){</span>
@@ -21,7 +21,7 @@
   <span class="hl kwa">var</span> ports <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">List</span><span class="hl opt">(</span>threads<span class="hl opt">);</span>
   <span class="hl kwa">var</span> segmentFutures <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">List</span><span class="hl opt">(</span>threads<span class="hl opt">);</span>
   <span class="hl kwb">int</span> lineLen <span class="hl opt">= (</span>n <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">)</span> ~<span class="hl opt">/</span> <span class="hl num">8</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
-  <span class="hl kwa">var</span> lines <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span>Int8List<span class="hl opt">&gt;(</span>n<span class="hl opt">);</span>
+  <span class="hl kwa">var</span> lines <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span>Uint8List<span class="hl opt">&gt;(</span>n<span class="hl opt">);</span>
 
   <span class="hl kwa">var</span> segmentSize <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">.</span><span class="hl kwd">filled</span><span class="hl opt">(</span>threads<span class="hl opt">,</span> n ~<span class="hl opt">/</span> threads<span class="hl opt">);</span>
   segmentSize<span class="hl kwc">[0]</span> <span class="hl opt">+=</span> n <span class="hl opt">%</span> threads<span class="hl opt">;</span>
@@ -49,10 +49,10 @@
   <span class="hl opt">});</span>
 <span class="hl opt">}</span>
 
-Int8List <span class="hl kwd">calculateLine</span> <span class="hl opt">(</span><span class="hl kwb">int</span> n<span class="hl opt">,</span> <span class="hl kwb">int</span> y<span class="hl opt">) {</span>
+Uint8List <span class="hl kwd">calculateLine</span> <span class="hl opt">(</span><span class="hl kwb">int</span> n<span class="hl opt">,</span> <span class="hl kwb">int</span> y<span class="hl opt">) {</span>
   <span class="hl kwb">int</span> lineLen <span class="hl opt">= (</span>n <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">)</span> ~<span class="hl opt">/</span> <span class="hl num">8</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
 
-  <span class="hl kwa">var</span> line <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Int8List</span><span class="hl opt">(</span>lineLen<span class="hl opt">);</span>
+  <span class="hl kwa">var</span> line <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Uint8List</span><span class="hl opt">(</span>lineLen<span class="hl opt">);</span>
 
   <span class="hl kwb">int</span> xbyte <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> bits <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
   <span class="hl kwb">double</span> ci <span class="hl opt">=</span> y <span class="hl opt">*</span> <span class="hl num">2.0</span> <span class="hl opt">/</span> n <span class="hl opt">-</span> <span class="hl num">1.0</span><span class="hl opt">;</span>
@@ -87,7 +87,7 @@ Int8List <span class="hl kwd">calculateLine</span> <span class="hl opt">(</span>
     <span class="hl kwb">int</span> from <span class="hl opt">=</span> msg<span class="hl opt">[</span><span class="hl str">'from'</span><span class="hl opt">];</span>
     <span class="hl kwb">int</span> len <span class="hl opt">=</span> msg<span class="hl opt">[</span><span class="hl str">'len'</span><span class="hl opt">];</span>
 
-    <span class="hl kwa">var</span> lines <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span>Int8List<span class="hl opt">&gt;(</span>len<span class="hl opt">);</span>
+    <span class="hl kwa">var</span> lines <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span>Uint8List<span class="hl opt">&gt;(</span>len<span class="hl opt">);</span>
     <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> len<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
       lines<span class="hl kwc">[i]</span> <span class="hl opt">=</span> <span class="hl kwd">calculateLine</span><span class="hl opt">(</span>n<span class="hl opt">,</span> from <span class="hl opt">+</span> i<span class="hl opt">);</span>
     <span class="hl opt">}</span>
