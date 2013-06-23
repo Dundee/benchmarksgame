@@ -1,5 +1,5 @@
 
-Tue, 16 Apr 2013 19:00:21 GMT
+Sun, 23 Jun 2013 05:07:41 GMT
 
 COMMAND LINE:
 /usr/local/src/dart-sdk/bin/dart --old_gen_heap_size=2048 revcomp.dart 0 < revcomp-input250000.txt
@@ -9,28 +9,15 @@ PROGRAM FAILED
 
 PROGRAM OUTPUT:
 >ONE Homo sapiens alu
-#0      IterableMixinWorkaround._rangeCheck (dart:_collection-dev:852:7)
-#1      IterableMixinWorkaround.getRangeList (dart:_collection-dev:856:16)
-#2      List.getRange (dart:core-patch:1121:48)
-#3      main.printSeq (file:///home/dunham/benchmarksgame_onecore/revcomp/tmp/revcomp.dart:30:30)
-#4      main.<anonymous closure> (file:///home/dunham/benchmarksgame_onecore/revcomp/tmp/revcomp.dart:51:17)
-#5      _StreamSubscriptionImpl._sendData (dart:async:1576:12)
-#6      _StreamImpl._sendData.<anonymous closure> (dart:async:1352:29)
-#7      _SingleStreamImpl._forEachSubscriber (dart:async:1436:11)
-#8      _StreamImpl._sendData (dart:async:1350:23)
-#9      _StreamImpl._add (dart:async:1152:16)
-#10     StreamController.add.add (dart:async:1067:35)
-
+Uncaught Error: null
 
 Unhandled exception:
-RangeError: value 60 not in range 499940..500000
-#0      _throwDelayed.<anonymous closure> (dart:async:1123:5)
-#1      _asyncRunCallback._asyncRunCallback (dart:async:34:17)
-#2      _asyncRunCallback._asyncRunCallback (dart:async:44:9)
-#3      Timer.run.<anonymous closure> (dart:async:2240:21)
-#4      Timer.run.<anonymous closure> (dart:async:2248:13)
-#5      Timer.Timer.<anonymous closure> (dart:async-patch:15:15)
-#6      _Timer._createTimerHandler._handleTimeout (dart:io:6721:28)
-#7      _Timer._createTimerHandler._handleTimeout (dart:io:6729:7)
-#8      _Timer._createTimerHandler.<anonymous closure> (dart:io:6737:23)
-#9      _ReceivePortImpl._handleMessage (dart:isolate-patch:81:92)
+Throw of null.
+#0      _DefaultZone.handleUncaughtError.<anonymous closure> (dart:async/zone.dart:148:7)
+#1      _asyncRunCallback._asyncRunCallback (dart:async/event_loop.dart:9:15)
+#2      _asyncRunCallback._asyncRunCallback (dart:async/event_loop.dart:13:7)
+#3      _createTimer.<anonymous closure> (dart:async-patch/timer_patch.dart:8:13)
+#4      _Timer._createTimerHandler._handleTimeout (timer_impl.dart:91:28)
+#5      _Timer._createTimerHandler._handleTimeout (timer_impl.dart:99:7)
+#6      _Timer._createTimerHandler.<anonymous closure> (timer_impl.dart:107:23)
+#7      _ReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:81:92)
