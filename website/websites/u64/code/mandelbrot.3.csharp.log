@@ -1,5 +1,5 @@
 
-Wed, 13 Feb 2013 11:09:27 GMT
+Tue, 25 Jun 2013 01:46:14 GMT
 
 MAKE:
 mv mandelbrot.csharp-3.csharp mandelbrot.csharp-3.cs
@@ -8,11 +8,6 @@ rm mandelbrot.csharp-3.cs
 0.22s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm -O=unsafe mandelbrot.csharp-3.csharp_run 16000
+/usr/local/bin/mono --llvm mandelbrot.csharp-3.csharp_run 16000
 
 (BINARY) PROGRAM OUTPUT NOT SHOWN
-
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

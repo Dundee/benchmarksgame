@@ -1,14 +1,14 @@
 
-Wed, 13 Feb 2013 08:56:10 GMT
+Mon, 24 Jun 2013 22:49:17 GMT
 
 MAKE:
 mv revcomp.csharp revcomp.cs
 /usr/local/bin/mcs  -optimize+ -platform:x64 -out:revcomp.csharp_run revcomp.cs
 rm revcomp.cs
-0.27s to complete and log all make actions
+0.24s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm revcomp.csharp_run 0 < revcomp-input25000000.txt
+/usr/local/bin/mono --llvm --gc=sgen revcomp.csharp_run 0 < revcomp-input25000000.txt
 
 (TRUNCATED) PROGRAM OUTPUT:
 >ONE Homo sapiens alu
@@ -180,7 +180,3 @@ CCTCCCGGGTTCAAGCGATTCTCCTGCCTCAGCCTCCCGAGTAGCTGGGATTACAGGCGC
 GCGCCACCACGCCCGGCTAATTTTTGTATTTTTAGTAGAGACGGGGTTTCACCATGTTGG
 CCAGGCTGGTCTCGAACTCCTGACCTCAGGTGATCCGCCCGCCTCGGCCTCCCAAAGTGC
 TGGGATTACAGGCGTGAGCCACCGCGCCCGG
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

@@ -1,14 +1,14 @@
 
-Wed, 13 Feb 2013 10:27:45 GMT
+Tue, 25 Jun 2013 00:21:19 GMT
 
 MAKE:
 mv knucleotide.csharp-5.csharp knucleotide.csharp-5.cs
 /usr/local/bin/mcs -unsafe+ -optimize+ -platform:x64 -out:knucleotide.csharp-5.csharp_run knucleotide.csharp-5.cs
 rm knucleotide.csharp-5.cs
-0.28s to complete and log all make actions
+0.29s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm -O=unsafe knucleotide.csharp-5.csharp_run 0 < knucleotide-input25000000.txt
+/usr/local/bin/mono --llvm knucleotide.csharp-5.csharp_run 0 < knucleotide-input25000000.txt
 
 PROGRAM OUTPUT:
 A 30.295
@@ -38,8 +38,3 @@ GG 3.902
 47336	GGTATT
 893	GGTATTTTAATT
 893	GGTATTTTAATTTATAGT
-
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

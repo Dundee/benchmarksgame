@@ -1,2 +1,4 @@
-<p>Mono JIT compiler version 3.0.3 (tarball Tue Feb 12 21:22:20 PST 2013)<br/>
-	LLVM:          yes(3.2svn-mono)</p>
+<p>Mono JIT compiler version 3.0.12 (tarball Thu Jun 20 11:46:48 PDT 2013)<br/>
+	LLVM:          yes(3.2svn-mono)<br/>
+	GC:            Included Boehm (with typed GC and Parallel Mark)
+</p>

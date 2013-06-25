@@ -1,5 +1,5 @@
 
-Wed, 13 Feb 2013 09:16:59 GMT
+Mon, 24 Jun 2013 22:54:26 GMT
 
 MAKE:
 mv threadring.csharp threadring.cs
@@ -8,12 +8,7 @@ rm threadring.cs
 0.22s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm threadring.csharp_run 50000000
+/usr/local/bin/mono --llvm --gc=sgen threadring.csharp_run 50000000
 
 PROGRAM OUTPUT:
 292
-
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

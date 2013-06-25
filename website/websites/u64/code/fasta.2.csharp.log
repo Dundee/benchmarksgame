@@ -1,14 +1,14 @@
 
-Wed, 13 Feb 2013 10:16:19 GMT
+Mon, 24 Jun 2013 23:44:32 GMT
 
 MAKE:
 mv fasta.csharp-2.csharp fasta.csharp-2.cs
 /usr/local/bin/mcs  -optimize+ -platform:x64 -out:fasta.csharp-2.csharp_run fasta.csharp-2.cs
 rm fasta.csharp-2.cs
-0.24s to complete and log all make actions
+0.22s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm -O=unsafe fasta.csharp-2.csharp_run 25000000
+/usr/local/bin/mono --llvm fasta.csharp-2.csharp_run 25000000
 
 (TRUNCATED) PROGRAM OUTPUT:
 >ONE Homo sapiens alu
@@ -180,7 +180,3 @@ GACCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAATACAAAAATTAGCCGGG
 CGTGGTGGCGCGCGCCTGTAATCCCAGCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTG
 AACCCGGGAGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCCAGCCTGGGCG
 ACAGAGCGAGACTCCGTCTCAAAAAGGCCGG
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

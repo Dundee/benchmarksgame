@@ -1,5 +1,5 @@
 
-Wed, 13 Feb 2013 10:18:35 GMT
+Mon, 24 Jun 2013 23:45:22 GMT
 
 MAKE:
 mv fastaredux.csharp fastaredux.cs
@@ -8,7 +8,7 @@ rm fastaredux.cs
 0.25s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm -O=unsafe fastaredux.csharp_run 25000000
+/usr/local/bin/mono --llvm fastaredux.csharp_run 25000000
 
 (TRUNCATED) PROGRAM OUTPUT:
 >ONE Homo sapiens alu
@@ -180,7 +180,3 @@ GACCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAATACAAAAATTAGCCGGG
 CGTGGTGGCGCGCGCCTGTAATCCCAGCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTG
 AACCCGGGAGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCCAGCCTGGGCG
 ACAGAGCGAGACTCCGTCTCAAAAAGGCCGG
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

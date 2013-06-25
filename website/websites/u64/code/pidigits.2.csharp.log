@@ -1,14 +1,14 @@
 
-Wed, 13 Feb 2013 11:46:55 GMT
+Tue, 25 Jun 2013 02:13:18 GMT
 
 MAKE:
 mv pidigits.csharp-2.csharp pidigits.csharp-2.cs
 /usr/local/bin/mcs -r:Mono.Security -optimize+ -platform:x64 -out:pidigits.csharp-2.csharp_run pidigits.csharp-2.cs
 rm pidigits.csharp-2.cs
-0.22s to complete and log all make actions
+0.23s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm -O=unsafe pidigits.csharp-2.csharp_run 10000
+/usr/local/bin/mono --llvm pidigits.csharp-2.csharp_run 10000
 
 (TRUNCATED) PROGRAM OUTPUT:
 3141592653	:10
@@ -620,7 +620,3 @@ COMMAND LINE:
 0432875262	:6070
 8889639958	:6080
 7947572917	:
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

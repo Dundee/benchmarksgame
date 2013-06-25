@@ -1,5 +1,5 @@
 
-Wed, 13 Feb 2013 12:32:50 GMT
+Tue, 25 Jun 2013 02:40:37 GMT
 
 MAKE:
 mv spectralnorm.csharp spectralnorm.cs
@@ -8,12 +8,7 @@ rm spectralnorm.cs
 0.22s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm -O=unsafe spectralnorm.csharp_run 5500
+/usr/local/bin/mono --llvm spectralnorm.csharp_run 5500
 
 PROGRAM OUTPUT:
 1.274224153
-
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

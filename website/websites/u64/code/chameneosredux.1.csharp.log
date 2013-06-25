@@ -1,5 +1,5 @@
 
-Wed, 13 Feb 2013 06:18:57 GMT
+Mon, 24 Jun 2013 23:19:35 GMT
 
 MAKE:
 mv chameneosredux.csharp chameneosredux.cs
@@ -8,7 +8,7 @@ rm chameneosredux.cs
 0.24s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm -O=unsafe chameneosredux.csharp_run 6000000
+/usr/local/bin/mono --llvm chameneosredux.csharp_run 6000000
 
 PROGRAM OUTPUT:
 blue + blue -> blue
@@ -22,26 +22,21 @@ yellow + red -> blue
 yellow + yellow -> yellow
 
  blue red yellow
-3973172 zero
-4033660 zero
-3993168 zero
+3992625 zero
+4019892 zero
+3987483 zero
  one two zero zero zero zero zero zero
 
  blue red yellow red yellow blue red yellow red blue
-1237602 zero
-1225701 zero
-1204754 zero
-1198629 zero
-1199862 zero
-1193772 zero
-1188385 zero
-1197293 zero
-1172700 zero
-1181302 zero
+1232914 zero
+1219854 zero
+1218589 zero
+1207890 zero
+1194607 zero
+1187101 zero
+1197154 zero
+1183272 zero
+1173798 zero
+1184821 zero
  one two zero zero zero zero zero zero
 
-
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
