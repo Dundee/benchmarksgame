@@ -39,13 +39,14 @@ Uint8List <span class="hl kwd">bytes</span> <span class="hl opt">(</span>String 
 <span class="hl opt">}</span>
 
 <span class="hl kwa">class</span> Out <span class="hl opt">{</span>
-  <span class="hl kwb">static</span> final Uint8List buf <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Uint8List</span><span class="hl opt">(</span>OUT_BUFFER_SIZE<span class="hl opt">);</span>
+  <span class="hl kwb">static</span> Uint8List buf <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Uint8List</span><span class="hl opt">(</span>OUT_BUFFER_SIZE<span class="hl opt">);</span>
   <span class="hl kwb">static</span> <span class="hl kwa">const</span> <span class="hl kwb">int</span> LIMIT <span class="hl opt">=</span> OUT_BUFFER_SIZE <span class="hl opt">-</span> <span class="hl num">2</span> <span class="hl opt">*</span> LINE_LENGTH <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
   <span class="hl kwb">static int</span> ct <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
 
   <span class="hl kwb">static</span> <span class="hl kwa">void</span> <span class="hl kwd">checkFlush</span> <span class="hl opt">() {</span>
     <span class="hl kwa">if</span> <span class="hl opt">(</span>ct <span class="hl opt">&gt;=</span> LIMIT<span class="hl opt">) {</span>
       stdout<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span><span class="hl kwa">new</span> Uint8List<span class="hl opt">.</span><span class="hl kwd">view</span><span class="hl opt">(</span>buf<span class="hl opt">.</span>buffer<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> ct<span class="hl opt">));</span>
+      buf <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Uint8List</span><span class="hl opt">(</span>OUT_BUFFER_SIZE<span class="hl opt">);</span>
       ct <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
     <span class="hl opt">}</span>
   <span class="hl opt">}</span>
