@@ -39,13 +39,14 @@ class Random {
 }
 
 class Out {
-  static final Uint8List buf = new Uint8List(OUT_BUFFER_SIZE);
+  static Uint8List buf = new Uint8List(OUT_BUFFER_SIZE);
   static const int LIMIT = OUT_BUFFER_SIZE - 2 * LINE_LENGTH - 1;
   static int ct = 0;
 
   static void checkFlush () {
     if (ct >= LIMIT) {
       stdout.add(new Uint8List.view(buf.buffer, 0, ct));
+      buf = new Uint8List(OUT_BUFFER_SIZE);
       ct = 0;
     }
   }
