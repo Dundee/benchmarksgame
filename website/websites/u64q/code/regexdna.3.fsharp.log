@@ -1,15 +1,15 @@
 
-Wed, 13 Feb 2013 08:28:09 GMT
+Fri, 28 Jun 2013 18:38:45 GMT
 
 MAKE:
 mv regexdna.fsharp-3.fsharp regexdna.fsharp-3.fs
 /usr/local/bin/fsharpc --target:exe --platform:x64 -O  -o regexdna.fsharp-3.fsharp_run.exe regexdna.fsharp-3.fs
-Microsoft (R) F# 3.0 Compiler version (Mono build)
-Copyright (c) Microsoft Corporation. All Rights Reserved.
+F# Compiler for F# 3.0 (Open Source Edition)
+Freely distributed under the Apache 2.0 Open Source License
 
 /home/dunham/benchmarksgame_quadcore/regexdna/tmp/regexdna.fsharp-3.fs(7,1): warning FS0221: The declarations in this file will be placed in an implicit module 'Regexdna.fsharp-3' based on the file name 'regexdna.fsharp-3.fs'. However this is not a valid F# identifier, so the contents will not be accessible from other files. Consider renaming the file or adding a 'module' or 'namespace' declaration at the top of the file.
 rm regexdna.fsharp-3.fs
-3.98s to complete and log all make actions
+4.31s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm regexdna.fsharp-3.fsharp_run.exe 0 < regexdna-input5000000.txt
@@ -28,8 +28,3 @@ agggtaa[cgt]|[acg]ttaccct 2178
 50833411
 50000000
 66800214
-
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

@@ -1,22 +1,17 @@
 
-Wed, 13 Feb 2013 07:49:24 GMT
+Fri, 28 Jun 2013 18:26:53 GMT
 
 MAKE:
 mv mandelbrot.fsharp-3.fsharp mandelbrot.fsharp-3.fs
 /usr/local/bin/fsharpc --target:exe --platform:x64 -O  -o mandelbrot.fsharp-3.fsharp_run.exe mandelbrot.fsharp-3.fs
-Microsoft (R) F# 3.0 Compiler version (Mono build)
-Copyright (c) Microsoft Corporation. All Rights Reserved.
+F# Compiler for F# 3.0 (Open Source Edition)
+Freely distributed under the Apache 2.0 Open Source License
 
 /home/dunham/benchmarksgame_quadcore/mandelbrot/tmp/mandelbrot.fsharp-3.fs(9,1): warning FS0221: The declarations in this file will be placed in an implicit module 'Mandelbrot.fsharp-3' based on the file name 'mandelbrot.fsharp-3.fs'. However this is not a valid F# identifier, so the contents will not be accessible from other files. Consider renaming the file or adding a 'module' or 'namespace' declaration at the top of the file.
 rm mandelbrot.fsharp-3.fs
-3.90s to complete and log all make actions
+4.23s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm mandelbrot.fsharp-3.fsharp_run.exe 16000
 
 (BINARY) PROGRAM OUTPUT NOT SHOWN
-
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

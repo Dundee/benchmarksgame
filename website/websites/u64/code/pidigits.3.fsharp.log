@@ -1,15 +1,15 @@
 
-Wed, 13 Feb 2013 11:50:22 GMT
+Fri, 28 Jun 2013 21:21:48 GMT
 
 MAKE:
 mv pidigits.fsharp-3.fsharp pidigits.fsharp-3.fs
 /usr/local/bin/fsharpc --target:exe --platform:x64 -O  -o pidigits.fsharp-3.fsharp_run.exe pidigits.fsharp-3.fs
-Microsoft (R) F# 3.0 Compiler version (Mono build)
-Copyright (c) Microsoft Corporation. All Rights Reserved.
+F# Compiler for F# 3.0 (Open Source Edition)
+Freely distributed under the Apache 2.0 Open Source License
 
 /home/dunham/benchmarksgame_onecore/pidigits/tmp/pidigits.fsharp-3.fs(16,6): warning FS0009: Uses of this construct may result in the generation of unverifiable .NET IL code. This warning can be disabled using '--nowarn:9' or '#nowarn "9"'.
 rm pidigits.fsharp-3.fs
-4.25s to complete and log all make actions
+4.60s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm -O=unsafe pidigits.fsharp-3.fsharp_run.exe 10000
@@ -624,7 +624,3 @@ COMMAND LINE:
 0432875262	:6070
 8889639958	:6080
 7947572917	:
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
