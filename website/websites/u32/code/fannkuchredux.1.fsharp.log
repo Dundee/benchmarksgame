@@ -1,22 +1,17 @@
 
-Wed, 13 Feb 2013 01:30:33 GMT
+Sat, 29 Jun 2013 03:51:12 GMT
 
 MAKE:
 mv fannkuchredux.fsharp fannkuchredux.fs
 /usr/local/bin/fsharpc --target:exe --platform:x86 -O  -o fannkuchredux.fsharp_run.exe fannkuchredux.fs
-Microsoft (R) F# 3.0 Compiler version (Mono build)
-Copyright (c) Microsoft Corporation. All Rights Reserved.
+F# Compiler for F# 3.0 (Open Source Edition)
+Freely distributed under the Apache 2.0 Open Source License
 rm fannkuchredux.fs
-3.61s to complete and log all make actions
+3.94s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm fannkuchredux.fsharp_run.exe 12
+/usr/local/bin/mono --llvm --gc=sgen fannkuchredux.fsharp_run.exe 12
 
 PROGRAM OUTPUT:
 3968050
 Pfannkuchen(12) = 65
-
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

@@ -1,16 +1,16 @@
 
-Wed, 13 Feb 2013 01:35:55 GMT
+Sat, 29 Jun 2013 03:54:45 GMT
 
 MAKE:
 mv fasta.fsharp fasta.fs
 /usr/local/bin/fsharpc --target:exe --platform:x86 -O  -o fasta.fsharp_run.exe fasta.fs
-Microsoft (R) F# 3.0 Compiler version (Mono build)
-Copyright (c) Microsoft Corporation. All Rights Reserved.
+F# Compiler for F# 3.0 (Open Source Edition)
+Freely distributed under the Apache 2.0 Open Source License
 rm fasta.fs
-3.95s to complete and log all make actions
+4.27s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm fasta.fsharp_run.exe 25000000
+/usr/local/bin/mono --llvm --gc=sgen fasta.fsharp_run.exe 25000000
 
 (TRUNCATED) PROGRAM OUTPUT:
 >ONE Homo sapiens alu
@@ -182,7 +182,3 @@ GACCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAATACAAAAATTAGCCGGG
 CGTGGTGGCGCGCGCCTGTAATCCCAGCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTG
 AACCCGGGAGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCCAGCCTGGGCG
 ACAGAGCGAGACTCCGTCTCAAAAAGGCCGG
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!

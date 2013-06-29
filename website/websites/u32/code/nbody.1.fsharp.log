@@ -1,22 +1,17 @@
 
-Wed, 13 Feb 2013 01:51:42 GMT
+Sat, 29 Jun 2013 04:09:26 GMT
 
 MAKE:
 mv nbody.fsharp nbody.fs
 /usr/local/bin/fsharpc --target:exe --platform:x86 -O  -o nbody.fsharp_run.exe nbody.fs
-Microsoft (R) F# 3.0 Compiler version (Mono build)
-Copyright (c) Microsoft Corporation. All Rights Reserved.
+F# Compiler for F# 3.0 (Open Source Edition)
+Freely distributed under the Apache 2.0 Open Source License
 rm nbody.fs
-4.17s to complete and log all make actions
+4.41s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm nbody.fsharp_run.exe 50000000
+/usr/local/bin/mono --llvm --gc=sgen nbody.fsharp_run.exe 50000000
 
 PROGRAM OUTPUT:
 -0.169075164
 -0.169059907
-
-<premain>: CommandLine Error: Argument 'misched' defined more than once!
-<premain>: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
--simplifycfg: CommandLine Error: Argument 'misched' defined more than once!
--simplifycfg: CommandLine Error: Argument 'print-machineinstrs' defined more than once!
