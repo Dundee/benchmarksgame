@@ -1,5 +1,5 @@
 
-Fri, 28 Jun 2013 18:11:38 GMT
+Sat, 29 Jun 2013 06:17:33 GMT
 
 MAKE:
 mv fannkuchredux.fsharp-2.fsharp fannkuchredux.fsharp-2.fs
@@ -9,10 +9,10 @@ Freely distributed under the Apache 2.0 Open Source License
 
 /home/dunham/benchmarksgame_quadcore/fannkuchredux/tmp/fannkuchredux.fsharp-2.fs(8,1): warning FS0221: The declarations in this file will be placed in an implicit module 'Fannkuchredux.fsharp-2' based on the file name 'fannkuchredux.fsharp-2.fs'. However this is not a valid F# identifier, so the contents will not be accessible from other files. Consider renaming the file or adding a 'module' or 'namespace' declaration at the top of the file.
 rm fannkuchredux.fsharp-2.fs
-4.02s to complete and log all make actions
+4.00s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm fannkuchredux.fsharp-2.fsharp_run.exe 12
+/usr/local/bin/mono --llvm --gc=sgen fannkuchredux.fsharp-2.fsharp_run.exe 12
 
 PROGRAM OUTPUT:
 3968050

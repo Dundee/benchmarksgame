@@ -1,5 +1,5 @@
 
-Fri, 28 Jun 2013 21:04:05 GMT
+Sat, 29 Jun 2013 07:43:54 GMT
 
 MAKE:
 mv fastaredux.fsharp-2.fsharp fastaredux.fsharp-2.fs
@@ -9,10 +9,10 @@ Freely distributed under the Apache 2.0 Open Source License
 
 /home/dunham/benchmarksgame_onecore/fastaredux/tmp/fastaredux.fsharp-2.fs(6,1): warning FS0221: The declarations in this file will be placed in an implicit module 'Fastaredux.fsharp-2' based on the file name 'fastaredux.fsharp-2.fs'. However this is not a valid F# identifier, so the contents will not be accessible from other files. Consider renaming the file or adding a 'module' or 'namespace' declaration at the top of the file.
 rm fastaredux.fsharp-2.fs
-4.39s to complete and log all make actions
+4.37s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm -O=unsafe fastaredux.fsharp-2.fsharp_run.exe 25000000
+/usr/local/bin/mono --llvm fastaredux.fsharp-2.fsharp_run.exe 25000000
 
 (TRUNCATED) PROGRAM OUTPUT:
 >ONE Homo sapiens alu

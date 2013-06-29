@@ -1,5 +1,5 @@
 
-Fri, 28 Jun 2013 19:06:18 GMT
+Sat, 29 Jun 2013 07:07:55 GMT
 
 MAKE:
 mv threadring.fsharp-4.fsharp threadring.fsharp-4.fs
@@ -12,7 +12,7 @@ rm threadring.fsharp-4.fs
 3.86s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm threadring.fsharp-4.fsharp_run.exe 50000000
+/usr/local/bin/mono --llvm --gc=sgen threadring.fsharp-4.fsharp_run.exe 50000000
 
 PROGRAM OUTPUT:
 292

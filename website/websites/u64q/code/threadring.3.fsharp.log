@@ -1,5 +1,5 @@
 
-Fri, 28 Jun 2013 19:00:33 GMT
+Sat, 29 Jun 2013 07:04:41 GMT
 
 MAKE:
 mv threadring.fsharp-3.fsharp threadring.fsharp-3.fs
@@ -9,10 +9,10 @@ Freely distributed under the Apache 2.0 Open Source License
 
 /home/dunham/benchmarksgame_quadcore/threadring/tmp/threadring.fsharp-3.fs(9,1): warning FS0221: The declarations in this file will be placed in an implicit module 'Threadring.fsharp-3' based on the file name 'threadring.fsharp-3.fs'. However this is not a valid F# identifier, so the contents will not be accessible from other files. Consider renaming the file or adding a 'module' or 'namespace' declaration at the top of the file.
 rm threadring.fsharp-3.fs
-3.98s to complete and log all make actions
+3.97s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm threadring.fsharp-3.fsharp_run.exe 50000000
+/usr/local/bin/mono --llvm --gc=sgen threadring.fsharp-3.fsharp_run.exe 50000000
 
 PROGRAM OUTPUT:
 292

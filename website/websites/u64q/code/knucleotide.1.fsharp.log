@@ -1,5 +1,5 @@
 
-Fri, 28 Jun 2013 18:22:54 GMT
+Sat, 29 Jun 2013 06:28:54 GMT
 
 MAKE:
 mv knucleotide.fsharp knucleotide.fs
@@ -7,10 +7,10 @@ mv knucleotide.fsharp knucleotide.fs
 F# Compiler for F# 3.0 (Open Source Edition)
 Freely distributed under the Apache 2.0 Open Source License
 rm knucleotide.fs
-4.33s to complete and log all make actions
+4.45s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm knucleotide.fsharp_run.exe 0 < knucleotide-input25000000.txt
+/usr/local/bin/mono --llvm --gc=sgen knucleotide.fsharp_run.exe 0 < knucleotide-input25000000.txt
 
 PROGRAM OUTPUT:
 A 30.295

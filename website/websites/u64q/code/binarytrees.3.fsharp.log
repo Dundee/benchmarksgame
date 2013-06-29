@@ -1,5 +1,5 @@
 
-Fri, 28 Jun 2013 17:56:58 GMT
+Sat, 29 Jun 2013 06:06:27 GMT
 
 MAKE:
 mv binarytrees.fsharp-3.fsharp binarytrees.fsharp-3.fs
@@ -9,10 +9,10 @@ Freely distributed under the Apache 2.0 Open Source License
 
 /home/dunham/benchmarksgame_quadcore/binarytrees/tmp/binarytrees.fsharp-3.fs(9,1): warning FS0221: The declarations in this file will be placed in an implicit module 'Binarytrees.fsharp-3' based on the file name 'binarytrees.fsharp-3.fs'. However this is not a valid F# identifier, so the contents will not be accessible from other files. Consider renaming the file or adding a 'module' or 'namespace' declaration at the top of the file.
 rm binarytrees.fsharp-3.fs
-4.59s to complete and log all make actions
+4.60s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm binarytrees.fsharp-3.fsharp_run.exe 20
+/usr/local/bin/mono --llvm --gc=sgen binarytrees.fsharp-3.fsharp_run.exe 20
 
 PROGRAM OUTPUT:
 stretch tree of depth 21	 check: -1

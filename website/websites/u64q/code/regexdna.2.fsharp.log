@@ -1,5 +1,5 @@
 
-Fri, 28 Jun 2013 18:43:36 GMT
+Sat, 29 Jun 2013 06:44:00 GMT
 
 MAKE:
 mv regexdna.fsharp-2.fsharp regexdna.fsharp-2.fs
@@ -9,10 +9,10 @@ Freely distributed under the Apache 2.0 Open Source License
 
 /home/dunham/benchmarksgame_quadcore/regexdna/tmp/regexdna.fsharp-2.fs(6,1): warning FS0221: The declarations in this file will be placed in an implicit module 'Regexdna.fsharp-2' based on the file name 'regexdna.fsharp-2.fs'. However this is not a valid F# identifier, so the contents will not be accessible from other files. Consider renaming the file or adding a 'module' or 'namespace' declaration at the top of the file.
 rm regexdna.fsharp-2.fs
-3.87s to complete and log all make actions
+3.90s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm regexdna.fsharp-2.fsharp_run.exe 0 < regexdna-input5000000.txt
+/usr/local/bin/mono --llvm --gc=sgen regexdna.fsharp-2.fsharp_run.exe 0 < regexdna-input5000000.txt
 
 PROGRAM OUTPUT:
 agggtaaa|tttaccct 356

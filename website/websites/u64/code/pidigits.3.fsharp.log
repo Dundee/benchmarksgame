@@ -1,5 +1,5 @@
 
-Fri, 28 Jun 2013 21:21:48 GMT
+Sat, 29 Jun 2013 08:01:49 GMT
 
 MAKE:
 mv pidigits.fsharp-3.fsharp pidigits.fsharp-3.fs
@@ -9,10 +9,10 @@ Freely distributed under the Apache 2.0 Open Source License
 
 /home/dunham/benchmarksgame_onecore/pidigits/tmp/pidigits.fsharp-3.fs(16,6): warning FS0009: Uses of this construct may result in the generation of unverifiable .NET IL code. This warning can be disabled using '--nowarn:9' or '#nowarn "9"'.
 rm pidigits.fsharp-3.fs
-4.60s to complete and log all make actions
+4.65s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm -O=unsafe pidigits.fsharp-3.fsharp_run.exe 10000
+/usr/local/bin/mono --llvm pidigits.fsharp-3.fsharp_run.exe 10000
 
 (TRUNCATED) PROGRAM OUTPUT:
 3141592653	:10
