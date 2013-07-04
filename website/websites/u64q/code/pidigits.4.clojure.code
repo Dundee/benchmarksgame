@@ -1,0 +1,295 @@
+<span class="hl slc">;; The Computer Language Benchmarks Game</span>
+<span class="hl slc">;; http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl slc">;; contributed by Mike Pall</span>
+<span class="hl slc">;; java port by Stefan Krause</span>
+<span class="hl slc">;; clojure port by Koji Yusa</span>
+<span class="hl slc">;; this code uses jgmplib library</span>
+
+<span class="hl opt">(</span><span class="hl kwa">ns</span> pidigits
+  <span class="hl opt">(:</span>gen-class<span class="hl opt">)</span>
+  <span class="hl opt">(:</span>import <span class="hl opt">(</span><span class="hl kwa">clojure</span>.asm Opcodes Type Label ClassWriter<span class="hl opt">)))</span>
+
+<span class="hl slc">;; Compose matrix with numbers on the right.</span>
+<span class="hl opt">(</span><span class="hl kwa">defn</span> compose_r <span class="hl opt">[</span>bq br bs bt GI<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>q <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">0</span><span class="hl opt">)</span> r <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">1</span><span class="hl opt">)</span> s <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">2</span><span class="hl opt">)</span> t <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">3</span><span class="hl opt">)</span> u <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">4</span><span class="hl opt">)</span> v <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">5</span><span class="hl opt">)</span> w <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">6</span><span class="hl opt">)]</span> 
+    <span class="hl opt">(</span>.mul u r bs<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.mul r r bq<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.mul v t br<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.add r r v<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.mul t t bt<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.add t t u<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.mul s s bt<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.mul u q bs<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.add s s u<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.mul q q bq<span class="hl opt">)))</span>
+
+<span class="hl slc">;; Compose matrix with numbers on the left.</span>
+<span class="hl opt">(</span><span class="hl kwa">defn</span> compose_l <span class="hl opt">[</span>bq br bs bt GI<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>q <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">0</span><span class="hl opt">)</span> r <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">1</span><span class="hl opt">)</span> s <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">2</span><span class="hl opt">)</span> t <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">3</span><span class="hl opt">)</span> u <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">4</span><span class="hl opt">)</span> v <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">5</span><span class="hl opt">)</span> w <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">6</span><span class="hl opt">)]</span> 
+    <span class="hl opt">(</span>.mul r r bt<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.mul u q br<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.add r r u<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.mul u t bs<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.mul t t bt<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.mul v s br<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.add t t v<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.mul s s bq<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.add s s u<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.mul q q bq<span class="hl opt">)))</span>
+
+<span class="hl slc">;; Extract one digit.</span>
+<span class="hl opt">(</span><span class="hl kwa">defn</span> extract <span class="hl opt">[</span>j GI<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>q <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">0</span><span class="hl opt">)</span> r <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">1</span><span class="hl opt">)</span> s <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">2</span><span class="hl opt">)</span> t <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">3</span><span class="hl opt">)</span> u <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">4</span><span class="hl opt">)</span> v <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">5</span><span class="hl opt">)</span> w <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">6</span><span class="hl opt">)]</span> 
+    <span class="hl opt">(</span>.mul u q j<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.add u u r<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.mul v s j<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.add v v t<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.div w u v<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.intValue w<span class="hl opt">)))</span>
+
+<span class="hl slc">;; Print one digit. Returns 1 for the last digit.</span>
+<span class="hl opt">(</span><span class="hl kwa">defn</span> prdigit <span class="hl opt">[</span>y i n<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">printf</span> <span class="hl str">&quot;%s&quot;</span> y<span class="hl opt">)</span> 
+  <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">or</span> <span class="hl opt">(= (</span><span class="hl kwa">mod</span> i <span class="hl num">10</span><span class="hl opt">)</span> <span class="hl num">0</span><span class="hl opt">) (=</span> i n<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">do</span>
+      <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">not</span><span class="hl opt">= (</span><span class="hl kwa">mod</span> i <span class="hl num">10</span><span class="hl opt">)</span> <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span><span class="hl kwa">printf</span> <span class="hl str">&quot;%s&quot;</span> <span class="hl opt">(</span><span class="hl kwa">apply</span> str <span class="hl opt">(</span><span class="hl kwa">repeat</span> <span class="hl opt">(</span><span class="hl kwa">-</span> <span class="hl num">10</span> <span class="hl opt">(</span><span class="hl kwa">mod</span> i <span class="hl num">10</span><span class="hl opt">))</span> <span class="hl str">&quot; &quot;</span><span class="hl opt">))))</span>
+      <span class="hl opt">(</span><span class="hl kwa">printf</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">:%s</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> i<span class="hl opt">)))</span>
+  <span class="hl opt">(=</span> i n<span class="hl opt">))</span> 
+
+<span class="hl slc">;; Generate successive digits of PI.</span>
+<span class="hl opt">(</span><span class="hl kwa">defn</span> digits <span class="hl opt">[</span>^long n GI<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>q <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">0</span><span class="hl opt">)</span> r <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">1</span><span class="hl opt">)</span> s <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">2</span><span class="hl opt">)</span> t <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">3</span><span class="hl opt">)</span> u <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">4</span><span class="hl opt">)</span> v <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">5</span><span class="hl opt">)</span> w <span class="hl opt">(</span><span class="hl kwa">GI</span> <span class="hl num">6</span><span class="hl opt">)]</span> 
+    <span class="hl opt">(</span><span class="hl kwa">do</span>
+      <span class="hl opt">(</span>.set q <span class="hl num">1</span><span class="hl opt">)</span>
+      <span class="hl opt">(</span>.set r <span class="hl num">0</span><span class="hl opt">)</span>
+      <span class="hl opt">(</span>.set s <span class="hl num">0</span><span class="hl opt">)</span>
+      <span class="hl opt">(</span>.set t <span class="hl num">1</span><span class="hl opt">)</span>
+      <span class="hl opt">(</span>.set u <span class="hl num">0</span><span class="hl opt">)</span>
+      <span class="hl opt">(</span>.set v <span class="hl num">0</span><span class="hl opt">)</span>
+      <span class="hl opt">(</span>.set w <span class="hl num">0</span><span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>k <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">1</span><span class="hl opt">)</span> i <span class="hl opt">(</span><span class="hl kwa">int</span> <span class="hl num">1</span><span class="hl opt">)]</span>
+        <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>y <span class="hl opt">(</span><span class="hl kwa">extract</span> <span class="hl num">3</span> GI<span class="hl opt">)]</span>
+          <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(=</span> y <span class="hl opt">(</span><span class="hl kwa">extract</span> <span class="hl num">4</span> GI<span class="hl opt">))</span>
+            <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">prdigit</span> y i n<span class="hl opt">)</span>
+              k
+              <span class="hl opt">(</span><span class="hl kwa">do</span>
+                <span class="hl opt">(</span><span class="hl kwa">compose_r</span> <span class="hl num">10</span> <span class="hl opt">(*</span> -<span class="hl num">10</span> y<span class="hl opt">)</span> <span class="hl num">0 1</span> GI<span class="hl opt">)</span>
+                <span class="hl opt">(</span><span class="hl kwa">recur</span> k <span class="hl opt">(</span><span class="hl kwa">inc</span> i<span class="hl opt">))))</span>
+            <span class="hl opt">(</span><span class="hl kwa">do</span>
+              <span class="hl opt">(</span><span class="hl kwa">compose_l</span> k <span class="hl opt">(+ (*</span> <span class="hl num">4</span> k<span class="hl opt">)</span> <span class="hl num">2</span><span class="hl opt">)</span> <span class="hl num">0</span> <span class="hl opt">(+ (*</span> <span class="hl num">2</span> k<span class="hl opt">)</span> <span class="hl num">1</span><span class="hl opt">)</span> GI<span class="hl opt">)</span>
+              <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> k<span class="hl opt">)</span> i<span class="hl opt">))))))))</span>
+
+<span class="hl slc">;; deassempled GmpInteger</span>
+<span class="hl opt">(</span><span class="hl kwa">defn</span> makeGmpInteger <span class="hl opt">[]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>cw <span class="hl opt">(</span><span class="hl kwa">ClassWriter</span>. <span class="hl num">0</span><span class="hl opt">)]</span>
+    <span class="hl opt">(</span>.visit cw Opcodes<span class="hl opt">/</span>V1_6 <span class="hl opt">(</span><span class="hl kwa">bit-or</span> Opcodes<span class="hl opt">/</span>ACC_PUBLIC Opcodes<span class="hl opt">/</span>ACC_SUPER<span class="hl opt">)</span> <span class="hl str">&quot;GmpInteger&quot;</span> nil <span class="hl str">&quot;java/lang/Object&quot;</span> nil<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.visitSource cw <span class="hl str">&quot;GmpInteger.java&quot;</span> nil<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">doto</span> <span class="hl opt">(</span>.visitField cw Opcodes<span class="hl opt">/</span>ACC_PRIVATE <span class="hl str">&quot;pointer&quot;</span> <span class="hl str">&quot;J&quot;</span> nil nil<span class="hl opt">)</span>
+      <span class="hl opt">(</span>.visitEnd<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>l0 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)</span> l1 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)</span> l2 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)</span> l3 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">doto</span> <span class="hl opt">(</span>.visitMethod cw Opcodes<span class="hl opt">/</span>ACC_PUBLIC <span class="hl str">&quot;&lt;init&gt;&quot;</span> <span class="hl str">&quot;()V&quot;</span> nil nil<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitCode<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLineNumber <span class="hl num">12</span> l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ALOAD <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMethodInsn Opcodes<span class="hl opt">/</span>INVOKESPECIAL <span class="hl str">&quot;java/lang/Object&quot;</span> <span class="hl str">&quot;&lt;init&gt;&quot;</span> <span class="hl str">&quot;()V&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l1<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLineNumber <span class="hl num">13</span> l1<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ALOAD <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMethodInsn Opcodes<span class="hl opt">/</span>INVOKESPECIAL <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;mpz_init&quot;</span> <span class="hl str">&quot;()V&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l2<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLineNumber <span class="hl num">14</span> l2<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitInsn Opcodes<span class="hl opt">/</span>RETURN<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l3<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLocalVariable <span class="hl str">&quot;this&quot;</span> <span class="hl str">&quot;LGmpInteger;&quot;</span> nil<span class="hl opt">,</span> l0 l3 <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMaxs <span class="hl num">1 1</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitEnd<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>l0 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)</span> l1 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)</span> l2 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)</span> l3 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">doto</span> <span class="hl opt">(</span>.visitMethod cw Opcodes<span class="hl opt">/</span>ACC_PUBLIC <span class="hl str">&quot;&lt;init&gt;&quot;</span> <span class="hl str">&quot;(I)V&quot;</span> nil nil<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitCode<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLineNumber <span class="hl num">17</span> l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ALOAD <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMethodInsn Opcodes<span class="hl opt">/</span>INVOKESPECIAL <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;&lt;init&gt;&quot;</span> <span class="hl str">&quot;()V&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l1<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLineNumber <span class="hl num">18</span> l1<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ALOAD <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitFieldInsn Opcodes<span class="hl opt">/</span>GETFIELD <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;pointer&quot;</span> <span class="hl str">&quot;J&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ILOAD <span class="hl num">1</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMethodInsn Opcodes<span class="hl opt">/</span>INVOKESTATIC <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;mpz_set_si&quot;</span> <span class="hl str">&quot;(JI)V&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l2<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLineNumber <span class="hl num">19</span> l2<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitInsn Opcodes<span class="hl opt">/</span>RETURN<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l3<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLocalVariable <span class="hl str">&quot;this&quot;</span> <span class="hl str">&quot;LGmpInteger;&quot;</span> nil l0 l3 <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLocalVariable <span class="hl str">&quot;value&quot;</span>  <span class="hl str">&quot;I&quot;</span> nil l0 l3 <span class="hl num">1</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMaxs <span class="hl num">3 2</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitEnd<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>l0 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)</span> l1 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">doto</span> <span class="hl opt">(</span>.visitMethod cw Opcodes<span class="hl opt">/</span>ACC_PUBLIC <span class="hl str">&quot;set&quot;</span> <span class="hl str">&quot;(I)V&quot;</span> nil nil<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitCode<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLineNumber <span class="hl num">21</span> l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ALOAD <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitFieldInsn Opcodes<span class="hl opt">/</span>GETFIELD <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;pointer&quot;</span> <span class="hl str">&quot;J&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ILOAD <span class="hl num">1</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMethodInsn Opcodes<span class="hl opt">/</span>INVOKESTATIC <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;mpz_set_si&quot;</span> <span class="hl str">&quot;(JI)V&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitInsn Opcodes<span class="hl opt">/</span>RETURN<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l1<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLocalVariable <span class="hl str">&quot;this&quot;</span> <span class="hl str">&quot;LGmpInteger;&quot;</span> nil l0 l1 <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLocalVariable <span class="hl str">&quot;value&quot;</span> <span class="hl str">&quot;I&quot;</span> nil l0 l1 <span class="hl num">1</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMaxs <span class="hl num">3 2</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitEnd<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>l0 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)</span> l1 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">doto</span> <span class="hl opt">(</span>.visitMethod cw Opcodes<span class="hl opt">/</span>ACC_PUBLIC <span class="hl str">&quot;mul&quot;</span> <span class="hl str">&quot;(LGmpInteger;I)V&quot;</span> nil nil<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitCode<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLineNumber <span class="hl num">23</span> l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ALOAD <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitFieldInsn Opcodes<span class="hl opt">/</span>GETFIELD <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;pointer&quot;</span> <span class="hl str">&quot;J&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ALOAD <span class="hl num">1</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitFieldInsn Opcodes<span class="hl opt">/</span>GETFIELD <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;pointer&quot;</span> <span class="hl str">&quot;J&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ILOAD <span class="hl num">2</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMethodInsn Opcodes<span class="hl opt">/</span>INVOKESTATIC <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;mpz_mul_si&quot;</span> <span class="hl str">&quot;(JJI)V&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitInsn Opcodes<span class="hl opt">/</span>RETURN<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l1<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLocalVariable <span class="hl str">&quot;this&quot;</span> <span class="hl str">&quot;LGmpInteger;&quot;</span> nil l0 l1 <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLocalVariable <span class="hl str">&quot;src&quot;</span> <span class="hl str">&quot;LGmpInteger;&quot;</span> nil l0 l1 <span class="hl num">1</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLocalVariable <span class="hl str">&quot;val&quot;</span> <span class="hl str">&quot;I&quot;</span> nil l0 l1 <span class="hl num">2</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMaxs <span class="hl num">5 3</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitEnd<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>l0 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)</span> l1 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">doto</span> <span class="hl opt">(</span>.visitMethod cw Opcodes<span class="hl opt">/</span>ACC_PUBLIC <span class="hl str">&quot;add&quot;</span> <span class="hl str">&quot;(LGmpInteger;LGmpInteger;)V&quot;</span> nil nil<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitCode<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLineNumber <span class="hl num">25</span> l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ALOAD <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitFieldInsn Opcodes<span class="hl opt">/</span>GETFIELD <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;pointer&quot;</span> <span class="hl str">&quot;J&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ALOAD <span class="hl num">1</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitFieldInsn Opcodes<span class="hl opt">/</span>GETFIELD <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;pointer&quot;</span> <span class="hl str">&quot;J&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ALOAD <span class="hl num">2</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitFieldInsn Opcodes<span class="hl opt">/</span>GETFIELD <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;pointer&quot;</span> <span class="hl str">&quot;J&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMethodInsn Opcodes<span class="hl opt">/</span>INVOKESTATIC <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;mpz_add&quot;</span> <span class="hl str">&quot;(JJJ)V&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitInsn Opcodes<span class="hl opt">/</span>RETURN<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l1<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLocalVariable <span class="hl str">&quot;this&quot;</span> <span class="hl str">&quot;LGmpInteger;&quot;</span> nil l0 l1 <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLocalVariable <span class="hl str">&quot;op1&quot;</span> <span class="hl str">&quot;LGmpInteger;&quot;</span> nil l0 l1 <span class="hl num">1</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLocalVariable <span class="hl str">&quot;op2&quot;</span> <span class="hl str">&quot;LGmpInteger;&quot;</span> nil l0 l1 <span class="hl num">2</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMaxs <span class="hl num">6 3</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitEnd<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>l0 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)</span> l1 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">doto</span> <span class="hl opt">(</span>.visitMethod cw Opcodes<span class="hl opt">/</span>ACC_PUBLIC <span class="hl str">&quot;div&quot;</span> <span class="hl str">&quot;(LGmpInteger;LGmpInteger;)V&quot;</span> nil nil<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitCode<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLineNumber <span class="hl num">27</span> l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ALOAD <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitFieldInsn Opcodes<span class="hl opt">/</span>GETFIELD <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;pointer&quot;</span> <span class="hl str">&quot;J&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ALOAD <span class="hl num">1</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitFieldInsn Opcodes<span class="hl opt">/</span>GETFIELD <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;pointer&quot;</span> <span class="hl str">&quot;J&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ALOAD <span class="hl num">2</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitFieldInsn Opcodes<span class="hl opt">/</span>GETFIELD <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;pointer&quot;</span> <span class="hl str">&quot;J&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMethodInsn Opcodes<span class="hl opt">/</span>INVOKESTATIC <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;mpz_tdiv_q&quot;</span> <span class="hl str">&quot;(JJJ)V&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitInsn Opcodes<span class="hl opt">/</span>RETURN<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l1<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLocalVariable <span class="hl str">&quot;this&quot;</span> <span class="hl str">&quot;LGmpInteger;&quot;</span> nil l0 l1 <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLocalVariable <span class="hl str">&quot;op1&quot;</span> <span class="hl str">&quot;LGmpInteger;&quot;</span> nil l0 l1 <span class="hl num">1</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLocalVariable <span class="hl str">&quot;op2&quot;</span> <span class="hl str">&quot;LGmpInteger;&quot;</span> nil l0 l1 <span class="hl num">2</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMaxs <span class="hl num">6 3</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitEnd<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>l0 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)</span> l1 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">doto</span> <span class="hl opt">(</span>.visitMethod cw Opcodes<span class="hl opt">/</span>ACC_PUBLIC <span class="hl str">&quot;intValue&quot;</span> <span class="hl str">&quot;()I&quot;</span> nil nil<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitCode<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLineNumber <span class="hl num">29</span> l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ALOAD <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitFieldInsn Opcodes<span class="hl opt">/</span>GETFIELD <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;pointer&quot;</span> <span class="hl str">&quot;J&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMethodInsn Opcodes<span class="hl opt">/</span>INVOKESTATIC <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;mpz_get_si&quot;</span> <span class="hl str">&quot;(J)I&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitInsn Opcodes<span class="hl opt">/</span>IRETURN<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l1<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLocalVariable <span class="hl str">&quot;this&quot;</span> <span class="hl str">&quot;LGmpInteger;&quot;</span> nil l0 l1 <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMaxs <span class="hl num">2 1</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitEnd<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>l0 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)</span> l1 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">doto</span> <span class="hl opt">(</span>.visitMethod cw Opcodes<span class="hl opt">/</span>ACC_PUBLIC <span class="hl str">&quot;doubleValue&quot;</span> <span class="hl str">&quot;()D&quot;</span> nil nil<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitCode<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLineNumber <span class="hl num">31</span> l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ALOAD <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitFieldInsn Opcodes<span class="hl opt">/</span>GETFIELD <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;pointer&quot;</span> <span class="hl str">&quot;J&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMethodInsn Opcodes<span class="hl opt">/</span>INVOKESTATIC <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;mpz_get_d&quot;</span> <span class="hl str">&quot;(J)D&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitInsn Opcodes<span class="hl opt">/</span>DRETURN<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l1<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLocalVariable <span class="hl str">&quot;this&quot;</span> <span class="hl str">&quot;LGmpInteger;&quot;</span> nil l0 l1 <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMaxs <span class="hl num">2 1</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitEnd<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>l0 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)</span> l1 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)</span> l2 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">doto</span> <span class="hl opt">(</span>.visitMethod cw Opcodes<span class="hl opt">/</span>ACC_PROTECTED <span class="hl str">&quot;finalize&quot;</span> <span class="hl str">&quot;()V&quot;</span> nil nil<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitCode<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLineNumber <span class="hl num">41</span> l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ALOAD <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitVarInsn Opcodes<span class="hl opt">/</span>ALOAD <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitFieldInsn Opcodes<span class="hl opt">/</span>GETFIELD <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;pointer&quot;</span> <span class="hl str">&quot;J&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMethodInsn Opcodes<span class="hl opt">/</span>INVOKESPECIAL <span class="hl str">&quot;GmpInteger&quot;</span> <span class="hl str">&quot;mpz_clear&quot;</span> <span class="hl str">&quot;(J)V&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l1<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLineNumber <span class="hl num">42</span> l1<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitInsn Opcodes<span class="hl opt">/</span>RETURN<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l2<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLocalVariable <span class="hl str">&quot;this&quot;</span> <span class="hl str">&quot;LGmpInteger;&quot;</span> nil l0 l2 <span class="hl num">0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMaxs <span class="hl num">3 1</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitEnd<span class="hl opt">)))</span>
+    <span class="hl opt">(</span><span class="hl kwa">doto</span> <span class="hl opt">(</span>.visitMethod cw <span class="hl opt">(</span><span class="hl kwa">bit-or</span> Opcodes<span class="hl opt">/</span>ACC_PRIVATE Opcodes<span class="hl opt">/</span>ACC_NATIVE<span class="hl opt">)</span> <span class="hl str">&quot;mpz_init&quot;</span> <span class="hl str">&quot;()V&quot;</span> nil nil<span class="hl opt">)</span>
+      <span class="hl opt">(</span>.visitEnd<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">doto</span> <span class="hl opt">(</span>.visitMethod cw <span class="hl opt">(</span><span class="hl kwa">bit-or</span> Opcodes<span class="hl opt">/</span>ACC_PRIVATE Opcodes<span class="hl opt">/</span>ACC_NATIVE<span class="hl opt">)</span> <span class="hl str">&quot;mpz_clear&quot;</span> <span class="hl str">&quot;(J)V&quot;</span> nil nil<span class="hl opt">)</span>
+      <span class="hl opt">(</span>.visitEnd<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">doto</span> <span class="hl opt">(</span>.visitMethod cw <span class="hl opt">(</span><span class="hl kwa">bit-or</span> Opcodes<span class="hl opt">/</span>ACC_PRIVATE Opcodes<span class="hl opt">/</span>ACC_STATIC Opcodes<span class="hl opt">/</span>ACC_NATIVE<span class="hl opt">)</span> <span class="hl str">&quot;mpz_mul_si&quot;</span> <span class="hl str">&quot;(JJI)V&quot;</span> nil nil<span class="hl opt">)</span>
+      <span class="hl opt">(</span>.visitEnd<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">doto</span> <span class="hl opt">(</span>.visitMethod cw <span class="hl opt">(</span><span class="hl kwa">bit-or</span> Opcodes<span class="hl opt">/</span>ACC_PRIVATE Opcodes<span class="hl opt">/</span>ACC_STATIC Opcodes<span class="hl opt">/</span>ACC_NATIVE<span class="hl opt">)</span> <span class="hl str">&quot;mpz_add&quot;</span> <span class="hl str">&quot;(JJJ)V&quot;</span> nil nil<span class="hl opt">)</span>
+      <span class="hl opt">(</span>.visitEnd<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">doto</span> <span class="hl opt">(</span>.visitMethod cw <span class="hl opt">(</span><span class="hl kwa">bit-or</span> Opcodes<span class="hl opt">/</span>ACC_PRIVATE Opcodes<span class="hl opt">/</span>ACC_STATIC Opcodes<span class="hl opt">/</span>ACC_NATIVE<span class="hl opt">)</span> <span class="hl str">&quot;mpz_tdiv_q&quot;</span> <span class="hl str">&quot;(JJJ)V&quot;</span> nil nil<span class="hl opt">)</span>
+      <span class="hl opt">(</span>.visitEnd<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">doto</span> <span class="hl opt">(</span>.visitMethod cw <span class="hl opt">(</span><span class="hl kwa">bit-or</span> Opcodes<span class="hl opt">/</span>ACC_PRIVATE Opcodes<span class="hl opt">/</span>ACC_STATIC Opcodes<span class="hl opt">/</span>ACC_NATIVE<span class="hl opt">)</span> <span class="hl str">&quot;mpz_set_si&quot;</span> <span class="hl str">&quot;(JI)V&quot;</span> nil nil<span class="hl opt">)</span>
+      <span class="hl opt">(</span>.visitEnd<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">doto</span> <span class="hl opt">(</span>.visitMethod cw <span class="hl opt">(</span><span class="hl kwa">bit-or</span> Opcodes<span class="hl opt">/</span>ACC_PRIVATE Opcodes<span class="hl opt">/</span>ACC_STATIC Opcodes<span class="hl opt">/</span>ACC_NATIVE<span class="hl opt">)</span> <span class="hl str">&quot;mpz_get_si&quot;</span> <span class="hl str">&quot;(J)I&quot;</span> nil nil<span class="hl opt">)</span>
+      <span class="hl opt">(</span>.visitEnd<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">doto</span> <span class="hl opt">(</span>.visitMethod cw <span class="hl opt">(</span><span class="hl kwa">bit-or</span> Opcodes<span class="hl opt">/</span>ACC_PRIVATE Opcodes<span class="hl opt">/</span>ACC_STATIC Opcodes<span class="hl opt">/</span>ACC_NATIVE<span class="hl opt">)</span> <span class="hl str">&quot;mpz_get_d&quot;</span> <span class="hl str">&quot;(J)D&quot;</span> nil nil<span class="hl opt">)</span>
+      <span class="hl opt">(</span>.visitEnd<span class="hl opt">))</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>l0 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)</span> l1 <span class="hl opt">(</span><span class="hl kwa">Label</span>.<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">doto</span> <span class="hl opt">(</span>.visitMethod cw Opcodes<span class="hl opt">/</span>ACC_STATIC <span class="hl str">&quot;&lt;clinit&gt;&quot;</span> <span class="hl str">&quot;()V&quot;</span> nil nil<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitCode<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLineNumber <span class="hl num">36</span> l0<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLdcInsn <span class="hl str">&quot;jgmplib&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMethodInsn Opcodes<span class="hl opt">/</span>INVOKESTATIC <span class="hl str">&quot;java/lang/System&quot;</span> <span class="hl str">&quot;loadLibrary&quot;</span> <span class="hl str">&quot;(Ljava/lang/String;)V&quot;</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLabel l1<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitLineNumber <span class="hl num">37</span> l1<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitInsn Opcodes<span class="hl opt">/</span>RETURN<span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitMaxs <span class="hl num">1 0</span><span class="hl opt">)</span>
+        <span class="hl opt">(</span>.visitEnd<span class="hl opt">)))</span>
+    <span class="hl opt">(</span>.visitEnd cw<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>ba <span class="hl opt">(</span>.toByteArray cw<span class="hl opt">)</span>
+          dcl <span class="hl opt">(</span><span class="hl kwa">clojure</span>.lang.DynamicClassLoader.<span class="hl opt">)]</span>
+      <span class="hl opt">(</span>.defineClass dcl <span class="hl str">&quot;GmpInteger&quot;</span> ba nil<span class="hl opt">))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> -main <span class="hl opt">[&amp;</span> args<span class="hl opt">]</span>
+
+  <span class="hl slc">;; load class</span>
+  <span class="hl opt">(</span><span class="hl kwa">def</span> GmpInt <span class="hl opt">(</span><span class="hl kwa">makeGmpInteger</span><span class="hl opt">))</span> 
+
+  <span class="hl slc">;; use reflection familiar with compile</span>
+  <span class="hl opt">(</span><span class="hl kwa">def</span> q <span class="hl opt">(</span>.. GmpInt newInstance<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">def</span> r <span class="hl opt">(</span>.. GmpInt newInstance<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">def</span> s <span class="hl opt">(</span>.. GmpInt newInstance<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">def</span> t <span class="hl opt">(</span>.. GmpInt newInstance<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">def</span> u <span class="hl opt">(</span>.. GmpInt newInstance<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">def</span> v <span class="hl opt">(</span>.. GmpInt newInstance<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">def</span> w <span class="hl opt">(</span>.. GmpInt newInstance<span class="hl opt">))</span>
+
+  <span class="hl opt">(</span><span class="hl kwa">def</span> GI <span class="hl opt">[</span>q r s t u v w<span class="hl opt">])</span>
+
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>n <span class="hl opt">(</span><span class="hl kwa">try</span> <span class="hl opt">(</span><span class="hl kwa">Integer</span><span class="hl opt">/</span>parseInt <span class="hl opt">(</span><span class="hl kwa">first</span> args<span class="hl opt">))</span>
+               <span class="hl opt">(</span><span class="hl kwa">catch</span> NumberFormatException e <span class="hl num">27</span><span class="hl opt">))]</span>
+    <span class="hl opt">(</span><span class="hl kwa">digits</span> n GI<span class="hl opt">))</span>
+  <span class="hl opt">(</span><span class="hl kwa">flush</span><span class="hl opt">))</span>
+
