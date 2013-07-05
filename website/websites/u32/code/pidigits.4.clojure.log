@@ -1,0 +1,37 @@
+
+Thu, 04 Jul 2013 23:17:24 GMT
+
+MAKE:
+mv pidigits.clojure-4.clojure pidigits.clj
+/usr/local/src/jdk1.7.0_11/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.5.1/clojure-1.5.1-slim.jar: clojure.lang.Compile pidigits
+Compiling pidigits to .
+5.61s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts -Xmx32m -cp .:/usr/local/src/clojure-1.5.1/clojure-1.5.1-slim.jar: pidigits 2000
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Exception in thread "main" java.lang.UnsatisfiedLinkError: no jgmplib in java.library.path
+	at java.lang.ClassLoader.loadLibrary(ClassLoader.java:1860)
+	at java.lang.Runtime.loadLibrary0(Runtime.java:845)
+	at java.lang.System.loadLibrary(System.java:1084)
+	at GmpInteger.<clinit>(GmpInteger.java:36)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:57)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:525)
+	at java.lang.Class.newInstance0(Class.java:372)
+	at java.lang.Class.newInstance(Class.java:325)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at clojure.lang.Reflector.invokeMatchingMethod(Reflector.java:93)
+	at clojure.lang.Reflector.invokeNoArgInstanceMember(Reflector.java:298)
+	at pidigits$_main.doInvoke(pidigits.clj:281)
+	at clojure.lang.RestFn.applyTo(RestFn.java:137)
+	at pidigits.main(Unknown Source)

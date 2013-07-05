@@ -1,14 +1,14 @@
 
-Mon, 04 Mar 2013 04:50:31 GMT
+Thu, 04 Jul 2013 23:54:11 GMT
 
 MAKE:
 mv threadring.clojure-2.clojure threadring.clj
-/usr/local/src/jdk1.7.0_11/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.5.0/clojure-1.5.0-slim.jar: clojure.lang.Compile threadring
+/usr/local/src/jdk1.7.0_11/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.5.1/clojure-1.5.1-slim.jar: clojure.lang.Compile threadring
 Compiling threadring to .
-5.32s to complete and log all make actions
+5.26s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -cp .:/usr/local/src/clojure-1.5.0/clojure-1.5.0-slim.jar: threadring 50000000
+/usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -cp .:/usr/local/src/clojure-1.5.1/clojure-1.5.1-slim.jar: threadring 50000000
 
 PROGRAM OUTPUT:
 292

@@ -1,9 +1,9 @@
 
-Mon, 04 Mar 2013 01:59:22 GMT
+Thu, 04 Jul 2013 20:44:25 GMT
 
 MAKE:
 mv chameneosredux.clojure chameneosredux.clj
-/usr/local/src/jdk1.7.0_11/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.5.0/clojure-1.5.0-slim.jar clojure.lang.Compile chameneosredux
+/usr/local/src/jdk1.7.0_11/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.5.1/clojure-1.5.1-slim.jar clojure.lang.Compile chameneosredux
 Compiling chameneosredux to .
 Warning: *blue* not declared dynamic and thus is not dynamically rebindable, but its name suggests otherwise. Please either indicate ^:dynamic *blue* or change the name. (chameneosredux.clj:42)
 Warning: *red* not declared dynamic and thus is not dynamically rebindable, but its name suggests otherwise. Please either indicate ^:dynamic *red* or change the name. (chameneosredux.clj:42)
@@ -13,10 +13,10 @@ Warning: *red* not declared dynamic and thus is not dynamically rebindable, but 
 Warning: *yellow* not declared dynamic and thus is not dynamically rebindable, but its name suggests otherwise. Please either indicate ^:dynamic *yellow* or change the name. (chameneosredux.clj:53)
 Warning: *in-order* not declared dynamic and thus is not dynamically rebindable, but its name suggests otherwise. Please either indicate ^:dynamic *in-order* or change the name. (chameneosredux.clj:72)
 Warning: *game-id* not declared dynamic and thus is not dynamically rebindable, but its name suggests otherwise. Please either indicate ^:dynamic *game-id* or change the name. (chameneosredux.clj:149)
-5.87s to complete and log all make actions
+6.02s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -cp .:/usr/local/src/clojure-1.5.0/clojure-1.5.0-slim.jar chameneosredux 6000000
+/usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -cp .:/usr/local/src/clojure-1.5.1/clojure-1.5.1-slim.jar chameneosredux 6000000
 
 PROGRAM OUTPUT:
 blue + blue -> blue
@@ -30,21 +30,21 @@ yellow + red -> blue
 yellow + yellow -> yellow
 
  blue red yellow
-3985400 zero
-4020321 zero
-3994279 zero
+4029098 zero
+3995028 zero
+3975874 zero
  one two zero zero zero zero zero zero
 
  blue red yellow red yellow blue red yellow red blue
-1200153 zero
-1200056 zero
-1200117 zero
-1200234 zero
-1199984 zero
-1200282 zero
-1199914 zero
-1199750 zero
-1199687 zero
-1199823 zero
+1200092 zero
+1200146 zero
+1200136 zero
+1199945 zero
+1200238 zero
+1199797 zero
+1199915 zero
+1200040 zero
+1199540 zero
+1200151 zero
  one two zero zero zero zero zero zero
 
