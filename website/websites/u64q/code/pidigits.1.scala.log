@@ -1,0 +1,33 @@
+
+Sat, 06 Jul 2013 21:42:31 GMT
+
+MAKE:
+mv pidigits.scala pidigits.scala
+mv: ‘pidigits.scala’ and ‘pidigits.scala’ are the same file
+make: [pidigits.scala_run] Error 1 (ignored)
+/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 pidigits.scala
+pidigits.scala:9: error: expected class or object definition
+def pi(n: Int) = {
+^
+pidigits.scala:20: error: expected class or object definition
+def p10(s: String, offset: Int = 0) {
+^
+pidigits.scala:26: error: expected class or object definition
+val n = if (args.isEmpty) 27 else args(0).toInt
+^
+pidigits.scala:27: error: expected class or object definition
+p10(pi(n).toString().filterNot(_ == '.').substring(0, n))
+^
+four errors found
+make: [pidigits.scala_run] Error 1 (ignored)
+4.75s to complete and log all make actions
+
+COMMAND LINE:
+ /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts -Djava.library.path=Include/java -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar pidigits 2000
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Error: Could not find or load main class pidigits
