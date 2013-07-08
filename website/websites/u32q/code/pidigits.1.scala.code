@@ -1,0 +1,27 @@
+<span class="hl com">/* </span>
+<span class="hl com"> * The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"> * contributed by Joseph Tang</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">import</span> math<span class="hl opt">.</span>_
+
+<span class="hl kwa">def</span> <span class="hl kwd">pi</span><span class="hl opt">(</span>n<span class="hl opt">:</span> Int<span class="hl opt">) = {</span>
+  <span class="hl kwa">val</span> pr <span class="hl opt">=</span> <span class="hl num">1.0</span> <span class="hl opt">/</span> <span class="hl kwd">pow</span><span class="hl opt">(</span><span class="hl num">10</span><span class="hl opt">,</span> n<span class="hl opt">)</span>
+  <span class="hl kwa">def</span> <span class="hl kwd">t</span><span class="hl opt">(</span>initial<span class="hl opt">:</span> BigDecimal <span class="hl opt">=</span> <span class="hl num">2</span><span class="hl opt">,</span> i<span class="hl opt">:</span> Int <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">):</span> Int <span class="hl opt">= {</span>
+    <span class="hl kwa">val</span> current <span class="hl opt">= (</span>i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">) *</span> <span class="hl num">1.0</span> <span class="hl opt">/ (</span><span class="hl num">2</span> <span class="hl opt">*</span> i <span class="hl opt">+</span> <span class="hl num">3</span><span class="hl opt">) *</span> initial
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>current <span class="hl opt">&lt;</span> pr<span class="hl opt">)</span> i <span class="hl kwa">else</span> <span class="hl kwd">t</span><span class="hl opt">(</span>current<span class="hl opt">,</span> i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)</span>
+  <span class="hl opt">}</span>
+  <span class="hl kwa">val</span> ts <span class="hl opt">=</span> <span class="hl kwd">t</span><span class="hl opt">()</span>
+  <span class="hl kwa">def</span> <span class="hl kwd">calPi</span><span class="hl opt">(</span>i<span class="hl opt">:</span> Int<span class="hl opt">):</span> BigDecimal <span class="hl opt">=</span> <span class="hl kwa">if</span> <span class="hl opt">(</span>i <span class="hl opt">&gt;</span> ts<span class="hl opt">)</span> <span class="hl num">2.5</span> <span class="hl kwa">else</span> <span class="hl num">2</span> <span class="hl opt">+</span> i <span class="hl opt">*</span> <span class="hl kwd">calPi</span><span class="hl opt">(</span>i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">) / (</span><span class="hl num">2</span> <span class="hl opt">*</span> i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)</span>
+  <span class="hl kwd">calPi</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">def</span> <span class="hl kwd">p10</span><span class="hl opt">(</span>s<span class="hl opt">:</span> String<span class="hl opt">,</span> offset<span class="hl opt">:</span> Int <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+  <span class="hl kwa">val</span> <span class="hl opt">(</span>s1<span class="hl opt">,</span> r<span class="hl opt">) =</span> s<span class="hl opt">.</span><span class="hl kwd">splitAt</span><span class="hl opt">(</span><span class="hl num">10</span><span class="hl opt">)</span>
+  <span class="hl kwd">println</span><span class="hl opt">(</span>s<span class="hl str">&quot;$s1</span><span class="hl esc">\t</span><span class="hl str">:${offset + s1.length}&quot;</span><span class="hl opt">)</span>
+  <span class="hl kwa">if</span> <span class="hl opt">(!</span>r<span class="hl opt">.</span>isEmpty<span class="hl opt">)</span> <span class="hl kwd">p10</span><span class="hl opt">(</span>r<span class="hl opt">,</span> <span class="hl num">10</span> <span class="hl opt">+</span> offset<span class="hl opt">)</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">val</span> n <span class="hl opt">=</span> <span class="hl kwa">if</span> <span class="hl opt">(</span>args<span class="hl opt">.</span>isEmpty<span class="hl opt">)</span> <span class="hl num">27</span> <span class="hl kwa">else</span> <span class="hl kwd">args</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">).</span>toInt
+<span class="hl kwd">p10</span><span class="hl opt">(</span><span class="hl kwd">pi</span><span class="hl opt">(</span>n<span class="hl opt">).</span><span class="hl kwd">toString</span><span class="hl opt">().</span><span class="hl kwd">filterNot</span><span class="hl opt">(</span>_ <span class="hl opt">==</span> <span class="hl str">'.'</span><span class="hl opt">).</span><span class="hl kwd">substring</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> n<span class="hl opt">))</span>
