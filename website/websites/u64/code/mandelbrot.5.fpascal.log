@@ -1,0 +1,21 @@
+
+Mon, 08 Jul 2013 18:09:19 GMT
+
+MAKE:
+mv mandelbrot.fpascal-5.fpascal mandelbrot.fpascal-5.pas
+/usr/local/src/fpc-2.6.0.x86_64-linux/bin/fpc -FuInclude/fpascal -XXs -O3   -oFPASCAL_RUN mandelbrot.fpascal-5.pas
+Free Pascal Compiler version 2.6.0 [2011/12/23] for x86_64
+Copyright (c) 1993-2011 by Florian Klaempfl and others
+Target OS: Linux for x86-64
+Compiling mandelbrot.fpascal-5.pas
+Linking FPASCAL_RUN
+/usr/bin/ld: warning: link.res contains output sections; did you forget -T?
+123 lines compiled, 0.2 sec 
+mv FPASCAL_RUN mandelbrot.fpascal-5.fpascal_run
+rm mandelbrot.fpascal-5.pas
+0.25s to complete and log all make actions
+
+COMMAND LINE:
+./mandelbrot.fpascal-5.fpascal_run 16000
+
+(BINARY) PROGRAM OUTPUT NOT SHOWN

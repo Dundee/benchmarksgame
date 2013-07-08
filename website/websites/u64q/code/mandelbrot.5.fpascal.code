@@ -1,0 +1,123 @@
+<span class="hl com">{ The Computer Language Benchmarks Game</span>
+<span class="hl com">  http://benchmarksgame.alioth.debian.org</span>
+<span class="hl com"></span>
+<span class="hl com">  contributed by Ales Katona</span>
+<span class="hl com">  modified by Vincent Snijders</span>
+<span class="hl com">  optimized and multithreaded by Jean de La Taille</span>
+<span class="hl com">  modified by Jeppe Johansen</span>
+<span class="hl com">  modified by Peter Blackman</span>
+<span class="hl com">      (Restore 'CalculatePoint' as leaf function, better use of registers)</span>
+<span class="hl com">}</span>
+
+<span class="hl kwa">program</span> mandelbrot<span class="hl opt">;</span>
+
+<span class="hl kwa">uses</span>
+  <span class="hl com">{$ifdef unix}</span>cthreads<span class="hl opt">,</span><span class="hl com">{$endif}</span>
+  sysUtils<span class="hl opt">,</span> math<span class="hl opt">;</span>
+
+<span class="hl kwa">const</span>
+  ThreadCount <span class="hl opt">=</span> <span class="hl num">4</span><span class="hl opt">;</span>
+
+<span class="hl kwa">var</span>
+  nInv<span class="hl opt">:</span> <span class="hl kwb">double</span><span class="hl opt">;</span>
+  TextBuf<span class="hl opt">:</span> pbyte<span class="hl opt">;</span> 
+  yCounter<span class="hl opt">,</span>
+  n<span class="hl opt">,</span> dimx <span class="hl opt">:</span> <span class="hl kwb">longint</span><span class="hl opt">;</span>
+
+
+<span class="hl kwa">function</span> <span class="hl kwd">subThread</span><span class="hl opt">(</span>p<span class="hl opt">:</span> <span class="hl kwb">pointer</span><span class="hl opt">) :</span> ptrint<span class="hl opt">;</span>
+<span class="hl kwa">var</span>
+  Cr<span class="hl opt">,</span> Ci <span class="hl opt">:</span> <span class="hl kwb">Double</span><span class="hl opt">;</span>
+  x<span class="hl opt">,</span> y<span class="hl opt">,</span> bits<span class="hl opt">,</span> bit<span class="hl opt">,</span> buf_index<span class="hl opt">:</span> <span class="hl kwb">Longint</span><span class="hl opt">;</span>
+  
+   <span class="hl kwa">function</span> <span class="hl kwd">CalculatePoint</span><span class="hl opt">(</span>Cx<span class="hl opt">,</span> Cy <span class="hl opt">:</span> <span class="hl kwb">double</span><span class="hl opt">):</span> <span class="hl kwb">boolean</span><span class="hl opt">;</span> nostackframe<span class="hl opt">;</span> <span class="hl kwa">inline</span><span class="hl opt">;</span>
+   <span class="hl kwa">var</span>
+     Limit <span class="hl opt">:</span> <span class="hl kwb">double</span> <span class="hl opt">=</span> <span class="hl kwb">double</span><span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">);</span>
+     Two   <span class="hl opt">:</span> <span class="hl kwb">double</span> <span class="hl opt">=</span> <span class="hl kwb">double</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">);</span>
+     Zr<span class="hl opt">,</span> Zi<span class="hl opt">,</span> Ti<span class="hl opt">,</span> Tr<span class="hl opt">:</span> <span class="hl kwb">Double</span><span class="hl opt">;</span>
+     i<span class="hl opt">:</span> <span class="hl kwb">longint</span><span class="hl opt">;</span>
+
+  <span class="hl kwa">begin</span>
+    Zr <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>  Zi <span class="hl opt">:=</span> Zr<span class="hl opt">;</span> Tr <span class="hl opt">:=</span> Zr<span class="hl opt">;</span> Ti <span class="hl opt">:=</span> Zr<span class="hl opt">;</span>
+    <span class="hl kwc">for</span> i <span class="hl opt">:=</span> <span class="hl num">1</span> <span class="hl kwc">to</span> <span class="hl num">50</span> <span class="hl kwc">do</span> <span class="hl kwa">begin</span>
+      Zi <span class="hl opt">:=</span> Two<span class="hl opt">*</span>Zr<span class="hl opt">*</span>Zi <span class="hl opt">+</span> Cy<span class="hl opt">;</span>
+      Zr <span class="hl opt">:=</span> Tr <span class="hl opt">-</span> Ti <span class="hl opt">+</span> Cx<span class="hl opt">;</span>
+      Ti <span class="hl opt">:=</span> Zi <span class="hl opt">*</span> Zi<span class="hl opt">;</span>
+      Tr <span class="hl opt">:=</span> Zr <span class="hl opt">*</span> Zr<span class="hl opt">;</span>
+      <span class="hl kwc">if</span> <span class="hl opt">(</span>Tr <span class="hl opt">+</span> Ti<span class="hl opt">&gt;=</span>limit<span class="hl opt">)</span> <span class="hl kwc">then</span> <span class="hl kwd">exit</span><span class="hl opt">(</span><span class="hl kwb">true</span><span class="hl opt">);</span>
+    <span class="hl kwa">end</span><span class="hl opt">;</span>
+
+    CalculatePoint <span class="hl opt">:=</span> <span class="hl kwb">false</span><span class="hl opt">;</span>
+  <span class="hl kwa">end</span><span class="hl opt">;</span>
+  
+  
+<span class="hl kwa">begin</span>
+  <span class="hl kwc">while</span> <span class="hl kwb">true</span> <span class="hl kwc">do</span>
+  <span class="hl kwa">begin</span>
+    y <span class="hl opt">:=</span> <span class="hl kwd">interlockedincrement</span><span class="hl opt">(</span>yCounter<span class="hl opt">)-</span><span class="hl num">1</span><span class="hl opt">;</span>
+
+    <span class="hl kwc">if</span> y <span class="hl opt">&gt;=</span> n <span class="hl kwc">then</span> break<span class="hl opt">;</span>
+
+    buf_index <span class="hl opt">:=</span> y<span class="hl opt">*</span>dimx<span class="hl opt">;</span>
+    <span class="hl kwd">prefetch</span><span class="hl opt">(</span>TextBuf<span class="hl opt">[</span>buf_index<span class="hl opt">]);</span>
+
+    bit <span class="hl opt">:=</span> <span class="hl num">128</span><span class="hl opt">;</span> <span class="hl slc">// 1000 0000</span>
+    bits <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+    Ci <span class="hl opt">:= ((</span>y <span class="hl opt">+</span> y<span class="hl opt">) *</span> nInv<span class="hl opt">) -</span> <span class="hl num">1.0</span><span class="hl opt">;</span>
+    <span class="hl kwc">for</span> x <span class="hl opt">:=</span> <span class="hl num">0</span> <span class="hl kwc">to</span> n<span class="hl opt">-</span><span class="hl num">1</span> <span class="hl kwc">do</span>
+    <span class="hl kwa">begin</span>
+      Cr <span class="hl opt">:= ((</span>x <span class="hl opt">+</span> x<span class="hl opt">) *</span> nInv<span class="hl opt">) -</span> <span class="hl num">1.5</span><span class="hl opt">;</span>
+           
+      <span class="hl kwc">If</span> <span class="hl kwd">CalculatePoint</span> <span class="hl opt">(</span>Cr<span class="hl opt">,</span> Ci<span class="hl opt">)</span> <span class="hl kwc">then</span>
+          bits <span class="hl opt">:=</span> bits <span class="hl kwa">or</span> bit<span class="hl opt">;</span>
+ 
+      bit <span class="hl opt">:=</span> bit <span class="hl opt">&gt;&gt;</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl kwc">if</span> <span class="hl opt">(</span>bit <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">)</span> <span class="hl kwc">then</span>
+      <span class="hl kwa">begin</span>
+        TextBuf<span class="hl opt">[</span>buf_index<span class="hl opt">] :=</span> <span class="hl kwa">not</span> bits<span class="hl opt">;</span>
+        <span class="hl kwd">inc</span><span class="hl opt">(</span>buf_index<span class="hl opt">);</span>
+
+        bits <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+        bit <span class="hl opt">:=</span> <span class="hl num">128</span><span class="hl opt">;</span>
+      <span class="hl kwa">end</span><span class="hl opt">;</span>
+    <span class="hl kwa">end</span><span class="hl opt">;</span>
+  <span class="hl kwa">end</span><span class="hl opt">;</span>
+  subThread <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span>
+
+<span class="hl kwa">procedure</span> run<span class="hl opt">;</span>
+<span class="hl kwa">var</span>
+  tt <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">..</span>ThreadCount<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">]</span> <span class="hl kwa">of</span> TThreadID<span class="hl opt">;</span>
+  i<span class="hl opt">,</span> t<span class="hl opt">,</span> buf_index<span class="hl opt">:</span> <span class="hl kwb">Longint</span><span class="hl opt">;</span>
+  
+<span class="hl kwa">begin</span>
+  nInv <span class="hl opt">:=</span> <span class="hl num">1</span><span class="hl opt">/</span>n<span class="hl opt">;</span>
+
+  <span class="hl kwc">for</span> i <span class="hl opt">:=</span> <span class="hl num">0</span> <span class="hl kwc">to</span> ThreadCount<span class="hl opt">-</span><span class="hl num">1</span> <span class="hl kwc">do</span>
+    tt<span class="hl opt">[</span>i<span class="hl opt">] :=</span> <span class="hl kwd">BeginThread</span><span class="hl opt">(&#64;</span>subThread<span class="hl opt">,</span> <span class="hl kwa">nil</span><span class="hl opt">);</span>
+
+  <span class="hl kwc">for</span> i <span class="hl opt">:=</span> <span class="hl num">0</span> <span class="hl kwc">to</span> ThreadCount<span class="hl opt">-</span><span class="hl num">1</span> <span class="hl kwc">do</span>
+    <span class="hl kwd">WaitForThreadTerminate</span><span class="hl opt">(</span>tt<span class="hl opt">[</span>i<span class="hl opt">],</span> <span class="hl num">0</span><span class="hl opt">);</span>
+
+  buf_index <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+  i <span class="hl opt">:=</span> n<span class="hl opt">*</span>dimx<span class="hl opt">;</span>
+  <span class="hl kwc">while</span> buf_index <span class="hl opt">&lt;</span> i <span class="hl kwc">do</span>
+  <span class="hl kwa">begin</span>
+    t <span class="hl opt">:=</span> <span class="hl kwd">FileWrite</span><span class="hl opt">(</span>StdOutputHandle<span class="hl opt">,</span> TextBuf<span class="hl opt">[</span>buf_index<span class="hl opt">],</span> i<span class="hl opt">-</span>buf_index<span class="hl opt">);;</span>
+    <span class="hl kwc">if</span> t <span class="hl opt">&gt;=</span> <span class="hl num">0</span> <span class="hl kwc">then</span>
+      buf_index <span class="hl opt">:=</span> buf_index <span class="hl opt">+</span> t<span class="hl opt">;</span>
+  <span class="hl kwa">end</span><span class="hl opt">;</span>
+<span class="hl kwa">end</span><span class="hl opt">;</span>
+
+<span class="hl kwa">begin</span>
+  <span class="hl kwd">Val</span><span class="hl opt">(</span><span class="hl kwd">ParamStr</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">),</span> n<span class="hl opt">);</span>
+  <span class="hl kwd">write</span><span class="hl opt">(</span><span class="hl str">'P4'</span><span class="hl opt">,</span> <span class="hl kwd">chr</span><span class="hl opt">(</span><span class="hl num">10</span><span class="hl opt">),</span> n<span class="hl opt">,</span> <span class="hl str">' '</span><span class="hl opt">,</span> n<span class="hl opt">,</span> <span class="hl kwd">chr</span><span class="hl opt">(</span><span class="hl num">10</span><span class="hl opt">));</span>
+  <span class="hl kwd">Flush</span><span class="hl opt">(</span>output<span class="hl opt">);</span>
+
+  dimx <span class="hl opt">:=</span> <span class="hl kwd">Ceil</span><span class="hl opt">(</span>n <span class="hl opt">/</span> <span class="hl num">8</span><span class="hl opt">);</span>
+  TextBuf <span class="hl opt">:=</span> <span class="hl kwd">GetMem</span><span class="hl opt">(</span>dimx<span class="hl opt">*</span>n<span class="hl opt">);</span>
+
+  run<span class="hl opt">;</span>
+  <span class="hl kwd">freemem</span><span class="hl opt">(</span>textbuf<span class="hl opt">);</span>
+<span class="hl kwa">end</span><span class="hl opt">.</span>
