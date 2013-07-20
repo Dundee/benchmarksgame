@@ -61,7 +61,7 @@
 <dt><a href="#machine" name="machine">What hardware and OS do you measure the programs on?</a></dt>
 <dd>
 <p><b>Quad-core 2.4Ghz Intel<sup>&#174;</sup> Q6600<sup>&#174;</sup></b> with 4GB of RAM and 250GB SATA II disk drive.</p>
-<p><b>Ubuntu&#8482; 12.10</b> Kernel Linux 3.5.0-25-generic</p>
+<p><b>Ubuntu&#8482; 12.10</b> Kernel Linux 3.8.0-26-generic</p>
 </dd>
 
 
@@ -80,6 +80,8 @@
 <p>Because I want to do fewer chores not more!</p>
 
 <p>If you're interested in something not shown then <a href="https://alioth.debian.org/snapshots.php?group_id=100815" title="Download the nightly snapshot"><b>please</b> take the program source code</a> and the measurement scripts and <b>publish your own measurements</b>.</p> 
+
+<p>A couple of years ago, someone complained that publishing their own measurements wouldn't show their favourite language implementation on a website highly ranked by search engines. By now - if they had actually made measurements, and published and promoted them - their website would be highly ranked by search engines. But they did nothing.</p>
 
 <p>The Python script "bencher does repeated measurements of program cpu time, elapsed time, resident memory usage, cpu load while a program is running, and summarizes those measurements" - <a href="<?=DOWNLOAD_PATH;?>bencher.zip"><b>download bencher</b></a> and unzip into your ~ directory, check the requirements and <a href="http://www.andre-simon.de/doku/highlight/en/highlight.html" title="highlight, ndiff">recommendations</a>, and read the license before use.</p>
 <p>(As an alternative, you should take a look at these Python measurement scripts designed for statistically rigorous Java performance evaluation - <a href="http://www.elis.ugent.be/JavaStats"><b>JavaStats</b></a>.)</p>
