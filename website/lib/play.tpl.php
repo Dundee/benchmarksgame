@@ -79,7 +79,7 @@
 <dd>
 <p>Because I want to do fewer chores not more!</p>
 
-<p>A couple of years ago, someone complained that publishing their own measurements wouldn't show their favourite language implementation on a website highly ranked by search engines. By now - if they had actually made measurements, and published and promoted them - their website would be highly ranked. <b>But they did nothing</b>.</p>
+<p>A couple of years ago, someone complained that publishing their own measurements wouldn't show their favorite language implementation on a website highly ranked by search engines. By now - if they had actually made measurements, and published and promoted them - their website would be highly ranked. <b>But they did nothing</b>.</p>
 
 <p>If you're interested in something not shown on the benchmarks game website then <a href="https://alioth.debian.org/snapshots.php?group_id=100815" title="Download the nightly snapshot"><b>please</b> take the program source code</a> and the measurement scripts and <b>publish your own measurements</b>.</p> 
 
