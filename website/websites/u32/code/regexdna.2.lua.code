@@ -1,0 +1,58 @@
+<span class="hl slc">-- The Computer Language Benchmarks Game</span>
+<span class="hl slc">-- http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl slc">-- contributed by Jim Roseborough</span>
+<span class="hl slc">-- modified by Victor Tang</span>
+<span class="hl slc">-- optimized &amp; replaced inefficient use of gsub with gmatch</span>
+<span class="hl slc">-- partitioned sequence to prevent extraneous redundant string copy</span>
+
+seq <span class="hl opt">=</span> io<span class="hl opt">.</span><span class="hl kwb">read</span><span class="hl opt">(</span><span class="hl str">&quot;*a&quot;</span><span class="hl opt">)</span>
+ilen<span class="hl opt">,</span> seq <span class="hl opt">= #</span>seq<span class="hl opt">,</span> seq<span class="hl opt">:</span><span class="hl kwb">gsub</span><span class="hl opt">(</span><span class="hl str">'&gt;[^%c]*%c*'</span><span class="hl opt">,</span> <span class="hl str">''</span><span class="hl opt">):</span><span class="hl kwb">gsub</span><span class="hl opt">(</span><span class="hl str">'%c+'</span><span class="hl opt">,</span> <span class="hl str">''</span><span class="hl opt">)</span>
+clen <span class="hl opt">= #</span>seq
+
+<span class="hl kwa">local</span> variants <span class="hl opt">= {</span> <span class="hl str">'agggtaaa|tttaccct'</span><span class="hl opt">,</span>
+                   <span class="hl str">'[cgt]gggtaaa|tttaccc[acg]'</span><span class="hl opt">,</span>
+                   <span class="hl str">'a[act]ggtaaa|tttacc[agt]t'</span><span class="hl opt">,</span>
+                   <span class="hl str">'ag[act]gtaaa|tttac[agt]ct'</span><span class="hl opt">,</span>
+                   <span class="hl str">'agg[act]taaa|ttta[agt]cct'</span><span class="hl opt">,</span>
+                   <span class="hl str">'aggg[acg]aaa|ttt[cgt]ccct'</span><span class="hl opt">,</span>
+                   <span class="hl str">'agggt[cgt]aa|tt[acg]accct'</span><span class="hl opt">,</span>
+                   <span class="hl str">'agggta[cgt]a|t[acg]taccct'</span><span class="hl opt">,</span>
+                   <span class="hl str">'agggtaa[cgt]|[acg]ttaccct'</span><span class="hl opt">, }</span>
+
+<span class="hl kwa">local</span> subst <span class="hl opt">= {</span> B<span class="hl opt">=</span><span class="hl str">'(c|g|t)'</span><span class="hl opt">,</span> D<span class="hl opt">=</span><span class="hl str">'(a|g|t)'</span><span class="hl opt">,</span>   H<span class="hl opt">=</span><span class="hl str">'(a|c|t)'</span><span class="hl opt">,</span> K<span class="hl opt">=</span><span class="hl str">'(g|t)'</span><span class="hl opt">,</span>
+                M<span class="hl opt">=</span><span class="hl str">'(a|c)'</span><span class="hl opt">,</span>   N<span class="hl opt">=</span><span class="hl str">'(a|c|g|t)'</span><span class="hl opt">,</span> R<span class="hl opt">=</span><span class="hl str">'(a|g)'</span><span class="hl opt">,</span>   S<span class="hl opt">=</span><span class="hl str">'(c|g)'</span><span class="hl opt">,</span>
+                V<span class="hl opt">=</span><span class="hl str">'(a|c|g)'</span><span class="hl opt">,</span> W<span class="hl opt">=</span><span class="hl str">'(a|t)'</span><span class="hl opt">,</span>     Y<span class="hl opt">=</span><span class="hl str">'(c|t)'</span> <span class="hl opt">}</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">countmatches</span><span class="hl opt">(</span>variant<span class="hl opt">)</span>
+   <span class="hl kwa">local</span> n <span class="hl opt">=</span> <span class="hl num">0</span>
+   variant<span class="hl opt">:</span><span class="hl kwb">gsub</span><span class="hl opt">(</span><span class="hl str">'([^|]+)|?'</span><span class="hl opt">,</span> <span class="hl kwa">function</span><span class="hl opt">(</span>pattern<span class="hl opt">)</span>
+      <span class="hl kwa">for</span> _ <span class="hl kwa">in</span> seq<span class="hl opt">:</span><span class="hl kwd">gmatch</span><span class="hl opt">(</span>pattern<span class="hl opt">)</span> <span class="hl kwa">do</span> n <span class="hl opt">=</span> n <span class="hl opt">+</span> <span class="hl num">1</span> <span class="hl kwa">end</span>
+   <span class="hl kwa">end</span><span class="hl opt">)</span>
+   <span class="hl kwa">return</span> n
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">for</span> _<span class="hl opt">,</span> p <span class="hl kwa">in</span> <span class="hl kwd">ipairs</span><span class="hl opt">(</span>variants<span class="hl opt">)</span> <span class="hl kwa">do</span>
+   io<span class="hl opt">.</span><span class="hl kwb">write</span><span class="hl opt">(</span> <span class="hl kwb">string</span><span class="hl opt">.</span><span class="hl kwb">format</span><span class="hl opt">(</span><span class="hl str">'%s %d</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">,</span> p<span class="hl opt">,</span> <span class="hl kwd">countmatches</span><span class="hl opt">(</span>p<span class="hl opt">)) )</span>
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">partitionstring</span><span class="hl opt">(</span>seq<span class="hl opt">)</span>
+  <span class="hl kwa">local</span> seg <span class="hl opt">=</span> math<span class="hl opt">.</span><span class="hl kwb">floor</span><span class="hl opt">(</span> math<span class="hl opt">.</span><span class="hl kwb">sqrt</span><span class="hl opt">(#</span>seq<span class="hl opt">) )</span>
+  <span class="hl kwa">local</span> seqtable <span class="hl opt">= {}</span>
+  <span class="hl kwa">for</span> nextstart <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">, #</span>seq<span class="hl opt">,</span> seg <span class="hl kwa">do</span>
+    <span class="hl kwb">table</span><span class="hl opt">.</span><span class="hl kwd">insert</span><span class="hl opt">(</span>seqtable<span class="hl opt">,</span> seq<span class="hl opt">:</span><span class="hl kwd">sub</span><span class="hl opt">(</span>nextstart<span class="hl opt">,</span> nextstart <span class="hl opt">+</span> seg <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">))</span>
+  <span class="hl kwa">end</span>
+  <span class="hl kwa">return</span> seqtable
+<span class="hl kwa">end</span>
+<span class="hl kwa">function</span> <span class="hl kwd">chunk_gsub</span><span class="hl opt">(</span>t<span class="hl opt">,</span> k<span class="hl opt">,</span> v<span class="hl opt">)</span>
+  <span class="hl kwa">for</span> i<span class="hl opt">,</span> p <span class="hl kwa">in</span> <span class="hl kwd">ipairs</span><span class="hl opt">(</span>t<span class="hl opt">)</span> <span class="hl kwa">do</span>
+    t<span class="hl opt">[</span>i<span class="hl opt">] =</span> p<span class="hl opt">:</span><span class="hl kwd">find</span><span class="hl opt">(</span>k<span class="hl opt">)</span> <span class="hl kwa">and</span> p<span class="hl opt">:</span><span class="hl kwb">gsub</span><span class="hl opt">(</span>k<span class="hl opt">,</span> v<span class="hl opt">)</span> <span class="hl kwa">or</span> t<span class="hl opt">[</span>i<span class="hl opt">]</span>
+  <span class="hl kwa">end</span>
+  <span class="hl kwa">return</span> t
+<span class="hl kwa">end</span>
+
+seq <span class="hl opt">=</span> <span class="hl kwd">partitionstring</span><span class="hl opt">(</span>seq<span class="hl opt">)</span>
+<span class="hl kwa">for</span> k<span class="hl opt">,</span> v <span class="hl kwa">in</span> <span class="hl kwd">pairs</span><span class="hl opt">(</span>subst<span class="hl opt">)</span> <span class="hl kwa">do</span>
+  <span class="hl kwd">chunk_gsub</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> k<span class="hl opt">,</span> v<span class="hl opt">)</span>
+<span class="hl kwa">end</span>
+seq <span class="hl opt">=</span> <span class="hl kwb">table</span><span class="hl opt">.</span><span class="hl kwd">concat</span><span class="hl opt">(</span>seq<span class="hl opt">)</span>
+io<span class="hl opt">.</span><span class="hl kwb">write</span><span class="hl opt">(</span><span class="hl kwb">string</span><span class="hl opt">.</span><span class="hl kwb">format</span><span class="hl opt">(</span><span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">%d</span><span class="hl esc">\n</span><span class="hl str">%d</span><span class="hl esc">\n</span><span class="hl str">%d</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">,</span> ilen<span class="hl opt">,</span> clen<span class="hl opt">, #</span>seq<span class="hl opt">))</span>
