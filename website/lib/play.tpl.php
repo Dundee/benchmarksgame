@@ -77,7 +77,7 @@
 
 <dt><a href="#languagex" name="languagex">Why don't you include language X?</a><br />Why don't you include my favorite implementation of language X?<br />Why don't you include Microsoft&#174; Windows&#174;?</dt>
 <dd>
-<p>Because I want to do fewer chores not more!</p>
+<p>Because I want to do fewer chores not more! Been there; done that.</p>
 
 <p>A couple of years ago, someone complained that publishing their own measurements wouldn't show their favorite language implementation on a website highly ranked by search engines. By now - if they had actually made measurements, and published and promoted them - their website would be highly ranked. <b>But they did nothing</b>.</p>
 
