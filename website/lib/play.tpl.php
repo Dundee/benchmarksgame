@@ -81,6 +81,8 @@
 
 <p>A couple of years ago, someone complained that publishing their own measurements wouldn't show their favorite language implementation on a website highly ranked by search engines. By now - if they had actually made measurements, and published and promoted them - their website would be highly ranked. <b>But they did nothing</b>.</p>
 
+<p><em>afaict</em> we all feel the same way about this, we all feel that we should sit on our hands and wait for someone else to do the chores we don't wish to do.</p>
+
 <p>If you're interested in something not shown on the benchmarks game website then <a href="https://alioth.debian.org/snapshots.php?group_id=100815" title="Download the nightly snapshot"><b>please</b> take the program source code</a> and the measurement scripts and <b>publish your own measurements</b>.</p> 
 
 <p>The Python script "bencher does repeated measurements of program cpu time, elapsed time, resident memory usage, cpu load while a program is running, and summarizes those measurements" - <a href="<?=DOWNLOAD_PATH;?>bencher.zip">download bencher</a> and unzip into your ~ directory, check the requirements and <a href="http://www.andre-simon.de/doku/highlight/en/highlight.html" title="highlight, ndiff">recommendations</a>, and read the license before use.</p>
