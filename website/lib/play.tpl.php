@@ -81,7 +81,7 @@
 
 <p>A couple of years ago, someone complained that publishing their own measurements wouldn't show their favorite language implementation on a website highly ranked by search engines. By now - if they had actually made measurements, and published and promoted them - their website would be highly ranked. <b>But they did nothing</b>.</p>
 
-<p><em>afaict</em> we all feel the same way about this, we all feel that we should sit on our hands and wait for someone else to do the chores we don't wish to do.</p>
+<p><em>afaict</em> we all feel the same way about this, we all feel that we should sit on our hands and wait for someone else to do the chores we don't wish to do. Of course, measurements of the <em>"proggit popular"</em> language implementations like PyPy and LuaJIT are very likely to attract attention and be the basis of a successful website (unlike more Fortran or Ada or Pascal or Lisp).</p>
 
 <p>If you're interested in something not shown on the benchmarks game website then <a href="https://alioth.debian.org/snapshots.php?group_id=100815" title="Download the nightly snapshot"><b>please</b> take the program source code</a> and the measurement scripts and <b>publish your own measurements</b>.</p> 
 
