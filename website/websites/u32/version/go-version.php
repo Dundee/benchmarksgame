@@ -1,1 +1,1 @@
-<p>go version go1.1.1 linux/386</p>
+<p>go version go1.1.2 linux/386</p>
