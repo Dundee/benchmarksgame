@@ -40,27 +40,21 @@ comp[118] = 'B';
 comp[119] = 'W';
 comp[121] = 'R';
 
-var LA_LEN = 995,
-    _PREV = 0,
-    _NEXT = 1,
-    _POS = 2,
-    _DATA = 3;
+var LA_LEN = 995;
 
-function newLinkedArray(prev) {
-    var ar = new Array(4);
-    ar[0] = prev;   // _PREV
-                    // _NEXT 
-    ar[2] = 0;      // _POS
-    ar[3] = [];     // _DATA
-    return ar;
+function LinkedArray(prev) {
+    this.prev = prev;
+    this.next = undefined;
+    this.pos = 0;
+    this.data = [];
 }
 
 function reverse(la) {
 
-    var i,
-        comps = comp,
-        lines = la[_DATA],
-        lnIdx = la[_POS] - 1,
+    var comps = comp,
+        i,
+        lines = la.data,
+        lnIdx = la.pos - 1,
         line = lines[lnIdx],
         c = 1,
         buff = [''],
@@ -69,7 +63,7 @@ function reverse(la) {
 
     rev[0] = '';
 
-    while (true) {
+    for (; true; ) {
 
         for (i = line.length; i-- > 0; ++c) {
             rev[c] = comps[line.charCodeAt(i)];
@@ -87,22 +81,24 @@ function reverse(la) {
             continue;
         }
 
-        la = la[_PREV];
+        la = la.prev;
         if (la === undefined) {
             if (c > 1) {
                 buff[buffIdx] = rev.join('').substr(0, c-1);
                 buffIdx++;
             }
+            buff[buffIdx] = '';
+            buffIdx++;
             if (buffIdx < buff.length) {
-                write(buff.slice(0, buffIdx).join('\n'));
+                write(buff.slice(0,buffIdx).join('\n'));
             } else {
                 write(buff.join('\n'));
             }
             return;
         }
 
-        lines = la[_DATA];
-        lnIdx = la[_POS];
+        lines = la.data;
+        lnIdx = la.pos;
         lnIdx--;
         line = lines[lnIdx];
         write(buff.join('\n'));
@@ -111,42 +107,42 @@ function reverse(la) {
 }
 
 var line,
-    headLA = newLinkedArray(),
+    headLA = new LinkedArray(),
     la = headLA,
     lnIdx = 0,
-    lines = la[_DATA];
+    lines = la.data;
 
 write(readline());
 
 for (line = readline(); line !== undefined; line = readline()) {
-
     if (line[0] !== '>') {
 
         if (lnIdx === LA_LEN) {
 
-            la[_POS] = LA_LEN;
+            la.pos = LA_LEN;
 
-            if (la[_NEXT] === undefined) {
-                la = la[_NEXT] = newLinkedArray(la);
+            if (la.next === undefined) {
+                la = la.next = new LinkedArray(la);
             } else {
-                la = la[_NEXT];
+                la = la.next;
             }
-            lines = la[_DATA];
+            lines = la.data;
             lines[0] = line;
-            lnIdx = la[_POS] = 1;
+            lnIdx = la.pos = 1;
         } else {
             lines[lnIdx] = line;
             lnIdx++;
         }
     } else {
-        la[_POS] = lnIdx;
-        reverse(la);
-        write('\n' + line);
+        lc = 0;
+        la.pos = lnIdx;
+        reverse(la, comp);
+        write(line);
         la = headLA;
-        lines = la[_DATA];
-        la[_POS] = 0;
+        lines = la.data;
+        la.pos = 0;
         lnIdx = 0;
     }
 }
-la[_POS] = lnIdx;
-reverse(la);
+la.pos = lnIdx;
+reverse(la, comp);
