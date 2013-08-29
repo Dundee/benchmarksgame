@@ -1,10 +1,17 @@
 
-Sun, 23 Jun 2013 04:03:05 GMT
+Thu, 29 Aug 2013 05:28:37 GMT
 
 COMMAND LINE:
-/usr/local/src/dart-sdk/bin/dart  regexdna.dart 0 < regexdna-input5000000.txt
+/usr/local/src/dart-sdk/bin/dart  regexdna.dart 0 < regexdna-input50000.txt
 
-TIMED OUT after 3600s
+PROGRAM FAILED 
 
 
 PROGRAM OUTPUT:
+
+Unhandled exception:
+'file:///home/dunham/benchmarksgame_onecore/regexdna/tmp/regexdna.dart': Error: line 12 pos 33: type 'StringDecoder' is not loaded
+  var src = stdin.transform(new StringDecoder()).transform(new LineTransformer());
+                                ^
+malformed type used.
+#0      main (file:///home/dunham/benchmarksgame_onecore/regexdna/tmp/regexdna.dart:12:33)

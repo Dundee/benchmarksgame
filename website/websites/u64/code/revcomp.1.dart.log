@@ -1,5 +1,5 @@
 
-Sun, 23 Jun 2013 05:07:41 GMT
+Thu, 29 Aug 2013 05:32:11 GMT
 
 COMMAND LINE:
 /usr/local/src/dart-sdk/bin/dart --old_gen_heap_size=2048 revcomp.dart 0 < revcomp-input250000.txt
@@ -8,16 +8,10 @@ PROGRAM FAILED
 
 
 PROGRAM OUTPUT:
->ONE Homo sapiens alu
-Uncaught Error: null
 
 Unhandled exception:
-Throw of null.
-#0      _DefaultZone.handleUncaughtError.<anonymous closure> (dart:async/zone.dart:148:7)
-#1      _asyncRunCallback._asyncRunCallback (dart:async/event_loop.dart:9:15)
-#2      _asyncRunCallback._asyncRunCallback (dart:async/event_loop.dart:13:7)
-#3      _createTimer.<anonymous closure> (dart:async-patch/timer_patch.dart:8:13)
-#4      _Timer._createTimerHandler._handleTimeout (timer_impl.dart:91:28)
-#5      _Timer._createTimerHandler._handleTimeout (timer_impl.dart:99:7)
-#6      _Timer._createTimerHandler.<anonymous closure> (timer_impl.dart:107:23)
-#7      _ReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:81:92)
+'file:///home/dunham/benchmarksgame_onecore/revcomp/tmp/revcomp.dart': Error: line 45 pos 20: type 'StringDecoder' is not loaded
+    .transform(new StringDecoder())
+                   ^
+malformed type used.
+#0      main (file:///home/dunham/benchmarksgame_onecore/revcomp/tmp/revcomp.dart:45:20)
