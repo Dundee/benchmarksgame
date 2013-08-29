@@ -1,0 +1,79 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Jos Hirth, based on the JavaScript version</span>
+<span class="hl com">     which was created by Jesse Millikan, jose fco. gonzalez, and Matthew Wilson</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">import</span> <span class="hl str">'dart:io'</span><span class="hl opt">;</span>
+<span class="hl kwa">import</span> <span class="hl str">'dart:convert'</span><span class="hl opt">;</span>
+
+<span class="hl kwa">void</span> <span class="hl kwd">main</span><span class="hl opt">() {</span>
+  <span class="hl kwa">var</span> text <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">StringBuffer</span><span class="hl opt">();</span>
+  <span class="hl kwa">var</span> src <span class="hl opt">=</span> stdin<span class="hl opt">.</span><span class="hl kwd">transform</span><span class="hl opt">(</span>UTF8<span class="hl opt">.</span>decoder<span class="hl opt">).</span><span class="hl kwd">transform</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">LineSplitter</span><span class="hl opt">());</span>
+
+  src<span class="hl opt">.</span><span class="hl kwd">listen</span><span class="hl opt">((</span>line<span class="hl opt">) {</span>
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>line <span class="hl opt">!=</span> <span class="hl kwa">null</span><span class="hl opt">) {</span>
+      text<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span>line<span class="hl opt">);</span>
+      text<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span><span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+  <span class="hl opt">},</span>
+  onDone<span class="hl opt">: () {</span>
+    <span class="hl kwd">regexAllTheThings</span><span class="hl opt">(</span>text<span class="hl opt">.</span><span class="hl kwd">toString</span><span class="hl opt">());</span>
+  <span class="hl opt">});</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">void</span> <span class="hl kwd">regexAllTheThings</span> <span class="hl opt">(</span>String fullText<span class="hl opt">) {</span>
+  <span class="hl kwa">var</span> lengthA<span class="hl opt">,</span> lengthB<span class="hl opt">,</span> lengthC<span class="hl opt">,</span> regexp<span class="hl opt">,</span> replacements<span class="hl opt">;</span>
+
+  regexp <span class="hl opt">= ((){</span>
+    <span class="hl kwa">var</span> pattern <span class="hl opt">= [</span>
+      <span class="hl str">'agggtaaa|tttaccct'</span><span class="hl opt">,</span>
+      <span class="hl str">'[cgt]gggtaaa|tttaccc[acg]'</span><span class="hl opt">,</span>
+      <span class="hl str">'a[act]ggtaaa|tttacc[agt]t'</span><span class="hl opt">,</span>
+      <span class="hl str">'ag[act]gtaaa|tttac[agt]ct'</span><span class="hl opt">,</span>
+      <span class="hl str">'agg[act]taaa|ttta[agt]cct'</span><span class="hl opt">,</span>
+      <span class="hl str">'aggg[acg]aaa|ttt[cgt]ccct'</span><span class="hl opt">,</span>
+      <span class="hl str">'agggt[cgt]aa|tt[acg]accct'</span><span class="hl opt">,</span>
+      <span class="hl str">'agggta[cgt]a|t[acg]taccct'</span><span class="hl opt">,</span>
+      <span class="hl str">'agggtaa[cgt]|[acg]ttaccct'</span>
+    <span class="hl opt">];</span>
+    <span class="hl kwa">var</span> regexp <span class="hl opt">= [];</span>
+    <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwa">var</span> p <span class="hl kwa">in</span> pattern<span class="hl opt">) {</span>
+      regexp<span class="hl opt">.</span><span class="hl kwd">add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">RegExp</span><span class="hl opt">(</span>p<span class="hl opt">,</span> caseSensitive<span class="hl opt">:</span> <span class="hl kwa">false</span><span class="hl opt">));</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwa">return</span> regexp<span class="hl opt">;</span>
+  <span class="hl opt">}());</span>
+
+  replacements <span class="hl opt">= [</span>
+    <span class="hl str">'B'</span><span class="hl opt">,</span> <span class="hl str">'(c|g|t)'</span><span class="hl opt">,</span>
+    <span class="hl str">'D'</span><span class="hl opt">,</span> <span class="hl str">'(a|g|t)'</span><span class="hl opt">,</span>
+    <span class="hl str">'H'</span><span class="hl opt">,</span> <span class="hl str">'(a|c|t)'</span><span class="hl opt">,</span>
+    <span class="hl str">'K'</span><span class="hl opt">,</span> <span class="hl str">'(g|t)'</span><span class="hl opt">,</span>
+    <span class="hl str">'M'</span><span class="hl opt">,</span> <span class="hl str">'(a|c)'</span><span class="hl opt">,</span>
+    <span class="hl str">'N'</span><span class="hl opt">,</span> <span class="hl str">'(a|c|g|t)'</span><span class="hl opt">,</span>
+    <span class="hl str">'R'</span><span class="hl opt">,</span> <span class="hl str">'(a|g)'</span><span class="hl opt">,</span>
+    <span class="hl str">'S'</span><span class="hl opt">,</span> <span class="hl str">'(c|g)'</span><span class="hl opt">,</span>
+    <span class="hl str">'V'</span><span class="hl opt">,</span> <span class="hl str">'(a|c|g)'</span><span class="hl opt">,</span>
+    <span class="hl str">'W'</span><span class="hl opt">,</span> <span class="hl str">'(a|t)'</span><span class="hl opt">,</span>
+    <span class="hl str">'Y'</span><span class="hl opt">,</span> <span class="hl str">'(c|t)'</span>
+  <span class="hl opt">];</span>
+
+  lengthA <span class="hl opt">=</span> fullText<span class="hl opt">.</span>length<span class="hl opt">;</span>
+
+  fullText <span class="hl opt">=</span> fullText<span class="hl opt">.</span><span class="hl kwd">replaceAll</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">RegExp</span><span class="hl opt">(</span><span class="hl str">'^&gt;.*</span><span class="hl esc">\n</span><span class="hl str">|</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">,</span> multiLine<span class="hl opt">:</span> <span class="hl kwa">true</span><span class="hl opt">),</span> <span class="hl str">''</span><span class="hl opt">);</span> <span class="hl slc">// still ridiculously slow with r21658</span>
+
+  lengthB <span class="hl opt">=</span> fullText<span class="hl opt">.</span>length<span class="hl opt">;</span>
+
+  <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwa">var</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> regexp<span class="hl opt">.</span>length<span class="hl opt">; ++</span>i<span class="hl opt">) {</span>
+    <span class="hl kwd">print</span><span class="hl opt">(</span><span class="hl str">'${regexp[i].pattern} ${regexp[i].allMatches(fullText).length}'</span><span class="hl opt">);</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwa">var</span> i <span class="hl opt">= -</span><span class="hl num">1</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> replacements<span class="hl opt">.</span>length <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;) {</span>
+    fullText <span class="hl opt">=</span> fullText<span class="hl opt">.</span><span class="hl kwd">replaceAll</span><span class="hl opt">(</span>replacements<span class="hl opt">[++</span>i<span class="hl opt">],</span> replacements<span class="hl opt">[++</span>i<span class="hl opt">]);</span>
+  <span class="hl opt">}</span>
+
+  lengthC <span class="hl opt">=</span> fullText<span class="hl opt">.</span>length<span class="hl opt">;</span>
+
+  <span class="hl kwd">print</span><span class="hl opt">(</span><span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">$lengthA</span><span class="hl esc">\n</span><span class="hl str">$lengthB</span><span class="hl esc">\n</span><span class="hl str">$lengthC'</span><span class="hl opt">);</span>
+<span class="hl opt">}</span>
