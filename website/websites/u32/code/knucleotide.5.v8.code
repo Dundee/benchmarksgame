@@ -1,0 +1,193 @@
+<span class="hl com">/*  The Computer Language Benchmarks Game</span>
+<span class="hl com">    http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">    Contributed by Joe Farro</span>
+<span class="hl com">    parts taken from solution contributed by </span>
+<span class="hl com">    Jesse Millikan which was modified by Matt Baker</span>
+<span class="hl com">*/</span>
+
+
+
+<span class="hl kwa">function</span> <span class="hl kwd">SeqSets</span><span class="hl opt">(</span>len<span class="hl opt">) {</span>
+    <span class="hl kwa">this</span><span class="hl opt">.</span>seqLen <span class="hl opt">=</span> len<span class="hl opt">;</span>
+    <span class="hl kwa">this</span><span class="hl opt">.</span>uintLeft <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">this</span><span class="hl opt">.</span>uintRight <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">this</span><span class="hl opt">.</span>maskLeft <span class="hl opt">=</span> len <span class="hl opt">&lt;=</span> <span class="hl num">12</span> ? <span class="hl num">0</span> <span class="hl opt">:</span> Math<span class="hl opt">.</span><span class="hl kwd">pow</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">, (</span>len <span class="hl opt">-</span> <span class="hl num">12</span><span class="hl opt">) *</span> <span class="hl num">2</span><span class="hl opt">) -</span> <span class="hl num">1</span><span class="hl opt">;</span>
+    <span class="hl kwa">this</span><span class="hl opt">.</span>maskRight <span class="hl opt">=</span> Math<span class="hl opt">.</span><span class="hl kwd">pow</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">,</span> Math<span class="hl opt">.</span><span class="hl kwd">min</span><span class="hl opt">(</span><span class="hl num">12</span><span class="hl opt">,</span> len<span class="hl opt">) *</span> <span class="hl num">2</span><span class="hl opt">) -</span> <span class="hl num">1</span><span class="hl opt">;</span>
+    <span class="hl kwa">this</span><span class="hl opt">.</span>data <span class="hl opt">= {};</span>
+    <span class="hl kwa">this</span><span class="hl opt">.</span>lastUintLeft <span class="hl opt">=</span> undefined<span class="hl opt">;</span>
+    <span class="hl kwa">this</span><span class="hl opt">.</span>lastLeftData <span class="hl opt">=</span> undefined<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+SeqSets<span class="hl opt">.</span><span class="hl kwa">prototype</span><span class="hl opt">.</span>pushToken <span class="hl opt">=</span> <span class="hl kwa">function</span><span class="hl opt">(</span><span class="hl kwb">char</span><span class="hl opt">) {</span>
+    <span class="hl kwa">this</span><span class="hl opt">.</span>uintLeft <span class="hl opt">= (</span><span class="hl kwa">this</span><span class="hl opt">.</span>uintLeft <span class="hl opt">&lt;&lt;</span> <span class="hl num">2</span> | <span class="hl kwa">this</span><span class="hl opt">.</span>uintRight <span class="hl opt">&gt;&gt;&gt;</span> <span class="hl num">22</span><span class="hl opt">) &amp;</span> <span class="hl kwa">this</span><span class="hl opt">.</span>maskLeft<span class="hl opt">;</span>
+    <span class="hl kwa">this</span><span class="hl opt">.</span>uintRight <span class="hl opt">= (</span><span class="hl kwa">this</span><span class="hl opt">.</span>uintRight <span class="hl opt">&lt;&lt;</span> <span class="hl num">2</span> | <span class="hl kwb">char</span><span class="hl opt">) &amp;</span> <span class="hl kwa">this</span><span class="hl opt">.</span>maskRight<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+SeqSets<span class="hl opt">.</span><span class="hl kwa">prototype</span><span class="hl opt">.</span>inc <span class="hl opt">=</span> <span class="hl kwa">function</span><span class="hl opt">(</span><span class="hl kwb">char</span><span class="hl opt">) {</span>
+    <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">this</span><span class="hl opt">.</span>uintLeft <span class="hl opt">!==</span> <span class="hl kwa">this</span><span class="hl opt">.</span>lastUintLeft<span class="hl opt">) {</span>
+        <span class="hl kwa">this</span><span class="hl opt">.</span>lastUintLeft <span class="hl opt">=</span> <span class="hl kwa">this</span><span class="hl opt">.</span>uintLeft<span class="hl opt">;</span>
+        <span class="hl kwa">this</span><span class="hl opt">.</span>lastLeftData <span class="hl opt">=</span> <span class="hl kwa">this</span><span class="hl opt">.</span>data<span class="hl opt">[</span><span class="hl kwa">this</span><span class="hl opt">.</span>uintLeft<span class="hl opt">] = (</span><span class="hl kwa">this</span><span class="hl opt">.</span>data<span class="hl opt">[</span><span class="hl kwa">this</span><span class="hl opt">.</span>uintLeft<span class="hl opt">]</span> || <span class="hl opt">{});</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwa">this</span><span class="hl opt">.</span>lastLeftData<span class="hl opt">[</span><span class="hl kwa">this</span><span class="hl opt">.</span>uintRight<span class="hl opt">] = (</span><span class="hl kwa">this</span><span class="hl opt">.</span>lastLeftData<span class="hl opt">[</span><span class="hl kwa">this</span><span class="hl opt">.</span>uintRight<span class="hl opt">]</span> || <span class="hl num">0</span><span class="hl opt">) +</span> <span class="hl num">1</span><span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+SeqSets<span class="hl opt">.</span><span class="hl kwa">prototype</span><span class="hl opt">.</span>incWithToken <span class="hl opt">=</span> <span class="hl kwa">function</span><span class="hl opt">(</span><span class="hl kwb">char</span><span class="hl opt">) {</span>
+    <span class="hl kwa">this</span><span class="hl opt">.</span><span class="hl kwd">pushToken</span><span class="hl opt">(</span><span class="hl kwb">char</span><span class="hl opt">);</span>
+    <span class="hl kwa">this</span><span class="hl opt">.</span><span class="hl kwd">inc</span><span class="hl opt">();</span>
+<span class="hl opt">};</span>
+
+SeqSets<span class="hl opt">.</span><span class="hl kwa">prototype</span><span class="hl opt">.</span>getCount <span class="hl opt">=</span> <span class="hl kwa">function</span><span class="hl opt">(</span>seq<span class="hl opt">) {</span>
+    <span class="hl kwa">var</span> seqLeft <span class="hl opt">=</span> seq<span class="hl opt">.</span>length <span class="hl opt">&lt;=</span> <span class="hl num">12</span> ? <span class="hl str">''</span> <span class="hl opt">:</span> seq<span class="hl opt">.</span><span class="hl kwd">substr</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> seq<span class="hl opt">.</span>length <span class="hl opt">-</span> <span class="hl num">12</span><span class="hl opt">),</span>
+        seqRight <span class="hl opt">=</span> seq<span class="hl opt">.</span><span class="hl kwd">substr</span><span class="hl opt">(-</span><span class="hl num">12</span><span class="hl opt">),</span>
+        uintLeft <span class="hl opt">=</span> seqLeft <span class="hl opt">&amp;&amp;</span> <span class="hl kwd">toUint</span><span class="hl opt">(</span>seqLeft<span class="hl opt">)</span> || <span class="hl num">0</span><span class="hl opt">,</span>
+        uintRight <span class="hl opt">=</span> <span class="hl kwd">toUint</span><span class="hl opt">(</span>seqRight<span class="hl opt">);</span>
+
+    <span class="hl kwa">return this</span><span class="hl opt">.</span>data<span class="hl kwc">[uintLeft][uintRight]</span><span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+
+<span class="hl kwa">function</span> <span class="hl kwd">charToInt</span><span class="hl opt">(</span>str<span class="hl opt">) {</span>
+    <span class="hl kwa">switch</span> <span class="hl opt">(</span>str<span class="hl opt">) {</span>
+        <span class="hl kwa">case</span> <span class="hl str">'a'</span><span class="hl opt">:</span> <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+        <span class="hl kwa">case</span> <span class="hl str">'c'</span><span class="hl opt">:</span> <span class="hl kwa">return</span> <span class="hl num">1</span><span class="hl opt">;</span>
+        <span class="hl kwa">case</span> <span class="hl str">'g'</span><span class="hl opt">:</span> <span class="hl kwa">return</span> <span class="hl num">2</span><span class="hl opt">;</span>
+        <span class="hl kwa">case</span> <span class="hl str">'t'</span><span class="hl opt">:</span> <span class="hl kwa">return</span> <span class="hl num">3</span><span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">toStr</span><span class="hl opt">(</span>num<span class="hl opt">,</span> len<span class="hl opt">) {</span>
+    <span class="hl kwa">var</span> res <span class="hl opt">=</span> <span class="hl str">''</span><span class="hl opt">;</span>
+    <span class="hl kwa">while</span> <span class="hl opt">(</span>len <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+        <span class="hl kwa">switch</span> <span class="hl opt">(</span>num <span class="hl opt">&amp;</span> <span class="hl num">3</span><span class="hl opt">) {</span>
+            <span class="hl kwa">case</span> <span class="hl num">0</span><span class="hl opt">:</span> res <span class="hl opt">=</span> <span class="hl str">'A'</span> <span class="hl opt">+</span> res<span class="hl opt">;</span> <span class="hl kwa">break</span><span class="hl opt">;</span>
+            <span class="hl kwa">case</span> <span class="hl num">1</span><span class="hl opt">:</span> res <span class="hl opt">=</span> <span class="hl str">'C'</span> <span class="hl opt">+</span> res<span class="hl opt">;</span> <span class="hl kwa">break</span><span class="hl opt">;</span>
+            <span class="hl kwa">case</span> <span class="hl num">2</span><span class="hl opt">:</span> res <span class="hl opt">=</span> <span class="hl str">'G'</span> <span class="hl opt">+</span> res<span class="hl opt">;</span> <span class="hl kwa">break</span><span class="hl opt">;</span>
+            <span class="hl kwa">case</span> <span class="hl num">3</span><span class="hl opt">:</span> res <span class="hl opt">=</span> <span class="hl str">'T'</span> <span class="hl opt">+</span> res<span class="hl opt">;</span> <span class="hl kwa">break</span><span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+        num <span class="hl opt">=</span> num <span class="hl opt">&gt;&gt;&gt;</span> <span class="hl num">2</span><span class="hl opt">;</span>
+        len<span class="hl opt">--;</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwa">return</span> res<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">toUint</span><span class="hl opt">(</span>str<span class="hl opt">) {</span>
+
+    <span class="hl kwa">var</span> offset <span class="hl opt">=</span> <span class="hl num">2</span> <span class="hl opt">*</span> str<span class="hl opt">.</span>length<span class="hl opt">,</span>
+        <span class="hl kwb">uint</span> <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Uint32Array</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">ArrayBuffer</span><span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">)),</span>
+        i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+    <span class="hl kwa">while</span> <span class="hl opt">(</span>offset<span class="hl opt">) {</span>
+        offset <span class="hl opt">-=</span> <span class="hl num">2</span><span class="hl opt">;</span>
+        <span class="hl kwb">uint</span><span class="hl kwc">[0]</span> |<span class="hl opt">= (</span><span class="hl kwd">charToInt</span><span class="hl opt">(</span>str<span class="hl kwc">[i]</span><span class="hl opt">) &lt;&lt;</span> offset<span class="hl opt">);</span>
+        i<span class="hl opt">++;</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwa">return</span> <span class="hl kwb">uint</span><span class="hl kwc">[0]</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+
+<span class="hl kwa">var</span> dataLength <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+<span class="hl kwa">var</span> seq1 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">SeqSets</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">),</span>
+    seq2 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">SeqSets</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">),</span>
+    seq3 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">SeqSets</span><span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">),</span>
+    seq4 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">SeqSets</span><span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">),</span>
+    seq6 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">SeqSets</span><span class="hl opt">(</span><span class="hl num">6</span><span class="hl opt">),</span>
+    seq12 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">SeqSets</span><span class="hl opt">(</span><span class="hl num">12</span><span class="hl opt">),</span>
+    seq18 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">SeqSets</span><span class="hl opt">(</span><span class="hl num">18</span><span class="hl opt">);</span>
+
+<span class="hl kwa">var</span> tables <span class="hl opt">= [</span>
+    seq1<span class="hl opt">,</span>
+    seq2<span class="hl opt">,</span>
+    seq3<span class="hl opt">,</span>
+    seq4<span class="hl opt">,</span>
+    seq6<span class="hl opt">,</span>
+    seq12<span class="hl opt">,</span>
+    seq18<span class="hl opt">,</span>
+<span class="hl opt">];</span>
+
+
+<span class="hl kwa">function</span> <span class="hl kwd">readInput</span><span class="hl opt">() {</span>
+
+    <span class="hl kwa">var</span> len <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span>
+        line<span class="hl opt">,</span>
+        i<span class="hl opt">,</span>
+        <span class="hl kwb">char</span><span class="hl opt">,</span>
+        si<span class="hl opt">,</span>
+        slen <span class="hl opt">=</span> tables<span class="hl opt">.</span>length<span class="hl opt">,</span>
+        seqSet<span class="hl opt">;</span>
+
+    <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl kwd">readline</span><span class="hl opt">().</span><span class="hl kwd">substr</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">3</span><span class="hl opt">) !==</span> <span class="hl str">'&gt;TH'</span><span class="hl opt">) {</span>
+    <span class="hl opt">}</span>
+
+    line <span class="hl opt">=</span> <span class="hl kwd">readline</span><span class="hl opt">();</span>
+    i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    len <span class="hl opt">=</span> line<span class="hl opt">.</span>length<span class="hl opt">;</span>
+
+    <span class="hl slc">// the first-line is a special case as not all the counts should start</span>
+    <span class="hl slc">// saving immediately</span>
+    <span class="hl kwa">while</span> <span class="hl opt">(</span>i <span class="hl opt">&lt;</span> <span class="hl num">18</span><span class="hl opt">) {</span>
+
+        <span class="hl kwb">char</span> <span class="hl opt">=</span> <span class="hl kwd">charToInt</span><span class="hl opt">(</span>line<span class="hl kwc">[i]</span><span class="hl opt">);</span>
+
+        si <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+        iPlusOne <span class="hl opt">=</span> i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(;</span> si <span class="hl opt">&lt;</span> slen<span class="hl opt">;</span> si<span class="hl opt">++) {</span>
+            seqSet <span class="hl opt">=</span> tables<span class="hl kwc">[si]</span><span class="hl opt">;</span>
+            seqSet<span class="hl opt">.</span><span class="hl kwd">pushToken</span><span class="hl opt">(</span><span class="hl kwb">char</span><span class="hl opt">);</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>seqSet<span class="hl opt">.</span>seqLen <span class="hl opt">&lt;=</span> i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">) {</span>
+                seqSet<span class="hl opt">.</span><span class="hl kwd">inc</span><span class="hl opt">();</span>
+            <span class="hl opt">}</span>
+        <span class="hl opt">}</span>
+        i<span class="hl opt">++;</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl slc">// use do-loop bc want to preserve `i` position on first line</span>
+    <span class="hl kwa">do</span> <span class="hl opt">{</span>
+
+        len <span class="hl opt">=</span> line<span class="hl opt">.</span>length<span class="hl opt">;</span>
+        dataLength <span class="hl opt">+=</span> len<span class="hl opt">;</span>
+        <span class="hl kwa">while</span> <span class="hl opt">(</span>i <span class="hl opt">&lt;</span> len<span class="hl opt">) {</span>
+
+            <span class="hl kwb">char</span> <span class="hl opt">=</span> <span class="hl kwd">charToInt</span><span class="hl opt">(</span>line<span class="hl kwc">[i]</span><span class="hl opt">);</span>
+
+            seq1<span class="hl opt">.</span><span class="hl kwd">incWithToken</span><span class="hl opt">(</span><span class="hl kwb">char</span><span class="hl opt">);</span>
+            seq2<span class="hl opt">.</span><span class="hl kwd">incWithToken</span><span class="hl opt">(</span><span class="hl kwb">char</span><span class="hl opt">);</span>
+            seq3<span class="hl opt">.</span><span class="hl kwd">incWithToken</span><span class="hl opt">(</span><span class="hl kwb">char</span><span class="hl opt">);</span>
+            seq4<span class="hl opt">.</span><span class="hl kwd">incWithToken</span><span class="hl opt">(</span><span class="hl kwb">char</span><span class="hl opt">);</span>
+            seq6<span class="hl opt">.</span><span class="hl kwd">incWithToken</span><span class="hl opt">(</span><span class="hl kwb">char</span><span class="hl opt">);</span>
+            seq12<span class="hl opt">.</span><span class="hl kwd">incWithToken</span><span class="hl opt">(</span><span class="hl kwb">char</span><span class="hl opt">);</span>
+            seq18<span class="hl opt">.</span><span class="hl kwd">incWithToken</span><span class="hl opt">(</span><span class="hl kwb">char</span><span class="hl opt">);</span>
+
+            i<span class="hl opt">++;</span>
+        <span class="hl opt">}</span>
+        i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl opt">}</span> <span class="hl kwa">while</span> <span class="hl opt">((</span>line <span class="hl opt">=</span> <span class="hl kwd">readline</span><span class="hl opt">()) &amp;&amp;</span> line<span class="hl kwc">[0]</span> <span class="hl opt">!==</span> <span class="hl str">'&gt;'</span><span class="hl opt">)</span>
+<span class="hl opt">}</span>
+
+
+<span class="hl kwa">function</span> <span class="hl kwd">sortCounts</span><span class="hl opt">(</span>data<span class="hl opt">,</span> seqLen<span class="hl opt">) {</span>
+
+    <span class="hl kwa">var</span> keys <span class="hl opt">=</span> Object<span class="hl opt">.</span><span class="hl kwd">keys</span><span class="hl opt">(</span>data<span class="hl opt">),</span>
+        pctFactor <span class="hl opt">=</span> <span class="hl num">100</span> <span class="hl opt">/ (</span>dataLength <span class="hl opt">-</span> seqLen <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">);</span>
+
+    keys<span class="hl opt">.</span><span class="hl kwd">sort</span><span class="hl opt">(</span><span class="hl kwa">function</span><span class="hl opt">(</span>a<span class="hl opt">,</span> b<span class="hl opt">) {</span>
+        <span class="hl kwa">return</span> data<span class="hl kwc">[b]</span> <span class="hl opt">-</span> data<span class="hl kwc">[a]</span><span class="hl opt">;</span>
+    <span class="hl opt">});</span>
+
+    keys<span class="hl opt">.</span><span class="hl kwd">forEach</span><span class="hl opt">(</span><span class="hl kwa">function</span><span class="hl opt">(</span>code<span class="hl opt">) {</span>
+        <span class="hl kwd">print</span><span class="hl opt">(</span><span class="hl kwd">toStr</span><span class="hl opt">(</span>code<span class="hl opt">,</span> seqLen<span class="hl opt">), (</span>data<span class="hl kwc">[code]</span> <span class="hl opt">*</span> pctFactor<span class="hl opt">).</span><span class="hl kwd">toFixed</span><span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">));</span>
+    <span class="hl opt">});</span>
+    <span class="hl kwd">print</span><span class="hl opt">();</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwd">readInput</span><span class="hl opt">();</span>
+
+<span class="hl kwd">sortCounts</span><span class="hl opt">(</span>seq1<span class="hl opt">.</span>data<span class="hl kwc">[0]</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">);</span>
+<span class="hl kwd">sortCounts</span><span class="hl opt">(</span>seq2<span class="hl opt">.</span>data<span class="hl kwc">[0]</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">);</span>
+
+<span class="hl kwd">print</span><span class="hl opt">(</span>seq3<span class="hl opt">.</span><span class="hl kwd">getCount</span><span class="hl opt">(</span><span class="hl str">'ggt'</span><span class="hl opt">) +</span><span class="hl str">'</span><span class="hl esc">\t</span><span class="hl str">'</span> <span class="hl opt">+</span> <span class="hl str">'GGT'</span><span class="hl opt">);</span>
+<span class="hl kwd">print</span><span class="hl opt">(</span>seq4<span class="hl opt">.</span><span class="hl kwd">getCount</span><span class="hl opt">(</span><span class="hl str">'ggta'</span><span class="hl opt">) +</span><span class="hl str">'</span><span class="hl esc">\t</span><span class="hl str">'</span> <span class="hl opt">+</span> <span class="hl str">'GGTA'</span><span class="hl opt">);</span>
+<span class="hl kwd">print</span><span class="hl opt">(</span>seq6<span class="hl opt">.</span><span class="hl kwd">getCount</span><span class="hl opt">(</span><span class="hl str">'ggtatt'</span><span class="hl opt">) +</span><span class="hl str">'</span><span class="hl esc">\t</span><span class="hl str">'</span> <span class="hl opt">+</span> <span class="hl str">'GGTATT'</span><span class="hl opt">);</span>
+<span class="hl kwd">print</span><span class="hl opt">(</span>seq12<span class="hl opt">.</span><span class="hl kwd">getCount</span><span class="hl opt">(</span><span class="hl str">'ggtattttaatt'</span><span class="hl opt">) +</span><span class="hl str">'</span><span class="hl esc">\t</span><span class="hl str">'</span> <span class="hl opt">+</span> <span class="hl str">'GGTATTTTAATT'</span><span class="hl opt">);</span>
+<span class="hl kwd">print</span><span class="hl opt">(</span>seq18<span class="hl opt">.</span><span class="hl kwd">getCount</span><span class="hl opt">(</span><span class="hl str">'ggtattttaatttatagt'</span><span class="hl opt">) +</span> <span class="hl str">'</span><span class="hl esc">\t</span><span class="hl str">'</span> <span class="hl opt">+</span> <span class="hl str">'GGTATTTTAATTTATAGT'</span><span class="hl opt">);</span>
