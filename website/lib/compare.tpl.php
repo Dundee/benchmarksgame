@@ -200,8 +200,8 @@ foreach($sorted as $k => $v){
       if ($v[DATA_MEMORY]==NO_VALUE){
          $kb = '<td class="num2">?</td>';
       } else {
-         if ($name=='startup'){ $kb = PF(1.0); }
-         else { $kb = PF($v[DATA_MEMORY]); }
+         if ($name=='binarytrees'||$name=='regexdna'||$name=='revcomp'||$name=='mandelbrot'||$name=='knucleotide'){ $kb = PF($v[DATA_MEMORY]); }
+         else { $kb = PF(0.0); }
       }
       if ($v[DATA_GZ]==NO_VALUE){
          $gz = '<td class="num2">?</td>';
