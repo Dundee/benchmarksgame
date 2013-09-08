@@ -54,12 +54,14 @@
 <th>Java</th>
 <th>C</th>
 <th>Free Pascal</th>
+<th></th>
 </tr>
 <tr>
-<td>n-body</td>
+<td></td>
 <td>13,996KB</td>
 <td>320KB</td>
 <td>8KB</td>
+<td>n-body</td>
 </tr>
 </table>
 
@@ -67,29 +69,34 @@
 
 <table>
 <tr>
-<th>benchmark</th>
+<th></th>
 <th>Java</th>
 <th>C</th>
+<th>benchmark</th>
 </tr>
 <tr>
-<td>k-nucleotide</td>
+<td></td>
 <td>494,040KB</td>
 <td>153,452KB</td>
+<td>k-nucleotide</td>
 </tr>
 <tr>
-<td>reverse-complement</td>
+<td></td>
 <td>511,484KB</td>
 <td>248,632KB</td>
+<td>reverse-complement</td>
 </tr>
 <tr>
-<td>regex-dna</td>
+<td></td>
 <td>557,080KB</td>
 <td>289,088KB</td>
+<td>regex-dna</td>
 </tr>
 <tr>
-<td>binary-trees</td>
+<td></td>
 <td>506,592KB</td>
 <td>99,448KB</td>
+<td>binary-trees</td>
 </tr>
 </table>
 
