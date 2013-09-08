@@ -63,7 +63,7 @@
 <td>8KB</td>
 <td>n-body</td>
 </tr>
-<tr><td colspan="5">Look at programs for the tasks that do require memory to be allocated:</td></tr>
+<tr><td colspan="5"></br>Look at programs for the tasks that do require memory to be allocated:</td></tr>
 <tr>
 <td></td>
 <td>494,040KB</td>
