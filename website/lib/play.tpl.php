@@ -47,17 +47,29 @@
 </dd>
 
 <dt><a href="#whymemory" name="whymemory">Why was memory was allocated?</a></dt>
-<dd><p>Big differences in default memory allocation, don't mean there'll be big differences in memory use for tasks that require memory to be allocated.</p>
-<ul>
-<li><i>n-body</i> Java program 13,996KB :: C program 320KB :: Free Pascal 8KB</li>
-</ul>
-<p>Look at the tasks that do require memory to be allocated:</p>
+<dd><p>Big differences in <i>default</i> memory allocation, don't mean there'll be big differences in memory use for tasks that require memory to be allocated:</p>
+<table>
+<tr>
+<th></th>
+<th>Java</th>
+<th>C</th>
+<th>Free Pascal</th>
+</tr>
+<tr>
+<td>n-body</td>
+<td>13,996KB</td>
+<td>320KB</td>
+<td>8KB</td>
+</tr>
+</table>
+
+<p>Look at programs for the tasks that do require memory to be allocated:</p>
 
 <table>
 <tr>
 <th>benchmark</th>
-<th>Java program</th>
-<th>C program</th>
+<th>Java</th>
+<th>C</th>
 </tr>
 <tr>
 <td>k-nucleotide</td>
