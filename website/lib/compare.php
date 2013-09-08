@@ -148,7 +148,14 @@ function HeadToHeadData($FileName,$Tests,$Langs,$Incl,$Excl,$L1,$L2,$HasHeading=
       $test = $v[0][DATA_TEST];
       if ($Tests[$test][TEST_WEIGHT]<=0 || $v[DATA_TIME] == NO_VALUE){ continue; }
       $ratios[] = $v[DATA_TIME];
-      $ratios[] = $v[DATA_MEMORY];
+
+      // Too many confuse default memory use with program memory use
+      if ($test=='binarytrees'||$test=='regexdna'||
+            $test=='revcomp'||$test=='mandelbrot'||$test=='knucleotide'){ 
+         $ratios[] = $v[DATA_MEMORY]; }
+      else { 
+         $ratios[] = 0.0; }
+
       $ratios[] = $v[DATA_GZ];
       $times[] = $v[DATA_TIME];
       $mismatches[$test] = isMulticore($v[0][DATA_LOAD]) != isMulticore($v[1][DATA_LOAD]);
