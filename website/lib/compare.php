@@ -151,7 +151,7 @@ function HeadToHeadData($FileName,$Tests,$Langs,$Incl,$Excl,$L1,$L2,$HasHeading=
 
       // Too many confuse default memory use with program memory use
       if ($test=='binarytrees'||$test=='regexdna'||
-            $test=='revcomp'||$test=='mandelbrot'||$test=='knucleotide'){ 
+            $test=='revcomp'||$test=='knucleotide'){ 
          $ratios[] = $v[DATA_MEMORY]; }
       else { 
          $ratios[] = 0.0; }

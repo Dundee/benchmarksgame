@@ -203,7 +203,7 @@ foreach($sorted as $k => $v){
 
       // Too many confuse default memory use with program memory use
          if ($k=='binarytrees'||$k=='regexdna'||
-            $k=='revcomp'||$k=='mandelbrot'||$k=='knucleotide'){ $kb = PF($v[DATA_MEMORY]); }
+            $k=='revcomp'||$k=='knucleotide'){ $kb = PF($v[DATA_MEMORY]); }
          else { $kb = PF(0.0); }
       }
       if ($v[DATA_GZ]==NO_VALUE){
