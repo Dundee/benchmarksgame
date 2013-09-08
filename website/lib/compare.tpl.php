@@ -159,7 +159,7 @@ $ExplanatoryHeader = '&nbsp;<strong>'.$LangName.'</strong>&nbsp;<b>used</b> what
 
 <p>Each chart bar shows, for one unidentified benchmark, how much the fastest <strong><?=$LangName;?></strong> program <i>used</i> compared to the fastest <?=$LangName2;?> program.</p>
 
-<p>Memory use is only compared for tasks that require memory to be allocated.</p>
+<p>Memory use is only compared <a href="<?=CORE_SITE;?>play.php#whymemory" title="">for tasks that require memory to be allocated</a>.</p>
 
 <p><br/><img src="chartvs.php?<?='r='.Encode($ratios);?>&amp;<?='m='.Encode($Mark.' n');?>&amp;<?='w='.Encode($SelectedLang.'O'.$SelectedLang2);?>"
    alt=""
@@ -172,7 +172,7 @@ $ExplanatoryHeader = '&nbsp;<strong>'.$LangName.'</strong>&nbsp;<b>used</b> what
 
 <p>Each table row shows, for one named benchmark, how much the fastest <strong><?=$LangName;?></strong> program <i>used</i> compared to the fastest <?=$LangName2;?> program.</p>
 
-<p>Memory use is only compared for tasks that require memory to be allocated.</p>
+<p>Memory use is only compared <a href="<?=CORE_SITE;?>play.php#whymemory" title="">for tasks that require memory to be allocated</a>.</p>
 
 <table>
 <colgroup span="1" class="txt"></colgroup>

@@ -46,8 +46,8 @@
 <p><i>On win32 - QueryInformationJobObject(hJob,JobObjectExtendedLimitInformation) <a href="http://msdn.microsoft.com/en-us/library/ms684156(VS.85).aspx">PeakJobMemoryUsed</a></i></p>
 </dd>
 
-<dt><a href="#whymemory" name="whymemory">Why was memory was allocated?</a></dt>
-<dd><p>Big differences in <i>default</i> memory allocation, don't mean there'll be big differences in memory use for tasks that require memory to be allocated:</p>
+<dt><a href="#whymemory" name="whymemory"><strong>Why was memory was allocated?</strong></a></dt>
+<dd><p>Huge differences in <i>default</i> memory allocation, don't mean there'll be huge differences in memory use for tasks that require memory to be allocated:</p>
 <table>
 <tr>
 <th></th>
