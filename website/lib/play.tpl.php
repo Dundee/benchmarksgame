@@ -46,6 +46,20 @@
 <p><i>On win32 - QueryInformationJobObject(hJob,JobObjectExtendedLimitInformation) <a href="http://msdn.microsoft.com/en-us/library/ms684156(VS.85).aspx">PeakJobMemoryUsed</a></i></p>
 </dd>
 
+<dt><a href="#whymemory" name="whymemory">Why was memory was allocated?</a></dt>
+<dd><p>Big differences in default memory allocation, don't mean there'll be big differences in memory use for tasks that require memory to be allocated.</p>
+<ul>
+<li><i>n-body</i> Java program 13,996KB :: C program 320KB :: Free Pascal 8KB</li>
+</ul>
+<p>Look at the tasks that do require memory to be allocated:</p>
+<ul>
+<li><i>k-nucleotide</i> Java program 494,040KB :: C program 153,452KB</li>
+<li><i>reverse-complement</i> Java program 511,484KB :: C program 248,632KB</li>
+<li><i>regex-dna</i> Java program 557,080KB :: C program 289,088KB</li>
+<li><i>binary-trees</i> Java program 506,592KB :: C program 99,448KB</li>
+</ul>
+</dd>
+
 <dt><a href="#gzbytes" name="gzbytes">How do you measure <strong>Code-used?</strong></a></dt>
 <dd><p>We start with the source-code markup you can see, remove comments, remove duplicate whitespace characters, and then apply minimum GZip compression. The Code-used measurement is the size in bytes of that GZip compressed source-code file.</p>
 <p>Thanks to Brian Hurt for the idea of using <em>size of compressed source code</em> instead of <em>lines of code</em>.</p>
