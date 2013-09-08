@@ -1,0 +1,50 @@
+<span class="hl slc"># The Computer Language Benchmarks Game</span>
+<span class="hl slc"># http://benchmarksgame.alioth.debian.org</span>
+<span class="hl slc">#</span>
+<span class="hl slc"># contributed by jose fco. gonzalez</span>
+<span class="hl slc"># optimized &amp; parallelized by Rick Branson</span>
+<span class="hl slc"># optimized for ruby2 by Aaron Tavistock</span>
+
+<span class="hl kwa">require</span> <span class="hl str">'fiber'</span>
+
+seq <span class="hl opt">=</span> <span class="hl kwb">$stdin</span><span class="hl opt">.</span>read<span class="hl opt">.</span><span class="hl kwd">force_encoding</span><span class="hl opt">(</span><span class="hl str">&quot;ASCII-8BIT&quot;</span>)
+origin_len <span class="hl opt">=</span> seq<span class="hl opt">.</span>size
+
+seq<span class="hl opt">.</span>gsub<span class="hl opt">!(</span><span class="hl kwc">/&gt;.*\n|\n/</span><span class="hl opt">,</span><span class="hl str">''</span>)
+clean_len <span class="hl opt">=</span> seq<span class="hl opt">.</span>size
+
+matchers <span class="hl opt">= [</span>
+  <span class="hl str">'agggtaaa|tttaccct'</span><span class="hl opt">,</span>
+  <span class="hl str">'[cgt]gggtaaa|tttaccc[acg]'</span><span class="hl opt">,</span>
+  <span class="hl str">'a[act]ggtaaa|tttacc[agt]t'</span><span class="hl opt">,</span>
+  <span class="hl str">'ag[act]gtaaa|tttac[agt]ct'</span><span class="hl opt">,</span>
+  <span class="hl str">'agg[act]taaa|ttta[agt]cct'</span><span class="hl opt">,</span>
+  <span class="hl str">'aggg[acg]aaa|ttt[cgt]ccct'</span><span class="hl opt">,</span>
+  <span class="hl str">'agggt[cgt]aa|tt[acg]accct'</span><span class="hl opt">,</span>
+  <span class="hl str">'agggta[cgt]a|t[acg]taccct'</span><span class="hl opt">,</span>
+  <span class="hl str">'agggtaa[cgt]|[acg]ttaccct'</span>
+<span class="hl opt">]</span>
+
+results <span class="hl opt">=</span> matchers<span class="hl opt">.</span>map <span class="hl kwa">do</span> <span class="hl opt">|</span>matcher<span class="hl opt">|</span>
+  Fiber<span class="hl opt">.</span>new <span class="hl kwa">do</span>
+    count <span class="hl opt">=</span> seq<span class="hl opt">.</span><span class="hl kwd">scan</span><span class="hl opt">(</span> Regexp<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span>matcher) )<span class="hl opt">.</span>size
+    Fiber<span class="hl opt">.</span><span class="hl kwa">yield</span> <span class="hl str">&quot;</span><span class="hl esc">#{matcher}</span> <span class="hl str"></span><span class="hl esc">#{count}</span><span class="hl str">&quot;</span>
+  <span class="hl kwa">end</span><span class="hl opt">.</span>resume
+<span class="hl kwa">end</span>
+
+replacements <span class="hl opt">= {</span>
+  <span class="hl str">'B'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(c|g|t)'</span><span class="hl opt">,</span>
+  <span class="hl str">'D'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(a|g|t)'</span><span class="hl opt">,</span>
+  <span class="hl str">'H'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(a|c|t)'</span><span class="hl opt">,</span>
+  <span class="hl str">'K'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(g|t)'</span><span class="hl opt">,</span>
+  <span class="hl str">'M'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(a|c)'</span><span class="hl opt">,</span>
+  <span class="hl str">'N'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(a|c|g|t)'</span><span class="hl opt">,</span>
+  <span class="hl str">'R'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(a|g)'</span><span class="hl opt">,</span>
+  <span class="hl str">'S'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(c|t)'</span><span class="hl opt">,</span>
+  <span class="hl str">'V'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(a|c|g)'</span><span class="hl opt">,</span>
+  <span class="hl str">'W'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(a|t)'</span><span class="hl opt">,</span>
+  <span class="hl str">'Y'</span> <span class="hl opt">=&gt;</span> <span class="hl str">'(c|t)'</span>
+<span class="hl opt">}</span>
+seq<span class="hl opt">.</span>gsub<span class="hl opt">!(</span>Regexp<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span>replacements<span class="hl opt">.</span>keys<span class="hl opt">.</span><span class="hl kwd">join</span><span class="hl opt">(</span><span class="hl str">'|'</span>))<span class="hl opt">,</span> replacements)
+
+puts <span class="hl str">&quot;</span><span class="hl esc">#{results.join(&quot;\n&quot;)}</span><span class="hl str">\n\n</span><span class="hl esc">#{origin_len}</span><span class="hl str">\n</span><span class="hl esc">#{clean_len}</span><span class="hl str">\n</span><span class="hl esc">#{seq.size}</span><span class="hl str">&quot;</span>
