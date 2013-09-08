@@ -200,7 +200,7 @@ foreach($sorted as $k => $v){
       if ($v[DATA_MEMORY]==NO_VALUE){
          $kb = '<td class="num2">?</td>';
       } else {
-         if ($name=='binarytrees'||$name=='regexdna'||$name=='revcomp'||$name=='mandelbrot'||$name=='knucleotide'){ $kb = PF($v[DATA_MEMORY]); }
+         if ($test=='binarytrees'||$test=='regexdna'||$test=='revcomp'||$test=='mandelbrot'||$test=='knucleotide'){ $kb = PF($v[DATA_MEMORY]); }
          else { $kb = PF(0.0); }
       }
       if ($v[DATA_GZ]==NO_VALUE){
