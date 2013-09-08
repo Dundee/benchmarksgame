@@ -52,12 +52,35 @@
 <li><i>n-body</i> Java program 13,996KB :: C program 320KB :: Free Pascal 8KB</li>
 </ul>
 <p>Look at the tasks that do require memory to be allocated:</p>
-<ul>
-<li><i>k-nucleotide</i> Java program 494,040KB :: C program 153,452KB</li>
-<li><i>reverse-complement</i> Java program 511,484KB :: C program 248,632KB</li>
-<li><i>regex-dna</i> Java program 557,080KB :: C program 289,088KB</li>
-<li><i>binary-trees</i> Java program 506,592KB :: C program 99,448KB</li>
-</ul>
+
+<table>
+<tr>
+<th>benchmark</th>
+<th>Java program</th>
+<th>C program</th>
+</tr>
+<tr>
+<td>k-nucleotide</td>
+<td>494,040KB</td>
+<td>153,452KB</td>
+</tr>
+<tr>
+<td>reverse-complement</td>
+<td>511,484KB</td>
+<td>248,632KB</td>
+</tr>
+<tr>
+<td>regex-dna</td>
+<td>557,080KB</td>
+<td>289,088KB</td>
+</tr>
+<tr>
+<td>binary-trees</td>
+<td>506,592KB</td>
+<td>99,448KB</td>
+</tr>
+</table>
+
 </dd>
 
 <dt><a href="#gzbytes" name="gzbytes">How do you measure <strong>Code-used?</strong></a></dt>
