@@ -1,0 +1,36 @@
+<span class="hl slc"># The Computer Language Benchmarks Game</span>
+<span class="hl slc"># http://benchmarksgame.alioth.debian.org</span>
+<span class="hl slc">#</span>
+<span class="hl slc"># contributed by Aaron Tavistock</span>
+
+<span class="hl kwa">def</span> <span class="hl kwd">frequency</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> keys)
+  counts <span class="hl opt">=</span> Hash<span class="hl opt">.</span><span class="hl kwd">new</span><span class="hl opt">(</span><span class="hl num">0</span>)
+  keys<span class="hl opt">.</span>each <span class="hl kwa">do</span> <span class="hl opt">|</span>key<span class="hl opt">|</span>
+    last_index <span class="hl opt">=</span> <span class="hl num">0</span>
+    <span class="hl kwa">while</span> last_index <span class="hl opt">=</span> seq<span class="hl opt">.</span><span class="hl kwd">index</span><span class="hl opt">(</span>key<span class="hl opt">,</span> last_index<span class="hl opt">+</span><span class="hl num">1</span>)
+      counts<span class="hl opt">[</span>key<span class="hl opt">] +=</span> <span class="hl num">1</span>
+    <span class="hl kwa">end</span>
+  <span class="hl kwa">end</span>
+  counts
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">def</span> <span class="hl kwd">percentage</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> keys)
+  <span class="hl kwd">frequency</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> keys)<span class="hl opt">.</span>sort <span class="hl esc">{ |a,b| b[1] &lt;=&gt; a[1] }</span><span class="hl opt">.</span>map <span class="hl kwa">do</span> <span class="hl opt">|</span>key<span class="hl opt">,</span> value<span class="hl opt">|</span>
+    <span class="hl str">&quot;%s %.3f&quot;</span> <span class="hl opt">% [</span> key<span class="hl opt">.</span>upcase<span class="hl opt">, ( (</span>value<span class="hl opt">*</span><span class="hl num">100</span>)<span class="hl opt">.</span>to_f <span class="hl opt">/</span> seq<span class="hl opt">.</span>size) <span class="hl opt">]</span>
+  <span class="hl kwa">end</span>
+<span class="hl kwa">end</span>
+
+<span class="hl kwa">def</span> <span class="hl kwd">count</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> keys)
+  <span class="hl kwd">frequency</span><span class="hl opt">(</span>seq<span class="hl opt">,</span> keys)<span class="hl opt">.</span>map <span class="hl kwa">do</span> <span class="hl opt">|</span>key<span class="hl opt">,</span> value<span class="hl opt">|</span>
+    <span class="hl str">&quot;</span><span class="hl esc">#{value.to_s}</span><span class="hl str">\t</span><span class="hl esc">#{key.upcase}</span><span class="hl str">&quot;</span>
+  <span class="hl kwa">end</span>
+<span class="hl kwa">end</span>
+
+_<span class="hl opt">,</span> seq <span class="hl opt">=</span> <span class="hl kwc">STDIN</span><span class="hl opt">.</span>read<span class="hl opt">.</span><span class="hl kwd">scan</span><span class="hl opt">(</span><span class="hl kwc">/(\n&gt;THREE[^\n]*\n)([^&gt;]*)\n/</span>)<span class="hl opt">.</span>flatten
+seq<span class="hl opt">.</span><span class="hl kwd">force_encoding</span><span class="hl opt">(</span><span class="hl str">'ASCII-8BIT'</span>)
+seq<span class="hl opt">.</span>gsub<span class="hl opt">!(</span><span class="hl kwc">/\s/</span><span class="hl opt">,</span> <span class="hl str">''</span>)
+
+print <span class="hl str">&quot;</span><span class="hl esc">#{percentage(seq, seq.chars.uniq).join(&quot;\n&quot;)}</span><span class="hl str">\n\n&quot;</span>
+print <span class="hl str">&quot;</span><span class="hl esc">#{percentage(seq, seq.scan(/../).uniq).join(&quot;\n&quot;)}</span><span class="hl str">\n\n&quot;</span>
+print <span class="hl str">&quot;</span><span class="hl esc">#{count(seq, %w(ggt ggta ggtatt ggtattttaatt ggtattttaatttatagt)).join(&quot;\n&quot;)}</span><span class="hl str">\n&quot;</span>
+
