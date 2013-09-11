@@ -1,0 +1,184 @@
+<span class="hl com">{-</span>
+<span class="hl com">  The Computer Language Benchmarks Game</span>
+<span class="hl com">  http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com">  </span>
+<span class="hl com">  contributed by Branimir Maksimovic</span>
+<span class="hl com">  converted from c++ version by Elam Kolenovic</span>
+<span class="hl com">-}</span>
+ 
+<span class="hl kwd">import</span> Foreign<span class="hl opt">.</span>Ptr
+<span class="hl kwd">import</span> Foreign<span class="hl opt">.</span>Marshal<span class="hl opt">.</span>Alloc
+<span class="hl kwd">import</span> Foreign<span class="hl opt">.</span>Storable
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span>Bits
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span>Word
+<span class="hl kwd">import</span> System<span class="hl opt">.</span>Environment
+<span class="hl kwd">import</span> System<span class="hl opt">.</span><span class="hl kwb">IO</span>
+<span class="hl kwd">import</span> Text<span class="hl opt">.</span>Printf
+<span class="hl kwd">import</span> Control<span class="hl opt">.</span>Concurrent
+
+<span class="hl kwd">type</span> Byte <span class="hl opt">=</span> Word8
+
+main <span class="hl opt">=</span> <span class="hl kwd">do</span>
+  n <span class="hl opt">&lt;-</span> <span class="hl kwc">getArgs</span> <span class="hl opt">&gt;&gt;=</span> <span class="hl kwc">readIO</span><span class="hl opt">.</span><span class="hl kwc">head</span>
+  <span class="hl kwd">let</span> width <span class="hl opt">=</span> n <span class="hl opt">::</span> <span class="hl kwb">Int</span>
+      height <span class="hl opt">=</span> n <span class="hl opt">::</span> <span class="hl kwb">Int</span> 
+      max_x <span class="hl opt">= (</span>width <span class="hl opt">+</span> <span class="hl num">7</span><span class="hl opt">)</span> `<span class="hl kwc">quot</span>` <span class="hl num">8</span> <span class="hl opt">::</span> <span class="hl kwb">Int</span>
+      max_iterations <span class="hl opt">=</span> <span class="hl num">50</span> <span class="hl opt">::</span> <span class="hl kwb">Int</span>
+      limit <span class="hl opt">=</span> <span class="hl num">2.0</span> <span class="hl opt">::</span> <span class="hl kwb">Double</span>
+      limit_sq <span class="hl opt">=</span> limit <span class="hl opt">*</span> limit <span class="hl opt">::</span> <span class="hl kwb">Double</span>
+      buffsz <span class="hl opt">=</span> height<span class="hl opt">*</span>max_x <span class="hl opt">::</span> <span class="hl kwb">Int</span>
+      cr0sz <span class="hl opt">=</span> <span class="hl num">8</span> <span class="hl opt">*</span> max_x <span class="hl opt">::</span> <span class="hl kwb">Int</span>
+
+  buff <span class="hl opt">&lt;-</span> new buffsz <span class="hl opt">::</span> <span class="hl kwb">IO</span><span class="hl opt">(</span>Ptr Byte<span class="hl opt">)</span>
+  cr0 <span class="hl opt">&lt;-</span> new cr0sz <span class="hl opt">::</span> <span class="hl kwb">IO</span><span class="hl opt">(</span>Ptr <span class="hl kwb">Double</span><span class="hl opt">)</span>
+
+  <span class="hl kwd">let</span> initcr0 x <span class="hl opt">=</span> <span class="hl kwd">do</span>
+          <span class="hl kwd">let</span> go k | k <span class="hl opt">&lt;</span> <span class="hl num">8</span> <span class="hl opt">=</span> <span class="hl kwd">do</span>
+                      <span class="hl kwd">let</span> xk <span class="hl opt">=</span> <span class="hl num">8</span> <span class="hl opt">*</span> x <span class="hl opt">+</span> k
+                      put cr0 xk <span class="hl opt">((</span><span class="hl num">2.0</span> <span class="hl opt">* (</span><span class="hl kwc">fromIntegral</span> xk<span class="hl opt">)) / (</span><span class="hl kwc">fromIntegral</span> width<span class="hl opt">) -</span> <span class="hl num">1.5</span><span class="hl opt">)</span>
+                      go <span class="hl opt">(</span>k<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+                   | <span class="hl kwc">otherwise</span> <span class="hl opt">=</span> <span class="hl kwc">return</span> <span class="hl opt">()</span>   
+          go <span class="hl num">0</span>
+
+  spawn initcr0 max_x
+
+  <span class="hl kwd">let</span> produce y <span class="hl opt">=</span> <span class="hl kwd">do</span>
+        line <span class="hl opt">&lt;-</span> advance buff <span class="hl opt">(</span>y<span class="hl opt">*</span>max_x<span class="hl opt">)</span>
+        cr <span class="hl opt">&lt;-</span> new <span class="hl num">8</span> <span class="hl opt">::</span> <span class="hl kwb">IO</span><span class="hl opt">(</span>Ptr <span class="hl kwb">Double</span><span class="hl opt">)</span>
+        ci <span class="hl opt">&lt;-</span> new <span class="hl num">8</span> <span class="hl opt">::</span> <span class="hl kwb">IO</span><span class="hl opt">(</span>Ptr <span class="hl kwb">Double</span><span class="hl opt">)</span>
+        <span class="hl kwd">let</span> ci0 <span class="hl opt">=</span> <span class="hl num">2.0</span> <span class="hl opt">* (</span><span class="hl kwc">fromIntegral</span> y<span class="hl opt">) / (</span><span class="hl kwc">fromIntegral</span> height<span class="hl opt">) -</span> <span class="hl num">1.0</span> <span class="hl opt">::</span> <span class="hl kwb">Double</span>
+        anyescape <span class="hl opt">&lt;-</span> malloc <span class="hl opt">::</span> <span class="hl kwb">IO</span><span class="hl opt">(</span>Ptr Byte<span class="hl opt">)</span>
+        poke anyescape <span class="hl num">0xff</span>
+        bits <span class="hl opt">&lt;-</span> malloc <span class="hl opt">::</span> <span class="hl kwb">IO</span><span class="hl opt">(</span>Ptr Byte<span class="hl opt">)</span>
+        bit_k <span class="hl opt">&lt;-</span> malloc <span class="hl opt">::</span> <span class="hl kwb">IO</span><span class="hl opt">(</span>Ptr Byte<span class="hl opt">)</span>
+        <span class="hl kwd">let</span> xloop x 
+             | x <span class="hl opt">&lt;</span> max_x <span class="hl opt">=</span> <span class="hl kwd">do</span>
+                cr0_x <span class="hl opt">&lt;-</span> advance cr0 <span class="hl opt">(</span><span class="hl num">8</span><span class="hl opt">*</span>x<span class="hl opt">)</span>
+                <span class="hl kwd">let</span> initcrs k 
+                     | k <span class="hl opt">&lt;</span> <span class="hl num">8</span> <span class="hl opt">=</span> <span class="hl kwd">do</span>
+                        v <span class="hl opt">&lt;-</span> get cr0_x k
+                        put cr k v
+                        put ci k ci0
+                        initcrs <span class="hl opt">(</span>k<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+                     | <span class="hl kwc">otherwise</span> <span class="hl opt">=</span> <span class="hl kwc">return</span> <span class="hl opt">()</span>
+                    noany <span class="hl opt">=</span> <span class="hl kwd">do</span>
+                      poke bits <span class="hl num">0xff</span>
+                      <span class="hl kwd">let</span> goi i <span class="hl opt">=</span> <span class="hl kwd">do</span>
+                            bitsv <span class="hl opt">&lt;-</span> peek bits 
+                            <span class="hl kwd">if</span> <span class="hl opt">(</span>toBool bitsv<span class="hl opt">) &amp;&amp;</span> i <span class="hl opt">&lt;</span> max_iterations 
+                              <span class="hl kwd">then do</span>
+                                poke bit_k <span class="hl num">0x80</span>
+                                <span class="hl kwd">let</span> gok k <span class="hl opt">=</span> <span class="hl kwd">do</span>
+                                      <span class="hl kwd">if</span> k <span class="hl opt">&lt;</span> <span class="hl num">8</span>
+                                        <span class="hl kwd">then do</span>
+                                          bitsv <span class="hl opt">&lt;-</span> peek bits
+                                          bit_kv <span class="hl opt">&lt;-</span> peek bit_k
+                                          <span class="hl kwd">if</span> toBool <span class="hl opt">(</span>bitsv <span class="hl opt">.&amp;.</span> bit_kv<span class="hl opt">)</span>
+                                            <span class="hl kwd">then do</span>
+                                              cr_k <span class="hl opt">&lt;-</span> get cr k
+                                              ci_k <span class="hl opt">&lt;-</span> get ci k
+                                              cr0_xk <span class="hl opt">&lt;-</span> get cr0_x k 
+                                              <span class="hl kwd">let</span> cr_k_sq <span class="hl opt">=</span> cr_k <span class="hl opt">*</span> cr_k
+                                                  ci_k_sq <span class="hl opt">=</span> ci_k <span class="hl opt">*</span> ci_k
+                                              put cr k <span class="hl opt">(</span>cr_k_sq <span class="hl opt">-</span> ci_k_sq <span class="hl opt">+</span> cr0_xk<span class="hl opt">)</span>
+                                              put ci k <span class="hl opt">(</span><span class="hl num">2.0</span> <span class="hl opt">*</span> cr_k <span class="hl opt">*</span> ci_k <span class="hl opt">+</span> ci0<span class="hl opt">)</span>
+                                              <span class="hl kwd">if</span> cr_k_sq <span class="hl opt">+</span> ci_k_sq <span class="hl opt">&gt;</span> limit_sq
+                                                <span class="hl kwd">then</span> poke bits <span class="hl opt">(</span>bitsv `xor` bit_kv<span class="hl opt">)</span>
+                                                <span class="hl kwd">else</span> <span class="hl kwc">return</span> <span class="hl opt">()</span>
+                                            <span class="hl kwd">else</span> <span class="hl kwc">return</span> <span class="hl opt">()</span>   
+                                          poke bit_k <span class="hl opt">(</span>bit_kv `shiftR` <span class="hl num">1</span><span class="hl opt">)</span>
+                                          gok <span class="hl opt">(</span>k<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+                                        <span class="hl kwd">else</span> <span class="hl kwc">return</span> <span class="hl opt">()</span>
+                                gok <span class="hl num">0</span>      
+                                goi <span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+                              <span class="hl kwd">else</span> 
+                                <span class="hl kwc">return</span> <span class="hl opt">()</span>   
+                      goi <span class="hl num">0</span>
+                    <span class="hl kwc">any</span> <span class="hl opt">=</span> <span class="hl kwd">do</span>
+                      poke bits <span class="hl num">0xff</span>
+                      <span class="hl kwd">let</span> goi i <span class="hl opt">=</span> <span class="hl kwd">do</span>
+                            bitsv <span class="hl opt">&lt;-</span> peek bits
+                            <span class="hl kwd">if</span> <span class="hl opt">(</span>toBool bitsv<span class="hl opt">) &amp;&amp;</span> i <span class="hl opt">&lt;</span> max_iterations<span class="hl opt">-</span><span class="hl num">1</span>
+                              <span class="hl kwd">then do</span>
+                                <span class="hl kwd">let</span> gok k <span class="hl opt">=</span> <span class="hl kwd">do</span>
+                                      <span class="hl kwd">if</span> k <span class="hl opt">&lt;</span> <span class="hl num">8</span>
+                                        <span class="hl kwd">then do</span>
+                                          cr_k <span class="hl opt">&lt;-</span> get cr k
+                                          ci_k <span class="hl opt">&lt;-</span> get ci k
+                                          cr0_xk <span class="hl opt">&lt;-</span> get cr0_x k 
+                                          <span class="hl kwd">let</span> cr_k_sq <span class="hl opt">=</span> cr_k <span class="hl opt">*</span> cr_k
+                                              ci_k_sq <span class="hl opt">=</span> ci_k <span class="hl opt">*</span> ci_k
+                                          put cr k <span class="hl opt">(</span>cr_k_sq <span class="hl opt">-</span> ci_k_sq <span class="hl opt">+</span> cr0_xk<span class="hl opt">)</span>
+                                          put ci k <span class="hl opt">(</span><span class="hl num">2.0</span> <span class="hl opt">*</span> cr_k <span class="hl opt">*</span> ci_k <span class="hl opt">+</span> ci0<span class="hl opt">)</span>
+                                          gok <span class="hl opt">(</span>k<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+                                        <span class="hl kwd">else</span> <span class="hl kwc">return</span><span class="hl opt">()</span>  
+                                gok <span class="hl num">0</span>
+                                goi <span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+                              <span class="hl kwd">else</span> <span class="hl kwc">return</span><span class="hl opt">()</span>
+                      goi <span class="hl num">0</span>
+                      poke bit_k <span class="hl num">0x80</span>
+                      <span class="hl kwd">let</span> gok k <span class="hl opt">=</span> <span class="hl kwd">do</span>
+                            <span class="hl kwd">if</span> k <span class="hl opt">&lt;</span> <span class="hl num">8</span>
+                              <span class="hl kwd">then do</span>
+                                cr_k <span class="hl opt">&lt;-</span> get cr k
+                                ci_k <span class="hl opt">&lt;-</span> get ci k
+                                <span class="hl kwd">let</span> <span class="hl kwa">sum</span> <span class="hl opt">=</span> cr_k <span class="hl opt">*</span> cr_k <span class="hl opt">+</span> ci_k <span class="hl opt">*</span> ci_k
+                                bitsv <span class="hl opt">&lt;-</span> peek bits
+                                bit_kv <span class="hl opt">&lt;-</span> peek bit_k
+                                <span class="hl kwd">if</span> <span class="hl kwc">isNaN</span> <span class="hl kwa">sum</span> || <span class="hl kwa">sum</span> <span class="hl opt">&gt;</span> limit_sq
+                                  <span class="hl kwd">then</span> poke bits <span class="hl opt">(</span>bitsv `xor` bit_kv<span class="hl opt">)</span>
+                                  <span class="hl kwd">else</span> <span class="hl kwc">return</span> <span class="hl opt">()</span>
+                                poke bit_k <span class="hl opt">(</span>bit_kv `shiftR` <span class="hl num">1</span><span class="hl opt">)</span>
+                                gok <span class="hl opt">(</span>k<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+                              <span class="hl kwd">else</span> <span class="hl kwc">return</span><span class="hl opt">()</span>
+                      gok <span class="hl num">0</span>
+                initcrs <span class="hl num">0</span>
+                anyv <span class="hl opt">&lt;-</span> peek anyescape
+                <span class="hl kwd">if</span> <span class="hl kwc">not</span> <span class="hl opt">(</span>toBool anyv<span class="hl opt">)</span>
+                  <span class="hl kwd">then</span> noany
+                  <span class="hl kwd">else</span> <span class="hl kwc">any</span>
+                bitsv <span class="hl opt">&lt;-</span> peek bits
+                put line x bitsv
+                poke anyescape bitsv
+                xloop <span class="hl opt">(</span>x<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+             | <span class="hl kwc">otherwise</span> <span class="hl opt">=</span> <span class="hl kwc">return</span> <span class="hl opt">()</span>
+        xloop <span class="hl num">0</span>
+           
+  spawn produce height
+    
+  printf <span class="hl str">&quot;P4</span><span class="hl esc">\n</span><span class="hl str">%u %u</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> width height
+  hPutBuf <span class="hl kwc">stdout</span> buff buffsz
+
+toBool i <span class="hl opt">=</span> <span class="hl kwd">if</span> i <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl kwd">then</span> <span class="hl kwa">False</span> <span class="hl kwd">else</span> <span class="hl kwa">True</span>
+
+new <span class="hl opt">::</span> Storable a <span class="hl opt">=&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">(</span>Ptr a<span class="hl opt">)</span>
+new <span class="hl opt">=</span> new<span class="hl opt">'</span> <span class="hl kwc">undefined</span>
+    <span class="hl kwd">where</span> new<span class="hl opt">' ::</span> Storable a <span class="hl opt">=&gt;</span> a <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">(</span>Ptr a<span class="hl opt">)</span>
+          new<span class="hl opt">'</span> result num <span class="hl opt">=</span> mallocBytes <span class="hl opt">(</span>num <span class="hl opt">*</span> sizeOf result<span class="hl opt">)</span>
+
+put b i v <span class="hl opt">=</span> pokeElemOff b i v
+get b i <span class="hl opt">=</span> peekElemOff b i
+
+advance <span class="hl opt">::</span> Storable a <span class="hl opt">=&gt;</span> Ptr a <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">(</span>Ptr a<span class="hl opt">)</span>
+advance <span class="hl opt">=</span> advance<span class="hl opt">'</span> <span class="hl kwc">undefined</span>
+    <span class="hl kwd">where</span> advance<span class="hl opt">' ::</span> Storable a <span class="hl opt">=&gt;</span> a <span class="hl opt">-&gt;</span> Ptr a <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">IO</span> <span class="hl opt">(</span>Ptr a<span class="hl opt">)</span>
+          advance<span class="hl opt">'</span> result b i <span class="hl opt">=</span>
+            <span class="hl kwc">return</span> <span class="hl opt">$</span> b `plusPtr` <span class="hl opt">(</span>i<span class="hl opt">*</span>sizeOf result<span class="hl opt">)</span>
+
+spawn a n <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    <span class="hl kwd">let</span> qt <span class="hl opt">=</span> n`<span class="hl kwc">quot</span>`<span class="hl num">8</span>
+        step <span class="hl opt">=</span> <span class="hl kwd">if</span> qt <span class="hl opt">==</span> <span class="hl num">0</span> <span class="hl kwd">then</span> <span class="hl num">1</span> <span class="hl kwd">else</span> qt
+        go i vars | i <span class="hl opt">&lt;</span> n <span class="hl opt">=</span> <span class="hl kwd">do</span>
+                    <span class="hl kwd">let</span> step<span class="hl opt">' =</span> <span class="hl kwd">if</span> n<span class="hl opt">-</span>i <span class="hl opt">&lt;</span> step <span class="hl kwd">then</span> n<span class="hl opt">-</span>i <span class="hl kwd">else</span> step
+                        limit <span class="hl opt">=</span> i<span class="hl opt">+</span>step<span class="hl opt">'</span>
+                    var <span class="hl opt">&lt;-</span> newEmptyMVar
+                    <span class="hl kwd">let</span> loop i | i <span class="hl opt">&lt;</span> limit <span class="hl opt">=</span> <span class="hl kwd">do</span>
+                                    a i
+                                    loop <span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+                               | <span class="hl kwc">otherwise</span> <span class="hl opt">=</span> putMVar var <span class="hl kwa">True</span>
+                    forkIO <span class="hl opt">(</span>loop i<span class="hl opt">)</span>
+                    go limit <span class="hl opt">(</span>var<span class="hl opt">:</span>vars<span class="hl opt">)</span>
+                  | <span class="hl kwc">otherwise</span> <span class="hl opt">=</span> <span class="hl kwc">return</span> vars
+    vars <span class="hl opt">&lt;-</span> go <span class="hl num">0</span> <span class="hl opt">[]</span>
+    <span class="hl kwc">mapM_</span> takeMVar vars
+    

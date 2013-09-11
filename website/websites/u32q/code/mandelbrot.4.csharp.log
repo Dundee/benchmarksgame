@@ -1,0 +1,13 @@
+
+Wed, 11 Sep 2013 21:23:37 GMT
+
+MAKE:
+mv mandelbrot.csharp-4.csharp mandelbrot.csharp-4.cs
+/usr/local/bin/mcs -r:/usr/local/lib/mono/4.5/Mono.Simd.dll -optimize+ -platform:x86 -out:mandelbrot.csharp-4.csharp_run mandelbrot.csharp-4.cs
+rm mandelbrot.csharp-4.cs
+3.27s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/bin/mono --llvm mandelbrot.csharp-4.csharp_run 16000
+
+(BINARY) PROGRAM OUTPUT NOT SHOWN

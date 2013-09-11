@@ -1,0 +1,17 @@
+
+Wed, 11 Sep 2013 21:34:10 GMT
+
+MAKE:
+mv mandelbrot.ghc-3.ghc mandelbrot.ghc-3.hs
+/usr/local/src/ghc-7.6.2/bin/ghc --make -fllvm -O2 -XBangPatterns -rtsopts -fexcess-precision mandelbrot.ghc-3.hs -o mandelbrot.ghc-3.ghc_run
+[1 of 1] Compiling Main             ( mandelbrot.ghc-3.hs, mandelbrot.ghc-3.o )
+ghc: out of memory (requested 1048576 bytes)
+make: [mandelbrot.ghc-3.ghc_run] Error 1 (ignored)
+rm mandelbrot.ghc-3.hs
+72.10s to complete and log all make actions
+
+COMMAND LINE:
+./mandelbrot.ghc-3.ghc_run  1000
+
+MAKE ERROR 
+

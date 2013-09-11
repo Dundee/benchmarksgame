@@ -1,0 +1,82 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   Adapted by Antti Lankila from the earlier Isaac Gouy's implementation</span>
+<span class="hl com">   Add multithread &amp; tweaks from C++ by The Anh Tran</span>
+<span class="hl com">   Simplified bit logic and cleaned code by Robert F. Tobler</span>
+<span class="hl com">   Mono.Simd implementation by Nigel Delaney.</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">using</span> System<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Mono<span class="hl opt">.</span>Simd<span class="hl opt">;</span>
+<span class="hl kwa">using</span> System<span class="hl opt">.</span>IO<span class="hl opt">;</span>
+<span class="hl kwa">using</span> System<span class="hl opt">.</span>Threading<span class="hl opt">;</span>
+
+<span class="hl kwa">public class</span> MandelBrot
+<span class="hl opt">{</span>
+   <span class="hl kwa">private static</span> <span class="hl kwb">int</span> n <span class="hl opt">=</span> <span class="hl num">200</span><span class="hl opt">;</span>
+   <span class="hl kwa">private static</span> <span class="hl kwb">byte</span><span class="hl opt">[][]</span> data<span class="hl opt">;</span>
+   <span class="hl kwa">private static</span> <span class="hl kwb">int</span> lineCount <span class="hl opt">= -</span><span class="hl num">1</span><span class="hl opt">;</span>
+   <span class="hl kwa">private static</span> <span class="hl kwb">double</span><span class="hl opt">[]</span> xa<span class="hl opt">;</span>
+
+   <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">Main</span> <span class="hl opt">(</span>String<span class="hl opt">[]</span> args<span class="hl opt">)</span>
+   <span class="hl opt">{</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>args<span class="hl opt">.</span>Length <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">)</span> n <span class="hl opt">=</span> Int32<span class="hl opt">.</span><span class="hl kwd">Parse</span><span class="hl opt">(</span>args<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]);</span>
+        Console<span class="hl opt">.</span>Out<span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(</span><span class="hl str">&quot;P4</span><span class="hl esc">\n</span><span class="hl str">{0} {0}&quot;</span><span class="hl opt">,</span> n<span class="hl opt">);</span>
+        <span class="hl kwb">int</span> lineLen <span class="hl opt">= (</span>n <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">) /</span> <span class="hl num">8</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+        data <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>n<span class="hl opt">][];</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> n<span class="hl opt">;</span> i<span class="hl opt">++)</span> data<span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>lineLen<span class="hl opt">];</span>
+        xa <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">double</span><span class="hl opt">[</span>n<span class="hl opt">];</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> x <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> x <span class="hl opt">&lt;</span> n<span class="hl opt">;</span> x<span class="hl opt">++)</span> xa<span class="hl opt">[</span>x<span class="hl opt">] =</span> x <span class="hl opt">*</span> <span class="hl num">2.0</span> <span class="hl opt">/</span> n <span class="hl opt">-</span> <span class="hl num">1.5</span><span class="hl opt">;</span>
+        var threads <span class="hl opt">=</span> <span class="hl kwa">new</span> Thread<span class="hl opt">[</span>Environment<span class="hl opt">.</span>ProcessorCount<span class="hl opt">];</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> threads<span class="hl opt">.</span>Length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+            <span class="hl opt">(</span>threads<span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl kwa">new</span> <span class="hl kwd">Thread</span><span class="hl opt">(</span>MandelBrot<span class="hl opt">.</span>Calculate<span class="hl opt">)).</span><span class="hl kwd">Start</span><span class="hl opt">();</span>
+        <span class="hl kwa">foreach</span> <span class="hl opt">(</span>var t <span class="hl kwa">in</span> threads<span class="hl opt">)</span> t<span class="hl opt">.</span><span class="hl kwd">Join</span><span class="hl opt">();</span>
+        var s <span class="hl opt">=</span> Console<span class="hl opt">.</span><span class="hl kwd">OpenStandardOutput</span><span class="hl opt">();</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> y <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> y <span class="hl opt">&lt;</span> n<span class="hl opt">;</span> y<span class="hl opt">++)</span> s<span class="hl opt">.</span><span class="hl kwd">Write</span><span class="hl opt">(</span>data<span class="hl opt">[</span>y<span class="hl opt">],</span> <span class="hl num">0</span><span class="hl opt">,</span> lineLen<span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">Calculate</span><span class="hl opt">()</span>
+   <span class="hl opt">{</span>
+      <span class="hl kwb">int</span> y<span class="hl opt">;</span>
+        <span class="hl kwb">double</span> twoOverN <span class="hl opt">=</span> <span class="hl num">2.0</span> <span class="hl opt">/</span> n<span class="hl opt">;</span>
+        <span class="hl kwa">while</span> <span class="hl opt">((</span>y <span class="hl opt">=</span> Interlocked<span class="hl opt">.</span><span class="hl kwd">Increment</span><span class="hl opt">(</span><span class="hl kwa">ref</span> lineCount<span class="hl opt">)) &lt;</span> n<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+         var line <span class="hl opt">=</span> data<span class="hl opt">[</span>y<span class="hl opt">];</span>
+         <span class="hl kwb">int</span> xbyte <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">,</span> bits <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+         <span class="hl kwb">double</span> ci <span class="hl opt">=</span> y <span class="hl opt">*</span> twoOverN <span class="hl opt">-</span> <span class="hl num">1.0</span><span class="hl opt">;</span>
+         Vector2d Ci <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span> <span class="hl opt">(</span>ci<span class="hl opt">);</span>
+         <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> x <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> x <span class="hl opt">&lt;</span> xa<span class="hl opt">.</span>Length<span class="hl opt">;</span> x<span class="hl opt">+=</span><span class="hl num">2</span><span class="hl opt">)</span>
+         <span class="hl opt">{</span>
+            Vector2d Cr<span class="hl opt">=</span><span class="hl kwa">new</span> <span class="hl kwd">Vector2d</span><span class="hl opt">(</span>xa<span class="hl opt">[</span>x<span class="hl opt">],</span>xa<span class="hl opt">[</span>x<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">]);</span><span class="hl slc">//vector of constant real terms</span>
+            Vector2d Tempr <span class="hl opt">=</span> Cr <span class="hl opt">*</span> Cr<span class="hl opt">;</span>
+            Vector2d Tempi <span class="hl opt">=</span> Ci <span class="hl opt">*</span> Ci<span class="hl opt">;</span>
+            Vector2d Zr <span class="hl opt">=</span> Cr<span class="hl opt">;</span>
+            Vector2d Zi <span class="hl opt">=</span> Ci<span class="hl opt">;</span>
+            Vector2d Temp <span class="hl opt">=</span> Tempr <span class="hl opt">-</span> Tempi <span class="hl opt">+</span> Cr<span class="hl opt">;</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>bits <span class="hl opt">&gt;</span> <span class="hl num">0xff</span><span class="hl opt">) {</span> line<span class="hl opt">[</span>xbyte<span class="hl opt">++] = (</span><span class="hl kwb">byte</span><span class="hl opt">)(</span>bits^<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">);</span> bits <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">; }</span>
+            <span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">49</span><span class="hl opt">;</span>
+            <span class="hl kwb">int</span> b <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+            <span class="hl kwa">do</span>
+            <span class="hl opt">{</span>
+               Vector2d Zri<span class="hl opt">=</span>Zr<span class="hl opt">*</span>Zi<span class="hl opt">;</span><span class="hl slc">//calculate r*i for both</span>
+               Zi<span class="hl opt">=</span>Zri<span class="hl opt">+</span>Zri<span class="hl opt">+</span>Ci<span class="hl opt">;</span> <span class="hl slc">//double that and add a constant </span>
+               Zr<span class="hl opt">=</span>Temp<span class="hl opt">;</span><span class="hl slc">//pre-calculated on previous loop</span>
+               var V0<span class="hl opt">=</span>Zr<span class="hl opt">.</span><span class="hl kwd">InterleaveLow</span><span class="hl opt">(</span>Zi<span class="hl opt">);</span><span class="hl slc">//r0,i0</span>
+                    var V1<span class="hl opt">=</span>Zr<span class="hl opt">.</span><span class="hl kwd">InterleaveHigh</span><span class="hl opt">(</span>Zi<span class="hl opt">);</span><span class="hl slc">//r1,i1</span>
+                    V0<span class="hl opt">=</span>V0<span class="hl opt">*</span>V0<span class="hl opt">;</span><span class="hl slc">//r0^2,i0^2</span>
+               V1<span class="hl opt">=</span>V1<span class="hl opt">*</span>V1<span class="hl opt">;</span>
+               var Length<span class="hl opt">=</span>V0<span class="hl opt">.</span><span class="hl kwd">HorizontalAdd</span><span class="hl opt">(</span>V1<span class="hl opt">);</span><span class="hl slc">//(r0^2+i0^2),(r1^2+i1^2)</span>
+                    Temp<span class="hl opt">=</span>V0<span class="hl opt">.</span><span class="hl kwd">HorizontalSub</span><span class="hl opt">(</span>V1<span class="hl opt">)+</span>Cr<span class="hl opt">;</span><span class="hl slc">//(r0^2-i0^2),(r1^2-i1^2)</span>
+                <span class="hl slc">//now to determine end condition, </span>
+                    <span class="hl kwa">if</span><span class="hl opt">(</span>Length<span class="hl opt">.</span>X<span class="hl opt">&gt;</span><span class="hl num">4.0</span><span class="hl opt">) {</span>b|<span class="hl opt">=</span><span class="hl num">2</span><span class="hl opt">;</span><span class="hl kwa">if</span><span class="hl opt">(</span>b<span class="hl opt">==</span><span class="hl num">3</span><span class="hl opt">)</span><span class="hl kwa">break</span><span class="hl opt">;}</span>
+               <span class="hl kwa">if</span><span class="hl opt">(</span>Length<span class="hl opt">.</span>Y<span class="hl opt">&gt;</span><span class="hl num">4.0</span><span class="hl opt">) {</span>b|<span class="hl opt">=</span><span class="hl num">1</span><span class="hl opt">;</span><span class="hl kwa">if</span><span class="hl opt">(</span>b<span class="hl opt">==</span><span class="hl num">3</span><span class="hl opt">)</span><span class="hl kwa">break</span><span class="hl opt">;}</span>
+            <span class="hl opt">}</span>
+            <span class="hl kwa">while</span> <span class="hl opt">(--</span>i <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">);</span>
+            bits <span class="hl opt">= (</span>bits <span class="hl opt">&lt;&lt;</span> <span class="hl num">2</span><span class="hl opt">) +</span>b<span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+         <span class="hl kwa">while</span> <span class="hl opt">(</span>bits <span class="hl opt">&lt;</span> <span class="hl num">0x100</span><span class="hl opt">)</span> bits <span class="hl opt">= (</span>bits <span class="hl opt">&lt;&lt;</span> <span class="hl num">1</span><span class="hl opt">);</span>
+            line<span class="hl opt">[</span>xbyte<span class="hl opt">] = (</span><span class="hl kwb">byte</span><span class="hl opt">)(</span>bits ^ <span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
