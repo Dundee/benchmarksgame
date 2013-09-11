@@ -30,7 +30,10 @@ _<span class="hl opt">,</span> seq <span class="hl opt">=</span> <span class="hl
 seq<span class="hl opt">.</span><span class="hl kwd">force_encoding</span><span class="hl opt">(</span><span class="hl str">'ASCII-8BIT'</span>)
 seq<span class="hl opt">.</span>gsub<span class="hl opt">!(</span><span class="hl kwc">/\s/</span><span class="hl opt">,</span> <span class="hl str">''</span>)
 
-print <span class="hl str">&quot;</span><span class="hl esc">#{percentage(seq, seq.chars.uniq).join(&quot;\n&quot;)}</span><span class="hl str">\n\n&quot;</span>
-print <span class="hl str">&quot;</span><span class="hl esc">#{percentage(seq, seq.scan(/../).uniq).join(&quot;\n&quot;)}</span><span class="hl str">\n\n&quot;</span>
-print <span class="hl str">&quot;</span><span class="hl esc">#{count(seq, %w(ggt ggta ggtatt ggtattttaatt ggtattttaatttatagt)).join(&quot;\n&quot;)}</span><span class="hl str">\n&quot;</span>
+singles <span class="hl opt">= %</span><span class="hl kwd">w</span><span class="hl opt">(</span>a t c g)
+doubles <span class="hl opt">=</span> singles<span class="hl opt">.</span>map <span class="hl esc">{ |a| singles.map { |b| &quot;#{a}</span><span class="hl slc">#{b}&quot; }}.flatten</span>
+chains  <span class="hl opt">= %</span><span class="hl kwd">w</span><span class="hl opt">(</span>ggt ggta ggtatt ggtattttaatt ggtattttaatttatagt)
 
+print <span class="hl str">&quot;</span><span class="hl esc">#{percentage(seq, singles).join(&quot;\n&quot;)}</span><span class="hl str">\n\n&quot;</span>
+print <span class="hl str">&quot;</span><span class="hl esc">#{percentage(seq, doubles).join(&quot;\n&quot;)}</span><span class="hl str">\n\n&quot;</span>
+print <span class="hl str">&quot;</span><span class="hl esc">#{count(seq, chains).join(&quot;\n&quot;)}</span><span class="hl str">\n&quot;</span>
