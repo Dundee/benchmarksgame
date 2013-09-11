@@ -30,7 +30,10 @@ _, seq = STDIN.read.scan(/(\n>THREE[^\n]*\n)([^>]*)\n/).flatten
 seq.force_encoding('ASCII-8BIT')
 seq.gsub!(/\s/, '')
 
-print "#{percentage(seq, seq.chars.uniq).join("\n")}\n\n"
-print "#{percentage(seq, seq.scan(/../).uniq).join("\n")}\n\n"
-print "#{count(seq, %w(ggt ggta ggtatt ggtattttaatt ggtattttaatttatagt)).join("\n")}\n"
+singles = %w(a t c g)
+doubles = singles.map { |a| singles.map { |b| "#{a}#{b}" }}.flatten
+chains  = %w(ggt ggta ggtatt ggtattttaatt ggtattttaatttatagt)
 
+print "#{percentage(seq, singles).join("\n")}\n\n"
+print "#{percentage(seq, doubles).join("\n")}\n\n"
+print "#{count(seq, chains).join("\n")}\n"
