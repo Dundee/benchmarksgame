@@ -1,0 +1,43 @@
+<span class="hl slc"># The Computer Language Benchmarks Game</span>
+<span class="hl slc"># http://benchmarksgame.alioth.debian.org</span>
+
+<span class="hl slc"># transliterated from Mario Pernici's Python program</span>
+<span class="hl slc"># contributed by Rick Branson</span>
+<span class="hl slc"># optimized by Aaron Tavistock</span>
+
+N <span class="hl opt">= (</span><span class="hl kwc">ARGV</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] ||</span> <span class="hl num">100</span>)<span class="hl opt">.</span>to_i
+
+i <span class="hl opt">=</span> <span class="hl num">0</span>
+k <span class="hl opt">=</span> <span class="hl num">0</span>
+ns <span class="hl opt">=</span> <span class="hl num">0</span>
+a <span class="hl opt">=</span> <span class="hl num">0</span>
+t <span class="hl opt">=</span> <span class="hl num">0</span>
+u <span class="hl opt">=</span> <span class="hl num">0</span>
+k1 <span class="hl opt">=</span> <span class="hl num">1</span>
+n <span class="hl opt">=</span> <span class="hl num">1</span>
+d <span class="hl opt">=</span> <span class="hl num">1</span>
+
+<span class="hl kwa">while</span><span class="hl opt">(</span><span class="hl kwa">true</span>) <span class="hl kwa">do</span>
+  k <span class="hl opt">+=</span> <span class="hl num">1</span>
+  t <span class="hl opt">=</span> n<span class="hl opt">&lt;&lt;</span><span class="hl num">1</span>
+  n <span class="hl opt">*=</span> k
+  k1 <span class="hl opt">+=</span> <span class="hl num">2</span>
+  a <span class="hl opt">= (</span>a <span class="hl opt">+</span> t) <span class="hl opt">*</span> k1
+  d <span class="hl opt">*=</span> k1
+  <span class="hl kwa">if</span> a <span class="hl opt">&gt;=</span> n
+    t<span class="hl opt">,</span>u <span class="hl opt">= (</span>n <span class="hl opt">*</span> <span class="hl num">3</span> <span class="hl opt">+</span> a)<span class="hl opt">.</span><span class="hl kwd">divmod</span><span class="hl opt">(</span>d)
+    u <span class="hl opt">+=</span> n
+    <span class="hl kwa">if</span> d <span class="hl opt">&gt;</span> u
+      ns <span class="hl opt">=</span> ns <span class="hl opt">*</span> <span class="hl num">10</span> <span class="hl opt">+</span> t
+      i <span class="hl opt">+=</span> <span class="hl num">1</span>
+      <span class="hl kwa">if</span> i <span class="hl opt">%</span> <span class="hl num">10</span> <span class="hl opt">==</span> <span class="hl num">0</span>
+        print <span class="hl str">&quot;%010d\t:%d\n&quot;</span> <span class="hl opt">% [</span>ns<span class="hl opt">,</span> i<span class="hl opt">]</span>
+        ns <span class="hl opt">=</span> <span class="hl num">0</span>
+      <span class="hl kwa">end</span>
+      <span class="hl kwa">break if</span> i <span class="hl opt">&gt;=</span> N
+   
+      a <span class="hl opt">= (</span>a <span class="hl opt">- (</span>d <span class="hl opt">*</span> t)) <span class="hl opt">*</span> <span class="hl num">10</span>
+      n <span class="hl opt">*=</span> <span class="hl num">10</span>
+    <span class="hl kwa">end</span>
+  <span class="hl kwa">end</span>
+<span class="hl kwa">end</span>
