@@ -1,12 +1,12 @@
 
-Sat, 19 Jan 2013 05:57:06 GMT
+Mon, 16 Sep 2013 22:19:43 GMT
 
 MAKE:
 mv threadring.jruby-2.jruby threadring.rb
 0.01s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/src/jruby-1.7.2/bin/jruby -Xcompile.invokedynamic=true -J-server -J-Xmn512m -J-Xms2048m -J-Xmx2048m threadring.rb 500000
+/usr/local/src/jruby-1.7.4/bin/jruby -Xcompile.invokedynamic=true -J-server -J-Xmn512m -J-Xms2048m -J-Xmx2048m threadring.rb 500000
 
 PROGRAM FAILED 
 
@@ -515,10 +515,12 @@ PROGRAM OUTPUT:
 16
 17
 18
+Java HotSpot(TM) 64-Bit Server VM warning: You have loaded library /usr/local/src/jruby-1.7.4/lib/native/arm-Linux/libjffi-1.2.so which might have disabled stack guard. The VM will try to fix the stack guard now.
+It's highly recommended that you fix the library with 'execstack -c <libfile>', or link it with '-z noexecstack'.
 
 ThreadError: killed thread
-   wakeup at org/jruby/RubyThread.java:737
-      run at org/jruby/RubyThread.java:845
+   wakeup at org/jruby/RubyThread.java:814
+      run at org/jruby/RubyThread.java:922
   __for__ at threadring.rb:30
-     each at org/jruby/RubyArray.java:1613
+     each at org/jruby/RubyArray.java:1617
    (root) at threadring.rb:28

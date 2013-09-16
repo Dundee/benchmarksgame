@@ -1,50 +1,50 @@
 
-Sat, 20 Apr 2013 00:40:57 GMT
+Mon, 16 Sep 2013 19:02:30 GMT
 
 MAKE:
 mv threadring.jruby-2.jruby threadring.rb
-0.02s to complete and log all make actions
+0.04s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/src/jruby-1.7.3/bin/jruby -Xcompile.invokedynamic=true -J-server -J-Xmn512m -J-Xms2048m -J-Xmx2048m threadring.rb 500000
+/usr/local/src/jruby-1.7.4/bin/jruby -Xcompile.invokedynamic=true -J-server -J-Xmn512m -J-Xms2048m -J-Xmx2048m threadring.rb 500000
 
 PROGRAM FAILED 
 
 
 PROGRAM OUTPUT:
-2021
-23
-
-24
-25
-26
-19
+192021
 22
+23
+24
+
+
+25
 27
 28
+26
+29
 30
 31
-29
 32
 33
-34373635
+34
+35
+36
+37
+38
 39
 40
 41
 42
-38
-
-
-
 43
 44
-4546
+45
+46
 47
-
 48
 49
-50
-51
+5051
+
 52
 53
 54
@@ -60,9 +60,9 @@ PROGRAM OUTPUT:
 64
 65
 66
-67
-68
+6768
 69
+
 70
 71
 72
@@ -76,16 +76,16 @@ PROGRAM OUTPUT:
 80
 81
 82
-8385
-8486
-
-8887
+83
+84
+85
+86
+87
+88
 89
 90
-92
-
 91
-
+92
 93
 94
 95
@@ -109,8 +109,8 @@ PROGRAM OUTPUT:
 113
 114
 115
-116117
-
+116
+117
 118
 119
 120
@@ -131,8 +131,8 @@ PROGRAM OUTPUT:
 135
 136
 137
-138139
-
+138
+139
 140
 141
 142
@@ -144,8 +144,8 @@ PROGRAM OUTPUT:
 148
 149
 150
-151152
-
+151
+152
 153
 154
 155
@@ -156,8 +156,8 @@ PROGRAM OUTPUT:
 160
 161
 162
-163164
-
+163
+164
 165
 166
 167
@@ -190,8 +190,8 @@ PROGRAM OUTPUT:
 194
 195
 196
-197
-198
+197198
+
 199
 200
 201
@@ -207,12 +207,12 @@ PROGRAM OUTPUT:
 211
 212
 213
-214215
-
+214
+215
+216
 217
+218
 219
-216218
-
 220
 221
 222
@@ -248,55 +248,55 @@ PROGRAM OUTPUT:
 252
 253
 254
-255256258257259
-
+255
+256
+257
+258
+259
 260
+261262
 
-
-
-261
-262
 263
 264
 265
 266267
-
 268
+
 269
 270
 271
 272
 273
 274
-275276
-
+275
+276
 277
 278
 279
 280
+281
 282
 283
-281
 284
 285
 286
-287288
-
+287
+288
 289
 290
-291292
+291
+292
 293
 294
-
 295
 296
 297
 298
 299
 300
-302303301
-
-
+301
+302
+303
 304
 305
 306
@@ -306,26 +306,26 @@ PROGRAM OUTPUT:
 310
 311
 312
-313314
-
-315
-316
+313
+314
 317
 318
 319
-320
+316
 321
 322
 323
 324
 325
 326
+315
+320
 327
 328
 329
-330331
+330
+331
 332
-
 333
 334
 335
@@ -363,8 +363,8 @@ PROGRAM OUTPUT:
 367
 368
 369
-370
-371
+370371
+
 372
 373
 374
@@ -384,10 +384,10 @@ PROGRAM OUTPUT:
 388
 389
 390
+391
+392
 393
 394
-391392
-
 395
 396
 397
@@ -416,12 +416,12 @@ PROGRAM OUTPUT:
 420
 421
 422
-423
-424
-425
+423424
 426
 427
 428
+
+425
 429
 430
 431
@@ -470,8 +470,8 @@ PROGRAM OUTPUT:
 474
 475
 476
-477478
-
+477
+478
 479
 480
 481
@@ -486,8 +486,8 @@ PROGRAM OUTPUT:
 490
 491
 492
-493
-494
+493494
+
 495
 496
 497
@@ -498,10 +498,10 @@ PROGRAM OUTPUT:
 502
 503
 1
-2
-3
+23
 4
 5
+
 6
 7
 8
@@ -515,10 +515,12 @@ PROGRAM OUTPUT:
 16
 17
 18
+Java HotSpot(TM) 64-Bit Server VM warning: You have loaded library /usr/local/src/jruby-1.7.4/lib/native/arm-Linux/libjffi-1.2.so which might have disabled stack guard. The VM will try to fix the stack guard now.
+It's highly recommended that you fix the library with 'execstack -c <libfile>', or link it with '-z noexecstack'.
 
 ThreadError: killed thread
-   wakeup at org/jruby/RubyThread.java:737
-      run at org/jruby/RubyThread.java:845
+   wakeup at org/jruby/RubyThread.java:814
+      run at org/jruby/RubyThread.java:922
   __for__ at threadring.rb:30
-     each at org/jruby/RubyArray.java:1613
+     each at org/jruby/RubyArray.java:1617
    (root) at threadring.rb:28
