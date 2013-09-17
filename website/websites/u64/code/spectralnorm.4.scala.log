@@ -1,15 +1,15 @@
 
-Sat, 26 Jan 2013 04:30:22 GMT
+Tue, 17 Sep 2013 20:26:23 GMT
 
 MAKE:
 mv spectralnorm.scala-4.scala spectralnorm.scala
-/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 spectralnorm.scala
-warning: there were 2 deprecation warnings; re-run with -deprecation for details
+/usr/local/src/scala-2.10.2/bin/scalac -optimise -target:jvm-1.7 spectralnorm.scala
+warning: there were 2 deprecation warning(s); re-run with -deprecation for details
 one warning found
-7.75s to complete and log all make actions
+8.41s to complete and log all make actions
 
 COMMAND LINE:
- /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar spectralnorm 500
+ /usr/local/src/jdk1.7.0_40/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.2/lib/scala-library.jar:/usr/local/src/scala-2.10.2/lib/akka-actors.jar:/usr/local/src/scala-2.10.2/lib/typesafe-config.jar spectralnorm 500
 
 PROGRAM FAILED 
 
@@ -29,7 +29,7 @@ Caused by: java.lang.ClassNotFoundException: scala.actors.Future
 	at java.net.URLClassLoader$1.run(URLClassLoader.java:355)
 	at java.security.AccessController.doPrivileged(Native Method)
 	at java.net.URLClassLoader.findClass(URLClassLoader.java:354)
-	at java.lang.ClassLoader.loadClass(ClassLoader.java:423)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
 	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
-	at java.lang.ClassLoader.loadClass(ClassLoader.java:356)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
 	... 7 more

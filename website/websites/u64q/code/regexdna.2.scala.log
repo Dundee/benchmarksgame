@@ -1,16 +1,16 @@
 
-Thu, 23 May 2013 22:05:40 GMT
+Tue, 17 Sep 2013 18:50:00 GMT
 
 MAKE:
 mv regexdna.scala-2.scala regexdna.scala
-/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 regexdna.scala
-warning: there were 5 feature warnings; re-run with -feature for details
-warning: there were 8 inliner warnings; re-run with -Yinline-warnings for details
+/usr/local/src/scala-2.10.2/bin/scalac -optimise -target:jvm-1.7 regexdna.scala
+warning: there were 5 feature warning(s); re-run with -feature for details
+warning: there were 5 inliner warning(s); re-run with -Yinline-warnings for details
 two warnings found
-11.68s to complete and log all make actions
+6.66s to complete and log all make actions
 
 COMMAND LINE:
-env JAVA_OPTS=-Xmx1024m /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar regexdna 0 < regexdna-input5000000.txt
+env JAVA_OPTS=-Xmx1024m /usr/local/src/jdk1.7.0_40/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.2/lib/scala-library.jar:/usr/local/src/scala-2.10.2/lib/akka-actors.jar:/usr/local/src/scala-2.10.2/lib/typesafe-config.jar regexdna 0 < regexdna-input5000000.txt
 
 PROGRAM OUTPUT:
 agggtaaa|tttaccct 356

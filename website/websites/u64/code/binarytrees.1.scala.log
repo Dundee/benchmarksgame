@@ -1,19 +1,19 @@
 
-Sat, 26 Jan 2013 03:25:23 GMT
+Tue, 17 Sep 2013 19:01:21 GMT
 
 MAKE:
 mv binarytrees.scala binarytrees.scala
-mv: `binarytrees.scala' and `binarytrees.scala' are the same file
+mv: ‘binarytrees.scala’ and ‘binarytrees.scala’ are the same file
 make: [binarytrees.scala_run] Error 1 (ignored)
-/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 binarytrees.scala
+/usr/local/src/scala-2.10.2/bin/scalac -optimise -target:jvm-1.7 binarytrees.scala
 binarytrees.scala:33: warning: This catches all Throwables. If this is really intended, use `case _ : Throwable` to clear this warning.
     val n = try{ args(0).toInt } catch { case _ => 1 }
                                               ^
 one warning found
-7.70s to complete and log all make actions
+8.34s to complete and log all make actions
 
 COMMAND LINE:
- /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar binarytrees 20
+ /usr/local/src/jdk1.7.0_40/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.2/lib/scala-library.jar:/usr/local/src/scala-2.10.2/lib/akka-actors.jar:/usr/local/src/scala-2.10.2/lib/typesafe-config.jar binarytrees 20
 
 PROGRAM OUTPUT:
 stretch tree of depth 21	 check: -1
