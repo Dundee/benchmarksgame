@@ -1,0 +1,57 @@
+<span class="hl opt">&lt;</span>?php 
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Oleksii Prudkyi</span>
+<span class="hl com">   port from pidigits.lua-5.lua (Mike Pall, Wim Couwenberg)</span>
+<span class="hl com">   modified by Craig Russell</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwc">$N</span> <span class="hl opt">= (</span><span class="hl kwb">int</span><span class="hl opt">)</span> <span class="hl kwc">$argv</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">];</span>
+
+<span class="hl kwd">ob_implicit_flush</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">);</span>
+<span class="hl kwd">ob_start</span><span class="hl opt">(</span>NULL<span class="hl opt">,</span> <span class="hl num">4096</span><span class="hl opt">);</span>
+
+<span class="hl kwc">$w</span> <span class="hl opt">=</span> <span class="hl kwd">gmp_init</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
+
+<span class="hl kwc">$k</span> <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+<span class="hl kwc">$n1</span> <span class="hl opt">=</span> <span class="hl kwd">gmp_init</span><span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">);</span>
+<span class="hl kwc">$n2</span> <span class="hl opt">=</span> <span class="hl kwd">gmp_init</span><span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">);</span>
+<span class="hl kwc">$d</span> <span class="hl opt">=</span> <span class="hl kwd">gmp_init</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">);</span>
+
+<span class="hl kwc">$i</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl kwa">while</span><span class="hl opt">(</span>true<span class="hl opt">) {</span>
+   <span class="hl slc">//digit</span>
+   <span class="hl kwc">$u</span> <span class="hl opt">=</span> <span class="hl kwd">gmp_div_q</span><span class="hl opt">(</span><span class="hl kwc">$n1</span><span class="hl opt">,</span> <span class="hl kwc">$d</span><span class="hl opt">);</span>
+   <span class="hl kwc">$v</span> <span class="hl opt">=</span> <span class="hl kwd">gmp_div_q</span><span class="hl opt">(</span><span class="hl kwc">$n2</span><span class="hl opt">,</span> <span class="hl kwc">$d</span><span class="hl opt">);</span>
+   <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwd">gmp_cmp</span><span class="hl opt">(</span><span class="hl kwc">$u</span><span class="hl opt">,</span> <span class="hl kwc">$v</span><span class="hl opt">) ==</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+      <span class="hl kwa">echo</span> <span class="hl kwd">gmp_strval</span><span class="hl opt">(</span><span class="hl kwc">$u</span><span class="hl opt">);</span>
+      ++<span class="hl kwc">$i</span><span class="hl opt">;</span>
+      <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$i</span> % <span class="hl num">10</span> <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+         <span class="hl kwa">echo</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">:&quot;</span> <span class="hl opt">,</span> <span class="hl kwc">$i</span> <span class="hl opt">,</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$i</span> <span class="hl opt">==</span> <span class="hl kwc">$N</span><span class="hl opt">) {</span>
+         <span class="hl kwa">break</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+      <span class="hl slc">//extract</span>
+      <span class="hl kwc">$u</span> <span class="hl opt">=</span> <span class="hl kwd">gmp_mul</span><span class="hl opt">(</span><span class="hl kwc">$d</span><span class="hl opt">,</span> <span class="hl kwd">gmp_mul</span><span class="hl opt">(-</span><span class="hl num">10</span><span class="hl opt">,</span> <span class="hl kwc">$u</span><span class="hl opt">));</span>
+      <span class="hl kwc">$n1</span> <span class="hl opt">=</span> <span class="hl kwd">gmp_mul</span><span class="hl opt">(</span><span class="hl kwc">$n1</span><span class="hl opt">,</span> <span class="hl num">10</span><span class="hl opt">);</span>
+      <span class="hl kwc">$n1</span> <span class="hl opt">=</span> <span class="hl kwd">gmp_add</span><span class="hl opt">(</span><span class="hl kwc">$n1</span><span class="hl opt">,</span> <span class="hl kwc">$u</span><span class="hl opt">);</span>
+      <span class="hl kwc">$n2</span> <span class="hl opt">=</span> <span class="hl kwd">gmp_mul</span><span class="hl opt">(</span><span class="hl kwc">$n2</span><span class="hl opt">,</span> <span class="hl num">10</span><span class="hl opt">);</span>
+      <span class="hl kwc">$n2</span> <span class="hl opt">=</span> <span class="hl kwd">gmp_add</span><span class="hl opt">(</span><span class="hl kwc">$n2</span><span class="hl opt">,</span> <span class="hl kwc">$u</span><span class="hl opt">);</span>
+   <span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+      <span class="hl slc">//produce</span>
+      <span class="hl kwc">$k2</span> <span class="hl opt">=</span> <span class="hl kwc">$k</span> <span class="hl opt">&lt;&lt;</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl kwc">$u</span> <span class="hl opt">=</span> <span class="hl kwd">gmp_mul</span><span class="hl opt">(</span><span class="hl kwc">$n1</span><span class="hl opt">,</span> <span class="hl kwc">$k2</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span>
+      <span class="hl kwc">$v</span> <span class="hl opt">=</span> <span class="hl kwd">gmp_add</span><span class="hl opt">(</span><span class="hl kwc">$n2</span><span class="hl opt">,</span> <span class="hl kwc">$n2</span><span class="hl opt">);</span>
+      <span class="hl kwc">$w</span> <span class="hl opt">=</span> <span class="hl kwd">gmp_mul</span><span class="hl opt">(</span><span class="hl kwc">$n1</span><span class="hl opt">,</span> <span class="hl kwc">$k</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span>
+      <span class="hl kwc">$n1</span> <span class="hl opt">=</span> <span class="hl kwd">gmp_add</span><span class="hl opt">(</span><span class="hl kwc">$u</span><span class="hl opt">,</span> <span class="hl kwc">$v</span><span class="hl opt">);</span>
+      <span class="hl kwc">$u</span> <span class="hl opt">=</span> <span class="hl kwd">gmp_mul</span><span class="hl opt">(</span><span class="hl kwc">$n2</span><span class="hl opt">,</span> <span class="hl kwc">$k</span> + <span class="hl num">2</span><span class="hl opt">);</span>
+      <span class="hl kwc">$n2</span> <span class="hl opt">=</span> <span class="hl kwd">gmp_add</span><span class="hl opt">(</span><span class="hl kwc">$w</span><span class="hl opt">,</span> <span class="hl kwc">$u</span><span class="hl opt">);</span>
+      <span class="hl kwc">$d</span> <span class="hl opt">=</span> <span class="hl kwd">gmp_mul</span><span class="hl opt">(</span><span class="hl kwc">$d</span><span class="hl opt">,</span> <span class="hl kwc">$k2</span> + <span class="hl num">1</span><span class="hl opt">);</span>
+      ++<span class="hl kwc">$k</span><span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+<span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$i</span> % <span class="hl num">10</span> <span class="hl opt">!=</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+   <span class="hl kwa">echo</span> <span class="hl kwd">str_repeat</span><span class="hl opt">(</span><span class="hl str">' '</span><span class="hl opt">,</span> <span class="hl num">10</span> <span class="hl opt">-</span> <span class="hl kwc">$N</span> % <span class="hl num">10</span><span class="hl opt">),</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">:&quot;</span><span class="hl opt">,</span> <span class="hl kwc">$N</span><span class="hl opt">,</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
