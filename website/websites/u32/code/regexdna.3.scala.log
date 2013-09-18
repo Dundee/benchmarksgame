@@ -1,16 +1,16 @@
 
-Sun, 27 Jan 2013 03:05:10 GMT
+Tue, 17 Sep 2013 23:26:05 GMT
 
 MAKE:
 mv regexdna.scala-3.scala regexdna.scala
-/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 regexdna.scala
-warning: there were 5 feature warnings; re-run with -feature for details
-warning: there were 8 inliner warnings; re-run with -Yinline-warnings for details
+/usr/local/src/scala-2.10.2/bin/scalac -optimise -target:jvm-1.7 regexdna.scala
+warning: there were 5 feature warning(s); re-run with -feature for details
+warning: there were 5 inliner warning(s); re-run with -Yinline-warnings for details
 two warnings found
-5.82s to complete and log all make actions
+6.49s to complete and log all make actions
 
 COMMAND LINE:
-env JAVA_OPTS=-Xmx1024m /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar regexdna 0 < regexdna-input50000.txt
+env JAVA_OPTS=-Xmx1024m /usr/local/src/jdk1.7.0_40/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.2/lib/scala-library.jar:/usr/local/src/scala-2.10.2/lib/akka-actors.jar:/usr/local/src/scala-2.10.2/lib/typesafe-config.jar regexdna 0 < regexdna-input50000.txt
 
 PROGRAM FAILED 
 
@@ -25,7 +25,7 @@ Caused by: java.lang.ClassNotFoundException: scala.actors.Future
 	at java.net.URLClassLoader$1.run(URLClassLoader.java:355)
 	at java.security.AccessController.doPrivileged(Native Method)
 	at java.net.URLClassLoader.findClass(URLClassLoader.java:354)
-	at java.lang.ClassLoader.loadClass(ClassLoader.java:423)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
 	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
-	at java.lang.ClassLoader.loadClass(ClassLoader.java:356)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
 	... 2 more

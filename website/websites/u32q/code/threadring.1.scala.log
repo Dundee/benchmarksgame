@@ -1,15 +1,15 @@
 
-Sat, 26 Jan 2013 13:45:27 GMT
+Tue, 17 Sep 2013 22:11:07 GMT
 
 MAKE:
 mv threadring.scala threadring.scala
-mv: `threadring.scala' and `threadring.scala' are the same file
+mv: ‘threadring.scala’ and ‘threadring.scala’ are the same file
 make: [threadring.scala_run] Error 1 (ignored)
-/usr/local/src/scala-2.10.0/bin/scalac -optimise -target:jvm-1.7 threadring.scala
-5.88s to complete and log all make actions
+/usr/local/src/scala-2.10.2/bin/scalac -optimise -target:jvm-1.7 threadring.scala
+6.39s to complete and log all make actions
 
 COMMAND LINE:
- /usr/local/src/jdk1.7.0_11/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.0/lib/scala-library.jar:/usr/local/src/scala-2.10.0/lib/akka-actors.jar:/usr/local/src/scala-2.10.0/lib/typesafe-config.jar threadring 500000
+ /usr/local/src/jdk1.7.0_40/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts  -Xbootclasspath/a:/usr/local/src/scala-2.10.2/lib/scala-library.jar:/usr/local/src/scala-2.10.2/lib/akka-actors.jar:/usr/local/src/scala-2.10.2/lib/typesafe-config.jar threadring 500000
 
 PROGRAM FAILED 
 
@@ -18,7 +18,7 @@ PROGRAM OUTPUT:
 
 Exception in thread "main" java.lang.NoClassDefFoundError: scala/actors/Actor
 	at java.lang.ClassLoader.defineClass1(Native Method)
-	at java.lang.ClassLoader.defineClass(ClassLoader.java:791)
+	at java.lang.ClassLoader.defineClass(ClassLoader.java:792)
 	at java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
 	at java.net.URLClassLoader.defineClass(URLClassLoader.java:449)
 	at java.net.URLClassLoader.access$100(URLClassLoader.java:71)
@@ -26,13 +26,13 @@ Exception in thread "main" java.lang.NoClassDefFoundError: scala/actors/Actor
 	at java.net.URLClassLoader$1.run(URLClassLoader.java:355)
 	at java.security.AccessController.doPrivileged(Native Method)
 	at java.net.URLClassLoader.findClass(URLClassLoader.java:354)
-	at java.lang.ClassLoader.loadClass(ClassLoader.java:423)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
 	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
-	at java.lang.ClassLoader.loadClass(ClassLoader.java:356)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
 	at java.lang.Class.getDeclaredMethods0(Native Method)
-	at java.lang.Class.privateGetDeclaredMethods(Class.java:2442)
-	at java.lang.Class.getMethod0(Class.java:2685)
-	at java.lang.Class.getMethod(Class.java:1620)
+	at java.lang.Class.privateGetDeclaredMethods(Class.java:2521)
+	at java.lang.Class.getMethod0(Class.java:2764)
+	at java.lang.Class.getMethod(Class.java:1653)
 	at sun.launcher.LauncherHelper.getMainMethod(LauncherHelper.java:494)
 	at sun.launcher.LauncherHelper.checkAndLoadMain(LauncherHelper.java:486)
 Caused by: java.lang.ClassNotFoundException: scala.actors.Actor
@@ -40,7 +40,7 @@ Caused by: java.lang.ClassNotFoundException: scala.actors.Actor
 	at java.net.URLClassLoader$1.run(URLClassLoader.java:355)
 	at java.security.AccessController.doPrivileged(Native Method)
 	at java.net.URLClassLoader.findClass(URLClassLoader.java:354)
-	at java.lang.ClassLoader.loadClass(ClassLoader.java:423)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
 	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
-	at java.lang.ClassLoader.loadClass(ClassLoader.java:356)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
 	... 18 more
