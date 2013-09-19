@@ -50,7 +50,7 @@ do
    $pid = pcntl_fork();
    if(!$pid) {
       $check = 0;
-      for($i = 1; $i != $iterations; ++$i)
+      for($i = 1; $i <= $iterations; ++$i)
       {
          $check += (new Tree($i, $minDepth))->check()
             + (new Tree(-$i, $minDepth))->check();
