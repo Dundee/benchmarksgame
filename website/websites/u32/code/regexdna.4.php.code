@@ -1,0 +1,107 @@
+<span class="hl opt">&lt;</span>?php
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Danny Sauer</span>
+<span class="hl com">   modified by Josh Goldfoot</span>
+<span class="hl com">   modified by Sergey Khripunov</span>
+<span class="hl com">   modified by Craig Russell</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwc">$tok</span> <span class="hl opt">=</span> <span class="hl kwd">ftok</span><span class="hl opt">(</span>__FILE__<span class="hl opt">,</span> <span class="hl kwd">chr</span><span class="hl opt">(</span><span class="hl kwd">time</span><span class="hl opt">() &amp;</span> <span class="hl num">255</span><span class="hl opt">));</span>
+<span class="hl kwc">$queue</span> <span class="hl opt">=</span> <span class="hl kwd">msg_get_queue</span><span class="hl opt">(</span><span class="hl kwc">$tok</span><span class="hl opt">);</span>
+
+<span class="hl kwc">$variants</span> <span class="hl opt">=</span> <span class="hl kwa">array</span><span class="hl opt">(</span>
+    <span class="hl str">'agggtaaa|tttaccct'</span><span class="hl opt">,</span>
+    <span class="hl str">'[cgt]gggtaaa|tttaccc[acg]'</span><span class="hl opt">,</span>
+    <span class="hl str">'a[act]ggtaaa|tttacc[agt]t'</span><span class="hl opt">,</span>
+    <span class="hl str">'ag[act]gtaaa|tttac[agt]ct'</span><span class="hl opt">,</span>
+    <span class="hl str">'agg[act]taaa|ttta[agt]cct'</span><span class="hl opt">,</span>
+    <span class="hl str">'aggg[acg]aaa|ttt[cgt]ccct'</span><span class="hl opt">,</span>
+    <span class="hl str">'agggt[cgt]aa|tt[acg]accct'</span><span class="hl opt">,</span>
+    <span class="hl str">'agggta[cgt]a|t[acg]taccct'</span><span class="hl opt">,</span>
+    <span class="hl str">'agggtaa[cgt]|[acg]ttaccct'</span><span class="hl opt">,</span>
+<span class="hl opt">);</span>
+
+<span class="hl slc">// IUB replacement parallel arrays</span>
+<span class="hl kwc">$IUB</span> <span class="hl opt">=</span> <span class="hl kwa">array</span><span class="hl opt">(</span>
+   <span class="hl str">'/B/S'</span><span class="hl opt">,</span>
+   <span class="hl str">'/D/S'</span><span class="hl opt">,</span>
+   <span class="hl str">'/H/S'</span><span class="hl opt">,</span>
+   <span class="hl str">'/K/S'</span><span class="hl opt">,</span>
+   <span class="hl str">'/M/S'</span><span class="hl opt">,</span>
+   <span class="hl str">'/N/S'</span><span class="hl opt">,</span>
+   <span class="hl str">'/R/S'</span><span class="hl opt">,</span>
+   <span class="hl str">'/S/S'</span><span class="hl opt">,</span>
+   <span class="hl str">'/V/S'</span><span class="hl opt">,</span>
+   <span class="hl str">'/W/S'</span><span class="hl opt">,</span>
+   <span class="hl str">'/Y/S'</span>
+<span class="hl opt">);</span>
+<span class="hl kwc">$IUBnew</span> <span class="hl opt">=</span> <span class="hl kwa">array</span><span class="hl opt">(</span>
+   <span class="hl str">'(c|g|t)'</span><span class="hl opt">,</span>
+   <span class="hl str">'(a|g|t)'</span><span class="hl opt">,</span>
+   <span class="hl str">'(a|c|t)'</span><span class="hl opt">,</span>
+   <span class="hl str">'(g|t)'</span><span class="hl opt">,</span>
+   <span class="hl str">'(a|c)'</span><span class="hl opt">,</span>
+   <span class="hl str">'(a|c|g|t)'</span><span class="hl opt">,</span>
+   <span class="hl str">'(a|g)'</span><span class="hl opt">,</span>
+   <span class="hl str">'(c|g)'</span><span class="hl opt">,</span>
+   <span class="hl str">'(a|c|g)'</span><span class="hl opt">,</span>
+   <span class="hl str">'(a|t)'</span><span class="hl opt">,</span>
+   <span class="hl str">'(c|t)'</span>
+<span class="hl opt">);</span>
+
+<span class="hl slc">// read in file</span>
+<span class="hl kwc">$contents</span> <span class="hl opt">=</span> <span class="hl kwd">file_get_contents</span><span class="hl opt">(</span><span class="hl str">'php://stdin'</span><span class="hl opt">);</span>
+<span class="hl kwc">$initialLength</span> <span class="hl opt">=</span> <span class="hl kwd">strlen</span><span class="hl opt">(</span><span class="hl kwc">$contents</span><span class="hl opt">);</span>
+
+<span class="hl slc">// remove things</span>
+<span class="hl kwc">$contents</span> <span class="hl opt">=</span> <span class="hl kwd">preg_replace</span><span class="hl opt">(</span><span class="hl str">'/^&gt;.*$|</span><span class="hl esc">\n</span><span class="hl str">/mS'</span><span class="hl opt">,</span> <span class="hl str">''</span><span class="hl opt">,</span> <span class="hl kwc">$contents</span><span class="hl opt">);</span>
+<span class="hl kwc">$codeLength</span> <span class="hl opt">=</span> <span class="hl kwd">strlen</span><span class="hl opt">(</span><span class="hl kwc">$contents</span><span class="hl opt">);</span>
+
+<span class="hl slc">// do regexp counts</span>
+<span class="hl kwc">$messages</span> <span class="hl opt">=</span> <span class="hl kwd">array_flip</span><span class="hl opt">(</span><span class="hl kwc">$variants</span><span class="hl opt">);</span>
+<span class="hl kwc">$chunks</span> <span class="hl opt">=</span> <span class="hl kwd">str_split</span><span class="hl opt">(</span><span class="hl kwc">$contents</span><span class="hl opt">,</span> <span class="hl kwd">ceil</span><span class="hl opt">(</span><span class="hl kwd">strlen</span><span class="hl opt">(</span><span class="hl kwc">$contents</span><span class="hl opt">) /</span> <span class="hl num">4</span><span class="hl opt">));</span>
+<span class="hl kwc">$workers</span> <span class="hl opt">=</span> <span class="hl kwc">$results</span> <span class="hl opt">=</span> <span class="hl kwa">array</span><span class="hl opt">();</span>
+<span class="hl kwa">foreach</span> <span class="hl opt">(</span><span class="hl kwc">$variants</span> <span class="hl kwa">as</span> <span class="hl kwc">$key</span> <span class="hl opt">=&gt;</span> <span class="hl kwc">$regex</span><span class="hl opt">){</span>
+   <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$key</span> <span class="hl opt">==</span> <span class="hl num">0</span> || <span class="hl kwc">$key</span> <span class="hl opt">==</span> <span class="hl num">2</span> || <span class="hl kwc">$key</span> <span class="hl opt">==</span> <span class="hl num">4</span> || <span class="hl kwc">$key</span> <span class="hl opt">==</span> <span class="hl num">6</span><span class="hl opt">) {</span>
+      <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$pid</span> <span class="hl opt">=</span> <span class="hl kwd">pcntl_fork</span><span class="hl opt">())</span> <span class="hl kwc">$workers</span><span class="hl opt">[] =</span> <span class="hl kwc">$pid</span><span class="hl opt">;</span>
+  <span class="hl opt">}</span>
+   <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$pid</span> <span class="hl opt">&amp;&amp;</span> <span class="hl kwc">$key</span> <span class="hl opt">&gt;</span> <span class="hl num">7</span><span class="hl opt">) {</span>
+      <span class="hl kwc">$messages</span><span class="hl opt">[</span><span class="hl kwc">$regex</span><span class="hl opt">] =</span>
+         <span class="hl kwd">preg_match_all</span><span class="hl opt">(</span><span class="hl str">'/'</span> <span class="hl opt">.</span> <span class="hl kwc">$regex</span> <span class="hl opt">.</span> <span class="hl str">'/iS'</span><span class="hl opt">,</span> <span class="hl kwc">$contents</span><span class="hl opt">,</span> <span class="hl kwc">$discard</span><span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">else if</span><span class="hl opt">(!</span><span class="hl kwc">$pid</span><span class="hl opt">) {</span>
+      <span class="hl kwc">$results</span><span class="hl opt">[] =</span> <span class="hl kwc">$regex</span> <span class="hl opt">.</span> <span class="hl str">','</span> <span class="hl opt">.</span> 
+         <span class="hl kwd">preg_match_all</span><span class="hl opt">(</span><span class="hl str">'/'</span> <span class="hl opt">.</span> <span class="hl kwc">$regex</span> <span class="hl opt">.</span> <span class="hl str">'/iS'</span><span class="hl opt">,</span> <span class="hl kwc">$contents</span><span class="hl opt">,</span> <span class="hl kwc">$discard</span><span class="hl opt">);</span>
+      <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$key</span> <span class="hl opt">==</span> <span class="hl num">1</span> || <span class="hl kwc">$key</span> <span class="hl opt">==</span> <span class="hl num">3</span> || <span class="hl kwc">$key</span> <span class="hl opt">==</span> <span class="hl num">5</span> || <span class="hl kwc">$key</span> <span class="hl opt">==</span> <span class="hl num">7</span><span class="hl opt">) {</span>
+         <span class="hl kwc">$results</span><span class="hl opt">[] =</span> <span class="hl kwd">strlen</span><span class="hl opt">(</span><span class="hl kwd">preg_replace</span><span class="hl opt">(</span><span class="hl kwc">$IUB</span><span class="hl opt">,</span> <span class="hl kwc">$IUBnew</span><span class="hl opt">,</span> <span class="hl kwc">$chunks</span><span class="hl opt">[(</span><span class="hl kwb">int</span><span class="hl opt">)(</span><span class="hl kwc">$key</span> <span class="hl opt">/</span> <span class="hl num">2</span><span class="hl opt">)]));</span>
+         <span class="hl kwd">msg_send</span><span class="hl opt">(</span><span class="hl kwc">$queue</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl kwd">implode</span><span class="hl opt">(</span><span class="hl str">';'</span><span class="hl opt">,</span> <span class="hl kwc">$results</span><span class="hl opt">),</span> false<span class="hl opt">,</span> false<span class="hl opt">,</span> <span class="hl kwc">$errno</span><span class="hl opt">);</span>
+         <span class="hl kwa">exit</span><span class="hl opt">;</span>
+	  <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl slc">// receive and output the counts</span>
+<span class="hl kwc">$contentLength</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl kwa">foreach</span><span class="hl opt">(</span><span class="hl kwc">$workers</span> <span class="hl kwa">as</span> <span class="hl kwc">$worker</span><span class="hl opt">) {</span>
+   <span class="hl kwd">pcntl_waitpid</span><span class="hl opt">(</span><span class="hl kwc">$worker</span><span class="hl opt">,</span> <span class="hl kwc">$status</span><span class="hl opt">);</span>
+   <span class="hl kwd">msg_receive</span><span class="hl opt">(</span><span class="hl kwc">$queue</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl kwc">$msgtype</span><span class="hl opt">,</span> <span class="hl num">4096</span><span class="hl opt">,</span> <span class="hl kwc">$message</span><span class="hl opt">,</span> false<span class="hl opt">);</span>
+   <span class="hl kwc">$message</span> <span class="hl opt">=</span> <span class="hl kwd">explode</span><span class="hl opt">(</span><span class="hl str">';'</span><span class="hl opt">,</span> <span class="hl kwc">$message</span><span class="hl opt">);</span>
+   <span class="hl kwa">foreach</span><span class="hl opt">(</span><span class="hl kwc">$message</span> <span class="hl kwa">as</span> <span class="hl kwc">$key</span> <span class="hl opt">=&gt;</span> <span class="hl kwc">$line</span><span class="hl opt">) {</span>
+      <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$key</span> <span class="hl opt">==</span> <span class="hl num">2</span><span class="hl opt">)</span>
+         <span class="hl kwc">$contentLength</span> +<span class="hl opt">=</span> <span class="hl kwc">$line</span><span class="hl opt">;</span>
+      <span class="hl kwa">else</span> <span class="hl opt">{</span>
+         <span class="hl kwc">$tmp</span> <span class="hl opt">=</span> <span class="hl kwd">explode</span><span class="hl opt">(</span><span class="hl str">','</span><span class="hl opt">,</span> <span class="hl kwc">$line</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">);</span>
+         <span class="hl kwc">$messages</span><span class="hl opt">[</span><span class="hl kwc">$tmp</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]] =</span> <span class="hl kwc">$tmp</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">];</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+<span class="hl kwa">foreach</span><span class="hl opt">(</span><span class="hl kwc">$messages</span> <span class="hl kwa">as</span> <span class="hl kwc">$regex</span> <span class="hl opt">=&gt;</span> <span class="hl kwc">$count</span><span class="hl opt">) {</span>
+   <span class="hl kwa">echo</span> <span class="hl kwc">$regex</span><span class="hl opt">,</span> <span class="hl str">' '</span><span class="hl opt">,</span> <span class="hl kwc">$count</span><span class="hl opt">,</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">echo</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span>
+      <span class="hl kwc">$initialLength</span><span class="hl opt">,</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span>
+      <span class="hl kwc">$codeLength</span><span class="hl opt">,</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span>
+      <span class="hl kwc">$contentLength</span><span class="hl opt">,</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
