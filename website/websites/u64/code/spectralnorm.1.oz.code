@@ -1,0 +1,66 @@
+<span class="hl slc">% The Computer Language Benchmarks Game                              </span>
+<span class="hl slc">% http://benchmarksgame.alioth.debian.org/    </span>
+<span class="hl slc">% contributed by Isaac Gouy</span>
+
+<span class="hl kwa">functor</span>
+<span class="hl kwa">import</span>
+   System Application 
+   S <span class="hl kwa">at</span> 'Include<span class="hl opt">/</span>oz<span class="hl opt">/</span>benchmarksgame<span class="hl opt">.</span>ozf'  
+
+<span class="hl kwa">define</span>
+   <span class="hl opt">[</span>Arg<span class="hl opt">] = {</span>Application<span class="hl opt">.</span>getArgs plain<span class="hl opt">}</span>
+   N <span class="hl opt">= {</span>String<span class="hl opt">.</span>toInt Arg<span class="hl opt">}</span>
+   M <span class="hl opt">=</span> N<span class="hl opt">-</span><span class="hl num">1</span>
+
+   <span class="hl slc">% return element i,j of infinite matrix A</span>
+   <span class="hl kwa">fun</span> <span class="hl opt">{</span>A I J<span class="hl opt">}</span> <span class="hl num">1.0</span> <span class="hl opt">/ {</span><span class="hl kwd">IntToFloat</span> <span class="hl opt">(</span>I<span class="hl opt">+</span>J<span class="hl opt">)*(</span>I<span class="hl opt">+</span>J<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span> <span class="hl kwa">div</span> <span class="hl num">2</span> <span class="hl opt">+</span> I<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">}</span> <span class="hl kwa">end</span>
+
+   <span class="hl slc">% multiply vector v by matrix A</span>
+   <span class="hl kwa">proc</span> <span class="hl opt">{</span>MultiplyAv V ?Av<span class="hl opt">}</span>
+      <span class="hl kwa">for</span> I <span class="hl kwa">in</span> <span class="hl num">0</span><span class="hl opt">..</span>M <span class="hl kwa">do</span>
+         Av<span class="hl opt">.</span>I <span class="hl opt">:=</span> <span class="hl num">0.0</span>
+         <span class="hl kwa">for</span> J <span class="hl kwa">in</span> <span class="hl num">0</span><span class="hl opt">..</span>M <span class="hl kwa">do</span> 
+            Av<span class="hl opt">.</span>I <span class="hl opt">:=</span> Av<span class="hl opt">.</span>I <span class="hl opt">+ {</span>A I J<span class="hl opt">}*</span>V<span class="hl opt">.</span>J
+         <span class="hl kwa">end</span>
+      <span class="hl kwa">end</span>
+   <span class="hl kwa">end</span>
+
+   <span class="hl slc">% multiply vector v by matrix A transposed</span>
+   <span class="hl kwa">proc</span> <span class="hl opt">{</span>MultiplyAtv V ?Atv<span class="hl opt">}</span>
+      <span class="hl kwa">for</span> I <span class="hl kwa">in</span> <span class="hl num">0</span><span class="hl opt">..</span>M <span class="hl kwa">do</span>
+         Atv<span class="hl opt">.</span>I <span class="hl opt">:=</span> <span class="hl num">0.0</span> 
+         <span class="hl kwa">for</span> J <span class="hl kwa">in</span> <span class="hl num">0</span><span class="hl opt">..</span>M <span class="hl kwa">do</span> 
+            Atv<span class="hl opt">.</span>I <span class="hl opt">:=</span> Atv<span class="hl opt">.</span>I <span class="hl opt">+ {</span>A J I<span class="hl opt">}*</span>V<span class="hl opt">.</span>J
+         <span class="hl kwa">end</span>
+      <span class="hl kwa">end</span>
+   <span class="hl kwa">end</span>
+
+   <span class="hl slc">% multiply vector v by matrix A and then by matrix A transposed</span>
+   <span class="hl kwa">proc</span> <span class="hl opt">{</span>MultiplyAtAv V ?AtAv<span class="hl opt">}</span>
+      U <span class="hl opt">= {</span>NewArray <span class="hl num">0</span> M <span class="hl num">0.0</span><span class="hl opt">}</span> 
+   <span class="hl kwa">in</span> 
+      <span class="hl opt">{</span>MultiplyAv V U<span class="hl opt">}</span>
+      <span class="hl opt">{</span>MultiplyAtv U AtAv<span class="hl opt">}</span>
+   <span class="hl kwa">end</span>
+
+   U <span class="hl opt">= {</span>NewArray <span class="hl num">0</span> M <span class="hl num">1.0</span><span class="hl opt">}</span>
+   V <span class="hl opt">= {</span>NewArray <span class="hl num">0</span> M <span class="hl num">0.0</span><span class="hl opt">}</span>
+
+   Vbv <span class="hl opt">= {</span>NewCell <span class="hl num">0.0</span><span class="hl opt">}</span>
+   Vv <span class="hl opt">= {</span>NewCell <span class="hl num">0.0</span><span class="hl opt">}</span>
+
+<span class="hl kwa">in</span>   
+   <span class="hl slc">% 20 steps of the power method</span>
+   <span class="hl kwa">for</span> I <span class="hl kwa">in</span> <span class="hl num">1</span><span class="hl opt">.</span><span class="hl num">.10</span> <span class="hl kwa">do</span> 
+      <span class="hl opt">{</span>MultiplyAtAv U V<span class="hl opt">}</span>
+      <span class="hl opt">{</span>MultiplyAtAv V U<span class="hl opt">}</span>
+   <span class="hl kwa">end</span>
+
+   <span class="hl kwa">for</span> I <span class="hl kwa">in</span> <span class="hl num">0</span><span class="hl opt">..</span>M <span class="hl kwa">do</span> 
+      Vbv <span class="hl opt">:= &#64;</span>Vbv <span class="hl opt">+</span> U<span class="hl opt">.</span>I<span class="hl opt">*</span>V<span class="hl opt">.</span>I 
+      Vv <span class="hl opt">:= &#64;</span>Vv <span class="hl opt">+</span> V<span class="hl opt">.</span>I<span class="hl opt">*</span>V<span class="hl opt">.</span>I 
+   <span class="hl kwa">end</span>
+
+   <span class="hl opt">{</span>System<span class="hl opt">.</span>showInfo <span class="hl opt">{</span>S<span class="hl opt">.</span>floatToString <span class="hl opt">{</span>Sqrt <span class="hl opt">&#64;</span>Vbv<span class="hl opt">/&#64;</span>Vv<span class="hl opt">}</span> <span class="hl num">9</span><span class="hl opt">}}</span>
+   <span class="hl opt">{</span>Application<span class="hl opt">.</span>exit <span class="hl num">0</span><span class="hl opt">}</span>   
+<span class="hl kwa">end</span>

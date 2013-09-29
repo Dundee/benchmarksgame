@@ -1,0 +1,27 @@
+
+Sun, 29 Sep 2013 19:39:08 GMT
+
+MAKE:
+/usr/local/src/mozart2/bin/ozc  -c pidigits.oz
+1.14s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/src/mozart2/bin/ozengine pidigits.ozf 2000
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+31415
+
+%***************************** Kernel ***************************
+%**
+%** kernel('Integer division: Division by zero')
+%**
+%** Call Stack:
+%** procedure 'Next' in file "pidigits.oz", line 12, column 4, PC = 140534703302948
+%** procedure 'Digit' in file "pidigits.oz", line 40, column 4, PC = 140534703299741
+%** procedure in file "pidigits.oz", line 7, column 1, PC = 140534703303950
+%** procedure 'RootManager,Pickle/fast' in file "/home/sjrd/documents/projets/mozart2/lib/main/init/Module.oz", line 244, column 7, PC = 140534702139593
+%** procedure in file "/home/sjrd/documents/projets/mozart2/lib/main/base/Base.oz", line 84, column 22, PC = 140534702341308
+%**--------------------------------------------------------------

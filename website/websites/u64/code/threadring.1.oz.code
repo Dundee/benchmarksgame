@@ -1,0 +1,56 @@
+<span class="hl slc">% The Computer Language Benchmarks Game                             </span>
+<span class="hl slc">% http://benchmarksgame.alioth.debian.org/    </span>
+<span class="hl slc">% contributed by Isaac Gouy</span>
+
+<span class="hl kwa">functor</span>
+<span class="hl kwa">import</span> Application System 
+
+<span class="hl kwa">define</span>
+   <span class="hl kwa">fun</span> <span class="hl opt">{</span>NewThread Name Next<span class="hl opt">}</span>
+      MessageList
+      MessagePort <span class="hl opt">= {</span>Port<span class="hl opt">.</span>new MessageList<span class="hl opt">}</span>
+
+      <span class="hl kwa">proc</span> <span class="hl opt">{</span>Loop Token|Tokens<span class="hl opt">}</span>     <span class="hl slc">% wait for list-head list-tail pattern to</span>
+         <span class="hl kwa">if</span> Token <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl kwa">then</span>         <span class="hl slc">% match and bind Token</span>
+            <span class="hl opt">{</span>Next<span class="hl opt">.</span>take Token<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">}</span>
+            <span class="hl opt">{</span>Loop Tokens<span class="hl opt">}</span>
+         <span class="hl kwa">else</span>
+            <span class="hl opt">{</span>System<span class="hl opt">.</span>show Name<span class="hl opt">}</span>
+            <span class="hl opt">{</span>Application<span class="hl opt">.</span>exit <span class="hl num">0</span><span class="hl opt">}</span>   <span class="hl slc">% exit without cleaning up</span>
+         <span class="hl kwa">end</span>         
+      <span class="hl kwa">end</span>
+
+      <span class="hl kwa">proc</span> <span class="hl opt">{</span>Take Token<span class="hl opt">}</span>
+         <span class="hl opt">{</span>Port<span class="hl opt">.</span>send MessagePort Token<span class="hl opt">}</span> 
+      <span class="hl kwa">end</span>
+   <span class="hl kwa">in</span>
+      <span class="hl kwa">thread</span> <span class="hl opt">{</span>Loop MessageList<span class="hl opt">}</span> <span class="hl kwa">end</span> <span class="hl slc">% spawn a thread </span>
+      <span class="hl kwd">newthread</span><span class="hl opt">(</span>take<span class="hl opt">:</span> Take<span class="hl opt">)</span>         <span class="hl slc">% let function Take be used elsewhere</span>
+   <span class="hl kwa">end</span>
+
+
+   <span class="hl kwa">fun</span> <span class="hl opt">{</span>NewRing NumberOfThreads<span class="hl opt">}</span>
+
+      <span class="hl kwa">fun</span> <span class="hl opt">{</span>MakeRing N NextThread<span class="hl opt">}</span> 
+         <span class="hl kwa">if</span> N <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl kwa">then</span>
+            <span class="hl opt">{</span>MakeRing N<span class="hl opt">-</span><span class="hl num">1</span> <span class="hl opt">{</span>NewThread N NextThread<span class="hl opt">}}</span>
+         <span class="hl kwa">else</span> 
+            NextThread
+         <span class="hl kwa">end</span>
+      <span class="hl kwa">end</span>
+
+      FirstThread
+   <span class="hl kwa">in</span>
+      <span class="hl slc">% The unbound logic variable FirstThread is passed into recursive </span>
+      <span class="hl slc">% function MakeRing and the value returned by that function is then</span>
+      <span class="hl slc">% bound to variable FirstThread, closing the thread ring.</span>
+
+      FirstThread <span class="hl opt">= {</span>MakeRing NumberOfThreads FirstThread<span class="hl opt">}</span>
+   <span class="hl kwa">end</span>
+
+
+   <span class="hl opt">[</span>Arg<span class="hl opt">] = {</span>Application<span class="hl opt">.</span>getArgs plain<span class="hl opt">}</span>
+
+<span class="hl kwa">in</span>  
+   <span class="hl opt">{{</span>NewRing <span class="hl num">503</span><span class="hl opt">}.</span>take <span class="hl opt">{</span>String<span class="hl opt">.</span>toInt Arg<span class="hl opt">}}</span>
+<span class="hl kwa">end</span>

@@ -1,0 +1,77 @@
+<span class="hl slc">% The Computer Language Benchmarks Game                        </span>
+<span class="hl slc">% http://benchmarksgame.alioth.debian.org/    </span>
+<span class="hl slc">% contributed by Isaac Gouy</span>
+
+<span class="hl kwa">functor</span>
+<span class="hl kwa">import</span> Application Open
+
+<span class="hl kwa">define</span>
+   <span class="hl kwa">proc</span> <span class="hl opt">{</span>Mandelbrot F Side<span class="hl opt">}</span>
+      IXMax <span class="hl opt">=</span> Side <span class="hl opt">-</span> <span class="hl num">1</span>
+      IYMax <span class="hl opt">=</span> IXMax
+      XMax <span class="hl opt">= {</span>IntToFloat Side<span class="hl opt">}</span>
+      YMax <span class="hl opt">=</span> XMax
+      M <span class="hl opt">=</span> <span class="hl num">50</span>
+      Limit2 <span class="hl opt">=</span> <span class="hl num">4.0</span>
+
+
+      <span class="hl kwa">proc</span> <span class="hl opt">{</span>XLoop IX Y B N<span class="hl opt">}</span>
+         X <span class="hl opt">= {</span>IntToFloat IX<span class="hl opt">}</span>
+         Cr <span class="hl opt">=</span> <span class="hl num">2.0</span><span class="hl opt">*</span>X <span class="hl opt">/</span> XMax <span class="hl opt">-</span> <span class="hl num">1.5</span>
+         Ci <span class="hl opt">=</span> <span class="hl num">2.0</span><span class="hl opt">*</span>Y <span class="hl opt">/</span> YMax <span class="hl opt">-</span> <span class="hl num">1.0</span>
+         Bits
+         Bitnum
+    
+         <span class="hl kwa">fun</span> <span class="hl opt">{</span>Include J Zr Zi Tr Ti<span class="hl opt">}</span>
+            <span class="hl kwa">if</span> J<span class="hl opt">&lt;</span>M <span class="hl kwa">andthen</span> Tr <span class="hl opt">+</span> Ti <span class="hl opt">=&lt;</span> Limit2 <span class="hl kwa">then</span> 
+               I <span class="hl opt">=</span> <span class="hl num">2.0</span> <span class="hl opt">*</span> Zr <span class="hl opt">*</span> Zi <span class="hl opt">+</span> Ci
+               R <span class="hl opt">=</span> Tr <span class="hl opt">-</span> Ti <span class="hl opt">+</span> Cr
+            <span class="hl kwa">in</span>
+               <span class="hl opt">{</span>Include J<span class="hl opt">+</span><span class="hl num">1</span> R I R<span class="hl opt">*</span>R I<span class="hl opt">*</span>I<span class="hl opt">}</span>
+            <span class="hl kwa">else</span> 
+               Tr <span class="hl opt">+</span> Ti <span class="hl opt">=&lt;</span> Limit2
+            <span class="hl kwa">end</span>
+         <span class="hl kwa">end</span>
+
+      <span class="hl kwa">in</span>
+         <span class="hl kwa">if</span> IX <span class="hl opt">=&lt;</span> IXMax <span class="hl kwa">then</span>
+            Bits <span class="hl opt">=</span> <span class="hl kwa">if</span> <span class="hl opt">{</span>Include <span class="hl num">0 0.0 0.0 0.0 0.0</span><span class="hl opt">}</span> <span class="hl kwa">then</span> B<span class="hl opt">*</span><span class="hl num">2</span><span class="hl opt">+</span><span class="hl num">1</span> <span class="hl kwa">else</span> B<span class="hl opt">*</span><span class="hl num">2</span> <span class="hl kwa">end</span>
+            Bitnum <span class="hl opt">=</span> N<span class="hl opt">+</span><span class="hl num">1</span> 
+
+            <span class="hl kwa">if</span> Bitnum <span class="hl opt">==</span> <span class="hl num">8</span> <span class="hl kwa">then</span> 
+               <span class="hl opt">{</span>F <span class="hl kwd">putC</span><span class="hl opt">(</span>Bits<span class="hl opt">)}</span>
+               <span class="hl opt">{</span>XLoop IX<span class="hl opt">+</span><span class="hl num">1</span> Y <span class="hl num">0 0</span><span class="hl opt">}</span>
+            <span class="hl kwa">elseif</span> IX <span class="hl opt">==</span> IXMax <span class="hl kwa">then</span>
+               <span class="hl opt">{</span>F <span class="hl kwd">putC</span><span class="hl opt">(</span> Bits <span class="hl opt">* {</span>Pow <span class="hl kwd">2</span> <span class="hl opt">(</span><span class="hl num">8</span> <span class="hl opt">- (</span>Side <span class="hl kwa">mod</span> <span class="hl num">8</span><span class="hl opt">))} )}</span>
+               <span class="hl opt">{</span>XLoop IX<span class="hl opt">+</span><span class="hl num">1</span> Y <span class="hl num">0 0</span><span class="hl opt">}</span>
+            <span class="hl kwa">else</span>
+               <span class="hl opt">{</span>XLoop IX<span class="hl opt">+</span><span class="hl num">1</span> Y Bits Bitnum<span class="hl opt">}</span>
+            <span class="hl kwa">end</span>
+         <span class="hl kwa">end</span>
+      <span class="hl kwa">end</span>
+
+
+      <span class="hl kwa">proc</span> <span class="hl opt">{</span>YLoop IY<span class="hl opt">}</span>
+         <span class="hl kwa">if</span> IY <span class="hl opt">=&lt;</span> IYMax <span class="hl kwa">then</span>
+            <span class="hl opt">{</span>XLoop <span class="hl num">0</span> <span class="hl opt">{</span>IntToFloat IY<span class="hl opt">}</span> <span class="hl num">0 0</span><span class="hl opt">}</span> 
+            <span class="hl opt">{</span>YLoop IY<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">}</span>
+         <span class="hl kwa">end</span>
+      <span class="hl kwa">end</span>
+
+   <span class="hl kwa">in</span>
+      <span class="hl opt">{</span>F <span class="hl kwd">putS</span><span class="hl opt">(</span><span class="hl str">&quot;P4&quot;</span><span class="hl opt">)}</span>
+      <span class="hl opt">{</span>F <span class="hl kwd">putS</span><span class="hl opt">({</span>IntToString Side<span class="hl opt">} #</span> <span class="hl str">&quot; &quot;</span> <span class="hl opt"># {</span>IntToString Side<span class="hl opt">})}</span>
+      <span class="hl opt">{</span>YLoop <span class="hl num">0</span><span class="hl opt">}</span>
+   <span class="hl kwa">end</span>
+
+
+   <span class="hl opt">[</span>Arg<span class="hl opt">] = {</span>Application<span class="hl opt">.</span>getArgs plain<span class="hl opt">}</span>
+   N <span class="hl opt">= {</span>String<span class="hl opt">.</span>toInt Arg<span class="hl opt">}</span>
+
+   <span class="hl kwa">class</span> TextFile <span class="hl kwa">from</span> Open<span class="hl opt">.</span>file Open<span class="hl opt">.</span>text <span class="hl kwa">end</span>
+   StdOut <span class="hl opt">= {</span>New TextFile <span class="hl kwd">init</span><span class="hl opt">(</span>name<span class="hl opt">:</span>stdout<span class="hl opt">)}</span>
+
+<span class="hl kwa">in</span>      
+   <span class="hl opt">{</span>Mandelbrot StdOut N<span class="hl opt">}</span>
+   <span class="hl opt">{</span>Application<span class="hl opt">.</span>exit <span class="hl num">0</span><span class="hl opt">}</span>   
+<span class="hl kwa">end</span>

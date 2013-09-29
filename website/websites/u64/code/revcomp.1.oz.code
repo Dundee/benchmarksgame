@@ -1,0 +1,77 @@
+<span class="hl slc">% The Computer Language Benchmarks Game  </span>
+<span class="hl slc">% http://benchmarksgame.alioth.debian.org/    </span>
+<span class="hl slc">% contributed by Isaac Gouy</span>
+
+<span class="hl kwa">functor</span>
+<span class="hl kwa">import</span> Application Open
+
+<span class="hl kwa">define</span>
+   <span class="hl kwa">fun</span> <span class="hl opt">{</span>NextHeader F<span class="hl opt">}</span>
+      <span class="hl kwa">case</span> <span class="hl opt">{</span>F <span class="hl kwd">getS</span><span class="hl opt">(</span>$<span class="hl opt">)}</span> 
+      <span class="hl kwa">of false then false</span>
+      <span class="hl opt">[] &amp;&gt;</span>|_ <span class="hl opt">=</span> Header <span class="hl kwa">then</span> Header
+      <span class="hl kwa">else</span> <span class="hl opt">{</span>NextHeader F<span class="hl opt">}</span> <span class="hl kwa">end</span>
+   <span class="hl kwa">end</span>
+
+   <span class="hl kwa">fun</span> <span class="hl opt">{</span>ReversedLines F L<span class="hl opt">}</span>
+      <span class="hl kwa">case</span> <span class="hl opt">{</span>F <span class="hl kwd">getS</span><span class="hl opt">(</span>$<span class="hl opt">)}</span> 
+      <span class="hl kwa">of false then</span> L <span class="hl opt">#</span> <span class="hl kwa">false</span>
+      <span class="hl opt">[] &amp;&gt;</span>|_ <span class="hl opt">=</span> Header <span class="hl kwa">then</span> L <span class="hl opt">#</span> Header
+      <span class="hl opt">[] &amp;;</span>|_ <span class="hl kwa">then</span> <span class="hl opt">{</span>ReversedLines F L<span class="hl opt">}</span>
+      <span class="hl opt">[]</span> Line <span class="hl kwa">then</span> <span class="hl opt">{</span>ReversedLines F Line|L<span class="hl opt">}</span> <span class="hl kwa">end</span>
+   <span class="hl kwa">end</span>
+
+
+   <span class="hl kwa">local</span>
+      <span class="hl kwa">fun</span> <span class="hl opt">{</span>IubCodeComplements<span class="hl opt">}</span>
+         Code <span class="hl opt">=</span> <span class="hl str">&quot;ABCDGHKMNRSTVWYabcdghkmnrstvwy&quot;</span>
+         Comp <span class="hl opt">=</span> <span class="hl str">&quot;TVGHCDMKNYSABWRTVGHCDMKNYSABWR&quot;</span>
+         A <span class="hl opt">= {</span>NewArray <span class="hl num">1</span> <span class="hl opt">&amp;</span>z <span class="hl opt">&amp;*}</span>
+      <span class="hl kwa">in</span>
+         <span class="hl opt">{</span>ForAll
+            <span class="hl opt">{</span>List<span class="hl opt">.</span>zip Code Comp <span class="hl kwa">fun</span><span class="hl opt">{</span>$ K V<span class="hl opt">}</span> K<span class="hl opt">#</span>V <span class="hl kwa">end</span><span class="hl opt">}</span>
+               <span class="hl kwa">proc</span><span class="hl opt">{</span>$ K<span class="hl opt">#</span>V<span class="hl opt">}</span> A<span class="hl opt">.</span>K <span class="hl opt">:=</span> V <span class="hl kwa">end</span><span class="hl opt">}</span>
+         A
+      <span class="hl kwa">end</span>
+
+      IUB <span class="hl opt">= {</span>IubCodeComplements<span class="hl opt">}</span>
+
+   <span class="hl kwa">in</span>
+      <span class="hl kwa">proc</span> <span class="hl opt">{</span>WriteReverseComplement FOut FirstLine|RemainingLines<span class="hl opt">}</span>
+         ShortestLength <span class="hl opt">= {</span>Length FirstLine<span class="hl opt">}</span>
+
+         <span class="hl kwa">fun</span> <span class="hl opt">{</span>ReverseComplement L C<span class="hl opt">}</span> IUB<span class="hl opt">.</span>C|L <span class="hl kwa">end</span>
+
+         <span class="hl kwa">fun</span> <span class="hl opt">{</span>FastaReverseComplement I L C<span class="hl opt">}</span> 
+            <span class="hl kwa">if</span> I <span class="hl opt">==</span> ShortestLength <span class="hl kwa">then</span> <span class="hl opt">&amp;</span><span class="hl esc">\n</span>|IUB<span class="hl opt">.</span>C|L 
+            <span class="hl kwa">else</span> IUB<span class="hl opt">.</span>C|L <span class="hl kwa">end</span> 
+         <span class="hl kwa">end</span>
+
+      <span class="hl kwa">in</span> 
+         <span class="hl opt">{</span>FOut <span class="hl kwd">write</span><span class="hl opt">(</span>vs<span class="hl opt">: {</span>FoldL FirstLine ReverseComplement nil<span class="hl opt">}) }</span>
+
+         <span class="hl kwa">for</span> Line <span class="hl kwa">in</span> RemainingLines <span class="hl kwa">do</span>
+            <span class="hl opt">{</span>FOut <span class="hl kwd">write</span><span class="hl opt">(</span>vs<span class="hl opt">: {</span>List<span class="hl opt">.</span>foldLInd Line FastaReverseComplement nil<span class="hl opt">})}</span>
+         <span class="hl kwa">end</span>
+         <span class="hl opt">{</span>FOut <span class="hl kwd">write</span><span class="hl opt">(</span>vs<span class="hl opt">:</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">)}</span>
+      <span class="hl kwa">end</span>
+   <span class="hl kwa">end</span>
+
+
+   <span class="hl kwa">proc</span> <span class="hl opt">{</span>ReadReverseComplementWrite F Header FOut<span class="hl opt">}</span>
+      <span class="hl kwa">if</span> Header \<span class="hl opt">=</span> <span class="hl kwa">false then</span> 
+         Lines <span class="hl opt">#</span> NextHeader <span class="hl opt">= {</span>ReversedLines F nil<span class="hl opt">}</span>
+      <span class="hl kwa">in</span>
+         <span class="hl opt">{</span>FOut <span class="hl kwd">write</span><span class="hl opt">(</span>vs<span class="hl opt">:</span> Header <span class="hl opt">#</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">)}</span>
+         <span class="hl opt">{</span>WriteReverseComplement FOut Lines<span class="hl opt">}</span>
+         <span class="hl opt">{</span>ReadReverseComplementWrite F NextHeader FOut<span class="hl opt">}</span>
+      <span class="hl kwa">end</span>
+   <span class="hl kwa">end</span>
+
+   <span class="hl kwa">class</span> TextFile <span class="hl kwa">from</span> Open<span class="hl opt">.</span>file Open<span class="hl opt">.</span>text <span class="hl kwa">end</span>
+   StdIn <span class="hl opt">= {</span>New TextFile <span class="hl kwd">init</span><span class="hl opt">(</span>name<span class="hl opt">:</span>stdin<span class="hl opt">)}</span>
+   StdOut <span class="hl opt">= {</span>New Open<span class="hl opt">.</span>file <span class="hl kwd">init</span><span class="hl opt">(</span>name<span class="hl opt">:</span>stdout<span class="hl opt">)}</span>
+<span class="hl kwa">in</span>
+   <span class="hl opt">{</span>ReadReverseComplementWrite StdIn <span class="hl opt">{</span>NextHeader StdIn<span class="hl opt">}</span> StdOut<span class="hl opt">}</span>
+   <span class="hl opt">{</span>Application<span class="hl opt">.</span>exit <span class="hl num">0</span><span class="hl opt">}</span>   
+<span class="hl kwa">end</span>

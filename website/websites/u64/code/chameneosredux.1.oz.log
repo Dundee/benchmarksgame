@@ -1,0 +1,83 @@
+
+Sun, 29 Sep 2013 17:38:07 GMT
+
+MAKE:
+/usr/local/src/mozart2/bin/ozc  -c chameneosredux.oz
+1.85s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/src/mozart2/bin/ozengine chameneosredux.ozf 60000
+
+UNEXPECTED OUTPUT 
+
+18c18
+< 12004 two three
+--- field 3
+> 12000 zero
+19c19
+< 11994 one six
+--- field 3
+> 12000 zero
+20c20
+< 12000 one seven
+--- field 3
+> 12000 zero
+21c21
+< 12005 one seven
+--- field 3
+> 12000 zero
+22c22
+< 11997 one seven
+--- field 3
+> 12000 zero
+23c23
+< 12004 one seven
+--- field 3
+> 12000 zero
+24c24
+< 11997 eight
+--- field 2
+> 12000 zero
+25c25
+< 12001 one eight
+--- field 3
+> 12000 zero
+26c26
+< 11998 one four
+--- field 3
+> 12000 zero
+27c27
+< 12000 two two
+--- field 3
+> 12000 zero
+
+PROGRAM OUTPUT:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
+ blue red yellow
+40002 zero
+40007 zero
+39991 zero
+ one two zero zero zero zero
+
+ blue red yellow red yellow blue red yellow red blue
+12004 two three
+11994 one six
+12000 one seven
+12005 one seven
+11997 one seven
+12004 one seven
+11997 eight
+12001 one eight
+11998 one four
+12000 two two
+ one two zero zero zero zero
+

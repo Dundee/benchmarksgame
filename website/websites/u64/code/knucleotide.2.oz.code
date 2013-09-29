@@ -1,0 +1,90 @@
+<span class="hl slc">% The Computer Language Benchmarks Game                            </span>
+<span class="hl slc">% http://benchmarksgame.alioth.debian.org/    </span>
+<span class="hl slc">% contributed by Isaac Gouy</span>
+
+<span class="hl kwa">functor</span>
+<span class="hl kwa">import</span> 
+   Application System Open
+   S <span class="hl kwa">at</span> 'Include<span class="hl opt">/</span>oz<span class="hl opt">/</span>benchmarksgame<span class="hl opt">.</span>ozf'
+
+<span class="hl kwa">define</span>
+   Sequence
+
+   <span class="hl kwa">proc</span> <span class="hl opt">{</span>FindSequence F Id<span class="hl opt">}</span>
+      <span class="hl kwa">case</span> <span class="hl opt">{</span>F <span class="hl kwd">getS</span><span class="hl opt">(</span>$<span class="hl opt">)}</span> 
+      <span class="hl kwa">of false then skip</span>
+      <span class="hl opt">[] &amp;&gt;</span>|T <span class="hl kwa">then</span> 
+         <span class="hl kwa">if</span> <span class="hl opt">{</span>List<span class="hl opt">.</span>isPrefix Id T<span class="hl opt">}</span> <span class="hl kwa">then skip else</span> <span class="hl opt">{</span>FindSequence F Id<span class="hl opt">}</span> <span class="hl kwa">end</span>
+      <span class="hl kwa">else</span> <span class="hl opt">{</span>FindSequence F Id<span class="hl opt">}</span> <span class="hl kwa">end</span>
+   <span class="hl kwa">end</span>
+
+   <span class="hl kwa">fun</span> <span class="hl opt">{</span>ReadSequence F S<span class="hl opt">}</span>
+      <span class="hl kwa">case</span> <span class="hl opt">{</span>F <span class="hl kwd">getS</span><span class="hl opt">(</span>$<span class="hl opt">)}</span> 
+      <span class="hl kwa">of false then</span> S
+      <span class="hl opt">[] &amp;&gt;</span>|_ <span class="hl kwa">then</span> S 
+      <span class="hl opt">[] &amp;;</span>|_ <span class="hl kwa">then</span> <span class="hl opt">{</span>ReadSequence F S<span class="hl opt">}</span>
+      <span class="hl opt">[]</span> Line <span class="hl kwa">then</span> <span class="hl opt">{</span>ReadSequence F S<span class="hl opt">#{</span>Map Line Char<span class="hl opt">.</span>toUpper<span class="hl opt">}}</span> <span class="hl kwa">end</span>
+   <span class="hl kwa">end</span>
+
+   <span class="hl kwa">fun</span> <span class="hl opt">{</span>GenerateFrequencies Length<span class="hl opt">}</span>
+      D <span class="hl opt">= {</span>NewDictionary<span class="hl opt">}</span>
+
+      <span class="hl kwa">proc</span> <span class="hl opt">{</span>KFrequency Offset J<span class="hl opt">}</span>
+         N <span class="hl opt">= {</span>ByteString<span class="hl opt">.</span>length Sequence<span class="hl opt">} -</span> J <span class="hl opt">+</span> <span class="hl num">1</span>
+      <span class="hl kwa">in</span> 
+         <span class="hl kwa">for</span> I <span class="hl kwa">in</span> Offset<span class="hl opt">;</span> I<span class="hl opt">&lt;</span>N<span class="hl opt">;</span> I<span class="hl opt">+</span>J <span class="hl kwa">do</span>
+            Slice <span class="hl opt">= {</span>ByteString<span class="hl opt">.</span>slice Sequence I I<span class="hl opt">+</span>J<span class="hl opt">}</span> 
+            K <span class="hl opt">= {</span>String<span class="hl opt">.</span>toAtom <span class="hl opt">{</span>ByteString<span class="hl opt">.</span>toString Slice<span class="hl opt">}}</span>
+            V NewV
+         <span class="hl kwa">in</span>
+            <span class="hl opt">{</span>Dictionary<span class="hl opt">.</span>condExchange D K <span class="hl num">0</span> V NewV<span class="hl opt">}</span>
+            NewV <span class="hl opt">=</span> V <span class="hl opt">+</span> <span class="hl num">1</span>
+         <span class="hl kwa">end</span>
+      <span class="hl kwa">end</span>
+   <span class="hl kwa">in</span>
+      <span class="hl kwa">for</span> Offset <span class="hl kwa">in</span> <span class="hl num">0</span><span class="hl opt">;</span> Offset<span class="hl opt">&lt;</span>Length<span class="hl opt">;</span> Offset<span class="hl opt">+</span><span class="hl num">1</span> <span class="hl kwa">do</span> 
+         <span class="hl opt">{</span>KFrequency Offset Length<span class="hl opt">}</span> 
+      <span class="hl kwa">end</span>
+      D
+   <span class="hl kwa">end</span>
+
+   <span class="hl kwa">proc</span> <span class="hl opt">{</span>WriteFrequencies J<span class="hl opt">}</span>
+      D <span class="hl opt">= {</span>GenerateFrequencies J<span class="hl opt">}</span>
+      F <span class="hl opt">=</span> <span class="hl kwa">fun</span> <span class="hl opt">{</span>$ Ak<span class="hl opt">#</span>Av Bk<span class="hl opt">#</span>Bv<span class="hl opt">}</span> <span class="hl kwa">if</span> Av<span class="hl opt">==</span>Bv <span class="hl kwa">then</span> Ak<span class="hl opt">&gt;</span>Bk <span class="hl kwa">else</span> Av<span class="hl opt">&gt;</span>Bv <span class="hl kwa">end end</span>
+      L <span class="hl opt">= {</span>Sort <span class="hl opt">{</span>Dictionary<span class="hl opt">.</span>entries D<span class="hl opt">}</span> F<span class="hl opt">}</span>
+      N <span class="hl opt">= {</span>IntToFloat <span class="hl opt">{</span>ByteString<span class="hl opt">.</span>length Sequence<span class="hl opt">} -</span> J <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">}</span>
+   <span class="hl kwa">in</span>
+      <span class="hl kwa">for</span> K<span class="hl opt">#</span>V <span class="hl kwa">in</span> L <span class="hl kwa">do</span> 
+         Percentage <span class="hl opt">= {</span>IntToFloat V<span class="hl opt">} /</span> N <span class="hl opt">*</span> <span class="hl num">100.0</span>
+      <span class="hl kwa">in</span>
+         <span class="hl opt">{</span>System<span class="hl opt">.</span>showInfo K <span class="hl opt">#</span> <span class="hl str">&quot; &quot;</span> <span class="hl opt"># {</span>S<span class="hl opt">.</span>floatToString Percentage <span class="hl num">3</span><span class="hl opt">}}</span>          
+      <span class="hl kwa">end</span>
+      <span class="hl opt">{</span>System<span class="hl opt">.</span>showInfo <span class="hl str">&quot;&quot;</span><span class="hl opt">}</span> 
+   <span class="hl kwa">end</span>
+
+   <span class="hl kwa">proc</span> <span class="hl opt">{</span>WriteCount Fragment<span class="hl opt">}</span>
+      D <span class="hl opt">= {</span>GenerateFrequencies <span class="hl opt">{</span>Length Fragment<span class="hl opt">}}</span>
+      K <span class="hl opt">= {</span>String<span class="hl opt">.</span>toAtom Fragment<span class="hl opt">}</span>
+      Count <span class="hl opt">= {</span>Dictionary<span class="hl opt">.</span>condGet D K <span class="hl num">0</span><span class="hl opt">}</span>
+   <span class="hl kwa">in</span>
+      <span class="hl opt">{</span>System<span class="hl opt">.</span>showInfo Count <span class="hl opt">#</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span><span class="hl str">&quot;</span> <span class="hl opt">#</span> Fragment<span class="hl opt">}</span>
+   <span class="hl kwa">end</span>
+
+   <span class="hl kwa">class</span> TextFile <span class="hl kwa">from</span> Open<span class="hl opt">.</span>file Open<span class="hl opt">.</span>text <span class="hl kwa">end</span>
+   StdIn <span class="hl opt">= {</span>New TextFile <span class="hl kwd">init</span><span class="hl opt">(</span>name<span class="hl opt">:</span>stdin<span class="hl opt">)}</span>
+
+<span class="hl kwa">in</span>    
+   <span class="hl opt">{</span>FindSequence StdIn <span class="hl str">&quot;THREE&quot;</span><span class="hl opt">}</span>
+   Sequence <span class="hl opt">= {</span>VirtualString<span class="hl opt">.</span>toByteString <span class="hl opt">{</span>ReadSequence StdIn nil<span class="hl opt">}}</span>
+
+   <span class="hl opt">{</span>WriteFrequencies <span class="hl num">1</span><span class="hl opt">}</span>
+   <span class="hl opt">{</span>WriteFrequencies <span class="hl num">2</span><span class="hl opt">}</span>
+
+   <span class="hl opt">{</span>WriteCount <span class="hl str">&quot;GGT&quot;</span><span class="hl opt">}</span>
+   <span class="hl opt">{</span>WriteCount <span class="hl str">&quot;GGTA&quot;</span><span class="hl opt">}</span>
+   <span class="hl opt">{</span>WriteCount <span class="hl str">&quot;GGTATT&quot;</span><span class="hl opt">}</span>
+   <span class="hl opt">{</span>WriteCount <span class="hl str">&quot;GGTATTTTAATT&quot;</span><span class="hl opt">}</span>
+   <span class="hl opt">{</span>WriteCount <span class="hl str">&quot;GGTATTTTAATTTATAGT&quot;</span><span class="hl opt">}</span>
+
+   <span class="hl opt">{</span>Application<span class="hl opt">.</span>exit <span class="hl num">0</span><span class="hl opt">}</span>   
+<span class="hl kwa">end</span>
