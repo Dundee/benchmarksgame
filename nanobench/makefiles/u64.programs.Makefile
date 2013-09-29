@@ -1,5 +1,5 @@
 # The Computer Language Benchmarks Game
-# $Id: u64.programs.Makefile,v 1.4 2013/05/14 06:22:01 igouy-guest Exp $
+# $Id: u64.programs.Makefile,v 1.5 2013/09/29 22:38:48 igouy-guest Exp $
 
 # ASSUME each program will build in a clean empty tmpdir
 # ASSUME there's a symlink to the program source in tmpdir
@@ -555,8 +555,10 @@ SBCL_TRACE :=
 ########################################
 
 %.oz_run: %.oz
-	-$(OZC) $(OZOPTS) -x $<
-	-mv $* $@
+	-$(OZC) $(OZOPTS) -c $<
+#	-mv $* $@
+#	-$(OZC) $(OZOPTS) -x $<
+#	-mv $* $@
 
 
 ########################################
