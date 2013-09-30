@@ -1,0 +1,181 @@
+<span class="hl slc">% The Computer Language Benchmarks Game </span>
+<span class="hl slc">% http://benchmarksgame.alioth.debian.org/    </span>
+<span class="hl slc">% contributed by Isaac Gouy</span>
+
+<span class="hl kwa">functor</span>
+<span class="hl kwa">import</span>
+   System Application 
+   S <span class="hl kwa">at</span> 'Include<span class="hl opt">/</span>oz<span class="hl opt">/</span>benchmarksgame<span class="hl opt">.</span>ozf'   
+
+<span class="hl kwa">define</span>
+   Pi <span class="hl opt">=</span> <span class="hl num">3.141592653589793</span>
+   SolarMass <span class="hl opt">=</span> <span class="hl num">4.0</span> <span class="hl opt">*</span> Pi <span class="hl opt">*</span> Pi
+   DaysPerYear <span class="hl opt">=</span> <span class="hl num">365.24</span>
+
+
+   <span class="hl kwa">class</span> Body
+      <span class="hl kwa">attr</span> x y z vx vy vz mass
+
+      <span class="hl kwa">meth</span> <span class="hl kwd">init</span><span class="hl opt">(</span>X Y Z Vx Vy Vz Mass<span class="hl opt">)</span>
+         x <span class="hl opt">:=</span> X
+         y <span class="hl opt">:=</span> Y
+         z <span class="hl opt">:=</span> Z
+         vx <span class="hl opt">:=</span> Vx 
+         vy <span class="hl opt">:=</span> Vy
+         vz <span class="hl opt">:=</span> Vz
+         mass <span class="hl opt">:=</span> Mass 
+      <span class="hl kwa">end</span>
+
+      <span class="hl kwa">meth</span> <span class="hl kwd">x</span><span class="hl opt">(</span>$<span class="hl opt">) &#64;</span>x <span class="hl kwa">end</span>
+      <span class="hl kwa">meth</span> <span class="hl kwd">y</span><span class="hl opt">(</span>$<span class="hl opt">) &#64;</span>y <span class="hl kwa">end</span>
+      <span class="hl kwa">meth</span> <span class="hl kwd">z</span><span class="hl opt">(</span>$<span class="hl opt">) &#64;</span>z <span class="hl kwa">end</span>
+      <span class="hl kwa">meth</span> <span class="hl kwd">mass</span><span class="hl opt">(</span>$<span class="hl opt">) &#64;</span>mass <span class="hl kwa">end</span>
+
+      <span class="hl kwa">meth</span> <span class="hl kwd">kineticEnergy</span><span class="hl opt">(</span>$<span class="hl opt">)</span> <span class="hl num">0.5</span> <span class="hl opt">* &#64;</span>mass <span class="hl opt">* (&#64;</span>vx<span class="hl opt">*&#64;</span>vx <span class="hl opt">+ &#64;</span>vy<span class="hl opt">*&#64;</span>vy <span class="hl opt">+ &#64;</span>vz<span class="hl opt">*&#64;</span>vz<span class="hl opt">)</span> <span class="hl kwa">end</span>
+
+      <span class="hl kwa">meth</span> <span class="hl kwd">potentialEnergy</span><span class="hl opt">(</span>B $<span class="hl opt">)</span>
+         Dx <span class="hl opt">= &#64;</span>x <span class="hl opt">- {</span>B <span class="hl kwd">x</span><span class="hl opt">(</span>$<span class="hl opt">)}</span> 
+         Dy <span class="hl opt">= &#64;</span>y <span class="hl opt">- {</span>B <span class="hl kwd">y</span><span class="hl opt">(</span>$<span class="hl opt">)}</span> 
+         Dz <span class="hl opt">= &#64;</span>z <span class="hl opt">- {</span>B <span class="hl kwd">z</span><span class="hl opt">(</span>$<span class="hl opt">)}</span> 
+         Distance <span class="hl opt">= {</span><span class="hl kwd">Sqrt</span> <span class="hl opt">(</span>Dx<span class="hl opt">*</span>Dx <span class="hl opt">+</span> Dy<span class="hl opt">*</span>Dy <span class="hl opt">+</span> Dz<span class="hl opt">*</span>Dz<span class="hl opt">)}</span>
+      <span class="hl kwa">in</span> 
+         <span class="hl opt">(&#64;</span>mass <span class="hl opt">* {</span>B <span class="hl kwd">mass</span><span class="hl opt">(</span>$<span class="hl opt">)}) /</span> Distance
+      <span class="hl kwa">end</span>     
+
+      <span class="hl kwa">meth</span> <span class="hl kwd">increaseVelocity</span><span class="hl opt">(</span>Dx Dy Dz M<span class="hl opt">)</span>  
+         vx <span class="hl opt">:= &#64;</span>vx <span class="hl opt">+</span> Dx<span class="hl opt">*</span>M
+         vy <span class="hl opt">:= &#64;</span>vy <span class="hl opt">+</span> Dy<span class="hl opt">*</span>M
+         vz <span class="hl opt">:= &#64;</span>vz <span class="hl opt">+</span> Dz<span class="hl opt">*</span>M
+      <span class="hl kwa">end</span>    
+
+      <span class="hl kwa">meth</span> <span class="hl kwd">decreaseVelocity</span><span class="hl opt">(</span>Dx Dy Dz M<span class="hl opt">)</span>  
+         vx <span class="hl opt">:= &#64;</span>vx <span class="hl opt">-</span> Dx<span class="hl opt">*</span>M
+         vy <span class="hl opt">:= &#64;</span>vy <span class="hl opt">-</span> Dy<span class="hl opt">*</span>M
+         vz <span class="hl opt">:= &#64;</span>vz <span class="hl opt">-</span> Dz<span class="hl opt">*</span>M
+      <span class="hl kwa">end</span>    
+  
+      <span class="hl kwa">meth</span> <span class="hl kwd">addMomentumTo</span><span class="hl opt">(</span>?A<span class="hl opt">)</span>
+         A<span class="hl num">.1</span> <span class="hl opt">:=</span> A<span class="hl num">.1</span> <span class="hl opt">+ &#64;</span>vx<span class="hl opt">*&#64;</span>mass
+         A<span class="hl num">.2</span> <span class="hl opt">:=</span> A<span class="hl num">.2</span> <span class="hl opt">+ &#64;</span>vy<span class="hl opt">*&#64;</span>mass
+         A<span class="hl num">.3</span> <span class="hl opt">:=</span> A<span class="hl num">.3</span> <span class="hl opt">+ &#64;</span>vz<span class="hl opt">*&#64;</span>mass
+      <span class="hl kwa">end</span>
+
+      <span class="hl kwa">meth</span> <span class="hl kwd">offsetMomentum</span><span class="hl opt">(</span>A<span class="hl opt">)</span>
+         vx <span class="hl opt">:= ~</span> A<span class="hl num">.1</span> <span class="hl opt">/</span> SolarMass
+         vy <span class="hl opt">:= ~</span> A<span class="hl num">.2</span> <span class="hl opt">/</span> SolarMass
+         vz <span class="hl opt">:= ~</span> A<span class="hl num">.3</span> <span class="hl opt">/</span> SolarMass
+      <span class="hl kwa">end</span>
+
+      <span class="hl kwa">meth</span> <span class="hl kwd">updatePositionAfter</span><span class="hl opt">(</span>Dt<span class="hl opt">)</span>
+         x <span class="hl opt">:= &#64;</span>x <span class="hl opt">+</span> Dt<span class="hl opt">*&#64;</span>vx
+         y <span class="hl opt">:= &#64;</span>y <span class="hl opt">+</span> Dt<span class="hl opt">*&#64;</span>vy
+         z <span class="hl opt">:= &#64;</span>z <span class="hl opt">+</span> Dt<span class="hl opt">*&#64;</span>vz
+      <span class="hl kwa">end</span>
+
+      <span class="hl kwa">meth</span> <span class="hl kwd">updateVelocitiesAfter</span><span class="hl opt">(</span>Dt ?B<span class="hl opt">)</span>
+         Dx <span class="hl opt">= &#64;</span>x <span class="hl opt">- {</span>B <span class="hl kwd">x</span><span class="hl opt">(</span>$<span class="hl opt">)}</span> 
+         Dy <span class="hl opt">= &#64;</span>y <span class="hl opt">- {</span>B <span class="hl kwd">y</span><span class="hl opt">(</span>$<span class="hl opt">)}</span> 
+         Dz <span class="hl opt">= &#64;</span>z <span class="hl opt">- {</span>B <span class="hl kwd">z</span><span class="hl opt">(</span>$<span class="hl opt">)}</span> 
+         Distance <span class="hl opt">= {</span><span class="hl kwd">Sqrt</span> <span class="hl opt">(</span>Dx<span class="hl opt">*</span>Dx <span class="hl opt">+</span> Dy<span class="hl opt">*</span>Dy <span class="hl opt">+</span> Dz<span class="hl opt">*</span>Dz<span class="hl opt">)}</span>
+         Magnitude <span class="hl opt">=</span> Dt <span class="hl opt">/ (</span>Distance <span class="hl opt">*</span> Distance <span class="hl opt">*</span> Distance<span class="hl opt">)</span>
+      <span class="hl kwa">in</span> 
+         <span class="hl opt">{</span><span class="hl kwa">self</span> <span class="hl kwd">decreaseVelocity</span><span class="hl opt">(</span>Dx Dy <span class="hl kwd">Dz</span> <span class="hl opt">({</span>B <span class="hl kwd">mass</span><span class="hl opt">(</span>$<span class="hl opt">)} *</span> Magnitude<span class="hl opt">))}</span>
+         <span class="hl opt">{</span>B <span class="hl kwd">increaseVelocity</span><span class="hl opt">(</span>Dx Dy <span class="hl kwd">Dz</span> <span class="hl opt">(&#64;</span>mass <span class="hl opt">*</span> Magnitude<span class="hl opt">))}</span>
+      <span class="hl kwa">end</span>
+
+   <span class="hl kwa">end</span>   <span class="hl slc">% Body</span>
+
+
+   Sun <span class="hl opt">= {</span>New Body <span class="hl kwd">init</span><span class="hl opt">(</span><span class="hl num">0.0 0.0 0.0 0.0 0.0 0.0</span> SolarMass<span class="hl opt">)}</span>
+
+   Jupiter <span class="hl opt">= {</span>New Body <span class="hl kwd">init</span><span class="hl opt">(</span>
+      <span class="hl num">4.84143144246472090</span>e00 
+      <span class="hl opt">~</span><span class="hl num">1.16032004402742839</span>e00 
+      <span class="hl opt">~</span><span class="hl num">1.03622044471123109</span>e<span class="hl opt">~</span><span class="hl num">01</span>
+      <span class="hl num">1.66007664274403694</span>e<span class="hl opt">~</span><span class="hl num">03</span> <span class="hl opt">*</span> DaysPerYear
+      <span class="hl num">7.69901118419740425</span>e<span class="hl opt">~</span><span class="hl num">03</span> <span class="hl opt">*</span> DaysPerYear
+      <span class="hl opt">~</span><span class="hl num">6.90460016972063023</span>e<span class="hl opt">~</span><span class="hl num">05</span> <span class="hl opt">*</span> DaysPerYear
+      <span class="hl num">9.54791938424326609</span>e<span class="hl opt">~</span><span class="hl num">04</span> <span class="hl opt">*</span> SolarMass 
+      <span class="hl opt">)}</span>
+
+   Saturn <span class="hl opt">= {</span>New Body <span class="hl kwd">init</span><span class="hl opt">(</span>
+      <span class="hl num">8.34336671824457987</span>e00
+      <span class="hl num">4.12479856412430479</span>e00
+      <span class="hl opt">~</span><span class="hl num">4.03523417114321381</span>e<span class="hl opt">~</span><span class="hl num">01</span>
+      <span class="hl opt">~</span><span class="hl num">2.76742510726862411</span>e<span class="hl opt">~</span><span class="hl num">03</span> <span class="hl opt">*</span> DaysPerYear
+      <span class="hl num">4.99852801234917238</span>e<span class="hl opt">~</span><span class="hl num">03</span> <span class="hl opt">*</span> DaysPerYear
+      <span class="hl num">2.30417297573763929</span>e<span class="hl opt">~</span><span class="hl num">05</span> <span class="hl opt">*</span> DaysPerYear
+      <span class="hl num">2.85885980666130812</span>e<span class="hl opt">~</span><span class="hl num">04</span> <span class="hl opt">*</span> SolarMass
+      <span class="hl opt">)}</span>
+
+   Uranus <span class="hl opt">= {</span>New Body <span class="hl kwd">init</span><span class="hl opt">(</span>
+      <span class="hl num">1.28943695621391310</span>e01
+      <span class="hl opt">~</span><span class="hl num">1.51111514016986312</span>e01
+      <span class="hl opt">~</span><span class="hl num">2.23307578892655734</span>e<span class="hl opt">~</span><span class="hl num">01</span>
+      <span class="hl num">2.96460137564761618</span>e<span class="hl opt">~</span><span class="hl num">03</span> <span class="hl opt">*</span> DaysPerYear
+      <span class="hl num">2.37847173959480950</span>e<span class="hl opt">~</span><span class="hl num">03</span> <span class="hl opt">*</span> DaysPerYear
+      <span class="hl opt">~</span><span class="hl num">2.96589568540237556</span>e<span class="hl opt">~</span><span class="hl num">05</span> <span class="hl opt">*</span> DaysPerYear
+      <span class="hl num">4.36624404335156298</span>e<span class="hl opt">~</span><span class="hl num">05</span> <span class="hl opt">*</span> SolarMass
+      <span class="hl opt">)}</span>
+
+   Neptune <span class="hl opt">= {</span>New Body <span class="hl kwd">init</span><span class="hl opt">(</span>
+      <span class="hl num">1.53796971148509165</span>e01
+      <span class="hl opt">~</span><span class="hl num">2.59193146099879641</span>e01
+      <span class="hl num">1.79258772950371181</span>e<span class="hl opt">~</span><span class="hl num">01</span>
+      <span class="hl num">2.68067772490389322</span>e<span class="hl opt">~</span><span class="hl num">03</span> <span class="hl opt">*</span> DaysPerYear
+      <span class="hl num">1.62824170038242295</span>e<span class="hl opt">~</span><span class="hl num">03</span> <span class="hl opt">*</span> DaysPerYear
+      <span class="hl opt">~</span><span class="hl num">9.51592254519715870</span>e<span class="hl opt">~</span><span class="hl num">05</span> <span class="hl opt">*</span> DaysPerYear
+      <span class="hl num">5.15138902046611451</span>e<span class="hl opt">~</span><span class="hl num">05</span> <span class="hl opt">*</span> SolarMass
+      <span class="hl opt">)}</span>
+
+
+   <span class="hl kwa">class</span> NBodySystem
+      <span class="hl kwa">attr</span> bodies
+
+      <span class="hl kwa">meth</span> <span class="hl kwd">init</span><span class="hl opt">()</span>
+         bodies <span class="hl opt">:= {</span>Tuple<span class="hl opt">.</span>toArray Sun <span class="hl opt">#</span> Jupiter <span class="hl opt">#</span> Saturn <span class="hl opt">#</span> Uranus <span class="hl opt">#</span> Neptune<span class="hl opt">}</span> 
+         A <span class="hl opt">= {</span>Tuple<span class="hl opt">.</span>toArray <span class="hl num">0.0</span> <span class="hl opt">#</span> <span class="hl num">0.0</span> <span class="hl opt">#</span> <span class="hl num">0.0</span><span class="hl opt">}</span> 
+         N <span class="hl opt">= {</span>Array<span class="hl opt">.</span>high <span class="hl opt">&#64;</span>bodies<span class="hl opt">}</span> 
+      <span class="hl kwa">in</span>
+         <span class="hl kwa">for</span> I <span class="hl kwa">in</span> <span class="hl num">1</span><span class="hl opt">..</span>N <span class="hl kwa">do</span> <span class="hl opt">{&#64;</span>bodies<span class="hl opt">.</span>I <span class="hl kwd">addMomentumTo</span><span class="hl opt">(</span>A<span class="hl opt">)}</span> <span class="hl kwa">end</span>
+         <span class="hl opt">{&#64;</span>bodies<span class="hl num">.1</span> <span class="hl kwd">offsetMomentum</span><span class="hl opt">(</span>A<span class="hl opt">)}</span>     
+      <span class="hl kwa">end</span>
+
+      <span class="hl kwa">meth</span> <span class="hl kwd">after</span><span class="hl opt">(</span>Dt<span class="hl opt">)</span>
+         N <span class="hl opt">= {</span>Array<span class="hl opt">.</span>high <span class="hl opt">&#64;</span>bodies<span class="hl opt">}</span> 
+      <span class="hl kwa">in</span> 
+         <span class="hl kwa">for</span> I <span class="hl kwa">in</span> <span class="hl num">1</span><span class="hl opt">..</span>N <span class="hl kwa">do</span> 
+            <span class="hl kwa">for</span> J <span class="hl kwa">in</span> I<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">..</span>N <span class="hl kwa">do</span> 
+               <span class="hl opt">{&#64;</span>bodies<span class="hl opt">.</span>I <span class="hl kwd">updateVelocitiesAfter</span><span class="hl opt">(</span>Dt <span class="hl opt">&#64;</span>bodies<span class="hl opt">.</span>J<span class="hl opt">)}</span>
+            <span class="hl kwa">end</span>
+         <span class="hl kwa">end</span>
+         <span class="hl kwa">for</span> I <span class="hl kwa">in</span> <span class="hl num">1</span><span class="hl opt">..</span>N <span class="hl kwa">do</span> <span class="hl opt">{&#64;</span>bodies<span class="hl opt">.</span>I <span class="hl kwd">updatePositionAfter</span><span class="hl opt">(</span>Dt<span class="hl opt">)}</span> <span class="hl kwa">end</span>
+      <span class="hl kwa">end</span>
+
+      <span class="hl kwa">meth</span> <span class="hl kwd">energy</span><span class="hl opt">(</span>$<span class="hl opt">)</span>
+         E <span class="hl opt">= {</span>NewCell <span class="hl num">0.0</span><span class="hl opt">}</span> 
+         N <span class="hl opt">= {</span>Array<span class="hl opt">.</span>high <span class="hl opt">&#64;</span>bodies<span class="hl opt">}</span> 
+      <span class="hl kwa">in</span>
+         <span class="hl kwa">for</span> I <span class="hl kwa">in</span> <span class="hl num">1</span><span class="hl opt">..</span>N <span class="hl kwa">do</span>
+            E <span class="hl opt">:= &#64;</span>E <span class="hl opt">+ {&#64;</span>bodies<span class="hl opt">.</span>I <span class="hl kwd">kineticEnergy</span><span class="hl opt">(</span>$<span class="hl opt">)}</span>
+            <span class="hl kwa">for</span> J <span class="hl kwa">in</span> I<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">..</span>N <span class="hl kwa">do</span>
+               E <span class="hl opt">:= &#64;</span>E <span class="hl opt">- {&#64;</span>bodies<span class="hl opt">.</span>I <span class="hl kwd">potentialEnergy</span><span class="hl opt">(&#64;</span>bodies<span class="hl opt">.</span>J $<span class="hl opt">)}</span>
+            <span class="hl kwa">end</span>
+         <span class="hl kwa">end</span>
+         <span class="hl opt">&#64;</span>E
+      <span class="hl kwa">end</span>
+
+   <span class="hl kwa">end</span>   <span class="hl slc">% NBodySystem</span>
+
+
+   NBody <span class="hl opt">= {</span>New NBodySystem init<span class="hl opt">}</span>
+
+   <span class="hl opt">[</span>Arg<span class="hl opt">] = {</span>Application<span class="hl opt">.</span>getArgs plain<span class="hl opt">}</span>
+   N <span class="hl opt">= {</span>String<span class="hl opt">.</span>toInt Arg<span class="hl opt">}</span>
+
+<span class="hl kwa">in</span>   
+   <span class="hl opt">{</span>System<span class="hl opt">.</span>showInfo <span class="hl opt">{</span>S<span class="hl opt">.</span>floatToString <span class="hl opt">{</span>NBody <span class="hl kwd">energy</span><span class="hl opt">(</span>$<span class="hl opt">)}</span> <span class="hl num">9</span><span class="hl opt">}}</span>
+   <span class="hl kwa">for</span> I <span class="hl kwa">in</span> <span class="hl num">1</span><span class="hl opt">..</span>N <span class="hl kwa">do</span> <span class="hl opt">{</span>NBody <span class="hl kwd">after</span><span class="hl opt">(</span><span class="hl num">0.01</span><span class="hl opt">)}</span> <span class="hl kwa">end</span>
+   <span class="hl opt">{</span>System<span class="hl opt">.</span>showInfo <span class="hl opt">{</span>S<span class="hl opt">.</span>floatToString <span class="hl opt">{</span>NBody <span class="hl kwd">energy</span><span class="hl opt">(</span>$<span class="hl opt">)}</span> <span class="hl num">9</span><span class="hl opt">}}</span>
+   <span class="hl opt">{</span>Application<span class="hl opt">.</span>exit <span class="hl num">0</span><span class="hl opt">}</span>   
+<span class="hl kwa">end</span>

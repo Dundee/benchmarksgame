@@ -1,0 +1,24 @@
+
+Mon, 30 Sep 2013 18:33:37 GMT
+
+MAKE:
+/usr/local/src/mozart2/bin/ozc  -c nbody.oz
+2.72s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/src/mozart2/bin/ozengine nbody.ozf 500000
+
+UNEXPECTED OUTPUT 
+
+1c1
+< -0.169080202
+--- field 1	absolute error 5.04e-06
+> -0.169075164
+2c2
+< -0.169101154
+--- field 1	absolute error 4.59e-06
+> -0.169096567
+
+PROGRAM OUTPUT:
+-0.169080202
+-0.169101154
