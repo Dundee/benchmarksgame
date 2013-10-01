@@ -1,0 +1,19 @@
+
+Tue, 01 Oct 2013 18:38:39 GMT
+
+MAKE:
+mv fannkuchredux.ghc-5.ghc fannkuchredux.ghc-5.hs
+/usr/local/src/ghc-7.6.2/bin/ghc --make -fllvm -O2 -XBangPatterns -threaded -rtsopts  fannkuchredux.ghc-5.hs -o fannkuchredux.ghc-5.ghc_run
+[1 of 1] Compiling Main             ( fannkuchredux.ghc-5.hs, fannkuchredux.ghc-5.o )
+You are using a new version of LLVM that hasn't been tested yet!
+We will try though...
+Linking fannkuchredux.ghc-5.ghc_run ...
+rm fannkuchredux.ghc-5.hs
+8.18s to complete and log all make actions
+
+COMMAND LINE:
+./fannkuchredux.ghc-5.ghc_run +RTS -N4 -RTS 12
+
+PROGRAM OUTPUT:
+3968050
+Pfannkuchen(12) = 65
