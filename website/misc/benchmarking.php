@@ -200,6 +200,7 @@
 <ul>
 <li><p>Unique Visitors, October through September 2011 - 319,829</p></li>
 <li><p>Unique Visitors, October through September 2012 - 340,917</p></li>
+<li><p>Unique Visitors, October through September 2013 - 337,231</p></li>
 </ul>
 </dd>
 
