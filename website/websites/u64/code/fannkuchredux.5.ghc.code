@@ -1,0 +1,82 @@
+<span class="hl com">{-  The Computer Language Benchmarks Game</span>
+<span class="hl com"></span>
+<span class="hl com">    http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">    contributed by Branimir Maksimovic</span>
+<span class="hl com">    optimized/rewritten by Bryan O'Sullivan</span>
+<span class="hl com">    modified by Dmitry Ivanov</span>
+<span class="hl com">-}</span>
+
+<span class="hl kwd">import</span> Control<span class="hl opt">.</span>Monad <span class="hl opt">(</span>replicateM_<span class="hl opt">)</span>
+<span class="hl kwd">import</span> Control<span class="hl opt">.</span>Monad<span class="hl opt">.</span>ST
+<span class="hl kwd">import</span> Control<span class="hl opt">.</span>Parallel<span class="hl opt">.</span>Strategies
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span>Bits <span class="hl opt">((.&amp;.))</span>
+<span class="hl kwd">import</span> Data<span class="hl opt">.</span>List <span class="hl opt">(</span><span class="hl kwc">foldl</span><span class="hl opt">')</span>
+
+<span class="hl kwd">import qualified</span> Data<span class="hl opt">.</span>Vector<span class="hl opt">.</span>Unboxed<span class="hl opt">.</span>Mutable <span class="hl kwd">as</span> VM
+<span class="hl kwd">import qualified</span> Data<span class="hl opt">.</span>Vector<span class="hl opt">.</span>Generic<span class="hl opt">.</span>Mutable <span class="hl kwd">as</span> VG
+<span class="hl kwd">import qualified</span> Data<span class="hl opt">.</span>Vector<span class="hl opt">.</span>Unboxed <span class="hl kwd">as</span> V
+
+<span class="hl kwd">import</span> System<span class="hl opt">.</span>Environment
+<span class="hl kwd">import</span> Text<span class="hl opt">.</span>Printf
+
+main <span class="hl opt">::</span> <span class="hl kwb">IO</span> <span class="hl opt">()</span>
+main <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    n <span class="hl opt">&lt;-</span> <span class="hl kwc">fmap</span> <span class="hl opt">(</span><span class="hl kwc">read</span> <span class="hl opt">.</span> <span class="hl kwc">head</span><span class="hl opt">)</span> <span class="hl kwc">getArgs</span>
+    <span class="hl kwd">let</span> <span class="hl opt">(</span>checksum<span class="hl opt">,</span> maxflips<span class="hl opt">) =</span> reduce <span class="hl opt">$</span> parMap rdeepseq <span class="hl opt">(</span>fannkuch n<span class="hl opt">) [</span><span class="hl num">0</span> <span class="hl opt">.. (</span>n <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">)]</span>
+    printf <span class="hl str">&quot;%d</span><span class="hl esc">\n</span><span class="hl str">Pfannkuchen(%d) = %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> checksum n maxflips
+
+reduce <span class="hl opt">:: [(</span><span class="hl kwb">Int</span><span class="hl opt">,</span> <span class="hl kwb">Int</span><span class="hl opt">)] -&gt; (</span><span class="hl kwb">Int</span><span class="hl opt">,</span> <span class="hl kwb">Int</span><span class="hl opt">)</span>
+reduce <span class="hl opt">=</span> <span class="hl kwc">foldl</span><span class="hl opt">' (\(!</span>c1<span class="hl opt">, !</span>f1<span class="hl opt">) (!</span>c2<span class="hl opt">, !</span>f2<span class="hl opt">) -&gt; (</span>c1 <span class="hl opt">+</span> c2<span class="hl opt">,</span> <span class="hl kwc">max</span> f1 f2<span class="hl opt">)) (</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">)</span>
+
+rotate mv <span class="hl opt">=</span> <span class="hl kwd">do</span>
+    <span class="hl opt">!</span>h <span class="hl opt">&lt;-</span> VM<span class="hl opt">.</span>unsafeRead mv <span class="hl num">0</span>
+    VM<span class="hl opt">.</span>unsafeMove <span class="hl opt">(</span>VM<span class="hl opt">.</span>unsafeInit mv<span class="hl opt">) (</span>VM<span class="hl opt">.</span>unsafeTail mv<span class="hl opt">)</span>
+    VM<span class="hl opt">.</span>unsafeWrite mv <span class="hl opt">(</span>VM<span class="hl opt">.</span><span class="hl kwa">length</span> mv <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">)</span> h
+
+fannkuch <span class="hl opt">::</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt; (</span><span class="hl kwb">Int</span><span class="hl opt">,</span> <span class="hl kwb">Int</span><span class="hl opt">)</span>
+fannkuch n i <span class="hl opt">=</span> runST <span class="hl opt">$</span> <span class="hl kwd">do</span>
+    <span class="hl opt">!</span>perm <span class="hl opt">&lt;-</span> V<span class="hl opt">.</span>unsafeThaw <span class="hl opt">$</span> V<span class="hl opt">.</span>enumFromN <span class="hl num">1</span> n
+    replicateM_ i <span class="hl opt">$</span> rotate perm
+    <span class="hl opt">!</span>tperm <span class="hl opt">&lt;-</span> VG<span class="hl opt">.</span>new n
+    <span class="hl opt">!</span>cnt <span class="hl opt">&lt;-</span> VG<span class="hl opt">.</span><span class="hl kwc">replicate</span> n <span class="hl num">0</span>
+    <span class="hl kwd">let</span> loop <span class="hl opt">!</span>c <span class="hl opt">!</span>m <span class="hl opt">!</span>countdown <span class="hl opt">=</span> <span class="hl kwd">do</span>
+            next_permutation perm n cnt
+            <span class="hl kwd">if</span> countdown <span class="hl opt">==</span> <span class="hl num">0</span>
+            <span class="hl kwd">then</span> <span class="hl kwc">return</span> <span class="hl opt">(</span>c<span class="hl opt">,</span> m<span class="hl opt">)</span>
+            <span class="hl kwd">else do</span>
+                VM<span class="hl opt">.</span>unsafeCopy tperm perm
+                <span class="hl kwd">let</span> count_flips <span class="hl opt">!</span>flips <span class="hl opt">=</span> <span class="hl kwd">do</span>
+                        f <span class="hl opt">&lt;-</span> VM<span class="hl opt">.</span>unsafeRead tperm <span class="hl num">0</span>
+                        <span class="hl kwd">if</span> f <span class="hl opt">==</span> <span class="hl num">1</span>
+                        <span class="hl kwd">then</span> loop <span class="hl opt">(</span>c <span class="hl opt">+</span> <span class="hl kwd">if</span> countdown <span class="hl opt">.&amp;.</span> <span class="hl num">1</span> <span class="hl opt">==</span> <span class="hl num">1</span> <span class="hl kwd">then</span> flips <span class="hl kwd">else</span> <span class="hl opt">-</span>flips<span class="hl opt">)</span>
+                                    <span class="hl opt">(</span><span class="hl kwc">max</span> m flips<span class="hl opt">)</span>
+                                    <span class="hl opt">(</span><span class="hl kwc">pred</span> countdown<span class="hl opt">)</span>
+                        <span class="hl kwd">else do</span>
+                            VG<span class="hl opt">.</span><span class="hl kwc">reverse</span> <span class="hl opt">$</span> VM<span class="hl opt">.</span>unsafeSlice <span class="hl num">0</span> f tperm
+                            count_flips <span class="hl opt">(</span>flips <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)</span>
+                count_flips <span class="hl num">0</span>
+    loop <span class="hl num">0 0</span> <span class="hl opt">(</span><span class="hl kwc">product</span> <span class="hl opt">[</span><span class="hl num">1</span> <span class="hl opt">..</span> n <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">])</span>
+
+next_permutation <span class="hl opt">!</span>perm <span class="hl opt">!</span>n <span class="hl opt">!</span>cnt <span class="hl opt">=</span> loop <span class="hl num">1</span>
+    <span class="hl kwd">where</span>
+    loop <span class="hl opt">!</span>i
+        | i <span class="hl opt">&gt;=</span> n <span class="hl opt">=</span> done i
+        | <span class="hl kwc">otherwise</span> <span class="hl opt">=</span> <span class="hl kwd">do</span>
+            tmp <span class="hl opt">&lt;-</span> VM<span class="hl opt">.</span>unsafeRead perm <span class="hl num">0</span>
+            <span class="hl kwd">let</span> rotate<span class="hl opt">'</span> j
+                    | j <span class="hl opt">&gt;=</span> i <span class="hl opt">=</span> VM<span class="hl opt">.</span>unsafeWrite perm i tmp
+                    | <span class="hl kwc">otherwise</span> <span class="hl opt">=</span> <span class="hl kwd">do</span>
+                        <span class="hl opt">!</span>v <span class="hl opt">&lt;-</span> VM<span class="hl opt">.</span>unsafeRead perm <span class="hl opt">(</span>j<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+                        VM<span class="hl opt">.</span>unsafeWrite perm j v
+                        rotate<span class="hl opt">' (</span>j<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+            rotate<span class="hl opt">'</span> <span class="hl num">0</span>
+            v <span class="hl opt">&lt;-</span> VM<span class="hl opt">.</span>unsafeRead cnt i
+            <span class="hl kwd">if</span> v <span class="hl opt">&gt;=</span> i
+            <span class="hl kwd">then</span> VM<span class="hl opt">.</span>unsafeWrite cnt i <span class="hl num">0</span> <span class="hl opt">&gt;&gt;</span> loop <span class="hl opt">(</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
+            <span class="hl kwd">else</span> done i
+    done <span class="hl opt">!</span>i
+        | i <span class="hl opt">&gt;=</span> n <span class="hl opt">=</span> <span class="hl kwc">return</span> <span class="hl opt">()</span>
+        | <span class="hl kwc">otherwise</span> <span class="hl opt">=</span> <span class="hl kwd">do</span>
+            v <span class="hl opt">&lt;-</span> VM<span class="hl opt">.</span>unsafeRead cnt i
+            VM<span class="hl opt">.</span>unsafeWrite cnt i <span class="hl opt">(</span>v<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)</span>
