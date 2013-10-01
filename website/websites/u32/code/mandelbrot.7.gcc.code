@@ -1,0 +1,137 @@
+<span class="hl slc">// The Computer Language Benchmarks Game</span>
+<span class="hl slc">// http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl slc">//</span>
+<span class="hl slc">// Contributed by Jeremy Zerfas</span>
+<span class="hl slc">// Partially based on code by Elam Kolenovic and Sean Stanek</span>
+
+<span class="hl ppc">#include &lt;stdint.h&gt;</span>
+<span class="hl ppc">#include &lt;stdlib.h&gt;</span>
+<span class="hl ppc">#include &lt;stdio.h&gt;</span>
+
+<span class="hl ppc">#define LIMIT_SQUARED   4.0</span>
+<span class="hl ppc">#define MAX_ITERATIONS   50</span>
+
+<span class="hl kwb">int</span> <span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">int</span> argc<span class="hl opt">,</span> <span class="hl kwb">char</span> <span class="hl opt">**</span> argv<span class="hl opt">){</span>
+   <span class="hl slc">// Ensure image_Width_And_Height are multiples of 8.</span>
+   <span class="hl kwb">const intmax_t</span> image_Width_And_Height<span class="hl opt">=(</span><span class="hl kwd">atoi</span><span class="hl opt">(</span>argv<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">])+</span><span class="hl num">7</span><span class="hl opt">)/</span><span class="hl num">8</span><span class="hl opt">*</span><span class="hl num">8</span><span class="hl opt">;</span>
+
+   <span class="hl slc">// The image will be black and white with one bit for each pixel. Bits with</span>
+   <span class="hl slc">// a value of zero are white pixels which are the ones that &quot;escape&quot; from</span>
+   <span class="hl slc">// the Mandelbrot set. We'll be working on one line at a time and each line</span>
+   <span class="hl slc">// will be made up of pixel groups that are eight pixels in size so each</span>
+   <span class="hl slc">// pixel group will be one byte. This allows for some more optimizations to</span>
+   <span class="hl slc">// be done.</span>
+   <span class="hl kwb">const intmax_t</span> pixel_Groups_Per_Line<span class="hl opt">=</span>image_Width_And_Height<span class="hl opt">/</span><span class="hl num">8</span><span class="hl opt">;</span>
+   <span class="hl kwb">uint8_t</span> <span class="hl opt">*</span> <span class="hl kwb">const</span> pixels<span class="hl opt">=</span><span class="hl kwd">malloc</span><span class="hl opt">(</span>image_Width_And_Height<span class="hl opt">*</span>
+     image_Width_And_Height<span class="hl opt">/</span><span class="hl num">8</span><span class="hl opt">);</span>
+
+   <span class="hl slc">// Precompute the initial real and imaginary values for each x and y</span>
+   <span class="hl slc">// coordinate in the image.</span>
+   <span class="hl kwb">double</span> initial_r<span class="hl opt">[</span>image_Width_And_Height<span class="hl opt">],</span> initial_i<span class="hl opt">[</span>image_Width_And_Height<span class="hl opt">];</span>
+   <span class="hl kwb">const double</span> two_Over_Image_Width_And_Height<span class="hl opt">=</span><span class="hl num">2.0</span><span class="hl opt">/</span>image_Width_And_Height<span class="hl opt">;</span>
+<span class="hl ppc">#pragma omp parallel for</span>
+   <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwb">intmax_t</span> xy<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> xy<span class="hl opt">&lt;</span>image_Width_And_Height<span class="hl opt">;</span> xy<span class="hl opt">++){</span>
+      initial_r<span class="hl opt">[</span>xy<span class="hl opt">]=</span>xy<span class="hl opt">*</span>two_Over_Image_Width_And_Height <span class="hl opt">-</span> <span class="hl num">1.5</span><span class="hl opt">;</span>
+      initial_i<span class="hl opt">[</span>xy<span class="hl opt">]=</span>xy<span class="hl opt">*</span>two_Over_Image_Width_And_Height <span class="hl opt">-</span> <span class="hl num">1.0</span><span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+
+<span class="hl ppc">#pragma omp parallel for schedule(guided)</span>
+   <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwb">intmax_t</span> y<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> y<span class="hl opt">&lt;</span>image_Width_And_Height<span class="hl opt">;</span> y<span class="hl opt">++){</span>
+      <span class="hl kwb">const double</span> prefetched_Initial_i<span class="hl opt">=</span>initial_i<span class="hl opt">[</span>y<span class="hl opt">];</span>
+      <span class="hl kwb">uint8_t</span> <span class="hl opt">*</span> <span class="hl kwb">const</span> line_Pixel_Groups<span class="hl opt">=&amp;</span>pixels<span class="hl opt">[</span>y<span class="hl opt">*</span>pixel_Groups_Per_Line<span class="hl opt">];</span>
+      <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwb">intmax_t</span> x_Major<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> x_Major<span class="hl opt">&lt;</span>image_Width_And_Height<span class="hl opt">;</span> x_Major<span class="hl opt">+=</span><span class="hl num">8</span><span class="hl opt">){</span>
+
+         <span class="hl slc">// pixel_Group_r and pixel_Group_i will store real and imaginary</span>
+         <span class="hl slc">// values for each pixel in the current pixel group as we perform</span>
+         <span class="hl slc">// iterations. Set their initial values here.</span>
+         <span class="hl kwb">double</span> pixel_Group_r<span class="hl opt">[</span><span class="hl num">8</span><span class="hl opt">],</span> pixel_Group_i<span class="hl opt">[</span><span class="hl num">8</span><span class="hl opt">];</span>
+         <span class="hl kwb">const double</span> <span class="hl opt">*</span> <span class="hl kwb">const</span> current_Pixel_Group_Initial_r<span class="hl opt">=</span>
+           <span class="hl opt">&amp;</span>initial_r<span class="hl opt">[</span>x_Major<span class="hl opt">];</span>
+         <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwb">intmax_t</span> x_Minor<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> x_Minor<span class="hl opt">&lt;</span><span class="hl num">8</span><span class="hl opt">; ++</span>x_Minor<span class="hl opt">){</span>
+            pixel_Group_r<span class="hl opt">[</span>x_Minor<span class="hl opt">]=</span>current_Pixel_Group_Initial_r<span class="hl opt">[</span>x_Minor<span class="hl opt">];</span>
+            pixel_Group_i<span class="hl opt">[</span>x_Minor<span class="hl opt">]=</span>prefetched_Initial_i<span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+
+         <span class="hl slc">// If any pixels from the previous pixel group escaped then we are</span>
+         <span class="hl slc">// likely outside the Mandelbrot set or near the edge of it so</span>
+         <span class="hl slc">// check whether pixels escape during each iteration. If no pixels</span>
+         <span class="hl slc">// from the previous pixel group escaped then the pixels for the</span>
+         <span class="hl slc">// current pixel group are likely to be in the Mandelbrot set so</span>
+         <span class="hl slc">// we'll just perform all iterations and do one final check at the</span>
+         <span class="hl slc">// end to see if any of the pixels escaped. </span>
+         <span class="hl kwb">static uint8_t</span> any_Pixels_Escape<span class="hl opt">=</span><span class="hl num">1</span><span class="hl opt">;</span>
+         <span class="hl kwb">uint8_t</span> eight_Pixels<span class="hl opt">;</span>
+         <span class="hl kwa">if</span><span class="hl opt">(</span>any_Pixels_Escape<span class="hl opt">){</span>
+            <span class="hl slc">// Assume all pixels are in the Mandelbrot set initially.</span>
+            eight_Pixels<span class="hl opt">=</span><span class="hl num">0xff</span><span class="hl opt">;</span>
+
+            <span class="hl kwb">intmax_t</span> iteration<span class="hl opt">=</span>MAX_ITERATIONS<span class="hl opt">;</span>
+            <span class="hl kwa">do</span><span class="hl opt">{</span>
+               <span class="hl kwb">uint8_t</span> current_Pixel_Bitmask<span class="hl opt">=</span><span class="hl num">0x80</span><span class="hl opt">;</span>
+               <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwb">intmax_t</span> x_Minor<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> x_Minor<span class="hl opt">&lt;</span><span class="hl num">8</span><span class="hl opt">;</span> x_Minor<span class="hl opt">++){</span>
+                  <span class="hl slc">// Only process the pixels that are still in the</span>
+                  <span class="hl slc">// Mandelbrot set.</span>
+                  <span class="hl kwa">if</span><span class="hl opt">(</span>eight_Pixels <span class="hl opt">&amp;</span> current_Pixel_Bitmask<span class="hl opt">){</span>
+                     <span class="hl kwb">const double</span> r<span class="hl opt">=</span>pixel_Group_r<span class="hl opt">[</span>x_Minor<span class="hl opt">];</span>
+                     <span class="hl kwb">const double</span> i<span class="hl opt">=</span>pixel_Group_i<span class="hl opt">[</span>x_Minor<span class="hl opt">];</span>
+
+                     pixel_Group_i<span class="hl opt">[</span>x_Minor<span class="hl opt">]=</span><span class="hl num">2.0</span><span class="hl opt">*</span>r<span class="hl opt">*</span>i <span class="hl opt">+</span>
+                       prefetched_Initial_i<span class="hl opt">;</span>
+                     pixel_Group_r<span class="hl opt">[</span>x_Minor<span class="hl opt">]=</span>r<span class="hl opt">*</span>r <span class="hl opt">-</span> i<span class="hl opt">*</span>i <span class="hl opt">+</span>
+                       current_Pixel_Group_Initial_r<span class="hl opt">[</span>x_Minor<span class="hl opt">];</span>
+
+                     <span class="hl slc">// Clear the bit for the pixel if it escapes from</span>
+                     <span class="hl slc">// the Mandelbrot set.</span>
+                     <span class="hl kwa">if</span><span class="hl opt">(</span>r<span class="hl opt">*</span>r <span class="hl opt">+</span> i<span class="hl opt">*</span>i<span class="hl opt">&gt;</span>LIMIT_SQUARED<span class="hl opt">)</span>
+                        eight_Pixels <span class="hl opt">^=</span> current_Pixel_Bitmask<span class="hl opt">;</span>
+                  <span class="hl opt">}</span>
+
+                  current_Pixel_Bitmask<span class="hl opt">&gt;&gt;=</span><span class="hl num">1</span><span class="hl opt">;</span>
+               <span class="hl opt">}</span>
+            <span class="hl opt">}</span><span class="hl kwa">while</span><span class="hl opt">(</span>eight_Pixels <span class="hl opt">&amp;&amp; --</span>iteration<span class="hl opt">);</span>
+         <span class="hl opt">}</span><span class="hl kwa">else</span><span class="hl opt">{</span>
+            <span class="hl slc">// One more iteration is done further below which is why</span>
+            <span class="hl slc">// MAX_ITERATIONS-1 iterations are done here instead of</span>
+            <span class="hl slc">// MAX_ITERATIONS.</span>
+            <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwb">intmax_t</span> iteration<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> iteration<span class="hl opt">&lt;</span>MAX_ITERATIONS<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">;</span>
+              iteration<span class="hl opt">++){</span>
+               <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwb">intmax_t</span> x_Minor<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> x_Minor<span class="hl opt">&lt;</span><span class="hl num">8</span><span class="hl opt">;</span> x_Minor<span class="hl opt">++){</span>
+                  <span class="hl kwb">const double</span> r<span class="hl opt">=</span>pixel_Group_r<span class="hl opt">[</span>x_Minor<span class="hl opt">];</span>
+                  <span class="hl kwb">const double</span> i<span class="hl opt">=</span>pixel_Group_i<span class="hl opt">[</span>x_Minor<span class="hl opt">];</span>
+
+                  pixel_Group_i<span class="hl opt">[</span>x_Minor<span class="hl opt">]=</span><span class="hl num">2.0</span><span class="hl opt">*</span>i<span class="hl opt">*</span>r <span class="hl opt">+</span> prefetched_Initial_i<span class="hl opt">;</span>
+                  pixel_Group_r<span class="hl opt">[</span>x_Minor<span class="hl opt">]=</span>r<span class="hl opt">*</span>r <span class="hl opt">-</span> i<span class="hl opt">*</span>i <span class="hl opt">+</span>
+                    current_Pixel_Group_Initial_r<span class="hl opt">[</span>x_Minor<span class="hl opt">];</span>
+               <span class="hl opt">}</span>
+            <span class="hl opt">}</span>
+
+            <span class="hl slc">// Assume all pixels escape initially.</span>
+            eight_Pixels<span class="hl opt">=</span><span class="hl num">0x00</span><span class="hl opt">;</span>
+
+            <span class="hl kwb">uint8_t</span> current_Pixel_Bitmask<span class="hl opt">=</span><span class="hl num">0x80</span><span class="hl opt">;</span>
+            <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwb">intmax_t</span> x_Minor<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> x_Minor<span class="hl opt">&lt;</span><span class="hl num">8</span><span class="hl opt">;</span> x_Minor<span class="hl opt">++){</span>
+               <span class="hl kwb">const double</span> r<span class="hl opt">=</span>pixel_Group_r<span class="hl opt">[</span>x_Minor<span class="hl opt">];</span>
+               <span class="hl kwb">const double</span> i<span class="hl opt">=</span>pixel_Group_i<span class="hl opt">[</span>x_Minor<span class="hl opt">];</span>
+
+               <span class="hl slc">// Set the bit for pixels that are still in the Mandelbrot</span>
+               <span class="hl slc">// set.</span>
+               <span class="hl kwa">if</span><span class="hl opt">(</span>r<span class="hl opt">*</span>r <span class="hl opt">+</span> i<span class="hl opt">*</span>i<span class="hl opt">&lt;=</span>LIMIT_SQUARED<span class="hl opt">)</span>
+                  eight_Pixels<span class="hl opt">|=</span>current_Pixel_Bitmask<span class="hl opt">;</span>
+
+               current_Pixel_Bitmask<span class="hl opt">&gt;&gt;=</span><span class="hl num">1</span><span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+         <span class="hl opt">}</span>
+
+         line_Pixel_Groups<span class="hl opt">[</span>x_Major<span class="hl opt">&gt;&gt;</span><span class="hl num">3</span><span class="hl opt">]=</span>eight_Pixels<span class="hl opt">;</span>
+         any_Pixels_Escape<span class="hl opt">=</span>eight_Pixels<span class="hl opt">!=</span><span class="hl num">0xff</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+
+   <span class="hl slc">// Output the image to stdout.</span>
+   <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;P4</span><span class="hl esc">\n</span><span class="hl str">%ju %ju</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> image_Width_And_Height<span class="hl opt">,</span> image_Width_And_Height<span class="hl opt">);</span>
+   <span class="hl kwd">fwrite</span><span class="hl opt">(</span>pixels<span class="hl opt">,</span> image_Width_And_Height<span class="hl opt">*</span>image_Width_And_Height<span class="hl opt">/</span><span class="hl num">8</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> stdout<span class="hl opt">);</span>
+
+   <span class="hl kwd">free</span><span class="hl opt">(</span>pixels<span class="hl opt">);</span>
+
+   <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
