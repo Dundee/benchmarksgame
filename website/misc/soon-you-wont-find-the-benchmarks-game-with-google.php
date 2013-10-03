@@ -11,7 +11,7 @@
 <dl>
 
 <dd>
-<p>Soon you won't find the Benchmarks Game with Google or any other search engine. So, if you're interested in programming language comparisons and performance benchmarks, <a href="http://benchmarksgame.alioth.debian.org/">bookmark the website now!</a></p>
+<p>You won't find the Benchmarks Game with Google or any other search engine. So, if you're interested in programming language comparisons and performance benchmarks, <a href="http://benchmarksgame.alioth.debian.org/">bookmark the website now!</a></p>
 
 <p>Since 2004, The Computer Language Benchmarks Game has been hosted by <a href="http://lists.debian.org/debian-devel-announce/2003/03/msg00024.html">Alioth</a>, and the <a href="https://wiki.debian.org/Alioth/Web">web hosting</a> has mostly worked well enough for a low volume web site.</p>
 
@@ -44,7 +44,7 @@
 
 <p>The inevitable consequence is that pages Googlebot cannot access are removed from Google's index. That's been happening all year. Since mid-September the benchmarks game has rapidly been removed from Google's index.</p>
 
-<p><b>Soon you won't find the Benchmarks Game website with Google or any other search engine, because the Alioth admins have throttled web crawling.</b></p>
+<p><b>You won't find the Benchmarks Game website with Google or any other search engine, because the Alioth admins have throttled web crawling.</b></p>
 
 </dd>
 </dl>
