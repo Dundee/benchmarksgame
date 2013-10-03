@@ -11,12 +11,14 @@
 <dl>
 
 <dd>
-<p>03 Oct 2013 -- Soon you won't find the Benchmarks Game with Google or any other search engine. So, if you're interested in programming language comparisons and performance benchmarks, <a href="http://benchmarksgame.alioth.debian.org/" >bookmark the website now!</a.</p>
+<p>Soon you won't find the Benchmarks Game with Google or any other search engine. So, if you're interested in programming language comparisons and performance benchmarks, <a href="http://benchmarksgame.alioth.debian.org/">bookmark the website now!</a>.</p>
+
+<p>Since 2004, The Computer Language Benchmarks Game has been hosted by <a href="http://lists.debian.org/debian-devel-announce/2003/03/msg00024.html">Alioth</a>. Mostly the <a href="https://wiki.debian.org/Alioth/Web">web hosting</a> has worked well enough for a low volume web site.</p>
+
+<p>Not anymore!</p>
+
+<p></p>
 
 </dd>
-
-
-
-
 </dl>
 
