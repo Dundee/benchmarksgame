@@ -19,7 +19,7 @@
 
 <p>As a matter of policy, the Alioth admins have now <b>throttled web crawling</b> to reduce average server load from 30% to near nothing. There's been no suggestion that the benchmarks game website was the primary cause of that server load. It's just the result of the default configuration they use to provide dynamic content for 1,000 projects.</p>
 
-<p>The inevitable consequence is that all year Googlebot has struggled to crawl pages on the benchmarks game website. In mid-September Googlebot repeatedly failed to fetch robots.txt --</p>
+<p>The inevitable consequence is that Googlebot has struggled to crawl pages on the benchmarks game website. In mid-September Googlebot repeatedly failed to fetch robots.txt --</p>
 
 <pre>
 14 Sept errors/attempts 147 / 148

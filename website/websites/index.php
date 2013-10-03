@@ -39,11 +39,12 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 
 <div id="sitemap">
 
-<table><tr>
-<td><g:plusone annotation="none"></g:plusone></td><td>YOU CAN NO LONGER FIND THIS WEBSITE WITH GOOGLE OR ANY OTHER SEARCH ENGINE, BECAUSE THE ALIOTH ADMINS HAVE <a href="http://benchmarksgame.alioth.debian.org/soon-you-wont-find-the-benchmarks-game-with-google.php">THROTTLED WEB CRAWLING</a>.</td>
-</tr></table>
-
 <p><i>"After all, facts are facts, and although we may quote one to another with a chuckle the words of the Wise Statesman, 'Lies--damned lies--and statistics,' still there are some easy figures the simplest must understand, and the astutest cannot wriggle out of."</i> <span class="smaller">Leonard Henry Courtney, 1895</span></p>
+
+<table>
+<tr></tr>
+<tr><td><g:plusone annotation="none"></g:plusone></td><td><b>YOU CAN NO LONGER FIND THIS WEBSITE</b> WITH GOOGLE OR ANY OTHER SEARCH ENGINE, BECAUSE THE ALIOTH ADMINS HAVE <a href="http://benchmarksgame.alioth.debian.org/soon-you-wont-find-the-benchmarks-game-with-google.php">THROTTLED WEB CRAWLING</a>.</td>
+</tr></table>
 
 <script type="text/javascript">
   (function() {
