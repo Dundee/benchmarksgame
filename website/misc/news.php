@@ -9,20 +9,13 @@
 </script>
 
 <dl>
-<dt><strong>News</strong></dt>
-<dd>
-<dl>
-
-<dd><br/></dd>
-
 <dt><a href="#bookmark" name="bookmark">&nbsp;Bookmark the benchmarks game because <strong>Google won't find it anymore!</strong></a></dt>
-
 <dd>
 
 </dd>
 
 
-</dl>
-</dd>
+
+
 </dl>
 
