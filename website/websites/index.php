@@ -40,6 +40,9 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 <div id="sitemap">
 <p><i>"After all, facts are facts, and although we may quote one to another with a chuckle the words of the Wise Statesman, 'Lies--damned lies--and statistics,' still there are some easy figures the simplest must understand, and the astutest cannot wriggle out of."</i> <span class="smaller">Leonard Henry Courtney, 1895</span></p>
 
+
+<p>Sadly you'll no longer find this website with Google or any other search engine, because <a href="http://benchmarksgame.alioth.debian.org/soon-you-wont-find-the-benchmarks-game-with-google.php">the Alioth admins have throttled web crawling</a>.</p>
+
 <p><g:plusone annotation="none"></g:plusone></p>
 
 <script type="text/javascript">
