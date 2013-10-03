@@ -9,8 +9,9 @@
 </script>
 
 <dl>
-<dt><a href="#bookmark" name="bookmark">&nbsp;Bookmark the benchmarks game because <strong>Google won't find it anymore!</strong></a></dt>
+
 <dd>
+<p>03 Oct 2013 -- Soon you won't find the Benchmarks Game with Google or any other search engine. So, if you're interested in programming language comparisons and performance benchmarks, <a href="http://benchmarksgame.alioth.debian.org/" >bookmark the website now!</a.</p>
 
 </dd>
 
