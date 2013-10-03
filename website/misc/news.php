@@ -15,7 +15,7 @@
 
 <dd><br/></dd>
 
-<dt><a href="#bookmark" name="bookmark">&nbsp;<strong>Bookmark the benchmarks game because Google won't find it anymore!</strong></a></dt>
+<dt><a href="#bookmark" name="bookmark">&nbsp;<strong>Bookmark</strong> the benchmarks game because Google won't find it anymore!</a></dt>
 
 <dd>
 
