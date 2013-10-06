@@ -46,7 +46,6 @@
 
 <p><b>You can no longer find the Benchmarks Game website with Google or any other search engine, because the Alioth admins have throttled web crawling.</b></p>
 
-<p><a href="http://www.reddit.com/r/programming/comments/1no9ga/soon_you_wont_find_the_benchmarks_game_with/">Programming Reddit</a>; <a href="https://news.ycombinator.com/item?id=6491249">Hacker News</a></p>
 
 </dd>
 </dl>
