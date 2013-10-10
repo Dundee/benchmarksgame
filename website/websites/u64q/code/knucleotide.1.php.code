@@ -1,0 +1,128 @@
+<span class="hl opt">&lt;</span>?
+<span class="hl com">/* </span>
+<span class="hl com">   The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Damien Bonvillain</span>
+<span class="hl com">   fixed by Isaac Gouy</span>
+<span class="hl com">   improved by Levi Cameron</span>
+<span class="hl com">   made about 8 times faster by Ludovic Urbain</span>
+<span class="hl com">   pcntl has a flat overhead of about 40ms on my VM, read_sequence takes about 10%</span>
+<span class="hl com">*/</span>
+
+
+<span class="hl kwa">function</span> <span class="hl kwd">read_sequence</span><span class="hl opt">(</span><span class="hl kwc">$id</span><span class="hl opt">) {</span>
+   <span class="hl kwc">$id</span> <span class="hl opt">=</span> <span class="hl str">'&gt;'</span> <span class="hl opt">.</span> <span class="hl kwc">$id</span><span class="hl opt">;</span>
+   <span class="hl kwc">$ln_id</span> <span class="hl opt">=</span> <span class="hl kwd">strlen</span><span class="hl opt">(</span><span class="hl kwc">$id</span><span class="hl opt">);</span>
+   <span class="hl kwc">$fd</span> <span class="hl opt">=</span> STDIN<span class="hl opt">;</span>
+
+   <span class="hl slc">// reach sequence three</span>
+   
+   <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl kwd">strpos</span><span class="hl opt">(</span><span class="hl kwc">$line</span><span class="hl opt">,</span> <span class="hl kwc">$id</span><span class="hl opt">) ===</span>false<span class="hl opt">){</span>
+      <span class="hl kwc">$line</span> <span class="hl opt">=</span> <span class="hl kwd">stream_get_line</span><span class="hl opt">(</span><span class="hl kwc">$fd</span><span class="hl opt">,</span> <span class="hl num">64</span><span class="hl opt">,</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">);</span> <span class="hl slc">// returns faster when the length is too large</span>
+      <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwd">feof</span><span class="hl opt">(</span><span class="hl kwc">$fd</span><span class="hl opt">)){</span>
+         <span class="hl kwa">exit</span><span class="hl opt">(-</span><span class="hl num">1</span><span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+   <span class="hl slc">// next, read the content of the sequence</span>
+   <span class="hl kwc">$r</span><span class="hl opt">=</span><span class="hl str">''</span><span class="hl opt">;</span>
+   <span class="hl kwa">while</span> <span class="hl opt">(!</span><span class="hl kwd">feof</span><span class="hl opt">(</span><span class="hl kwc">$fd</span><span class="hl opt">)) {</span>
+      <span class="hl kwc">$line</span> <span class="hl opt">=</span> <span class="hl kwd">stream_get_line</span><span class="hl opt">(</span><span class="hl kwc">$fd</span><span class="hl opt">,</span> <span class="hl num">64</span><span class="hl opt">,</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">);</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(!</span><span class="hl kwa">isset</span><span class="hl opt">(</span><span class="hl kwc">$line</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]))</span> <span class="hl kwa">continue</span><span class="hl opt">;</span>
+      <span class="hl kwc">$c</span> <span class="hl opt">=</span> <span class="hl kwc">$line</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">];</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwc">$c</span> <span class="hl opt">===</span> <span class="hl str">';'</span><span class="hl opt">)</span> <span class="hl kwa">continue</span><span class="hl opt">;</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwc">$c</span> <span class="hl opt">===</span> <span class="hl str">'&gt;'</span><span class="hl opt">)</span> <span class="hl kwa">break</span><span class="hl opt">;</span>
+      <span class="hl kwc">$r</span><span class="hl opt">.=</span><span class="hl kwc">$line</span><span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">return</span> <span class="hl kwd">strtoupper</span><span class="hl opt">(</span><span class="hl kwc">$r</span><span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">write_freq</span><span class="hl opt">(&amp;</span><span class="hl kwc">$sequence</span><span class="hl opt">,&amp;</span><span class="hl kwc">$seqlen</span><span class="hl opt">, &amp;</span><span class="hl kwc">$keys</span><span class="hl opt">) {</span>
+   <span class="hl kwc">$map</span> <span class="hl opt">=</span> <span class="hl kwa">array</span><span class="hl opt">();</span>
+   <span class="hl kwc">$total</span><span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwd">strlen</span><span class="hl opt">(</span><span class="hl kwc">$keys</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">])==</span><span class="hl num">1</span><span class="hl opt">){</span>
+      <span class="hl kwa">foreach</span><span class="hl opt">(</span><span class="hl kwc">$keys</span> <span class="hl kwa">as</span> <span class="hl kwc">$p</span><span class="hl opt">){</span>
+         <span class="hl kwc">$map</span><span class="hl opt">[</span><span class="hl kwc">$p</span><span class="hl opt">]=</span><span class="hl kwd">substr_count</span><span class="hl opt">(</span><span class="hl kwc">$sequence</span><span class="hl opt">,</span><span class="hl kwc">$p</span><span class="hl opt">);</span>
+         <span class="hl kwc">$total</span>+<span class="hl opt">=</span><span class="hl kwc">$map</span><span class="hl opt">[</span><span class="hl kwc">$p</span><span class="hl opt">];</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span><span class="hl kwa">elseif</span><span class="hl opt">(</span><span class="hl kwd">strlen</span><span class="hl opt">(</span><span class="hl kwc">$keys</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">])==</span><span class="hl num">2</span><span class="hl opt">){</span>
+      <span class="hl slc">//this is here only because substr_count does not count overlapping strings,</span>
+      <span class="hl slc">// it can be replaced by anything counting overlapping strings and with better performance</span>
+      <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwc">$i</span><span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span><span class="hl kwc">$i</span><span class="hl opt">&lt;</span><span class="hl kwc">$seqlen</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">;</span><span class="hl kwc">$i</span>++<span class="hl opt">){</span>
+         <span class="hl kwc">$map</span><span class="hl opt">[</span><span class="hl kwc">$sequence</span><span class="hl opt">[</span><span class="hl kwc">$i</span><span class="hl opt">].</span><span class="hl kwc">$sequence</span><span class="hl opt">[</span><span class="hl kwc">$i</span>+<span class="hl num">1</span><span class="hl opt">]]</span>++<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwa">foreach</span><span class="hl opt">(</span><span class="hl kwc">$keys</span> <span class="hl kwa">as</span> <span class="hl kwc">$p</span><span class="hl opt">){</span>
+         <span class="hl kwc">$total</span>+<span class="hl opt">=</span><span class="hl kwc">$map</span><span class="hl opt">[</span><span class="hl kwc">$p</span><span class="hl opt">];</span>
+      <span class="hl opt">}</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">foreach</span><span class="hl opt">(</span><span class="hl kwc">$keys</span> <span class="hl kwa">as</span> <span class="hl kwc">$p</span><span class="hl opt">){</span>
+      <span class="hl kwc">$map</span><span class="hl opt">[</span><span class="hl kwc">$p</span><span class="hl opt">]=(</span> <span class="hl kwc">$map</span><span class="hl opt">[</span><span class="hl kwc">$p</span><span class="hl opt">] /</span> <span class="hl kwc">$total</span> <span class="hl opt">) *</span><span class="hl num">100</span><span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwd">uasort</span><span class="hl opt">(</span><span class="hl kwc">$map</span><span class="hl opt">,</span> <span class="hl str">'freq_name_comparator'</span><span class="hl opt">);</span>
+   <span class="hl kwc">$r</span><span class="hl opt">=</span><span class="hl str">''</span><span class="hl opt">;</span>
+   <span class="hl kwa">foreach</span><span class="hl opt">(</span><span class="hl kwc">$map</span> <span class="hl kwa">as</span> <span class="hl kwc">$key</span> <span class="hl opt">=&gt;</span> <span class="hl kwc">$val</span><span class="hl opt">) {</span>
+      <span class="hl kwc">$r</span><span class="hl opt">.=</span><span class="hl kwd">sprintf</span> <span class="hl opt">(</span><span class="hl str">&quot;%s %.3f</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> <span class="hl kwc">$key</span><span class="hl opt">,</span> <span class="hl kwc">$val</span><span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">return</span> <span class="hl kwc">$r</span><span class="hl opt">.</span><span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">write_count</span><span class="hl opt">(&amp;</span><span class="hl kwc">$sequence</span><span class="hl opt">,&amp;</span><span class="hl kwc">$seqlen</span><span class="hl opt">,</span> <span class="hl kwc">$key</span><span class="hl opt">){</span>
+   <span class="hl kwa">return</span> <span class="hl kwd">sprintf</span> <span class="hl opt">(</span><span class="hl str">&quot;%d</span><span class="hl esc">\t</span><span class="hl str">%s</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> <span class="hl kwd">substr_count</span><span class="hl opt">(</span><span class="hl kwc">$sequence</span><span class="hl opt">,</span><span class="hl kwc">$key</span><span class="hl opt">),</span> <span class="hl kwc">$key</span><span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">freq_name_comparator</span><span class="hl opt">(</span><span class="hl kwc">$a</span><span class="hl opt">,</span> <span class="hl kwc">$b</span><span class="hl opt">) {</span>
+   <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwc">$a</span> <span class="hl opt">==</span> <span class="hl kwc">$b</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwa">return</span>  <span class="hl opt">(</span><span class="hl kwc">$a</span> <span class="hl opt">&lt;</span> <span class="hl kwc">$b</span><span class="hl opt">)</span> ? <span class="hl num">1</span> <span class="hl opt">: -</span><span class="hl num">1</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+<span class="hl kwc">$sequence</span> <span class="hl opt">=</span> <span class="hl kwd">read_sequence</span><span class="hl opt">(</span><span class="hl str">'THREE'</span><span class="hl opt">);</span>
+<span class="hl kwc">$seqlen</span><span class="hl opt">=</span><span class="hl kwd">strlen</span><span class="hl opt">(</span><span class="hl kwc">$sequence</span><span class="hl opt">);</span>
+<span class="hl kwd">fclose</span><span class="hl opt">(</span>STDIN<span class="hl opt">);</span>
+
+<span class="hl kwc">$jobs</span> <span class="hl opt">=</span> <span class="hl kwa">array</span><span class="hl opt">(</span>
+   <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl str">'write_freq'</span><span class="hl opt">,</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl str">'A'</span><span class="hl opt">,</span><span class="hl str">'T'</span><span class="hl opt">,</span><span class="hl str">'G'</span><span class="hl opt">,</span><span class="hl str">'C'</span><span class="hl opt">)),</span>
+   <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl str">'write_freq'</span><span class="hl opt">,</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl str">'AA'</span><span class="hl opt">,</span><span class="hl str">'AT'</span><span class="hl opt">,</span><span class="hl str">'TA'</span><span class="hl opt">,</span><span class="hl str">'TT'</span><span class="hl opt">,</span><span class="hl str">'CA'</span><span class="hl opt">,</span><span class="hl str">'GA'</span><span class="hl opt">,</span><span class="hl str">'AG'</span><span class="hl opt">,</span><span class="hl str">'AC'</span><span class="hl opt">,</span><span class="hl str">'TG'</span><span class="hl opt">,</span><span class="hl str">'GT'</span><span class="hl opt">,</span><span class="hl str">'TC'</span><span class="hl opt">,</span><span class="hl str">'CT'</span><span class="hl opt">,</span><span class="hl str">'GG'</span><span class="hl opt">,</span><span class="hl str">'GC'</span><span class="hl opt">,</span><span class="hl str">'CG'</span><span class="hl opt">,</span><span class="hl str">'CC'</span><span class="hl opt">)),</span>
+   <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl str">'write_count'</span><span class="hl opt">,</span> <span class="hl str">'GGT'</span><span class="hl opt">),</span>
+   <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl str">'write_count'</span><span class="hl opt">,</span> <span class="hl str">'GGTA'</span><span class="hl opt">),</span>
+   <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl str">'write_count'</span><span class="hl opt">,</span> <span class="hl str">'GGTATT'</span><span class="hl opt">),</span>
+   <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl str">'write_count'</span><span class="hl opt">,</span> <span class="hl str">'GGTATTTTAATT'</span><span class="hl opt">),</span>
+   <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl str">'write_count'</span><span class="hl opt">,</span> <span class="hl str">'GGTATTTTAATTTATAGT'</span><span class="hl opt">)</span>
+<span class="hl opt">);</span>
+
+<span class="hl kwc">$tok</span> <span class="hl opt">=</span> <span class="hl kwd">ftok</span><span class="hl opt">(</span>__FILE__<span class="hl opt">,</span> <span class="hl kwd">chr</span><span class="hl opt">(</span><span class="hl kwd">time</span><span class="hl opt">() &amp;</span> <span class="hl num">255</span><span class="hl opt">));</span>
+<span class="hl kwc">$queue</span> <span class="hl opt">=</span> <span class="hl kwd">msg_get_queue</span><span class="hl opt">(</span><span class="hl kwc">$tok</span><span class="hl opt">);</span>
+
+<span class="hl kwc">$parent</span> <span class="hl opt">=</span> TRUE<span class="hl opt">;</span>
+<span class="hl kwc">$count</span> <span class="hl opt">=</span> <span class="hl kwd">count</span><span class="hl opt">(</span><span class="hl kwc">$jobs</span><span class="hl opt">);</span>
+<span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwc">$i</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> <span class="hl kwc">$i</span> <span class="hl opt">&lt;</span> <span class="hl kwc">$count</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">;</span> ++<span class="hl kwc">$i</span><span class="hl opt">) {</span>
+   <span class="hl kwc">$pid</span> <span class="hl opt">=</span> <span class="hl kwd">pcntl_fork</span><span class="hl opt">();</span>
+   <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwc">$pid</span> <span class="hl opt">=== -</span><span class="hl num">1</span><span class="hl opt">) {</span>
+      <span class="hl kwa">die</span><span class="hl opt">(</span><span class="hl str">'could not fork'</span><span class="hl opt">);</span>
+   <span class="hl opt">}</span> <span class="hl kwa">else if</span> <span class="hl opt">(</span><span class="hl kwc">$pid</span><span class="hl opt">) {</span>
+      <span class="hl kwa">continue</span><span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwc">$parent</span> <span class="hl opt">=</span> FALSE<span class="hl opt">;</span>
+   <span class="hl kwa">break</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+<span class="hl kwc">$result</span> <span class="hl opt">=</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl kwc">$i</span><span class="hl opt">,</span><span class="hl kwc">$jobs</span><span class="hl opt">[</span><span class="hl kwc">$i</span><span class="hl opt">][</span><span class="hl num">0</span><span class="hl opt">](</span><span class="hl kwc">$sequence</span><span class="hl opt">,</span> <span class="hl kwc">$seqlen</span><span class="hl opt">,</span> <span class="hl kwc">$jobs</span><span class="hl opt">[</span><span class="hl kwc">$i</span><span class="hl opt">][</span><span class="hl num">1</span><span class="hl opt">]));</span>
+<span class="hl kwa">if</span> <span class="hl opt">(!</span><span class="hl kwd">msg_send</span><span class="hl opt">(</span><span class="hl kwc">$queue</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl kwc">$result</span><span class="hl opt">,</span> TRUE<span class="hl opt">,</span> FALSE<span class="hl opt">,</span> <span class="hl kwc">$errno</span><span class="hl opt">)) {</span>
+   <span class="hl kwd">var_dump</span><span class="hl opt">(</span><span class="hl str">&quot;$errno&quot;</span><span class="hl opt">);</span>
+   <span class="hl kwd">var_dump</span><span class="hl opt">(</span><span class="hl kwd">msg_stat_queue</span><span class="hl opt">(</span><span class="hl kwc">$queue</span><span class="hl opt">));</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">if</span> <span class="hl opt">(!</span><span class="hl kwc">$parent</span><span class="hl opt">) {</span>
+   <span class="hl kwa">exit</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwc">$results</span> <span class="hl opt">=</span> <span class="hl kwa">array</span><span class="hl opt">();</span>
+<span class="hl kwa">foreach</span><span class="hl opt">(</span><span class="hl kwc">$jobs</span> <span class="hl kwa">as</span> <span class="hl kwc">$job</span><span class="hl opt">) {</span>
+   <span class="hl kwd">msg_receive</span><span class="hl opt">(</span><span class="hl kwc">$queue</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl kwc">$msgtype</span><span class="hl opt">,</span> <span class="hl num">256</span><span class="hl opt">,</span> <span class="hl kwc">$result</span><span class="hl opt">,</span> TRUE<span class="hl opt">);</span>
+   <span class="hl kwc">$results</span><span class="hl opt">[</span><span class="hl kwc">$result</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]] =</span> <span class="hl kwc">$result</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">];</span>
+   <span class="hl kwd">pcntl_wait</span><span class="hl opt">(</span><span class="hl kwc">$s</span><span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwd">ksort</span><span class="hl opt">(</span><span class="hl kwc">$results</span><span class="hl opt">);</span>
+<span class="hl kwa">foreach</span> <span class="hl opt">(</span><span class="hl kwc">$results</span> <span class="hl kwa">as</span> <span class="hl kwc">$result</span><span class="hl opt">) {</span>
+   <span class="hl kwa">echo</span> <span class="hl kwc">$result</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwd">msg_remove_queue</span><span class="hl opt">(</span><span class="hl kwc">$queue</span><span class="hl opt">);</span>
