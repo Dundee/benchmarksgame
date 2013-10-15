@@ -1,0 +1,67 @@
+﻿(*
+      The Computer Language Benchmarks Game
+      http://benchmarksgame.alioth.debian.org/ 
+
+      Contributed by Don Syme
+      Port of C# version by Antti Lankila, Isaac Gouy's, 
+      The Anh Tran, Robert F. Tobler, Nigel Delaney, Marek Safar, kasthack
+*)
+
+open System
+open Mono.Simd
+open System.IO
+open System.Threading
+
+
+[<EntryPoint>]
+let main argv = 
+    let n  = if (argv.Length > 0) then Int32.Parse(argv.[0]) else 200
+    Console.Out.WriteLine("P4\n{0} {0}", n)
+    let lineLen = (n - 1) / 8 + 1
+    let data = Array.init n (fun i -> Array.zeroCreate lineLen)
+    let xa = Array.init n (fun x -> float x * 2.0 / float n - 1.5)
+    let lineCount = ref -1
+    let calculate()  =
+        let mutable y = 0
+        let twoOverN = 2.0 / float n
+        while (y <- Interlocked.Increment(&lineCount.contents); y < n) do
+         let line = data.[y]
+         let mutable xbyte = 0
+         let mutable bits = 1
+         let ci = float y * twoOverN - 1.0
+         let Ci = new Vector2d (ci)
+         for x in 0 .. 2 .. xa.Length - 1 do
+            let Cr = new Vector2d(xa.[x],xa.[x+1])//vector of constant real terms
+            let Tempr = Cr * Cr
+            let Tempi = Ci * Ci
+            let mutable Zr = Cr
+            let mutable Zi = Ci
+            let mutable Temp = Tempr - Tempi + Cr
+            if (bits > 0xff) then line.[xbyte] <- byte(bits ^^^ -1); xbyte <- xbyte + 1; bits <- 1 
+            let mutable i = 49
+            let mutable b = 0
+            let mutable brk = false
+            while not brk do
+               let Zri = Zr*Zi  //calculate r*i for both
+               Zi <- Zri+Zri+Ci //double that and add a constant 
+               Zr <- Temp//pre-calculated on previous loop
+               let mutable V0 = Zr.InterleaveLow(Zi)//r0,i0
+               let mutable V1 = Zr.InterleaveHigh(Zi)//r1,i1
+               V0 <- V0*V0 //r0^2,i0^2
+               V1 <- V1*V1
+               let Length = V0.HorizontalAdd(V1)//(r0^2+i0^2),(r1^2+i1^2)
+               Temp <- V0.HorizontalSub(V1)+Cr//(r0^2-i0^2),(r1^2-i1^2)
+                //now to determine end condition, 
+               if(Length.X>4.0) then (b <- b ||| 2; if(b=3) then brk <- true)
+               if(not brk && Length.Y>4.0) then (b <- b ||| 1; if(b=3) then brk <- true)
+               i <- i - 1
+               if (i = 0) then brk <- true
+            bits <- (bits <<< 2) + b
+         while (bits < 0x100) do bits <- (bits <<< 1) 
+         line.[xbyte] <- byte(bits ^^^ -1)
+
+    let threads = Array.init Environment.ProcessorCount (fun _ -> let t = new Thread(calculate) in t.Start(); t)
+    for t in threads do t.Join()
+    let s = Console.OpenStandardOutput()
+    for y in 0 .. n - 1 do s.Write(data.[y], 0, lineLen)
+    0

@@ -1,0 +1,77 @@
+
+Tue, 15 Oct 2013 23:12:11 GMT
+
+MAKE:
+mv knucleotide.fsharp-4.fsharp knucleotide.fsharp-4.fs
+/usr/local/bin/fsharpc --target:exe --platform:x64 -O  -o knucleotide.fsharp-4.fsharp_run.exe knucleotide.fsharp-4.fs
+F# Compiler for F# 3.0 (Open Source Edition)
+Freely distributed under the Apache 2.0 Open Source License
+
+/home/dunham/benchmarksgame_onecore/knucleotide/tmp/knucleotide.fsharp-4.fs(9,1): warning FS0221: The declarations in this file will be placed in an implicit module 'Knucleotide.fsharp-4' based on the file name 'knucleotide.fsharp-4.fs'. However this is not a valid F# identifier, so the contents will not be accessible from other files. Consider renaming the file or adding a 'module' or 'namespace' declaration at the top of the file.
+rm knucleotide.fsharp-4.fs
+5.21s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/bin/mono --llvm knucleotide.fsharp-4.fsharp_run.exe 0 < knucleotide-input250000.txt
+
+UNEXPECTED OUTPUT 
+
+1,3c1,3
+< A 30.297
+< T 30.156
+< C 19.792
+---
+> A 30.298
+> T 30.157
+> C 19.793
+6,8c6,8
+< AA 9.176
+< TA 9.136
+< AT 9.135
+---
+> AA 9.177
+> TA 9.137
+> AT 9.136
+11,12c11,12
+< CA 5.998
+< GA 5.985
+---
+> CA 5.999
+> GA 5.986
+17c17
+< TG 5.955
+---
+> TG 5.956
+20c20
+< GC 3.907
+---
+> GC 3.908
+
+PROGRAM OUTPUT:
+A 30.297
+T 30.156
+C 19.792
+G 19.752
+
+AA 9.176
+TA 9.136
+AT 9.135
+TT 9.094
+AC 6.000
+CA 5.998
+GA 5.985
+AG 5.985
+TC 5.970
+CT 5.970
+GT 5.957
+TG 5.955
+CC 3.915
+CG 3.910
+GC 3.907
+GG 3.902
+
+14717	GGT
+4463	GGTA
+472	GGTATT
+9	GGTATTTTAATT
+9	GGTATTTTAATTTATAGT

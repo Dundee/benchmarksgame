@@ -1,0 +1,90 @@
+﻿(* The Computer Language Benchmarks Game
+   http://benchmarksgame.alioth.debian.org/
+
+   from C# version by Isaac Gouy, transliterated from Mike Pall's Lua program 
+
+*)
+open System
+
+let fannkuch n =
+   let p = Array.init n id
+   let q = Array.init n id
+   let s = Array.init n id
+   let mutable sign = 1
+   let mutable maxflips = 0
+   let mutable sum = 0
+   let mutable m = n - 1
+   let mutable ret = false
+   let mutable res = (0,0)
+   while not ret do 
+         // Copy and flip.
+         let mutable q0 = p.[0]                                    // Cache 0th element.
+         if (q0 <> 0) then
+            for i in 1 .. n - 1 do q.[i] <- p.[i]             // Work on a copy.
+            let mutable flips = 1
+            let mutable brk = false
+            while not brk do
+              let mutable qq = q.[q0] 
+              if (qq = 0) then                                // ... until 0th element is 0.
+                  sum <- sum + sign*flips
+                  if (flips > maxflips) then maxflips <- flips    // New maximum?
+                  brk <- true
+               
+              else
+                  q.[q0] <- q0
+                  if (q0 >= 3) then
+                      let mutable i = 1
+                      let mutable j = q0 - 1
+                      let mutable brk2 = false
+                      while not brk2 do 
+                          let t = q.[i]
+                          q.[i] <- q.[j]
+                          q.[j] <- t
+                          i <- i + 1
+                          j <- j - 1
+                          if (i >= j) then brk2 <- true
+               
+                  q0 <- qq
+                  flips <- flips+1
+            
+             // Permute.
+         if (sign = 1) then
+             let t = p.[1]
+             p.[1] <- p.[0]
+             p.[0] <- t
+             sign <- -1 // Rotate 0<-1.
+         else 
+             let t = p.[1]
+             p.[1] <- p.[2]
+             p.[2] <- t
+             sign <- 1  // Rotate 0<-1 and 0<-1<-2.
+             let mutable i = 2
+             let mutable brk2 = false 
+             while not ret && not brk2 do 
+                 if i < n then 
+                     
+                     let mutable sx = s.[i]
+                     if (sx <> 0) then 
+                         s.[i] <- sx-1
+                         brk2 <- true
+                     elif (i = m) then 
+                         ret <- true
+                         res <- (sum, maxflips)  // Out of permutations.
+                     else 
+                         s.[i] <- i
+                         // Rotate 0<-...<-i+1.
+                         let t = p.[0]
+                         for j in 0 .. i do
+                             p.[j] <- p.[j+1]
+                         p.[i+1] <- t
+                     i <- i + 1
+                 else 
+                     brk2 <- true
+   res
+
+[<EntryPoint>]
+let main argv = 
+    let n = if (argv.Length > 0) then Int32.Parse(argv.[0]) else 7
+    let (sum,maxflips) = fannkuch n
+    Console.Write("{0}\nPfannkuchen({1}) = {2}\n", sum, n, maxflips)
+    0

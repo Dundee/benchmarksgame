@@ -1,0 +1,26 @@
+
+Tue, 15 Oct 2013 22:31:50 GMT
+
+MAKE:
+mv binarytrees.fsharp binarytrees.fs
+/usr/local/bin/fsharpc --target:exe --platform:x64 -O  -o binarytrees.fsharp_run.exe binarytrees.fs
+F# Compiler for F# 3.0 (Open Source Edition)
+Freely distributed under the Apache 2.0 Open Source License
+rm binarytrees.fs
+4.32s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/bin/mono --llvm binarytrees.fsharp_run.exe 20
+
+PROGRAM OUTPUT:
+stretch tree of depth 21	 check: -1
+2097152	 trees of depth 4	 check: -2097152
+524288	 trees of depth 6	 check: -524288
+131072	 trees of depth 8	 check: -131072
+32768	 trees of depth 10	 check: -32768
+8192	 trees of depth 12	 check: -8192
+2048	 trees of depth 14	 check: -2048
+512	 trees of depth 16	 check: -512
+128	 trees of depth 18	 check: -128
+32	 trees of depth 20	 check: -32
+long lived tree of depth 20	 check: -1

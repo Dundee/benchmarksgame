@@ -1,0 +1,92 @@
+﻿(* The Computer Language Benchmarks Game
+   http://benchmarksgame.alioth.debian.org/
+ *
+ * Contributed by Don Syme
+ * Based on C# contribution by Isaac Gouy, Antti Lankila, A.Nahr, The Anh Tran
+ * Uses one byte array rather than strings.
+ *)
+
+open System
+open System.IO
+open System.Collections.Generic
+open System.Text
+open System.Threading
+
+let input = Console.In
+let toBytes (s:string) = s.ToCharArray() |> Array.map byte
+let toString (s:byte[]) = String(s |> Array.map char)
+let prefixes = [| "ggt"; "ggta"; "ggtatt"; "ggtattttaatt"; "ggtattttaatttatagt" |]
+let prefixBytes = [| for p in prefixes -> toBytes p |] 
+let prefixLengths = [| for p in prefixBytes -> p.Length |] 
+let prefixOffsets = Array.scan (+) 0 prefixLengths
+let dnaStart = prefixOffsets.[prefixLengths.Length]
+
+let dna = 
+    seq { while true do yield input.ReadLine() }
+        |> Seq.takeWhile (fun x -> x <> null)
+        |> Seq.skipWhile (fun x -> not(x.StartsWith(">THREE")))
+        |> Seq.skip 1
+        |> String.concat ""
+        |> toBytes
+        |> Array.append (Array.concat prefixBytes)
+
+[<Struct>]
+type Key(offset: int, length: int) =
+    member x.GetHash() = 
+        let mutable hash = 0
+        for i in 0 .. length - 1 do
+            hash <- hash * 31 + int (dna.[offset+i])
+        hash
+
+    member x.KeyText = (toString (dna.[offset..offset+length-1])).ToUpper()
+
+
+type Value = { mutable value:int; key: Key }
+
+let GenerateFrequencies(frameSize) =
+    let freq = new Dictionary<int, Value>(1000)
+    let mutable v = Unchecked.defaultof<Value>
+    let fin = dna.Length - frameSize + 1
+    for i in 0 .. fin - 1 do 
+        let k = Key(i, frameSize)
+        let h = k.GetHash()
+        if freq.TryGetValue(h, &v) then 
+            v.value <- v.value + 1   
+        else
+            freq.[h] <- { value = 1;key=k }
+    freq
+
+let WriteCount(n:int) =
+    let freq = GenerateFrequencies(prefixLengths.[n])
+    let hash = Key(prefixOffsets.[n], prefixLengths.[n]).GetHash()
+    let count = if (freq.ContainsKey(hash)) then freq.[hash].value else 0
+    String.Format("{0}\t{1}", count, prefixes.[n].ToUpper())
+
+type Pair = KeyValuePair<int, Value>
+
+let WriteFrequencies(nucleotideLength) =
+    let freq = GenerateFrequencies(nucleotideLength)
+    let items = new ResizeArray<Pair>(freq)
+    items.Sort(fun (item1: Pair) (item2: Pair ) ->
+        let comparison = item2.Value.value - item1.Value.value
+        if (comparison = 0)  then 
+            item1.Value.key.KeyText.CompareTo(item2.Value.key.KeyText)
+        else 
+            comparison)
+
+    let buf = new StringBuilder()
+    let sum = dna.Length - nucleotideLength + 1
+    for element in items do
+         let percent = single element.Value.value * 100.0f / single sum
+         buf.AppendFormat("{0} {1:f3}\n", element.Key, percent) |> ignore
+
+    buf.ToString()
+
+Async.Parallel [ 
+    yield async { return WriteFrequencies(1) } 
+    yield async { return WriteFrequencies(2) }
+    for i in 0 .. prefixes.Length - 1 do 
+        yield async { return WriteCount(i) } ]
+|> Async.RunSynchronously
+|> Array.iter Console.Out.WriteLine
+
