@@ -1,0 +1,42 @@
+﻿<span class="hl com">(*</span>
+<span class="hl com">      The Computer Language Benchmarks Game</span>
+<span class="hl com">      http://benchmarksgame.alioth.debian.org/ </span>
+<span class="hl com"></span>
+<span class="hl com">      Contributed by Don Syme</span>
+<span class="hl com">      Port of C# version by by Marek Safar and optimized by kasthack</span>
+<span class="hl com">*)</span>
+
+<span class="hl kwa">open</span> <span class="hl kwd">System</span>
+
+<span class="hl opt">[&lt;</span><span class="hl kwd">AllowNullLiteral</span><span class="hl opt">&gt;]</span>
+<span class="hl kwa">type</span> <span class="hl kwd">TreeNode</span><span class="hl opt">(</span>left<span class="hl opt">:</span><span class="hl kwd">TreeNode</span><span class="hl opt">,</span>right<span class="hl opt">:</span><span class="hl kwd">TreeNode</span><span class="hl opt">,</span>item<span class="hl opt">) =</span> 
+    <span class="hl kwa">member</span> __<span class="hl opt">.</span><span class="hl kwd">CheckSum</span> <span class="hl opt">=</span>
+        <span class="hl kwa">match</span> right <span class="hl kwa">with</span> 
+        | <span class="hl kwa">null</span> <span class="hl opt">-&gt;</span> item 
+        | _ <span class="hl opt">-&gt;</span> item <span class="hl opt">+</span> left<span class="hl opt">.</span><span class="hl kwd">CheckSum</span> <span class="hl opt">-</span> right<span class="hl opt">.</span><span class="hl kwd">CheckSum</span>
+
+<span class="hl kwa">let rec</span> mkTree<span class="hl opt">(</span>item<span class="hl opt">,</span> depth<span class="hl opt">) =</span>
+    <span class="hl kwa">if</span> depth <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl kwa">then</span> <span class="hl kwd">TreeNode</span><span class="hl opt">(</span><span class="hl kwa">null</span><span class="hl opt">,</span> <span class="hl kwa">null</span><span class="hl opt">,</span> item<span class="hl opt">)</span>
+    <span class="hl kwa">else</span> <span class="hl kwd">TreeNode</span><span class="hl opt">(</span>mkTree <span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">*</span>item <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">,</span> depth<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">),</span> mkTree<span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">*</span>item<span class="hl opt">,</span> depth<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">),</span> item<span class="hl opt">)</span>
+
+<span class="hl kwa">let</span> bottomUpTree <span class="hl opt">(</span>item<span class="hl opt">,</span> depth<span class="hl opt">) =</span> mkTree<span class="hl opt">(</span>item<span class="hl opt">,</span> depth <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">)</span>
+
+<span class="hl kwa">let</span> minDepth <span class="hl opt">=</span> <span class="hl num">4</span>
+<span class="hl opt">[&lt;</span><span class="hl kwd">EntryPoint</span><span class="hl opt">&gt;]</span>
+<span class="hl kwa">let</span> main argv <span class="hl opt">=</span> 
+    <span class="hl kwa">let</span> n <span class="hl opt">=</span> <span class="hl kwa">if</span> argv<span class="hl opt">.</span><span class="hl kwd">Length</span> <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl kwa">then</span> <span class="hl kwd">Int32</span><span class="hl opt">.</span><span class="hl kwd">Parse</span><span class="hl opt">(</span>argv<span class="hl opt">.[</span><span class="hl num">0</span><span class="hl opt">])</span> <span class="hl kwa">else</span> <span class="hl num">0</span>
+    <span class="hl kwa">let</span> maxDepth <span class="hl opt">=</span> <span class="hl kwd">Math</span><span class="hl opt">.</span><span class="hl kwd">Max</span><span class="hl opt">(</span>minDepth <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">,</span> n<span class="hl opt">)</span>
+    <span class="hl kwa">let</span> stretchDepth <span class="hl opt">=</span> maxDepth <span class="hl opt">+</span> <span class="hl num">1</span>
+    <span class="hl kwa">let mutable</span> check <span class="hl opt">=</span> bottomUpTree<span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> stretchDepth<span class="hl opt">).</span><span class="hl kwd">CheckSum</span>
+    <span class="hl kwd">Console</span><span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(</span><span class="hl str">&quot;stretch tree of depth {0}</span><span class="hl esc">\t</span> <span class="hl str">check: {1}&quot;</span><span class="hl opt">,</span> stretchDepth<span class="hl opt">,</span> check<span class="hl opt">)</span>
+    <span class="hl kwa">let</span> longLivedTree <span class="hl opt">=</span> bottomUpTree<span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> maxDepth<span class="hl opt">)</span>
+    <span class="hl kwa">for</span> depth <span class="hl kwa">in</span> minDepth <span class="hl opt">..</span> <span class="hl num">2</span> <span class="hl opt">..</span> maxDepth <span class="hl kwa">do</span>
+         <span class="hl kwa">let</span> iterations <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl opt">&lt;&lt;&lt; (</span> maxDepth <span class="hl opt">-</span> depth <span class="hl opt">+</span> minDepth <span class="hl opt">)</span>
+         check <span class="hl opt">&lt;-</span> <span class="hl num">0</span>
+         <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl num">1</span> <span class="hl opt">..</span> iterations <span class="hl kwa">do</span> 
+            check <span class="hl opt">&lt;-</span> check <span class="hl opt">+</span> bottomUpTree<span class="hl opt">(</span>i<span class="hl opt">,</span> depth<span class="hl opt">).</span><span class="hl kwd">CheckSum</span>
+            check <span class="hl opt">&lt;-</span> check <span class="hl opt">+</span> bottomUpTree<span class="hl opt">(-</span>i<span class="hl opt">,</span> depth<span class="hl opt">).</span><span class="hl kwd">CheckSum</span>
+         <span class="hl kwd">Console</span><span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(</span><span class="hl str">&quot;{0}</span><span class="hl esc">\t</span> <span class="hl str">trees of depth {1}</span><span class="hl esc">\t</span> <span class="hl str">check: {2}&quot;</span><span class="hl opt">,</span>iterations <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">,</span> depth<span class="hl opt">,</span> check<span class="hl opt">)</span>
+    <span class="hl kwd">Console</span><span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(</span><span class="hl str">&quot;long lived tree of depth {0}</span><span class="hl esc">\t</span> <span class="hl str">check: {1}&quot;</span><span class="hl opt">,</span>maxDepth<span class="hl opt">,</span> longLivedTree<span class="hl opt">.</span><span class="hl kwd">CheckSum</span><span class="hl opt">)</span>
+    <span class="hl num">0</span>
+
