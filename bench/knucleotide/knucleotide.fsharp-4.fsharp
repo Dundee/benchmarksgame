@@ -62,7 +62,7 @@ type Key(offset: int, length: int) =
 type Value = { mutable value:int; key:Key }
 
 let generateFrequencies(frameSize) =
-    let freq = Dictionary<int, Value>(1000)
+    let freq = Dictionary<int, Value>()
     let mutable v = Unchecked.defaultof<Value>
     for i in dnaStart .. dnaLength - frameSize do 
         let k = Key(i, frameSize)

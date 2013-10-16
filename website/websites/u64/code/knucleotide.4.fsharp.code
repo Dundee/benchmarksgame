@@ -62,7 +62,7 @@
 <span class="hl kwa">type</span> <span class="hl kwd">Value</span> <span class="hl opt">= {</span> <span class="hl kwa">mutable</span> value<span class="hl opt">:</span><span class="hl kwb">int</span><span class="hl opt">;</span> key<span class="hl opt">:</span><span class="hl kwd">Key</span> <span class="hl opt">}</span>
 
 <span class="hl kwa">let</span> generateFrequencies<span class="hl opt">(</span>frameSize<span class="hl opt">) =</span>
-    <span class="hl kwa">let</span> freq <span class="hl opt">=</span> <span class="hl kwd">Dictionary</span><span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">,</span> <span class="hl kwd">Value</span><span class="hl opt">&gt;(</span><span class="hl num">1000</span><span class="hl opt">)</span>
+    <span class="hl kwa">let</span> freq <span class="hl opt">=</span> <span class="hl kwd">Dictionary</span><span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">,</span> <span class="hl kwd">Value</span><span class="hl opt">&gt;()</span>
     <span class="hl kwa">let mutable</span> v <span class="hl opt">=</span> <span class="hl kwd">Unchecked</span><span class="hl opt">.</span>defaultof<span class="hl opt">&lt;</span><span class="hl kwd">Value</span><span class="hl opt">&gt;</span>
     <span class="hl kwa">for</span> i <span class="hl kwa">in</span> dnaStart <span class="hl opt">..</span> dnaLength <span class="hl opt">-</span> frameSize <span class="hl kwa">do</span> 
         <span class="hl kwa">let</span> k <span class="hl opt">=</span> <span class="hl kwd">Key</span><span class="hl opt">(</span>i<span class="hl opt">,</span> frameSize<span class="hl opt">)</span>
