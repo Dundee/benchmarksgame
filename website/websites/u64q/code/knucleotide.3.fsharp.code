@@ -77,7 +77,7 @@
     <span class="hl kwa">let</span> buf <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">StringBuilder</span><span class="hl opt">()</span>
     <span class="hl kwa">let</span> sum <span class="hl opt">=</span> dna<span class="hl opt">.</span><span class="hl kwd">Length</span> <span class="hl opt">-</span> nucleotideLength <span class="hl opt">+</span> <span class="hl num">1</span>
     <span class="hl kwa">for</span> element <span class="hl kwa">in</span> items <span class="hl kwa">do</span>
-         <span class="hl kwa">let</span> percent <span class="hl opt">=</span> single element<span class="hl opt">.</span><span class="hl kwd">Value</span><span class="hl opt">.</span>value <span class="hl opt">*</span> <span class="hl num">100.0f</span> <span class="hl opt">/</span> single sum
+         <span class="hl kwa">let</span> percent <span class="hl opt">=</span> double element<span class="hl opt">.</span><span class="hl kwd">Value</span><span class="hl opt">.</span>value <span class="hl opt">*</span> <span class="hl num">100.0</span> <span class="hl opt">/</span> double sum
          buf<span class="hl opt">.</span><span class="hl kwd">AppendFormat</span><span class="hl opt">(</span><span class="hl str">&quot;{0} {1:f3}</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> element<span class="hl opt">.</span><span class="hl kwd">Key</span><span class="hl opt">,</span> percent<span class="hl opt">)</span> |<span class="hl opt">&gt;</span> ignore
 
     buf<span class="hl opt">.</span><span class="hl kwd">ToString</span><span class="hl opt">()</span>

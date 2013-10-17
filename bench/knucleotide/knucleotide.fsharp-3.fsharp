@@ -77,7 +77,7 @@ let WriteFrequencies(nucleotideLength) =
     let buf = new StringBuilder()
     let sum = dna.Length - nucleotideLength + 1
     for element in items do
-         let percent = single element.Value.value * 100.0f / single sum
+         let percent = double element.Value.value * 100.0 / double sum
          buf.AppendFormat("{0} {1:f3}\n", element.Key, percent) |> ignore
 
     buf.ToString()
