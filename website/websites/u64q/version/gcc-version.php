@@ -1,1 +1,1 @@
-<p>gcc (Ubuntu/Linaro 4.7.3-1ubuntu1) 4.7.3</p>
+<p>gcc version 4.8.1 (Ubuntu/Linaro 4.8.1-10ubuntu8)</p>

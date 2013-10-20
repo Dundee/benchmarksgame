@@ -1,5 +1,5 @@
 
-Sat, 27 Apr 2013 21:52:49 GMT
+Sat, 19 Oct 2013 17:48:08 GMT
 
 MAKE:
 /usr/bin/gnatchop -r -w chameneosredux.gnat-2.gnat
@@ -33,17 +33,10 @@ gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp ch
 gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp x86_atomic_swap_utils.adb
 gnatbind -x chameneosredux.ali
 gnatlink chameneosredux.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o chameneosredux.gnat-2.gnat_run
-2.10s to complete and log all make actions
+1.72s to complete and log all make actions
 
 COMMAND LINE:
 ./chameneosredux.gnat-2.gnat_run 6000000
-
-UNEXPECTED OUTPUT 
-
-15c15
-<  one one nine nine nine nine nine nine
---- field 2
->  one two zero zero zero zero zero zero
 
 PROGRAM OUTPUT:
 blue + blue -> blue
@@ -57,21 +50,21 @@ yellow + red -> blue
 yellow + yellow -> yellow
 
  blue red yellow
-3155334 zero
-5928277 zero
-2916388 zero
- one one nine nine nine nine nine nine
+3007466 zero
+2992633 zero
+5999901 zero
+ one two zero zero zero zero zero zero
 
  blue red yellow red yellow blue red yellow red blue
-1296260 zero
-1263805 zero
-1307420 zero
-1010195 zero
-1189756 zero
-1018132 zero
-1044697 zero
-1347353 zero
-1254226 zero
-1268156 zero
+1337791 zero
+1338114 zero
+1026692 zero
+1009161 zero
+1122692 zero
+1182078 zero
+1176198 zero
+1619856 zero
+1101739 zero
+1085679 zero
  one two zero zero zero zero zero zero
 

@@ -1,13 +1,19 @@
 
-Sun, 28 Apr 2013 01:39:51 GMT
+Sun, 20 Oct 2013 02:52:08 GMT
 
 MAKE:
 /usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread threadring.c -o threadring.gcc_run 
 threadring.c: In function ‘thread’:
 threadring.c:30:12: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+    int l = (int)num;
+            ^
 threadring.c: In function ‘main’:
 threadring.c:67:53: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+       pthread_create(&cthread, &stack_attr, thread, (void*)i);
+                                                     ^
 threadring.c:72:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
 rm threadring.c
 0.10s to complete and log all make actions
 

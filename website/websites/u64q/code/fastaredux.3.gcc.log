@@ -1,14 +1,20 @@
 
-Sat, 27 Apr 2013 04:42:08 GMT
+Sat, 19 Oct 2013 18:09:40 GMT
 
 MAKE:
 /usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -std=c99 -mfpmath=sse -msse3 fastaredux.gcc-3.c -o fastaredux.gcc-3.gcc_run 
 fastaredux.gcc-3.c: In function ‘repeat’:
 fastaredux.gcc-3.c:53:5: warning: implicit declaration of function ‘fputs_unlocked’ [-Wimplicit-function-declaration]
+     fputs_unlocked(title, stdout);
+     ^
 fastaredux.gcc-3.c:57:9: warning: implicit declaration of function ‘fwrite_unlocked’ [-Wimplicit-function-declaration]
+         fwrite_unlocked(buffer + pos, bytes, 1, stdout);
+         ^
 fastaredux.gcc-3.c:62:9: warning: implicit declaration of function ‘fputc_unlocked’ [-Wimplicit-function-declaration]
+         fputc_unlocked('\n', stdout);
+         ^
 rm fastaredux.gcc-3.c
-0.13s to complete and log all make actions
+0.14s to complete and log all make actions
 
 COMMAND LINE:
 ./fastaredux.gcc-3.gcc_run 25000000

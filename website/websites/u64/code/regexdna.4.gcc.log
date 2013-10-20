@@ -1,16 +1,20 @@
 
-Sat, 27 Apr 2013 23:52:44 GMT
+Sun, 20 Oct 2013 02:11:12 GMT
 
 MAKE:
 /usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -fopenmp regexdna.gcc-4.c -o regexdna.gcc-4.gcc_run -lpcre
 regexdna.gcc-4.c: In function ‘Count_Patterns’:
-regexdna.gcc-4.c:131:10: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has type ‘size_t’ [-Wformat]
+regexdna.gcc-4.c:131:10: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has type ‘size_t’ [-Wformat=]
+          plen += sprintf(result + plen, "%s %d\n", ptns[i], counters[i]);
+          ^
 regexdna.gcc-4.c: In function ‘main’:
-regexdna.gcc-4.c:263:7: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘size_t’ [-Wformat]
-regexdna.gcc-4.c:263:7: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has type ‘size_t’ [-Wformat]
-regexdna.gcc-4.c:263:7: warning: format ‘%d’ expects argument of type ‘int’, but argument 5 has type ‘size_t’ [-Wformat]
+regexdna.gcc-4.c:263:7: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘size_t’ [-Wformat=]
+       replace_length );
+       ^
+regexdna.gcc-4.c:263:7: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has type ‘size_t’ [-Wformat=]
+regexdna.gcc-4.c:263:7: warning: format ‘%d’ expects argument of type ‘int’, but argument 5 has type ‘size_t’ [-Wformat=]
 rm regexdna.gcc-4.c
-0.21s to complete and log all make actions
+0.15s to complete and log all make actions
 
 COMMAND LINE:
 ./regexdna.gcc-4.gcc_run 0 < regexdna-input5000000.txt

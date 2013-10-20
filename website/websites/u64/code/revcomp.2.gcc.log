@@ -1,10 +1,12 @@
 
-Sun, 28 Apr 2013 00:02:01 GMT
+Sat, 19 Oct 2013 22:00:54 GMT
 
 MAKE:
 /usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread -std=c99 revcomp.gcc-2.c -o revcomp.gcc-2.gcc_run 
 revcomp.gcc-2.c: In function ‘main’:
 revcomp.gcc-2.c:92:9: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+    write(fileno(stdout), buf, end);
+         ^
 rm revcomp.gcc-2.c
 0.12s to complete and log all make actions
 

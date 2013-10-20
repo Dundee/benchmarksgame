@@ -1,5 +1,5 @@
 
-Sat, 27 Apr 2013 22:15:54 GMT
+Sat, 19 Oct 2013 18:53:47 GMT
 
 MAKE:
 /usr/bin/gnatchop -r -w regexdna.gnat-5.gnat
@@ -25,7 +25,7 @@ gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp dn
 gcc-4.6 -c -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -gnatNp preprocessing.adb
 gnatbind -x regexdna.ali
 gnatlink regexdna.ali -O3 -fomit-frame-pointer -march=native -msse3 -mfpmath=sse -o regexdna.gnat-5.gnat_run
-2.96s to complete and log all make actions
+2.92s to complete and log all make actions
 
 COMMAND LINE:
 ./regexdna.gnat-5.gnat_run 0 < regexdna-input5000000.txt

@@ -1,19 +1,31 @@
 
-Sat, 27 Apr 2013 04:39:39 GMT
+Sat, 19 Oct 2013 18:06:08 GMT
 
 MAKE:
 /usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -std=c99 -mfpmath=sse -msse3 fasta.gcc-2.c -o fasta.gcc-2.gcc_run 
 fasta.gcc-2.c: In function ‘str_write’:
 fasta.gcc-2.c:41:4: warning: implicit declaration of function ‘fileno’ [-Wimplicit-function-declaration]
+    write(fileno(stdout), s, strlen(s));
+    ^
 fasta.gcc-2.c: At top level:
 fasta.gcc-2.c:82:20: warning: ‘rseed’ is static but declared in inline function ‘rnd’ which is not static [enabled by default]
-fasta.gcc-2.c: In function ‘str_write’:
-fasta.gcc-2.c:41:9: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
-fasta.gcc-2.c: In function ‘rand_fasta’:
-fasta.gcc-2.c:110:15: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
-fasta.gcc-2.c:116:12: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+    static unsigned rseed = 42;
+                    ^
 fasta.gcc-2.c: In function ‘str_repeat’:
 fasta.gcc-2.c:64:12: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+       write(fd, buf, l);
+            ^
+fasta.gcc-2.c: In function ‘str_write’:
+fasta.gcc-2.c:41:9: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+    write(fileno(stdout), s, strlen(s));
+         ^
+fasta.gcc-2.c: In function ‘rand_fasta’:
+fasta.gcc-2.c:110:15: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+          write(fd, buf, WIDTH + 1);
+               ^
+fasta.gcc-2.c:116:12: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+       write(fd, buf, i + 1);
+            ^
 rm fasta.gcc-2.c
 0.11s to complete and log all make actions
 
