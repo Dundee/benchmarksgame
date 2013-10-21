@@ -1,15 +1,21 @@
 
-Sat, 27 Apr 2013 16:22:37 GMT
+Sun, 20 Oct 2013 19:51:13 GMT
 
 MAKE:
 /usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -std=c99 -mfpmath=sse -msse3 fasta.c -o fasta.gcc_run 
 fasta.c: In function ‘makeRepeatFasta’:
 fasta.c:75:4: warning: implicit declaration of function ‘strlen’ [-Wimplicit-function-declaration]
+    int todo = n, k = 0, kn = strlen (s);
+    ^
 fasta.c:75:30: warning: incompatible implicit declaration of built-in function ‘strlen’ [enabled by default]
+    int todo = n, k = 0, kn = strlen (s);
+                              ^
 fasta.c:79:4: warning: implicit declaration of function ‘memcpy’ [-Wimplicit-function-declaration]
+    memcpy (ss, s, kn+1);
+    ^
 fasta.c:79:4: warning: incompatible implicit declaration of built-in function ‘memcpy’ [enabled by default]
 rm fasta.c
-0.14s to complete and log all make actions
+0.13s to complete and log all make actions
 
 COMMAND LINE:
 ./fasta.gcc_run 25000000

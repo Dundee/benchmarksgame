@@ -1,10 +1,10 @@
 
-Sat, 27 Apr 2013 15:52:10 GMT
+Sun, 20 Oct 2013 19:21:28 GMT
 
 MAKE:
-/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -std=c99 -pthread binarytrees.c -o binarytrees.gcc_run -lm
+/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -fopenmp -D_FILE_OFFSET_BITS=64 -I/usr/include/apr-1.0 binarytrees.c -o binarytrees.gcc_run -lapr-1 -lgomp -lm
 rm binarytrees.c
-0.26s to complete and log all make actions
+0.30s to complete and log all make actions
 
 COMMAND LINE:
 ./binarytrees.gcc_run 20
