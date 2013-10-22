@@ -3,7 +3,7 @@
 
 // FUNCTIONS ///////////////////////////////////////////
 
-function MkHeadToHeadMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang,$SelectedLang2){
+function MkHeadToHeadMenuForm($Tests,$Langs,$SelectedLang,$SelectedLang2){
    echo '<form method="get" action="benchmark.php">', "\n";
    echo '<p><select name="test">', "\n";
    echo '<option value="all">- all ', TESTS_PHRASE, 's -</option>', "\n";
@@ -11,11 +11,7 @@ function MkHeadToHeadMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang,$Selecte
    foreach($Tests as $Row){
       $Link = $Row[TEST_LINK];
       $Name = $Row[TEST_NAME];
-      if ($Link==$SelectedTest){
-         $Selected = 'selected="selected"';
-      } else {
-         $Selected = '';
-      }
+      $Selected = '';
       printf('<option %s value="%s">%s</option>', $Selected,$Link,$Name); echo "\n";
    }
    echo '</select>', "\n";
@@ -89,17 +85,13 @@ function MkLangsMenuForm($Langs,$SelectedLang,$Action='measurements.php'){
    echo '</p></form>', "\n";
 }
 
-function MkTestsMenuForm($Tests,$SelectedTest){
+function MkTestsMenuForm($Tests){
    echo '<form method="get" action="performance.php">', "\n";
    echo '<p><select name="test">', "\n";
    foreach($Tests as $Row){
       $Link = $Row[TEST_LINK];
       $Name = $Row[TEST_NAME];
-      if ($Link==$SelectedTest){
-         $Selected = 'selected="selected"';
-      } else {
-         $Selected = '';
-      }
+      $Selected = '';
       printf('<option %s value="%s">%s</option>', $Selected,$Link,$Name); echo "\n";
    }
    echo '</select>', "\n";
@@ -143,7 +135,7 @@ $LangLink2 = $Langs[$SelectedLang2][LANG_LINK];
 $ExplanatoryHeader = '&nbsp;<strong>'.$LangName.'</strong>&nbsp;<b>used</b> what fraction? <b>used</b> how many times more?&nbsp;';
 ?>
 
-<? MkHeadToHeadMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang,$SelectedLang2); ?>
+<? MkHeadToHeadMenuForm($Tests,$Langs,$SelectedLang,$SelectedLang2); ?>
 
 <? if ($CanonicalPage){ echo '<p><g:plusone annotation="none"></g:plusone></p> 
 <script type="text/javascript">
@@ -281,7 +273,7 @@ foreach($sorted as $k => $rows){
 
    if (!empty($rows)){
 
-      printf('<tr><th class="txt" colspan="3">&nbsp;<a name="%s" href="performance.php?test=%s" title="Measurements for all the %s benchmark programs">%s</a><span class="smaller">%s</span>&nbsp;</th><th colspan="3"></th></tr>', $k, $k, $testname, $testname, $n);
+      printf('<tr><th class="txt" colspan="3">&nbsp;<a name="%s" href="performance.php?test=%s" title="Measurements for all the %s benchmark programs">%s</a>&nbsp;</th><th colspan="3"></th></tr>', $k, $k, $testname, $testname);
 
       $ELAPSED = '';
       if (isset($rows[0]) && isset($rows[1]) && ($rows[0][DATA_TIME] < $rows[1][DATA_TIME])){
@@ -308,7 +300,7 @@ foreach($sorted as $k => $rows){
             if ($row[DATA_ELAPSED]>0){ $e = number_format($row[DATA_ELAPSED],2); } else { $e = ''; }
             $ld = CpuLoad($row);
 
-            if ($mismatches[$k]){
+            if (isset($mismatches[$k])&&($mismatches[$k])){
                $ld .= '&nbsp;&#8224;';
                $hasMismatches = true;
             }
@@ -352,7 +344,7 @@ if ($hasMismatches){
 
 <h2><a href="#measurements" name="measurements">&nbsp;5&nbsp;:&nbsp;Are there other faster programs for these benchmarks?</a></h2>
 <p>Remember - those are just the fastest <em><?=$LangName;?></em> and <i><?=$LangName2;?></i> programs measured on this OS/machine. <b>Check</b> if there are faster implementations of these benchmark programs for other programming languages.</p>
-<? MkTestsMenuForm($Tests,$SelectedTest); ?>
+<? MkTestsMenuForm($Tests); ?>
 <p>Maybe one of those other programs is fastest on <a href="<?=CORE_SITE;?>dont-jump-to-conclusions.php#multicore" title="x86, x64 and quad-core">a different OS/machine</a>.</p>
 
 

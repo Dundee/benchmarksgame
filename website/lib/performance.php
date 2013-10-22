@@ -41,7 +41,11 @@ function BenchmarkData($FileName,$Test,$Langs,$Incl,$Excl,$Sort,$SLangs,$HasHead
          $lang = $row[DATA_LANG];
 
          if (isset($Incl[$lang])){
-            $exclude = $Excl[ $Test.$lang.$row[DATA_ID] ];
+               //$exclude = $Excl[ $Test.$lang.$row[DATA_ID] ];
+            $exclude = NULL;
+            if (isset($Excl[ $Test.$lang.$row[DATA_ID] ])){
+               $exclude = $Excl[ $Test.$lang.$row[DATA_ID] ];
+            }
             if (!$exclude){
                settype($row[DATA_ID],'integer');
                settype($row[DATA_TESTVALUE],'integer');

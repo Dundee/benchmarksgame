@@ -28,8 +28,6 @@ $bannerUrl = CORE_SITE;
 $faqUrl = CORE_SITE.'dont-jump-to-conclusions.php';
 $MetaKeywords = '<meta name="description" content="How programs were measured. FAQs. How to contribute programs. " />';
 
-
-
 $Page->set('Robots', $metaRobots);
 $Page->set('BannerUrl', $bannerUrl);
 $Page->set('FaqUrl', $faqUrl);

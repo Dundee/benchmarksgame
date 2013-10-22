@@ -32,13 +32,10 @@ if (isset($_GET['lang'])
 if (!isset($L)){ $L = 'all'; }
 
 
-if ($L2 == 'lang'){ $L2 = $L; }
-else {
-   if (isset($_GET['lang2'])
-         && strlen($_GET['lang2']) && (strlen($_GET['lang2']) <= $NAME_LEN)){
-      $X = $_GET['lang2'];
-      if (ereg("^[a-z0-9]+$",$X)){ $L2 = Alias($X); }
-   }
+if (isset($_GET['lang2'])
+      && strlen($_GET['lang2']) && (strlen($_GET['lang2']) <= $NAME_LEN)){
+   $X = $_GET['lang2'];
+   if (ereg("^[a-z0-9]+$",$X)){ $L2 = Alias($X); }
 }
 if (!isset($L2)){
    if ($L!='all'){ $L2 = $Langs[$L][$LANG_COMPARE]; }

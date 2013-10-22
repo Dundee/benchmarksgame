@@ -1,7 +1,7 @@
 <?   // Copyright (c) Isaac Gouy 2009-2013 ?>
 
 <?
-   MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang);
+   MkMenuForm($Tests,NULL,$Langs,NULL);
 
    list($labels,$stats) = $Data;
    unset($Data);  

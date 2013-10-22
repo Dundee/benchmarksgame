@@ -28,7 +28,7 @@ function PFx($d){
 
 // PAGE ////////////////////////////////////////////////
 
-MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang);
+MkMenuForm($Tests,$SelectedTest,$Langs,NULL);
 $Row = $Tests[$SelectedTest];
 $TestName = $Row[TEST_NAME];
 $TestTag = $Row[TEST_TAG];

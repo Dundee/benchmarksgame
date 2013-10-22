@@ -40,6 +40,7 @@ function BestRows($rows){
    $testvalue = -2; // assume not test value is < 0
    $time = 360000.0; // assume no program was allowed to run for 100 hours
    $id = -2; // assume no id is < 0
+   $failed_id = 0;
 
    // Identify id of fastest row at largest n, or whatever rows there are
    foreach($rows as $row) {
@@ -288,7 +289,7 @@ $MetaKeywords = '<meta name="description" content="'.$LangName.' programs vs '.$
          
 $metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
 
-$canonicalPage = empty($LinkRelCanonical);
+$canonicalPage = isset($LinkRelCanonical) && !(empty($LinkRelCanonical));
 
 
 // TEMPLATE VARS ////////////////////////////////////////////////
@@ -315,7 +316,11 @@ $Body->set('About', $About->fetch($AboutTemplateName));
 $Page->set('PageBody', $Body->fetch($TemplateName));
 $Page->set('Robots', $metaRobots);
 $Page->set('MetaKeywords', $MetaKeywords);
-$Page->set('LinkCanonical', $LinkRelCanonical);
+
+if (isset($LinkRelCanonical)) { 
+   $Page->set('LinkCanonical', $LinkRelCanonical);
+}
+
 $Page->set('PageId', $PageId);
 
 echo $Page->fetch('page.tpl.php');
