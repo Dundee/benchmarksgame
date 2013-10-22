@@ -139,7 +139,6 @@ $LangTag = $Row[LANG_TAG];
 $LangName2 = $Langs[$SelectedLang2][LANG_FULL];
 $LangLink = $Row[LANG_LINK];
 $LangLink2 = $Langs[$SelectedLang2][LANG_LINK];
-$Family = $Row[LANG_FAMILY];
 
 $ExplanatoryHeader = '&nbsp;<strong>'.$LangName.'</strong>&nbsp;<b>used</b> what fraction? <b>used</b> how many times more?&nbsp;';
 ?>

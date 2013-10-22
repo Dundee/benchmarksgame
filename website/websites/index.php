@@ -59,7 +59,7 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 
 
 <table>
-<?
+<?php
 $sites = array('u32','u64q','u32q','u64');
 
 function PrintHeaders(){

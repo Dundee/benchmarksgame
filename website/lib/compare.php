@@ -9,7 +9,6 @@ require_once(LIB_PATH.'lib_data.php');
 
 // DATA LAYOUT ///////////////////////////////////////////////////
 
-define('PROGRAM_TIMEOUT',-1);
 
 define('STATS_SIZE',8);
 define('STAT_MIN',0);
@@ -234,13 +233,10 @@ if (isset($_GET['lang'])
 if (!isset($L)){ $L = 'java'; }
 
 
-if ($L2 == 'lang'){ $L2 = $L; }
-else {
-   if (isset($_GET['lang2'])
-         && strlen($_GET['lang2']) && (strlen($_GET['lang2']) <= NAME_LEN)){
-      $X = $_GET['lang2'];
-      if (ereg("^[a-z0-9]+$",$X) && (isset($Langs[$X]) && isset($Incl[$X]))){ $L2 = $X; }
-   }
+if (isset($_GET['lang2'])
+      && strlen($_GET['lang2']) && (strlen($_GET['lang2']) <= NAME_LEN)){
+   $X = $_GET['lang2'];
+   if (ereg("^[a-z0-9]+$",$X) && (isset($Langs[$X]) && isset($Incl[$X]))){ $L2 = $X; }
 }
 if (!isset($L2) || $L2 == $L){
    $L2 = $Langs[$L][LANG_COMPARE];
