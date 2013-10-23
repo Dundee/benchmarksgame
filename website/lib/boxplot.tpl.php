@@ -34,17 +34,16 @@
    $chart = 'chartbox.php';
 ?>
 
-<? if ($CanonicalPage){ echo '<p><g:plusone annotation="none"></g:plusone></p>'; } ?>
-
-<p><em>"What gets us into trouble is not what we don't know, it's what we know for sure that just ain't so."</em></p>
-
+<? if ($CanonicalPage){ echo '<p><g:plusone annotation="none"></g:plusone></p>
 <script type="text/javascript">
   (function() {
-    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://apis.google.com/js/plusone.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    var po = document.createElement("script"); po.type = "text/javascript"; po.async = true;
+    po.src = "https://apis.google.com/js/plusone.js";
+    var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(po, s);
   })();
-</script>
+</script>'; } ?>
+
+<p><em>"What gets us into trouble is not what we don't know, it's what we know for sure that just ain't so."</em></p>
 
 <h2><a href="<?=$pageUrl;?>#chart" name="chart">&nbsp;<strong>Which programs are fastest?</strong></a></h2>
 

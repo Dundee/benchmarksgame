@@ -193,6 +193,8 @@ if (! file_exists(ABOUT_PATH.$AboutTemplateName)){ $AboutTemplateName = 'blank-a
 $metaRobots = '<meta name="robots" content="index,follow,noarchive" />';
 $MetaKeywords = '<meta name="description" content="Which of these programming language implementations have the fastest benchmark programs ('.PLATFORM_NAME.')." />';
 
+$canonicalPage = !(isset($LinkRelCanonical) && !(empty($LinkRelCanonical)));
+
 
 // TEMPLATE VARS ////////////////////////////////////////////////
 
@@ -210,6 +212,7 @@ $Body->set('TimeUsed', $timeUsed);
 
 $Body->set('Data', $Data );
 $Body->set('Title', $Title);
+$Body->set('CanonicalPage', $canonicalPage);
 
 $Body->set('About', $About->fetch($AboutTemplateName));
 
