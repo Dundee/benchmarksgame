@@ -136,16 +136,15 @@ $ExplanatoryHeader = '&nbsp;<strong>'.$LangName.'</strong>&nbsp;<b>used</b> what
 
 MkHeadToHeadMenuForm($Tests,$Langs,$SelectedLang,$SelectedLang2); 
 
-if ($CanonicalPage){ echo '<p><g:plusone annotation="none"></g:plusone></p>'; } 
-?> 
-
+if ($CanonicalPage){ echo '<p><g:plusone annotation="none"></g:plusone></p>
 <script type="text/javascript">
   (function() {
     var po = document.createElement("script"); po.type = "text/javascript"; po.async = true;
     po.src = "https://apis.google.com/js/plusone.js";
     var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(po, s);
   })();
-</script>
+</script>'; } 
+?> 
 
 <h2><a href="#faster-programs-chart" name="faster-programs-chart">&nbsp;1&nbsp;:&nbsp;Are the <strong><?=$LangName;?> programs faster</strong>?</a> <i>At a glance.</i></h2>
 

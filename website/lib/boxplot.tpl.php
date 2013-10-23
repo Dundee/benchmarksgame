@@ -34,6 +34,8 @@
    $chart = 'chartbox.php';
 ?>
 
+<p><em>"What gets us into trouble is not what we don't know, it's what we know for sure that just ain't so."</em></p>
+
 <? if ($CanonicalPage){ echo '<p><g:plusone annotation="none"></g:plusone></p>
 <script type="text/javascript">
   (function() {
@@ -42,8 +44,6 @@
     var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(po, s);
   })();
 </script>'; } ?>
-
-<p><em>"What gets us into trouble is not what we don't know, it's what we know for sure that just ain't so."</em></p>
 
 <h2><a href="<?=$pageUrl;?>#chart" name="chart">&nbsp;<strong>Which programs are fastest?</strong></a></h2>
 
