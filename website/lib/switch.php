@@ -86,16 +86,20 @@ if ($T=='all'){
          }
 
          require_once(LIB_PATH.'compare.php');
-      } else {
 
-        $LinkRelCanonical = '<link rel="canonical" href="measurements.php?lang='.$L.'" />';
+      } else {
 
         require_once(LIB_PATH.'measurements.php');
       }
    }
 } elseif ($L=='all'){
+
+        $LinkRelCanonical = '<link rel="canonical" href="http://benchmarksgame.alioth.debian.org/u32/performance.php?test='.$T.'" />';
+
    require_once(LIB_PATH.'performance.php');
+
 } else {
+
    require_once(LIB_PATH.'program.php');
 }
 ?>

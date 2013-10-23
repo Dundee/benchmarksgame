@@ -213,6 +213,8 @@ if (! file_exists(ABOUT_PATH.$AboutTemplateName)){ $AboutTemplateName = 'blank-a
 $metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
 $MetaKeywords = '<meta name="description" content="For ~24 programming languages compare programs that '.$Tests[$T][TEST_META].' ('.PLATFORM_NAME.')." />';
 
+$canonicalPage = !(isset($LinkRelCanonical) && !(empty($LinkRelCanonical)));
+
 
 // TEMPLATE VARS ////////////////////////////////////////////////
 
@@ -231,6 +233,7 @@ $Body->set('Mark', $mark);
 $Body->set('Sort', $S);
 $Body->set('Data', $Data );
 $Body->set('Title', $Title);
+$Body->set('CanonicalPage', $canonicalPage);
 
 $About->set('SelectedTest', $T);
 $Body->set('About', $About->fetch($AboutTemplateName));
@@ -238,7 +241,7 @@ $Body->set('About', $About->fetch($AboutTemplateName));
 $Page->set('PageBody', $Body->fetch($TemplateName));
 $Page->set('Robots', $metaRobots);
 $Page->set('MetaKeywords', $MetaKeywords);
-$Page->set('LinkCanonical', '<link rel="canonical" href="http://benchmarksgame.alioth.debian.org/u32/performance.php?test='.$T.'" />');
+if (isset($LinkRelCanonical)) { $Page->set('LinkCanonical', $LinkRelCanonical); }
 $Page->set('PageId', $PageId);
 
 echo $Page->fetch('page.tpl.php');
