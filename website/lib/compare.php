@@ -289,7 +289,7 @@ $MetaKeywords = '<meta name="description" content="'.$LangName.' programs vs '.$
          
 $metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
 
-$canonicalPage = isset($LinkRelCanonical) && !(empty($LinkRelCanonical));
+$canonicalPage = !(isset($LinkRelCanonical) && !(empty($LinkRelCanonical)));
 
 
 // TEMPLATE VARS ////////////////////////////////////////////////
