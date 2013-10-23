@@ -41,6 +41,8 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 
 <p><i>"After all, facts are facts, and although we may quote one to another with a chuckle the words of the Wise Statesman, 'Lies--damned lies--and statistics,' still there are some easy figures the simplest must understand, and the astutest cannot wriggle out of."</i> <span class="smaller">Leonard Henry Courtney, 1895</span></p>
 
+<p><g:plusone annotation="none"></g:plusone></p>
+
 <script type="text/javascript">
   (function() {
     var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
