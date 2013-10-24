@@ -260,9 +260,11 @@ if (!isset($L2) || $L2 == $L){
 $mark = MarkTime();
 $mark = $mark.' '.SITE_NAME;
 
-$LangName = $Langs[$L][LANG_FULL];
-$LangName2 = $Langs[$L2][LANG_FULL];
-$Title = $LangName.'&nbsp;vs&nbsp;'.$LangName2;
+$LangName = (isset($Langs[$L])) ? $Langs[$L][LANG_FULL] : '';
+$LangName2 = (isset($Langs[$L2])) ? $Langs[$L2][LANG_FULL] : '';
+
+// see META section
+//$Title = $LangName.'&nbsp;vs&nbsp;'.$LangName2;
 
 $bannerUrl = CORE_SITE;
 $faqUrl = CORE_SITE.'play.php';
@@ -287,9 +289,18 @@ $About->set('Version', HtmlFragment(VERSION_PATH.$L.SEPARATOR.'version.php'));
 
 $MetaKeywords = '<meta name="description" content="'.$LangName.' programs vs '.$LangName2.' programs ('.PLATFORM_NAME.')." />';
          
-$metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
+// if the URL parameter is not currently accepted then do not index
+if ($LangName && $LangName2) { 
+   $metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
+   $canonicalPage = !(isset($LinkRelCanonical) && !(empty($LinkRelCanonical)));
+   $Title = $LangName.'&nbsp;vs&nbsp;'.$LangName2;
+} else {
+   $metaRobots = '<meta name="robots" content="noindex,nofollow" />';
+   $canonicalPage = FALSE;
+   $Title = 'Those measurements are not available';
+}
 
-$canonicalPage = !(isset($LinkRelCanonical) && !(empty($LinkRelCanonical)));
+
 
 
 // TEMPLATE VARS ////////////////////////////////////////////////
