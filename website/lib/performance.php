@@ -169,7 +169,8 @@ if (isset($_GET['test'])
    $X = $_GET['test'];
    if (ereg("^[a-z]+$",$X) && (isset($Tests[$X]) && isset($Incl[$X]))){ $T = $X; }
 }
-if (!isset($T)){ $T = 'nbody'; }
+$Available = isset($T) && isset($Tests[$T]) && isset($Incl[$T]);
+if (!$Available){ $T = 'nbody'; }
 
 
 if (isset($_GET['sort'])
@@ -190,7 +191,7 @@ $mark = MarkTime();
 $mark = $mark.' '.SITE_NAME;
 
 $TestName = $Tests[$T][TEST_NAME];
-$Title = $TestName.' benchmark';
+$Title = ($Available) ? $TestName.' benchmark' : 'Not Available';
 
 $bannerUrl = CORE_SITE;
 $faqUrl = CORE_SITE.'play.php';
@@ -210,10 +211,15 @@ if (! file_exists(ABOUT_PATH.$AboutTemplateName)){ $AboutTemplateName = 'blank-a
 
 // META ////////////////////////////////////////////////
 
-$metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
 $MetaKeywords = '<meta name="description" content="For ~24 programming languages compare programs that '.$Tests[$T][TEST_META].' ('.PLATFORM_NAME.')." />';
 
-$canonicalPage = !(isset($LinkRelCanonical) && !(empty($LinkRelCanonical)));
+if ($Available) { 
+   $metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
+   $canonicalPage = !(isset($LinkRelCanonical) && !(empty($LinkRelCanonical)));
+} else {
+   $metaRobots = '<meta name="robots" content="noindex,nofollow" />';
+   $canonicalPage = FALSE;
+}
 
 
 // TEMPLATE VARS ////////////////////////////////////////////////

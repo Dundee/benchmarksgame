@@ -38,7 +38,7 @@ if (isset($_GET['lang2'])
    if (ereg("^[a-z0-9]+$",$X)){ $L2 = Alias($X); }
 }
 if (!isset($L2)){
-   if ($L!='all'){ $L2 = $Langs[$L][$LANG_COMPARE]; }
+   if ($L!='all'){ $L2 = ''; }
 }
 
 

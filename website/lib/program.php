@@ -106,9 +106,10 @@ if (!isset($T)){ $T = 'nbody'; }
 if (isset($_GET['lang'])
       && strlen($_GET['lang']) && (strlen($_GET['lang']) <= NAME_LEN)){
    $X = $_GET['lang'];
-   if (ereg("^[a-z0-9]+$",$X) && isset($Langs[$X]) && isset($Incl[$X])){ $L = $X; }
+   if (ereg("^[a-z0-9]+$",$X)){ $L = $X; }
 }
-if (!isset($L)){ $L = 'java'; }
+$Available = isset($L) && isset($Langs[$L]) && isset($Incl[$L]);
+if (!$Available){ $L = 'java'; }
 
 
 if (isset($_GET['id']) && strlen($_GET['id']) == 1){
@@ -135,7 +136,7 @@ $mark = $mark.' '.SITE_NAME;
 
 $TestName = $Tests[$T][TEST_NAME];
 $LangName = $Langs[$L][LANG_FULL];
-$Title = $TestName.' '.$LangName.IdName($I).' program';
+$Title = ($Available) ? $TestName.' '.$LangName.IdName($I).' program' : 'Not Available';
 
 $bannerUrl = CORE_SITE;
 $faqUrl = CORE_SITE.'play.php';

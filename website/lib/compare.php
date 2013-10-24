@@ -226,33 +226,26 @@ list($Incl,$Excl) = WhiteListInEx();
 $Tests = WhiteListUnique('test.csv',$Incl); // assume test.csv in name order
 $Langs = WhiteListUnique('lang.csv',$Incl); // assume lang.csv in name order
 
+
+// if compare.php was requested directly get the request parameters
 if (isset($_GET['lang'])
       && strlen($_GET['lang']) && (strlen($_GET['lang']) <= NAME_LEN)){
    $X = $_GET['lang'];
-   if (ereg("^[a-z0-9]+$",$X) && (isset($Langs[$X]) && isset($Incl[$X]))){ $L = $X; }
+   if (ereg("^[a-z0-9]+$",$X)){ $L = $X; }
 }
-if (!isset($L)){ $L = 'java'; }
+$Available = isset($L) && isset($Langs[$L]) && isset($Incl[$L]);
+if (!$Available){ $L = 'java'; }
 
 
 if (isset($_GET['lang2'])
       && strlen($_GET['lang2']) && (strlen($_GET['lang2']) <= NAME_LEN)){
    $X = $_GET['lang2'];
-   if (ereg("^[a-z0-9]+$",$X) && (isset($Langs[$X]) && isset($Incl[$X]))){ $L2 = $X; }
+   if (ereg("^[a-z0-9]+$",$X)){ $L2 = $X; }
 }
-if (!isset($L2) || $L2 == $L){
-   $L2 = $Langs[$L][LANG_COMPARE];
-   
-   // just use ANY included language for comparison
-   // rather than have no comparison
 
-   if (!isset($Incl[$L2])){
-      foreach(array_keys($Langs) as $k){
-         if ($k != $L && isset($Incl[$k])){
-            $L2 = $k;
-         }
-      }
-   }
-}
+$Available = $Available && isset($L2) && isset($Langs[$L2]) && isset($Incl[$L2]) && ($L2 != $L);
+// assume LANG_COMPARE is always available in every data set
+if (!$Available){ $L2 = $Langs[$L][LANG_COMPARE]; }
 
 
 // HEADER ////////////////////////////////////////////////
@@ -260,11 +253,9 @@ if (!isset($L2) || $L2 == $L){
 $mark = MarkTime();
 $mark = $mark.' '.SITE_NAME;
 
-$LangName = (isset($Langs[$L])) ? $Langs[$L][LANG_FULL] : '';
-$LangName2 = (isset($Langs[$L2])) ? $Langs[$L2][LANG_FULL] : '';
-
-// see META section
-//$Title = $LangName.'&nbsp;vs&nbsp;'.$LangName2;
+$LangName = $Langs[$L][LANG_FULL];
+$LangName2 = $Langs[$L2][LANG_FULL];
+$Title = ($Available) ? $LangName.'&nbsp;vs&nbsp;'.$LangName2 : 'Not Available';
 
 $bannerUrl = CORE_SITE;
 $faqUrl = CORE_SITE.'play.php';
@@ -290,14 +281,12 @@ $About->set('Version', HtmlFragment(VERSION_PATH.$L.SEPARATOR.'version.php'));
 $MetaKeywords = '<meta name="description" content="'.$LangName.' programs vs '.$LangName2.' programs ('.PLATFORM_NAME.')." />';
          
 // if the URL parameter is not currently accepted then do not index
-if ($LangName && $LangName2) { 
+if ($Available) { 
    $metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
    $canonicalPage = !(isset($LinkRelCanonical) && !(empty($LinkRelCanonical)));
-   $Title = $LangName.'&nbsp;vs&nbsp;'.$LangName2;
 } else {
    $metaRobots = '<meta name="robots" content="noindex,nofollow" />';
    $canonicalPage = FALSE;
-   $Title = 'Those measurements are not available';
 }
 
 

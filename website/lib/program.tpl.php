@@ -5,6 +5,7 @@ MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang,$Id);
 $TestName = $Tests[$SelectedTest][TEST_NAME];
 $TestTag = $Tests[$SelectedTest][TEST_TAG];
 $LangName = $Langs[$SelectedLang][LANG_FULL];
+$SourceCodeName = $TestName.' '.$LangName.IdName($Id).' program';
 ?>
 
 <h2><a href="#measurements" name="measurements">&nbsp;performance measurements</a></h2>
@@ -56,7 +57,7 @@ foreach($Data as $d){
 
 <h3><a href="#about" name="about">&nbsp;notes</a></h3><?=$About;?>
 
-<h2><a href="#sourcecode" name="sourcecode">&nbsp;<?=$Title;?> source code</a></h2>
+<h2><a href="#sourcecode" name="sourcecode">&nbsp;<?=$SourceCodeName;?> source code</a></h2>
 
 <pre><?=$Code;?></pre>
 
