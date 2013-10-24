@@ -233,19 +233,33 @@ if (isset($_GET['lang'])
    $X = $_GET['lang'];
    if (ereg("^[a-z0-9]+$",$X)){ $L = $X; }
 }
-$Available = isset($L) && isset($Langs[$L]) && isset($Incl[$L]);
-if (!$Available){ $L = 'java'; }
-
+if (isset($L)){
+   $Available = isset($Langs[$L]) && isset($Incl[$L]);
+   // specific request which is not available
+   if (!$Available){ 
+      $L = 'java'; 
+   }
+} else {
+   // no specific request
+   $L = 'java';
+}
 
 if (isset($_GET['lang2'])
       && strlen($_GET['lang2']) && (strlen($_GET['lang2']) <= NAME_LEN)){
    $X = $_GET['lang2'];
    if (ereg("^[a-z0-9]+$",$X)){ $L2 = $X; }
 }
+if ($Available && isset($L2)){ 
+   $Available = isset($Langs[$L2]) && isset($Incl[$L2]) && ($L2 != $L);
+   if (!$Available){ 
+      // assume LANG_COMPARE is always available in every data set
+      $L2 = $Langs[$L][LANG_COMPARE];
+   }
+} else {
+      // assume LANG_COMPARE is always available in every data set
+      $L2 = $Langs[$L][LANG_COMPARE];
+}
 
-$Available = $Available && isset($L2) && isset($Langs[$L2]) && isset($Incl[$L2]) && ($L2 != $L);
-// assume LANG_COMPARE is always available in every data set
-if (!$Available){ $L2 = $Langs[$L][LANG_COMPARE]; }
 
 
 // HEADER ////////////////////////////////////////////////
