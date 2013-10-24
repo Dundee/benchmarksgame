@@ -23,6 +23,7 @@ function LanguageData($FileName,$Langs,$Incl,$Excl,$L,$HasHeading=TRUE){
          // $L has already been checked
          if (isset($Incl[$test]) && isset($Incl[$L]) && !isset($Excl[$key])){
             settype($row[DATA_STATUS],'integer');
+            settype($row[DATA_ELAPSED],'double');
             $rows[] = $row;
          }
 
@@ -49,9 +50,10 @@ $Langs = WhiteListUnique('lang.csv',$Incl); // assume lang.csv in name order
 if (isset($_GET['lang'])
       && strlen($_GET['lang']) && (strlen($_GET['lang']) <= NAME_LEN)){
    $X = $_GET['lang'];
-   if (ereg("^[a-z0-9]+$",$X) && (isset($Langs[$X]) || $X == 'all' || $X == 'fun')){ $L = $X; }
+   if (ereg("^[a-z0-9]+$",$X)){ $L = $X; }
 }
-if (!isset($L)){ $L = ''; }
+$Available = isset($L) && isset($Langs[$L]) && isset($Incl[$L]);
+if (!$Available){ $L = 'java'; }
 
 
 // HEADER ////////////////////////////////////////////////
@@ -60,7 +62,7 @@ $mark = MarkTime();
 $mark = $mark.' '.SITE_NAME;
 
 $LangName = $Langs[$L][LANG_FULL];
-$Title = $LangName.' measurements';
+$Title = ($Available) ? $LangName.' measurements' : 'Not Available';
 
 $bannerUrl = CORE_SITE;
 $faqUrl = CORE_SITE.'play.php';
@@ -110,7 +112,6 @@ $Body->set('About', $About->fetch($AboutTemplateName));
 $Page->set('PageBody', $Body->fetch($TemplateName));
 $Page->set('Robots', $metaRobots);
 $Page->set('MetaKeywords', $MetaKeywords);
-$Page->set('LinkCanonical', $LinkRelCanonical);
 $Page->set('PageId', $PageId);
 
 echo $Page->fetch('page.tpl.php');

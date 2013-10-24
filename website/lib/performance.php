@@ -167,7 +167,7 @@ $SLangs = SelectedLangs($Langs);
 if (isset($_GET['test'])
       && strlen($_GET['test']) && (strlen($_GET['test']) <= NAME_LEN)){
    $X = $_GET['test'];
-   if (ereg("^[a-z]+$",$X) && (isset($Tests[$X]) && isset($Incl[$X]))){ $T = $X; }
+   if (ereg("^[a-z]+$",$X)){ $T = $X; }
 }
 $Available = isset($T) && isset($Tests[$T]) && isset($Incl[$T]);
 if (!$Available){ $T = 'nbody'; }
