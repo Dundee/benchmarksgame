@@ -219,6 +219,7 @@ if ($Available) {
 } else {
    $metaRobots = '<meta name="robots" content="noindex,nofollow" />';
    $canonicalPage = FALSE;
+   unset($LinkRelCanonical);
 }
 
 
