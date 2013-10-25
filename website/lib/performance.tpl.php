@@ -85,7 +85,15 @@ if ($Sort=='fullcpu'){
    $Chart_intro_2 = 'program used, compared to the program that used least Code';
 }
 
-?>
+if ($CanonicalPage){ echo '<p><g:plusone annotation="none"></g:plusone></p>
+<script type="text/javascript">
+  (function() {
+    var po = document.createElement("script"); po.type = "text/javascript"; po.async = true;
+    po.src = "https://apis.google.com/js/plusone.js";
+    var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(po, s);
+  })();
+</script>'; } 
+?> 
 
 
 <h2><a href="#chart" name="chart">&nbsp;<?=$TestName;?>&nbsp;<strong>benchmark</strong></a>&nbsp;<a href="<?=CORE_SITE;?>play.php#inputvalue"><?=$NString;?></a></h2>

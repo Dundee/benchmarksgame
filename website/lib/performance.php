@@ -213,12 +213,17 @@ if (! file_exists(ABOUT_PATH.$AboutTemplateName)){ $AboutTemplateName = 'blank-a
 
 $MetaKeywords = '<meta name="description" content="For ~24 programming languages compare programs that '.$Tests[$T][TEST_META].' ('.PLATFORM_NAME.')." />';
 
+$canonicalPage = FALSE;
 if ($Available) { 
    $metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
-   $canonicalPage = !(isset($LinkRelCanonical) && !(empty($LinkRelCanonical)));
+   if (!isset($LinkRelCanonical)){
+      $canonicalPage = SITE_NAME == 'u32';
+      if (!$canonicalPage) {
+         $LinkRelCanonical = '<link rel="canonical" href="http://benchmarksgame.alioth.debian.org/u32/performance.php?test='.$T.'" />';
+      }
+   } 
 } else {
    $metaRobots = '<meta name="robots" content="noindex,nofollow" />';
-   $canonicalPage = FALSE;
    unset($LinkRelCanonical);
 }
 
