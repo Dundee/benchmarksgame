@@ -75,8 +75,8 @@ function BestRows($rows){
 
 
 function AccumulateComparableRows($rowsL1,$rowsL2,&$comparable){
-   $rowL1 = $rowsL1[0];
-   $rowL2 = $rowsL2[0];
+   $rowL1 = empty($rowsL1) ? NULL :  $rowsL1[0];
+   $rowL2 = empty($rowsL2) ? NULL :  $rowsL2[0];
    $time = NO_VALUE; $mem = NO_VALUE; $gz = NO_VALUE;
 
    $n = min(sizeof($rowsL1),sizeof($rowsL2));
@@ -145,8 +145,8 @@ function HeadToHeadData($FileName,$Tests,$Langs,$Incl,$Excl,$L1,$L2,$HasHeading=
    $times = array();
    $mismatches = array();
    foreach($measurements as $v){
-      $test = $v[0][DATA_TEST];
-      if ($Tests[$test][TEST_WEIGHT]<=0 || $v[DATA_TIME] == NO_VALUE){ continue; }
+      $test = $v[0][DATA_TEST]; 
+      if (($test!=NULL && $Tests[$test][TEST_WEIGHT]<=0) || $v[DATA_TIME] == NO_VALUE){ continue; }
       $ratios[] = $v[DATA_TIME];
 
       // Too many confuse default memory use with program memory use
