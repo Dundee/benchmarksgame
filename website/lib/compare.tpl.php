@@ -183,8 +183,9 @@ if ($CanonicalPage){ echo '<p><g:plusone annotation="none"></g:plusone></p>
 $hasMismatches = false;
 
 foreach($sorted as $k => $v){
+   // Why would $k be NULL? No working programs for a test?
+   if ($k == NULL || $v == NULL || ($Tests[$k][TEST_WEIGHT]<=0 || $v[DATA_TIME] == NO_VALUE)){ continue; }   
    $test = $Tests[$k];
-   if ($test[TEST_WEIGHT]<=0 || $v[DATA_TIME] == NO_VALUE){ continue; }   
    $name = $test[TEST_NAME];
    if (!empty($v)){
       if ($mismatches[$k]){
@@ -267,8 +268,9 @@ if ($hasMismatches){
 $hasMismatches = false;
 
 foreach($sorted as $k => $rows){
+   // Why would $k be NULL? No working programs for a test? 
+   if ($k == NULL || $Tests[$k][TEST_WEIGHT]<=0){ continue; }
    $test = $Tests[$k];
-   if ($test[TEST_WEIGHT]<=0){ continue; }
    $testname = $test[TEST_NAME];
 
    if (!empty($rows)){

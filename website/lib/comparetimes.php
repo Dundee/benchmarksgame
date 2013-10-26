@@ -27,6 +27,7 @@ function BestRows($rows){
    $testvalue = -2; // assume not test value is < 0
    $time = 360000.0; // assume no program was allowed to run for 100 hours
    $id = -2; // assume no id is < 0
+   $failed_id = 0;
 
    // Identify id of fastest row at largest n, or whatever rows there are
    foreach($rows as $row) {
@@ -61,8 +62,8 @@ function BestRows($rows){
 
 
 function AccumulateComparableRows($rowsL1,$rowsL2,&$comparable){
-   $rowL1 = $rowsL1[0];
-   $rowL2 = $rowsL2[0];
+   $rowL1 = empty($rowsL1) ? NULL :  $rowsL1[0];
+   $rowL2 = empty($rowsL2) ? NULL :  $rowsL2[0];
    $time = NO_VALUE; $mem = NO_VALUE; $gz = NO_VALUE;
 
    $n = min(sizeof($rowsL1),sizeof($rowsL2));
@@ -131,7 +132,7 @@ function HeadToHeadData($FileName,$Tests,$Langs,$Incl,$Excl,$L1,$L2,$HasHeading=
    $times = array();
    foreach($measurements as $v){
       $test = $v[0][DATA_TEST];
-      if ($Tests[$test][TEST_WEIGHT]<=0 || $v[DATA_TIME] == NO_VALUE){ continue; }
+      if (($test!=NULL && $Tests[$test][TEST_WEIGHT]<=0) || $v[DATA_TIME] == NO_VALUE){ continue; }
       $ratios[] = $v[DATA_TIME];
       $ratios[] = $v[DATA_MEMORY];
       $ratios[] = $v[DATA_GZ];
@@ -245,6 +246,8 @@ $faqUrl = CORE_SITE.'play.php';
 // DATA ////////////////////////////////////////////////
 
 $Data = HeadToHeadData(DATA_PATH.'ndata.csv',$Tests,$Langs,$Incl,$Excl,$L,$L2);
+
+$timeUsed = 'Elapsed secs';
 
 
 // ABOUT ////////////////////////////////////////////////

@@ -19,8 +19,9 @@ unset($stats);
 <ul>
 <?
 foreach($sorted as $k => $rows){
+   // Why would $k be NULL? 
+   if ($k == NULL || $Tests[$k][TEST_WEIGHT]<=0){ continue; }
    $test = $Tests[$k];
-   if ($test[TEST_WEIGHT]<=0){ continue; }
 
    echo '<li>';
    printf('%s<br/>', $test[TEST_TAG]);
