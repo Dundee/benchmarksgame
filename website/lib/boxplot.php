@@ -193,7 +193,13 @@ if (! file_exists(ABOUT_PATH.$AboutTemplateName)){ $AboutTemplateName = 'blank-a
 $metaRobots = '<meta name="robots" content="index,follow,noarchive" />';
 $MetaKeywords = '<meta name="description" content="Which of these programming language implementations have the fastest benchmark programs ('.PLATFORM_NAME.')." />';
 
-$canonicalPage = !(isset($LinkRelCanonical) && !(empty($LinkRelCanonical)));
+$canonicalPage = FALSE;
+if (!isset($LinkRelCanonical)){
+   $canonicalPage = SITE_NAME == 'u64';
+   if (!$canonicalPage) {
+      $LinkRelCanonical = '<link rel="canonical" href="http://benchmarksgame.alioth.debian.org/u64/which-programs-are-fastest.php" />';
+   }
+} 
 
 
 // TEMPLATE VARS ////////////////////////////////////////////////
@@ -219,9 +225,7 @@ $Body->set('About', $About->fetch($AboutTemplateName));
 $Page->set('PageBody', $Body->fetch($TemplateName));
 $Page->set('Robots', $metaRobots);
 $Page->set('MetaKeywords', $MetaKeywords);
-if (isset($LinkRelCanonical)) { 
-   $Page->set('LinkCanonical', $LinkRelCanonical);
-}
+if (isset($LinkRelCanonical)) { $Page->set('LinkCanonical', $LinkRelCanonical); }
 $Page->set('PageId', $PageId);
 
 echo $Page->fetch('page.tpl.php');
