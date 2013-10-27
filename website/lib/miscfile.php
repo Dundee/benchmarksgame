@@ -29,7 +29,7 @@ if (!isset($T)){ $T = ''; }
 if (SITE_NAME == 'core' || SITE_NAME == 'u32' || SITE_NAME == 'u32q' || SITE_NAME == 'u64' || SITE_NAME == 'u64q'){
    if ($F == 'benchmarking'){
       $metaRobots = '<meta name="robots" content="index,nofollow,noarchive" /><meta name="revisit"  content="10 days" />';
-      $metaKeywords = '<meta name="description" content="The performance of a benchmark, even if it is derived from a real program, may not help to predict the performance of similar programs that have different hot spots." />';
+      $metaKeywords = '<meta name="description" content="Even benchmarks derived from real programs may not help." />';
    } else {
       $metaRobots = '<meta name="robots" content="noindex,nofollow,noarchive" />';
       $metaKeywords = '<meta name="description" content="Software contributed to The Computer Language Benchmarks Game is published under this revised BSD license." />';

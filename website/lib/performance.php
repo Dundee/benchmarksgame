@@ -211,7 +211,7 @@ if (! file_exists(ABOUT_PATH.$AboutTemplateName)){ $AboutTemplateName = 'blank-a
 
 // META ////////////////////////////////////////////////
 
-$MetaKeywords = '<meta name="description" content="For ~24 programming languages compare programs that '.$Tests[$T][TEST_META].' ('.PLATFORM_NAME.')." />';
+$MetaKeywords = '<meta name="description" content="Compare programs that '.$Tests[$T][TEST_META].' for ~24 programming languages ('.PLATFORM_NAME.')." />';
 
 $canonicalPage = FALSE;
 if ($Available) { 

@@ -292,7 +292,7 @@ $About->set('Version', HtmlFragment(VERSION_PATH.$L.SEPARATOR.'version.php'));
 
 // META ////////////////////////////////////////////////
 
-$MetaKeywords = '<meta name="description" content="'.$LangName.' programs vs '.$LangName2.' programs ('.PLATFORM_NAME.')." />';
+$MetaKeywords = '<meta name="description" content="'.$LangName.' programs vs '.$LangName2.' programs (performance on '.PLATFORM_NAME.')." />';
          
 // if the URL parameter is not currently accepted then do not index
 if ($Available) { 
