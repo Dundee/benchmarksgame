@@ -213,6 +213,9 @@ if (! file_exists(ABOUT_PATH.$AboutTemplateName)){ $AboutTemplateName = 'blank-a
 
 $MetaKeywords = '<meta name="description" content="Compare programs that '.$Tests[$T][TEST_META].' for ~24 programming languages ('.PLATFORM_NAME.')." />';
 
+// last field of test.csv has linefeed
+$MetaKeywords = str_replace(array("\r", "\n"), '', $MetaKeywords); 
+
 $canonicalPage = FALSE;
 if ($Available) { 
    $metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
