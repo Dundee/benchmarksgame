@@ -1,42 +1,29 @@
 
-Wed, 01 May 2013 21:42:26 GMT
+Mon, 28 Oct 2013 18:13:13 GMT
 
 MAKE:
 /usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native   chameneosredux.gpp-5.c++ -o chameneosredux.gpp-5.c++.o &&  \
-        /usr/bin/g++ chameneosredux.gpp-5.c++.o -o chameneosredux.gpp-5.gpp_run -lpthread 
+        /usr/bin/g++ chameneosredux.gpp-5.c++.o -o chameneosredux.gpp-5.gpp_run -lboost_thread -lboost_system 
+chameneosredux.gpp-5.c++.o: In function `main':
+chameneosredux.gpp-5.c++:(.text.startup+0x6e1): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text.startup+0x6ff): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text.startup+0x72a): undefined reference to `pthread_join'
+chameneosredux.gpp-5.c++:(.text.startup+0x768): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text.startup+0x786): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text.startup+0x7af): undefined reference to `pthread_join'
+chameneosredux.gpp-5.c++:(.text.startup+0x839): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text.startup+0x857): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text.startup+0x8a9): undefined reference to `pthread_attr_setaffinity_np'
+chameneosredux.gpp-5.c++:(.text.startup+0x8c7): undefined reference to `pthread_create'
+chameneosredux.gpp-5.c++:(.text.startup+0x8f2): undefined reference to `pthread_join'
+chameneosredux.gpp-5.c++:(.text.startup+0x917): undefined reference to `pthread_join'
+collect2: error: ld returned 1 exit status
+make: [chameneosredux.gpp-5.gpp_run] Error 1 (ignored)
 rm chameneosredux.gpp-5.c++
-0.71s to complete and log all make actions
+0.63s to complete and log all make actions
 
 COMMAND LINE:
-./chameneosredux.gpp-5.gpp_run 6000000
+./chameneosredux.gpp-5.gpp_run 60000
 
-PROGRAM OUTPUT:
-blue + blue -> blue
-blue + red -> yellow
-blue + yellow -> red
-red + blue -> yellow
-red + red -> red
-red + yellow -> blue
-yellow + blue -> red
-yellow + red -> blue
-yellow + yellow -> yellow
-
- blue red yellow
-4615244 zero
-3112820 zero
-4271936 zero
- one two zero zero zero zero zero zero
-
- blue red yellow red yellow blue red yellow red blue
-1396147 zero
-1243583 zero
-1503317 zero
-1254347 zero
-1137399 zero
-991486 zero
-875675 zero
-1262431 zero
-1347087 zero
-988528 zero
- one two zero zero zero zero zero zero
+MAKE ERROR 
 

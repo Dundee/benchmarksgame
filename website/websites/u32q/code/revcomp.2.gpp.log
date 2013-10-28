@@ -1,9 +1,9 @@
 
-Tue, 30 Apr 2013 04:29:11 GMT
+Mon, 28 Oct 2013 18:54:08 GMT
 
 MAKE:
-/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -std=c++11 revcomp.gpp-2.c++ -o revcomp.gpp-2.c++.o &&  \
-        /usr/bin/g++ revcomp.gpp-2.c++.o -o revcomp.gpp-2.gpp_run  
+/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -fopenmp -mfpmath=sse -msse2 revcomp.gpp-2.c++ -o revcomp.gpp-2.c++.o &&  \
+        /usr/bin/g++ revcomp.gpp-2.c++.o -o revcomp.gpp-2.gpp_run -fopenmp 
 rm revcomp.gpp-2.c++
 0.17s to complete and log all make actions
 

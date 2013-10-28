@@ -1,14 +1,20 @@
 
-Tue, 30 Apr 2013 04:14:51 GMT
+Mon, 28 Oct 2013 18:39:33 GMT
 
 MAKE:
 /usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -fopenmp meteor.c++ -o meteor.c++.o &&  \
         /usr/bin/g++ meteor.c++.o -o meteor.gpp_run -fopenmp 
 meteor.c++:98:2: warning: ‘typedef’ was ignored in this declaration [enabled by default]
+ };
+  ^
 meteor.c++:174:2: warning: ‘typedef’ was ignored in this declaration [enabled by default]
+ };
+  ^
 meteor.c++:183:1: warning: ‘typedef’ was ignored in this declaration [enabled by default]
+ };
+ ^
 rm meteor.c++
-1.43s to complete and log all make actions
+1.47s to complete and log all make actions
 
 COMMAND LINE:
 ./meteor.gpp_run 2098

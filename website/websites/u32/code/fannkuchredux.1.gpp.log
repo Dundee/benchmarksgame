@@ -1,15 +1,19 @@
 
-Wed, 01 May 2013 20:56:36 GMT
+Mon, 28 Oct 2013 21:20:04 GMT
 
 MAKE:
 /usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -std=c++0x fannkuchredux.c++ -o fannkuchredux.c++.o &&  \
         /usr/bin/g++ fannkuchredux.c++.o -o fannkuchredux.gpp_run -lpthread 
 rm fannkuchredux.c++
-1.79s to complete and log all make actions
+1.81s to complete and log all make actions
 
 COMMAND LINE:
-./fannkuchredux.gpp_run 12
+./fannkuchredux.gpp_run 10
+
+PROGRAM FAILED 
+
 
 PROGRAM OUTPUT:
-3968050
-Pfannkuchen(12) = 65
+
+terminate called after throwing an instance of 'std::system_error'
+  what():  Enable multithreading to use std::thread: Operation not permitted

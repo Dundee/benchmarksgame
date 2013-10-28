@@ -1,42 +1,18 @@
 
-Wed, 01 May 2013 21:45:25 GMT
+Mon, 28 Oct 2013 19:20:24 GMT
 
 MAKE:
 /usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native   chameneosredux.c++ -o chameneosredux.c++.o &&  \
         /usr/bin/g++ chameneosredux.c++.o -o chameneosredux.gpp_run -lboost_thread -lboost_system 
+/usr/bin/ld: chameneosredux.c++.o: undefined reference to symbol 'pthread_setaffinity_np@@GLIBC_2.3.4'
+/lib/i386-linux-gnu/libpthread.so.0: error adding symbols: DSO missing from command line
+collect2: error: ld returned 1 exit status
+make: [chameneosredux.gpp_run] Error 1 (ignored)
 rm chameneosredux.c++
-11.53s to complete and log all make actions
+12.36s to complete and log all make actions
 
 COMMAND LINE:
-./chameneosredux.gpp_run 6000000
+./chameneosredux.gpp_run 60000
 
-PROGRAM OUTPUT:
-blue + blue -> blue
-blue + red -> yellow
-blue + yellow -> red
-red + blue -> yellow
-red + red -> red
-red + yellow -> blue
-yellow + blue -> red
-yellow + red -> blue
-yellow + yellow -> yellow
-
-blue red yellow 
-3983674 zero 
-4065793 zero 
-3950533 zero 
- one two zero zero zero zero zero zero 
-
-blue red yellow red yellow blue red yellow red blue 
-1213435 zero 
-1084373 zero 
-1135080 zero 
-1333677 zero 
-1212287 zero 
-1255841 zero 
-1219411 zero 
-1205184 zero 
-1236758 zero 
-1103954 zero 
- one two zero zero zero zero zero zero 
+MAKE ERROR 
 
