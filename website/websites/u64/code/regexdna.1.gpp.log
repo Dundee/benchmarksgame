@@ -1,26 +1,137 @@
 
-Mon, 29 Apr 2013 20:25:23 GMT
+Mon, 28 Oct 2013 00:04:18 GMT
 
 MAKE:
-/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -fopenmp -I/usr/local/src/re2/re2 regexdna.c++ -o regexdna.c++.o &&  \
-        /usr/bin/g++ regexdna.c++.o -o regexdna.gpp_run /usr/local/src/re2/obj/libre2.a -fopenmp 
+/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -I/usr/local/src/re2/re2 regexdna.c++ -o regexdna.c++.o &&  \
+        /usr/bin/g++ regexdna.c++.o -o regexdna.gpp_run -lpthread /usr/local/src/re2/obj/libre2.a 
+/usr/local/src/re2/obj/libre2.a(re2.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(re2.o): In function `Mutex':
+/usr/local/src/re2/./util/mutex.h:108: undefined reference to `pthread_rwlock_init'
+/usr/local/src/re2/obj/libre2.a(re2.o): In function `re2::Mutex::Lock()':
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/obj/libre2.a(re2.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(re2.o): In function `re2::Mutex::Lock()':
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/obj/libre2.a(re2.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(re2.o): In function `re2::Mutex::Lock()':
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/obj/libre2.a(re2.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(re2.o): In function `~Mutex':
+/usr/local/src/re2/./util/mutex.h:109: undefined reference to `pthread_rwlock_destroy'
+/usr/local/src/re2/obj/libre2.a(regexp.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(regexp.o): In function `re2::Mutex::Lock()':
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/obj/libre2.a(regexp.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(regexp.o): In function `re2::Mutex::Lock()':
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/obj/libre2.a(regexp.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(regexp.o): In function `re2::Mutex::Lock()':
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/obj/libre2.a(regexp.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(regexp.o): In function `~Mutex':
+/usr/local/src/re2/./util/mutex.h:109: undefined reference to `pthread_rwlock_destroy'
+/usr/local/src/re2/obj/libre2.a(regexp.o): In function `Mutex':
+/usr/local/src/re2/./util/mutex.h:108: undefined reference to `pthread_rwlock_init'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::ReaderUnlock()':
+/usr/local/src/re2/./util/mutex.h:114: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `Mutex':
+/usr/local/src/re2/./util/mutex.h:108: undefined reference to `pthread_rwlock_init'
+/usr/local/src/re2/./util/mutex.h:108: undefined reference to `pthread_rwlock_init'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `~Mutex':
+/usr/local/src/re2/./util/mutex.h:109: undefined reference to `pthread_rwlock_destroy'
+/usr/local/src/re2/./util/mutex.h:109: undefined reference to `pthread_rwlock_destroy'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::ReaderLock()':
+/usr/local/src/re2/./util/mutex.h:113: undefined reference to `pthread_rwlock_rdlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::ReaderUnlock()':
+/usr/local/src/re2/./util/mutex.h:114: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Lock()':
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::ReaderUnlock()':
+/usr/local/src/re2/./util/mutex.h:114: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/./util/mutex.h:114: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Lock()':
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Lock()':
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Lock()':
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Lock()':
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::ReaderLock()':
+/usr/local/src/re2/./util/mutex.h:113: undefined reference to `pthread_rwlock_rdlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Lock()':
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Lock()':
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::ReaderUnlock()':
+/usr/local/src/re2/./util/mutex.h:114: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Lock()':
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Lock()':
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::ReaderLock()':
+/usr/local/src/re2/./util/mutex.h:113: undefined reference to `pthread_rwlock_rdlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Lock()':
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::ReaderUnlock()':
+/usr/local/src/re2/./util/mutex.h:114: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::ReaderLock()':
+/usr/local/src/re2/./util/mutex.h:113: undefined reference to `pthread_rwlock_rdlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::ReaderUnlock()':
+/usr/local/src/re2/./util/mutex.h:114: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Lock()':
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Lock()':
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Lock()':
+/usr/local/src/re2/./util/mutex.h:110: undefined reference to `pthread_rwlock_wrlock'
+/usr/local/src/re2/obj/libre2.a(dfa.o): In function `re2::Mutex::Unlock()':
+/usr/local/src/re2/./util/mutex.h:111: undefined reference to `pthread_rwlock_unlock'
+/usr/local/src/re2/obj/libre2.a(prog.o): In function `Mutex':
+/usr/local/src/re2/./util/mutex.h:108: undefined reference to `pthread_rwlock_init'
+/usr/local/src/re2/obj/libre2.a(prog.o): In function `~Mutex':
+/usr/local/src/re2/./util/mutex.h:109: undefined reference to `pthread_rwlock_destroy'
+/usr/local/src/re2/./util/mutex.h:109: undefined reference to `pthread_rwlock_destroy'
+collect2: error: ld returned 1 exit status
+make: [regexdna.gpp_run] Error 1 (ignored)
 rm regexdna.c++
-0.56s to complete and log all make actions
+0.57s to complete and log all make actions
 
 COMMAND LINE:
-./regexdna.gpp_run 0 < regexdna-input5000000.txt
+./regexdna.gpp_run 0 < regexdna-input50000.txt
 
-PROGRAM OUTPUT:
-agggtaaa|tttaccct 356
-[cgt]gggtaaa|tttaccc[acg] 1250
-a[act]ggtaaa|tttacc[agt]t 4252
-ag[act]gtaaa|tttac[agt]ct 2894
-agg[act]taaa|ttta[agt]cct 5435
-aggg[acg]aaa|ttt[cgt]ccct 1537
-agggt[cgt]aa|tt[acg]accct 1431
-agggta[cgt]a|t[acg]taccct 1608
-agggtaa[cgt]|[acg]ttaccct 2178
+MAKE ERROR 
 
-50833411
-50000000
-66800214

@@ -13,80 +13,78 @@
 <span class="hl kwa">open</span> <span class="hl kwd">System</span><span class="hl opt">.</span><span class="hl kwd">Threading</span>
 
 <span class="hl kwa">let</span> input <span class="hl opt">=</span> <span class="hl kwd">Console</span><span class="hl opt">.</span><span class="hl kwd">In</span>
-<span class="hl kwa">let</span> toBytes <span class="hl opt">(</span>s<span class="hl opt">:</span><span class="hl kwb">string</span><span class="hl opt">) =</span> s<span class="hl opt">.</span><span class="hl kwd">ToCharArray</span><span class="hl opt">()</span> |<span class="hl opt">&gt;</span> <span class="hl kwd">Array</span><span class="hl opt">.</span>map byte
-<span class="hl kwa">let</span> toString <span class="hl opt">(</span>s<span class="hl opt">:</span>byte<span class="hl opt">[]) =</span> <span class="hl kwd">String</span><span class="hl opt">(</span>s |<span class="hl opt">&gt;</span> <span class="hl kwd">Array</span><span class="hl opt">.</span>map char<span class="hl opt">)</span>
+<span class="hl kwa">let</span> toBytes <span class="hl opt">(</span>s<span class="hl opt">:</span> <span class="hl kwb">string</span><span class="hl opt">) =</span> s<span class="hl opt">.</span><span class="hl kwd">ToCharArray</span><span class="hl opt">()</span> |<span class="hl opt">&gt;</span> <span class="hl kwd">Array</span><span class="hl opt">.</span>map byte
+<span class="hl kwa">let</span> toString <span class="hl opt">(</span>s<span class="hl opt">:</span> byte <span class="hl opt">[]) =</span> <span class="hl kwd">String</span><span class="hl opt">(</span>s |<span class="hl opt">&gt;</span> <span class="hl kwd">Array</span><span class="hl opt">.</span>map char<span class="hl opt">)</span>
 <span class="hl kwa">let</span> prefixes <span class="hl opt">= [</span>| <span class="hl str">&quot;ggt&quot;</span><span class="hl opt">;</span> <span class="hl str">&quot;ggta&quot;</span><span class="hl opt">;</span> <span class="hl str">&quot;ggtatt&quot;</span><span class="hl opt">;</span> <span class="hl str">&quot;ggtattttaatt&quot;</span><span class="hl opt">;</span> <span class="hl str">&quot;ggtattttaatttatagt&quot;</span> |<span class="hl opt">]</span>
-<span class="hl kwa">let</span> prefixBytes <span class="hl opt">= [</span>| <span class="hl kwa">for</span> p <span class="hl kwa">in</span> prefixes <span class="hl opt">-&gt;</span> toBytes p |<span class="hl opt">]</span> 
-<span class="hl kwa">let</span> prefixLengths <span class="hl opt">= [</span>| <span class="hl kwa">for</span> p <span class="hl kwa">in</span> prefixBytes <span class="hl opt">-&gt;</span> p<span class="hl opt">.</span><span class="hl kwd">Length</span> |<span class="hl opt">]</span> 
+
+<span class="hl kwa">let</span> prefixBytes <span class="hl opt">=</span> 
+    <span class="hl opt">[</span>| <span class="hl kwa">for</span> p <span class="hl kwa">in</span> prefixes <span class="hl opt">-&gt;</span> toBytes p |<span class="hl opt">]</span>
+
+<span class="hl kwa">let</span> prefixLengths <span class="hl opt">=</span> 
+    <span class="hl opt">[</span>| <span class="hl kwa">for</span> p <span class="hl kwa">in</span> prefixBytes <span class="hl opt">-&gt;</span> p<span class="hl opt">.</span><span class="hl kwd">Length</span> |<span class="hl opt">]</span>
+
 <span class="hl kwa">let</span> prefixOffsets <span class="hl opt">=</span> <span class="hl kwd">Array</span><span class="hl opt">.</span>scan <span class="hl opt">(+)</span> <span class="hl num">0</span> prefixLengths
 <span class="hl kwa">let</span> dnaStart <span class="hl opt">=</span> prefixOffsets<span class="hl opt">.[</span>prefixLengths<span class="hl opt">.</span><span class="hl kwd">Length</span><span class="hl opt">]</span>
 
 <span class="hl kwa">let</span> dna <span class="hl opt">=</span> 
     seq <span class="hl opt">{</span> <span class="hl kwa">while true do</span> yield input<span class="hl opt">.</span><span class="hl kwd">ReadLine</span><span class="hl opt">() }</span>
-        |<span class="hl opt">&gt;</span> <span class="hl kwd">Seq</span><span class="hl opt">.</span>takeWhile <span class="hl opt">(</span><span class="hl kwa">fun</span> x <span class="hl opt">-&gt;</span> x <span class="hl opt">&lt;&gt;</span> <span class="hl kwa">null</span><span class="hl opt">)</span>
-        |<span class="hl opt">&gt;</span> <span class="hl kwd">Seq</span><span class="hl opt">.</span>skipWhile <span class="hl opt">(</span><span class="hl kwa">fun</span> x <span class="hl opt">-&gt;</span> not<span class="hl opt">(</span>x<span class="hl opt">.</span><span class="hl kwd">StartsWith</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;THREE&quot;</span><span class="hl opt">)))</span>
-        |<span class="hl opt">&gt;</span> <span class="hl kwd">Seq</span><span class="hl opt">.</span>skip <span class="hl num">1</span>
-        |<span class="hl opt">&gt;</span> <span class="hl kwd">String</span><span class="hl opt">.</span>concat <span class="hl str">&quot;&quot;</span>
-        |<span class="hl opt">&gt;</span> toBytes
-        |<span class="hl opt">&gt;</span> <span class="hl kwd">Array</span><span class="hl opt">.</span>append <span class="hl opt">(</span><span class="hl kwd">Array</span><span class="hl opt">.</span>concat prefixBytes<span class="hl opt">)</span>
+    |<span class="hl opt">&gt;</span> <span class="hl kwd">Seq</span><span class="hl opt">.</span>takeWhile <span class="hl opt">(</span><span class="hl kwa">fun</span> x <span class="hl opt">-&gt;</span> x <span class="hl opt">&lt;&gt;</span> <span class="hl kwa">null</span><span class="hl opt">)</span>
+    |<span class="hl opt">&gt;</span> <span class="hl kwd">Seq</span><span class="hl opt">.</span>skipWhile <span class="hl opt">(</span><span class="hl kwa">fun</span> x <span class="hl opt">-&gt;</span> not <span class="hl opt">(</span>x<span class="hl opt">.</span><span class="hl kwd">StartsWith</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;THREE&quot;</span><span class="hl opt">)))</span>
+    |<span class="hl opt">&gt;</span> <span class="hl kwd">Seq</span><span class="hl opt">.</span>skip <span class="hl num">1</span>
+    |<span class="hl opt">&gt;</span> <span class="hl kwd">String</span><span class="hl opt">.</span>concat <span class="hl str">&quot;&quot;</span>
+    |<span class="hl opt">&gt;</span> toBytes
+    |<span class="hl opt">&gt;</span> <span class="hl kwd">Array</span><span class="hl opt">.</span>append <span class="hl opt">(</span><span class="hl kwd">Array</span><span class="hl opt">.</span>concat prefixBytes<span class="hl opt">)</span>
 
-<span class="hl opt">[&lt;</span><span class="hl kwd">Struct</span><span class="hl opt">&gt;]</span>
-<span class="hl kwa">type</span> <span class="hl kwd">Key</span><span class="hl opt">(</span>offset<span class="hl opt">:</span> <span class="hl kwb">int</span><span class="hl opt">,</span> length<span class="hl opt">:</span> <span class="hl kwb">int</span><span class="hl opt">) =</span>
-    <span class="hl kwa">member</span> x<span class="hl opt">.</span><span class="hl kwd">GetHash</span><span class="hl opt">() =</span> 
-        <span class="hl kwa">let mutable</span> hash <span class="hl opt">=</span> <span class="hl num">0</span>
-        <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl num">0</span> <span class="hl opt">..</span> length <span class="hl opt">-</span> <span class="hl num">1</span> <span class="hl kwa">do</span>
-            hash <span class="hl opt">&lt;-</span> hash <span class="hl opt">*</span> <span class="hl num">31</span> <span class="hl opt">+</span> <span class="hl kwb">int</span> <span class="hl opt">(</span>dna<span class="hl opt">.[</span>offset<span class="hl opt">+</span>i<span class="hl opt">])</span>
-        hash
+<span class="hl kwa">let</span> keyHash <span class="hl opt">(</span>k<span class="hl opt">,</span> n<span class="hl opt">) =</span> 
+    <span class="hl kwa">let mutable</span> h <span class="hl opt">=</span> <span class="hl num">0</span>
+    <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl num">0</span><span class="hl opt">..</span>n <span class="hl opt">-</span> <span class="hl num">1</span> <span class="hl kwa">do</span>
+        h <span class="hl opt">&lt;-</span> h <span class="hl opt">*</span> <span class="hl num">31</span> <span class="hl opt">+</span> <span class="hl kwb">int</span> dna<span class="hl opt">.[</span>k <span class="hl opt">+</span> i<span class="hl opt">]</span>
+    h
 
-    <span class="hl kwa">member</span> x<span class="hl opt">.</span><span class="hl kwd">KeyText</span> <span class="hl opt">= (</span>toString <span class="hl opt">(</span>dna<span class="hl opt">.[</span>offset<span class="hl opt">..</span>offset<span class="hl opt">+</span>length<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">])).</span><span class="hl kwd">ToUpper</span><span class="hl opt">()</span>
+<span class="hl kwa">let</span> keyText <span class="hl opt">(</span>k<span class="hl opt">,</span> n<span class="hl opt">) =</span> toString<span class="hl opt">(</span>dna<span class="hl opt">.[</span>k<span class="hl opt">..</span>k <span class="hl opt">+</span> n <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">]).</span><span class="hl kwd">ToUpper</span><span class="hl opt">()</span>
 
+<span class="hl kwa">type</span> <span class="hl kwd">KeyData</span> <span class="hl opt">=</span> 
+    <span class="hl opt">{</span> <span class="hl kwa">mutable</span> count<span class="hl opt">:</span> <span class="hl kwb">int</span>
+      key<span class="hl opt">:</span> <span class="hl kwb">int</span> <span class="hl opt">*</span> <span class="hl kwb">int</span> <span class="hl opt">}</span>
 
-<span class="hl kwa">type</span> <span class="hl kwd">Value</span> <span class="hl opt">= {</span> <span class="hl kwa">mutable</span> value<span class="hl opt">:</span><span class="hl kwb">int</span><span class="hl opt">;</span> key<span class="hl opt">:</span> <span class="hl kwd">Key</span> <span class="hl opt">}</span>
-
-<span class="hl kwa">let</span> <span class="hl kwd">GenerateFrequencies</span><span class="hl opt">(</span>frameSize<span class="hl opt">) =</span>
-    <span class="hl kwa">let</span> freq <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Dictionary</span><span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">,</span> <span class="hl kwd">Value</span><span class="hl opt">&gt;()</span>
-    <span class="hl kwa">let mutable</span> v <span class="hl opt">=</span> <span class="hl kwd">Unchecked</span><span class="hl opt">.</span>defaultof<span class="hl opt">&lt;</span><span class="hl kwd">Value</span><span class="hl opt">&gt;</span>
-    <span class="hl kwa">let</span> fin <span class="hl opt">=</span> dna<span class="hl opt">.</span><span class="hl kwd">Length</span> <span class="hl opt">-</span> frameSize <span class="hl opt">+</span> <span class="hl num">1</span>
-    <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl num">0</span> <span class="hl opt">..</span> fin <span class="hl opt">-</span> <span class="hl num">1</span> <span class="hl kwa">do</span> 
-        <span class="hl kwa">let</span> k <span class="hl opt">=</span> <span class="hl kwd">Key</span><span class="hl opt">(</span>i<span class="hl opt">,</span> frameSize<span class="hl opt">)</span>
-        <span class="hl kwa">let</span> h <span class="hl opt">=</span> k<span class="hl opt">.</span><span class="hl kwd">GetHash</span><span class="hl opt">()</span>
-        <span class="hl kwa">if</span> freq<span class="hl opt">.</span><span class="hl kwd">TryGetValue</span><span class="hl opt">(</span>h<span class="hl opt">, &amp;</span>v<span class="hl opt">)</span> <span class="hl kwa">then</span> 
-            v<span class="hl opt">.</span>value <span class="hl opt">&lt;-</span> v<span class="hl opt">.</span>value <span class="hl opt">+</span> <span class="hl num">1</span>   
-        <span class="hl kwa">else</span>
-            freq<span class="hl opt">.[</span>h<span class="hl opt">] &lt;- {</span> value <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>key<span class="hl opt">=</span>k <span class="hl opt">}</span>
+<span class="hl kwa">let</span> generateFrequencies<span class="hl opt">(</span>frameSize<span class="hl opt">) =</span> 
+    <span class="hl kwa">let</span> freq <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Dictionary</span><span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">,</span> <span class="hl kwd">KeyData</span><span class="hl opt">&gt;()</span>
+    <span class="hl kwa">let mutable</span> v <span class="hl opt">=</span> <span class="hl kwd">Unchecked</span><span class="hl opt">.</span>defaultof<span class="hl opt">&lt;</span><span class="hl kwd">KeyData</span><span class="hl opt">&gt;</span>
+    <span class="hl kwa">for</span> i <span class="hl kwa">in</span> dnaStart<span class="hl opt">..</span>dna<span class="hl opt">.</span><span class="hl kwd">Length</span> <span class="hl opt">-</span> frameSize <span class="hl kwa">do</span>
+        <span class="hl kwa">let</span> h <span class="hl opt">=</span> keyHash <span class="hl opt">(</span>i<span class="hl opt">,</span> frameSize<span class="hl opt">)</span>
+        <span class="hl kwa">if</span> freq<span class="hl opt">.</span><span class="hl kwd">TryGetValue</span><span class="hl opt">(</span>h<span class="hl opt">, &amp;</span>v<span class="hl opt">)</span> <span class="hl kwa">then</span> v<span class="hl opt">.</span>count <span class="hl opt">&lt;-</span> v<span class="hl opt">.</span>count <span class="hl opt">+</span> <span class="hl num">1</span>
+        <span class="hl kwa">else</span> freq<span class="hl opt">.[</span>h<span class="hl opt">] &lt;- {</span> count <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span> key <span class="hl opt">= (</span>i<span class="hl opt">,</span> frameSize<span class="hl opt">) }</span>
     freq
 
-<span class="hl kwa">let</span> <span class="hl kwd">WriteCount</span><span class="hl opt">(</span>n<span class="hl opt">:</span><span class="hl kwb">int</span><span class="hl opt">) =</span>
-    <span class="hl kwa">let</span> freq <span class="hl opt">=</span> <span class="hl kwd">GenerateFrequencies</span><span class="hl opt">(</span>prefixLengths<span class="hl opt">.[</span>n<span class="hl opt">])</span>
-    <span class="hl kwa">let</span> hash <span class="hl opt">=</span> <span class="hl kwd">Key</span><span class="hl opt">(</span>prefixOffsets<span class="hl opt">.[</span>n<span class="hl opt">],</span> prefixLengths<span class="hl opt">.[</span>n<span class="hl opt">]).</span><span class="hl kwd">GetHash</span><span class="hl opt">()</span>
-    <span class="hl kwa">let</span> count <span class="hl opt">=</span> <span class="hl kwa">if</span> <span class="hl opt">(</span>freq<span class="hl opt">.</span><span class="hl kwd">ContainsKey</span><span class="hl opt">(</span>hash<span class="hl opt">))</span> <span class="hl kwa">then</span> freq<span class="hl opt">.[</span>hash<span class="hl opt">].</span>value <span class="hl kwa">else</span> <span class="hl num">0</span>
+<span class="hl kwa">let</span> writeCount<span class="hl opt">(</span>n<span class="hl opt">) =</span> 
+    <span class="hl kwa">let</span> freq <span class="hl opt">=</span> generateFrequencies<span class="hl opt">(</span>prefixLengths<span class="hl opt">.[</span>n<span class="hl opt">])</span>
+    <span class="hl kwa">let</span> hash <span class="hl opt">=</span> keyHash<span class="hl opt">(</span>prefixOffsets<span class="hl opt">.[</span>n<span class="hl opt">],</span> prefixLengths<span class="hl opt">.[</span>n<span class="hl opt">])</span>
+    
+    <span class="hl kwa">let</span> count <span class="hl opt">=</span> 
+        <span class="hl kwa">if</span> freq<span class="hl opt">.</span><span class="hl kwd">ContainsKey</span><span class="hl opt">(</span>hash<span class="hl opt">)</span> <span class="hl kwa">then</span> freq<span class="hl opt">.[</span>hash<span class="hl opt">].</span>count
+        <span class="hl kwa">else</span> <span class="hl num">0</span>
     <span class="hl kwd">String</span><span class="hl opt">.</span><span class="hl kwd">Format</span><span class="hl opt">(</span><span class="hl str">&quot;{0}</span><span class="hl esc">\t</span><span class="hl str">{1}&quot;</span><span class="hl opt">,</span> count<span class="hl opt">,</span> prefixes<span class="hl opt">.[</span>n<span class="hl opt">].</span><span class="hl kwd">ToUpper</span><span class="hl opt">())</span>
 
-<span class="hl kwa">type</span> <span class="hl kwd">Pair</span> <span class="hl opt">=</span> <span class="hl kwd">KeyValuePair</span><span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">,</span> <span class="hl kwd">Value</span><span class="hl opt">&gt;</span>
+<span class="hl kwa">type</span> <span class="hl kwd">Pair</span> <span class="hl opt">=</span> <span class="hl kwd">KeyValuePair</span><span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">,</span> <span class="hl kwd">KeyData</span><span class="hl opt">&gt;</span>
 
-<span class="hl kwa">let</span> <span class="hl kwd">WriteFrequencies</span><span class="hl opt">(</span>nucleotideLength<span class="hl opt">) =</span>
-    <span class="hl kwa">let</span> freq <span class="hl opt">=</span> <span class="hl kwd">GenerateFrequencies</span><span class="hl opt">(</span>nucleotideLength<span class="hl opt">)</span>
+<span class="hl kwa">let</span> writeFrequencies<span class="hl opt">(</span>nucleotideLength<span class="hl opt">) =</span> 
+    <span class="hl kwa">let</span> freq <span class="hl opt">=</span> generateFrequencies<span class="hl opt">(</span>nucleotideLength<span class="hl opt">)</span>
     <span class="hl kwa">let</span> items <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">ResizeArray</span><span class="hl opt">&lt;</span><span class="hl kwd">Pair</span><span class="hl opt">&gt;(</span>freq<span class="hl opt">)</span>
-    items<span class="hl opt">.</span><span class="hl kwd">Sort</span><span class="hl opt">(</span><span class="hl kwa">fun</span> <span class="hl opt">(</span>item1<span class="hl opt">:</span> <span class="hl kwd">Pair</span><span class="hl opt">) (</span>item2<span class="hl opt">:</span> <span class="hl kwd">Pair</span> <span class="hl opt">) -&gt;</span>
-        <span class="hl kwa">let</span> comparison <span class="hl opt">=</span> item2<span class="hl opt">.</span><span class="hl kwd">Value</span><span class="hl opt">.</span>value <span class="hl opt">-</span> item1<span class="hl opt">.</span><span class="hl kwd">Value</span><span class="hl opt">.</span>value
-        <span class="hl kwa">if</span> <span class="hl opt">(</span>comparison <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">)</span>  <span class="hl kwa">then</span> 
-            item1<span class="hl opt">.</span><span class="hl kwd">Value</span><span class="hl opt">.</span>key<span class="hl opt">.</span><span class="hl kwd">KeyText</span><span class="hl opt">.</span><span class="hl kwd">CompareTo</span><span class="hl opt">(</span>item2<span class="hl opt">.</span><span class="hl kwd">Value</span><span class="hl opt">.</span>key<span class="hl opt">.</span><span class="hl kwd">KeyText</span><span class="hl opt">)</span>
-        <span class="hl kwa">else</span> 
-            comparison<span class="hl opt">)</span>
-
+    items<span class="hl opt">.</span><span class="hl kwd">Sort</span><span class="hl opt">(</span><span class="hl kwa">fun</span> <span class="hl opt">(</span>kv1<span class="hl opt">:</span> <span class="hl kwd">Pair</span><span class="hl opt">) (</span>kv2<span class="hl opt">:</span> <span class="hl kwd">Pair</span><span class="hl opt">) -&gt;</span> 
+        <span class="hl kwa">let</span> c <span class="hl opt">=</span> kv2<span class="hl opt">.</span><span class="hl kwd">Value</span><span class="hl opt">.</span>count <span class="hl opt">-</span> kv1<span class="hl opt">.</span><span class="hl kwd">Value</span><span class="hl opt">.</span>count
+        <span class="hl kwa">if</span> c <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl kwa">then</span> keyText<span class="hl opt">(</span>kv1<span class="hl opt">.</span><span class="hl kwd">Value</span><span class="hl opt">.</span>key<span class="hl opt">).</span><span class="hl kwd">CompareTo</span><span class="hl opt">(</span>keyText<span class="hl opt">(</span>kv2<span class="hl opt">.</span><span class="hl kwd">Value</span><span class="hl opt">.</span>key<span class="hl opt">))</span>
+        <span class="hl kwa">else</span> c<span class="hl opt">)</span>
     <span class="hl kwa">let</span> buf <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">StringBuilder</span><span class="hl opt">()</span>
-    <span class="hl kwa">let</span> sum <span class="hl opt">=</span> dna<span class="hl opt">.</span><span class="hl kwd">Length</span> <span class="hl opt">-</span> nucleotideLength <span class="hl opt">+</span> <span class="hl num">1</span>
+    <span class="hl kwa">let</span> sum <span class="hl opt">=</span> dna<span class="hl opt">.</span><span class="hl kwd">Length</span> <span class="hl opt">-</span> dnaStart <span class="hl opt">-</span> nucleotideLength <span class="hl opt">+</span> <span class="hl num">1</span>
     <span class="hl kwa">for</span> element <span class="hl kwa">in</span> items <span class="hl kwa">do</span>
-         <span class="hl kwa">let</span> percent <span class="hl opt">=</span> double element<span class="hl opt">.</span><span class="hl kwd">Value</span><span class="hl opt">.</span>value <span class="hl opt">*</span> <span class="hl num">100.0</span> <span class="hl opt">/</span> double sum
-         buf<span class="hl opt">.</span><span class="hl kwd">AppendFormat</span><span class="hl opt">(</span><span class="hl str">&quot;{0} {1:f3}</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> element<span class="hl opt">.</span><span class="hl kwd">Key</span><span class="hl opt">,</span> percent<span class="hl opt">)</span> |<span class="hl opt">&gt;</span> ignore
-
+        <span class="hl kwa">let</span> percent <span class="hl opt">=</span> double element<span class="hl opt">.</span><span class="hl kwd">Value</span><span class="hl opt">.</span>count <span class="hl opt">*</span> <span class="hl num">100.0</span> <span class="hl opt">/</span> double sum
+        buf<span class="hl opt">.</span><span class="hl kwd">AppendFormat</span><span class="hl opt">(</span><span class="hl str">&quot;{0} {1:f3}</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> keyText<span class="hl opt">(</span>element<span class="hl opt">.</span><span class="hl kwd">Value</span><span class="hl opt">.</span>key<span class="hl opt">),</span> percent<span class="hl opt">)</span> |<span class="hl opt">&gt;</span> ignore
     buf<span class="hl opt">.</span><span class="hl kwd">ToString</span><span class="hl opt">()</span>
 
-<span class="hl kwd">Async</span><span class="hl opt">.</span><span class="hl kwd">Parallel</span> <span class="hl opt">[</span> 
-    yield async <span class="hl opt">{</span> return <span class="hl kwd">WriteFrequencies</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) }</span> 
-    yield async <span class="hl opt">{</span> return <span class="hl kwd">WriteFrequencies</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">) }</span>
-    <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl num">0</span> <span class="hl opt">..</span> prefixes<span class="hl opt">.</span><span class="hl kwd">Length</span> <span class="hl opt">-</span> <span class="hl num">1</span> <span class="hl kwa">do</span> 
-        yield async <span class="hl opt">{</span> return <span class="hl kwd">WriteCount</span><span class="hl opt">(</span>i<span class="hl opt">) } ]</span>
+<span class="hl kwd">Async</span><span class="hl opt">.</span><span class="hl kwd">Parallel</span> <span class="hl opt">[</span> yield async <span class="hl opt">{</span> return writeFrequencies<span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) }</span>
+                 yield async <span class="hl opt">{</span> return writeFrequencies<span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">) }</span>
+                 <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl num">0</span><span class="hl opt">..</span>prefixes<span class="hl opt">.</span><span class="hl kwd">Length</span> <span class="hl opt">-</span> <span class="hl num">1</span> <span class="hl kwa">do</span>
+                     yield async <span class="hl opt">{</span> return writeCount<span class="hl opt">(</span>i<span class="hl opt">) } ]</span>
 |<span class="hl opt">&gt;</span> <span class="hl kwd">Async</span><span class="hl opt">.</span><span class="hl kwd">RunSynchronously</span>
 |<span class="hl opt">&gt;</span> <span class="hl kwd">Array</span><span class="hl opt">.</span>iter <span class="hl kwd">Console</span><span class="hl opt">.</span><span class="hl kwd">Out</span><span class="hl opt">.</span><span class="hl kwd">WriteLine</span>
 

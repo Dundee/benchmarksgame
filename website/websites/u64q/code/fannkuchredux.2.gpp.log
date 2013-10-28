@@ -1,14 +1,36 @@
 
-Thu, 31 Jan 2013 21:39:09 GMT
+Sun, 27 Oct 2013 22:13:09 GMT
 
 MAKE:
-/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -std=c++0x fannkuchredux.gpp-2.c++ -o fannkuchredux.gpp-2.c++.o &&  \
-        /usr/bin/g++ fannkuchredux.gpp-2.c++.o -o fannkuchredux.gpp-2.gpp_run -lpthread 
-fannkuchredux.gpp-2.c++:20:28: fatal error: boost/thread.hpp: No such file or directory
-compilation terminated.
+/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -pthread -flax-vector-conversions fannkuchredux.gpp-2.c++ -o fannkuchredux.gpp-2.c++.o &&  \
+        /usr/bin/g++ fannkuchredux.gpp-2.c++.o -o fannkuchredux.gpp-2.gpp_run -lpthread -lboost_thread 
+fannkuchredux.gpp-2.c++:146:4: warning: always_inline function might not be inlinable [-Wattributes]
+ P& rotate_slow(P&p, int i)
+    ^
+fannkuchredux.gpp-2.c++:133:4: warning: always_inline function might not be inlinable [-Wattributes]
+ P& reverse_slow(P& p, int n)
+    ^
+fannkuchredux.gpp-2.c++:119:3: warning: always_inline function might not be inlinable [-Wattributes]
+ P rotate(P p, int f)
+   ^
+fannkuchredux.gpp-2.c++:110:3: warning: always_inline function might not be inlinable [-Wattributes]
+ P rotate1(P p) 
+   ^
+fannkuchredux.gpp-2.c++:101:3: warning: always_inline function might not be inlinable [-Wattributes]
+ P reverse(P p, int first)
+   ^
+fannkuchredux.gpp-2.c++:93:3: warning: always_inline function might not be inlinable [-Wattributes]
+ P assign(const char d[16])
+   ^
+fannkuchredux.gpp-2.c++:85:5: warning: always_inline function might not be inlinable [-Wattributes]
+ int p0(P p) 
+     ^
+/usr/bin/ld: fannkuchredux.gpp-2.c++.o: undefined reference to symbol '_ZN5boost6system15system_categoryEv'
+/usr/lib/x86_64-linux-gnu/libboost_system.so.1.53.0: error adding symbols: DSO missing from command line
+collect2: error: ld returned 1 exit status
 make: [fannkuchredux.gpp-2.gpp_run] Error 1 (ignored)
 rm fannkuchredux.gpp-2.c++
-0.31s to complete and log all make actions
+4.16s to complete and log all make actions
 
 COMMAND LINE:
 ./fannkuchredux.gpp-2.gpp_run 10

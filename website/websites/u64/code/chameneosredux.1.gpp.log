@@ -1,16 +1,15 @@
 
-Mon, 29 Apr 2013 23:11:36 GMT
+Sun, 27 Oct 2013 23:50:11 GMT
 
 MAKE:
 /usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native   chameneosredux.c++ -o chameneosredux.c++.o &&  \
         /usr/bin/g++ chameneosredux.c++.o -o chameneosredux.gpp_run -lboost_thread -lboost_system 
-/usr/bin/ld: chameneosredux.c++.o: undefined reference to symbol 'pthread_key_delete@@GLIBC_2.2.5'
-/usr/bin/ld: note: 'pthread_key_delete@@GLIBC_2.2.5' is defined in DSO /lib/x86_64-linux-gnu/libpthread.so.0 so try adding it to the linker command line
-/lib/x86_64-linux-gnu/libpthread.so.0: could not read symbols: Invalid operation
+/usr/bin/ld: chameneosredux.c++.o: undefined reference to symbol 'pthread_setaffinity_np@@GLIBC_2.3.4'
+/lib/x86_64-linux-gnu/libpthread.so.0: error adding symbols: DSO missing from command line
 collect2: error: ld returned 1 exit status
 make: [chameneosredux.gpp_run] Error 1 (ignored)
 rm chameneosredux.c++
-11.78s to complete and log all make actions
+12.15s to complete and log all make actions
 
 COMMAND LINE:
 ./chameneosredux.gpp_run 60000
