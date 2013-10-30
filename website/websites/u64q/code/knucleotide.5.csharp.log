@@ -1,11 +1,11 @@
 
-Mon, 24 Jun 2013 18:32:13 GMT
+Tue, 29 Oct 2013 20:42:43 GMT
 
 MAKE:
 mv knucleotide.csharp-5.csharp knucleotide.csharp-5.cs
 /usr/local/bin/mcs -unsafe+ -optimize+ -platform:x64 -out:knucleotide.csharp-5.csharp_run knucleotide.csharp-5.cs
 rm knucleotide.csharp-5.cs
-0.28s to complete and log all make actions
+0.27s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm --gc=sgen knucleotide.csharp-5.csharp_run 0 < knucleotide-input25000000.txt

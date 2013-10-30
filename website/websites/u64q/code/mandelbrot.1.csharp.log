@@ -1,11 +1,11 @@
 
-Mon, 24 Jun 2013 18:54:21 GMT
+Tue, 29 Oct 2013 21:57:15 GMT
 
 MAKE:
 mv mandelbrot.csharp mandelbrot.cs
 /usr/local/bin/mcs  -optimize+ -platform:x64 -out:mandelbrot.csharp_run mandelbrot.cs
 rm mandelbrot.cs
-0.22s to complete and log all make actions
+0.21s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm --gc=sgen mandelbrot.csharp_run 16000
