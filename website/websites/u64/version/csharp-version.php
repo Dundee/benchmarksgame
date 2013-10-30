@@ -1,4 +1,4 @@
-<p>Mono JIT compiler version 3.0.12 (tarball Thu Jun 20 11:46:48 PDT 2013)<br/>
-	LLVM:          yes(3.2svn-mono)<br/>
-	GC:            Included Boehm (with typed GC and Parallel Mark)
+<p>Mono Runtime Engine version 3.2.5 (master/4c1198f Tue Oct 29 09:53:35 PDT 2013)<br/>
+	LLVM:          yes(3.3svn-mono-mono/8bdedb5)<br/>
+	GC:            sgen
 </p>
