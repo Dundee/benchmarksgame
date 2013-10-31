@@ -1,11 +1,11 @@
 
-Mon, 30 Sep 2013 17:09:11 GMT
+Wed, 30 Oct 2013 21:57:36 GMT
 
 MAKE:
 mv fasta.csharp-4.csharp fasta.csharp-4.cs
 /usr/local/bin/mcs  -optimize+ -platform:x86 -out:fasta.csharp-4.csharp_run fasta.csharp-4.cs
 rm fasta.csharp-4.cs
-3.36s to complete and log all make actions
+0.28s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm --gc=sgen fasta.csharp-4.csharp_run 25000000

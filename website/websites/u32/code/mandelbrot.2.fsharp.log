@@ -1,15 +1,15 @@
 
-Sat, 29 Jun 2013 04:01:13 GMT
+Thu, 31 Oct 2013 00:31:42 GMT
 
 MAKE:
 mv mandelbrot.fsharp-2.fsharp mandelbrot.fsharp-2.fs
-/usr/local/bin/fsharpc --target:exe --platform:x86 -O  -o mandelbrot.fsharp-2.fsharp_run.exe mandelbrot.fsharp-2.fs
+/usr/local/bin/fsharpc --target:exe --platform:x86 -O -r:/usr/local/lib/mono/4.5/Mono.Simd.dll -o mandelbrot.fsharp-2.fsharp_run.exe mandelbrot.fsharp-2.fs
 F# Compiler for F# 3.0 (Open Source Edition)
 Freely distributed under the Apache 2.0 Open Source License
 
 /home/dunham/benchmarksgame_onecore/mandelbrot/tmp/mandelbrot.fsharp-2.fs(10,1): warning FS0221: The declarations in this file will be placed in an implicit module 'Mandelbrot.fsharp-2' based on the file name 'mandelbrot.fsharp-2.fs'. However this is not a valid F# identifier, so the contents will not be accessible from other files. Consider renaming the file or adding a 'module' or 'namespace' declaration at the top of the file.
 rm mandelbrot.fsharp-2.fs
-4.83s to complete and log all make actions
+4.51s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm --gc=sgen mandelbrot.fsharp-2.fsharp_run.exe 16000
