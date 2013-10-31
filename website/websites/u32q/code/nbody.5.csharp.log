@@ -1,49 +1,15 @@
 
-Sat, 22 Jun 2013 18:38:33 GMT
+Thu, 31 Oct 2013 21:19:50 GMT
 
 MAKE:
 mv nbody.csharp-5.csharp nbody.csharp-5.cs
 /usr/local/bin/mcs -r:/usr/local/lib/mono/4.5/Mono.Simd.dll -optimize+ -platform:x86 -out:nbody.csharp-5.csharp_run nbody.csharp-5.cs
 rm nbody.csharp-5.cs
-0.24s to complete and log all make actions
+0.23s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/bin/mono --llvm nbody.csharp-5.csharp_run 500000
-
-PROGRAM FAILED 
-
+/usr/local/bin/mono --llvm nbody.csharp-5.csharp_run 50000000
 
 PROGRAM OUTPUT:
-
-mono: /usr/local/src/llvm/include/llvm/ADT/SmallVector.h:143: const_reference llvm::SmallVectorTemplateCommon<unsigned int, void>::operator[](unsigned int) const [T = unsigned int]: Assertion `begin() + idx < end()' failed.
-Stacktrace:
-
-  at <unknown> <0xffffffff>
-  at NBody.Main (string[]) <0x00044>
-  at (wrapper runtime-invoke) <Module>.runtime_invoke_void_object (object,intptr,intptr,intptr) <0xffffffff>
-
-Native stacktrace:
-
-	/usr/local/bin/mono() [0x8109bd3]
-	[0xb774640c]
-	[0xb7746424]
-	/lib/i386-linux-gnu/libc.so.6(gsignal+0x4f) [0xb7432b1f]
-	/lib/i386-linux-gnu/libc.so.6(abort+0x143) [0xb74360b3]
-	/lib/i386-linux-gnu/libc.so.6(+0x27877) [0xb742b877]
-	/lib/i386-linux-gnu/libc.so.6(+0x27927) [0xb742b927]
-	/usr/local/bin/mono() [0x85507de]
-
-Debug info from gdb:
-
-Could not attach to process.  If your uid matches the uid of the target
-process, check the setting of /proc/sys/kernel/yama/ptrace_scope, or try
-again as the root user.  For more details, see /etc/sysctl.d/10-ptrace.conf
-ptrace: Operation not permitted.
-No threads.
-
-=================================================================
-Got a SIGABRT while executing native code. This usually indicates
-a fatal error in the mono runtime or one of the native libraries 
-used by your application.
-=================================================================
-
+-0.169075164
+-0.169059907

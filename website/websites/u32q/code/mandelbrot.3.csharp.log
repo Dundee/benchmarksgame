@@ -1,11 +1,11 @@
 
-Sat, 22 Jun 2013 18:17:21 GMT
+Thu, 31 Oct 2013 21:10:03 GMT
 
 MAKE:
 mv mandelbrot.csharp-3.csharp mandelbrot.csharp-3.cs
-/usr/local/bin/mcs  -optimize+ -platform:x86 -out:mandelbrot.csharp-3.csharp_run mandelbrot.csharp-3.cs
+/usr/local/bin/mcs -r:/usr/local/lib/mono/4.5/Mono.Simd.dll -optimize+ -platform:x86 -out:mandelbrot.csharp-3.csharp_run mandelbrot.csharp-3.cs
 rm mandelbrot.csharp-3.cs
-0.24s to complete and log all make actions
+0.23s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/mono --llvm mandelbrot.csharp-3.csharp_run 16000
