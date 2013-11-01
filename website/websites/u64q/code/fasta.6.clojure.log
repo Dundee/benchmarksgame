@@ -1,0 +1,25 @@
+
+Fri, 01 Nov 2013 21:21:56 GMT
+
+MAKE:
+mv fasta.clojure-6.clojure fasta.clj
+/usr/local/src/jdk1.7.0_45/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.5.1/clojure-1.5.1.jar clojure.lang.Compile fasta
+Compiling fasta to .
+Exception in thread "main" java.lang.Exception: namespace 'fasta' not found after loading '/fasta'
+	at clojure.core$load_one.invoke(core.clj:5339)
+	at clojure.core$compile$fn__5023.invoke(core.clj:5541)
+	at clojure.core$compile.invoke(core.clj:5540)
+	at clojure.lang.Var.invoke(Var.java:415)
+	at clojure.lang.Compile.main(Compile.java:81)
+make: [fasta.clojure-6.clojure_run] Error 1 (ignored)
+4.81s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/src/jdk1.7.0_45/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts -Xmx16m -cp .:/usr/local/src/clojure-1.5.1/clojure-1.5.1.jar fasta 250000
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Error: Could not find or load main class fasta
