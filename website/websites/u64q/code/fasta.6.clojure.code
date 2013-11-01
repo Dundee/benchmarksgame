@@ -4,7 +4,7 @@
 <span class="hl slc">;; contributed by Andy Fingerhut</span>
 <span class="hl slc">;; refined by Rich Hickey</span>
 
-<span class="hl opt">(</span><span class="hl kwa">ns</span> alioth.fasta
+<span class="hl opt">(</span><span class="hl kwa">ns</span> fasta
   <span class="hl opt">(:</span>gen-class<span class="hl opt">))</span>
 
 <span class="hl opt">(</span><span class="hl kwa">set</span><span class="hl opt">! *</span>warn-on-reflection<span class="hl opt">*</span> true<span class="hl opt">)</span>
@@ -59,7 +59,7 @@
         <span class="hl opt">(</span><span class="hl kwa">set</span><span class="hl opt">!</span> rand-state next-state<span class="hl opt">)</span>
         <span class="hl opt">(*</span> max-val next-state ONE_OVER_IM<span class="hl opt">))))</span>
 
-<span class="hl opt">(</span><span class="hl kwa">defn</span> fill-random<span class="hl opt">! [#</span>^bytes gene-bytes <span class="hl opt">#</span>^doubles gene-cdf n <span class="hl opt">#</span>^bytes buf ^alioth.fasta.PRNG my-prng<span class="hl opt">]</span>
+<span class="hl opt">(</span><span class="hl kwa">defn</span> fill-random<span class="hl opt">! [#</span>^bytes gene-bytes <span class="hl opt">#</span>^doubles gene-cdf n <span class="hl opt">#</span>^bytes buf ^fasta.PRNG my-prng<span class="hl opt">]</span>
   <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>n ^long n<span class="hl opt">]</span>
     <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>i <span class="hl num">0</span><span class="hl opt">]</span>
       <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(&lt;</span> i n<span class="hl opt">)</span>
