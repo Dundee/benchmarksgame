@@ -4,15 +4,10 @@
    contributed by Jos Hirth, transliterated from Jarkko Miettinen's Java program
 */
 
-import 'dart:io';
-
 final int minDepth = 4;
 
-void main(){
-  int n = (){
-    var args = new Options().arguments;
-    return args.length > 0 ? int.parse(args[0]) : 0;
-  }();
+void main(args){
+  int n = args.length > 0 ? int.parse(args[0]) : 0;
 
   int maxDepth = (minDepth + 2 > n) ? minDepth + 2 : n;
   int stretchDepth = maxDepth + 1;

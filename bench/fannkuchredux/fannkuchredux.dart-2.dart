@@ -1,13 +1,11 @@
 /* The Computer Language Benchmarks Game
    http://benchmarksgame.alioth.debian.org/
 
-   warmup code suggested by Vyacheslav Egorov
    contributed by Jos Hirth
-   transliterated from Isaac Gouy's C# program, 
+   (previously used) warmup code suggested by Vyacheslav Egorov
+   transliterated from Isaac Gouy's C# program,
    which was transliterated from Mike Pall's Lua program
 */
-
-import 'dart:io';
 
 fannkuch(n) {
   var p = new List<int>(n), q = new List<int>(n), s = new List<int>(n);
@@ -51,14 +49,8 @@ fannkuch(n) {
   } while (true);
 }
 
-void main() {
-  // No OSR so... warmup code
-  fannkuch(5);
-
-  var n = (){
-    var args = new Options().arguments;
-    return args.length > 0 ? int.parse(args[0]) : 7;
-  }();
+void main(args) {
+  int n = args.length > 0 ? int.parse(args[0]) : 7;
   var pf = fannkuch(n);
   print("${pf[0]}\nPfannkuchen($n) = ${pf[1]}");
 }

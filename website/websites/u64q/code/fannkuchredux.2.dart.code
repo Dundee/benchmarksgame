@@ -1,13 +1,11 @@
 <span class="hl com">/* The Computer Language Benchmarks Game</span>
 <span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
 <span class="hl com"></span>
-<span class="hl com">   warmup code suggested by Vyacheslav Egorov</span>
 <span class="hl com">   contributed by Jos Hirth</span>
-<span class="hl com">   transliterated from Isaac Gouy's C# program, </span>
+<span class="hl com">   (previously used) warmup code suggested by Vyacheslav Egorov</span>
+<span class="hl com">   transliterated from Isaac Gouy's C# program,</span>
 <span class="hl com">   which was transliterated from Mike Pall's Lua program</span>
 <span class="hl com">*/</span>
-
-<span class="hl kwa">import</span> <span class="hl str">'dart:io'</span><span class="hl opt">;</span>
 
 <span class="hl kwd">fannkuch</span><span class="hl opt">(</span>n<span class="hl opt">) {</span>
   <span class="hl kwa">var</span> p <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">&gt;(</span>n<span class="hl opt">),</span> q <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">&gt;(</span>n<span class="hl opt">),</span> s <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span><span class="hl kwb">int</span><span class="hl opt">&gt;(</span>n<span class="hl opt">);</span>
@@ -51,14 +49,8 @@
   <span class="hl opt">}</span> <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl kwa">true</span><span class="hl opt">);</span>
 <span class="hl opt">}</span>
 
-<span class="hl kwa">void</span> <span class="hl kwd">main</span><span class="hl opt">() {</span>
-  <span class="hl slc">// No OSR so... warmup code</span>
-  <span class="hl kwd">fannkuch</span><span class="hl opt">(</span><span class="hl num">5</span><span class="hl opt">);</span>
-
-  <span class="hl kwa">var</span> n <span class="hl opt">= (){</span>
-    <span class="hl kwa">var</span> args <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Options</span><span class="hl opt">().</span>arguments<span class="hl opt">;</span>
-    <span class="hl kwa">return</span> args<span class="hl opt">.</span>length <span class="hl opt">&gt;</span> <span class="hl num">0</span> ? <span class="hl kwb">int</span><span class="hl opt">.</span><span class="hl kwd">parse</span><span class="hl opt">(</span>args<span class="hl kwc">[0]</span><span class="hl opt">) :</span> <span class="hl num">7</span><span class="hl opt">;</span>
-  <span class="hl opt">}();</span>
+<span class="hl kwa">void</span> <span class="hl kwd">main</span><span class="hl opt">(</span>args<span class="hl opt">) {</span>
+  <span class="hl kwb">int</span> n <span class="hl opt">=</span> args<span class="hl opt">.</span>length <span class="hl opt">&gt;</span> <span class="hl num">0</span> ? <span class="hl kwb">int</span><span class="hl opt">.</span><span class="hl kwd">parse</span><span class="hl opt">(</span>args<span class="hl kwc">[0]</span><span class="hl opt">) :</span> <span class="hl num">7</span><span class="hl opt">;</span>
   <span class="hl kwa">var</span> pf <span class="hl opt">=</span> <span class="hl kwd">fannkuch</span><span class="hl opt">(</span>n<span class="hl opt">);</span>
   <span class="hl kwd">print</span><span class="hl opt">(</span><span class="hl str">&quot;${pf[0]}</span><span class="hl esc">\n</span><span class="hl str">Pfannkuchen($n) = ${pf[1]}&quot;</span><span class="hl opt">);</span>
 <span class="hl opt">}</span>

@@ -122,7 +122,7 @@ class RepeatFasta {
   }
 }
 
-void main() {
+void main(args) {
   final String ALU =
     "GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG"
     "GAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGAGA"
@@ -163,10 +163,7 @@ void main() {
     a[a.length - 1].p = LOOKUP_SCALE;
   }
 
-  int n = ((){
-    var args = new Options().arguments;
-    return args.length > 0 ? int.parse(args[0]) : 200;
-  }());
+  int n = args.length > 0 ? int.parse(args[0]) : 200;
 
   sumAndScale(IUB);
   sumAndScale(HomoSapiens);

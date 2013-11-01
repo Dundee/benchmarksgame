@@ -5,7 +5,6 @@
 // based on the JavaScript version by Ian Osgood with modifications by Isaac Gouy
 
 import 'dart:math' as Math;
-import 'dart:io';
 import 'dart:typed_data';
 
 double A(int i, int j) {
@@ -58,8 +57,7 @@ double spectralNorm(n) {
   return Math.sqrt(vBv / vv);
 }
 
-void main() {
-  var args = new Options().arguments;
+void main(args) {
   int n = args.length > 0 ? int.parse(args[0]) : 100;
   print(spectralNorm(n).toStringAsFixed(9));
 }

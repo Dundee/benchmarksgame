@@ -1,23 +1,18 @@
 /* The Computer Language Benchmarks game
    http://benchmarksgame.alioth.debian.org/
 
-   contributed by Jos Hirth, 
-   transliterated from Mario Pernici's Python program 
+   contributed by Jos Hirth,
+   transliterated from Mario Pernici's Python program
    (which was transliterated from Mike Pall's Lua program)
 */
 
-import 'dart:io';
-
-void main(){
+void main(args){
   int i = 0, k = 0, ns = 0,
       k1 = 1,
       n = 1, a = 0, d = 1, t = 0, u = 0,
       N;
 
-  N = (){
-    var args = new Options().arguments;
-    return args.length > 0 ? int.parse(args[0]) : 100;
-  }();
+  N = args.length > 0 ? int.parse(args[0]) : 100;
 
   do{
     k += 1;

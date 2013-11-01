@@ -1,18 +1,14 @@
 /* The Computer Language Benchmarks Game
    http://benchmarksgame.alioth.debian.org/
 
-   contributed by Jos Hirth, 
+   contributed by Jos Hirth,
    transliterated from Isaac Gouy and Robert F. Tobler's C# program
 */
 
-import 'dart:io';
 import 'dart:math' as Math;
 
-void main() {
-  int n = () {
-    var args = new Options().arguments;
-    return args.length > 0 ? int.parse(args[0]) : 0;
-  }();
+void main(args) {
+  int n = args.length > 0 ? int.parse(args[0]) : 0;
 
   NBodySystem system = new NBodySystem();
   print(system.energy().toStringAsFixed(9));
