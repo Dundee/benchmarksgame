@@ -167,14 +167,10 @@ final Frequency HOMO_SAPIENS <span class="hl opt">=</span> <span class="hl kwa">
 <span class="hl opt">}</span>
 
 
-<span class="hl kwd">main</span><span class="hl opt">() {</span>
+<span class="hl kwd">main</span><span class="hl opt">(</span>args<span class="hl opt">) {</span>
   IOSink writer <span class="hl opt">=</span> stdout<span class="hl opt">;</span>
 
-  <span class="hl kwb">int</span> n <span class="hl opt">=</span> <span class="hl num">250</span><span class="hl opt">;</span>
-  List<span class="hl opt">&lt;</span>String<span class="hl opt">&gt;</span> args <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Options</span><span class="hl opt">().</span>arguments<span class="hl opt">;</span>
-  <span class="hl kwa">if</span> <span class="hl opt">(</span>args <span class="hl opt">!=</span> <span class="hl kwa">null</span> <span class="hl opt">&amp;&amp;</span> args<span class="hl opt">.</span>length <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">) {</span>
-    n <span class="hl opt">=</span> <span class="hl kwb">int</span><span class="hl opt">.</span><span class="hl kwd">parse</span><span class="hl opt">(</span>args<span class="hl kwc">[0]</span><span class="hl opt">);</span>
-  <span class="hl opt">}</span>
+  <span class="hl kwb">int</span> n <span class="hl opt">=</span> args<span class="hl opt">.</span>length <span class="hl opt">&gt;</span> <span class="hl num">0</span> ? <span class="hl kwb">int</span><span class="hl opt">.</span><span class="hl kwd">parse</span><span class="hl opt">(</span>args<span class="hl kwc">[0]</span><span class="hl opt">) :</span> <span class="hl num">250</span><span class="hl opt">;</span>
 
   <span class="hl kwd">makeRepeatFasta</span><span class="hl opt">(</span><span class="hl str">&quot;ONE&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Homo sapiens alu&quot;</span><span class="hl opt">,</span> ALU<span class="hl opt">,</span> n <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">,</span> writer<span class="hl opt">);</span>
   IUB<span class="hl opt">.</span>last <span class="hl opt">=</span> <span class="hl num">42</span><span class="hl opt">;</span>

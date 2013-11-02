@@ -5,7 +5,6 @@
 <span class="hl slc">// based on the JavaScript version by Ian Osgood with modifications by Isaac Gouy</span>
 
 <span class="hl kwa">import</span> <span class="hl str">'dart:math'</span> as Math<span class="hl opt">;</span>
-<span class="hl kwa">import</span> <span class="hl str">'dart:io'</span><span class="hl opt">;</span>
 <span class="hl kwa">import</span> <span class="hl str">'dart:typed_data'</span><span class="hl opt">;</span>
 
 <span class="hl kwb">double</span> <span class="hl kwd">A</span><span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">,</span> <span class="hl kwb">int</span> j<span class="hl opt">) {</span>
@@ -58,8 +57,7 @@
   <span class="hl kwa">return</span> Math<span class="hl opt">.</span><span class="hl kwd">sqrt</span><span class="hl opt">(</span>vBv <span class="hl opt">/</span> vv<span class="hl opt">);</span>
 <span class="hl opt">}</span>
 
-<span class="hl kwa">void</span> <span class="hl kwd">main</span><span class="hl opt">() {</span>
-  <span class="hl kwa">var</span> args <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Options</span><span class="hl opt">().</span>arguments<span class="hl opt">;</span>
+<span class="hl kwa">void</span> <span class="hl kwd">main</span><span class="hl opt">(</span>args<span class="hl opt">) {</span>
   <span class="hl kwb">int</span> n <span class="hl opt">=</span> args<span class="hl opt">.</span>length <span class="hl opt">&gt;</span> <span class="hl num">0</span> ? <span class="hl kwb">int</span><span class="hl opt">.</span><span class="hl kwd">parse</span><span class="hl opt">(</span>args<span class="hl kwc">[0]</span><span class="hl opt">) :</span> <span class="hl num">100</span><span class="hl opt">;</span>
   <span class="hl kwd">print</span><span class="hl opt">(</span><span class="hl kwd">spectralNorm</span><span class="hl opt">(</span>n<span class="hl opt">).</span><span class="hl kwd">toStringAsFixed</span><span class="hl opt">(</span><span class="hl num">9</span><span class="hl opt">));</span>
 <span class="hl opt">}</span>

@@ -122,7 +122,7 @@ Uint8List <span class="hl kwd">bytes</span> <span class="hl opt">(</span>String 
   <span class="hl opt">}</span>
 <span class="hl opt">}</span>
 
-<span class="hl kwa">void</span> <span class="hl kwd">main</span><span class="hl opt">() {</span>
+<span class="hl kwa">void</span> <span class="hl kwd">main</span><span class="hl opt">(</span>args<span class="hl opt">) {</span>
   final String ALU <span class="hl opt">=</span>
     <span class="hl str">&quot;GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG&quot;</span>
     <span class="hl str">&quot;GAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGAGA&quot;</span>
@@ -163,10 +163,7 @@ Uint8List <span class="hl kwd">bytes</span> <span class="hl opt">(</span>String 
     a<span class="hl opt">[</span>a<span class="hl opt">.</span>length <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">].</span>p <span class="hl opt">=</span> LOOKUP_SCALE<span class="hl opt">;</span>
   <span class="hl opt">}</span>
 
-  <span class="hl kwb">int</span> n <span class="hl opt">= ((){</span>
-    <span class="hl kwa">var</span> args <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Options</span><span class="hl opt">().</span>arguments<span class="hl opt">;</span>
-    <span class="hl kwa">return</span> args<span class="hl opt">.</span>length <span class="hl opt">&gt;</span> <span class="hl num">0</span> ? <span class="hl kwb">int</span><span class="hl opt">.</span><span class="hl kwd">parse</span><span class="hl opt">(</span>args<span class="hl kwc">[0]</span><span class="hl opt">) :</span> <span class="hl num">200</span><span class="hl opt">;</span>
-  <span class="hl opt">}());</span>
+  <span class="hl kwb">int</span> n <span class="hl opt">=</span> args<span class="hl opt">.</span>length <span class="hl opt">&gt;</span> <span class="hl num">0</span> ? <span class="hl kwb">int</span><span class="hl opt">.</span><span class="hl kwd">parse</span><span class="hl opt">(</span>args<span class="hl kwc">[0]</span><span class="hl opt">) :</span> <span class="hl num">200</span><span class="hl opt">;</span>
 
   <span class="hl kwd">sumAndScale</span><span class="hl opt">(</span>IUB<span class="hl opt">);</span>
   <span class="hl kwd">sumAndScale</span><span class="hl opt">(</span>HomoSapiens<span class="hl opt">);</span>

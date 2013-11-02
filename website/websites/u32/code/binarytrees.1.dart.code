@@ -4,15 +4,10 @@
 <span class="hl com">   contributed by Jos Hirth, transliterated from Jarkko Miettinen's Java program</span>
 <span class="hl com">*/</span>
 
-<span class="hl kwa">import</span> <span class="hl str">'dart:io'</span><span class="hl opt">;</span>
-
 final <span class="hl kwb">int</span> minDepth <span class="hl opt">=</span> <span class="hl num">4</span><span class="hl opt">;</span>
 
-<span class="hl kwa">void</span> <span class="hl kwd">main</span><span class="hl opt">(){</span>
-  <span class="hl kwb">int</span> n <span class="hl opt">= (){</span>
-    <span class="hl kwa">var</span> args <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Options</span><span class="hl opt">().</span>arguments<span class="hl opt">;</span>
-    <span class="hl kwa">return</span> args<span class="hl opt">.</span>length <span class="hl opt">&gt;</span> <span class="hl num">0</span> ? <span class="hl kwb">int</span><span class="hl opt">.</span><span class="hl kwd">parse</span><span class="hl opt">(</span>args<span class="hl kwc">[0]</span><span class="hl opt">) :</span> <span class="hl num">0</span><span class="hl opt">;</span>
-  <span class="hl opt">}();</span>
+<span class="hl kwa">void</span> <span class="hl kwd">main</span><span class="hl opt">(</span>args<span class="hl opt">){</span>
+  <span class="hl kwb">int</span> n <span class="hl opt">=</span> args<span class="hl opt">.</span>length <span class="hl opt">&gt;</span> <span class="hl num">0</span> ? <span class="hl kwb">int</span><span class="hl opt">.</span><span class="hl kwd">parse</span><span class="hl opt">(</span>args<span class="hl kwc">[0]</span><span class="hl opt">) :</span> <span class="hl num">0</span><span class="hl opt">;</span>
 
   <span class="hl kwb">int</span> maxDepth <span class="hl opt">= (</span>minDepth <span class="hl opt">+</span> <span class="hl num">2</span> <span class="hl opt">&gt;</span> n<span class="hl opt">)</span> ? minDepth <span class="hl opt">+</span> <span class="hl num">2</span> <span class="hl opt">:</span> n<span class="hl opt">;</span>
   <span class="hl kwb">int</span> stretchDepth <span class="hl opt">=</span> maxDepth <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
