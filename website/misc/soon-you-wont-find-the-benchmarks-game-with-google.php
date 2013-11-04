@@ -4,7 +4,7 @@
 
 <dd><dl>
 <dd>
-<p><br/>Luckily I found a way for the Alioth admins to take some control of the upstream FusionForge generated pages (<a href="http://alioth.debian.org/projects/benchmarksgame/">for example</a>) without requiring changes to FusionForge. So, for now, the Alioth admins have unthrottled web crawling and the website is once again findable with Google.</p>
+<p><br/>Luckily I found a way for the Alioth admins to take some control of the upstream FusionForge generated pages (<a href="http://alioth.debian.org/projects/benchmarksgame/">for example</a>) without requiring changes to FusionForge. So, for now, the Alioth admins have unthrottled web crawling and <b>the website is once again findable with Google</b>.</p>
 
 <p>(All the upstream FusionForge generated pages were being served without any HTML robots meta tags: a minimum of 90 pages, for each of 1000 projects, duplicated at 4 different sub-domains. In other words, webcrawlers were visiting Alioth because Alioth pages repeatedly asked to be indexed and crawled. That problem has now been fixed using the HTTP <a href="https://developers.google.com/webmasters/control-crawl-index/docs/robots_meta_tag">X-Robots-Tag "noindex, nofollow"</a> header.)</p>
 </dd>
@@ -46,7 +46,7 @@
 
 <p>The inevitable consequence is that pages Googlebot cannot access are removed from Google's index. That's been happening all year. Since mid-September the benchmarks game has rapidly been removed from Google's index.</p>
 
-<p><b>You can no longer find the Benchmarks Game website with Google or any other search engine, because the Alioth admins have throttled web crawling.</b></p>
+<p>You can no longer find the Benchmarks Game website with Google or any other search engine, because the Alioth admins have throttled web crawling.</p>
 
 
 </dd>
