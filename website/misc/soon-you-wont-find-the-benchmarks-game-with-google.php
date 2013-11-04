@@ -10,9 +10,8 @@
 </dd>
 
 
-
-<dd>
 <dt>&nbsp;</dt>
+<dd>
 <p class="timestamp"><? printf('%s GMT', '06 Oct 2013, Sunday, 4:12 pm') ?></p>
 <p>You can no longer find the Benchmarks Game with Google or any other search engine. So, if you're interested in programming language comparisons and performance benchmarks, <a href="http://benchmarksgame.alioth.debian.org/">bookmark the website now!</a></p>
 
