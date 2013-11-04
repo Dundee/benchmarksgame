@@ -1,5 +1,5 @@
 # The Computer Language Benchmarks Game
-# $Id: u64.programs.Makefile,v 1.5 2013/09/29 22:38:48 igouy-guest Exp $
+# $Id: u64.programs.Makefile,v 1.6 2013/11/04 16:12:57 igouy-guest Exp $
 
 # ASSUME each program will build in a clean empty tmpdir
 # ASSUME there's a symlink to the program source in tmpdir
@@ -36,13 +36,11 @@ STD_COPTS := -O3 -fomit-frame-pointer -march=native
 # ATS Advanced Type System
 ########################################
 
-%.dats: %.ats $(ATS)
+%.dats: %.ats $(PATSCC)
 	-@cp $< $(TEST).dats
-#	-@echo split_file.bash $(TEST).dats $(TEST).dats
-#	-@$(SPLITFILE) $(TEST).dats $(TEST).dats
 
-%.ats_run: %.dats $(ATS)
-	-$(ATS) $(ATSOPTS) -pipe -Wall $(STD_COPTS) $(COPTS) $(TEST).dats -o $@ $(CLOPTS)
+%.ats_run: %.dats $(PATSCC)
+	-$(PATSCC) $(ATSOPTS) -pipe -Wall $(STD_COPTS) $(COPTS) $(TEST).dats -o $@ $(CLOPTS)
 
 
 ########################################
