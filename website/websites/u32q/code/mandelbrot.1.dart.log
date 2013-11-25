@@ -1,7 +1,15 @@
 
-Sat, 02 Nov 2013 01:52:44 GMT
+Thu, 14 Nov 2013 22:27:20 GMT
 
 COMMAND LINE:
-/usr/local/src/dart-sdk/bin/dart  mandelbrot.dart 16000
+/usr/local/src/dart-sdk/bin/dart  mandelbrot.dart 1000
+
+PROGRAM FAILED 
+
 
 (BINARY) PROGRAM OUTPUT NOT SHOWN
+
+The built-in library 'dart:platform' is not available on the stand-alone VM.
+'file:///home/dunham/benchmarksgame_quadcore/mandelbrot/tmp/mandelbrot.dart': Error: line 13 pos 1: library handler failed
+import 'dart:platform' as platform;
+^
