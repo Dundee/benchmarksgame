@@ -166,7 +166,7 @@ $Body->set('Data', TimeSizeShapes(DATA_PATH.$DataSet.'.csv', $Tests, $Langs, $In
 $faqUrl = CORE_SITE.'play.php';
 $bannerUrl = CORE_SITE;
 
-$metaRobots = '<meta name="robots" content="index,follow,noarchive" />';
+$metaRobots = '<meta name="robots" content="index,follow,archive" />';
 
 $metaKeywords = '<meta name="description" content="Look for patterns in Code-used Time-used Shapes ('.PLATFORM_NAME.') for programs written in ~24 different programming languages." />';
 

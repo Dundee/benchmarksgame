@@ -14,6 +14,8 @@
 <dl>
 
 <dd>
+<blockquote><p>"Since compiler optimizations and code changes also alter layout, it is currently impossible to distinguish the impact of an optimization from that of its layout effects. ... the performance impact of -03 over -02 optimzations is indistinguishable from random noise." <br/><a href="https://people.cs.umass.edu/~emery/pubs/stabilizer-asplos13.pdf">STABILIZER: Statistically Sound Performance Evaluation</a> pdf</p></blockquote>
+
 <blockquote><p>"The performance of a benchmark, even if it is derived from a real program, may not help to predict the performance of similar programs that have different hot spots." <br/><a href="http://www.larcenists.org/Twobit/bmcrock.temp.html">Benchmarks are a crock</a></p></blockquote>
 
 <blockquote><p>"It may seem paradoxical to use an interpreted language in a high-throughput environment, but we have found that the CPU time is rarely the limiting factor; the expressibility of the language means that most programs are small and spend most of their time in I/O and native run-time code." <br/><a href="http://research.google.com/archive/sawzall-sciprog.pdf">Interpreting the Data: Parallel Analysis with Sawzall</a> page 27 pdf</p></blockquote>
