@@ -1,44 +1,40 @@
 
-Tue, 22 Jan 2013 19:49:11 GMT
+Thu, 14 Nov 2013 21:26:56 GMT
 
 MAKE:
-/usr/local/src/ats-lang-anairiats-0.2.9/bin/atscc  -pipe -Wall -O3 -fomit-frame-pointer -march=native  fannkuchredux.dats -o fannkuchredux.ats-2.ats_run 
-/usr/local/src/ats-lang-anairiats-0.2.9/bin/atsopt --output fannkuchredux_dats.c --dynamic fannkuchredux.dats
-In file included from fannkuchredux_dats.c:19:0:
-/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/basics.cats: In function ‘atspre_fprint_newline’:
-/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/basics.cats:271:11: warning: variable ‘n2’ set but not used [-Wunused-but-set-variable]
-/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/basics.cats:271:7: warning: variable ‘n1’ set but not used [-Wunused-but-set-variable]
-fannkuchredux_dats.c: In function ‘array_get_0’:
-fannkuchredux_dats.c:134:1: warning: label ‘__ats_lab_array_get_0’ defined but not used [-Wunused-label]
-fannkuchredux_dats.c: In function ‘array_set_1’:
-fannkuchredux_dats.c:151:1: warning: label ‘__ats_lab_array_set_1’ defined but not used [-Wunused-label]
-fannkuchredux_dats.c: In function ‘array_fprint_2’:
-fannkuchredux_dats.c:183:1: warning: label ‘__ats_lab_1’ defined but not used [-Wunused-label]
-fannkuchredux_dats.c:171:1: warning: label ‘__ats_lab_array_fprint_2’ defined but not used [-Wunused-label]
-fannkuchredux_dats.c: In function ‘array_print_3’:
-fannkuchredux_dats.c:197:1: warning: label ‘__ats_lab_array_print_3’ defined but not used [-Wunused-label]
-fannkuchredux_dats.c: In function ‘array_rotate_6’:
-fannkuchredux_dats.c:272:1: warning: label ‘__ats_lab_array_rotate_6’ defined but not used [-Wunused-label]
-fannkuchredux_dats.c: In function ‘fannkuch_9’:
-fannkuchredux_dats.c:413:1: warning: label ‘__ats_lab_3’ defined but not used [-Wunused-label]
-fannkuchredux_dats.c: In function ‘mainats’:
-fannkuchredux_dats.c:486:1: warning: label ‘__ats_lab_mainats’ defined but not used [-Wunused-label]
-In file included from fannkuchredux_dats.c:29:0:
-fannkuchredux_dats.c: At top level:
-/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/pointer.cats:52:14: warning: ‘atspre_null_ptr’ defined but not used [-Wunused-variable]
-In file included from fannkuchredux_dats.c:30:0:
-/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/printf.cats:57:1: warning: ‘atspre_fprintf_err’ defined but not used [-Wunused-function]
-/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/printf.cats:69:1: warning: ‘atspre_fprintf_exn’ defined but not used [-Wunused-function]
-/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/printf.cats:105:1: warning: ‘atspre_prerrf_exn’ defined but not used [-Wunused-function]
-In file included from fannkuchredux_dats.c:33:0:
-/usr/local/src/ats-lang-anairiats-0.2.9/prelude/CATS/string.cats:351:14: warning: ‘atspre_stropt_none’ defined but not used [-Wunused-variable]
-fannkuchredux_dats.c:193:1: warning: ‘array_print_3’ defined but not used [-Wunused-function]
-gcc -I/usr/local/src/ats-lang-anairiats-0.2.9/ -I/usr/local/src/ats-lang-anairiats-0.2.9/ccomp/runtime/ -L/usr/local/src/ats-lang-anairiats-0.2.9/ccomp/lib64/ /usr/local/src/ats-lang-anairiats-0.2.9/ccomp/runtime/ats_prelude.c -pipe -Wall -O3 -fomit-frame-pointer -march=native fannkuchredux_dats.c -o fannkuchredux.ats-2.ats_run -lats 
-0.35s to complete and log all make actions
+/usr/local/src/ATS2-Postiats-0.0.3/bin/patscc  -pipe -Wall -O3 -fomit-frame-pointer -march=native  fannkuchredux.dats -o fannkuchredux.ats-2.ats_run 
+exec(/usr/local/src/ATS2-Postiats-0.0.3/bin/patsopt --output fannkuchredux_dats.c --dynamic fannkuchredux.dats)
+Hello from ATS/Postiats!
+Loading [fixity.ats] starts!
+Loading [fixity.ats] finishes!
+Loading [basics_pre.sats] starts!
+Loading [basics_pre.sats] finishes!
+Loading [basics_sta.sats] starts!
+Loading [basics_sta.sats] finishes!
+Loading [basics_dyn.sats] starts!
+Loading [basics_dyn.sats] finishes!
+Loading [basics_gen.sats] starts!
+Loading [basics_gen.sats] finishes!
+The 1st translation (fixity) of [fannkuchredux.dats] is successfully completed!
+/home/dunham/benchmarksgame_onecore/fannkuchredux/tmp/fannkuchredux.dats: 783(line=32, offs=47) -- 784(line=32, offs=48): error(2): [/home/hwxi/research/Postiats/git/src/pats_trans2_staexp.dats]: s1exp_app_wind: the static expression is of the sort [S2RTbas(S2RTBASpre(int))] but it is expectecd to be of the sort [S2RTbas(S2RTBASpre(addr))].
+/home/dunham/benchmarksgame_onecore/fannkuchredux/tmp/fannkuchredux.dats: 786(line=32, offs=50) -- 787(line=32, offs=51): error(2): [/home/hwxi/research/Postiats/git/src/pats_trans2_staexp.dats]: s1exp_app_wind: the static expression is of the sort [S2RTbas(S2RTBASpre(addr))] but it is expectecd to be of the sort [S2RTbas(S2RTBASpre(int))].
+/home/dunham/benchmarksgame_onecore/fannkuchredux/tmp/fannkuchredux.dats: 1759(line=71, offs=23) -- 1772(line=71, offs=36): error(2): [/home/hwxi/research/Postiats/git/src/pats_trans2_dynexp.dats]: d1exp_tr_app_dyn_dqid: the dynamic identifier [size1_of_int1] is unrecognized.
+/home/dunham/benchmarksgame_onecore/fannkuchredux/tmp/fannkuchredux.dats: 2556(line=93, offs=17) -- 2569(line=93, offs=30): error(2): [/home/hwxi/research/Postiats/git/src/pats_trans2_dynexp.dats]: d1exp_tr_app_dyn_dqid: the dynamic identifier [size1_of_int1] is unrecognized.
+/home/dunham/benchmarksgame_onecore/fannkuchredux/tmp/fannkuchredux.dats: 3919(line=138, offs=36) -- 3932(line=138, offs=49): error(2): [/home/hwxi/research/Postiats/git/src/pats_trans2_dynexp.dats]: d1exp_tr_app_dyn_dqid: the dynamic identifier [size1_of_int1] is unrecognized.
+/home/dunham/benchmarksgame_onecore/fannkuchredux/tmp/fannkuchredux.dats: 4105(line=142, offs=35) -- 4118(line=142, offs=48): error(2): [/home/hwxi/research/Postiats/git/src/pats_trans2_dynexp.dats]: d1exp_tr_app_dyn_dqid: the dynamic identifier [size1_of_int1] is unrecognized.
+/home/dunham/benchmarksgame_onecore/fannkuchredux/tmp/fannkuchredux.dats: 4654(line=160, offs=23) -- 4661(line=160, offs=30): error(2): [/home/hwxi/research/Postiats/git/src/pats_trans2_dynexp.dats]: d1exp_tr_app_dyn_dqid: the dynamic identifier [int1_of] is unrecognized.
+/home/dunham/benchmarksgame_onecore/fannkuchredux/tmp/fannkuchredux.dats: 4723(line=162, offs=13) -- 4736(line=162, offs=26): error(2): [/home/hwxi/research/Postiats/git/src/pats_trans2_dynexp.dats]: d1exp_tr_app_dyn_dqid: the dynamic identifier [size1_of_int1] is unrecognized.
+/home/dunham/benchmarksgame_onecore/fannkuchredux/tmp/fannkuchredux.dats: 4762(line=163, offs=24) -- 4775(line=163, offs=37): error(2): [/home/hwxi/research/Postiats/git/src/pats_trans2_dynexp.dats]: d1exp_tr_app_dyn_dqid: the dynamic identifier [size1_of_int1] is unrecognized.
+/home/dunham/benchmarksgame_onecore/fannkuchredux/tmp/fannkuchredux.dats: 5249(line=178, offs=5) -- 5255(line=178, offs=11): error(2): [/home/hwxi/research/Postiats/git/src/pats_trans2_dynexp.dats]: d1exp_tr_app_dyn_dqid: the dynamic identifier [printf] is unrecognized.
+/home/dunham/benchmarksgame_onecore/fannkuchredux/tmp/fannkuchredux.dats: 5287(line=179, offs=5) -- 5293(line=179, offs=11): error(2): [/home/hwxi/research/Postiats/git/src/pats_trans2_dynexp.dats]: d1exp_tr_app_dyn_dqid: the dynamic identifier [printf] is unrecognized.
+TRANS2: there are [11] errors in total.
+exit(ATS): uncaught exception: _2home_2hwxi_2research_2Postiats_2git_2src_2pats_error_2esats__FatalErrorException(1025)
+exec(/usr/local/src/ATS2-Postiats-0.0.3/bin/patsopt --output fannkuchredux_dats.c --dynamic fannkuchredux.dats) = 256
+make: [fannkuchredux.ats-2.ats_run] Error 1 (ignored)
+0.52s to complete and log all make actions
 
 COMMAND LINE:
-./fannkuchredux.ats-2.ats_run 12
+./fannkuchredux.ats-2.ats_run 10
 
-PROGRAM OUTPUT:
-3968050
-Pfannkuchen(12) = 65
+MAKE ERROR 
+

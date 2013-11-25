@@ -1,9 +1,20 @@
 
-Sat, 02 Nov 2013 03:52:56 GMT
+Thu, 14 Nov 2013 21:26:56 GMT
 
 COMMAND LINE:
-/usr/local/src/dart-sdk/bin/dart  fannkuchredux.dart 12
+/usr/local/src/dart-sdk/bin/dart  fannkuchredux.dart 10
+
+PROGRAM FAILED 
+
 
 PROGRAM OUTPUT:
-3968050
-Pfannkuchen(12) = 65
+
+Unhandled exception:
+'file:///home/dunham/benchmarksgame_onecore/fannkuchredux/tmp/fannkuchredux.dart': Error: line 55 pos 20: type 'Options' is not loaded
+    var args = new Options().arguments;
+                   ^
+malformed type used.
+#0      main.<anonymous closure> (file:///home/dunham/benchmarksgame_onecore/fannkuchredux/tmp/fannkuchredux.dart:55:20)
+#1      main (file:///home/dunham/benchmarksgame_onecore/fannkuchredux/tmp/fannkuchredux.dart:57:4)
+#2      _startIsolate.isolateStartHandler (dart:isolate-patch/isolate_patch.dart:190)
+#3      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:93)
