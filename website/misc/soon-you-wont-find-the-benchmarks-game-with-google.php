@@ -3,7 +3,24 @@
 <dt>&nbsp;UPDATE</dt>
 
 <dd><dl>
+
 <dd>
+<p><br/>The machine hosting the storage for alioth.debian.org suffered
+<a href="http://lists.debian.org/debian-infrastructure-announce/2013/11/msg00001.html">catastrophic disk failure&#8230;</a></p>
+<blockquote>"Most of the data on vasks was stored on a RAID5. One of the disks in the RAID
+experienced a small hiccup, leading to it being thrown from the RAID, at which
+point mdadm started recovery using a hotspare. During this, another disk in the
+RAID threw hard errors and we were stuck with a non-working RAID. 
+
+Investigations showed this did not affect the /srv partition, but it affected
+the PostgreSQL partition. <a href="http://lists.debian.org/debian-infrastructure-announce/2013/11/msg00002.html">Due to various misconfigurations, we did not have any
+recent backups of Postgres.</a>"</blockquote>
+<p>With the inevitable consequence that for 2 weeks Googlebot could not access the website and&#8230;</p>
+</dd>
+
+<dt>&nbsp;</dt>
+<dd>
+<p class="timestamp"><? printf('%s GMT', '06 Nov 2013, Wednesday, 7:52 am') ?></p>
 <p><br/>Luckily I found a way for the Alioth admins to take some control of the upstream FusionForge generated pages (<a href="http://alioth.debian.org/projects/benchmarksgame/">for example</a>) without requiring changes to FusionForge. So, for now, the Alioth admins have throttled web crawlers less and <b>the website is once again findable with Google</b>.</p>
 
 <p>(All the upstream FusionForge generated pages were being served without any HTML robots meta tags: a minimum of 90 pages, for each of 1000 projects, duplicated at 4 different sub-domains. In other words, web crawlers were visiting Alioth because Alioth pages repeatedly asked to be indexed and crawled. That problem has now been fixed using the HTTP <a href="https://developers.google.com/webmasters/control-crawl-index/docs/robots_meta_tag">X-Robots-Tag "noindex, nofollow"</a> header.)</p>
