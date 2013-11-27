@@ -1,5 +1,5 @@
 
-Sat, 04 May 2013 01:57:20 GMT
+Wed, 27 Nov 2013 06:20:41 GMT
 
 MAKE:
 cp: ‘mandelbrot.sbcl-3.sbcl’ and ‘./mandelbrot.sbcl-3.sbcl’ are the same file
@@ -7,7 +7,6 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### START mandelbrot.sbcl-3.sbcl_compile
 (handler-bind ((sb-ext:defconstant-uneql      (lambda (c) (abort c))))      (load (compile-file "mandelbrot.sbcl-3.sbcl" ))) (save-lisp-and-die "sbcl.core" :purify t)
 ### END mandelbrot.sbcl-3.sbcl_compile
-
 
 ; compiling file "/home/dunham/benchmarksgame/bench/mandelbrot/mandelbrot.sbcl-3.sbcl" (written 23 JAN 2013 08:18:52 PM):
 ; compiling (DEFUN RENDER ...)
@@ -24,7 +23,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ;        :KIND NIL
 ;        :TYPE #<SB-KERNEL:FUN-TYPE #>
 ;        :WHERE-FROM :DEFINED
-;        :VARS NIL {1002CFE023}>))
+;        :VARS NIL {1002DBF963}>))
 ; 
 ; note: doing signed word to integer coercion (cost 20), for:
 ;       the second argument of CLOSURE-INIT
@@ -35,18 +34,18 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 
 
 ; /home/dunham/benchmarksgame_onecore/mandelbrot/tmp/mandelbrot.sbcl-3.fasl written
-; compilation finished in 0:00:00.055
+; compilation finished in 0:00:00.059
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 5952 bytes from the read-only space at 0x0x20000000
-writing 4064 bytes from the static space at 0x0x20100000
-writing 43384832 bytes from the dynamic space at 0x0x1000000000
+writing 5856 bytes from the read-only space at 0x0x20000000
+writing 4032 bytes from the static space at 0x0x20100000
+writing 44761088 bytes from the dynamic space at 0x0x1000000000
 done]
 ### START mandelbrot.sbcl-3.sbcl_run
 (main) (quit)
 ### END mandelbrot.sbcl-3.sbcl_run
 
-0.42s to complete and log all make actions
+0.43s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl  --noinform --core sbcl.core --userinit /dev/null --load mandelbrot.sbcl-3.sbcl_run 16000

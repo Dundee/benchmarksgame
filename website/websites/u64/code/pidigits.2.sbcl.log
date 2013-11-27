@@ -1,5 +1,5 @@
 
-Sat, 04 May 2013 02:12:26 GMT
+Wed, 27 Nov 2013 06:35:55 GMT
 
 MAKE:
 cp: ‘pidigits.sbcl-2.sbcl’ and ‘./pidigits.sbcl-2.sbcl’ are the same file
@@ -7,7 +7,6 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### START pidigits.sbcl-2.sbcl_compile
 (handler-bind ((sb-ext:defconstant-uneql      (lambda (c) (abort c))))      (load (compile-file "pidigits.sbcl-2.sbcl" ))) (save-lisp-and-die "sbcl.core" :purify t)
 ### END pidigits.sbcl-2.sbcl_compile
-
 
 ; compiling file "/home/dunham/benchmarksgame/bench/pidigits/pidigits.sbcl-2.sbcl" (written 23 JAN 2013 08:19:48 PM):
 ; compiling (DEFCONSTANT +DIGITS-PER-LINE+ ...)
@@ -192,18 +191,18 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 
 
 ; /home/dunham/benchmarksgame_onecore/pidigits/tmp/pidigits.sbcl-2.fasl written
-; compilation finished in 0:00:00.031
+; compilation finished in 0:00:00.033
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 5952 bytes from the read-only space at 0x0x20000000
-writing 4064 bytes from the static space at 0x0x20100000
-writing 43352064 bytes from the dynamic space at 0x0x1000000000
+writing 5856 bytes from the read-only space at 0x0x20000000
+writing 4032 bytes from the static space at 0x0x20100000
+writing 44728320 bytes from the dynamic space at 0x0x1000000000
 done]
 ### START pidigits.sbcl-2.sbcl_run
 (main) (quit)
 ### END pidigits.sbcl-2.sbcl_run
 
-0.40s to complete and log all make actions
+0.41s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl  --noinform --core sbcl.core --userinit /dev/null --load pidigits.sbcl-2.sbcl_run 10000
