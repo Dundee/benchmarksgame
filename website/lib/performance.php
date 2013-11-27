@@ -218,11 +218,14 @@ $MetaKeywords = str_replace(array("\r", "\n"), '', $MetaKeywords);
 
 $canonicalPage = FALSE;
 if ($Available) { 
-   $metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
+   
    if (!isset($LinkRelCanonical)){
       $canonicalPage = SITE_NAME == 'u32';
-      if (!$canonicalPage) {
+      if ($canonicalPage) {
+         $metaRobots = '<meta name="robots" content="index,nofollow,archive" />';
+      } else {
          $LinkRelCanonical = '<link rel="canonical" href="http://benchmarksgame.alioth.debian.org/u32/performance.php?test='.$T.'" />';
+         $metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
       }
    } 
 } else {
