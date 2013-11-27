@@ -296,8 +296,12 @@ $MetaKeywords = '<meta name="description" content="'.$LangName.' programs vs '.$
          
 // if the URL parameter is not currently accepted then do not index
 if ($Available) { 
-   $metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
    $canonicalPage = !(isset($LinkRelCanonical) && !(empty($LinkRelCanonical)));
+   if ($canonicalPage){ 
+      $metaRobots = '<meta name="robots" content="index,follow,archive" />'; 
+   } else { 
+      $metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />'; 
+   }
 } else {
    $metaRobots = '<meta name="robots" content="noindex,nofollow" />';
    $canonicalPage = FALSE;

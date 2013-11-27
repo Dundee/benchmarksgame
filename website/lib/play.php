@@ -22,7 +22,7 @@ $Body->set('Changed', filemtime(LIB_PATH.'play.tpl.php'));
 $Page->set('PageBody', $Body->fetch('play.tpl.php'));
 
 
-$metaRobots = '<meta name="robots" content="all" /><meta name="revisit" content="10 days" />';
+$metaRobots = '<meta name="robots" content="index,follow,archive" /><meta name="revisit" content="10 days" />';
 $bannerUrl = CORE_SITE;
 
 $faqUrl = CORE_SITE.'dont-jump-to-conclusions.php';
