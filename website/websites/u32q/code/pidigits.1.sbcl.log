@@ -1,5 +1,5 @@
 
-Fri, 03 May 2013 20:48:31 GMT
+Thu, 28 Nov 2013 04:36:55 GMT
 
 MAKE:
 cp: ‘pidigits.sbcl’ and ‘./pidigits.sbcl’ are the same file
@@ -7,7 +7,6 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### START pidigits.sbcl_compile
 (handler-bind ((sb-ext:defconstant-uneql      (lambda (c) (abort c))))      (load (compile-file "pidigits.sbcl" ))) (save-lisp-and-die "sbcl.core" :purify t)
 ### END pidigits.sbcl_compile
-
 
 ; compiling file "/home/dunham/benchmarksgame/bench/pidigits/pidigits.sbcl" (written 24 JAN 2013 02:01:15 PM):
 ; compiling (DECLAIM (OPTIMIZE # ...))
@@ -106,7 +105,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 
 
 ; /home/dunham/benchmarksgame_quadcore/pidigits/tmp/pidigits.fasl written
-; compilation finished in 0:00:00.184
+; compilation finished in 0:00:00.195
 STYLE-WARNING: Undefined alien: "__gmpz_init"
 STYLE-WARNING: Undefined alien: "__gmpz_init_set_ui"
 STYLE-WARNING: Undefined alien: "__gmpz_get_ui"
@@ -119,15 +118,15 @@ STYLE-WARNING: Undefined alien: "__gmpz_mul_ui"
 STYLE-WARNING: Undefined alien: "__gmpz_submul_ui"
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 3512 bytes from the read-only space at 0x0x1000000
-writing 2256 bytes from the static space at 0x0x1100000
-writing 28250112 bytes from the dynamic space at 0x0x9000000
+writing 3528 bytes from the read-only space at 0x0x1000000
+writing 2272 bytes from the static space at 0x0x1100000
+writing 29487104 bytes from the dynamic space at 0x0x9000000
 done]
 ### START pidigits.sbcl_run
 (main) (quit)
 ### END pidigits.sbcl_run
 
-0.79s to complete and log all make actions
+0.80s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl  --noinform --core sbcl.core --userinit /dev/null --load pidigits.sbcl_run 10000

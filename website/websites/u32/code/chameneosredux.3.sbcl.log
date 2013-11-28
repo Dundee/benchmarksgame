@@ -1,5 +1,5 @@
 
-Fri, 03 May 2013 21:29:13 GMT
+Thu, 28 Nov 2013 05:16:03 GMT
 
 MAKE:
 cp: ‘chameneosredux.sbcl-3.sbcl’ and ‘./chameneosredux.sbcl-3.sbcl’ are the same file
@@ -7,7 +7,6 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### START chameneosredux.sbcl-3.sbcl_compile
 (handler-bind ((sb-ext:defconstant-uneql      (lambda (c) (abort c))))      (load (compile-file "chameneosredux.sbcl-3.sbcl" ))) (save-lisp-and-die "sbcl.core" :purify t)
 ### END chameneosredux.sbcl-3.sbcl_compile
-
 
 ; compiling file "/home/dunham/benchmarksgame/bench/chameneosredux/chameneosredux.sbcl-3.sbcl" (written 24 JAN 2013 02:01:14 PM):
 ; compiling (DEFPACKAGE #:SMP-UTILS ...)
@@ -31,18 +30,18 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; compiling (DEFUN MAIN ...)
 
 ; /home/dunham/benchmarksgame_onecore/chameneosredux/tmp/chameneosredux.sbcl-3.fasl written
-; compilation finished in 0:00:00.220
+; compilation finished in 0:00:00.260
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 3512 bytes from the read-only space at 0x0x1000000
-writing 2256 bytes from the static space at 0x0x1100000
-writing 28270592 bytes from the dynamic space at 0x0x9000000
+writing 3528 bytes from the read-only space at 0x0x1000000
+writing 2272 bytes from the static space at 0x0x1100000
+writing 29507584 bytes from the dynamic space at 0x0x9000000
 done]
 ### START chameneosredux.sbcl-3.sbcl_run
 (main) (quit)
 ### END chameneosredux.sbcl-3.sbcl_run
 
-0.80s to complete and log all make actions
+0.90s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl   --noinform --core sbcl.core --userinit /dev/null --load chameneosredux.sbcl-3.sbcl_run 6000000
@@ -59,21 +58,21 @@ yellow + red -> blue
 yellow + yellow -> yellow
 
  blue red yellow
-4024850 zero
-3984470 zero
-3990680 zero
+4014576 zero
+4009020 zero
+3976404 zero
  one two zero zero zero zero zero zero
 
  blue red yellow red yellow blue red yellow red blue
-1221894 zero
-1201813 zero
-1196450 zero
-1206720 zero
-1215415 zero
-1207950 zero
-1204993 zero
-1187781 zero
-1176169 zero
-1180815 zero
+1213042 zero
+1214490 zero
+1200598 zero
+1210176 zero
+1200784 zero
+1203088 zero
+1182019 zero
+1199682 zero
+1195097 zero
+1181024 zero
  one two zero zero zero zero zero zero
 

@@ -1,5 +1,5 @@
 
-Fri, 03 May 2013 20:05:06 GMT
+Thu, 28 Nov 2013 01:55:59 GMT
 
 MAKE:
 cp: ‘fastaredux.sbcl-5.sbcl’ and ‘./fastaredux.sbcl-5.sbcl’ are the same file
@@ -7,7 +7,6 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### START fastaredux.sbcl-5.sbcl_compile
 (handler-bind ((sb-ext:defconstant-uneql      (lambda (c) (abort c))))      (load (compile-file "fastaredux.sbcl-5.sbcl" ))) (save-lisp-and-die "sbcl.core" :purify t)
 ### END fastaredux.sbcl-5.sbcl_compile
-
 
 ; compiling file "/home/dunham/benchmarksgame/bench/fastaredux/fastaredux.sbcl-5.sbcl" (written 24 JAN 2013 02:01:15 PM):
 ; compiling (DEFMACRO DEFINE-CONSTANT ...)
@@ -49,6 +48,22 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ;                               (SINGLE-FLOAT -139968.0 279936.0)), not a INTEGER.
 ; 
 ; note: unable to
+;   associate */* of constants
+; due to type uncertainty:
+;   The first argument is a (OR (MEMBER 0.0 0.0d0) (RATIONAL (-139968) (279936))
+;                               (DOUBLE-FLOAT -139968.0d0 279936.0d0)
+;                               (SINGLE-FLOAT -139968.0
+;                                279936.0)), not a RATIONAL.
+; 
+; note: unable to
+;   associate *// of constants
+; due to type uncertainty:
+;   The first argument is a (OR (MEMBER 0.0 0.0d0) (RATIONAL (-139968) (279936))
+;                               (DOUBLE-FLOAT -139968.0d0 279936.0d0)
+;                               (SINGLE-FLOAT -139968.0
+;                                279936.0)), not a RATIONAL.
+; 
+; note: unable to
 ;   recode as leas, shifts and adds
 ; due to type uncertainty:
 ;   The first argument is a (OR (MEMBER 0.0 0.0d0) (RATIONAL (-139968) (279936))
@@ -85,10 +100,28 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ;                               (DOUBLE-FLOAT -5.42655936d8 1.085311872d9)
 ;                               (RATIONAL (-542655936)
 ;                                         (1085311872))), not a FLOAT.
+; 
+; note: unable to
+;   associate +/+ of constants
+; due to type uncertainty:
+;   The first argument is a (OR (MEMBER 0.0 0.0d0)
+;                               (SINGLE-FLOAT -5.4265594e8 1.0853119e9)
+;                               (DOUBLE-FLOAT -5.42655936d8 1.085311872d9)
+;                               (RATIONAL (-542655936)
+;                                         (1085311872))), not a RATIONAL.
+; 
+; note: unable to
+;   associate +/- of constants
+; due to type uncertainty:
+;   The first argument is a (OR (MEMBER 0.0 0.0d0)
+;                               (SINGLE-FLOAT -5.4265594e8 1.0853119e9)
+;                               (DOUBLE-FLOAT -5.42655936d8 1.085311872d9)
+;                               (RATIONAL (-542655936)
+;                                         (1085311872))), not a RATIONAL.
 
 ;     (* SCALE (SETF LAST (MOD (+ # IC) IM)))
 ; ==>
-;   (* SB-C::Y 0.029256687242798354d0)
+;   (* (TRULY-THE #<SB-KERNEL:UNION-TYPE REAL> SB-C::Y) 0.029256687242798354d0)
 ; 
 ; note: unable to
 ;   optimize
@@ -142,6 +175,22 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ;   The first argument is a (OR (RATIONAL (-139968) (139968))
 ;                               (DOUBLE-FLOAT -139968.0d0 139968.0d0)
 ;                               (SINGLE-FLOAT -139968.0 139968.0)), not a FLOAT.
+; 
+; note: unable to
+;   associate +/+ of constants
+; due to type uncertainty:
+;   The first argument is a (OR (RATIONAL (-139968) (139968))
+;                               (DOUBLE-FLOAT -139968.0d0 139968.0d0)
+;                               (SINGLE-FLOAT -139968.0
+;                                139968.0)), not a RATIONAL.
+; 
+; note: unable to
+;   associate +/- of constants
+; due to type uncertainty:
+;   The first argument is a (OR (RATIONAL (-139968) (139968))
+;                               (DOUBLE-FLOAT -139968.0d0 139968.0d0)
+;                               (SINGLE-FLOAT -139968.0
+;                                139968.0)), not a RATIONAL.
 
 ; --> BLOCK LET REM BLOCK MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL 
 ; ==>
@@ -274,7 +323,7 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 
 ;     (* SCALE (SETF LAST (MOD (+ # IC) IM)))
 ; ==>
-;   (* SB-C::Y 0.029256687242798354d0)
+;   (* (TRULY-THE #<SB-KERNEL:UNION-TYPE REAL> SB-C::Y) 0.029256687242798354d0)
 ; 
 ; note: forced to do GENERIC-* (cost 30)
 ;       unable to do inline float arithmetic (cost 3) because:
@@ -327,22 +376,22 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; compiling (LET (#) ...)
 ; compiling (DEFUN MAIN ...); 
 ; compilation unit finished
-;   printed 23 notes
+;   printed 29 notes
 
 
 ; /home/dunham/benchmarksgame_quadcore/fastaredux/tmp/fastaredux.sbcl-5.fasl written
-; compilation finished in 0:00:00.196
+; compilation finished in 0:00:00.213
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 3512 bytes from the read-only space at 0x0x1000000
-writing 2256 bytes from the static space at 0x0x1100000
-writing 30367744 bytes from the dynamic space at 0x0x9000000
+writing 3528 bytes from the read-only space at 0x0x1000000
+writing 2272 bytes from the static space at 0x0x1100000
+writing 31588352 bytes from the dynamic space at 0x0x9000000
 done]
 ### START fastaredux.sbcl-5.sbcl_run
 (main) (quit)
 ### END fastaredux.sbcl-5.sbcl_run
 
-0.81s to complete and log all make actions
+0.87s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl  --noinform --core sbcl.core --userinit /dev/null --load fastaredux.sbcl-5.sbcl_run 25000000

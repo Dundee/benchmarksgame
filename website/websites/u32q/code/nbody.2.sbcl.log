@@ -1,5 +1,5 @@
 
-Fri, 03 May 2013 20:39:53 GMT
+Thu, 28 Nov 2013 04:24:45 GMT
 
 MAKE:
 cp: ‘nbody.sbcl-2.sbcl’ and ‘./nbody.sbcl-2.sbcl’ are the same file
@@ -7,7 +7,6 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### START nbody.sbcl-2.sbcl_compile
 (handler-bind ((sb-ext:defconstant-uneql      (lambda (c) (abort c))))      (load (compile-file "nbody.sbcl-2.sbcl" ))) (save-lisp-and-die "sbcl.core" :purify t)
 ### END nbody.sbcl-2.sbcl_compile
-
 
 ; compiling file "/home/dunham/benchmarksgame/bench/nbody/nbody.sbcl-2.sbcl" (written 24 JAN 2013 02:01:15 PM):
 ; compiling (DECLAIM (OPTIMIZE # ...))
@@ -37,11 +36,11 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; note: doing float to pointer coercion (cost 13) to "<return value>"
 
 ; --> PROGN DEFUN PROGN EVAL-WHEN SB-IMPL::%DEFUN BLOCK SETF SB-KERNEL:%SETELT 
-; --> SB-KERNEL:%ASET SB-KERNEL:HAIRY-DATA-VECTOR-SET MULTIPLE-VALUE-BIND 
-; --> MULTIPLE-VALUE-CALL 
+; --> SETF LET* MULTIPLE-VALUE-BIND LET FUNCALL SB-C::%FUNCALL (SETF AREF) 
+; --> SB-KERNEL:HAIRY-DATA-VECTOR-SET MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL 
 ; ==>
-;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G24)
-;       (DECLARE (IGNORE #:G24))
+;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G27)
+;       (DECLARE (IGNORE #:G27))
 ;       (DECLARE (TYPE (SIMPLE-ARRAY DOUBLE-FLOAT 1) ARRAY)
 ;                (TYPE DOUBLE-FLOAT SB-C::NEW-VALUE))
 ;       (SB-KERNEL:DATA-VECTOR-SET ARRAY SB-INT:INDEX SB-C::NEW-VALUE))
@@ -51,19 +50,19 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; --> PROGN DEFUN PROGN EVAL-WHEN SB-IMPL::%DEFUN BLOCK THE ELT AREF 
 ; --> SB-KERNEL:HAIRY-DATA-VECTOR-REF MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL 
 ; ==>
-;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G29)
-;       (DECLARE (IGNORE #:G29))
+;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G32)
+;       (DECLARE (IGNORE #:G32))
 ;       (DECLARE (TYPE (SIMPLE-ARRAY DOUBLE-FLOAT 1) ARRAY))
 ;       (SB-KERNEL:DATA-VECTOR-REF ARRAY SB-INT:INDEX))
 ; 
 ; note: doing float to pointer coercion (cost 13) to "<return value>"
 
 ; --> PROGN DEFUN PROGN EVAL-WHEN SB-IMPL::%DEFUN BLOCK SETF SB-KERNEL:%SETELT 
-; --> SB-KERNEL:%ASET SB-KERNEL:HAIRY-DATA-VECTOR-SET MULTIPLE-VALUE-BIND 
-; --> MULTIPLE-VALUE-CALL 
+; --> SETF LET* MULTIPLE-VALUE-BIND LET FUNCALL SB-C::%FUNCALL (SETF AREF) 
+; --> SB-KERNEL:HAIRY-DATA-VECTOR-SET MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL 
 ; ==>
-;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G37)
-;       (DECLARE (IGNORE #:G37))
+;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G43)
+;       (DECLARE (IGNORE #:G43))
 ;       (DECLARE (TYPE (SIMPLE-ARRAY DOUBLE-FLOAT 1) ARRAY)
 ;                (TYPE DOUBLE-FLOAT SB-C::NEW-VALUE))
 ;       (SB-KERNEL:DATA-VECTOR-SET ARRAY SB-INT:INDEX SB-C::NEW-VALUE))
@@ -73,19 +72,19 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; --> PROGN DEFUN PROGN EVAL-WHEN SB-IMPL::%DEFUN BLOCK THE ELT AREF 
 ; --> SB-KERNEL:HAIRY-DATA-VECTOR-REF MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL 
 ; ==>
-;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G42)
-;       (DECLARE (IGNORE #:G42))
+;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G48)
+;       (DECLARE (IGNORE #:G48))
 ;       (DECLARE (TYPE (SIMPLE-ARRAY DOUBLE-FLOAT 1) ARRAY))
 ;       (SB-KERNEL:DATA-VECTOR-REF ARRAY SB-INT:INDEX))
 ; 
 ; note: doing float to pointer coercion (cost 13) to "<return value>"
 
 ; --> PROGN DEFUN PROGN EVAL-WHEN SB-IMPL::%DEFUN BLOCK SETF SB-KERNEL:%SETELT 
-; --> SB-KERNEL:%ASET SB-KERNEL:HAIRY-DATA-VECTOR-SET MULTIPLE-VALUE-BIND 
-; --> MULTIPLE-VALUE-CALL 
+; --> SETF LET* MULTIPLE-VALUE-BIND LET FUNCALL SB-C::%FUNCALL (SETF AREF) 
+; --> SB-KERNEL:HAIRY-DATA-VECTOR-SET MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL 
 ; ==>
-;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G50)
-;       (DECLARE (IGNORE #:G50))
+;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G59)
+;       (DECLARE (IGNORE #:G59))
 ;       (DECLARE (TYPE (SIMPLE-ARRAY DOUBLE-FLOAT 1) ARRAY)
 ;                (TYPE DOUBLE-FLOAT SB-C::NEW-VALUE))
 ;       (SB-KERNEL:DATA-VECTOR-SET ARRAY SB-INT:INDEX SB-C::NEW-VALUE))
@@ -95,19 +94,19 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; --> PROGN DEFUN PROGN EVAL-WHEN SB-IMPL::%DEFUN BLOCK THE ELT AREF 
 ; --> SB-KERNEL:HAIRY-DATA-VECTOR-REF MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL 
 ; ==>
-;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G55)
-;       (DECLARE (IGNORE #:G55))
+;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G64)
+;       (DECLARE (IGNORE #:G64))
 ;       (DECLARE (TYPE (SIMPLE-ARRAY DOUBLE-FLOAT 1) ARRAY))
 ;       (SB-KERNEL:DATA-VECTOR-REF ARRAY SB-INT:INDEX))
 ; 
 ; note: doing float to pointer coercion (cost 13) to "<return value>"
 
 ; --> PROGN DEFUN PROGN EVAL-WHEN SB-IMPL::%DEFUN BLOCK SETF SB-KERNEL:%SETELT 
-; --> SB-KERNEL:%ASET SB-KERNEL:HAIRY-DATA-VECTOR-SET MULTIPLE-VALUE-BIND 
-; --> MULTIPLE-VALUE-CALL 
+; --> SETF LET* MULTIPLE-VALUE-BIND LET FUNCALL SB-C::%FUNCALL (SETF AREF) 
+; --> SB-KERNEL:HAIRY-DATA-VECTOR-SET MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL 
 ; ==>
-;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G63)
-;       (DECLARE (IGNORE #:G63))
+;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G75)
+;       (DECLARE (IGNORE #:G75))
 ;       (DECLARE (TYPE (SIMPLE-ARRAY DOUBLE-FLOAT 1) ARRAY)
 ;                (TYPE DOUBLE-FLOAT SB-C::NEW-VALUE))
 ;       (SB-KERNEL:DATA-VECTOR-SET ARRAY SB-INT:INDEX SB-C::NEW-VALUE))
@@ -117,19 +116,19 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; --> PROGN DEFUN PROGN EVAL-WHEN SB-IMPL::%DEFUN BLOCK THE ELT AREF 
 ; --> SB-KERNEL:HAIRY-DATA-VECTOR-REF MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL 
 ; ==>
-;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G68)
-;       (DECLARE (IGNORE #:G68))
+;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G80)
+;       (DECLARE (IGNORE #:G80))
 ;       (DECLARE (TYPE (SIMPLE-ARRAY DOUBLE-FLOAT 1) ARRAY))
 ;       (SB-KERNEL:DATA-VECTOR-REF ARRAY SB-INT:INDEX))
 ; 
 ; note: doing float to pointer coercion (cost 13) to "<return value>"
 
 ; --> PROGN DEFUN PROGN EVAL-WHEN SB-IMPL::%DEFUN BLOCK SETF SB-KERNEL:%SETELT 
-; --> SB-KERNEL:%ASET SB-KERNEL:HAIRY-DATA-VECTOR-SET MULTIPLE-VALUE-BIND 
-; --> MULTIPLE-VALUE-CALL 
+; --> SETF LET* MULTIPLE-VALUE-BIND LET FUNCALL SB-C::%FUNCALL (SETF AREF) 
+; --> SB-KERNEL:HAIRY-DATA-VECTOR-SET MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL 
 ; ==>
-;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G76)
-;       (DECLARE (IGNORE #:G76))
+;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G91)
+;       (DECLARE (IGNORE #:G91))
 ;       (DECLARE (TYPE (SIMPLE-ARRAY DOUBLE-FLOAT 1) ARRAY)
 ;                (TYPE DOUBLE-FLOAT SB-C::NEW-VALUE))
 ;       (SB-KERNEL:DATA-VECTOR-SET ARRAY SB-INT:INDEX SB-C::NEW-VALUE))
@@ -139,19 +138,19 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; --> PROGN DEFUN PROGN EVAL-WHEN SB-IMPL::%DEFUN BLOCK THE ELT AREF 
 ; --> SB-KERNEL:HAIRY-DATA-VECTOR-REF MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL 
 ; ==>
-;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G81)
-;       (DECLARE (IGNORE #:G81))
+;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G96)
+;       (DECLARE (IGNORE #:G96))
 ;       (DECLARE (TYPE (SIMPLE-ARRAY DOUBLE-FLOAT 1) ARRAY))
 ;       (SB-KERNEL:DATA-VECTOR-REF ARRAY SB-INT:INDEX))
 ; 
 ; note: doing float to pointer coercion (cost 13) to "<return value>"
 
 ; --> PROGN DEFUN PROGN EVAL-WHEN SB-IMPL::%DEFUN BLOCK SETF SB-KERNEL:%SETELT 
-; --> SB-KERNEL:%ASET SB-KERNEL:HAIRY-DATA-VECTOR-SET MULTIPLE-VALUE-BIND 
-; --> MULTIPLE-VALUE-CALL 
+; --> SETF LET* MULTIPLE-VALUE-BIND LET FUNCALL SB-C::%FUNCALL (SETF AREF) 
+; --> SB-KERNEL:HAIRY-DATA-VECTOR-SET MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL 
 ; ==>
-;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G89)
-;       (DECLARE (IGNORE #:G89))
+;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G107)
+;       (DECLARE (IGNORE #:G107))
 ;       (DECLARE (TYPE (SIMPLE-ARRAY DOUBLE-FLOAT 1) ARRAY)
 ;                (TYPE DOUBLE-FLOAT SB-C::NEW-VALUE))
 ;       (SB-KERNEL:DATA-VECTOR-SET ARRAY SB-INT:INDEX SB-C::NEW-VALUE))
@@ -161,19 +160,19 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; --> PROGN DEFUN PROGN EVAL-WHEN SB-IMPL::%DEFUN BLOCK THE ELT AREF 
 ; --> SB-KERNEL:HAIRY-DATA-VECTOR-REF MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL 
 ; ==>
-;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G94)
-;       (DECLARE (IGNORE #:G94))
+;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G112)
+;       (DECLARE (IGNORE #:G112))
 ;       (DECLARE (TYPE (SIMPLE-ARRAY DOUBLE-FLOAT 1) ARRAY))
 ;       (SB-KERNEL:DATA-VECTOR-REF ARRAY SB-INT:INDEX))
 ; 
 ; note: doing float to pointer coercion (cost 13) to "<return value>"
 
 ; --> PROGN DEFUN PROGN EVAL-WHEN SB-IMPL::%DEFUN BLOCK SETF SB-KERNEL:%SETELT 
-; --> SB-KERNEL:%ASET SB-KERNEL:HAIRY-DATA-VECTOR-SET MULTIPLE-VALUE-BIND 
-; --> MULTIPLE-VALUE-CALL 
+; --> SETF LET* MULTIPLE-VALUE-BIND LET FUNCALL SB-C::%FUNCALL (SETF AREF) 
+; --> SB-KERNEL:HAIRY-DATA-VECTOR-SET MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL 
 ; ==>
-;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G102)
-;       (DECLARE (IGNORE #:G102))
+;   #'(LAMBDA (&OPTIONAL (ARRAY) (SB-INT:INDEX) &REST #:G123)
+;       (DECLARE (IGNORE #:G123))
 ;       (DECLARE (TYPE (SIMPLE-ARRAY DOUBLE-FLOAT 1) ARRAY)
 ;                (TYPE DOUBLE-FLOAT SB-C::NEW-VALUE))
 ;       (SB-KERNEL:DATA-VECTOR-SET ARRAY SB-INT:INDEX SB-C::NEW-VALUE))
@@ -246,18 +245,18 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 
 
 ; /home/dunham/benchmarksgame_quadcore/nbody/tmp/nbody.sbcl-2.fasl written
-; compilation finished in 0:00:00.143
+; compilation finished in 0:00:00.152
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 3512 bytes from the read-only space at 0x0x1000000
-writing 2256 bytes from the static space at 0x0x1100000
-writing 28217344 bytes from the dynamic space at 0x0x9000000
+writing 3528 bytes from the read-only space at 0x0x1000000
+writing 2272 bytes from the static space at 0x0x1100000
+writing 29450240 bytes from the dynamic space at 0x0x9000000
 done]
 ### START nbody.sbcl-2.sbcl_run
 (main) (quit)
 ### END nbody.sbcl-2.sbcl_run
 
-0.71s to complete and log all make actions
+0.75s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl  --noinform --core sbcl.core --userinit /dev/null --load nbody.sbcl-2.sbcl_run 50000000
