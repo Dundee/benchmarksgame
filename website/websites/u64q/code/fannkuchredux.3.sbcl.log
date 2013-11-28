@@ -1,5 +1,5 @@
 
-Sat, 04 May 2013 03:52:02 GMT
+Thu, 28 Nov 2013 17:37:02 GMT
 
 MAKE:
 cp: ‘fannkuchredux.sbcl-3.sbcl’ and ‘./fannkuchredux.sbcl-3.sbcl’ are the same file
@@ -7,7 +7,6 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### START fannkuchredux.sbcl-3.sbcl_compile
 (handler-bind ((sb-ext:defconstant-uneql      (lambda (c) (abort c))))      (load (compile-file "fannkuchredux.sbcl-3.sbcl" ))) (save-lisp-and-die "sbcl.core" :purify t)
 ### END fannkuchredux.sbcl-3.sbcl_compile
-
 
 ; compiling file "/home/dunham/benchmarksgame/bench/fannkuchredux/fannkuchredux.sbcl-3.sbcl" (written 23 JAN 2013 08:16:55 PM):
 ; compiling (DECLAIM (OPTIMIZE # ...))
@@ -19,18 +18,18 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; compiling (DEFUN MAIN ...)
 
 ; /home/dunham/benchmarksgame_quadcore/fannkuchredux/tmp/fannkuchredux.sbcl-3.fasl written
-; compilation finished in 0:00:00.050
+; compilation finished in 0:00:00.056
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 5952 bytes from the read-only space at 0x0x20000000
-writing 4064 bytes from the static space at 0x0x20100000
-writing 43352064 bytes from the dynamic space at 0x0x1000000000
+writing 5856 bytes from the read-only space at 0x0x20000000
+writing 4032 bytes from the static space at 0x0x20100000
+writing 44728320 bytes from the dynamic space at 0x0x1000000000
 done]
 ### START fannkuchredux.sbcl-3.sbcl_run
 (main) (quit)
 ### END fannkuchredux.sbcl-3.sbcl_run
 
-0.40s to complete and log all make actions
+0.41s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl  --noinform --core sbcl.core --userinit /dev/null --load fannkuchredux.sbcl-3.sbcl_run 12

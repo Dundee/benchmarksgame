@@ -1,5 +1,5 @@
 
-Sat, 04 May 2013 04:43:34 GMT
+Thu, 28 Nov 2013 18:42:02 GMT
 
 MAKE:
 cp: ‘revcomp.sbcl’ and ‘./revcomp.sbcl’ are the same file
@@ -7,7 +7,6 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### START revcomp.sbcl_compile
 (handler-bind ((sb-ext:defconstant-uneql      (lambda (c) (abort c))))      (load (compile-file "revcomp.sbcl" ))) (save-lisp-and-die "sbcl.core" :purify t)
 ### END revcomp.sbcl_compile
-
 
 ; compiling file "/home/dunham/benchmarksgame/bench/revcomp/revcomp.sbcl" (written 23 JAN 2013 08:20:38 PM):
 ; compiling (DEFCONSTANT +BUFFER-SIZE+ ...)
@@ -18,18 +17,18 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ; compiling (DEFUN MAIN ...)
 
 ; /home/dunham/benchmarksgame_quadcore/revcomp/tmp/revcomp.fasl written
-; compilation finished in 0:00:00.906
+; compilation finished in 0:00:00.076
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 5952 bytes from the read-only space at 0x0x20000000
-writing 4064 bytes from the static space at 0x0x20100000
-writing 43352064 bytes from the dynamic space at 0x0x1000000000
+writing 5856 bytes from the read-only space at 0x0x20000000
+writing 4032 bytes from the static space at 0x0x20100000
+writing 44728320 bytes from the dynamic space at 0x0x1000000000
 done]
 ### START revcomp.sbcl_run
 (main) (quit)
 ### END revcomp.sbcl_run
 
-4.10s to complete and log all make actions
+0.43s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl  --noinform --core sbcl.core --userinit /dev/null --load revcomp.sbcl_run 0 < revcomp-input25000000.txt

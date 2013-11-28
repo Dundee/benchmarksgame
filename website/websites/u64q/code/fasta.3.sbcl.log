@@ -1,5 +1,5 @@
 
-Sat, 04 May 2013 04:03:10 GMT
+Thu, 28 Nov 2013 17:54:04 GMT
 
 MAKE:
 cp: ‘fasta.sbcl-3.sbcl’ and ‘./fasta.sbcl-3.sbcl’ are the same file
@@ -7,7 +7,6 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 ### START fasta.sbcl-3.sbcl_compile
 (handler-bind ((sb-ext:defconstant-uneql      (lambda (c) (abort c))))      (load (compile-file "fasta.sbcl-3.sbcl" ))) (save-lisp-and-die "sbcl.core" :purify t)
 ### END fasta.sbcl-3.sbcl_compile
-
 
 ; compiling file "/home/dunham/benchmarksgame/bench/fasta/fasta.sbcl-3.sbcl" (written 23 JAN 2013 08:17:31 PM):
 ; compiling (DECLAIM (OPTIMIZE # ...))
@@ -87,18 +86,18 @@ SBCL built with: /usr/local/bin/sbcl --userinit /dev/null --batch --eval '(load 
 
 
 ; /home/dunham/benchmarksgame_quadcore/fasta/tmp/fasta.sbcl-3.fasl written
-; compilation finished in 0:00:00.137
+; compilation finished in 0:00:00.145
 [undoing binding stack and other enclosing state... done]
 [saving current Lisp image into sbcl.core:
-writing 5952 bytes from the read-only space at 0x0x20000000
-writing 4064 bytes from the static space at 0x0x20100000
-writing 43384832 bytes from the dynamic space at 0x0x1000000000
+writing 5856 bytes from the read-only space at 0x0x20000000
+writing 4032 bytes from the static space at 0x0x20100000
+writing 44761088 bytes from the dynamic space at 0x0x1000000000
 done]
 ### START fasta.sbcl-3.sbcl_run
 (main) (quit)
 ### END fasta.sbcl-3.sbcl_run
 
-0.49s to complete and log all make actions
+0.50s to complete and log all make actions
 
 COMMAND LINE:
 /usr/local/bin/sbcl --dynamic-space-size 500 --noinform --core sbcl.core --userinit /dev/null --load fasta.sbcl-3.sbcl_run 25000000
