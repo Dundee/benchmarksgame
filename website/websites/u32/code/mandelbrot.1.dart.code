@@ -10,12 +10,11 @@
 <span class="hl kwa">import</span> <span class="hl str">'dart:isolate'</span><span class="hl opt">;</span>
 <span class="hl kwa">import</span> <span class="hl str">'dart:async'</span><span class="hl opt">;</span>
 <span class="hl kwa">import</span> <span class="hl str">'dart:typed_data'</span><span class="hl opt">;</span>
-<span class="hl kwa">import</span> <span class="hl str">'dart:platform'</span> as platform<span class="hl opt">;</span>
 
 <span class="hl kwa">void</span> <span class="hl kwd">main</span><span class="hl opt">(</span>args<span class="hl opt">) {</span>
-  <span class="hl kwb">int</span> n <span class="hl opt">=</span> args<span class="hl opt">.</span>length <span class="hl opt">&gt;</span> <span class="hl num">0</span> ? <span class="hl kwb">int</span><span class="hl opt">.</span><span class="hl kwd">parse</span><span class="hl opt">(</span>args<span class="hl kwc">[0]</span><span class="hl opt">) :</span> <span class="hl num">200</span><span class="hl opt">;</span>
+  <span class="hl kwb">int</span> n <span class="hl opt">=</span> args<span class="hl opt">.</span>length <span class="hl opt">&gt;</span> <span class="hl num">0</span> ? <span class="hl kwb">int</span><span class="hl opt">.</span><span class="hl kwd">parse</span><span class="hl opt">(</span>args<span class="hl kwc">[0]</span><span class="hl opt">) :</span> <span class="hl num">2000</span><span class="hl opt">;</span>
 
-  <span class="hl kwa">var</span> threads <span class="hl opt">=</span> platform<span class="hl opt">.</span>numberOfProcessors<span class="hl opt">;</span>
+  <span class="hl kwa">var</span> threads <span class="hl opt">=</span> Platform<span class="hl opt">.</span>numberOfProcessors<span class="hl opt">;</span>
   <span class="hl kwa">var</span> segmentFutures <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">List</span><span class="hl opt">(</span>threads<span class="hl opt">);</span>
   <span class="hl kwb">int</span> lineLen <span class="hl opt">= (</span>n <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">)</span> ~<span class="hl opt">/</span> <span class="hl num">8</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
   <span class="hl kwa">var</span> lines <span class="hl opt">=</span> <span class="hl kwa">new</span> List<span class="hl opt">&lt;</span>Uint8List<span class="hl opt">&gt;(</span>n<span class="hl opt">);</span>
