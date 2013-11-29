@@ -1,0 +1,109 @@
+<span class="hl com">/* The Computer Language Benchmarks Game </span>
+<span class="hl com"> * http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * Contributed by Jon Harrop</span>
+<span class="hl com"> * Modified by Alex Mizrahi</span>
+<span class="hl com"> * Modified by Bruno Coutinho to use apr like the C version</span>
+<span class="hl com"> */</span>
+
+<span class="hl ppc">#include &lt;iostream&gt;</span>
+<span class="hl ppc">#include &lt;sstream&gt;</span>
+<span class="hl ppc">#include &lt;cstdlib&gt;</span>
+ 
+<span class="hl kwc">typedef</span> off_t off64_t<span class="hl opt">;</span>
+<span class="hl ppc">#include &lt;apr_pools.h&gt;</span>
+
+<span class="hl kwc">class</span> Node <span class="hl opt">{</span>
+<span class="hl kwc">public</span><span class="hl opt">:</span>
+  <span class="hl kwc">inline</span> <span class="hl kwd">Node</span><span class="hl opt">(</span><span class="hl kwb">int</span> i2<span class="hl opt">) :</span> <span class="hl kwd">l</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">),</span> <span class="hl kwd">r</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">),</span> <span class="hl kwd">i</span><span class="hl opt">(</span>i2<span class="hl opt">) {}</span>
+
+  <span class="hl kwc">inline</span> <span class="hl kwd">Node</span><span class="hl opt">(</span>Node<span class="hl opt">*</span> __restrict__ l2<span class="hl opt">,</span> <span class="hl kwb">int</span> i2<span class="hl opt">,</span> Node<span class="hl opt">*</span> __restrict__ r2<span class="hl opt">)</span> 
+    <span class="hl opt">:</span><span class="hl kwd">l</span><span class="hl opt">(</span>l2<span class="hl opt">)</span>
+    <span class="hl opt">,</span><span class="hl kwd">r</span><span class="hl opt">(</span>r2<span class="hl opt">)</span>
+    <span class="hl opt">,</span><span class="hl kwd">i</span><span class="hl opt">(</span>i2<span class="hl opt">)</span> 
+    <span class="hl opt">{}</span>
+
+  <span class="hl kwc">inline</span> <span class="hl opt">~</span><span class="hl kwd">Node</span><span class="hl opt">() {}</span>
+
+  <span class="hl kwb">int</span> <span class="hl kwd">check</span><span class="hl opt">()</span> <span class="hl kwb">const</span> <span class="hl opt">{</span>
+    <span class="hl kwa">if</span> <span class="hl opt">(</span>l<span class="hl opt">)</span> <span class="hl kwa">return</span> l<span class="hl opt">-&gt;</span><span class="hl kwd">check</span><span class="hl opt">() +</span> i <span class="hl opt">-</span> r<span class="hl opt">-&gt;</span><span class="hl kwd">check</span><span class="hl opt">();</span> 
+    <span class="hl kwa">else return</span> i<span class="hl opt">;</span>
+  <span class="hl opt">}</span>
+
+<span class="hl kwc">private</span><span class="hl opt">:</span>
+  Node<span class="hl opt">*</span> __restrict__ l<span class="hl opt">;</span>
+  Node<span class="hl opt">*</span> __restrict__ r<span class="hl opt">;</span>
+  <span class="hl kwb">int</span> i<span class="hl opt">;</span>
+<span class="hl opt">};</span>
+
+Node<span class="hl opt">*</span> <span class="hl kwd">make</span><span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">,</span> <span class="hl kwb">int</span> depth<span class="hl opt">,</span> apr_pool_t<span class="hl opt">*</span> pool<span class="hl opt">) {</span>
+  Node<span class="hl opt">*</span> __restrict__ addr  <span class="hl opt">= (</span>Node<span class="hl opt">*)</span> <span class="hl kwd">apr_palloc</span><span class="hl opt">(</span>pool<span class="hl opt">,</span> <span class="hl kwa">sizeof</span><span class="hl opt">(</span>Node<span class="hl opt">));</span>
+  Node<span class="hl opt">*</span> __restrict__ left  <span class="hl opt">=</span> NULL<span class="hl opt">;</span>
+  Node<span class="hl opt">*</span> __restrict__ right <span class="hl opt">=</span> NULL<span class="hl opt">;</span>
+
+  <span class="hl kwa">if</span> <span class="hl opt">(</span>depth <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+    left  <span class="hl opt">=</span> <span class="hl kwd">make</span> <span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">*</span>i<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">,</span> depth <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">,</span> pool<span class="hl opt">);</span>
+    right <span class="hl opt">=</span> <span class="hl kwd">make</span> <span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">*</span>i  <span class="hl opt">,</span> depth <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">,</span> pool<span class="hl opt">);</span>
+  <span class="hl opt">}</span>   
+
+  Node<span class="hl opt">*</span> __restrict__ curr <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl opt">(</span>addr<span class="hl opt">)</span> <span class="hl kwd">Node</span><span class="hl opt">(</span>left<span class="hl opt">,</span> i<span class="hl opt">,</span> right<span class="hl opt">);</span>
+  <span class="hl kwa">return</span> curr<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwb">int</span> <span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">int</span> argc<span class="hl opt">,</span> <span class="hl kwb">char</span> <span class="hl opt">*</span>argv<span class="hl opt">[]) {</span>
+  apr_pool_t<span class="hl opt">*</span> long_lived_pool <span class="hl opt">=</span> NULL<span class="hl opt">;</span>
+  <span class="hl kwb">int</span> min_depth <span class="hl opt">=</span> <span class="hl num">4</span><span class="hl opt">;</span>
+  <span class="hl kwb">int</span> max_depth <span class="hl opt">=</span> std<span class="hl opt">::</span><span class="hl kwd">max</span><span class="hl opt">(</span>min_depth<span class="hl opt">+</span><span class="hl num">2</span><span class="hl opt">,</span>
+			 <span class="hl opt">(</span>argc <span class="hl opt">==</span> <span class="hl num">2</span> ? <span class="hl kwd">atoi</span><span class="hl opt">(</span>argv<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]) :</span> <span class="hl num">10</span><span class="hl opt">));</span>
+  <span class="hl kwb">int</span> stretch_depth <span class="hl opt">=</span> max_depth<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">;</span>
+
+  <span class="hl kwd">apr_initialize</span><span class="hl opt">();</span>
+  std<span class="hl opt">::</span>cout<span class="hl opt">.</span><span class="hl kwd">sync_with_stdio</span><span class="hl opt">(</span><span class="hl kwa">false</span><span class="hl opt">);</span>
+
+  <span class="hl opt">{</span>
+    apr_pool_t<span class="hl opt">*</span> store<span class="hl opt">;</span>
+    <span class="hl kwd">apr_pool_create</span><span class="hl opt">(&amp;</span>store<span class="hl opt">,</span> NULL<span class="hl opt">);</span>
+
+    Node<span class="hl opt">*</span> c <span class="hl opt">=</span> <span class="hl kwd">make</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> stretch_depth<span class="hl opt">,</span> store<span class="hl opt">);</span>
+    std<span class="hl opt">::</span>cout <span class="hl opt">&lt;&lt;</span> <span class="hl str">&quot;stretch tree of depth &quot;</span> <span class="hl opt">&lt;&lt;</span> stretch_depth <span class="hl opt">&lt;&lt;</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">&quot;</span>
+      <span class="hl opt">&lt;&lt;</span> <span class="hl str">&quot;check: &quot;</span> <span class="hl opt">&lt;&lt;</span> c<span class="hl opt">-&gt;</span><span class="hl kwd">check</span><span class="hl opt">() &lt;&lt;</span> std<span class="hl opt">::</span>endl<span class="hl opt">;</span>
+    <span class="hl kwd">apr_pool_destroy</span><span class="hl opt">(</span>store<span class="hl opt">);</span>
+  <span class="hl opt">}</span>
+
+  std<span class="hl opt">::</span>string<span class="hl opt">*</span> output <span class="hl opt">=</span> <span class="hl kwa">new</span> std<span class="hl opt">::</span>string<span class="hl opt">[</span>max_depth <span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">];</span>
+<span class="hl ppc">#pragma omp parallel for schedule (dynamic)</span>
+  <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> d<span class="hl opt">=</span>min_depth<span class="hl opt">;</span> d<span class="hl opt">&lt;=</span>max_depth<span class="hl opt">;</span> d<span class="hl opt">+=</span><span class="hl num">2</span><span class="hl opt">) {</span>
+    <span class="hl kwb">int</span> iterations <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl opt">&lt;&lt; (</span>max_depth <span class="hl opt">-</span> d <span class="hl opt">+</span> min_depth<span class="hl opt">);</span>
+    apr_pool_t <span class="hl opt">*</span>store<span class="hl opt">;</span>
+    <span class="hl kwb">int</span> c <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+    <span class="hl kwd">apr_pool_create</span> <span class="hl opt">(&amp;</span>store<span class="hl opt">,</span> NULL<span class="hl opt">);</span>
+    <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i<span class="hl opt">=</span><span class="hl num">1</span><span class="hl opt">;</span> i<span class="hl opt">&lt;=</span>iterations<span class="hl opt">; ++</span>i<span class="hl opt">) {</span>
+      Node<span class="hl opt">*</span> __restrict__ a <span class="hl opt">=</span> <span class="hl kwd">make</span><span class="hl opt">(</span>i<span class="hl opt">,</span> d<span class="hl opt">,</span> store<span class="hl opt">);</span>
+      Node<span class="hl opt">*</span> __restrict__ b <span class="hl opt">=</span> <span class="hl kwd">make</span><span class="hl opt">(-</span>i<span class="hl opt">,</span> d<span class="hl opt">,</span> store<span class="hl opt">);</span>
+
+      c <span class="hl opt">+=</span> a<span class="hl opt">-&gt;</span><span class="hl kwd">check</span><span class="hl opt">() +</span> b<span class="hl opt">-&gt;</span><span class="hl kwd">check</span><span class="hl opt">();</span>
+      <span class="hl kwd">apr_pool_clear</span><span class="hl opt">(</span>store<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwd">apr_pool_destroy</span><span class="hl opt">(</span>store<span class="hl opt">);</span>
+    
+    <span class="hl slc">// each thread write to separate location</span>
+    std<span class="hl opt">::</span>stringstream ss<span class="hl opt">;</span>
+    ss <span class="hl opt">&lt;&lt; (</span><span class="hl num">2</span> <span class="hl opt">*</span> iterations<span class="hl opt">) &lt;&lt;</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">trees of depth &quot;</span><span class="hl opt">;</span>
+    ss <span class="hl opt">&lt;&lt;</span> d <span class="hl opt">&lt;&lt;</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">check: &quot;</span> <span class="hl opt">&lt;&lt;</span> c <span class="hl opt">&lt;&lt;</span> std<span class="hl opt">::</span>endl<span class="hl opt">;</span>
+    output<span class="hl opt">[</span>d<span class="hl opt">] =</span> ss<span class="hl opt">.</span><span class="hl kwd">str</span><span class="hl opt">();</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl slc">// print all results</span>
+  <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> d <span class="hl opt">=</span> min_depth<span class="hl opt">;</span> d <span class="hl opt">&lt;=</span> max_depth<span class="hl opt">;</span> d <span class="hl opt">+=</span> <span class="hl num">2</span><span class="hl opt">)</span>
+    std<span class="hl opt">::</span>cout <span class="hl opt">&lt;&lt;</span> output<span class="hl opt">[</span>d<span class="hl opt">];</span>
+  <span class="hl kwa">delete</span><span class="hl opt">[]</span> output<span class="hl opt">;</span>
+
+  <span class="hl kwd">apr_pool_create</span><span class="hl opt">(&amp;</span>long_lived_pool<span class="hl opt">,</span> NULL<span class="hl opt">);</span>
+  Node<span class="hl opt">*</span> long_lived_tree <span class="hl opt">=</span> <span class="hl kwd">make</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> max_depth<span class="hl opt">,</span> long_lived_pool<span class="hl opt">);</span>
+  std<span class="hl opt">::</span>cout <span class="hl opt">&lt;&lt;</span> <span class="hl str">&quot;long lived tree of depth &quot;</span> <span class="hl opt">&lt;&lt;</span> max_depth <span class="hl opt">&lt;&lt;</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">&quot;</span>
+	    <span class="hl opt">&lt;&lt;</span> <span class="hl str">&quot;check: &quot;</span> <span class="hl opt">&lt;&lt; (</span>long_lived_tree<span class="hl opt">-&gt;</span><span class="hl kwd">check</span><span class="hl opt">()) &lt;&lt;</span> <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
+  <span class="hl kwd">apr_pool_destroy</span><span class="hl opt">(</span>long_lived_pool<span class="hl opt">);</span>
+
+  <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>

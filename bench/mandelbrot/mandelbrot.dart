@@ -10,12 +10,11 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:async';
 import 'dart:typed_data';
-import 'dart:platform' as platform;
 
 void main(args) {
-  int n = args.length > 0 ? int.parse(args[0]) : 200;
+  int n = args.length > 0 ? int.parse(args[0]) : 2000;
 
-  var threads = platform.numberOfProcessors;
+  var threads = Platform.numberOfProcessors;
   var segmentFutures = new List(threads);
   int lineLen = (n - 1) ~/ 8 + 1;
   var lines = new List<Uint8List>(n);
