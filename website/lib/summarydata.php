@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) Isaac Gouy 2009-2010
+// Copyright (c) Isaac Gouy 2009-2013
 
 // LIBRARIES ////////////////////////////////////////////////
 
@@ -134,7 +134,7 @@ $Title = $Title.' - Full Data'; $mark = $mark.' n';
 $Body->set('DataSet', 'ndata');
 $Body->set('Data', DataRows(DATA_PATH.'ndata.csv', $Tests, $Langs, $Incl, $Excl));
 $Body->set('Title', $Title);
-$metaRobots = '<meta name="robots" content="noindex,nofollow,noarchive" />';
+$metaRobots = '<meta name="robots" content="index,follow,archive" />';
 
 // TEMPLATE VARS ////////////////////////////////////////////////
 
