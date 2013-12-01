@@ -111,6 +111,7 @@
 <dd>
 <p>Quite unexpectedly, some of the tasks shown on the benchmarks game website have become a very modest resource for programming language researchers. For example&nbsp;-</p>
 <ul>
+<li><a href="http://www.dynamic-languages-symposium.org/dls-13/program/media/Wolczko_2013_VMsIHaveKnownAndOrLoved_Dls.pdf">VMs I Have Known and/or Loved: A subjective history</a> pdf slides</li>
 <li><a href="http://design.cs.iastate.edu/vmil/2013/papers/p05-Sarimbekov.pdf">Characteristics of Dynamic JVM Languages</a> pdf</li>
 <li><a href="http://www.dcs.gla.ac.uk/~wingli/jvm_language_study/jvmlanguages.pdf">JVM-Hosted Languages: They Talk the Talk, but do they Walk the Walk?</a> pdf</li> 
 <li><a href="https://www.scss.tcd.ie/~mccandjm/papers/pppj_preprint.pdf">Optimizing Interpreters by Tuning Opcode Orderings on Virtual Machines for Modern Architectures (Or: How I Learned to Stop Worrying and Love Hill Climbing)</a> pdf</li> 

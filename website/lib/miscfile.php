@@ -28,7 +28,7 @@ if (!isset($T)){ $T = ''; }
 
 if (SITE_NAME == 'core' || SITE_NAME == 'u32' || SITE_NAME == 'u32q' || SITE_NAME == 'u64' || SITE_NAME == 'u64q'){
    if ($F == 'benchmarking'){
-      $metaRobots = '<meta name="robots" content="index,nofollow,archive" /><meta name="revisit"  content="10 days" />';
+      $metaRobots = '<meta name="robots" content="index,follow,archive" /><meta name="revisit"  content="10 days" />';
       $metaKeywords = '<meta name="description" content="Even benchmarks derived from real programs may not help." />';
    } else {
       $metaRobots = '<meta name="robots" content="noindex,nofollow,noarchive" />';
