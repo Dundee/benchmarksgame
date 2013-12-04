@@ -1,0 +1,179 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   Contributed by Marceli Narcyz</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>io<span class="hl opt">.</span>OutputStream
+
+<span class="hl kwa">object</span> fastaredux <span class="hl opt">{</span>
+  <span class="hl kwa">val</span> LINE_LENGTH<span class="hl opt">:</span> Int <span class="hl opt">=</span> <span class="hl num">60</span><span class="hl opt">;</span>
+  <span class="hl kwa">val</span> OUT_BUFFER_SIZE<span class="hl opt">:</span> Int <span class="hl opt">=</span> <span class="hl num">256</span> <span class="hl opt">*</span> <span class="hl num">1024</span><span class="hl opt">;</span>
+  <span class="hl kwa">val</span> LOOKUP_SIZE<span class="hl opt">:</span> Int <span class="hl opt">=</span> <span class="hl num">4</span> <span class="hl opt">*</span> <span class="hl num">1024</span><span class="hl opt">;</span>
+  <span class="hl kwa">val</span> LOOKUP_SCALE<span class="hl opt">:</span> Double <span class="hl opt">=</span> LOOKUP_SIZE <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+
+  <span class="hl kwa">case class</span> <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl kwa">var</span> c<span class="hl opt">:</span> Byte<span class="hl opt">,</span> <span class="hl kwa">var</span> p<span class="hl opt">:</span> Double<span class="hl opt">);</span>
+
+  <span class="hl kwa">val</span> ALU <span class="hl opt">=</span>
+    <span class="hl str">&quot;GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG&quot;</span> <span class="hl opt">+</span>
+      <span class="hl str">&quot;GAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGAGA&quot;</span> <span class="hl opt">+</span>
+      <span class="hl str">&quot;CCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAAT&quot;</span> <span class="hl opt">+</span>
+      <span class="hl str">&quot;ACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAATCCCA&quot;</span> <span class="hl opt">+</span>
+      <span class="hl str">&quot;GCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTGAACCCGGG&quot;</span> <span class="hl opt">+</span>
+      <span class="hl str">&quot;AGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCC&quot;</span> <span class="hl opt">+</span>
+      <span class="hl str">&quot;AGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAA&quot;</span><span class="hl opt">;</span>
+
+  <span class="hl kwa">val</span> IUB<span class="hl opt">:</span> Array<span class="hl opt">[</span>Freq<span class="hl opt">] =</span> Array<span class="hl opt">[</span>Freq<span class="hl opt">](</span>
+    <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl str">'a'</span><span class="hl opt">,</span> <span class="hl num">0.27</span><span class="hl opt">),</span>
+    <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl str">'c'</span><span class="hl opt">,</span> <span class="hl num">0.12</span><span class="hl opt">),</span>
+    <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl str">'g'</span><span class="hl opt">,</span> <span class="hl num">0.12</span><span class="hl opt">),</span>
+    <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl str">'t'</span><span class="hl opt">,</span> <span class="hl num">0.27</span><span class="hl opt">),</span>
+    <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl str">'B'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">),</span>
+    <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl str">'D'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">),</span>
+    <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl str">'H'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">),</span>
+    <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl str">'K'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">),</span>
+    <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl str">'M'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">),</span>
+    <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl str">'N'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">),</span>
+    <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl str">'R'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">),</span>
+    <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl str">'S'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">),</span>
+    <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl str">'V'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">),</span>
+    <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl str">'W'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">),</span>
+    <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl str">'Y'</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">));</span>
+
+  <span class="hl kwa">val</span> HomoSapiens<span class="hl opt">:</span> Array<span class="hl opt">[</span>Freq<span class="hl opt">] =</span> Array<span class="hl opt">[</span>Freq<span class="hl opt">](</span>
+    <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl str">'a'</span><span class="hl opt">,</span> <span class="hl num">0.3029549426680</span><span class="hl opt">),</span>
+    <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl str">'c'</span><span class="hl opt">,</span> <span class="hl num">0.1979883004921</span><span class="hl opt">),</span>
+    <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl str">'g'</span><span class="hl opt">,</span> <span class="hl num">0.1975473066391</span><span class="hl opt">),</span>
+    <span class="hl kwd">Freq</span><span class="hl opt">(</span><span class="hl str">'t'</span><span class="hl opt">,</span> <span class="hl num">0.3015094502008</span><span class="hl opt">));</span>
+
+  <span class="hl kwa">def</span> <span class="hl kwd">sumAndScale</span><span class="hl opt">(</span>a<span class="hl opt">:</span> Array<span class="hl opt">[</span>Freq<span class="hl opt">]):</span> Unit <span class="hl opt">= {</span>
+    <span class="hl kwa">var</span> p<span class="hl opt">:</span> Double <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">var</span> i<span class="hl opt">:</span> Int <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">while</span> <span class="hl opt">(</span>i <span class="hl opt">&lt;</span> a<span class="hl opt">.</span>length<span class="hl opt">) {</span>
+      p <span class="hl opt">=</span> p <span class="hl opt">+</span> <span class="hl kwd">a</span><span class="hl opt">(</span>i<span class="hl opt">).</span>p
+      <span class="hl kwd">a</span><span class="hl opt">(</span>i<span class="hl opt">).</span>p <span class="hl opt">=</span> p <span class="hl opt">*</span> LOOKUP_SCALE<span class="hl opt">;</span>
+      i <span class="hl opt">=</span> i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwd">a</span><span class="hl opt">(</span>a<span class="hl opt">.</span>length <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">).</span>p <span class="hl opt">=</span> LOOKUP_SCALE<span class="hl opt">;</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwa">object</span> Random <span class="hl opt">{</span>
+    <span class="hl kwa">val</span> IM<span class="hl opt">:</span> Int <span class="hl opt">=</span> <span class="hl num">139968</span><span class="hl opt">;</span>
+    <span class="hl kwa">val</span> IA<span class="hl opt">:</span> Int <span class="hl opt">=</span> <span class="hl num">3877</span><span class="hl opt">;</span>
+    <span class="hl kwa">val</span> IC<span class="hl opt">:</span> Int <span class="hl opt">=</span> <span class="hl num">29573</span><span class="hl opt">;</span>
+    <span class="hl kwa">val</span> SCALE<span class="hl opt">:</span> Double <span class="hl opt">=</span> LOOKUP_SCALE <span class="hl opt">/</span> IM<span class="hl opt">;</span>
+    <span class="hl kwa">var</span> last<span class="hl opt">:</span> Int <span class="hl opt">=</span> <span class="hl num">42</span><span class="hl opt">;</span>
+
+    <span class="hl kwa">def</span> <span class="hl kwd">next</span><span class="hl opt">():</span> Double <span class="hl opt">= {</span>
+      last <span class="hl opt">= (</span>last <span class="hl opt">*</span> IA <span class="hl opt">+</span> IC<span class="hl opt">) %</span> IM
+
+      SCALE <span class="hl opt">*</span> last<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwa">object</span> Out <span class="hl opt">{</span>
+    <span class="hl kwa">val</span> buf <span class="hl opt">=</span> <span class="hl kwa">new</span> Array<span class="hl opt">[</span>Byte<span class="hl opt">](</span>OUT_BUFFER_SIZE<span class="hl opt">);</span>
+    <span class="hl kwa">val</span> lim<span class="hl opt">:</span> Int <span class="hl opt">=</span> OUT_BUFFER_SIZE <span class="hl opt">-</span> <span class="hl num">2</span> <span class="hl opt">*</span> LINE_LENGTH <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+    <span class="hl kwa">var</span> ct<span class="hl opt">:</span> Int <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">var</span> stream<span class="hl opt">:</span> OutputStream <span class="hl opt">=</span> null<span class="hl opt">;</span>
+
+    <span class="hl kwa">def</span> <span class="hl kwd">checkFlush</span><span class="hl opt">():</span> Unit <span class="hl opt">= {</span>
+      <span class="hl kwa">if</span> <span class="hl opt">(</span>ct <span class="hl opt">&gt;=</span> lim<span class="hl opt">) {</span>
+        stream<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span>buf<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> ct<span class="hl opt">);</span>
+        ct <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">def</span> <span class="hl kwd">close</span><span class="hl opt">():</span> Unit <span class="hl opt">= {</span>
+      stream<span class="hl opt">.</span><span class="hl kwd">write</span><span class="hl opt">(</span>buf<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> ct<span class="hl opt">);</span>
+      ct <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      stream<span class="hl opt">.</span><span class="hl kwd">close</span><span class="hl opt">();</span>
+    <span class="hl opt">}</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwa">object</span> RandomFasta <span class="hl opt">{</span>
+    <span class="hl kwa">val</span> lookup<span class="hl opt">:</span> Array<span class="hl opt">[</span>Freq<span class="hl opt">] =</span> <span class="hl kwa">new</span> Array<span class="hl opt">[</span>Freq<span class="hl opt">](</span>LOOKUP_SIZE<span class="hl opt">);</span>
+
+    <span class="hl kwa">def</span> <span class="hl kwd">makeLookup</span><span class="hl opt">(</span>a<span class="hl opt">:</span> Array<span class="hl opt">[</span>Freq<span class="hl opt">]):</span> Unit <span class="hl opt">= {</span>
+      <span class="hl kwa">var</span> i<span class="hl opt">:</span> Int <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">var</span> j<span class="hl opt">:</span> Int <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(</span>i <span class="hl opt">&lt;</span> LOOKUP_SIZE<span class="hl opt">) {</span>
+        <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl kwd">a</span><span class="hl opt">(</span>j<span class="hl opt">).</span>p <span class="hl opt">&lt;</span> i<span class="hl opt">) {</span>
+          j <span class="hl opt">=</span> j <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+        <span class="hl kwd">lookup</span><span class="hl opt">(</span>i<span class="hl opt">) =</span> <span class="hl kwd">a</span><span class="hl opt">(</span>j<span class="hl opt">);</span>
+        i <span class="hl opt">=</span> i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">def</span> <span class="hl kwd">addLine</span><span class="hl opt">(</span>bytes<span class="hl opt">:</span> Int<span class="hl opt">):</span> Unit <span class="hl opt">= {</span>
+      Out<span class="hl opt">.</span><span class="hl kwd">checkFlush</span><span class="hl opt">();</span>
+      <span class="hl kwa">var</span> lct<span class="hl opt">:</span> Int <span class="hl opt">=</span> Out<span class="hl opt">.</span>ct<span class="hl opt">;</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(</span>lct <span class="hl opt">&lt;</span> Out<span class="hl opt">.</span>ct <span class="hl opt">+</span> bytes<span class="hl opt">) {</span>
+        <span class="hl kwa">val</span> r<span class="hl opt">:</span> Double <span class="hl opt">=</span> Random<span class="hl opt">.</span><span class="hl kwd">next</span><span class="hl opt">();</span>
+        <span class="hl kwa">var</span> ai<span class="hl opt">:</span> Int <span class="hl opt">=</span> r<span class="hl opt">.</span>asInstanceOf<span class="hl opt">[</span>Int<span class="hl opt">];</span>
+        <span class="hl kwa">while</span> <span class="hl opt">(</span><span class="hl kwd">lookup</span><span class="hl opt">(</span>ai<span class="hl opt">).</span>p <span class="hl opt">&lt;</span> r<span class="hl opt">) {</span>
+          ai <span class="hl opt">=</span> ai <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+        Out<span class="hl opt">.</span><span class="hl kwd">buf</span><span class="hl opt">(</span>lct<span class="hl opt">) =</span> <span class="hl kwd">lookup</span><span class="hl opt">(</span>ai<span class="hl opt">).</span>c<span class="hl opt">;</span>
+        lct <span class="hl opt">=</span> lct <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+      Out<span class="hl opt">.</span><span class="hl kwd">buf</span><span class="hl opt">(</span>lct<span class="hl opt">) =</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">.</span>asInstanceOf<span class="hl opt">[</span>Byte<span class="hl opt">];</span>
+      lct <span class="hl opt">=</span> lct <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      Out<span class="hl opt">.</span>ct <span class="hl opt">=</span> lct<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">def</span> <span class="hl kwd">make</span><span class="hl opt">(</span>desc<span class="hl opt">:</span> String<span class="hl opt">,</span> a<span class="hl opt">:</span> Array<span class="hl opt">[</span>Freq<span class="hl opt">],</span> startN<span class="hl opt">:</span> Int<span class="hl opt">):</span> Unit <span class="hl opt">= {</span>
+      <span class="hl kwa">var</span> n <span class="hl opt">=</span> startN<span class="hl opt">;</span>
+      <span class="hl kwd">makeLookup</span><span class="hl opt">(</span>a<span class="hl opt">);</span>
+
+      System<span class="hl opt">.</span><span class="hl kwd">arraycopy</span><span class="hl opt">(</span>desc<span class="hl opt">.</span><span class="hl kwd">getBytes</span><span class="hl opt">(),</span> <span class="hl num">0</span><span class="hl opt">,</span> Out<span class="hl opt">.</span>buf<span class="hl opt">,</span> Out<span class="hl opt">.</span>ct<span class="hl opt">,</span> desc<span class="hl opt">.</span><span class="hl kwd">length</span><span class="hl opt">());</span>
+      Out<span class="hl opt">.</span>ct <span class="hl opt">+=</span> desc<span class="hl opt">.</span><span class="hl kwd">length</span><span class="hl opt">();</span>
+
+      <span class="hl kwa">while</span> <span class="hl opt">(</span>n <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+        <span class="hl kwa">val</span> bytes<span class="hl opt">:</span> Int <span class="hl opt">=</span> Math<span class="hl opt">.</span><span class="hl kwd">min</span><span class="hl opt">(</span>LINE_LENGTH<span class="hl opt">,</span> n<span class="hl opt">);</span>
+        <span class="hl kwd">addLine</span><span class="hl opt">(</span>bytes<span class="hl opt">);</span>
+        n <span class="hl opt">=</span> n <span class="hl opt">-</span> bytes<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwa">object</span> RepeatFasta <span class="hl opt">{</span>
+    <span class="hl kwa">def</span> <span class="hl kwd">make</span><span class="hl opt">(</span>desc<span class="hl opt">:</span> String<span class="hl opt">,</span> alu<span class="hl opt">:</span> Array<span class="hl opt">[</span>Byte<span class="hl opt">],</span> startN<span class="hl opt">:</span> Int<span class="hl opt">):</span> Unit <span class="hl opt">= {</span>
+      <span class="hl kwa">var</span> n <span class="hl opt">=</span> startN<span class="hl opt">;</span>
+      System<span class="hl opt">.</span><span class="hl kwd">arraycopy</span><span class="hl opt">(</span>desc<span class="hl opt">.</span><span class="hl kwd">getBytes</span><span class="hl opt">(),</span> <span class="hl num">0</span><span class="hl opt">,</span> Out<span class="hl opt">.</span>buf<span class="hl opt">,</span> Out<span class="hl opt">.</span>ct<span class="hl opt">,</span> desc<span class="hl opt">.</span><span class="hl kwd">length</span><span class="hl opt">());</span>
+      Out<span class="hl opt">.</span>ct <span class="hl opt">+=</span> desc<span class="hl opt">.</span><span class="hl kwd">length</span><span class="hl opt">();</span>
+
+      <span class="hl kwa">val</span> buf <span class="hl opt">=</span> <span class="hl kwa">new</span> Array<span class="hl opt">[</span>Byte<span class="hl opt">](</span>alu<span class="hl opt">.</span>length <span class="hl opt">+</span> LINE_LENGTH<span class="hl opt">);</span>
+      <span class="hl kwa">var</span> i<span class="hl opt">:</span> Int <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(</span>i <span class="hl opt">&lt;</span> buf<span class="hl opt">.</span>length<span class="hl opt">) {</span>
+        System<span class="hl opt">.</span><span class="hl kwd">arraycopy</span><span class="hl opt">(</span>alu<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> buf<span class="hl opt">,</span> i<span class="hl opt">,</span> Math<span class="hl opt">.</span><span class="hl kwd">min</span><span class="hl opt">(</span>alu<span class="hl opt">.</span>length<span class="hl opt">,</span> buf<span class="hl opt">.</span>length <span class="hl opt">-</span> i<span class="hl opt">));</span>
+        i <span class="hl opt">+=</span> alu<span class="hl opt">.</span>length<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+
+      <span class="hl kwa">var</span> pos<span class="hl opt">:</span> Int <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">while</span> <span class="hl opt">(</span>n <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+        <span class="hl kwa">val</span> bytes<span class="hl opt">:</span> Int <span class="hl opt">=</span> Math<span class="hl opt">.</span><span class="hl kwd">min</span><span class="hl opt">(</span>LINE_LENGTH<span class="hl opt">,</span> n<span class="hl opt">);</span>
+        Out<span class="hl opt">.</span><span class="hl kwd">checkFlush</span><span class="hl opt">();</span>
+        System<span class="hl opt">.</span><span class="hl kwd">arraycopy</span><span class="hl opt">(</span>buf<span class="hl opt">,</span> pos<span class="hl opt">,</span> Out<span class="hl opt">.</span>buf<span class="hl opt">,</span> Out<span class="hl opt">.</span>ct<span class="hl opt">,</span> bytes<span class="hl opt">);</span> Out<span class="hl opt">.</span>ct <span class="hl opt">+=</span> bytes<span class="hl opt">;</span>
+        Out<span class="hl opt">.</span><span class="hl kwd">buf</span><span class="hl opt">(</span>Out<span class="hl opt">.</span>ct<span class="hl opt">) =</span> <span class="hl str">'</span><span class="hl esc">\n</span><span class="hl str">'</span><span class="hl opt">.</span>asInstanceOf<span class="hl opt">[</span>Byte<span class="hl opt">];</span>
+        Out<span class="hl opt">.</span>ct <span class="hl opt">+=</span> <span class="hl num">1</span>
+        pos <span class="hl opt">= (</span>pos <span class="hl opt">+</span> bytes<span class="hl opt">) %</span> alu<span class="hl opt">.</span>length<span class="hl opt">;</span>
+        n <span class="hl opt">-=</span> bytes<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwa">def</span> <span class="hl kwd">main</span><span class="hl opt">(</span>args<span class="hl opt">:</span> Array<span class="hl opt">[</span>String<span class="hl opt">]):</span> Unit <span class="hl opt">= {</span>
+    <span class="hl kwa">val</span> n <span class="hl opt">= (</span><span class="hl kwa">if</span> <span class="hl opt">(</span>args<span class="hl opt">.</span>length <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">)</span> Integer<span class="hl opt">.</span><span class="hl kwd">parseInt</span><span class="hl opt">(</span><span class="hl kwd">args</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">))</span> <span class="hl kwa">else</span> <span class="hl num">2500000</span><span class="hl opt">);</span>
+
+    <span class="hl kwd">sumAndScale</span><span class="hl opt">(</span>IUB<span class="hl opt">);</span>
+    <span class="hl kwd">sumAndScale</span><span class="hl opt">(</span>HomoSapiens<span class="hl opt">);</span>
+
+    Out<span class="hl opt">.</span>stream <span class="hl opt">=</span> System<span class="hl opt">.</span>out<span class="hl opt">;</span>
+    RepeatFasta<span class="hl opt">.</span><span class="hl kwd">make</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;ONE Homo sapiens alu</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> ALU<span class="hl opt">.</span><span class="hl kwd">getBytes</span><span class="hl opt">(),</span> n <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">);</span>
+    RandomFasta<span class="hl opt">.</span><span class="hl kwd">make</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;TWO IUB ambiguity codes</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> IUB<span class="hl opt">,</span> n <span class="hl opt">*</span> <span class="hl num">3</span><span class="hl opt">);</span>
+    RandomFasta<span class="hl opt">.</span><span class="hl kwd">make</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;THREE Homo sapiens frequency</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> HomoSapiens<span class="hl opt">,</span> n <span class="hl opt">*</span> <span class="hl num">5</span><span class="hl opt">);</span>
+    Out<span class="hl opt">.</span><span class="hl kwd">close</span><span class="hl opt">();</span>
+  <span class="hl opt">}</span>
+<span class="hl opt">}</span>
