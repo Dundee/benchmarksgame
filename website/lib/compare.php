@@ -249,7 +249,7 @@ if (isset($_GET['lang2'])
    $X = $_GET['lang2'];
    if (ereg("^[a-z0-9]+$",$X)){ $L2 = $X; }
 }
-if ($Available && isset($L2)){ 
+if ($Available && !empty($L2)){ 
    $Available = isset($Langs[$L2]) && isset($Incl[$L2]) && ($L2 != $L);
    if (!$Available){ 
       // assume LANG_COMPARE is always available in every data set
