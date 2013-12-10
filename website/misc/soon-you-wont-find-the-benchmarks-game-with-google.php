@@ -1,6 +1,6 @@
 
 <dl>
-<dt>&nbsp;</dt>
+
 
 <dd>
 <p><i>One response to this series of disruptions is that many more benchmarks game pages ask to be archived.</i></p>
