@@ -8,7 +8,7 @@
 
 <dd><dl>
 
-<dt>&nbsp;Throttling a web server</dt>
+<dt>&nbsp;<a href="#throttled" name="throttled">Throttling a web server</a></dt>
 <dd>
 <p class="timestamp"><? printf('%s GMT', '06 Oct 2013, Sunday, 4:12 pm') ?></p>
 <p>You can no longer find the Benchmarks Game with Google or any other search engine. So, if you're interested in programming language comparisons and performance benchmarks, <a href="http://benchmarksgame.alioth.debian.org/">bookmark the website now!</a></p>
@@ -49,7 +49,7 @@
 
 
 
-<dt>&nbsp;Taking control with X-Robots-Tag</dt>
+<dt>&nbsp;<a href="#xtag" name="xtag">Taking control with X-Robots-Tag</a></dt>
 <dd>
 <p class="timestamp"><? printf('%s GMT', '06 Nov 2013, Wednesday, 7:52 am') ?></p>
 <p><br/>Luckily I found a way for the Alioth admins to take some control of the upstream FusionForge generated pages (<a href="http://alioth.debian.org/projects/benchmarksgame/">for example</a>) without requiring changes to FusionForge. So, for now, the Alioth admins have throttled web crawlers less and <b>the website is once again findable with Google</b>.</p>
@@ -58,7 +58,7 @@
 </dd>
 
 
-<dt>&nbsp;Crash</dt>
+<dt>&nbsp;<a href="#crash" name="crash">Crash</a></dt>
 <dd>
 <p class="timestamp"><? printf('%s GMT', '26 Nov 2013, Tuesday, 4:51 pm GMT') ?></p>
 <p><br/>The machine hosting the storage for alioth.debian.org suffered
