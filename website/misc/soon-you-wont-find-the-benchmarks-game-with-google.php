@@ -46,7 +46,6 @@
 <p>The inevitable consequence is that pages Googlebot cannot access are removed from Google's index. That's been happening all year. Since mid-September the benchmarks game has rapidly been removed from Google's index.</p>
 
 <p>You can no longer find the Benchmarks Game website with Google or any other search engine, because the Alioth admins have throttled web crawling.</p>
-<br/><br/>
 </dd>
 
 
