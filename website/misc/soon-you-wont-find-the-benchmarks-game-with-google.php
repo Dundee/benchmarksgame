@@ -4,6 +4,7 @@
 
 <dd>
 <p><i>One response to this series of disruptions is that many more benchmarks game pages ask to be archived.</i></p>
+<br/><br/>
 </dd>
 
 <dd><dl>
@@ -45,6 +46,7 @@
 <p>The inevitable consequence is that pages Googlebot cannot access are removed from Google's index. That's been happening all year. Since mid-September the benchmarks game has rapidly been removed from Google's index.</p>
 
 <p>You can no longer find the Benchmarks Game website with Google or any other search engine, because the Alioth admins have throttled web crawling.</p>
+<br/><br/>
 </dd>
 
 
@@ -55,6 +57,7 @@
 <p><br/>Luckily I found a way for the Alioth admins to take some control of the upstream FusionForge generated pages (<a href="http://alioth.debian.org/projects/benchmarksgame/">for example</a>) without requiring changes to FusionForge. So, for now, the Alioth admins have throttled web crawlers less and <b>the website is once again findable with Google</b>.</p>
 
 <p>(All the upstream FusionForge generated pages were being served without any HTML robots meta tags: a minimum of 90 pages, for each of 1000 projects, duplicated at 4 different sub-domains. In other words, web crawlers were visiting Alioth because Alioth pages repeatedly asked to be indexed and crawled. That problem has now been fixed using the HTTP <a href="https://developers.google.com/webmasters/control-crawl-index/docs/robots_meta_tag">X-Robots-Tag "noindex, nofollow"</a> header.)</p>
+<br/><br/>
 </dd>
 
 
@@ -72,6 +75,7 @@ Investigations showed this did not affect the /srv partition, but it affected
 the PostgreSQL partition. <a href="http://lists.debian.org/debian-infrastructure-announce/2013/11/msg00002.html">Due to various misconfigurations, we did not have any
 recent backups of Postgres.</a>"</blockquote>
 <p>With the inevitable consequence that for 2 weeks Googlebot could not access the website and&#8230;</p>
+<br/><br/>
 </dd>
 
 

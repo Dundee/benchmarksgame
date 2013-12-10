@@ -143,7 +143,10 @@
 <dt><a href="#contest" name="contest">Why don't you accept every program that gives the correct result?</a></dt>
 <dd><p>We are trying to show the performance of various programming language implementations - so we ask that contributed programs not only give the correct result, but also <b>use the same algorithm</b> to calculate that result.</p>
 <p>We do show one contest where you can use different algorithms - <a href="./u64q/performance.php?test=meteor">meteor-contest</a>.</p>
-<p>If the point was to compare different algorithms then it would be appropriate to do something like the <a href="http://www.cs.cmu.edu/~pbbs/">Problem Based Benchmark Suite</a>.</p>
+
+<p>If the point was to compare different algorithms we'd need to do something like the <a href="http://www.cs.cmu.edu/~pbbs/">Problem Based Benchmark Suite</a>.</p>
+
+<p>If the point was to broadly compare different programming platforms we'd need to do something like <a href="https://www.plat-forms.org/">Plat_Forms - The web development platform comparison</a>.</p>
 </dd>
 
 
