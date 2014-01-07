@@ -1,4 +1,4 @@
-<?   // Copyright (c) Isaac Gouy 2009-2013 ?>
+<?   // Copyright (c) Isaac Gouy 2009-2014 ?>
 
 <?
    MkMenuForm($Tests,NULL,$Langs,NULL);
@@ -70,7 +70,7 @@
    width="480" height="300"
  /></p>
 
-<p>Please don't obsess about which programming language implementation is shown 10<sup>th</sup> and which is shown 11<sup>th</sup> -- the order would probably be different if it was based on the median scores instead of <a href="http://portal.acm.org/citation.cfm?id=5666.5673" title="How not to lie with statistics: the correct way to summarize benchmark results">the geometric mean</a> scores.</p>
+<p>Please don't obsess about which programming language implementation is shown 10<sup>th</sup> and which is shown 11<sup>th</sup>. You can see that the order would be different if it was based on the median scores instead of <a href="http://portal.acm.org/citation.cfm?id=5666.5673" title="How not to lie with statistics: the correct way to summarize benchmark results">the geometric mean</a> scores.</p>
 
 
 
