@@ -1,9 +1,7 @@
-/* The Computer Language Benchmarks Game
-   http://benchmarksgame.alioth.debian.org/
-
-   contributed by Mykola Zubach
-*/
-
+# The Computer Language Benchmarks Game
+# http://benchmarksgame.alioth.debian.org/
+#
+#  contributed by Mykola Zubach
 
 use strict;
 use threads;

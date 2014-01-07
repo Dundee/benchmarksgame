@@ -1,0 +1,88 @@
+<span class="hl slc"># The Computer Language Benchmarks Game</span>
+<span class="hl slc">#  http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl slc">#</span>
+<span class="hl slc">#  contributed by Mykola Zubach</span>
+
+<span class="hl kwa">use</span> strict<span class="hl opt">;</span>
+<span class="hl kwa">use</span> threads<span class="hl opt">;</span>
+<span class="hl kwa">use</span> integer<span class="hl opt">;</span>
+
+<span class="hl kwc">my</span><span class="hl opt">(</span><span class="hl kwb">$max_flips</span><span class="hl opt">,</span> <span class="hl kwb">$chksum</span><span class="hl opt">,</span> <span class="hl kwb">$sign</span><span class="hl opt">,</span> <span class="hl kwb">$n</span><span class="hl opt">,</span> <span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl kwb">$count</span><span class="hl opt">,</span> <span class="hl kwb">&#64;threads</span><span class="hl opt">,</span> <span class="hl kwb">$thr</span><span class="hl opt">,</span> <span class="hl kwb">$t_chksum</span><span class="hl opt">,</span> <span class="hl kwb">$t_max_flips</span><span class="hl opt">);</span>
+
+<span class="hl kwa">sub</span> count_flips<span class="hl opt">($) {</span>
+    <span class="hl kwc">my</span> <span class="hl kwb">$p</span> <span class="hl opt">=</span> <span class="hl kwc">shift</span><span class="hl opt">;</span>
+    <span class="hl kwc">my</span> <span class="hl kwb">$flips</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwc">my</span><span class="hl opt">(</span><span class="hl kwb">$first</span><span class="hl opt">);</span>
+
+<span class="hl slc"># debug permutation order:</span>
+<span class="hl slc">#print unpack('c*', $p), &quot;\n&quot;;</span>
+    <span class="hl kwa">while</span><span class="hl opt">(</span><span class="hl kwb">$first</span> <span class="hl opt">=</span> <span class="hl kwc">vec</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">8</span><span class="hl opt">)) {</span>
+        <span class="hl kwb">$first</span> <span class="hl opt">++;</span>
+        <span class="hl kwb">$flips</span> <span class="hl opt">++;</span>
+        <span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwb">$first</span><span class="hl opt">,</span> <span class="hl kwc">reverse</span><span class="hl opt">(</span><span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwb">$first</span><span class="hl opt">)));</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwb">$max_flips</span> <span class="hl opt">=</span> <span class="hl kwb">$flips</span> <span class="hl kwa">if</span> <span class="hl kwb">$flips</span> <span class="hl opt">&gt;</span> <span class="hl kwb">$max_flips</span><span class="hl opt">;</span>
+    <span class="hl kwb">$chksum</span> <span class="hl opt">+=</span> <span class="hl kwb">$sign</span> <span class="hl opt">*</span> <span class="hl kwb">$flips</span><span class="hl opt">;</span>
+    <span class="hl kwb">$sign</span> <span class="hl opt">= -</span><span class="hl kwb">$sign</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">sub</span> fannkuchredux<span class="hl opt">($$) {</span>
+    <span class="hl kwc">my</span> <span class="hl kwb">$p</span> <span class="hl opt">=</span> <span class="hl kwc">shift</span><span class="hl opt">;</span>
+    <span class="hl kwc">my</span> <span class="hl kwb">$rotate_len</span> <span class="hl opt">=</span> <span class="hl kwc">shift</span><span class="hl opt">;</span>
+
+<span class="hl slc"># optimize case when rotation is equivalent to byte-swapping</span>
+    <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwb">$rotate_len</span> <span class="hl opt">==</span> <span class="hl num">3</span><span class="hl opt">) {</span>
+        count_flips<span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">);</span>
+        <span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl kwc">reverse</span><span class="hl opt">(</span><span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">)));</span>
+        count_flips<span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">);</span>
+        <span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl kwc">reverse</span><span class="hl opt">(</span><span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">)));</span>
+        count_flips<span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">);</span>
+        <span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl kwc">reverse</span><span class="hl opt">(</span><span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">)));</span>
+        count_flips<span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">);</span>
+        <span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl kwc">reverse</span><span class="hl opt">(</span><span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">)));</span>
+        count_flips<span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">);</span>
+        <span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl kwc">reverse</span><span class="hl opt">(</span><span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">)));</span>
+        count_flips<span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">);</span>
+        <span class="hl kwa">return</span><span class="hl opt">(</span><span class="hl kwb">$chksum</span><span class="hl opt">,</span> <span class="hl kwb">$max_flips</span><span class="hl opt">);</span>
+    <span class="hl opt">}</span> <span class="hl kwa">elsif</span><span class="hl opt">(</span><span class="hl kwb">$rotate_len</span> <span class="hl opt">==</span> <span class="hl num">2</span><span class="hl opt">) {</span>
+        count_flips<span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">);</span>
+        <span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl kwc">reverse</span><span class="hl opt">(</span><span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">)));</span>
+        count_flips<span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">);</span>
+        <span class="hl kwa">return</span><span class="hl opt">(</span><span class="hl kwb">$chksum</span><span class="hl opt">,</span> <span class="hl kwb">$max_flips</span><span class="hl opt">);</span>
+    <span class="hl opt">}</span> <span class="hl kwa">elsif</span><span class="hl opt">(</span><span class="hl kwb">$rotate_len</span> <span class="hl opt">==</span> <span class="hl num">1</span><span class="hl opt">) {</span>
+        count_flips<span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">);</span>
+        <span class="hl kwa">return</span><span class="hl opt">(</span><span class="hl kwb">$chksum</span><span class="hl opt">,</span> <span class="hl kwb">$max_flips</span><span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwb">$rotate_len</span> <span class="hl opt">--;</span>
+    <span class="hl kwc">my</span> <span class="hl kwb">$count</span> <span class="hl opt">=</span> <span class="hl kwb">$rotate_len</span><span class="hl opt">;</span>
+    <span class="hl kwa">for</span><span class="hl opt">(;;) {</span>
+        fannkuchredux<span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl kwb">$rotate_len</span><span class="hl opt">);</span>
+        <span class="hl kwb">$count</span> <span class="hl opt">--;</span>
+        <span class="hl kwa">last if</span> <span class="hl kwb">$count</span> <span class="hl opt">&lt;</span> <span class="hl num">0</span><span class="hl opt">;</span>	<span class="hl slc"># skip unneccessary rotation</span>
+        <span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwb">$rotate_len</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">) =</span> <span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl kwb">$rotate_len</span><span class="hl opt">) .</span> <span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+    <span class="hl kwa">return</span><span class="hl opt">(</span><span class="hl kwb">$chksum</span><span class="hl opt">,</span> <span class="hl kwb">$max_flips</span><span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl slc">## MAIN()</span>
+
+<span class="hl kwb">$n</span> <span class="hl opt">=</span> <span class="hl kwc">shift</span><span class="hl opt">;</span>
+<span class="hl kwb">$p</span> <span class="hl opt">=</span> <span class="hl kwc">pack</span><span class="hl opt">(</span><span class="hl str">'c*'</span><span class="hl opt">, (</span><span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl kwb">$n</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">));</span>
+<span class="hl kwb">$sign</span> <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+
+<span class="hl kwb">$count</span> <span class="hl opt">=</span> <span class="hl kwb">$n</span><span class="hl opt">;</span>
+<span class="hl kwa">while</span><span class="hl opt">(</span><span class="hl kwb">$count</span> <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+    <span class="hl kwc">push</span> <span class="hl kwb">&#64;threads</span><span class="hl opt">,</span> threads<span class="hl opt">-&gt;</span><span class="hl kwd">create</span><span class="hl opt">(</span>\<span class="hl opt">&amp;</span>fannkuchredux<span class="hl opt">,</span> <span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl kwb">$n</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">);</span>
+    <span class="hl kwb">$p</span> <span class="hl opt">=</span> <span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl kwb">$n</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">) .</span> <span class="hl kwc">substr</span><span class="hl opt">(</span><span class="hl kwb">$p</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">);</span>
+    <span class="hl kwb">$count</span> <span class="hl opt">--;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">foreach</span> <span class="hl kwb">$thr</span> <span class="hl opt">(</span><span class="hl kwb">&#64;threads</span><span class="hl opt">) {</span>
+    <span class="hl opt">(</span><span class="hl kwb">$t_chksum</span><span class="hl opt">,</span> <span class="hl kwb">$t_max_flips</span><span class="hl opt">) =</span> <span class="hl kwb">$thr</span><span class="hl opt">-&gt;</span><span class="hl kwc">join</span><span class="hl opt">();</span>
+    <span class="hl kwb">$chksum</span> <span class="hl opt">+=</span> <span class="hl kwb">$t_chksum</span><span class="hl opt">;</span>
+    <span class="hl kwb">$max_flips</span> <span class="hl opt">=</span> <span class="hl kwb">$t_max_flips</span> <span class="hl kwa">if</span> <span class="hl kwb">$max_flips</span> <span class="hl opt">&lt;</span> <span class="hl kwb">$t_max_flips</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwc">print</span> <span class="hl str">&quot;$chksum</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
+<span class="hl kwc">print</span> <span class="hl str">&quot;Pfannkuchen($n) = $max_flips</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
