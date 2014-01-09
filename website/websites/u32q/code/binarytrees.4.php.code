@@ -1,81 +1,167 @@
 <span class="hl opt">&lt;</span>?php 
 <span class="hl com">/* The Computer Language Benchmarks Game</span>
 <span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
-<span class="hl com"></span>
-<span class="hl com">   contributed by Peter Baltruschat</span>
-<span class="hl com">   modified by Levi Cameron</span>
-<span class="hl com">   modified by Craig Russell</span>
+<span class="hl com">   binarytree by Ludovic Urbain</span>
 <span class="hl com">*/</span>
 
-<span class="hl kwa">class</span> Tree <span class="hl opt">{</span>
-   <span class="hl kwa">public</span> <span class="hl kwc">$i</span><span class="hl opt">;</span>
-   <span class="hl kwa">public</span> <span class="hl kwc">$l</span><span class="hl opt">;</span>
-   <span class="hl kwa">public</span> <span class="hl kwc">$r</span><span class="hl opt">;</span>
-   
-   <span class="hl kwa">public function</span> <span class="hl kwd">__construct</span><span class="hl opt">(</span><span class="hl kwc">$item</span><span class="hl opt">,</span> <span class="hl kwc">$depth</span><span class="hl opt">) {</span>
-      <span class="hl kwc">$this</span><span class="hl opt">-&gt;</span>i <span class="hl opt">=</span> <span class="hl kwc">$item</span><span class="hl opt">;</span>
-      <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$depth</span><span class="hl opt">) {</span>
-         <span class="hl kwc">$this</span><span class="hl opt">-&gt;</span>l <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Tree</span><span class="hl opt">(</span><span class="hl kwc">$item</span> <span class="hl opt">*</span> <span class="hl num">2</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">, --</span><span class="hl kwc">$depth</span><span class="hl opt">);</span>
-         <span class="hl kwc">$this</span><span class="hl opt">-&gt;</span>r <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Tree</span><span class="hl opt">(</span><span class="hl kwc">$item</span> <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl kwc">$depth</span><span class="hl opt">);</span>
+<span class="hl kwa">function</span> <span class="hl kwd">tree</span><span class="hl opt">(&amp;</span><span class="hl kwc">$n</span><span class="hl opt">,&amp;</span><span class="hl kwc">$i</span><span class="hl opt">,&amp;</span><span class="hl kwc">$depth</span><span class="hl opt">){</span>
+   <span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">]=</span><span class="hl kwc">$i</span><span class="hl opt">;</span>
+   <span class="hl kwa">if</span><span class="hl opt">(!</span><span class="hl kwc">$depth</span><span class="hl opt">){</span>
+      <span class="hl kwa">return</span> <span class="hl kwc">$n</span><span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwc">$i2</span><span class="hl opt">=</span><span class="hl kwc">$i</span>+<span class="hl kwc">$i</span><span class="hl opt">;</span>
+   <span class="hl kwc">$depth</span><span class="hl opt">--;</span>
+   <span class="hl slc">//tree($n[1],$i2,$depth); </span>
+      <span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">][</span><span class="hl num">2</span><span class="hl opt">]=</span><span class="hl kwc">$i2</span><span class="hl opt">;</span>
+      <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$depth</span><span class="hl opt">){</span>
+         <span class="hl kwc">$i3</span><span class="hl opt">=</span><span class="hl kwc">$i2</span>+<span class="hl kwc">$i2</span><span class="hl opt">;</span>
+         <span class="hl kwc">$depth</span><span class="hl opt">--;</span>
+         <span class="hl slc">//tree($n[1][1],$i3,$depth);</span>
+            <span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">][</span><span class="hl num">1</span><span class="hl opt">][</span><span class="hl num">2</span><span class="hl opt">]=</span><span class="hl kwc">$i3</span><span class="hl opt">;</span>
+            <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$depth</span><span class="hl opt">){</span>
+               <span class="hl kwc">$i4</span><span class="hl opt">=</span><span class="hl kwc">$i3</span>+<span class="hl kwc">$i3</span><span class="hl opt">;</span>
+               <span class="hl kwc">$depth</span><span class="hl opt">--;</span>
+               <span class="hl kwd">tree</span><span class="hl opt">(</span><span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">][</span><span class="hl num">1</span><span class="hl opt">][</span><span class="hl num">1</span><span class="hl opt">],</span><span class="hl kwc">$i4</span><span class="hl opt">,</span><span class="hl kwc">$depth</span><span class="hl opt">);</span>
+               <span class="hl kwc">$i4</span><span class="hl opt">--;</span>
+               <span class="hl kwd">tree</span><span class="hl opt">(</span><span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">][</span><span class="hl num">1</span><span class="hl opt">][</span><span class="hl num">0</span><span class="hl opt">],</span><span class="hl kwc">$i4</span><span class="hl opt">,</span><span class="hl kwc">$depth</span><span class="hl opt">);</span>
+               <span class="hl kwc">$depth</span>++<span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+         <span class="hl kwc">$i3</span><span class="hl opt">--;</span>
+         <span class="hl slc">//tree($n[1][0],$i3,$depth);</span>
+            <span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">][</span><span class="hl num">0</span><span class="hl opt">][</span><span class="hl num">2</span><span class="hl opt">]=</span><span class="hl kwc">$i3</span><span class="hl opt">;</span>
+            <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$depth</span><span class="hl opt">){</span>
+               <span class="hl kwc">$i4</span><span class="hl opt">=</span><span class="hl kwc">$i3</span>+<span class="hl kwc">$i3</span><span class="hl opt">;</span>
+               <span class="hl kwc">$depth</span><span class="hl opt">--;</span>
+               <span class="hl kwd">tree</span><span class="hl opt">(</span><span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">][</span><span class="hl num">0</span><span class="hl opt">][</span><span class="hl num">1</span><span class="hl opt">],</span><span class="hl kwc">$i4</span><span class="hl opt">,</span><span class="hl kwc">$depth</span><span class="hl opt">);</span>
+               <span class="hl kwc">$i4</span><span class="hl opt">--;</span>
+               <span class="hl kwd">tree</span><span class="hl opt">(</span><span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">][</span><span class="hl num">0</span><span class="hl opt">][</span><span class="hl num">0</span><span class="hl opt">],</span><span class="hl kwc">$i4</span><span class="hl opt">,</span><span class="hl kwc">$depth</span><span class="hl opt">);</span>
+               <span class="hl kwc">$depth</span>++<span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+         <span class="hl kwc">$depth</span>++<span class="hl opt">;</span>
       <span class="hl opt">}</span>
-   <span class="hl opt">}</span>
-   
-   <span class="hl kwa">public function</span> <span class="hl kwd">check</span><span class="hl opt">() {</span>
-      <span class="hl kwa">return</span> <span class="hl kwc">$this</span><span class="hl opt">-&gt;</span>i
-         + <span class="hl opt">(</span><span class="hl kwc">$this</span><span class="hl opt">-&gt;</span>l<span class="hl opt">-&gt;</span>l <span class="hl opt">===</span> null ? <span class="hl kwc">$this</span><span class="hl opt">-&gt;</span>l<span class="hl opt">-&gt;</span><span class="hl kwd">check</span><span class="hl opt">() :</span> <span class="hl kwc">$this</span><span class="hl opt">-&gt;</span>l<span class="hl opt">-&gt;</span>i<span class="hl opt">)</span>
-         <span class="hl opt">- (</span><span class="hl kwc">$this</span><span class="hl opt">-&gt;</span>r<span class="hl opt">-&gt;</span>l <span class="hl opt">===</span> null ? <span class="hl kwc">$this</span><span class="hl opt">-&gt;</span>r<span class="hl opt">-&gt;</span><span class="hl kwd">check</span><span class="hl opt">() :</span> <span class="hl kwc">$this</span><span class="hl opt">-&gt;</span>r<span class="hl opt">-&gt;</span>i<span class="hl opt">);</span>
-   <span class="hl opt">}</span>
+   <span class="hl kwc">$i2</span><span class="hl opt">--;</span>
+   <span class="hl slc">//tree($n[0],$i2,$depth);</span>
+      <span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span><span class="hl num">2</span><span class="hl opt">]=</span><span class="hl kwc">$i2</span><span class="hl opt">;</span>
+      <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$depth</span><span class="hl opt">){</span>
+         <span class="hl kwc">$i3</span><span class="hl opt">=</span><span class="hl kwc">$i2</span>+<span class="hl kwc">$i2</span><span class="hl opt">;</span>
+         <span class="hl kwc">$depth</span><span class="hl opt">--;</span>
+         <span class="hl slc">//tree($n[0][1],$i3,$depth);</span>
+            <span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span><span class="hl num">1</span><span class="hl opt">][</span><span class="hl num">2</span><span class="hl opt">]=</span><span class="hl kwc">$i3</span><span class="hl opt">;</span>
+            <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$depth</span><span class="hl opt">){</span>
+               <span class="hl kwc">$i4</span><span class="hl opt">=</span><span class="hl kwc">$i3</span>+<span class="hl kwc">$i3</span><span class="hl opt">;</span>
+               <span class="hl kwc">$depth</span><span class="hl opt">--;</span>
+               <span class="hl kwd">tree</span><span class="hl opt">(</span><span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span><span class="hl num">1</span><span class="hl opt">][</span><span class="hl num">1</span><span class="hl opt">],</span><span class="hl kwc">$i4</span><span class="hl opt">,</span><span class="hl kwc">$depth</span><span class="hl opt">);</span>
+               <span class="hl kwc">$i4</span><span class="hl opt">--;</span>
+               <span class="hl kwd">tree</span><span class="hl opt">(</span><span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span><span class="hl num">1</span><span class="hl opt">][</span><span class="hl num">0</span><span class="hl opt">],</span><span class="hl kwc">$i4</span><span class="hl opt">,</span><span class="hl kwc">$depth</span><span class="hl opt">);</span>
+               <span class="hl kwc">$depth</span>++<span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+         <span class="hl kwc">$i3</span><span class="hl opt">--;</span>
+         <span class="hl slc">//tree($n[0][0],$i3,$depth);</span>
+            <span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span><span class="hl num">0</span><span class="hl opt">][</span><span class="hl num">2</span><span class="hl opt">]=</span><span class="hl kwc">$i3</span><span class="hl opt">;</span>
+            <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$depth</span><span class="hl opt">){</span>
+               <span class="hl kwc">$i4</span><span class="hl opt">=</span><span class="hl kwc">$i3</span>+<span class="hl kwc">$i3</span><span class="hl opt">;</span>
+               <span class="hl kwc">$depth</span><span class="hl opt">--;</span>
+               <span class="hl kwd">tree</span><span class="hl opt">(</span><span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span><span class="hl num">0</span><span class="hl opt">][</span><span class="hl num">1</span><span class="hl opt">],</span><span class="hl kwc">$i4</span><span class="hl opt">,</span><span class="hl kwc">$depth</span><span class="hl opt">);</span>
+               <span class="hl kwc">$i4</span><span class="hl opt">--;</span>
+               <span class="hl kwd">tree</span><span class="hl opt">(</span><span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span><span class="hl num">0</span><span class="hl opt">][</span><span class="hl num">0</span><span class="hl opt">],</span><span class="hl kwc">$i4</span><span class="hl opt">,</span><span class="hl kwc">$depth</span><span class="hl opt">);</span>
+               <span class="hl kwc">$depth</span>++<span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+         <span class="hl kwc">$depth</span>++<span class="hl opt">;</span>
+      <span class="hl opt">}</span>
+   <span class="hl kwc">$depth</span>++<span class="hl opt">;</span>
 <span class="hl opt">}</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">check</span><span class="hl opt">(&amp;</span><span class="hl kwc">$n</span><span class="hl opt">) {</span><span class="hl slc">//checks look like free from a performance standpoint.</span>
+   <span class="hl kwc">$r</span><span class="hl opt">=</span><span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">];</span>
+   <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span><span class="hl num">0</span><span class="hl opt">] ===</span> null<span class="hl opt">){</span>
+      <span class="hl kwc">$r</span>+<span class="hl opt">=</span><span class="hl kwd">check</span><span class="hl opt">(</span><span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]);</span>
+   <span class="hl opt">}</span><span class="hl kwa">else</span><span class="hl opt">{</span>
+      <span class="hl kwc">$r</span>+<span class="hl opt">=</span><span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">][</span><span class="hl num">2</span><span class="hl opt">];</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">][</span><span class="hl num">0</span><span class="hl opt">] ===</span> null<span class="hl opt">){</span>
+      <span class="hl kwc">$r</span><span class="hl opt">-=</span><span class="hl kwd">check</span><span class="hl opt">(</span><span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]);</span>
+   <span class="hl opt">}</span><span class="hl kwa">else</span><span class="hl opt">{</span>
+      <span class="hl kwc">$r</span><span class="hl opt">-=</span><span class="hl kwc">$n</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">][</span><span class="hl num">2</span><span class="hl opt">];</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">return</span> <span class="hl kwc">$r</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwc">$threads</span><span class="hl opt">=</span><span class="hl num">2</span><span class="hl opt">;</span>
+<span class="hl slc">// Currently limited to two threads, designed for 2n-threads, </span>
+<span class="hl slc">// can be updated to 4 threads when PHP releases a better array / memory limit</span>
+<span class="hl slc">// on the benchmarks game goes up to at least 4.8G</span>
+
+
+<span class="hl kwc">$min_depth</span> <span class="hl opt">=</span> <span class="hl num">4</span><span class="hl opt">;</span>
+<span class="hl kwa">if</span><span class="hl opt">(</span><span class="hl kwc">$argc</span> <span class="hl opt">==</span> <span class="hl num">2</span><span class="hl opt">){</span>
+   <span class="hl kwc">$max_depth</span><span class="hl opt">=</span><span class="hl kwc">$argv</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">];</span>
+<span class="hl opt">}</span><span class="hl kwa">else</span><span class="hl opt">{</span>
+   <span class="hl kwc">$max_depth</span><span class="hl opt">=</span><span class="hl kwc">$min_depth</span>+<span class="hl num">2</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+<span class="hl kwc">$stretch_depth</span><span class="hl opt">=</span><span class="hl kwc">$max_depth</span>+<span class="hl num">1</span><span class="hl opt">;</span>
+<span class="hl kwc">$stree</span><span class="hl opt">=</span><span class="hl kwa">array</span><span class="hl opt">();</span>
+<span class="hl kwc">$i</span><span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl kwd">tree</span><span class="hl opt">(</span><span class="hl kwc">$stree</span><span class="hl opt">,</span><span class="hl kwc">$i</span><span class="hl opt">,</span><span class="hl kwc">$stretch_depth</span><span class="hl opt">);</span>
+<span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;stretch tree of depth %d</span><span class="hl esc">\t</span> <span class="hl str">check: %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span><span class="hl kwc">$stretch_depth</span><span class="hl opt">,</span> <span class="hl kwd">check</span><span class="hl opt">(</span><span class="hl kwc">$stree</span><span class="hl opt">));</span>
+<span class="hl kwa">unset</span><span class="hl opt">(</span><span class="hl kwc">$stree</span><span class="hl opt">);</span>
+<span class="hl kwc">$bigtree</span><span class="hl opt">=</span><span class="hl kwa">array</span><span class="hl opt">();</span>
+<span class="hl kwd">tree</span><span class="hl opt">(</span><span class="hl kwc">$bigtree</span><span class="hl opt">,</span><span class="hl kwc">$i</span><span class="hl opt">,</span><span class="hl kwc">$max_depth</span><span class="hl opt">);</span>
+<span class="hl kwc">$runs</span> <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl opt">&lt;&lt; (</span><span class="hl kwc">$max_depth</span><span class="hl opt">);</span>
+
 
 <span class="hl kwc">$tok</span> <span class="hl opt">=</span> <span class="hl kwd">ftok</span><span class="hl opt">(</span>__FILE__<span class="hl opt">,</span> <span class="hl kwd">chr</span><span class="hl opt">(</span><span class="hl kwd">time</span><span class="hl opt">() &amp;</span> <span class="hl num">255</span><span class="hl opt">));</span>
 <span class="hl kwc">$queue</span> <span class="hl opt">=</span> <span class="hl kwd">msg_get_queue</span><span class="hl opt">(</span><span class="hl kwc">$tok</span><span class="hl opt">);</span>
 
-<span class="hl kwc">$minDepth</span> <span class="hl opt">=</span> <span class="hl num">4</span><span class="hl opt">;</span>
-
-<span class="hl kwc">$n</span> <span class="hl opt">=</span> <span class="hl kwc">$argc</span> <span class="hl opt">==</span> <span class="hl num">2</span> ? <span class="hl kwc">$argv</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] :</span> <span class="hl num">1</span><span class="hl opt">;</span>
-<span class="hl kwc">$maxDepth</span> <span class="hl opt">=</span> <span class="hl kwc">$minDepth</span> + <span class="hl num">2</span> <span class="hl opt">&gt;</span> <span class="hl kwc">$n</span> ? <span class="hl kwc">$minDepth</span> + <span class="hl num">2</span> <span class="hl opt">:</span> <span class="hl kwc">$n</span><span class="hl opt">;</span>
-<span class="hl kwc">$stretchDepth</span> <span class="hl opt">=</span> <span class="hl kwc">$maxDepth</span> + <span class="hl num">1</span><span class="hl opt">;</span>
-
-<span class="hl kwc">$stretch</span> <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Tree</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwc">$stretchDepth</span><span class="hl opt">);</span>
-<span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;stretch tree of depth %d</span><span class="hl esc">\t</span> <span class="hl str">check: %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span>
-   <span class="hl kwc">$stretchDepth</span><span class="hl opt">,</span> <span class="hl kwc">$stretch</span><span class="hl opt">-&gt;</span><span class="hl kwd">check</span><span class="hl opt">());</span>
-<span class="hl kwa">unset</span><span class="hl opt">(</span><span class="hl kwc">$stretch</span><span class="hl opt">);</span>
-
-<span class="hl kwc">$longLivedTree</span> <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Tree</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl kwc">$maxDepth</span><span class="hl opt">);</span>
-
-<span class="hl kwc">$workers</span> <span class="hl opt">=</span> <span class="hl kwc">$messages</span> <span class="hl opt">=</span> <span class="hl kwa">array</span><span class="hl opt">();</span>
-<span class="hl kwc">$iterations</span> <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl opt">&lt;&lt;</span> <span class="hl kwc">$maxDepth</span><span class="hl opt">;</span>
-<span class="hl kwa">do</span>
-<span class="hl opt">{</span>
+<span class="hl kwc">$parent</span> <span class="hl opt">=</span> TRUE<span class="hl opt">;</span>
+<span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwc">$i</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> <span class="hl kwc">$i</span> <span class="hl opt">&lt;</span> <span class="hl kwc">$threads</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">;</span> ++<span class="hl kwc">$i</span><span class="hl opt">) {</span>
    <span class="hl kwc">$pid</span> <span class="hl opt">=</span> <span class="hl kwd">pcntl_fork</span><span class="hl opt">();</span>
-   <span class="hl kwa">if</span><span class="hl opt">(!</span><span class="hl kwc">$pid</span><span class="hl opt">) {</span>
-      <span class="hl kwc">$check</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
-      <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwc">$i</span> <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span> <span class="hl kwc">$i</span> <span class="hl opt">!=</span> <span class="hl kwc">$iterations</span><span class="hl opt">;</span> ++<span class="hl kwc">$i</span><span class="hl opt">)</span>
-      <span class="hl opt">{</span>
-         <span class="hl kwc">$check</span> +<span class="hl opt">= (</span><span class="hl kwa">new</span> <span class="hl kwd">Tree</span><span class="hl opt">(</span><span class="hl kwc">$i</span><span class="hl opt">,</span> <span class="hl kwc">$minDepth</span><span class="hl opt">))-&gt;</span><span class="hl kwd">check</span><span class="hl opt">()</span>
-            + <span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">Tree</span><span class="hl opt">(-</span><span class="hl kwc">$i</span><span class="hl opt">,</span> <span class="hl kwc">$minDepth</span><span class="hl opt">))-&gt;</span><span class="hl kwd">check</span><span class="hl opt">();</span>
-     <span class="hl opt">}</span>
-     <span class="hl kwd">msg_send</span><span class="hl opt">(</span><span class="hl kwc">$queue</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl kwd">getmypid</span><span class="hl opt">() .</span> <span class="hl str">','</span> <span class="hl opt">. (</span><span class="hl kwc">$iterations</span><span class="hl opt">&lt;&lt;</span><span class="hl num">1</span><span class="hl opt">) .</span> <span class="hl str">','</span> <span class="hl opt">.</span> <span class="hl kwc">$minDepth</span> <span class="hl opt">.</span> <span class="hl str">','</span> <span class="hl opt">.</span> <span class="hl kwc">$check</span><span class="hl opt">,</span> false<span class="hl opt">,</span> false<span class="hl opt">,</span> <span class="hl kwc">$errno</span><span class="hl opt">);</span>
-     <span class="hl kwa">exit</span><span class="hl opt">;</span>
+   <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwc">$pid</span> <span class="hl opt">=== -</span><span class="hl num">1</span><span class="hl opt">) {</span>
+      <span class="hl kwa">die</span><span class="hl opt">(</span><span class="hl str">'could not fork'</span><span class="hl opt">);</span>
+   <span class="hl opt">}</span> <span class="hl kwa">else if</span> <span class="hl opt">(</span><span class="hl kwc">$pid</span><span class="hl opt">) {</span>
+      <span class="hl kwa">continue</span><span class="hl opt">;</span>
    <span class="hl opt">}</span>
-   
-   <span class="hl kwc">$workers</span><span class="hl opt">[] =</span> <span class="hl kwc">$pid</span><span class="hl opt">;</span>
-   <span class="hl kwc">$messages</span><span class="hl opt">[</span><span class="hl kwc">$pid</span><span class="hl opt">] =</span> <span class="hl kwa">array</span><span class="hl opt">();</span>
-   <span class="hl kwc">$minDepth</span> +<span class="hl opt">=</span> <span class="hl num">2</span><span class="hl opt">;</span>
-   <span class="hl kwc">$iterations</span> <span class="hl opt">&gt;&gt;=</span> <span class="hl num">2</span><span class="hl opt">;</span>
+   <span class="hl kwc">$parent</span> <span class="hl opt">=</span> FALSE<span class="hl opt">;</span>
+   <span class="hl kwa">break</span><span class="hl opt">;</span>
 <span class="hl opt">}</span>
-<span class="hl kwa">while</span><span class="hl opt">(</span><span class="hl kwc">$minDepth</span> <span class="hl opt">&lt;=</span> <span class="hl kwc">$maxDepth</span><span class="hl opt">);</span>
+<span class="hl kwa">if</span><span class="hl opt">(!</span><span class="hl kwc">$parent</span><span class="hl opt">){</span>
+   <span class="hl kwa">unset</span><span class="hl opt">(</span><span class="hl kwc">$bigtree</span><span class="hl opt">);</span>
+<span class="hl opt">}</span>
+<span class="hl kwc">$tmptree</span><span class="hl opt">=</span><span class="hl kwa">array</span><span class="hl opt">();</span>
+<span class="hl kwc">$return</span><span class="hl opt">=</span><span class="hl kwa">array</span><span class="hl opt">();</span>
+<span class="hl kwa">while</span><span class="hl opt">(</span><span class="hl kwc">$min_depth</span> <span class="hl opt">&lt;=</span> <span class="hl kwc">$max_depth</span><span class="hl opt">){</span>
+   <span class="hl kwc">$check</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwc">$i</span><span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span><span class="hl kwc">$i</span><span class="hl opt">&lt;</span><span class="hl kwc">$runs</span><span class="hl opt">&gt;&gt;(</span><span class="hl num">2</span><span class="hl opt">/</span><span class="hl kwc">$threads</span><span class="hl opt">);</span><span class="hl kwc">$i</span>++<span class="hl opt">){</span>
+      <span class="hl kwd">tree</span><span class="hl opt">(</span><span class="hl kwc">$tmptree</span><span class="hl opt">,</span><span class="hl kwc">$i</span><span class="hl opt">,</span><span class="hl kwc">$min_depth</span><span class="hl opt">);</span>
+      <span class="hl kwc">$check</span>+<span class="hl opt">=</span><span class="hl kwd">check</span><span class="hl opt">(</span><span class="hl kwc">$tmptree</span><span class="hl opt">);</span>
+      <span class="hl kwc">$j</span><span class="hl opt">=-</span><span class="hl kwc">$i</span><span class="hl opt">;</span>
+      <span class="hl kwd">tree</span><span class="hl opt">(</span><span class="hl kwc">$tmptree</span><span class="hl opt">,</span><span class="hl kwc">$j</span><span class="hl opt">,</span><span class="hl kwc">$min_depth</span><span class="hl opt">);</span>
+      <span class="hl kwc">$check</span>+<span class="hl opt">=</span><span class="hl kwd">check</span><span class="hl opt">(</span><span class="hl kwc">$tmptree</span><span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwc">$return</span><span class="hl opt">[</span><span class="hl kwc">$min_depth</span><span class="hl opt">]=</span><span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl kwc">$runs</span><span class="hl opt">,</span><span class="hl kwc">$check</span><span class="hl opt">);</span>
+   <span class="hl kwc">$min_depth</span>+<span class="hl opt">=</span><span class="hl num">2</span><span class="hl opt">;</span>
+   <span class="hl kwc">$runs</span><span class="hl opt">&gt;&gt;=</span><span class="hl num">2</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+<span class="hl kwa">unset</span><span class="hl opt">(</span><span class="hl kwc">$tmptree</span><span class="hl opt">);</span>
+<span class="hl kwa">if</span> <span class="hl opt">(!</span><span class="hl kwd">msg_send</span><span class="hl opt">(</span><span class="hl kwc">$queue</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl kwc">$return</span><span class="hl opt">,</span> TRUE<span class="hl opt">,</span> FALSE<span class="hl opt">,</span> <span class="hl kwc">$errno</span><span class="hl opt">)) {</span>
+   <span class="hl kwd">var_dump</span><span class="hl opt">(</span><span class="hl str">&quot;$errno&quot;</span><span class="hl opt">);</span>
+   <span class="hl kwd">var_dump</span><span class="hl opt">(</span><span class="hl kwd">msg_stat_queue</span><span class="hl opt">(</span><span class="hl kwc">$queue</span><span class="hl opt">));</span>
+<span class="hl opt">}</span>
 
-<span class="hl kwd">pcntl_wait</span><span class="hl opt">(</span><span class="hl kwc">$status</span><span class="hl opt">);</span>
-<span class="hl kwa">foreach</span><span class="hl opt">(</span><span class="hl kwc">$workers</span> <span class="hl kwa">as</span> <span class="hl kwc">$worker</span><span class="hl opt">) {</span>
-   <span class="hl kwd">msg_receive</span><span class="hl opt">(</span><span class="hl kwc">$queue</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl kwc">$msgtype</span><span class="hl opt">,</span> <span class="hl num">4096</span><span class="hl opt">,</span> <span class="hl kwc">$message</span><span class="hl opt">,</span> false<span class="hl opt">);</span>
-   <span class="hl kwc">$message</span> <span class="hl opt">=</span> <span class="hl kwd">explode</span><span class="hl opt">(</span><span class="hl str">','</span><span class="hl opt">,</span> <span class="hl kwc">$message</span><span class="hl opt">);</span>
-   <span class="hl kwc">$messages</span><span class="hl opt">[</span><span class="hl kwc">$message</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]] =</span> <span class="hl kwd">array_slice</span><span class="hl opt">(</span><span class="hl kwc">$message</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">);</span>
+<span class="hl kwa">if</span> <span class="hl opt">(!</span><span class="hl kwc">$parent</span><span class="hl opt">) {</span>
+   <span class="hl kwa">exit</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
 <span class="hl opt">}</span>
-<span class="hl kwa">foreach</span><span class="hl opt">(</span><span class="hl kwc">$messages</span> <span class="hl kwa">as</span> <span class="hl kwc">$message</span><span class="hl opt">) {</span>
-   <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%d</span><span class="hl esc">\t</span> <span class="hl str">trees of depth %d</span><span class="hl esc">\t</span> <span class="hl str">check: %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span>
-      <span class="hl kwc">$message</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">],</span> <span class="hl kwc">$message</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">],</span> <span class="hl kwc">$message</span><span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">]);</span>
+
+<span class="hl kwc">$result2</span><span class="hl opt">=</span><span class="hl kwa">array</span><span class="hl opt">();</span>
+<span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwc">$i</span><span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span><span class="hl kwc">$i</span><span class="hl opt">&lt;</span><span class="hl kwc">$threads</span><span class="hl opt">;</span><span class="hl kwc">$i</span>++<span class="hl opt">){</span>
+   <span class="hl kwd">msg_receive</span><span class="hl opt">(</span><span class="hl kwc">$queue</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl kwc">$msgtype</span><span class="hl opt">,</span> <span class="hl num">2048</span><span class="hl opt">,</span> <span class="hl kwc">$result</span><span class="hl opt">,</span> TRUE<span class="hl opt">);</span>
+   <span class="hl kwa">foreach</span><span class="hl opt">(</span><span class="hl kwc">$result</span> <span class="hl kwa">as</span> <span class="hl kwc">$depth</span> <span class="hl opt">=&gt;</span> <span class="hl kwc">$res</span><span class="hl opt">){</span>
+      <span class="hl kwc">$result2</span><span class="hl opt">[</span><span class="hl kwc">$depth</span><span class="hl opt">][</span><span class="hl num">0</span><span class="hl opt">]</span>+<span class="hl opt">=</span><span class="hl kwc">$res</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">];</span>
+      <span class="hl kwc">$result2</span><span class="hl opt">[</span><span class="hl kwc">$depth</span><span class="hl opt">][</span><span class="hl num">1</span><span class="hl opt">]-=</span><span class="hl kwc">$res</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">];</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwd">pcntl_wait</span><span class="hl opt">(</span><span class="hl kwc">$s</span><span class="hl opt">);</span>
 <span class="hl opt">}</span>
-   
+<span class="hl kwa">foreach</span><span class="hl opt">(</span><span class="hl kwc">$result2</span> <span class="hl kwa">as</span> <span class="hl kwc">$depth</span> <span class="hl opt">=&gt;</span> <span class="hl kwc">$res</span><span class="hl opt">){</span>
+   <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%d</span><span class="hl esc">\t</span> <span class="hl str">trees of depth %d</span><span class="hl esc">\t</span> <span class="hl str">check: %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> <span class="hl kwc">$result2</span><span class="hl opt">[</span><span class="hl kwc">$depth</span><span class="hl opt">][</span><span class="hl num">0</span><span class="hl opt">],</span> <span class="hl kwc">$depth</span><span class="hl opt">, -</span><span class="hl kwc">$result2</span><span class="hl opt">[</span><span class="hl kwc">$depth</span><span class="hl opt">][</span><span class="hl num">1</span><span class="hl opt">]);</span>
+<span class="hl opt">}</span>
 <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;long lived tree of depth %d</span><span class="hl esc">\t</span> <span class="hl str">check: %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span>
-   <span class="hl kwc">$maxDepth</span><span class="hl opt">,</span> <span class="hl kwc">$longLivedTree</span><span class="hl opt">-&gt;</span><span class="hl kwd">check</span><span class="hl opt">());</span>
+<span class="hl kwc">$max_depth</span><span class="hl opt">,</span> <span class="hl kwd">check</span><span class="hl opt">(</span><span class="hl kwc">$bigtree</span><span class="hl opt">));</span>
