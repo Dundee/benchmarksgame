@@ -1,62 +1,75 @@
 <span class="hl slc"># The Computer Language Benchmarks Game</span>
-<span class="hl slc"># http://benchmarksgame.alioth.debian.org/</span>
-<span class="hl slc"># implemented by Greg Buchholz</span>
-<span class="hl slc"># streamlined by Kalev Soikonen</span>
-<span class="hl slc"># parallelised by Philip Boulain</span>
-<span class="hl slc"># modified by Jerry D. Hedden</span>
-<span class="hl kwa">use</span> warnings<span class="hl opt">;</span> <span class="hl kwa">use</span> strict<span class="hl opt">;</span> <span class="hl kwa">use</span> threads<span class="hl opt">;</span>
+<span class="hl slc">#  http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl slc">#</span>
+<span class="hl slc">#  contributed by Mykola Zubach</span>
 
-<span class="hl kwa">use</span> constant ITER     <span class="hl opt">=&gt;</span> <span class="hl num">50</span><span class="hl opt">;</span>
-<span class="hl kwa">use</span> constant LIMITSQR <span class="hl opt">=&gt;</span> <span class="hl num">2.0</span> <span class="hl opt">**</span> <span class="hl num">2</span><span class="hl opt">;</span>
-<span class="hl kwa">use</span> constant MAXPIXEL <span class="hl opt">=&gt;</span> <span class="hl num">524288</span><span class="hl opt">;</span> <span class="hl slc"># Maximum pixel buffer per thread</span>
+<span class="hl kwa">use</span> strict<span class="hl opt">;</span>
+<span class="hl kwa">use</span> threads<span class="hl opt">;</span>
+<span class="hl kwa">use</span> threads<span class="hl opt">::</span>shared<span class="hl opt">;</span>
 
-<span class="hl kwc">my</span> <span class="hl opt">(</span><span class="hl kwb">$w</span><span class="hl opt">,</span> <span class="hl kwb">$h</span><span class="hl opt">);</span>
-<span class="hl kwb">$w</span> <span class="hl opt">=</span> <span class="hl kwb">$h</span> <span class="hl opt">=</span> <span class="hl kwc">shift</span> <span class="hl opt">||</span> <span class="hl num">80</span><span class="hl opt">;</span>
-<span class="hl kwc">my</span> <span class="hl kwb">$threads</span> <span class="hl opt">=</span> <span class="hl num">6</span><span class="hl opt">;</span> <span class="hl slc"># Workers; ideally slightly overshoots number of processors</span>
+<span class="hl kwa">use</span> constant MAXITER <span class="hl opt">=&gt;</span> <span class="hl num">50</span><span class="hl opt">;</span>
+<span class="hl kwa">use</span> constant LIMIT <span class="hl opt">=&gt;</span> <span class="hl num">4.0</span><span class="hl opt">;</span>
+<span class="hl kwa">use</span> constant XMIN <span class="hl opt">=&gt; -</span><span class="hl num">1.5</span><span class="hl opt">;</span>
+<span class="hl kwa">use</span> constant YMIN <span class="hl opt">=&gt; -</span><span class="hl num">1</span><span class="hl opt">;</span>
+<span class="hl kwa">use</span> constant WHITE <span class="hl opt">=&gt;</span> <span class="hl str">&quot;\0&quot;</span><span class="hl opt">;</span>
+<span class="hl kwa">use</span> constant BLACK <span class="hl opt">=&gt;</span> <span class="hl str">&quot;</span><span class="hl esc">\001</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
 
-<span class="hl slc"># Generate pixel data for a single dot</span>
-<span class="hl kwa">sub</span> dot<span class="hl opt">($$) {</span>
-   <span class="hl kwc">my</span> <span class="hl opt">(</span><span class="hl kwb">$Zr</span><span class="hl opt">,</span> <span class="hl kwb">$Zi</span><span class="hl opt">,</span> <span class="hl kwb">$Tr</span><span class="hl opt">,</span> <span class="hl kwb">$Ti</span><span class="hl opt">) = (</span><span class="hl num">0.0</span><span class="hl opt">,</span><span class="hl num">0.0</span><span class="hl opt">,</span><span class="hl num">0.0</span><span class="hl opt">,</span><span class="hl num">0.0</span><span class="hl opt">);</span>
-   <span class="hl kwc">my</span> <span class="hl kwb">$i</span> <span class="hl opt">=</span> ITER<span class="hl opt">;</span>
-   <span class="hl kwc">my</span> <span class="hl kwb">$Cr</span> <span class="hl opt">=</span> <span class="hl num">2</span> <span class="hl opt">*</span> <span class="hl kwb">$_</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] /</span> <span class="hl kwb">$w</span> <span class="hl opt">-</span> <span class="hl num">1.5</span><span class="hl opt">;</span>
-   <span class="hl kwc">my</span> <span class="hl kwb">$Ci</span> <span class="hl opt">=</span> <span class="hl num">2</span> <span class="hl opt">*</span> <span class="hl kwb">$_</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] /</span> <span class="hl kwb">$h</span> <span class="hl opt">-</span> <span class="hl num">1.0</span><span class="hl opt">;</span>
-   <span class="hl opt">(</span>
-      <span class="hl kwb">$Zi</span> <span class="hl opt">=</span> <span class="hl num">2.0</span> <span class="hl opt">*</span> <span class="hl kwb">$Zr</span> <span class="hl opt">*</span> <span class="hl kwb">$Zi</span> <span class="hl opt">+</span> <span class="hl kwb">$Ci</span><span class="hl opt">,</span>
-      <span class="hl kwb">$Zr</span> <span class="hl opt">=</span> <span class="hl kwb">$Tr</span> <span class="hl opt">-</span> <span class="hl kwb">$Ti</span> <span class="hl opt">+</span> <span class="hl kwb">$Cr</span><span class="hl opt">,</span>
-      <span class="hl kwb">$Ti</span> <span class="hl opt">=</span> <span class="hl kwb">$Zi</span> <span class="hl opt">*</span> <span class="hl kwb">$Zi</span><span class="hl opt">,</span>
-      <span class="hl kwb">$Tr</span> <span class="hl opt">=</span> <span class="hl kwb">$Zr</span> <span class="hl opt">*</span> <span class="hl kwb">$Zr</span>
-   <span class="hl opt">)</span> <span class="hl kwa">until</span> <span class="hl opt">(</span><span class="hl kwb">$Tr</span> <span class="hl opt">+</span> <span class="hl kwb">$Ti</span> <span class="hl opt">&gt;</span> LIMITSQR <span class="hl opt">|| !</span><span class="hl kwb">$i</span><span class="hl opt">--);</span>
-   <span class="hl kwa">return</span> <span class="hl opt">(</span><span class="hl kwb">$i</span> <span class="hl opt">== -</span><span class="hl num">1</span><span class="hl opt">);</span>
-<span class="hl opt">}</span>
+<span class="hl kwc">my</span> <span class="hl opt">(</span><span class="hl kwb">$w</span><span class="hl opt">,</span> <span class="hl kwb">$h</span><span class="hl opt">,</span> <span class="hl kwb">&#64;threads</span><span class="hl opt">,</span> <span class="hl kwb">$invN</span><span class="hl opt">);</span>
+<span class="hl kwc">my</span> <span class="hl kwb">&#64;jobs</span> <span class="hl opt">:</span>shared<span class="hl opt">;</span>
+<span class="hl kwc">my</span> <span class="hl kwb">&#64;picture</span> <span class="hl opt">:</span>shared<span class="hl opt">;</span>
 
-<span class="hl slc"># Generate pixel data for range of lines, inclusive</span>
-<span class="hl kwa">sub</span> lines<span class="hl opt">($$) {</span>
-   <span class="hl kwc">map</span> <span class="hl opt">{</span> <span class="hl kwc">my</span> <span class="hl kwb">$y</span> <span class="hl opt">=</span> <span class="hl kwb">$_</span><span class="hl opt">;</span>
-      <span class="hl kwc">pack</span> <span class="hl str">'B*'</span><span class="hl opt">,</span> <span class="hl kwc">pack</span> <span class="hl str">'C*'</span><span class="hl opt">,</span> <span class="hl kwc">map</span> dot<span class="hl opt">(</span><span class="hl kwb">$_</span><span class="hl opt">,</span> <span class="hl kwb">$y</span><span class="hl opt">),</span> <span class="hl num">0</span><span class="hl opt">..</span><span class="hl kwb">$w</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">;</span>
-   <span class="hl opt">}</span> <span class="hl kwb">$_</span><span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]..</span><span class="hl kwb">$_</span><span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]</span>
-<span class="hl opt">}</span>
+<span class="hl kwa">sub</span> draw_line<span class="hl opt">($) {</span>
+   <span class="hl kwc">my</span> <span class="hl kwb">$y</span> <span class="hl opt">=</span> <span class="hl kwc">shift</span><span class="hl opt">;</span>
+   <span class="hl kwc">my</span> <span class="hl kwb">$line</span><span class="hl opt">;</span>
+   <span class="hl kwc">my</span> <span class="hl kwb">$Ci</span> <span class="hl opt">=</span> <span class="hl kwb">$y</span> <span class="hl opt">*</span> <span class="hl kwb">$invN</span> <span class="hl opt">+</span> YMIN<span class="hl opt">;</span>
+X<span class="hl opt">:</span>
+   <span class="hl kwa">for</span> <span class="hl kwc">my</span> <span class="hl kwb">$x</span> <span class="hl opt">(</span><span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl kwb">$w</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">) {</span>
+      <span class="hl kwc">my</span> <span class="hl opt">(</span><span class="hl kwb">$Zr</span><span class="hl opt">,</span> <span class="hl kwb">$Zi</span><span class="hl opt">,</span> <span class="hl kwb">$Tr</span><span class="hl opt">,</span> <span class="hl kwb">$Ti</span><span class="hl opt">);</span>
+      <span class="hl kwc">my</span> <span class="hl kwb">$Cr</span> <span class="hl opt">=</span> <span class="hl kwb">$x</span> <span class="hl opt">*</span> <span class="hl kwb">$invN</span> <span class="hl opt">+</span> XMIN<span class="hl opt">;</span>
 
-<span class="hl slc"># Decide upon roughly equal batching of workload, within buffer limits</span>
-<span class="hl kwb">$threads</span> <span class="hl opt">=</span> <span class="hl kwb">$h</span> <span class="hl kwa">if</span> <span class="hl kwb">$threads</span> <span class="hl opt">&gt;</span> <span class="hl kwb">$h</span><span class="hl opt">;</span>
-<span class="hl kwc">my</span> <span class="hl kwb">$each</span> <span class="hl opt">=</span> <span class="hl kwc">int</span><span class="hl opt">(</span><span class="hl kwb">$h</span> <span class="hl opt">/</span> <span class="hl kwb">$threads</span><span class="hl opt">);</span>
-<span class="hl kwb">$each</span> <span class="hl opt">=</span> <span class="hl kwc">int</span><span class="hl opt">(</span>MAXPIXEL <span class="hl opt">/</span> <span class="hl kwb">$w</span><span class="hl opt">)</span> <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwb">$each</span> <span class="hl opt">*</span> <span class="hl kwb">$w</span><span class="hl opt">) &gt;</span> MAXPIXEL<span class="hl opt">;</span>
-<span class="hl kwb">$each</span> <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl kwa">if</span> <span class="hl kwb">$each</span> <span class="hl opt">&lt;</span> <span class="hl num">1</span><span class="hl opt">;</span>
-
-<span class="hl slc"># Work as long as we have lines to spawn for or threads to collect from</span>
-<span class="hl opt">$| =</span> <span class="hl num">1</span><span class="hl opt">;</span>
-<span class="hl kwc">print</span> <span class="hl str">&quot;P4</span><span class="hl esc">\n</span><span class="hl str">$w $h</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
-<span class="hl kwc">my</span> <span class="hl kwb">$y</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
-<span class="hl kwc">my</span> <span class="hl kwb">&#64;workers</span><span class="hl opt">;</span>
-<span class="hl kwa">while</span><span class="hl opt">(</span><span class="hl kwb">&#64;workers</span> <span class="hl kwc">or</span> <span class="hl opt">(</span><span class="hl kwb">$y</span> <span class="hl opt">&lt;</span> <span class="hl kwb">$h</span><span class="hl opt">)) {</span>
-   <span class="hl slc"># Create workers up to requirement</span>
-   <span class="hl kwa">while</span><span class="hl opt">((</span><span class="hl kwb">&#64;workers</span> <span class="hl opt">&lt;</span> <span class="hl kwb">$threads</span><span class="hl opt">)</span> <span class="hl kwc">and</span> <span class="hl opt">(</span><span class="hl kwb">$y</span> <span class="hl opt">&lt;</span> <span class="hl kwb">$h</span><span class="hl opt">)) {</span>
-      <span class="hl kwc">my</span> <span class="hl kwb">$y2</span> <span class="hl opt">=</span> <span class="hl kwb">$y</span> <span class="hl opt">+</span> <span class="hl kwb">$each</span><span class="hl opt">;</span>
-      <span class="hl kwb">$y2</span> <span class="hl opt">=</span> <span class="hl kwb">$h</span> <span class="hl kwa">if</span> <span class="hl kwb">$y2</span> <span class="hl opt">&gt;</span> <span class="hl kwb">$h</span><span class="hl opt">;</span>
-      <span class="hl kwc">push</span><span class="hl opt">(</span><span class="hl kwb">&#64;workers</span><span class="hl opt">,</span> threads<span class="hl opt">-&gt;</span><span class="hl kwd">create</span><span class="hl opt">(</span><span class="hl str">'lines'</span><span class="hl opt">,</span> <span class="hl kwb">$y</span><span class="hl opt">,</span> <span class="hl kwb">$y2</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">));</span>
-      <span class="hl kwb">$y</span> <span class="hl opt">=</span> <span class="hl kwb">$y2</span><span class="hl opt">;</span>
+      <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> MAXITER<span class="hl opt">) {</span>
+         <span class="hl kwb">$Zi</span> <span class="hl opt">=</span> <span class="hl kwb">$Zi</span> <span class="hl opt">*</span> <span class="hl num">2</span> <span class="hl opt">*</span> <span class="hl kwb">$Zr</span> <span class="hl opt">+</span> <span class="hl kwb">$Ci</span><span class="hl opt">;</span>
+         <span class="hl kwb">$Zr</span> <span class="hl opt">=</span> <span class="hl kwb">$Tr</span> <span class="hl opt">-</span> <span class="hl kwb">$Ti</span> <span class="hl opt">+</span> <span class="hl kwb">$Cr</span><span class="hl opt">;</span>
+         <span class="hl kwb">$Ti</span> <span class="hl opt">=</span> <span class="hl kwb">$Zi</span> <span class="hl opt">*</span> <span class="hl kwb">$Zi</span><span class="hl opt">;</span>
+         <span class="hl kwb">$Tr</span> <span class="hl opt">=</span> <span class="hl kwb">$Zr</span> <span class="hl opt">*</span> <span class="hl kwb">$Zr</span><span class="hl opt">;</span>
+         <span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwb">$Tr</span> <span class="hl opt">+</span> <span class="hl kwb">$Ti</span> <span class="hl opt">&gt;</span> LIMIT<span class="hl opt">) {</span>
+            <span class="hl kwb">$line</span> <span class="hl opt">.=</span> WHITE<span class="hl opt">;</span>
+            <span class="hl kwa">next</span> X<span class="hl opt">;</span>
+         <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+      <span class="hl kwb">$line</span> <span class="hl opt">.=</span> BLACK<span class="hl opt">;</span>
    <span class="hl opt">}</span>
-   <span class="hl slc"># Block for result from the leading thread (to keep output in order)</span>
-   <span class="hl kwc">my</span> <span class="hl kwb">$next</span> <span class="hl opt">=</span> <span class="hl kwc">shift</span> <span class="hl kwb">&#64;workers</span><span class="hl opt">;</span>
-   <span class="hl kwc">print</span> <span class="hl kwb">$next</span><span class="hl opt">-&gt;</span><span class="hl kwc">join</span><span class="hl opt">();</span>
+   <span class="hl kwb">$picture</span><span class="hl opt">[</span><span class="hl kwb">$y</span><span class="hl opt">] =</span> <span class="hl kwc">pack</span> <span class="hl str">'B*'</span><span class="hl opt">,</span> <span class="hl kwb">$line</span><span class="hl opt">;</span>
 <span class="hl opt">}</span>
 
+<span class="hl kwa">sub</span> process_queue<span class="hl opt">() {</span>
+   <span class="hl kwa">while</span><span class="hl opt">(</span><span class="hl kwc">defined</span><span class="hl opt">(</span><span class="hl kwc">my</span> <span class="hl kwb">$y</span> <span class="hl opt">=</span> <span class="hl kwc">pop</span> <span class="hl kwb">&#64;jobs</span><span class="hl opt">)) {</span>
+      draw_line<span class="hl opt">(</span><span class="hl kwb">$y</span><span class="hl opt">);</span>
+   <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">sub</span> num_cpus<span class="hl opt">() {</span>
+   <span class="hl kwc">open my</span> <span class="hl kwb">$fh</span><span class="hl opt">,</span> <span class="hl str">'&lt;/proc/cpuinfo'</span> <span class="hl kwc">or</span> <span class="hl kwa">return</span> <span class="hl num">4</span><span class="hl opt">;</span>
+   <span class="hl kwc">my</span> <span class="hl kwb">$cpus</span><span class="hl opt">;</span>
+   <span class="hl kwa">while</span><span class="hl opt">(&lt;</span><span class="hl kwb">$fh</span><span class="hl opt">&gt;) {</span>
+      <span class="hl kwb">$cpus</span> <span class="hl opt">++</span> <span class="hl kwa">if</span> <span class="hl kwd">/^processor\s+:/</span><span class="hl opt">;</span>
+   <span class="hl opt">}</span>
+   <span class="hl kwa">return</span> <span class="hl kwb">$cpus</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl slc">## MAIN()</span>
+
+<span class="hl kwb">$w</span> <span class="hl opt">=</span> <span class="hl kwb">$h</span> <span class="hl opt">=</span> <span class="hl kwc">shift</span> <span class="hl opt">||</span> <span class="hl num">200</span><span class="hl opt">;</span>
+<span class="hl kwb">$invN</span> <span class="hl opt">=</span> <span class="hl num">2</span> <span class="hl opt">/</span> <span class="hl kwb">$w</span><span class="hl opt">;</span>
+<span class="hl kwb">&#64;jobs</span> <span class="hl opt">= (</span><span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl kwb">$h</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span>
+
+<span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> num_cpus<span class="hl opt">()) {</span>
+   <span class="hl kwc">push</span> <span class="hl kwb">&#64;threads</span><span class="hl opt">,</span> threads<span class="hl opt">-&gt;</span><span class="hl kwd">create</span><span class="hl opt">(</span>\<span class="hl opt">&amp;</span>process_queue<span class="hl opt">);</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">&#64;threads</span><span class="hl opt">) {</span>
+   <span class="hl kwb">$_</span><span class="hl opt">-&gt;</span><span class="hl kwc">join</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwc">print</span> <span class="hl str">&quot;P4</span><span class="hl esc">\n</span><span class="hl str">$w $h</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span> <span class="hl slc"># PBM image header</span>
+<span class="hl kwc">print</span> <span class="hl kwb">&#64;picture</span><span class="hl opt">;</span>
