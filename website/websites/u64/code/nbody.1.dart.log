@@ -1,5 +1,5 @@
 
-Thu, 14 Nov 2013 21:38:03 GMT
+Fri, 17 Jan 2014 07:15:05 GMT
 
 COMMAND LINE:
 /usr/local/src/dart-sdk/bin/dart  nbody.dart 500000
@@ -10,11 +10,11 @@ PROGRAM FAILED
 PROGRAM OUTPUT:
 
 Unhandled exception:
-'file:///home/dunham/benchmarksgame_onecore/nbody/tmp/nbody.dart': Error: line 13 pos 20: type 'Options' is not loaded
+'file:///home/dunham/benchmarksgame_onecore/nbody/tmp/nbody.dart': malformed type: line 13 pos 20: type 'Options' is not loaded
     var args = new Options().arguments;
                    ^
-malformed type used.
+type error.
 #0      main.<anonymous closure> (file:///home/dunham/benchmarksgame_onecore/nbody/tmp/nbody.dart:13:20)
 #1      main (file:///home/dunham/benchmarksgame_onecore/nbody/tmp/nbody.dart:15:4)
-#2      _startIsolate.isolateStartHandler (dart:isolate-patch/isolate_patch.dart:190)
-#3      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:93)
+#2      _startIsolate.isolateStartHandler (dart:isolate-patch/isolate_patch.dart:216)
+#3      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:115)

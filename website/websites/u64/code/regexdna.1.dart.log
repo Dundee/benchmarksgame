@@ -1,5 +1,5 @@
 
-Thu, 14 Nov 2013 21:47:51 GMT
+Fri, 17 Jan 2014 07:28:13 GMT
 
 COMMAND LINE:
 /usr/local/src/dart-sdk/bin/dart  regexdna.dart 0 < regexdna-input50000.txt
@@ -10,10 +10,10 @@ PROGRAM FAILED
 PROGRAM OUTPUT:
 
 Unhandled exception:
-'file:///home/dunham/benchmarksgame_onecore/regexdna/tmp/regexdna.dart': Error: line 12 pos 33: type 'StringDecoder' is not loaded
+'file:///home/dunham/benchmarksgame_onecore/regexdna/tmp/regexdna.dart': malformed type: line 12 pos 33: type 'StringDecoder' is not loaded
   var src = stdin.transform(new StringDecoder()).transform(new LineTransformer());
                                 ^
-malformed type used.
+type error.
 #0      main (file:///home/dunham/benchmarksgame_onecore/regexdna/tmp/regexdna.dart:12:33)
-#1      _startIsolate.isolateStartHandler (dart:isolate-patch/isolate_patch.dart:190)
-#2      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:93)
+#1      _startIsolate.isolateStartHandler (dart:isolate-patch/isolate_patch.dart:216)
+#2      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:115)
