@@ -1,0 +1,141 @@
+<span class="hl slc">;;   The Computer Language Benchmarks Game</span>
+<span class="hl slc">;;   http://benchmarksgame.alioth.debian.org/</span>
+
+<span class="hl slc">;; contributed by Bill James</span>
+<span class="hl slc">;; speed improvements by Andy Fingerhut</span>
+<span class="hl slc">;; ported to Clojure 1.3 by Marko Kocic</span>
+<span class="hl slc">;; updated for Clojure 1.5 by Alex Miller</span>
+<span class="hl slc">;;  removed most casts and ints, add *unchecked-math*</span>
+
+<span class="hl opt">(</span><span class="hl kwa">ns</span> fastaredux
+  <span class="hl opt">(:</span>gen-class<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">set</span><span class="hl opt">! *</span>warn-on-reflection<span class="hl opt">*</span> true<span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">set</span><span class="hl opt">! *</span>unchecked-math<span class="hl opt">*</span> true<span class="hl opt">)</span>
+
+<span class="hl opt">(</span><span class="hl kwa">def</span> ^<span class="hl opt">:</span>const IM <span class="hl num">139968</span><span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">def</span> ^<span class="hl opt">:</span>const IA <span class="hl num">3877</span><span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">def</span> ^<span class="hl opt">:</span>const IC <span class="hl num">29573</span><span class="hl opt">)</span>
+
+<span class="hl opt">(</span><span class="hl kwa">def</span> ^<span class="hl opt">:</span>const LINE_LENGTH <span class="hl num">60</span><span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">def</span> ^<span class="hl opt">:</span>const LINES_IN_BUFFER <span class="hl num">2000</span><span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">def</span> ^<span class="hl opt">:</span>const LOOKUP_SIZE <span class="hl num">222000</span><span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">def</span> ^<span class="hl opt">:</span>const LOOKUP_SCALE <span class="hl opt">(</span><span class="hl kwa">-</span> LOOKUP_SIZE <span class="hl num">0.0001</span><span class="hl opt">))</span>
+<span class="hl opt">(</span><span class="hl kwa">def</span> ^<span class="hl opt">:</span>const LCG_SCALE <span class="hl opt">(</span><span class="hl kwa">double</span> <span class="hl opt">(/</span> LOOKUP_SIZE IM<span class="hl opt">)))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">def</span> alu <span class="hl opt">(</span><span class="hl kwa">str</span> <span class="hl str">&quot;GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG&quot;</span>
+              <span class="hl str">&quot;GAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGAGA&quot;</span>
+              <span class="hl str">&quot;CCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAAT&quot;</span>
+              <span class="hl str">&quot;ACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAATCCCA&quot;</span>
+              <span class="hl str">&quot;GCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTGAACCCGGG&quot;</span>
+              <span class="hl str">&quot;AGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCC&quot;</span>
+              <span class="hl str">&quot;AGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAA&quot;</span><span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">def</span> codes <span class="hl str">&quot;acgtBDHKMNRSVWY&quot;</span><span class="hl opt">)</span>
+
+<span class="hl opt">(</span><span class="hl kwa">def</span> iub <span class="hl opt">[</span><span class="hl num">0.27 0.12 0.12 0.27 0.02 0.02 0.02 0.02</span>
+          <span class="hl num">0.02 0.02 0.02 0.02 0.02 0.02 0.02</span><span class="hl opt">])</span>
+
+<span class="hl opt">(</span><span class="hl kwa">def</span> homosapiens <span class="hl opt">[</span><span class="hl num">0.3029549426680 0.1979883004921</span>
+                  <span class="hl num">0.1975473066391 0.3015094502008</span><span class="hl opt">])</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> find-index ^long <span class="hl opt">[</span>^double t ^doubles coll<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>i <span class="hl num">0</span><span class="hl opt">]</span>
+    <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(&lt;=</span> t <span class="hl opt">(</span><span class="hl kwa">aget</span> coll i<span class="hl opt">))</span>
+      i
+      <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> i<span class="hl opt">)))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">def</span> random-seed <span class="hl opt">(</span><span class="hl kwa">long-array</span> <span class="hl opt">[</span><span class="hl num">42</span><span class="hl opt">]))</span>
+<span class="hl opt">(</span><span class="hl kwa">defn</span> gen-random-fast <span class="hl opt">[]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>^longs random-seed random-seed
+        new-seed <span class="hl opt">(</span><span class="hl kwa">rem</span> <span class="hl opt">(+ (* (</span><span class="hl kwa">aget</span> random-seed <span class="hl num">0</span><span class="hl opt">)</span> IA<span class="hl opt">)</span> IC<span class="hl opt">)</span> IM<span class="hl opt">)</span>
+        throwaway-val <span class="hl opt">(</span><span class="hl kwa">aset</span> random-seed <span class="hl num">0</span> new-seed<span class="hl opt">)]</span>
+    <span class="hl opt">(*</span> new-seed LCG_SCALE<span class="hl opt">)))</span>
+
+<span class="hl slc">;; Takes a vector of probabilities.</span>
+<span class="hl opt">(</span><span class="hl kwa">defn</span> make-cumulative
+  ^doubles <span class="hl opt">[</span>v<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">double-array</span> <span class="hl opt">(</span><span class="hl kwa">map</span> <span class="hl opt">#(</span><span class="hl kwa">reduce</span> <span class="hl opt">+ (</span><span class="hl kwa">subvec</span> v <span class="hl num">0</span> %<span class="hl opt">)) (</span><span class="hl kwa">range</span> <span class="hl num">1</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> <span class="hl opt">(</span><span class="hl kwa">count</span> v<span class="hl opt">))))))</span>
+
+<span class="hl slc">;; Takes a double array of cumulative probabilities.</span>
+<span class="hl opt">(</span><span class="hl kwa">defn</span> make-lookup-table <span class="hl opt">[</span>^doubles v<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>^longs a <span class="hl opt">(</span><span class="hl kwa">long-array</span> LOOKUP_SIZE<span class="hl opt">)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>i <span class="hl num">0</span><span class="hl opt">]</span>
+      <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(&lt;</span> i LOOKUP_SIZE<span class="hl opt">)</span>
+        <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>t <span class="hl opt">(/</span> i LOOKUP_SCALE<span class="hl opt">)]</span>
+          <span class="hl opt">(</span><span class="hl kwa">aset</span> a i <span class="hl opt">(</span><span class="hl kwa">find-index</span> t v<span class="hl opt">))</span>
+          <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> i<span class="hl opt">)))</span>
+        a<span class="hl opt">))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> fasta-repeat <span class="hl opt">[</span>^long n ^java.io.BufferedOutputStream ostream<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>^bytes source <span class="hl opt">(</span>.getBytes <span class="hl opt">(</span><span class="hl kwa">str</span> alu alu<span class="hl opt">))</span>
+        source-size <span class="hl opt">(</span><span class="hl kwa">count</span> alu<span class="hl opt">)</span>
+        width<span class="hl opt">+</span><span class="hl num">1</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> LINE_LENGTH<span class="hl opt">)</span>
+        buffer-size <span class="hl opt">(*</span> width<span class="hl opt">+</span><span class="hl num">1 4096</span><span class="hl opt">)</span>
+        buffer <span class="hl opt">(</span><span class="hl kwa">byte-array</span> buffer-size <span class="hl opt">(</span><span class="hl kwa">byte</span> <span class="hl num">10</span><span class="hl opt">))]</span>
+    <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>i <span class="hl num">0</span>
+           j <span class="hl num">0</span>
+           n n<span class="hl opt">]</span>
+      <span class="hl opt">(</span><span class="hl kwa">System</span><span class="hl opt">/</span>arraycopy source i buffer j LINE_LENGTH<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(&gt;</span> n LINE_LENGTH<span class="hl opt">)</span>
+        <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">long</span> <span class="hl opt">(</span><span class="hl kwa">rem</span> <span class="hl opt">(+</span> i LINE_LENGTH<span class="hl opt">)</span> source-size<span class="hl opt">))</span>
+               <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>j <span class="hl opt">(+</span> j width<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)]</span>
+                 <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(=</span> j buffer-size<span class="hl opt">)</span>
+                   <span class="hl opt">(</span><span class="hl kwa">do</span> <span class="hl opt">(</span>.write ostream buffer<span class="hl opt">)</span>
+                       <span class="hl num">0</span><span class="hl opt">)</span>
+                   j<span class="hl opt">))</span>
+               <span class="hl opt">(</span><span class="hl kwa">-</span> n LINE_LENGTH<span class="hl opt">))</span>
+        <span class="hl opt">(</span><span class="hl kwa">do</span>
+          <span class="hl opt">(</span><span class="hl kwa">aset</span> buffer <span class="hl opt">(+</span> j n<span class="hl opt">) (</span><span class="hl kwa">byte</span> <span class="hl num">10</span><span class="hl opt">))</span>
+          <span class="hl opt">(</span>.write ostream buffer <span class="hl num">0</span> <span class="hl opt">(+</span> j n <span class="hl num">1</span><span class="hl opt">)))))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> fasta-random <span class="hl opt">[</span>probs ^long n ^java.io.BufferedOutputStream ostream<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>codes <span class="hl opt">(</span>.getBytes <span class="hl opt">(</span><span class="hl kwa">str</span> codes<span class="hl opt">))</span>
+        lookup-table <span class="hl opt">(</span><span class="hl kwa">longs</span> <span class="hl opt">(</span><span class="hl kwa">make-lookup-table</span>
+                             <span class="hl opt">(</span><span class="hl kwa">make-cumulative</span> probs<span class="hl opt">)))</span>
+        width-1 <span class="hl opt">(</span><span class="hl kwa">dec</span> LINE_LENGTH<span class="hl opt">)</span>
+        buf-size <span class="hl opt">(*</span> LINES_IN_BUFFER <span class="hl opt">(</span><span class="hl kwa">inc</span> LINE_LENGTH<span class="hl opt">))</span>
+        buffer <span class="hl opt">(</span><span class="hl kwa">byte-array</span> buf-size<span class="hl opt">)</span>
+        b10 <span class="hl opt">(</span><span class="hl kwa">byte</span> <span class="hl num">10</span><span class="hl opt">)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>n n        <span class="hl slc">;; The number of characters left to generate.</span>
+           j LINE_LENGTH  <span class="hl slc">;; The number of characters left to</span>
+                          <span class="hl slc">;; generate on the current line of output</span>
+                          <span class="hl slc">;; before printing a newline.</span>
+           i <span class="hl num">0</span><span class="hl opt">]</span> <span class="hl slc">;; Number of characters put in buffer so far.</span>
+      <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">zero</span>? n<span class="hl opt">)</span>
+        <span class="hl opt">(</span><span class="hl kwa">do</span>
+          <span class="hl opt">(</span>.write ostream buffer <span class="hl num">0</span> i<span class="hl opt">)</span>
+          <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(</span><span class="hl kwa">not</span><span class="hl opt">=</span> b10 <span class="hl opt">(</span><span class="hl kwa">aget</span> buffer <span class="hl opt">(</span><span class="hl kwa">dec</span> i<span class="hl opt">)))</span>
+            <span class="hl opt">(</span><span class="hl kwa">aset</span> buffer <span class="hl num">0</span> b10<span class="hl opt">)</span>
+            <span class="hl opt">(</span>.write ostream buffer <span class="hl num">0 1</span><span class="hl opt">)))</span>
+        <span class="hl slc">;; else</span>
+        <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>rand-byte <span class="hl opt">(</span><span class="hl kwa">aget</span> codes <span class="hl opt">(</span><span class="hl kwa">aget</span> lookup-table <span class="hl opt">(</span><span class="hl kwa">gen-random-fast</span><span class="hl opt">)))]</span>
+          <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(=</span> i buf-size<span class="hl opt">)</span>
+            <span class="hl opt">(</span><span class="hl kwa">do</span>
+              <span class="hl slc">;; buffer is full.  write it and start over.</span>
+              <span class="hl opt">(</span>.write ostream buffer <span class="hl num">0</span> buf-size<span class="hl opt">)</span>
+              <span class="hl opt">(</span><span class="hl kwa">aset</span> buffer <span class="hl num">0</span> rand-byte<span class="hl opt">)</span>
+              <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">dec</span> n<span class="hl opt">)</span> width-1 <span class="hl num">1</span><span class="hl opt">))</span>
+            <span class="hl opt">(</span><span class="hl kwa">do</span>
+              <span class="hl opt">(</span><span class="hl kwa">aset</span> buffer i rand-byte<span class="hl opt">)</span>
+              <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(=</span> j <span class="hl num">1</span><span class="hl opt">)</span>
+                <span class="hl slc">;; then</span>
+                <span class="hl opt">(</span><span class="hl kwa">do</span>
+                  <span class="hl opt">(</span><span class="hl kwa">aset</span> buffer <span class="hl opt">(</span><span class="hl kwa">inc</span> i<span class="hl opt">)</span> b10<span class="hl opt">)</span> <span class="hl slc">;; add newline</span>
+                  <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">dec</span> n<span class="hl opt">)</span> LINE_LENGTH <span class="hl opt">(+</span> i <span class="hl num">2</span><span class="hl opt">)))</span>
+                <span class="hl slc">;; else</span>
+                <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">dec</span> n<span class="hl opt">) (</span><span class="hl kwa">dec</span> j<span class="hl opt">) (</span><span class="hl kwa">inc</span> i<span class="hl opt">))))))))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> write-line <span class="hl opt">[</span>s ^java.io.BufferedOutputStream stream<span class="hl opt">]</span>
+  <span class="hl opt">(</span>.write stream <span class="hl opt">(</span>.getBytes <span class="hl opt">(</span><span class="hl kwa">str</span> s <span class="hl str">&quot;</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> -main <span class="hl opt">[&amp;</span> args<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>n <span class="hl opt">(</span><span class="hl kwa">read-string</span> <span class="hl opt">(</span><span class="hl kwa">first</span> args<span class="hl opt">))</span>
+        ostream <span class="hl opt">(</span><span class="hl kwa">java</span>.io.BufferedOutputStream. System<span class="hl opt">/</span>out<span class="hl opt">)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">write-line</span> <span class="hl str">&quot;&gt;ONE Homo sapiens alu&quot;</span> ostream<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">fasta-repeat</span> <span class="hl opt">(*</span> n <span class="hl num">2</span><span class="hl opt">)</span> ostream<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">write-line</span> <span class="hl str">&quot;&gt;TWO IUB ambiguity codes&quot;</span> ostream<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">fasta-random</span> iub <span class="hl opt">(*</span> n <span class="hl num">3</span><span class="hl opt">)</span> ostream<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">write-line</span> <span class="hl str">&quot;&gt;THREE Homo sapiens frequency&quot;</span> ostream<span class="hl opt">)</span>
+    <span class="hl opt">(</span><span class="hl kwa">fasta-random</span> homosapiens <span class="hl opt">(*</span> n <span class="hl num">5</span><span class="hl opt">)</span> ostream<span class="hl opt">)</span>
+    <span class="hl opt">(</span>.flush ostream<span class="hl opt">)))</span>
