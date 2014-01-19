@@ -1,0 +1,25 @@
+
+Sun, 19 Jan 2014 02:23:29 GMT
+
+MAKE:
+mv fastaredux.clojure-5.clojure fastaredux.clj
+/usr/local/src/jdk1.7.0_45/bin/java -Dclojure.compile.path=. -cp .:/usr/local/src/clojure-1.5.1/clojure-1.5.1.jar clojure.lang.Compile fastaredux
+Compiling fastaredux to .
+Exception in thread "main" java.lang.Exception: namespace 'fastaredux' not found after loading '/fastaredux'
+	at clojure.core$load_one.invoke(core.clj:5339)
+	at clojure.core$compile$fn__5023.invoke(core.clj:5541)
+	at clojure.core$compile.invoke(core.clj:5540)
+	at clojure.lang.Var.invoke(Var.java:415)
+	at clojure.lang.Compile.main(Compile.java:81)
+make: [fastaredux.clojure-5.clojure_run] Error 1 (ignored)
+4.50s to complete and log all make actions
+
+COMMAND LINE:
+/usr/local/src/jdk1.7.0_45/bin/java -server -XX:+TieredCompilation -XX:+AggressiveOpts -Xmx16m -cp .:/usr/local/src/clojure-1.5.1/clojure-1.5.1.jar fastaredux 250000
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Error: Could not find or load main class fastaredux
