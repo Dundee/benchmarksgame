@@ -1,0 +1,16 @@
+
+Tue, 28 Jan 2014 19:16:36 GMT
+
+MAKE:
+/usr/local/src/intel/bin/ifort -O3 -fast nbody.ifc-5.f90 -o nbody.ifc-5.ifc_run
+ipo: remark #11001: performing single-file optimizations
+ipo: remark #11006: generating object file /tmp/ipo_ifortjU62kx.o
+rm nbody.ifc-5.f90
+4.86s to complete and log all make actions
+
+COMMAND LINE:
+./nbody.ifc-5.ifc_run 50000000
+
+PROGRAM OUTPUT:
+-0.169075164
+-0.169059907
