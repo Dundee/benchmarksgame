@@ -1,0 +1,58 @@
+<span class="hl com">/**</span>
+<span class="hl com"> * The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"> * contributed by Klaus Friedel</span>
+<span class="hl com"> * modified by Daryl Griffith</span>
+<span class="hl com"> */</span>
+
+<span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>concurrent<span class="hl opt">.</span>locks<span class="hl opt">.</span>LockSupport<span class="hl opt">;</span>
+
+<span class="hl kwa">public class</span> threadring <span class="hl kwa">extends</span> Thread <span class="hl opt">{</span>
+
+    <span class="hl kwa">static final</span> <span class="hl kwb">int</span> THREAD_COUNT <span class="hl opt">=</span> <span class="hl num">503</span><span class="hl opt">;</span>
+
+    threadring nextThread<span class="hl opt">;</span>
+    <span class="hl kwa">volatile</span> <span class="hl kwb">boolean</span> waiting <span class="hl opt">=</span> true<span class="hl opt">;</span>
+    <span class="hl kwb">int</span> message<span class="hl opt">;</span>
+
+    <span class="hl kwa">public</span> <span class="hl kwd">threadring</span><span class="hl opt">(</span><span class="hl kwb">int</span> name<span class="hl opt">) {</span>
+        <span class="hl kwa">super</span><span class="hl opt">(</span>Integer<span class="hl opt">.</span><span class="hl kwd">toString</span><span class="hl opt">(</span>name<span class="hl opt">));</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwc">&#64;Override</span>
+    <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">run</span><span class="hl opt">() {</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(;;) {</span>
+            <span class="hl kwa">while</span> <span class="hl opt">(</span>waiting<span class="hl opt">) {</span>
+                LockSupport<span class="hl opt">.</span><span class="hl kwd">park</span><span class="hl opt">();</span>
+            <span class="hl opt">}</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>message <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+                System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">(</span><span class="hl kwd">getName</span><span class="hl opt">());</span>
+                System<span class="hl opt">.</span><span class="hl kwd">exit</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
+            <span class="hl opt">}</span>
+            waiting <span class="hl opt">=</span> true<span class="hl opt">;</span>
+            nextThread<span class="hl opt">.</span>message <span class="hl opt">=</span> message <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+            nextThread<span class="hl opt">.</span>waiting <span class="hl opt">=</span> false<span class="hl opt">;</span>
+            LockSupport<span class="hl opt">.</span><span class="hl kwd">unpark</span><span class="hl opt">(</span>nextThread<span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">main</span><span class="hl opt">(</span>String args<span class="hl opt">[])</span> <span class="hl kwa">throws</span> Exception <span class="hl opt">{</span>
+        threadring first <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">threadring</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">);</span>
+        threadring current <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">threadring</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">);</span>
+
+        first<span class="hl opt">.</span><span class="hl kwd">start</span><span class="hl opt">();</span> <span class="hl slc">// Thread 1</span>
+        first<span class="hl opt">.</span>nextThread <span class="hl opt">=</span> current<span class="hl opt">;</span>
+        first<span class="hl opt">.</span>message <span class="hl opt">=</span> Integer<span class="hl opt">.</span><span class="hl kwd">parseInt</span><span class="hl opt">(</span>args<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]);</span>
+        first<span class="hl opt">.</span>waiting <span class="hl opt">=</span> false<span class="hl opt">;</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> THREAD_COUNT<span class="hl opt">;</span> i<span class="hl opt">++) {</span>
+            current<span class="hl opt">.</span>nextThread <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">threadring</span><span class="hl opt">(</span>i<span class="hl opt">);</span>
+            current<span class="hl opt">.</span><span class="hl kwd">start</span><span class="hl opt">();</span>
+            current <span class="hl opt">=</span> current<span class="hl opt">.</span>nextThread<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+        current<span class="hl opt">.</span>nextThread <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">threadring</span><span class="hl opt">(</span>THREAD_COUNT<span class="hl opt">);</span>
+        current<span class="hl opt">.</span><span class="hl kwd">start</span><span class="hl opt">();</span> <span class="hl slc">// Thread 502</span>
+        current <span class="hl opt">=</span> current<span class="hl opt">.</span>nextThread<span class="hl opt">;</span>
+        current<span class="hl opt">.</span>nextThread <span class="hl opt">=</span> first<span class="hl opt">;</span>
+        current<span class="hl opt">.</span><span class="hl kwd">start</span><span class="hl opt">();</span> <span class="hl slc">// Thread 503</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
