@@ -7,15 +7,15 @@
 
 import java.util.concurrent.locks.LockSupport;
 
-public class ThreadRing extends Thread {
+public class threadring extends Thread {
 
     static final int THREAD_COUNT = 503;
 
-    ThreadRing nextThread;
+    threadring nextThread;
     volatile boolean waiting = true;
     int message;
 
-    public ThreadRing(int name) {
+    public threadring(int name) {
         super(Integer.toString(name));
     }
 
@@ -37,19 +37,19 @@ public class ThreadRing extends Thread {
     }
 
     public static void main(String args[]) throws Exception {
-        ThreadRing first = new ThreadRing(1);
-        ThreadRing current = new ThreadRing(2);
+        threadring first = new threadring(1);
+        threadring current = new threadring(2);
 
         first.start(); // Thread 1
         first.nextThread = current;
         first.message = Integer.parseInt(args[0]);
         first.waiting = false;
         for (int i = 3; i < THREAD_COUNT; i++) {
-            current.nextThread = new ThreadRing(i);
+            current.nextThread = new threadring(i);
             current.start();
             current = current.nextThread;
         }
-        current.nextThread = new ThreadRing(THREAD_COUNT);
+        current.nextThread = new threadring(THREAD_COUNT);
         current.start(); // Thread 502
         current = current.nextThread;
         current.nextThread = first;
