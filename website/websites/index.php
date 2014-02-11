@@ -108,6 +108,7 @@ $langs = array(
    array('racket','Racket','racket',$allsites),
    array('yarv','Ruby','ruby',$allsites),
    array('jruby','JRuby','jruby',$allsites),
+   array('rust','Rust','rust',$allsites),
    array('scala','Scala','scala',$allsites),
    array('vw','Smalltalk VisualWorks','smalltalk',$onecoresites)
    );
