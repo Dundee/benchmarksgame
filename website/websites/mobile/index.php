@@ -53,6 +53,7 @@ h1 { font-weight: bold; font-size: smaller; }
 <li><a href="./racket.php" title="Compare Racket and interpreted Java elapsed times">Racket</a></li>
 <li><a href="./compare.php?lang=yarv&amp;lang2=python3" title="Compare Ruby and Python3 elapsed times">Ruby 2.0</a></li>
 <li><a href="./compare.php?lang=jruby&amp;lang2=yarv" title="Compare JRuby and Ruby elapsed times">JRuby</a></li>
+<li><a href="./rust.php" title="Compare Rust and C++ elapsed times">Rust</a></li>
 <li><a href="./scala.php" title="Compare Scala and Java elapsed times">Scala</a></li>
 <li><a href="./smalltalk.php" title="Compare Smalltalk and Java elapsed times">Smalltalk VisualWorks</a></li>
 </ul>
