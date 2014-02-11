@@ -1,5 +1,5 @@
 # The Computer Language Benchmarks Game
-# $Id: u32.programs.Makefile,v 1.4 2013/09/30 20:09:34 igouy-guest Exp $
+# $Id: u32.programs.Makefile,v 1.5 2014/02/11 22:36:47 igouy-guest Exp $
 
 # ASSUME each program will build in a clean empty tmpdir
 # ASSUME there's a symlink to the program source in tmpdir
@@ -608,6 +608,15 @@ SBCL_TRACE :=
 	-$(JDKRUN) -Dclojure.compile.path=. -cp .:$(CLOJURE):$(CLOJURECONTRIB) clojure.lang.Compile $(TEST)
 
 
+########################################
+# Rust
+########################################
+
+%.rs: %.rust $(RUST)
+	-@mv $< $@
+
+%.rust_run: %.rs $(RUST)
+	-$(RUST) --opt-level=3 $< -o $@
 
 
 
