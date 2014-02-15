@@ -1,0 +1,82 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"> *</span>
+<span class="hl com"> * contributed by Jarkko Miettinen</span>
+<span class="hl com"> * modified by Daryl Griffith</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">public class</span> binarytrees <span class="hl opt">{</span>
+
+    <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">main</span><span class="hl opt">(</span>String<span class="hl opt">[]</span> args<span class="hl opt">) {</span>
+        <span class="hl kwb">int</span> maxDepth<span class="hl opt">;</span>
+        
+        <span class="hl opt">{</span>
+            <span class="hl kwb">int</span> n <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+            
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>args<span class="hl opt">.</span>length <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+                n <span class="hl opt">=</span> Integer<span class="hl opt">.</span><span class="hl kwd">parseInt</span><span class="hl opt">(</span>args<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]);</span>
+            <span class="hl opt">}</span>
+            maxDepth <span class="hl opt">= (</span><span class="hl num">6</span> <span class="hl opt">&gt;</span> n<span class="hl opt">)</span> ? <span class="hl num">6</span> <span class="hl opt">:</span> n<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+        <span class="hl opt">{</span>
+            <span class="hl kwb">int</span> stretchDepth <span class="hl opt">=</span> maxDepth <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+
+            System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">(</span><span class="hl str">&quot;stretch tree of depth &quot;</span> <span class="hl opt">+</span> stretchDepth <span class="hl opt">+</span> 
+		<span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">check: &quot;</span> <span class="hl opt">+</span> <span class="hl kwd">checkTree</span><span class="hl opt">(</span><span class="hl kwd">createTree</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> stretchDepth<span class="hl opt">)));</span>
+        <span class="hl opt">}</span>
+        <span class="hl kwd">trees</span><span class="hl opt">(</span>maxDepth<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+    
+    <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">trees</span><span class="hl opt">(</span><span class="hl kwb">int</span> maxDepth<span class="hl opt">) {</span>
+        TreeNode longLastingNode <span class="hl opt">=</span> <span class="hl kwd">createTree</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> maxDepth<span class="hl opt">);</span>
+        <span class="hl kwb">int</span> depth <span class="hl opt">=</span> <span class="hl num">4</span><span class="hl opt">;</span>
+
+        <span class="hl kwa">do</span> <span class="hl opt">{</span>
+            <span class="hl kwb">int</span> iterations <span class="hl opt">=</span> <span class="hl num">16</span> <span class="hl opt">&lt;&lt; (</span>maxDepth <span class="hl opt">-</span> depth<span class="hl opt">);</span>
+
+            <span class="hl kwd">loops</span><span class="hl opt">(</span>iterations<span class="hl opt">,</span> depth<span class="hl opt">);</span>
+            depth <span class="hl opt">+=</span> <span class="hl num">2</span><span class="hl opt">;</span>
+        <span class="hl opt">}</span> <span class="hl kwa">while</span> <span class="hl opt">(</span>depth <span class="hl opt">&lt;=</span> maxDepth<span class="hl opt">);</span>
+        System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">(</span><span class="hl str">&quot;long lived tree of depth &quot;</span> <span class="hl opt">+</span> maxDepth
+		 <span class="hl opt">+</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">check: &quot;</span> <span class="hl opt">+</span> <span class="hl kwd">checkTree</span><span class="hl opt">(</span>longLastingNode<span class="hl opt">));</span>
+    <span class="hl opt">}</span>
+    
+    <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">loops</span><span class="hl opt">(</span><span class="hl kwb">int</span> iterations<span class="hl opt">,</span> <span class="hl kwb">int</span> depth<span class="hl opt">) {</span>
+        <span class="hl kwb">int</span> check <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+        <span class="hl kwb">int</span> item <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+
+        <span class="hl kwa">do</span> <span class="hl opt">{</span>
+            check <span class="hl opt">+=</span> <span class="hl kwd">checkTree</span><span class="hl opt">(</span><span class="hl kwd">createTree</span><span class="hl opt">(</span>item<span class="hl opt">,</span> depth<span class="hl opt">)) +</span>
+		 <span class="hl kwd">checkTree</span><span class="hl opt">(</span><span class="hl kwd">createTree</span><span class="hl opt">(-</span>item<span class="hl opt">,</span> depth<span class="hl opt">));</span>
+            item<span class="hl opt">++;</span>
+        <span class="hl opt">}</span> <span class="hl kwa">while</span> <span class="hl opt">(</span>item <span class="hl opt">&lt;</span> iterations<span class="hl opt">);</span>
+        System<span class="hl opt">.</span>out<span class="hl opt">.</span><span class="hl kwd">println</span><span class="hl opt">((</span>iterations <span class="hl opt">&lt;&lt;</span> <span class="hl num">1</span><span class="hl opt">) +</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">trees of depth &quot;</span> <span class="hl opt">+</span>
+		depth <span class="hl opt">+</span> <span class="hl str">&quot;</span><span class="hl esc">\t</span> <span class="hl str">check: &quot;</span> <span class="hl opt">+</span> check<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+    
+    <span class="hl kwa">public static</span> TreeNode <span class="hl kwd">createTree</span><span class="hl opt">(</span><span class="hl kwb">int</span> item<span class="hl opt">,</span> <span class="hl kwb">int</span> depth<span class="hl opt">) {</span>
+        TreeNode node <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">TreeNode</span><span class="hl opt">();</span>
+
+        node<span class="hl opt">.</span>item <span class="hl opt">=</span> item<span class="hl opt">;</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>depth <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">) {</span>
+            item <span class="hl opt">=</span> item <span class="hl opt">+</span> item<span class="hl opt">;</span>
+            depth<span class="hl opt">--;</span>
+            node<span class="hl opt">.</span>left <span class="hl opt">=</span> <span class="hl kwd">createTree</span><span class="hl opt">(</span>item <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">,</span> depth<span class="hl opt">);</span>
+            node<span class="hl opt">.</span>right <span class="hl opt">=</span> <span class="hl kwd">createTree</span><span class="hl opt">(</span>item<span class="hl opt">,</span> depth<span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+        <span class="hl kwa">return</span> node<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+    
+    <span class="hl kwa">public static</span> <span class="hl kwb">int</span> <span class="hl kwd">checkTree</span><span class="hl opt">(</span>TreeNode node<span class="hl opt">) {</span>
+        <span class="hl kwa">if</span> <span class="hl opt">(</span>node<span class="hl opt">.</span>left <span class="hl opt">==</span> null<span class="hl opt">) {</span>
+            <span class="hl kwa">return</span> node<span class="hl opt">.</span>item<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+        <span class="hl kwa">return</span> <span class="hl kwd">checkTree</span><span class="hl opt">(</span>node<span class="hl opt">.</span>left<span class="hl opt">) -</span> <span class="hl kwd">checkTree</span><span class="hl opt">(</span>node<span class="hl opt">.</span>right<span class="hl opt">) +</span> node<span class="hl opt">.</span>item<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwa">public static class</span> TreeNode <span class="hl opt">{</span>
+
+        <span class="hl kwa">private</span> <span class="hl kwb">int</span> item<span class="hl opt">;</span>
+        <span class="hl kwa">private</span> TreeNode left<span class="hl opt">,</span> right<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>

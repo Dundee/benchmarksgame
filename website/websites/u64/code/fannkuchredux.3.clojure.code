@@ -1,0 +1,171 @@
+<span class="hl slc">;;   The Computer Language Benchmarks Game</span>
+<span class="hl slc">;;   http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl slc">;;</span>
+<span class="hl slc">;; contributed by Alex Miller, ported from Java version</span>
+
+<span class="hl opt">(</span><span class="hl kwa">ns</span> fannkuchredux
+  <span class="hl opt">(:</span>require clojure.string<span class="hl opt">)</span>
+  <span class="hl opt">(:</span>import <span class="hl opt">[</span>java.util.concurrent.atomic AtomicInteger<span class="hl opt">])</span>
+  <span class="hl opt">(:</span>gen-class<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">set</span><span class="hl opt">! *</span>warn-on-reflection<span class="hl opt">*</span> true<span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">set</span><span class="hl opt">! *</span>unchecked-math<span class="hl opt">*</span> true<span class="hl opt">)</span>
+
+<span class="hl opt">(</span><span class="hl kwa">def</span> ^<span class="hl opt">:</span>const NCHUNKS <span class="hl num">150</span><span class="hl opt">)</span>
+<span class="hl opt">(</span><span class="hl kwa">def</span> ^AtomicInteger task-id <span class="hl opt">(</span><span class="hl kwa">AtomicInteger</span>.<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">definterface</span> Task
+  <span class="hl opt">(</span><span class="hl kwa">taskLoop</span> <span class="hl opt">[</span>^long n<span class="hl opt">])</span>
+  <span class="hl opt">(</span><span class="hl kwa">runTask</span> <span class="hl opt">[</span>^long task ^long n ^longs p ^longs pp ^longs counts<span class="hl opt">])</span>
+  <span class="hl opt">(</span><span class="hl kwa">firstPermutation</span> <span class="hl opt">[</span>^long idx ^longs p ^longs pp ^longs counts<span class="hl opt">])</span>
+  <span class="hl opt">(</span>^long countFlips <span class="hl opt">[</span>^longs p ^longs pp<span class="hl opt">])</span>
+  <span class="hl opt">(</span><span class="hl kwa">nextPermutation</span> <span class="hl opt">[</span>^longs p ^longs counts<span class="hl opt">]))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">deftype</span> FannTask <span class="hl opt">[</span>^longs fact      <span class="hl slc">;; constant</span>
+                   ^long chunksz    <span class="hl slc">;; constant</span>
+                   ^long ntasks     <span class="hl slc">;; constant</span>
+                   ^longs max-flips <span class="hl slc">;; global scope</span>
+                   ^longs chk-sums  <span class="hl slc">;; global scope</span>
+                   <span class="hl opt">]</span>
+  Task
+  <span class="hl opt">(</span><span class="hl kwa">taskLoop</span> <span class="hl opt">[</span>this n<span class="hl opt">]</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>p <span class="hl opt">(</span><span class="hl kwa">long-array</span> n<span class="hl opt">)</span>
+          pp <span class="hl opt">(</span><span class="hl kwa">long-array</span> n<span class="hl opt">)</span>
+          counts <span class="hl opt">(</span><span class="hl kwa">long-array</span> n<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[]</span>
+        <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>task <span class="hl opt">(</span>.getAndIncrement task-id<span class="hl opt">)]</span>
+          <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(&lt;</span> task ntasks<span class="hl opt">)</span>
+            <span class="hl opt">(</span>.runTask this task n p pp counts<span class="hl opt">)</span>
+            <span class="hl opt">(</span><span class="hl kwa">recur</span><span class="hl opt">))))))</span>
+
+  <span class="hl opt">(</span><span class="hl kwa">runTask</span> <span class="hl opt">[</span>this task n p pp counts<span class="hl opt">]</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>^longs max-flips max-flips
+          ^longs chk-sums chk-sums
+          idx-min <span class="hl opt">(*</span> task chunksz<span class="hl opt">)</span>
+          idx-max <span class="hl opt">(</span><span class="hl kwa">min</span> <span class="hl opt">(</span><span class="hl kwa">aget</span> fact n<span class="hl opt">) (+</span> idx-min chunksz<span class="hl opt">))]</span>
+      <span class="hl opt">(</span>.firstPermutation this idx-min p pp counts<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>mflips <span class="hl num">1</span>
+             chksum <span class="hl num">0</span>
+             i idx-min<span class="hl opt">]</span>
+        <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">zero</span>? <span class="hl opt">(</span><span class="hl kwa">aget</span> p <span class="hl num">0</span><span class="hl opt">))</span>
+          <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>new-mflips mflips
+                new-chksum chksum
+                new-i <span class="hl opt">(</span><span class="hl kwa">inc</span> i<span class="hl opt">)]</span>
+            <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(&lt;</span> new-i idx-max<span class="hl opt">)</span>
+              <span class="hl opt">(</span><span class="hl kwa">do</span>
+                <span class="hl opt">(</span>.nextPermutation this p counts<span class="hl opt">)</span>
+                <span class="hl opt">(</span><span class="hl kwa">recur</span> new-mflips new-chksum new-i<span class="hl opt">))</span>
+              <span class="hl opt">(</span><span class="hl kwa">do</span>
+                <span class="hl opt">(</span><span class="hl kwa">aset</span> max-flips task new-mflips<span class="hl opt">)</span>
+                <span class="hl opt">(</span><span class="hl kwa">aset</span> chk-sums task new-chksum<span class="hl opt">)</span>
+                nil<span class="hl opt">)))</span>
+          <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>flips <span class="hl opt">(</span>.countFlips this p pp<span class="hl opt">)</span>
+                new-mflips <span class="hl opt">(</span><span class="hl kwa">max</span> mflips flips<span class="hl opt">)</span>                      
+                new-chksum <span class="hl opt">(+</span> chksum <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">zero</span>? <span class="hl opt">(</span><span class="hl kwa">rem</span> i <span class="hl num">2</span><span class="hl opt">))</span> flips <span class="hl opt">(</span><span class="hl kwa">-</span> flips<span class="hl opt">)))</span>
+                new-i <span class="hl opt">(</span><span class="hl kwa">inc</span> i<span class="hl opt">)]</span>
+            <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(&lt;</span> new-i idx-max<span class="hl opt">)</span>
+              <span class="hl opt">(</span><span class="hl kwa">do</span>
+                <span class="hl opt">(</span>.nextPermutation this p counts<span class="hl opt">)</span>
+                <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">long</span> new-mflips<span class="hl opt">) (</span><span class="hl kwa">long</span> new-chksum<span class="hl opt">)</span> new-i<span class="hl opt">))</span>
+              <span class="hl opt">(</span><span class="hl kwa">do</span>
+                <span class="hl opt">(</span><span class="hl kwa">aset</span> max-flips task new-mflips<span class="hl opt">)</span>
+                <span class="hl opt">(</span><span class="hl kwa">aset</span> chk-sums task new-chksum<span class="hl opt">)</span>
+                nil<span class="hl opt">)))))))</span>
+  
+  <span class="hl opt">(</span><span class="hl kwa">firstPermutation</span> <span class="hl opt">[</span>_ idx p pp counts<span class="hl opt">]</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>^longs fact fact
+          pl <span class="hl opt">(</span><span class="hl kwa">alength</span> p<span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>i <span class="hl num">0</span><span class="hl opt">]</span>
+        <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(&lt;</span> i pl<span class="hl opt">)</span>
+          <span class="hl opt">(</span><span class="hl kwa">aset</span> p i i<span class="hl opt">)</span>
+          <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> i<span class="hl opt">))))</span>
+      <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>i <span class="hl opt">(</span><span class="hl kwa">dec</span> <span class="hl opt">(</span><span class="hl kwa">alength</span> counts<span class="hl opt">))</span>
+             idx idx<span class="hl opt">]</span>
+        <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(&gt;</span> i <span class="hl num">0</span><span class="hl opt">)</span>
+          <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>fact-i <span class="hl opt">(</span><span class="hl kwa">aget</span> fact i<span class="hl opt">)</span>
+                d <span class="hl opt">(</span><span class="hl kwa">quot</span> idx fact-i<span class="hl opt">)]</span>
+            <span class="hl opt">(</span><span class="hl kwa">aset</span> counts i d<span class="hl opt">)</span>
+            <span class="hl opt">(</span><span class="hl kwa">System</span><span class="hl opt">/</span>arraycopy p <span class="hl num">0</span> pp <span class="hl num">0</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> i<span class="hl opt">))</span>
+            <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>j <span class="hl num">0</span><span class="hl opt">]</span>
+              <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(&lt;=</span> j i<span class="hl opt">)</span>
+                <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>jd <span class="hl opt">(+</span> j d<span class="hl opt">)</span>
+                      val <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(&lt;=</span> jd i<span class="hl opt">)</span>
+                            <span class="hl opt">(</span><span class="hl kwa">aget</span> pp jd<span class="hl opt">)</span>
+                            <span class="hl opt">(</span><span class="hl kwa">aget</span> pp <span class="hl opt">(</span><span class="hl kwa">-</span> jd i <span class="hl num">1</span><span class="hl opt">)))]</span>
+                  <span class="hl opt">(</span><span class="hl kwa">aset</span> p j val<span class="hl opt">)</span>
+                  <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> j<span class="hl opt">)))))</span>
+            <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">dec</span> i<span class="hl opt">) (</span><span class="hl kwa">long</span> <span class="hl opt">(</span><span class="hl kwa">rem</span> idx fact-i<span class="hl opt">))))))))</span>
+  
+  <span class="hl opt">(</span><span class="hl kwa">nextPermutation</span> <span class="hl opt">[</span>_ p counts<span class="hl opt">]</span>    
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>f <span class="hl opt">(</span><span class="hl kwa">aget</span> p <span class="hl num">1</span><span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">aset</span> p <span class="hl num">1</span> <span class="hl opt">(</span><span class="hl kwa">aget</span> p <span class="hl num">0</span><span class="hl opt">))</span>
+      <span class="hl opt">(</span><span class="hl kwa">aset</span> p <span class="hl num">0</span> f<span class="hl opt">)</span>
+      <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>i <span class="hl num">1</span>
+             f f<span class="hl opt">]</span>
+        <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>ci <span class="hl opt">(</span><span class="hl kwa">inc</span> <span class="hl opt">(</span><span class="hl kwa">aget</span> counts i<span class="hl opt">))]</span>
+          <span class="hl opt">(</span><span class="hl kwa">aset</span> counts i ci<span class="hl opt">)</span>
+          <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(&gt;</span> ci i<span class="hl opt">)</span>
+            <span class="hl opt">(</span><span class="hl kwa">aset</span> counts i <span class="hl num">0</span><span class="hl opt">)</span>
+            <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>new-i <span class="hl opt">(</span><span class="hl kwa">inc</span> i<span class="hl opt">)</span>                
+                  next <span class="hl opt">(</span><span class="hl kwa">aget</span> p <span class="hl num">1</span><span class="hl opt">)]</span>
+              <span class="hl opt">(</span><span class="hl kwa">aset</span> p <span class="hl num">0</span> next<span class="hl opt">)</span>
+              <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>j <span class="hl num">1</span><span class="hl opt">]</span>
+                <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(&lt;</span> j new-i<span class="hl opt">)</span>
+                  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>j<span class="hl opt">+</span><span class="hl num">1</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> j<span class="hl opt">)]</span>
+                    <span class="hl opt">(</span><span class="hl kwa">aset</span> p j <span class="hl opt">(</span><span class="hl kwa">aget</span> p j<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">))</span>
+                    <span class="hl opt">(</span><span class="hl kwa">recur</span> j<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">))))</span>
+              <span class="hl opt">(</span><span class="hl kwa">aset</span> p new-i f<span class="hl opt">)</span>
+              <span class="hl opt">(</span><span class="hl kwa">recur</span> new-i next<span class="hl opt">)))))))</span>
+  
+  <span class="hl opt">(</span><span class="hl kwa">countFlips</span> <span class="hl opt">[</span>_ p pp<span class="hl opt">]</span>
+    <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>flips <span class="hl num">1</span>
+          f <span class="hl opt">(</span><span class="hl kwa">aget</span> p <span class="hl num">0</span><span class="hl opt">)]</span>
+      <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">zero</span>? <span class="hl opt">(</span><span class="hl kwa">aget</span> p f<span class="hl opt">))</span>
+        <span class="hl num">1</span>
+        <span class="hl opt">(</span><span class="hl kwa">do</span>
+          <span class="hl opt">(</span><span class="hl kwa">System</span><span class="hl opt">/</span>arraycopy p <span class="hl num">0</span> pp <span class="hl num">0</span> <span class="hl opt">(</span><span class="hl kwa">alength</span> pp<span class="hl opt">))</span>
+          <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>f f
+                 flips flips<span class="hl opt">]</span>
+            <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>new-flips <span class="hl opt">(</span><span class="hl kwa">inc</span> flips<span class="hl opt">)]</span>
+              <span class="hl opt">(</span><span class="hl kwa">loop</span> <span class="hl opt">[</span>lo <span class="hl num">1</span>
+                     hi <span class="hl opt">(</span><span class="hl kwa">dec</span> f<span class="hl opt">)]</span>
+                <span class="hl opt">(</span><span class="hl kwa">when</span> <span class="hl opt">(&lt;</span> lo hi<span class="hl opt">)</span>
+                  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>t <span class="hl opt">(</span><span class="hl kwa">aget</span> pp lo<span class="hl opt">)]</span>
+                    <span class="hl opt">(</span><span class="hl kwa">aset</span> pp lo <span class="hl opt">(</span><span class="hl kwa">aget</span> pp hi<span class="hl opt">))</span>
+                    <span class="hl opt">(</span><span class="hl kwa">aset</span> pp hi t<span class="hl opt">)</span>
+                    <span class="hl opt">(</span><span class="hl kwa">recur</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> lo<span class="hl opt">) (</span><span class="hl kwa">dec</span> hi<span class="hl opt">)))))</span>
+              <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>t <span class="hl opt">(</span><span class="hl kwa">aget</span> pp f<span class="hl opt">)]</span>
+                <span class="hl opt">(</span><span class="hl kwa">aset</span> pp f f<span class="hl opt">)</span>
+                <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">zero</span>? <span class="hl opt">(</span><span class="hl kwa">aget</span> pp t<span class="hl opt">))</span>
+                  new-flips
+                  <span class="hl opt">(</span><span class="hl kwa">recur</span> t new-flips<span class="hl opt">))))))))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> print-result <span class="hl opt">[</span>n res chk<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">printf</span> <span class="hl str">&quot;%d</span><span class="hl esc">\n</span><span class="hl str">Pfannkuchen(%d) = %d</span><span class="hl esc">\n</span><span class="hl str">&quot;</span> chk n res<span class="hl opt">))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> fannkuch <span class="hl opt">[</span>^long n<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>fact <span class="hl opt">(</span><span class="hl kwa">long-array</span> <span class="hl opt">(</span><span class="hl kwa">concat</span> <span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] (</span><span class="hl kwa">reductions</span> <span class="hl opt">* (</span><span class="hl kwa">range</span> <span class="hl num">1</span> <span class="hl opt">(</span><span class="hl kwa">inc</span> n<span class="hl opt">)))))</span>
+        chunksz <span class="hl opt">(</span><span class="hl kwa">quot</span> <span class="hl opt">(+ (</span><span class="hl kwa">aget</span> fact n<span class="hl opt">)</span> NCHUNKS -<span class="hl num">1</span><span class="hl opt">)</span> NCHUNKS<span class="hl opt">)</span>
+        ntasks <span class="hl opt">(</span><span class="hl kwa">quot</span> <span class="hl opt">(+ (</span><span class="hl kwa">aget</span> fact n<span class="hl opt">)</span> chunksz -<span class="hl num">1</span><span class="hl opt">)</span> chunksz<span class="hl opt">)</span>
+        max-flips <span class="hl opt">(</span><span class="hl kwa">long-array</span> ntasks<span class="hl opt">)</span>
+        chk-sums <span class="hl opt">(</span><span class="hl kwa">long-array</span> ntasks<span class="hl opt">)</span>
+        nthreads <span class="hl opt">(</span>.availableProcessors <span class="hl opt">(</span><span class="hl kwa">Runtime</span><span class="hl opt">/</span>getRuntime<span class="hl opt">))</span>
+        tasks <span class="hl opt">(</span><span class="hl kwa">repeatedly</span> nthreads <span class="hl opt">#(</span><span class="hl kwa">-</span><span class="hl opt">&gt;</span>FannTask fact chunksz ntasks max-flips chk-sums<span class="hl opt">))</span>
+        threads <span class="hl opt">(</span><span class="hl kwa">into-array</span> Thread <span class="hl opt">(</span><span class="hl kwa">doall</span> <span class="hl opt">(</span><span class="hl kwa">map</span> <span class="hl opt">#(</span><span class="hl kwa">Thread</span>. <span class="hl opt">(</span><span class="hl kwa">fn</span> <span class="hl opt">[] (</span>.taskLoop ^Task % n<span class="hl opt">)))</span> tasks<span class="hl opt">)))]</span>
+    
+    <span class="hl opt">(</span><span class="hl kwa">doseq</span> <span class="hl opt">[</span>^Thread t threads<span class="hl opt">]</span>
+      <span class="hl opt">(</span>.start t<span class="hl opt">))</span>
+
+    <span class="hl opt">(</span><span class="hl kwa">doseq</span> <span class="hl opt">[</span>^Thread t threads<span class="hl opt">]</span>
+      <span class="hl opt">(</span>.join t<span class="hl opt">))</span>
+
+    <span class="hl opt">(</span><span class="hl kwa">print-result</span> n <span class="hl opt">(</span><span class="hl kwa">apply</span> max max-flips<span class="hl opt">) (</span><span class="hl kwa">reduce</span> <span class="hl opt">+</span> chk-sums<span class="hl opt">))))</span>
+
+<span class="hl opt">(</span><span class="hl kwa">defn</span> -main <span class="hl opt">[&amp;</span> args<span class="hl opt">]</span>
+  <span class="hl opt">(</span><span class="hl kwa">let</span> <span class="hl opt">[</span>n <span class="hl opt">(</span><span class="hl kwa">if</span> <span class="hl opt">(</span><span class="hl kwa">seq</span> args<span class="hl opt">) (</span><span class="hl kwa">Long</span><span class="hl opt">/</span>parseLong <span class="hl opt">(</span><span class="hl kwa">first</span> args<span class="hl opt">))</span> <span class="hl num">12</span><span class="hl opt">)]</span>
+    <span class="hl opt">(</span><span class="hl kwa">cond</span> <span class="hl opt">(&lt;</span> n <span class="hl num">0</span><span class="hl opt">) (</span><span class="hl kwa">print-result</span> n -<span class="hl num">1</span> -<span class="hl num">1</span><span class="hl opt">)</span>
+          <span class="hl opt">(&gt;</span> n <span class="hl num">12</span><span class="hl opt">) (</span><span class="hl kwa">print-result</span> n -<span class="hl num">1</span> -<span class="hl num">1</span><span class="hl opt">)</span>
+          <span class="hl opt">(&lt;=</span> n <span class="hl num">1</span><span class="hl opt">) (</span><span class="hl kwa">print-result</span> n <span class="hl num">0 0</span><span class="hl opt">)</span>
+          <span class="hl opt">:</span>else <span class="hl opt">(</span><span class="hl kwa">fannkuch</span> n<span class="hl opt">)))</span>
+  <span class="hl opt">(</span><span class="hl kwa">flush</span><span class="hl opt">)</span>
+  <span class="hl opt">(</span>. System <span class="hl opt">(</span><span class="hl kwa">exit</span> <span class="hl num">0</span><span class="hl opt">)))</span>

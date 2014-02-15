@@ -1,88 +1,41 @@
 
-Sun, 09 Feb 2014 22:45:01 GMT
+Sat, 15 Feb 2014 00:01:46 GMT
 
 MAKE:
 mv chameneosredux.java-4.java chameneosredux.java
 /usr/local/src/jdk1.7.0_45/bin/javac chameneosredux.java
-4.38s to complete and log all make actions
+0.89s to complete and log all make actions
 
 COMMAND LINE:
-/usr/local/src/jdk1.7.0_45/bin/java  -server -XX:+TieredCompilation -XX:+AggressiveOpts chameneosredux 60000
-
-UNEXPECTED OUTPUT 
-
-1c1
-< BLUE + BLUE -> BLUE
---- field 3
-> blue + blue -> blue
-2c2
-< BLUE + RED -> YELLOW
---- field 3
-> blue + red -> yellow
-3c3
-< BLUE + YELLOW -> RED
---- field 3
-> blue + yellow -> red
-4c4
-< RED + BLUE -> YELLOW
---- field 3
-> red + blue -> yellow
-5c5
-< RED + RED -> RED
---- field 3
-> red + red -> red
-6c6
-< RED + YELLOW -> BLUE
---- field 3
-> red + yellow -> blue
-7c7
-< YELLOW + BLUE -> RED
---- field 3
-> yellow + blue -> red
-8c8
-< YELLOW + RED -> BLUE
---- field 3
-> yellow + red -> blue
-9c9
-< YELLOW + YELLOW -> YELLOW
---- field 3
-> yellow + yellow -> yellow
-11c11
-<  BLUE RED YELLOW
---- field 2
->  blue red yellow
-17c17
-<  BLUE RED YELLOW RED YELLOW BLUE RED YELLOW RED BLUE
---- field 2
->  blue red yellow red yellow blue red yellow red blue
+/usr/local/src/jdk1.7.0_45/bin/java  -server -XX:+TieredCompilation -XX:+AggressiveOpts chameneosredux 6000000
 
 PROGRAM OUTPUT:
-BLUE + BLUE -> BLUE
-BLUE + RED -> YELLOW
-BLUE + YELLOW -> RED
-RED + BLUE -> YELLOW
-RED + RED -> RED
-RED + YELLOW -> BLUE
-YELLOW + BLUE -> RED
-YELLOW + RED -> BLUE
-YELLOW + YELLOW -> YELLOW
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
 
- BLUE RED YELLOW
-35449 zero
-39502 zero
-45049 zero
- one two zero zero zero zero
+ blue red yellow
+3661687 zero
+4264990 zero
+4073323 zero
+ one two zero zero zero zero zero zero
 
- BLUE RED YELLOW RED YELLOW BLUE RED YELLOW RED BLUE
-11289 zero
-11939 zero
-11562 zero
-11364 zero
-15278 zero
-11926 zero
-15921 zero
-10130 zero
-13734 zero
-6857 zero
- one two zero zero zero zero
+ blue red yellow red yellow blue red yellow red blue
+1285215 zero
+1063704 zero
+1328129 zero
+1221563 zero
+1249414 zero
+1126338 zero
+1200424 zero
+1168018 zero
+1151303 zero
+1205892 zero
+ one two zero zero zero zero zero zero
 

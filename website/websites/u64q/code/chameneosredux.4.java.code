@@ -1,8 +1,8 @@
-<span class="hl com">/**</span>
-<span class="hl com"> * The Computer Language Benchmarks Game</span>
-<span class="hl com"> * http://benchmarksgame.alioth.debian.org/</span>
-<span class="hl com"> * contributed by Michael Barker</span>
-<span class="hl com"> * modified by Daryl Griffith</span>
+<span class="hl com">/**</span>
+<span class="hl com"> * The Computer Language Benchmarks Game</span>
+<span class="hl com"> * http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"> * contributed by Michael Barker</span>
+<span class="hl com"> * modified by Daryl Griffith</span>
 <span class="hl com"> */</span>
 
 <span class="hl kwa">import</span> java<span class="hl opt">.</span>util<span class="hl opt">.</span>concurrent<span class="hl opt">.</span>Exchanger<span class="hl opt">;</span>
@@ -18,17 +18,32 @@
             Colour <span class="hl kwd">complement</span><span class="hl opt">(</span>Colour colour<span class="hl opt">) {</span>
                 <span class="hl kwa">return</span> colour<span class="hl opt">.</span>blue<span class="hl opt">;</span>
             <span class="hl opt">}</span>
+            
+            <span class="hl kwc">&#64;Override</span>
+            <span class="hl kwa">public</span> String <span class="hl kwd">toString</span><span class="hl opt">() {</span>
+                <span class="hl kwa">return</span> <span class="hl str">&quot;blue&quot;</span><span class="hl opt">;</span>
+            <span class="hl opt">}</span>
         <span class="hl opt">},</span>
         RED <span class="hl opt">{</span>
             <span class="hl kwc">&#64;Override</span>
             Colour <span class="hl kwd">complement</span><span class="hl opt">(</span>Colour colour<span class="hl opt">) {</span>
                 <span class="hl kwa">return</span> colour<span class="hl opt">.</span>red<span class="hl opt">;</span>
             <span class="hl opt">}</span>
+            
+            <span class="hl kwc">&#64;Override</span>
+            <span class="hl kwa">public</span> String <span class="hl kwd">toString</span><span class="hl opt">() {</span>
+                <span class="hl kwa">return</span> <span class="hl str">&quot;red&quot;</span><span class="hl opt">;</span>
+            <span class="hl opt">}</span>
         <span class="hl opt">},</span>
         YELLOW <span class="hl opt">{</span>
             <span class="hl kwc">&#64;Override</span>
             Colour <span class="hl kwd">complement</span><span class="hl opt">(</span>Colour colour<span class="hl opt">) {</span>
                 <span class="hl kwa">return</span> colour<span class="hl opt">.</span>yellow<span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+            
+            <span class="hl kwc">&#64;Override</span>
+            <span class="hl kwa">public</span> String <span class="hl kwd">toString</span><span class="hl opt">() {</span>
+                <span class="hl kwa">return</span> <span class="hl str">&quot;yellow&quot;</span><span class="hl opt">;</span>
             <span class="hl opt">}</span>
         <span class="hl opt">};</span>
 

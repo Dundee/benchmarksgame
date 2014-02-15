@@ -18,17 +18,32 @@ public class chameneosredux {
             Colour complement(Colour colour) {
                 return colour.blue;
             }
+            
+            @Override
+            public String toString() {
+                return "blue";
+            }
         },
         RED {
             @Override
             Colour complement(Colour colour) {
                 return colour.red;
             }
+            
+            @Override
+            public String toString() {
+                return "red";
+            }
         },
         YELLOW {
             @Override
             Colour complement(Colour colour) {
                 return colour.yellow;
+            }
+            
+            @Override
+            public String toString() {
+                return "yellow";
             }
         };
 
