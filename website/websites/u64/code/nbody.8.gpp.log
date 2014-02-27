@@ -1,0 +1,15 @@
+
+Thu, 27 Feb 2014 23:16:48 GMT
+
+MAKE:
+/usr/bin/g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 --std=c++11 nbody.gpp-8.c++ -o nbody.gpp-8.c++.o &&  \
+        /usr/bin/g++ nbody.gpp-8.c++.o -o nbody.gpp-8.gpp_run -fopenmp 
+rm nbody.gpp-8.c++
+0.70s to complete and log all make actions
+
+COMMAND LINE:
+./nbody.gpp-8.gpp_run 50000000
+
+PROGRAM OUTPUT:
+-0.169075164
+-0.169059907

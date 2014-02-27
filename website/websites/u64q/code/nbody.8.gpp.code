@@ -1,0 +1,184 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Mark C. Lewis</span>
+<span class="hl com">   modified slightly by Chad Whipkey</span>
+<span class="hl com">   converted from java to c++,added sse support, by Branimir Maksimovic</span>
+<span class="hl com">   converted from c++ to c, by Alexey Medvedchikov </span>
+<span class="hl com">   converted from c to c++11, by Walter Landry</span>
+<span class="hl com">   modified by Dmitri Naumov</span>
+<span class="hl com">*/</span>
+
+<span class="hl ppc">#include &lt;algorithm&gt;</span>
+<span class="hl ppc">#include &lt;stdio.h&gt;</span>
+<span class="hl ppc">#include &lt;cmath&gt;</span>
+<span class="hl ppc">#include &lt;stdlib.h&gt;</span>
+<span class="hl ppc">#include &lt;immintrin.h&gt;</span>
+<span class="hl ppc">#include &lt;array&gt;</span>
+
+<span class="hl kwc">constexpr</span> <span class="hl kwb">double</span> <span class="hl kwd">PI</span><span class="hl opt">(</span><span class="hl num">3.141592653589793</span><span class="hl opt">);</span>
+<span class="hl kwc">constexpr</span> <span class="hl kwb">double</span> <span class="hl kwd">SOLAR_MASS</span> <span class="hl opt">(</span> <span class="hl num">4</span> <span class="hl opt">*</span> PI <span class="hl opt">*</span> PI <span class="hl opt">);</span>
+<span class="hl kwc">constexpr</span> <span class="hl kwb">double</span> <span class="hl kwd">DAYS_PER_YEAR</span><span class="hl opt">(</span><span class="hl num">365.24</span><span class="hl opt">);</span>
+
+<span class="hl kwb">struct</span> body <span class="hl opt">{</span>
+  <span class="hl kwb">double</span> x<span class="hl opt">[</span><span class="hl num">3</span><span class="hl opt">],</span> fill<span class="hl opt">,</span> v<span class="hl opt">[</span><span class="hl num">3</span><span class="hl opt">],</span> mass<span class="hl opt">;</span>
+  <span class="hl kwc">constexpr</span> <span class="hl kwd">body</span><span class="hl opt">(</span><span class="hl kwb">double</span> x0<span class="hl opt">,</span> <span class="hl kwb">double</span> x1<span class="hl opt">,</span> <span class="hl kwb">double</span> x2<span class="hl opt">,</span> <span class="hl kwb">double</span> v0<span class="hl opt">,</span> <span class="hl kwb">double</span> v1<span class="hl opt">,</span> <span class="hl kwb">double</span> v2<span class="hl opt">,</span>  <span class="hl kwb">double</span> Mass<span class="hl opt">):</span>
+    x<span class="hl opt">{</span>x0<span class="hl opt">,</span>x1<span class="hl opt">,</span>x2<span class="hl opt">},</span> <span class="hl kwd">fill</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">),</span> v<span class="hl opt">{</span>v0<span class="hl opt">,</span>v1<span class="hl opt">,</span>v2<span class="hl opt">},</span> <span class="hl kwd">mass</span><span class="hl opt">(</span>Mass<span class="hl opt">) {}</span>
+<span class="hl opt">};</span>
+
+<span class="hl kwc">class</span> N_Body_System
+<span class="hl opt">{</span>
+  <span class="hl kwb">static</span> std<span class="hl opt">::</span>array<span class="hl opt">&lt;</span>body<span class="hl opt">,</span><span class="hl num">5</span><span class="hl opt">&gt;</span> bodies<span class="hl opt">;</span>
+
+  <span class="hl kwb">void</span> <span class="hl kwd">offset_momentum</span><span class="hl opt">()</span>
+  <span class="hl opt">{</span>
+    <span class="hl kwb">unsigned int</span> k<span class="hl opt">;</span>
+    <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwc">auto</span> <span class="hl opt">&amp;</span>body<span class="hl opt">:</span> bodies<span class="hl opt">)</span>
+      <span class="hl kwa">for</span><span class="hl opt">(</span>k <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> k <span class="hl opt">&lt;</span> <span class="hl num">3</span><span class="hl opt">; ++</span>k<span class="hl opt">)</span>
+        bodies<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>v<span class="hl opt">[</span>k<span class="hl opt">] -=</span> body<span class="hl opt">.</span>v<span class="hl opt">[</span>k<span class="hl opt">] *</span> body<span class="hl opt">.</span>mass <span class="hl opt">/</span> SOLAR_MASS<span class="hl opt">;</span>
+  <span class="hl opt">}</span>
+
+<span class="hl kwc">public</span><span class="hl opt">:</span>
+  <span class="hl kwd">N_Body_System</span><span class="hl opt">()</span>
+  <span class="hl opt">{</span>
+    <span class="hl kwd">offset_momentum</span><span class="hl opt">();</span>
+  <span class="hl opt">}</span>
+  <span class="hl kwb">void</span> <span class="hl kwd">advance</span><span class="hl opt">(</span><span class="hl kwb">double</span> dt<span class="hl opt">)</span>
+  <span class="hl opt">{</span>
+    <span class="hl kwc">constexpr</span> <span class="hl kwb">unsigned int</span> N <span class="hl opt">= ((</span>bodies<span class="hl opt">.</span><span class="hl kwd">size</span><span class="hl opt">() -</span> <span class="hl num">1</span><span class="hl opt">) *</span> bodies<span class="hl opt">.</span><span class="hl kwd">size</span><span class="hl opt">()) /</span> <span class="hl num">2</span><span class="hl opt">;</span>
+
+    <span class="hl kwb">static double</span> r<span class="hl opt">[</span>N<span class="hl opt">][</span><span class="hl num">4</span><span class="hl opt">];</span>
+    <span class="hl kwb">static double</span> mag<span class="hl opt">[</span>N<span class="hl opt">];</span>
+
+    <span class="hl kwb">unsigned int</span> i<span class="hl opt">,</span> m<span class="hl opt">;</span>
+    __m128d dx<span class="hl opt">[</span><span class="hl num">3</span><span class="hl opt">],</span> dsquared<span class="hl opt">,</span> distance<span class="hl opt">,</span> dmag<span class="hl opt">;</span>
+
+    i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwc">auto</span> <span class="hl kwd">bi</span><span class="hl opt">(</span>bodies<span class="hl opt">.</span><span class="hl kwd">begin</span><span class="hl opt">());</span> bi<span class="hl opt">!=</span>bodies<span class="hl opt">.</span><span class="hl kwd">end</span><span class="hl opt">(); ++</span>bi<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+        <span class="hl kwc">auto</span> <span class="hl kwd">bj</span><span class="hl opt">(</span>bi<span class="hl opt">);</span>
+        <span class="hl kwa">for</span><span class="hl opt">(++</span>bj<span class="hl opt">;</span> bj<span class="hl opt">!=</span>bodies<span class="hl opt">.</span><span class="hl kwd">end</span><span class="hl opt">(); ++</span>bj<span class="hl opt">, ++</span>i<span class="hl opt">)</span>
+          <span class="hl kwa">for</span> <span class="hl opt">(</span>m<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> m<span class="hl opt">&lt;</span><span class="hl num">3</span><span class="hl opt">; ++</span>m<span class="hl opt">)</span>
+            r<span class="hl opt">[</span>i<span class="hl opt">][</span>m<span class="hl opt">] =</span> bi<span class="hl opt">-&gt;</span>x<span class="hl opt">[</span>m<span class="hl opt">] -</span> bj<span class="hl opt">-&gt;</span>x<span class="hl opt">[</span>m<span class="hl opt">];</span>
+      <span class="hl opt">}</span>
+
+    <span class="hl kwa">for</span> <span class="hl opt">(</span>i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> i<span class="hl opt">&lt;</span>N<span class="hl opt">;</span> i<span class="hl opt">+=</span><span class="hl num">2</span><span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span>m<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> m<span class="hl opt">&lt;</span><span class="hl num">3</span><span class="hl opt">; ++</span>m<span class="hl opt">)</span>
+          <span class="hl opt">{</span>
+            dx<span class="hl opt">[</span>m<span class="hl opt">] =</span> <span class="hl kwd">_mm_loadl_pd</span><span class="hl opt">(</span>dx<span class="hl opt">[</span>m<span class="hl opt">], &amp;</span>r<span class="hl opt">[</span>i<span class="hl opt">][</span>m<span class="hl opt">]);</span>
+            dx<span class="hl opt">[</span>m<span class="hl opt">] =</span> <span class="hl kwd">_mm_loadh_pd</span><span class="hl opt">(</span>dx<span class="hl opt">[</span>m<span class="hl opt">], &amp;</span>r<span class="hl opt">[</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">][</span>m<span class="hl opt">]);</span>
+          <span class="hl opt">}</span>
+
+        dsquared <span class="hl opt">=</span> dx<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] *</span> dx<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] +</span> dx<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] *</span> dx<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] +</span> dx<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">] *</span> dx<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">];</span>
+        distance <span class="hl opt">=</span> <span class="hl kwd">_mm_cvtps_pd</span><span class="hl opt">(</span><span class="hl kwd">_mm_rsqrt_ps</span><span class="hl opt">(</span><span class="hl kwd">_mm_cvtpd_ps</span><span class="hl opt">(</span>dsquared<span class="hl opt">)));</span>
+
+        <span class="hl kwa">for</span> <span class="hl opt">(</span>m<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> m<span class="hl opt">&lt;</span><span class="hl num">2</span><span class="hl opt">; ++</span>m<span class="hl opt">)</span>
+          distance <span class="hl opt">=</span> distance <span class="hl opt">*</span> <span class="hl kwd">_mm_set1_pd</span><span class="hl opt">(</span><span class="hl num">1.5</span><span class="hl opt">)</span>
+            <span class="hl opt">- ((</span><span class="hl kwd">_mm_set1_pd</span><span class="hl opt">(</span><span class="hl num">0.5</span><span class="hl opt">) *</span> dsquared<span class="hl opt">) *</span> distance<span class="hl opt">)</span>
+            <span class="hl opt">* (</span>distance <span class="hl opt">*</span> distance<span class="hl opt">);</span>
+
+        dmag <span class="hl opt">=</span> <span class="hl kwd">_mm_set1_pd</span><span class="hl opt">(</span>dt<span class="hl opt">) / (</span>dsquared<span class="hl opt">) *</span> distance<span class="hl opt">;</span>
+        <span class="hl kwd">_mm_store_pd</span><span class="hl opt">(&amp;</span>mag<span class="hl opt">[</span>i<span class="hl opt">],</span> dmag<span class="hl opt">);</span>
+      <span class="hl opt">}</span>
+
+    i<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span>
+    <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwc">auto</span> <span class="hl kwd">bi</span><span class="hl opt">(</span>bodies<span class="hl opt">.</span><span class="hl kwd">begin</span><span class="hl opt">());</span> bi<span class="hl opt">!=</span>bodies<span class="hl opt">.</span><span class="hl kwd">end</span><span class="hl opt">(); ++</span>bi<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+        <span class="hl kwc">auto</span> <span class="hl kwd">bj</span><span class="hl opt">(</span>bi<span class="hl opt">);</span>
+        <span class="hl kwa">for</span><span class="hl opt">(++</span>bj<span class="hl opt">;</span> bj<span class="hl opt">!=</span>bodies<span class="hl opt">.</span><span class="hl kwd">end</span><span class="hl opt">(); ++</span>bj<span class="hl opt">, ++</span>i<span class="hl opt">)</span>
+          <span class="hl kwa">for</span><span class="hl opt">(</span>m<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> m<span class="hl opt">&lt;</span><span class="hl num">3</span><span class="hl opt">; ++</span>m<span class="hl opt">)</span>
+            <span class="hl opt">{</span>
+              <span class="hl kwb">const double</span> x <span class="hl opt">=</span> r<span class="hl opt">[</span>i<span class="hl opt">][</span>m<span class="hl opt">] *</span> mag<span class="hl opt">[</span>i<span class="hl opt">];</span>
+              bi<span class="hl opt">-&gt;</span>v<span class="hl opt">[</span>m<span class="hl opt">] -=</span> x <span class="hl opt">*</span> bj<span class="hl opt">-&gt;</span>mass<span class="hl opt">;</span>
+              bj<span class="hl opt">-&gt;</span>v<span class="hl opt">[</span>m<span class="hl opt">] +=</span> x <span class="hl opt">*</span> bi<span class="hl opt">-&gt;</span>mass<span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+
+    <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwc">auto</span> <span class="hl opt">&amp;</span>body<span class="hl opt">:</span> bodies<span class="hl opt">)</span>
+      <span class="hl kwa">for</span><span class="hl opt">(</span>m<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> m<span class="hl opt">&lt;</span><span class="hl num">3</span><span class="hl opt">; ++</span>m<span class="hl opt">)</span>
+        body<span class="hl opt">.</span>x<span class="hl opt">[</span>m<span class="hl opt">] +=</span> dt <span class="hl opt">*</span> body<span class="hl opt">.</span>v<span class="hl opt">[</span>m<span class="hl opt">];</span>
+  <span class="hl opt">}</span>
+
+  <span class="hl kwb">double</span> <span class="hl kwd">energy</span><span class="hl opt">()</span>
+  <span class="hl opt">{</span>
+    <span class="hl kwb">double</span> <span class="hl kwd">e</span><span class="hl opt">(</span><span class="hl num">0.0</span><span class="hl opt">);</span>
+    <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwc">auto</span> <span class="hl kwd">bi</span><span class="hl opt">(</span>bodies<span class="hl opt">.</span><span class="hl kwd">cbegin</span><span class="hl opt">());</span> bi<span class="hl opt">!=</span>bodies<span class="hl opt">.</span><span class="hl kwd">cend</span><span class="hl opt">(); ++</span>bi<span class="hl opt">)</span>
+      <span class="hl opt">{</span>
+        e <span class="hl opt">+=</span> bi<span class="hl opt">-&gt;</span>mass <span class="hl opt">* (</span> bi<span class="hl opt">-&gt;</span>v<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">] *</span> bi<span class="hl opt">-&gt;</span>v<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]</span>
+                          <span class="hl opt">+</span> bi<span class="hl opt">-&gt;</span>v<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">] *</span> bi<span class="hl opt">-&gt;</span>v<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]</span>
+                          <span class="hl opt">+</span> bi<span class="hl opt">-&gt;</span>v<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">] *</span> bi<span class="hl opt">-&gt;</span>v<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">] ) /</span> <span class="hl num">2</span><span class="hl opt">.;</span>
+
+        <span class="hl kwc">auto</span> <span class="hl kwd">bj</span><span class="hl opt">(</span>bi<span class="hl opt">);</span>
+        <span class="hl kwa">for</span><span class="hl opt">(++</span>bj<span class="hl opt">;</span> bj<span class="hl opt">!=</span>bodies<span class="hl opt">.</span><span class="hl kwd">end</span><span class="hl opt">(); ++</span>bj<span class="hl opt">)</span>
+          <span class="hl opt">{</span>
+            <span class="hl kwb">double</span> distance <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+            <span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwc">auto</span> k<span class="hl opt">=</span><span class="hl num">0</span><span class="hl opt">;</span> k<span class="hl opt">&lt;</span><span class="hl num">3</span><span class="hl opt">; ++</span>k<span class="hl opt">)</span>
+            <span class="hl opt">{</span>
+              <span class="hl kwb">const double</span> dx <span class="hl opt">=</span> bi<span class="hl opt">-&gt;</span>x<span class="hl opt">[</span>k<span class="hl opt">] -</span> bj<span class="hl opt">-&gt;</span>x<span class="hl opt">[</span>k<span class="hl opt">];</span>
+              distance <span class="hl opt">+=</span> dx <span class="hl opt">*</span> dx<span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+
+            e <span class="hl opt">-= (</span>bi<span class="hl opt">-&gt;</span>mass <span class="hl opt">*</span> bj<span class="hl opt">-&gt;</span>mass<span class="hl opt">) /</span> std<span class="hl opt">::</span><span class="hl kwd">sqrt</span><span class="hl opt">(</span>distance<span class="hl opt">);</span>
+          <span class="hl opt">}</span>
+      <span class="hl opt">}</span>
+    <span class="hl kwa">return</span> e<span class="hl opt">;</span>
+  <span class="hl opt">}</span>
+<span class="hl opt">};</span>
+
+
+std<span class="hl opt">::</span>array<span class="hl opt">&lt;</span>body<span class="hl opt">,</span><span class="hl num">5</span><span class="hl opt">&gt;</span> N_Body_System<span class="hl opt">::</span>bodies<span class="hl opt">{{</span>
+    <span class="hl com">/* sun */</span>
+    <span class="hl kwd">body</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">.,</span> <span class="hl num">0</span><span class="hl opt">.,</span> <span class="hl num">0</span><span class="hl opt">. ,</span>
+         <span class="hl num">0</span><span class="hl opt">.,</span> <span class="hl num">0</span><span class="hl opt">.,</span> <span class="hl num">0</span><span class="hl opt">. ,</span>
+         SOLAR_MASS<span class="hl opt">),</span>
+    <span class="hl com">/* jupiter */</span>
+    <span class="hl kwd">body</span><span class="hl opt">(</span><span class="hl num">4.84143144246472090e+00</span><span class="hl opt">,</span>
+         <span class="hl opt">-</span><span class="hl num">1.16032004402742839e+00</span><span class="hl opt">,</span>
+         <span class="hl opt">-</span><span class="hl num">1.03622044471123109e-01</span> <span class="hl opt">,</span>
+         <span class="hl num">1.66007664274403694e-03</span> <span class="hl opt">*</span> DAYS_PER_YEAR<span class="hl opt">,</span>
+         <span class="hl num">7.69901118419740425e-03</span> <span class="hl opt">*</span> DAYS_PER_YEAR<span class="hl opt">,</span>
+         <span class="hl opt">-</span><span class="hl num">6.90460016972063023e-05</span> <span class="hl opt">*</span> DAYS_PER_YEAR <span class="hl opt">,</span>
+         <span class="hl num">9.54791938424326609e-04</span> <span class="hl opt">*</span> SOLAR_MASS
+         <span class="hl opt">),</span>
+    <span class="hl com">/* saturn */</span>
+    <span class="hl kwd">body</span><span class="hl opt">(</span><span class="hl num">8.34336671824457987e+00</span><span class="hl opt">,</span>
+         <span class="hl num">4.12479856412430479e+00</span><span class="hl opt">,</span>
+         <span class="hl opt">-</span><span class="hl num">4.03523417114321381e-01</span> <span class="hl opt">,</span>
+         <span class="hl opt">-</span><span class="hl num">2.76742510726862411e-03</span> <span class="hl opt">*</span> DAYS_PER_YEAR<span class="hl opt">,</span>
+         <span class="hl num">4.99852801234917238e-03</span> <span class="hl opt">*</span> DAYS_PER_YEAR<span class="hl opt">,</span>
+         <span class="hl num">2.30417297573763929e-05</span> <span class="hl opt">*</span> DAYS_PER_YEAR <span class="hl opt">,</span>
+         <span class="hl num">2.85885980666130812e-04</span> <span class="hl opt">*</span> SOLAR_MASS
+         <span class="hl opt">),</span>
+    <span class="hl com">/* uranus */</span>
+    <span class="hl kwd">body</span><span class="hl opt">(</span><span class="hl num">1.28943695621391310e+01</span><span class="hl opt">,</span>
+         <span class="hl opt">-</span><span class="hl num">1.51111514016986312e+01</span><span class="hl opt">,</span>
+         <span class="hl opt">-</span><span class="hl num">2.23307578892655734e-01</span> <span class="hl opt">,</span>
+         <span class="hl num">2.96460137564761618e-03</span> <span class="hl opt">*</span> DAYS_PER_YEAR<span class="hl opt">,</span>
+         <span class="hl num">2.37847173959480950e-03</span> <span class="hl opt">*</span> DAYS_PER_YEAR<span class="hl opt">,</span>
+         <span class="hl opt">-</span><span class="hl num">2.96589568540237556e-05</span> <span class="hl opt">*</span> DAYS_PER_YEAR <span class="hl opt">,</span>
+         <span class="hl num">4.36624404335156298e-05</span> <span class="hl opt">*</span> SOLAR_MASS
+         <span class="hl opt">),</span>
+    <span class="hl com">/* neptune */</span>
+    <span class="hl kwd">body</span><span class="hl opt">(</span><span class="hl num">1.53796971148509165e+01</span><span class="hl opt">,</span>
+         <span class="hl opt">-</span><span class="hl num">2.59193146099879641e+01</span><span class="hl opt">,</span>
+         <span class="hl num">1.79258772950371181e-01</span> <span class="hl opt">,</span>
+         <span class="hl num">2.68067772490389322e-03</span> <span class="hl opt">*</span> DAYS_PER_YEAR<span class="hl opt">,</span>
+         <span class="hl num">1.62824170038242295e-03</span> <span class="hl opt">*</span> DAYS_PER_YEAR<span class="hl opt">,</span>
+         <span class="hl opt">-</span><span class="hl num">9.51592254519715870e-05</span> <span class="hl opt">*</span> DAYS_PER_YEAR <span class="hl opt">,</span>
+         <span class="hl num">5.15138902046611451e-05</span> <span class="hl opt">*</span> SOLAR_MASS
+         <span class="hl opt">)</span>
+  <span class="hl opt">}};</span>
+
+<span class="hl kwb">int</span> <span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">int</span> <span class="hl opt">,</span> <span class="hl kwb">char</span><span class="hl opt">**</span> argv<span class="hl opt">)</span>
+<span class="hl opt">{</span>
+  <span class="hl kwb">int</span> i<span class="hl opt">,</span> n <span class="hl opt">=</span> <span class="hl kwd">atoi</span><span class="hl opt">(</span>argv<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]);</span>
+  N_Body_System system<span class="hl opt">;</span>
+
+  <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%.9f</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> system<span class="hl opt">.</span><span class="hl kwd">energy</span><span class="hl opt">());</span>
+  <span class="hl kwa">for</span> <span class="hl opt">(</span>i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> n<span class="hl opt">; ++</span>i<span class="hl opt">)</span>
+    system<span class="hl opt">.</span><span class="hl kwd">advance</span><span class="hl opt">(</span><span class="hl num">0.01</span><span class="hl opt">);</span>
+  <span class="hl kwd">printf</span><span class="hl opt">(</span><span class="hl str">&quot;%.9f</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">,</span> system<span class="hl opt">.</span><span class="hl kwd">energy</span><span class="hl opt">());</span>
+
+  <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl opt">}</span>
