@@ -1,0 +1,47 @@
+<span class="hl com">/* The Computer Language Benchmarks Game</span>
+<span class="hl com">   http://benchmarksgame.alioth.debian.org/</span>
+<span class="hl com"></span>
+<span class="hl com">   contributed by Luka Popijac</span>
+<span class="hl com">*/</span>
+
+<span class="hl kwa">var</span> comp <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Uint8Array</span><span class="hl opt">([</span>
+	<span class="hl opt">,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,</span>
+	<span class="hl num">84</span><span class="hl opt">,</span><span class="hl num">86</span><span class="hl opt">,</span><span class="hl num">71</span><span class="hl opt">,</span><span class="hl num">72</span><span class="hl opt">,,,</span><span class="hl num">67</span><span class="hl opt">,</span><span class="hl num">68</span><span class="hl opt">,,,</span><span class="hl num">77</span><span class="hl opt">,,</span><span class="hl num">75</span><span class="hl opt">,</span><span class="hl num">78</span><span class="hl opt">,,,,</span><span class="hl num">89</span><span class="hl opt">,</span><span class="hl num">83</span><span class="hl opt">,</span><span class="hl num">65</span><span class="hl opt">,</span><span class="hl num">65</span><span class="hl opt">,</span><span class="hl num">66</span><span class="hl opt">,</span><span class="hl num">87</span><span class="hl opt">,,</span><span class="hl num">82</span><span class="hl opt">,,,,,,,,</span>
+	<span class="hl num">84</span><span class="hl opt">,</span><span class="hl num">86</span><span class="hl opt">,</span><span class="hl num">71</span><span class="hl opt">,</span><span class="hl num">72</span><span class="hl opt">,,,</span><span class="hl num">67</span><span class="hl opt">,</span><span class="hl num">68</span><span class="hl opt">,,,</span><span class="hl num">77</span><span class="hl opt">,,</span><span class="hl num">75</span><span class="hl opt">,</span><span class="hl num">78</span><span class="hl opt">,,,,</span><span class="hl num">89</span><span class="hl opt">,</span><span class="hl num">83</span><span class="hl opt">,</span><span class="hl num">65</span><span class="hl opt">,</span><span class="hl num">65</span><span class="hl opt">,</span><span class="hl num">66</span><span class="hl opt">,</span><span class="hl num">87</span><span class="hl opt">,,</span><span class="hl num">82</span>
+<span class="hl opt">]);</span>
+
+<span class="hl kwa">var</span> fromCharCode <span class="hl opt">=</span> String<span class="hl opt">.</span>fromCharCode<span class="hl opt">;</span>
+
+<span class="hl kwa">var</span> display <span class="hl opt">=</span> <span class="hl kwa">function</span><span class="hl opt">(</span>node<span class="hl opt">,</span> len<span class="hl opt">) {</span>
+	<span class="hl kwd">write</span><span class="hl opt">(</span>fromCharCode<span class="hl opt">.</span><span class="hl kwd">apply</span><span class="hl opt">(</span><span class="hl kwa">null</span><span class="hl opt">,</span> node<span class="hl opt">.</span>val<span class="hl opt">));</span>
+	<span class="hl kwa">while</span><span class="hl opt">(</span>node <span class="hl opt">=</span> node<span class="hl opt">.</span>next<span class="hl opt">) {</span>
+		<span class="hl kwa">var</span> v <span class="hl opt">=</span> node<span class="hl opt">.</span>val<span class="hl opt">;</span>
+		<span class="hl kwd">print</span><span class="hl opt">(</span>fromCharCode<span class="hl opt">.</span><span class="hl kwd">apply</span><span class="hl opt">(</span><span class="hl kwa">null</span><span class="hl opt">,</span> v<span class="hl opt">.</span><span class="hl kwd">subarray</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">60</span><span class="hl opt">-</span>len<span class="hl opt">)));</span>
+		<span class="hl kwd">write</span><span class="hl opt">(</span>fromCharCode<span class="hl opt">.</span><span class="hl kwd">apply</span><span class="hl opt">(</span><span class="hl kwa">null</span><span class="hl opt">,</span> v<span class="hl opt">.</span><span class="hl kwd">subarray</span><span class="hl opt">(</span><span class="hl num">60</span><span class="hl opt">-</span>len<span class="hl opt">,</span><span class="hl num">60</span><span class="hl opt">)));</span>
+	<span class="hl opt">}</span>
+	<span class="hl kwd">print</span><span class="hl opt">();</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">function</span> <span class="hl kwd">List</span><span class="hl opt">(</span>len<span class="hl opt">,</span> next<span class="hl opt">) {</span>
+	<span class="hl kwa">this</span><span class="hl opt">.</span>val <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Uint8Array</span><span class="hl opt">(</span>len<span class="hl opt">);</span>
+	<span class="hl kwa">this</span><span class="hl opt">.</span>next <span class="hl opt">=</span> next<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">var</span> node <span class="hl opt">=</span> <span class="hl kwa">null</span><span class="hl opt">;</span>
+<span class="hl kwa">var</span> len<span class="hl opt">,</span> line<span class="hl opt">;</span>
+<span class="hl kwa">while</span><span class="hl opt">(</span>line <span class="hl opt">=</span> <span class="hl kwd">readline</span><span class="hl opt">()) {</span>
+	<span class="hl kwa">if</span><span class="hl opt">(</span>line<span class="hl kwc">[0]</span> <span class="hl opt">!==</span> <span class="hl str">'&gt;'</span><span class="hl opt">) {</span>
+		len <span class="hl opt">=</span> line<span class="hl opt">.</span>length<span class="hl opt">;</span>
+		node <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">List</span><span class="hl opt">(</span>len<span class="hl opt">,</span> node<span class="hl opt">);</span>
+		<span class="hl kwa">var</span> v <span class="hl opt">=</span> node<span class="hl opt">.</span>val<span class="hl opt">;</span>
+		<span class="hl kwa">for</span><span class="hl opt">(</span><span class="hl kwa">var</span> i<span class="hl opt">=</span>len<span class="hl opt">;</span> i<span class="hl opt">--;) {</span>
+			v<span class="hl kwc">[i]</span> <span class="hl opt">=</span> comp<span class="hl opt">[</span>line<span class="hl opt">.</span><span class="hl kwd">charCodeAt</span><span class="hl opt">(</span>len<span class="hl opt">-</span>i<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)];</span>
+		<span class="hl opt">}</span>
+	<span class="hl opt">}</span> <span class="hl kwa">else</span> <span class="hl opt">{</span>
+		<span class="hl kwa">if</span><span class="hl opt">(</span>node<span class="hl opt">)</span> <span class="hl kwd">display</span><span class="hl opt">(</span>node<span class="hl opt">,</span> len<span class="hl opt">);</span>
+		node <span class="hl opt">=</span> <span class="hl kwa">null</span><span class="hl opt">;</span>
+		<span class="hl kwd">print</span><span class="hl opt">(</span>line<span class="hl opt">);</span>
+	<span class="hl opt">}</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwd">display</span><span class="hl opt">(</span>node<span class="hl opt">,</span> len<span class="hl opt">);</span>
