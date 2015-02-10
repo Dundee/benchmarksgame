@@ -180,7 +180,7 @@ def configure(ini):
       filters['onlydirs'] = frozenset( filters['onlydirs'])
 
       for k,v in parser.items('alias'):
-         alias[k] = v.split() 
+         alias[k] = v.split()
 
       make = frozenset( parser.get('build', 'make').split() )
 
@@ -231,11 +231,11 @@ def configure(ini):
             elif o in ('maxtime'):
                maxtime = parser.getint(s,o)
             elif o in ('logfilemax'):
-               logfilemax = parser.getint(s,o)  
+               logfilemax = parser.getint(s,o)
             elif o in ('outputmax'):
                outputmax = parser.getint(s,o)
             elif o in ('affinitymask'):
-               affinitymask = parser.getint(s,o) 
+               affinitymask = parser.getint(s,o)
 
    except (NoSectionError,NoOptionError), e:
       if logger: logger.debug(e)
@@ -250,10 +250,10 @@ def checkDirectories():
    if dirs['dat_sweep'] and not isdir(dirs['dat_sweep']):
       if logger: logger.warn('no directory %s', dirs['dat_sweep'])
 
-   if dirs['log_sweep'] and not isdir(dirs['log_sweep']): 
+   if dirs['log_sweep'] and not isdir(dirs['log_sweep']):
       if logger: logger.warn('no directory %s', dirs['log_sweep'])
 
-   if dirs['code_sweep'] and not isdir(dirs['code_sweep']): 
+   if dirs['code_sweep'] and not isdir(dirs['code_sweep']):
       if logger: logger.warn('no directory %s', dirs['code_sweep'])
 
 
@@ -264,7 +264,7 @@ def makeSubDirectoriesFor(dirName):
 
    def ifNoneMkdir(path,name):
       d = join(path,name)
-      if not isdir(d): 
+      if not isdir(d):
          os.mkdir(d)
          if logger: logger.debug('mkdir %s' % d)
       return d
@@ -293,7 +293,7 @@ def configureLogger(logfilemax,loggerDir=None):
       logger.setLevel(logging.DEBUG)
 
 
-      
+
 def checkExes():
 
    def check(cmd):
@@ -324,7 +324,7 @@ def isexe(exename):
 
 
 
-def clean(d,srcSet): 
+def clean(d,srcSet):
 
    def cleanLocal(name,localDirName,ext,sweepDir=None,isSymlink=False):
       names = frozenset( [n.__getattribute__(name) for n in srcSet] )
@@ -356,7 +356,7 @@ def clean(d,srcSet):
 
 
 def targets(originalFiles,aliasedFiles):
-   # ALLOW these helper file extensions to be available unchanged 
+   # ALLOW these helper file extensions to be available unchanged
    # from the working directory - they will never be measured
    a = frozenset( filters['allow'] )
    allowed = []; _files = originalFiles; files = []
@@ -374,26 +374,26 @@ def targets(originalFiles,aliasedFiles):
       for v in vs:
          revAlias[v] = k
 
-   links = [] 
- 
-   # ONLY measure files with these extensions 
+   links = []
+
+   # ONLY measure files with these extensions
    o = filters['only']
    if o:
       _files = files; files = []
-      
+
       for imp in o:
-         reva = revAlias.get(imp,None)   
+         reva = revAlias.get(imp,None)
          for f in _files:
             if reva:
                if f.imp == reva:
-                  links.append(LinkNameParts(f.filename,imp)) 
+                  links.append(LinkNameParts(f.filename,imp))
             else:
                if f.imp == imp:
                   files.append(f)
       # giving a list of ONLY links and a list of ONLY files
 
    # measure files with ANY extension, except ...
-   else: 
+   else:
       # create alias filenames
       links = aliasedFiles
 
@@ -408,7 +408,7 @@ def targets(originalFiles,aliasedFiles):
    def notUpToDate(s,d):
       try:
          return getmtime( join(srcdir,s) ) > getmtime( join(datdir,d) )
-      except OSError, (e,_): 
+      except OSError, (e,_):
          return e == ENOENT # No such file or directory
 
    links = [f for f in links if notUpToDate(f.filename,f.datName)]
@@ -422,13 +422,13 @@ def worklist():
    global srcdir
 
    w = []
-   subdirs = [each for each in os.listdir( dirs['src'] ) 
+   subdirs = [each for each in os.listdir( dirs['src'] )
       if each in filters['onlydirs']]
 
    subdirs.sort()
-   for d in subdirs:  
-      makeSubDirectoriesFor(d) 
- 
+   for d in subdirs:
+      makeSubDirectoriesFor(d)
+
       # take all likely names in src directory
       # create simpleNames for each name and each possible alias
       srcdir = join(dirs['src'],d)
@@ -444,7 +444,7 @@ def worklist():
       src = set( original )
       aliased = []
       for o in original:
-         for imp in alias.get(o.imp,[]): 
+         for imp in alias.get(o.imp,[]):
             aliased.append( LinkNameParts(o.filename,imp))
       src.update(aliased)
 
@@ -455,7 +455,7 @@ def worklist():
       programs = set(sources)
       programs.update(links)
 
-      # symlink these programs from codedir so they are available 
+      # symlink these programs from codedir so they are available
       # for conversion to highlight-ed xml files
       codedir = join(dirs['tmp'],d,'code')
       for f in programs:
@@ -487,7 +487,7 @@ def hasMake(ext):
 
 
 def callMake(p):
-   with open( makeName(), 'w') as mf: 
+   with open( makeName(), 'w') as mf:
       mf.write('\nMAKE:\n')
 
    cmd = makeExeName + ' -f ' + makefile + ' ' + p.runName
@@ -519,7 +519,7 @@ def cmdTemplate(p):
 
       for m in re.finditer('\%[XTBI]' ,s):
          value = specials.get( m.group(0), '' )
-         s = re.sub('\\'+ m.group(0), value, s) 
+         s = re.sub('\\'+ m.group(0), value, s)
 
    else:
       s = join('.',p.runName) + ' %A'
@@ -531,7 +531,7 @@ def cmdTemplate(p):
 def cmdWithArg(s,arg):
    _a = '0' if testdata.get(testname,None) else arg
    for m in re.finditer('\%A' ,s):
-      s = re.sub('\\'+ m.group(0), _a, s) 
+      s = re.sub('\\'+ m.group(0), _a, s)
    return s
 
 
@@ -587,7 +587,7 @@ def setVariables(name):
 
    # export test specific environment variables for tools
    os.environ['TEST'] = testname
-   
+
    for k,v in testenv.get('default',{}).iteritems():
       os.environ[k] = v
 
@@ -651,7 +651,7 @@ def callHighlightSourceCodeMarkup(p):
 
    try:
       call(cmd)
-   except OSError, (e,err): 
+   except OSError, (e,err):
       if logger: logger.debug('%s %s',e,err)
 
 
@@ -726,7 +726,7 @@ def checkAndLog(m,outFile,logf):
       if isfile(argFile):
          with open( diffName(), 'w') as df:
             try:
-            
+
                if isNotChecked(testname):
                   pass
 
@@ -765,7 +765,7 @@ def checkAndLog(m,outFile,logf):
 
       else: # create the initial expected output file
          copyfile(outFile, join('..', m.argString + _OUT))
-                  
+
    if not m.isOkay():
       extra = '' if not m.hasTimedout() else '%s %d%s' % ('after',maxtime,'s')
       print >>logf, '\n%s%s\n' % (m.statusStr(),extra)
@@ -827,10 +827,10 @@ def measureCheckAndLog(p,t,ms):
 
    for a in testvalues:
       cmd = cmdWithArg(t,a)
-      ofName = outName(0) 
+      ofName = outName(0)
 
       # a logged Empty record will reveal a bencher failure
-      m = Record() 
+      m = Record()
 
       try:
          with open(logName(p),'w') as logf:
@@ -841,7 +841,7 @@ def measureCheckAndLog(p,t,ms):
                # append Make output to log
                if hasMake(p.imp):
                   with open( makeName(), 'r') as mf:
-                     logf.write( mf.read() ) 
+                     logf.write( mf.read() )
 
                with open(errName(),'w+') as ef:
                   # append command line showing redirected test data file to log
@@ -890,7 +890,7 @@ def measureCheckAndLog(p,t,ms):
                   if getsize(errName()):
                      with open(errName(), 'r') as ef:
                         logf.write( '\n' )
-                        logf.write( ef.read() )               
+                        logf.write( ef.read() )
 
          if m.isOkay():
             if not m.hasExceeded(cutoff):
@@ -916,7 +916,7 @@ def measureCheckAndLog(p,t,ms):
 def measurePrograms(name,programs,allowed,total):
    global loggerLine
 
-   def fillInMissingRecords(ms): 
+   def fillInMissingRecords(ms):
       for a in testvalues[len(ms):]:
          c = copy.deepcopy(ms[-1:])
          if c:
@@ -939,7 +939,7 @@ def measurePrograms(name,programs,allowed,total):
       srcSize = sizeCompressedSourceCode(p)
 
       if hasMake(p.imp):
-         callMake(p)   
+         callMake(p)
 
       loggerLine = StringIO()
       t = cmdTemplate(p)
@@ -952,7 +952,7 @@ def measurePrograms(name,programs,allowed,total):
       # Write compressed dat file once, when all data is available
       try:
          datf = bz2.BZ2File( join(datdir,p.datName) ,'w')
-         for m in ms: 
+         for m in ms:
             m.gz = srcSize
             print >>datf, m
       except IOError, err:
@@ -985,7 +985,7 @@ def measureCheckAndLogRepeatLargest(p,t,ms):
       ofName = outName(0)
 
       # a logged Empty record will reveal a bencher failure
-      m = Record() 
+      m = Record()
 
       try:
          with open(logName(p),'w') as logf:
@@ -996,7 +996,7 @@ def measureCheckAndLogRepeatLargest(p,t,ms):
                # append Make output to log
                if hasMake(p.imp):
                   with open( makeName(), 'r') as mf:
-                     logf.write( mf.read() ) 
+                     logf.write( mf.read() )
 
                with open(errName(),'w+') as ef:
                   # append command line showing redirected test data file to log
@@ -1045,7 +1045,7 @@ def measureCheckAndLogRepeatLargest(p,t,ms):
                   if getsize(errName()):
                      with open(errName(), 'r') as ef:
                         logf.write( '\n' )
-                        logf.write( ef.read() )               
+                        logf.write( ef.read() )
 
          if m.isOkay():
             if m.hasExceeded(cutoff):
@@ -1125,7 +1125,7 @@ def measureProgramsRepeatLargest(name,programs,allowed,total):
       loggerLine.close()
 
    return total
-   
+
 
 
 # =============================
@@ -1150,7 +1150,7 @@ def appendToBothDataCsv(ms,fp,df,ndf):
    # for each test value find the measurements with lowest time
    d = {}
    mem = {}
-   for each in ms: 
+   for each in ms:
       # find lowest time
       v = d.get(each.arg,None)
       #if not v or (each.isOkay() and each.userSysTime < v.userSysTime):
@@ -1216,15 +1216,15 @@ def appendToCsv(d,path,filename,df,ndf,bdf):
 
 
 def walkDatFiles(df,ndf,bdf):
-   subdirs = [each for each in os.listdir( dirs['tmp'] ) 
+   subdirs = [each for each in os.listdir( dirs['tmp'] )
       if each in filters['onlydirs']]
    subdirs.sort()
-   for d in subdirs: 
+   for d in subdirs:
       try:
          path = join(d,datdirName)
          datfiles = os.listdir(path)
-      except OSError, err: 
-         if err[0] == ENOENT: 
+      except OSError, err:
+         if err[0] == ENOENT:
             if logger: logger.debug(err)
             continue # No such file or directory
       else:
@@ -1282,19 +1282,19 @@ def sweepLogAndCodeFiles():
    def sweep(sweepName, pattern, subdirs, dirName):
       if dirs[sweepName]:
          if logger: logger.info('copy %s files to %s',pattern,dirs[sweepName])
-         for d in subdirs: 
+         for d in subdirs:
             try:
                path = join(d,dirName)
                fs = fnmatch.filter( os.listdir(path), pattern)
-            except OSError, err: 
-               if err[0] == ENOENT: 
+            except OSError, err:
+               if err[0] == ENOENT:
                   if logger: logger.debug(err)
                   continue # No such file or directory
             else:
-               for f in fs: 
+               for f in fs:
                   copy2( join(path,f), dirs[sweepName])
 
-   subdirs = [each for each in os.listdir( dirs['tmp'] ) 
+   subdirs = [each for each in os.listdir( dirs['tmp'] )
       if each in filters['onlydirs']]
 
    sweep('code_sweep', '*.code', subdirs, codedirName)
@@ -1404,9 +1404,9 @@ def main():
          print planDesc
          benchmarksGame(ini)
 
-      else:   
+      else:
          print 'No .ini file'
-         sys.exit(0)    
+         sys.exit(0)
 
    except KeyboardInterrupt:
       if logger: logger.debug('Keyboard Interrupt')
@@ -1417,6 +1417,6 @@ def main():
       print err
       sys.exit(2)
 
-           
+
 if __name__ == "__main__":
    main()
