@@ -1,5 +1,5 @@
 #!/usr/bin/php
-<?
+<?php
 
 // Copyright (c) Isaac Gouy 2009-2013
 
@@ -19,14 +19,14 @@ function extractLogDates($site){
    $h = opendir($d)
       or die("Couldn't open $d");
 
-   $datalist = data($site); 
+   $datalist = data($site);
    $fs = array();
    while ($each = readdir($h)){
       if (preg_match('/\.log$/i',$each) && $datalist[$each]){
          $fs[] = $d.'/'.$each;
       }
    }
-  
+
    $sitelist = includes($site);
    $freq = array();
    $sum = 0.0;
@@ -45,7 +45,7 @@ function extractLogDates($site){
          if ($found){
             $sum++;
             $mth = month($match[1]);
-            $yr = intval($match[2]);     
+            $yr = intval($match[2]);
             if (!isset($freq[$yr][$mth][$site])){
                $freq[$yr][$mth][$site] = 1;
             } else {
@@ -67,7 +67,7 @@ function extractLogDates($site){
          }
 
    usort($a,'CompareYearMonth');
-   
+
    $cumulative = 0.0;
    for ($k=0; $k<sizeof($a); $k++){
       $cumulative += $a[$k][3];
@@ -141,7 +141,7 @@ function YrMth(&$p){
 $p = array();
 foreach ($Sites as $each){
    $tmp = extractLogDates($each);
-   
+
    // find first and last measurement batch in time
    foreach ($tmp as $each){
       if (!isset($firstYrMth)) $firstYrMth = YrMth($each);

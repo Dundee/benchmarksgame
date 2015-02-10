@@ -1,35 +1,0 @@
-﻿<span class="hl com">(*  The Computer Language Benchmarks Game</span>
-<span class="hl com">    http://benchmarksgame.alioth.debian.org/</span>
-<span class="hl com"></span>
-<span class="hl com">    contributed by Jomo Fisher</span>
-<span class="hl com">    modified by Kostas Rontogiannis</span>
-<span class="hl com"></span>
-<span class="hl com">    Using an array of Async&lt;unit&gt; for the workers and</span>
-<span class="hl com">    a shared token between threads.</span>
-<span class="hl com"></span>
-<span class="hl com">    Compile : </span>
-<span class="hl com">        fsc --tailcalls+ -O --platform:x64 ThreadRingNew.fs -o ThreadRingNew.exe</span>
-<span class="hl com">    Execute :</span>
-<span class="hl com">        mono ThreadRingNew.exe 50000000</span>
-<span class="hl com">*)</span>
-
-<span class="hl kwa">let</span> <span class="hl kwd">NumberOfThreads</span> <span class="hl opt">=</span> <span class="hl num">503</span>
-
-<span class="hl kwa">let mutable</span> <span class="hl opt">(</span>workers <span class="hl opt">:</span> <span class="hl kwd">Async</span><span class="hl opt">&lt;</span><span class="hl kwb">unit</span><span class="hl opt">&gt;[]) =</span> <span class="hl kwa">null</span>
-<span class="hl kwa">let mutable</span> token <span class="hl opt">= -</span><span class="hl num">1</span>
-
-<span class="hl kwa">let</span> createWorker i <span class="hl opt">=</span> 
-    <span class="hl kwa">let</span> next <span class="hl opt">= (</span>i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">) %</span> <span class="hl kwd">NumberOfThreads</span>
-    async <span class="hl opt">{</span> <span class="hl kwa">if</span> token <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl kwa">then</span> 
-                printfn <span class="hl str">&quot;%d&quot;</span> <span class="hl opt">(</span>i <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">)</span>
-                exit <span class="hl num">0</span> 
-            <span class="hl kwa">else</span> 
-                token <span class="hl opt">&lt;-</span> token <span class="hl opt">-</span> <span class="hl num">1</span>
-                return<span class="hl opt">!</span> workers<span class="hl opt">.[</span>next<span class="hl opt">] }</span>
-
-<span class="hl opt">[&lt;</span><span class="hl kwd">EntryPoint</span><span class="hl opt">&gt;]</span>
-<span class="hl kwa">let</span> main args <span class="hl opt">=</span> 
-    token   <span class="hl opt">&lt;-</span> <span class="hl kwb">int</span> args<span class="hl opt">.[</span><span class="hl num">0</span><span class="hl opt">]</span>
-    workers <span class="hl opt">&lt;-</span> <span class="hl kwd">Array</span><span class="hl opt">.</span>init <span class="hl kwd">NumberOfThreads</span> createWorker
-    <span class="hl kwd">Async</span><span class="hl opt">.</span><span class="hl kwd">StartImmediate</span><span class="hl opt">(</span>workers<span class="hl opt">.[</span><span class="hl num">0</span><span class="hl opt">])</span>
-    <span class="hl num">0</span>

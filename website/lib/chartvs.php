@@ -1,4 +1,5 @@
-<?
+<?php
+ini_set('display_errors', 0);
 header("Content-type: image/png");
 
 // Copyright (c) Isaac Gouy 2004-2011
@@ -92,7 +93,7 @@ if ($valid){
    $z = $x1 + ($x-$x1-strlen($label)*CHAR_WIDTH_2)/2.0;
    ImageString($chart->im, 2, $z, $chart->h - 30, $label, $chart->colour[BLACK]);
    ImageString($chart->im, 2, $z, 23, $label, $chart->colour[BLACK]);
-   
+
    $chart->xo = $chart->defaultOriginX();
 
    // Y AXIS LABEL

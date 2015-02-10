@@ -1,6 +1,6 @@
-<?   // Copyright (c) Isaac Gouy 2010,2013 ?>
+<?php   // Copyright (c) Isaac Gouy 2010,2013 ?>
 
-<? 
+<?
 function MkLangsMenuForm($Langs,$SelectedLang,$Action='measurements.php'){
    echo '<form method="get" action="'.$Action.'">', "\n";
    echo '<p><select name="lang">', "\n";
@@ -44,7 +44,7 @@ $Row = $Langs[$SelectedLang];
 $LangName = $Row[LANG_FULL];
 $LangTag = $Row[LANG_TAG];
 
-MkLangsMenuForm($Langs,$SelectedLang); 
+MkLangsMenuForm($Langs,$SelectedLang);
 ?>
 
 <h2><a href="#title" name="title">&nbsp;<strong><?=$LangName;?> measurements</strong></a></h2>
@@ -67,7 +67,7 @@ MkLangsMenuForm($Langs,$SelectedLang);
 <th><a href="<?=CORE_SITE;?>play.php#gzbytes" title="? Help">Code&nbsp;B</a></th>
 </tr>
 
-<?
+<?php
 foreach($Data as $row){
    $test = $row[DATA_TEST];
    $id = $row[DATA_ID];

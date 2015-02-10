@@ -1,6 +1,7 @@
 <?php
 ob_start('ob_gzhandler');
 $s = time();
+$baseUrl = 'http://localhost/benchmarksgame/website/websites';
 
 // REVISED - don't have all pages expire at the same time!
 // EXPIRE pages 31 hours after they are visited.
@@ -24,17 +25,16 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 <meta name="google-site-verification" content="y9GFMJuxj7Ou4xK9YRagz9hCBfn1lyKcHQakWgkE7gg" />
 
 <title>Computer Language Benchmarks Game</title>
-<link rel="stylesheet" type="text/css" href="http://benchmarksgame.alioth.debian.org/benchmark_css_8oct2012.php" />
-<link rel="stylesheet" type="text/css" href="http://benchmarksgame.alioth.debian.org/nohint_css_26jan2011.php" media="screen,print,projection"/>
-<link rel="stylesheet" type="text/css" href="http://benchmarksgame.alioth.debian.org/hint_css_26jan2011.php" media="handheld,aural,braille"/>
-<link rel="shortcut icon" href="http://benchmarksgame.alioth.debian.org/favicon_ico_11dec2009.php" />
+<link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/benchmark_css_8oct2012.php" />
+<link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/nohint_css_26jan2011.php" media="screen,print,projection"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/hint_css_26jan2011.php" media="handheld,aural,braille"/>
+<link rel="shortcut icon" href="<?php echo $baseUrl ?>/favicon_ico_11dec2009.php" />
 </head>
 
 <body id="core">
-<p id="hint"><a href="http://benchmarksgame.alioth.debian.org/mobile/index.php">/mobile Handheld Friendly website</a></p>
 
 <table class="banner"><tr>
-<td><h1><a>The&nbsp;Computer&nbsp;<strong>Language</strong>&nbsp; <br/><strong>Benchmarks</strong>&nbsp;Game</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://benchmarksgame.alioth.debian.org/play.php" title="How programs were measured. FAQs. How to contribute programs.">[[ Play ]]</a></h1></td>
+<td><h1><a>The&nbsp;Computer&nbsp;<strong>Language</strong>&nbsp; <br/><strong>Benchmarks</strong>&nbsp;Game</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo $baseUrl ?>/play.php" title="How programs were measured. FAQs. How to contribute programs.">[[ Play ]]</a></h1></td>
 </tr></table>
 
 <div id="sitemap">
@@ -53,24 +53,21 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 
 <p><strong>tl;dr</strong></p>
 
-<p><strong>Measurement is highly specific</strong> -- the time taken for this <a href="http://benchmarksgame.alioth.debian.org/u32/performance.php?test=nbody#about" title="Read the task description">benchmark task</a>, by this <a href="http://benchmarksgame.alioth.debian.org/u32/program.php?test=nbody&amp;lang=gcc&amp;id=1#sourcecode" title="Read the program source code">toy program</a>, with this <a href="http://benchmarksgame.alioth.debian.org/u32/program.php?test=nbody&amp;lang=gcc&amp;id=1#about"  title="Check the version information">programming language implementation</a>, with these <a href="http://benchmarksgame.alioth.debian.org/u32/program.php?test=nbody&amp;lang=gcc&amp;id=1#log" title="Check the compiler flags and runtime options">options</a>, on this <a href="http://benchmarksgame.alioth.debian.org/more.php#machine" title="What hardware and OS do you measure the programs on?">computer</a>, with these <a href="http://benchmarksgame.alioth.debian.org/u32/program.php?test=nbody&amp;lang=gcc&amp;id=1#measurements" title="">workloads</a>.</p>
+<p><strong>Measurement is highly specific</strong> -- the time taken for this <a href="<?php echo $baseUrl ?>/u32/performance.php?test=nbody#about" title="Read the task description">benchmark task</a>, by this <a href="<?php echo $baseUrl ?>/u32/program.php?test=nbody&amp;lang=gcc&amp;id=1#sourcecode" title="Read the program source code">toy program</a>, with this <a href="<?php echo $baseUrl ?>/u32/program.php?test=nbody&amp;lang=gcc&amp;id=1#about"  title="Check the version information">programming language implementation</a>, with these <a href="<?php echo $baseUrl ?>/u32/program.php?test=nbody&amp;lang=gcc&amp;id=1#log" title="Check the compiler flags and runtime options">options</a>, on this <a href="<?php echo $baseUrl ?>/more.php#machine" title="What hardware and OS do you measure the programs on?">computer</a>, with these <a href="<?php echo $baseUrl ?>/u32/program.php?test=nbody&amp;lang=gcc&amp;id=1#measurements" title="">workloads</a>.</p>
 
-<p>Same toy program, same computer, same workload -- but <a href="http://benchmarksgame.alioth.debian.org/u32/program.php?test=nbody&amp;lang=cint&amp;id=1#measurements" title="">much slower</a>.</p>
+<p>Same toy program, same computer, same workload -- but <a href="<?php echo $baseUrl ?>/u32/program.php?test=nbody&amp;lang=cint&amp;id=1#measurements" title="">much slower</a>.</p>
 
 <p>Measurement is not prophesy.</p>
 
 
 <table>
 <?php
-$sites = array('u32','u64q','u32q','u64');
+$sites = array('u64q');
 
 function PrintHeaders(){
    echo '<tr><th>&nbsp;</th><th></th><th></th><th></th></tr>';
    echo '<tr>';
-   echo '<th class="u32">&nbsp;x86&nbsp;Ubuntu&#8482; Intel&#174;&nbsp;Q6600&#174; one&nbsp;core&nbsp;</th>';
-   echo '<th class="u64q">&nbsp;x64&nbsp;Ubuntu&#8482; Intel&#174;&nbsp;Q6600&#174; quad-core&nbsp;</th>';
-   echo '<th class="u32q">&nbsp;x86&nbsp;Ubuntu&#8482; Intel&#174;&nbsp;Q6600&#174; quad-core&nbsp;</th>';
-   echo '<th class="u64">&nbsp;x64&nbsp;Ubuntu&#8482; Intel&#174;&nbsp;Q6600&#174; one&nbsp;core&nbsp;</th>';
+   echo '<th class="u64q">&nbsp;x64&nbsp;Arch Linux&#8482; Intel&#174;&nbsp;Q6600&#174; quad-core&nbsp;</th>';
    echo '</tr>';
    echo '<tr><th>&nbsp;</th><th></th><th></th><th></th></tr>';
 }
@@ -81,44 +78,18 @@ PrintHeaders();
 $basesite = array('u32');
 $onecoresites = array('u32','u64');
 $u32sites = array('u32','u32q');
-$allsites = array('u32','u32q','u64','u64q');
+$allsites = array('u64q');
 
 $langs = array(
-   array('gnat','Ada 2005 GNAT','ada',$allsites),
-   array('ats','ATS','ats',$allsites),
-   array('gcc','C gcc','c',$allsites),
-   array('clojure','Clojure','clojure',$allsites),
-   array('csharp','C# Mono','csharp',$allsites),
-   array('gpp','C++ g++','cpp',$allsites),
-   array('dart','Dart','dart',$allsites),
-   array('hipe','Erlang HiPE','erlang',$allsites),
-   array('fsharp','F# Mono','fsharp',$allsites),
-   array('ifc','Fortran Intel','fortran',$allsites),
-   array('go','Go','go',$allsites),
-   array('ghc','Haskell GHC','haskell',$allsites),
-   array('java','Java 7','java',$allsites),
-   array('v8','JavaScript V8','javascript',$onecoresites),
-   array('sbcl','Lisp SBCL','lisp',$allsites),
-   array('lua','Lua','lua',$onecoresites),
-   array('ocaml','OCaml','ocaml',$allsites),
-   array('fpascal','Free Pascal','pascal',$allsites),
-   array('perl','Perl','perl',$allsites),
-   array('php','PHP','php',$allsites), 
+   array('php','PHP','php',$allsites),
+   array('python2','Python 2','python',$allsites),
    array('python3','Python 3','python',$allsites),
-   array('racket','Racket','racket',$allsites),
-   array('yarv','Ruby','ruby',$allsites),
-   array('jruby','JRuby','jruby',$allsites),
-   array('rust','Rust','rust',$allsites),
-   array('scala','Scala','scala',$allsites),
-   array('vw','Smalltalk VisualWorks','smalltalk',$onecoresites)
+   array('pypy3','PyPy 3','pypy',$allsites),
    );
 
 
 $tag = array(
-    'u32' => 'on single core 32 bit Linux'
-   ,'u32q' =>'on multi core 32 bit Linux'
-   ,'u64' =>'on single core 64 bit Linux'
-   ,'u64q' =>'on multi core 64 bit Linux'
+   'u64q' =>'on multi core 64 bit Linux'
    );
 
 foreach($langs as $lang){
@@ -128,9 +99,9 @@ foreach($langs as $lang){
    foreach($sites as $s){
       if (in_array($s,$langsites)){
          if (!empty($lang[2])){
-            printf('<td><a href="http://benchmarksgame.alioth.debian.org/%s/%s.php" title="Compare %s program performance %s">%s</a></td>', $s, $lang[2], $name, $tag[$s], $name );
+            printf('<td><a href="' . $baseUrl . '/%s/%s.php" title="Compare %s program performance %s">%s</a></td>', $s, $lang[2], $name, $tag[$s], $name );
          } else {
-            printf('<td><a href="http://benchmarksgame.alioth.debian.org/%s/compare.php?lang=%s" title="Compare %s program performance %s">%s</a></td>', $s, $lang[0], $name, $tag[$s], $name );
+            printf('<td><a href="' . $baseUrl . '/%s/compare.php?lang=%s" title="Compare %s program performance %s">%s</a></td>', $s, $lang[0], $name, $tag[$s], $name );
          }
       }
       else {
@@ -163,9 +134,9 @@ foreach($tests as $t){
    printf('<tr>');
    foreach($sites as $s){
       if ($s=='u64q'){
-         printf('<td><a href="http://benchmarksgame.alioth.debian.org/%s/performance.php?test=%s">%s</a></td>', $s, $t[0], $t[2] );
+         printf('<td><a href="' . $baseUrl . '/%s/performance.php?test=%s">%s</a></td>', $s, $t[0], $t[2] );
       } else {
-         printf('<td><a href="http://benchmarksgame.alioth.debian.org/%s/performance.php?test=%s" title="%s">%s</a></td>', $s, $t[0], $t[2], $t[1] );
+         printf('<td><a href="' . $baseUrl . '/%s/performance.php?test=%s" title="%s">%s</a></td>', $s, $t[0], $t[2], $t[1] );
       }
    }
    printf('</tr>');
@@ -180,7 +151,7 @@ $page = array(
 foreach($page as $p){
    printf('<tr>');
    foreach($sites as $s){
-      printf('<td><a href="http://benchmarksgame.alioth.debian.org/%s/%s" title="%s">%s</a></td>', $s, $p[0], $p[2], $p[1] );
+      printf('<td><a href="' . $baseUrl . '/%s/%s" title="%s">%s</a></td>', $s, $p[0], $p[2], $p[1] );
    }
    echo "</tr>";
 }
@@ -190,11 +161,11 @@ foreach($page as $p){
 </table>
 
 
-<p class="imgfooter">&nbsp; <a href="http://benchmarksgame.alioth.debian.org/mobile/index.php" title="Handheld Friendly website">Mobile</a> &nbsp; <a href="http://benchmarksgame.alioth.debian.org/dont-jump-to-conclusions.php">Conclusions</a> &nbsp; <a href="http://benchmarksgame.alioth.debian.org/license.php">License</a> &nbsp; <a href="http://benchmarksgame.alioth.debian.org/play.php">Play</a> &nbsp;</p>
+<p class="imgfooter">&nbsp; <a href="<?php echo $baseUrl ?>/mobile/index.php" title="Handheld Friendly website">Mobile</a> &nbsp; <a href="<?php echo $baseUrl ?>/dont-jump-to-conclusions.php">Conclusions</a> &nbsp; <a href="<?php echo $baseUrl ?>/license.php">License</a> &nbsp; <a href="<?php echo $baseUrl ?>/play.php">Play</a> &nbsp;</p>
 
 </div>
 
 
-<? include_once("analyticstracking.php") ?>
+<?php include_once("analyticstracking.php") ?>
 </body>
 </html>

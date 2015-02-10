@@ -1,12 +1,12 @@
-<?   // Copyright (c) Isaac Gouy 2009-2012 ?>
+<?php   // Copyright (c) Isaac Gouy 2009-2012 ?>
 
 
-<?    
+<?
    function CompareTime($b, $a){
       if ($a[1] == $b[1]) return 0;
       return  ($a[1] < $b[1]) ? -1 : 1;
    }
-   
+
    list($Shapes,$Centers) = $Data;
    uasort($Centers,'CompareTime');
    $bounds = array(0.0,1.3,1.8,2.3,1000.0);
@@ -145,12 +145,12 @@
 <p>These are not the only programs that could be written. These are not the only programming languages. These are not the only compilers and interpreters. These are not the only tasks that could be solved. <a href="<?=CORE_SITE;?>dont-jump-to-conclusions.php"><strong>These are just 10 tiny examples.</strong></a></p>
 
 
-<?
+<?php
    printf('<table>');
 
    for ($row=0; $row<$n; $row++){
       printf('<tr>');
-      for ($col=0; $col<NCOLS; $col++){  
+      for ($col=0; $col<NCOLS; $col++){
          printf('<td>&nbsp;');
          if (isset($cols[$col][$row])){
             $k = $cols[$col][$row];

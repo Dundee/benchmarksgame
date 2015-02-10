@@ -1,6 +1,6 @@
-<?   // Copyright (c) Isaac Gouy 2004-2013 ?>
+<?php   // Copyright (c) Isaac Gouy 2004-2013 ?>
 
-<? 
+<?
 MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang,$Id);
 $TestName = $Tests[$SelectedTest][TEST_NAME];
 $TestTag = $Tests[$SelectedTest][TEST_TAG];
@@ -22,7 +22,7 @@ $SourceCodeName = $TestName.' '.$LangName.IdName($Id).' program';
 <th><a href="<?=CORE_SITE;?>play.php#gzbytes" title="How do you measure program Source Code Bytes?">Code&nbsp;B</a></th>
 <th><a href="<?=CORE_SITE;?>play.php#cpuloadpercent" title="How do you measure CPU Load?">&asymp;&nbsp;CPU&nbsp;Load</a></th>
 </tr>
-<?
+<?php
 
 foreach($Data as $d){
       if ($Id==$d[DATA_ID]){
@@ -44,7 +44,7 @@ foreach($Data as $d){
 
          printf('<tr class="a"><td class="r"><span class="numN">%s</span></td><td class="r">%s</td><td class="r">%s</td><td class="r">%s</td><td class="r">%d</td><td class="smaller">&nbsp;&nbsp;%s</td></tr>',
             $n,$fullcpu,$elapsed,$kb,$d[DATA_GZ],$load); echo "\n";
-            
+
          if ($d[DATA_STATUS]<0){ break; }
       }
 }

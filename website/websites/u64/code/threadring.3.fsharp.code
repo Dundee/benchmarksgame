@@ -1,35 +1,0 @@
-﻿<span class="hl com">(*  The Computer Language Benchmarks Game</span>
-<span class="hl com">    http://benchmarksgame.alioth.debian.org/</span>
-<span class="hl com"></span>
-<span class="hl com">    Contributed by Jomo Fisher</span>
-<span class="hl com"></span>
-<span class="hl com">    Uses F# asyncs. Asyncs are triggered by tailcall in sequence as progress is </span>
-<span class="hl com">    made around the ring. </span>
-<span class="hl com">*)</span>
-<span class="hl kwa">let</span> ringLength <span class="hl opt">=</span> <span class="hl num">503</span>
-
-<span class="hl kwa">let</span> cells <span class="hl opt">=</span> <span class="hl kwd">Array</span><span class="hl opt">.</span>zeroCreate ringLength
-<span class="hl kwa">let</span> threads <span class="hl opt">=</span> <span class="hl kwd">Array</span><span class="hl opt">.</span>zeroCreate ringLength
-<span class="hl kwa">let</span> answer <span class="hl opt">=</span> <span class="hl kwb">ref</span> <span class="hl opt">-</span><span class="hl num">1</span>
-
-<span class="hl kwa">let</span> createWorker i <span class="hl opt">=</span> 
-    <span class="hl kwa">let</span> next <span class="hl opt">= (</span>i<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">)%</span>ringLength
-    async <span class="hl opt">{</span> <span class="hl kwa">let</span> value <span class="hl opt">=</span> cells<span class="hl opt">.[</span>i<span class="hl opt">]</span>
-            <span class="hl kwa">if false then</span> <span class="hl opt">()</span> 
-            <span class="hl kwa">match</span> value <span class="hl kwa">with</span>
-            | <span class="hl num">0</span> <span class="hl opt">-&gt;</span> answer <span class="hl opt">:=</span> i<span class="hl opt">+</span><span class="hl num">1</span>
-            | _ <span class="hl opt">-&gt;</span> 
-                cells<span class="hl opt">.[</span>next<span class="hl opt">] &lt;-</span> value <span class="hl opt">-</span> <span class="hl num">1</span> 
-                return<span class="hl opt">!</span> threads<span class="hl opt">.[</span>next<span class="hl opt">] }</span>
-    
-<span class="hl opt">[&lt;</span><span class="hl kwd">EntryPoint</span><span class="hl opt">&gt;]</span>
-<span class="hl kwa">let</span> main args <span class="hl opt">=</span> 
-    cells<span class="hl opt">.[</span><span class="hl num">0</span><span class="hl opt">] &lt;-</span> <span class="hl kwa">if</span> args<span class="hl opt">.</span><span class="hl kwd">Length</span><span class="hl opt">&gt;</span><span class="hl num">0</span> <span class="hl kwa">then</span> <span class="hl kwb">int</span> args<span class="hl opt">.[</span><span class="hl num">0</span><span class="hl opt">]</span> <span class="hl kwa">else</span> <span class="hl num">50000000</span>
-    <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl num">0</span><span class="hl opt">..</span>ringLength<span class="hl opt">-</span><span class="hl num">1</span> <span class="hl kwa">do</span> 
-        threads<span class="hl opt">.[</span>i<span class="hl opt">]&lt;-</span>createWorker i
-
-    <span class="hl kwa">let</span> result <span class="hl opt">=</span> <span class="hl kwd">Async</span><span class="hl opt">.</span><span class="hl kwd">StartImmediate</span><span class="hl opt">(</span>threads<span class="hl opt">.[</span><span class="hl num">0</span><span class="hl opt">])</span>
-    printfn <span class="hl str">&quot;%d&quot;</span> <span class="hl opt">!</span>answer
-    <span class="hl num">0</span>
-
-

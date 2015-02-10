@@ -1,4 +1,4 @@
-<?   // Copyright (c) Isaac Gouy 2011
+<?php   // Copyright (c) Isaac Gouy 2011
 
 
 // PAGE ////////////////////////////////////////////////
@@ -17,9 +17,9 @@ unset($stats);
 <p>Compare x86 Ubuntu one-core elapsed time measurements for 10 tiny tasks:</p>
 
 <ul>
-<?
+<?php
 foreach($sorted as $k => $rows){
-   // Why would $k be NULL? 
+   // Why would $k be NULL?
    if ($k == NULL || $Tests[$k][TEST_WEIGHT]<=0){ continue; }
    $test = $Tests[$k];
 
@@ -28,7 +28,7 @@ foreach($sorted as $k => $rows){
 
    if (!empty($rows)){
 
-      foreach($rows as $row){  
+      foreach($rows as $row){
 
          if (is_array($row)){
             $fc = number_format($row[DATA_FULLCPU],2);
@@ -43,7 +43,7 @@ foreach($sorted as $k => $rows){
 
             $lang = $row[DATA_LANG];
             $name = $Langs[$lang][LANG_FULL];
-            $noSpaceName = str_replace(' ','&nbsp;',$name);   
+            $noSpaceName = str_replace(' ','&nbsp;',$name);
             printf(' %s<br/>', $noSpaceName);
 
          } elseif (!isset($row)) {
@@ -52,7 +52,7 @@ foreach($sorted as $k => $rows){
       }
    }
 
-   else { // empty($rows)     
+   else { // empty($rows)
       printf('%s', 'No&nbsp;programs');
    }
    echo "</li>\n";

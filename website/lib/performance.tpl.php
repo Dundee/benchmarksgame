@@ -1,6 +1,6 @@
-<?   // Copyright (c) Isaac Gouy 2004-2013 ?>
+<?php   // Copyright (c) Isaac Gouy 2004-2013 ?>
 
-<? 
+<?
 // FUNCTIONS ///////////////////////////////////////////
 
 // should these be on the tpl.php?
@@ -43,7 +43,7 @@ foreach($Succeeded as $d){
    if ($d[DATA_TESTVALUE]>0){
       $testValue = (double)$d[DATA_TESTVALUE];
       $NString = 'N='.number_format($testValue);
-      break; 
+      break;
    }
 }
 
@@ -79,7 +79,7 @@ if ($Sort=='fullcpu'){
    $ELAPSED_sort_td = '<td>&nbsp;</td>';
    $Chart_intro_1 = '<i>how many times slower</i>';
    $Chart_intro_2 = 'program was, compared to the fastest program';
-} elseif ($Sort=='gz'){ 
+} elseif ($Sort=='gz'){
    $GZBYTES_sort_td = '<td>&nbsp;</td>';
    $Chart_intro_1 = '<i>how many times more</i> Code';
    $Chart_intro_2 = 'program used, compared to the program that used least Code';
@@ -92,8 +92,8 @@ if ($CanonicalPage){ echo '<p><g:plusone annotation="none"></g:plusone></p>
     po.src = "https://apis.google.com/js/plusone.js";
     var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(po, s);
   })();
-</script>'; } 
-?> 
+</script>'; }
+?>
 
 
 <h2><a href="#chart" name="chart">&nbsp;<?=$TestName;?>&nbsp;<strong>benchmark</strong></a>&nbsp;<a href="<?=CORE_SITE;?>play.php#inputvalue"><?=$NString;?></a></h2>
@@ -117,7 +117,7 @@ if ($CanonicalPage){ echo '<p><g:plusone annotation="none"></g:plusone></p>
 <tr>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
-<?
+<?php
 echo $CPU_sort_td;
 echo $ELAPSED_sort_td;
 echo $MEM_sort_td;
@@ -135,7 +135,7 @@ echo $GZBYTES_sort_td;
 <th><a href="<?=CORE_SITE;?>play.php#cpuloadpercent" title="How do you measure CPU Load?">&asymp;&nbsp;CPU&nbsp;Load</a></th>
 </tr>
 
-<?
+<?php
 foreach($Langs as $k => $v){ $No_Program_Langs[$k] = TRUE; }
 
 $better = array();
@@ -157,15 +157,15 @@ foreach($Succeeded as $d){
          $MEM = ' class="sort"';
       } elseif ($Sort=='elapsed'){
          $ELAPSED = ' class="sort"';
-      } elseif ($Sort=='gz'){ 
+      } elseif ($Sort=='gz'){
          $GZBYTES = ' class="sort"';
       }
    }
 
-   if ($Sort=='fullcpu'){   
+   if ($Sort=='fullcpu'){
       if ($first[DATA_FULLCPU]==0){ $ratio = 0; }
       else { $ratio = $d[DATA_FULLCPU]/$first[DATA_FULLCPU]; }
-   } elseif ($Sort=='kb'){ 
+   } elseif ($Sort=='kb'){
       if (($TestName=='startup')||($first[DATA_MEMORY]==0)){ $ratio = 0; }
       else { $ratio = $d[DATA_MEMORY]/$first[DATA_MEMORY]; }
    } elseif ($Sort=='elapsed'){
@@ -188,7 +188,7 @@ foreach($Succeeded as $d){
       $kb = '&nbsp;';
       $e = '&nbsp;';
       $ld = '&nbsp;';
-   } else { 
+   } else {
       $fc = PTime($fullcpu);
       if ($d[DATA_MEMORY]==0){ $kb = '?'; } else { $kb = number_format((double)$d[DATA_MEMORY]); }
       $e = PTime($d[DATA_ELAPSED]);
@@ -209,7 +209,7 @@ foreach($Succeeded as $d){
 unset($better);
 ?>
 
-<?
+<?php
 foreach($Langs as $k => $v){
    foreach($Failed as $d){
       if ($d[DATA_LANG]==$k){
@@ -240,8 +240,8 @@ foreach($Langs as $k => $v){
 }
 ?>
 
-<?
-if (sizeof($Special)>0){ 
+<?php
+if (sizeof($Special)>0){
    printf('<tr><th colspan="7"><a href="#wrong" name="wrong">"wrong" (different) algorithm / less comparable programs</a></th></tr>', CORE_SITE);
 
    foreach($Special as $d){
@@ -250,7 +250,7 @@ if (sizeof($Special)>0){
       $TipName = $Name.IdName($d[DATA_ID]);
       $HtmlName = $Langs[$k][LANG_HTML].IdName($d[DATA_ID]);
 
-      if ($Sort=='fullcpu'){   
+      if ($Sort=='fullcpu'){
          if ($first[DATA_FULLCPU]==0){ $ratio = 0; }
          else { $ratio = $d[DATA_FULLCPU]/$first[DATA_FULLCPU]; }
       } elseif ($Sort=='elapsed'){
@@ -291,23 +291,23 @@ if (sizeof($Special)>0){
 ?>
 
 
-<? // MISSING PROGRAMS TABLE //////////////////////////
+<?php // MISSING PROGRAMS TABLE //////////////////////////
 
 if (sizeof($No_Program_Langs)>0){
    echo '<tr><th colspan="7"><a href="#missing" name="missing">missing benchmark programs</a></th></tr>', "\n";
-      
+
    foreach($Langs as $k => $v){
       $no_program = isset($No_Program_Langs[$k]);
-      if ($no_program){  
-         printf('<tr>'); echo "\n";             
+      if ($no_program){
+         printf('<tr>'); echo "\n";
          $Name = $v[LANG_FULL];
          $HtmlName = $v[LANG_HTML];
 
-         printf('<td></td><td><a href="program.php?test=%s&amp;lang=%s">%s</a></td>', 
+         printf('<td></td><td><a href="program.php?test=%s&amp;lang=%s">%s</a></td>',
             $SelectedTest,$k,$HtmlName); echo "\n";
 
          echo '<td>No&nbsp;program</td><td></td><td></td><td></td><td></td>';
-         echo "</tr>\n";     
+         echo "</tr>\n";
       }
    }
 }

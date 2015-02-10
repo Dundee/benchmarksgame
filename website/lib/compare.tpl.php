@@ -1,4 +1,4 @@
-<?   // Copyright (c) Isaac Gouy 2004-2013
+<?php   // Copyright (c) Isaac Gouy 2004-2013
 
 
 // FUNCTIONS ///////////////////////////////////////////
@@ -30,7 +30,7 @@ function MkHeadToHeadMenuForm($Tests,$Langs,$SelectedLang,$SelectedLang2){
       printf('<option %s value="%s">%s</option>', $Selected,$Link,$Name); echo "\n";
    }
    echo '</select></p>', "\n";
-   
+
    echo '<p>vs <select name="lang2">', "\n";
    foreach($Langs as $Row){
       $Link = $Row[LANG_LINK];
@@ -42,7 +42,7 @@ function MkHeadToHeadMenuForm($Tests,$Langs,$SelectedLang,$SelectedLang2){
       }
       printf('<option %s value="%s">%s</option>', $Selected,$Link,$Name); echo "\n";
    }
-   echo '</select>', "\n";   
+   echo '</select>', "\n";
 
    $datasets = array(
       array('u32','x86 one core'),
@@ -134,7 +134,7 @@ $LangLink2 = $Langs[$SelectedLang2][LANG_LINK];
 
 $ExplanatoryHeader = '&nbsp;<strong>'.$LangName.'</strong>&nbsp;<b>used</b> what fraction? <b>used</b> how many times more?&nbsp;';
 
-MkHeadToHeadMenuForm($Tests,$Langs,$SelectedLang,$SelectedLang2); 
+MkHeadToHeadMenuForm($Tests,$Langs,$SelectedLang,$SelectedLang2);
 
 if ($CanonicalPage){ echo '<p><g:plusone annotation="none"></g:plusone></p>
 <script type="text/javascript">
@@ -143,8 +143,8 @@ if ($CanonicalPage){ echo '<p><g:plusone annotation="none"></g:plusone></p>
     po.src = "https://apis.google.com/js/plusone.js";
     var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(po, s);
   })();
-</script>'; } 
-?> 
+</script>'; }
+?>
 
 <h2><a href="#faster-programs-chart" name="faster-programs-chart">&nbsp;1&nbsp;:&nbsp;Are the <strong><?=$LangName;?> programs faster</strong>?</a> <i>At a glance.</i></h2>
 
@@ -179,12 +179,12 @@ if ($CanonicalPage){ echo '<p><g:plusone annotation="none"></g:plusone></p>
 </tr>
 
 
-<?
+<?php
 $hasMismatches = false;
 
 foreach($sorted as $k => $v){
    // Why would $k be NULL? No working programs for a test?
-   if ($k == NULL || $v == NULL || ($Tests[$k][TEST_WEIGHT]<=0 || $v[DATA_TIME] == NO_VALUE)){ continue; }   
+   if ($k == NULL || $v == NULL || ($Tests[$k][TEST_WEIGHT]<=0 || $v[DATA_TIME] == NO_VALUE)){ continue; }
    $test = $Tests[$k];
    $name = $test[TEST_NAME];
    if (!empty($v)){
@@ -208,7 +208,7 @@ foreach($sorted as $k => $v){
       } else {
          $gz = PF($v[DATA_GZ]);
       }
-      
+
       printf('%s%s%s</tr>', PF($v[DATA_TIME]), $kb, $gz);
    }
 }
@@ -229,7 +229,7 @@ foreach($sorted as $k => $v){
 <th>&nbsp;-|</th>
 </tr>
 <tr>
-<?
+<?php
 printf('<th>(%s)</th>%s%s%s%s%s%s%s',
       $TimeUsed,
       PF($stats[STAT_MIN]), PF($stats[STAT_XLOWER]), PF($stats[STAT_LOWER]), PF($stats[STAT_MEDIAN]),
@@ -238,7 +238,7 @@ printf('<th>(%s)</th>%s%s%s%s%s%s%s',
 </tr>
 </table>
 
-<?
+<?php
 if ($hasMismatches){
    printf('<p>&#8224; possible mismatch - one-core program compared to multi-core program.</p>');
 }
@@ -263,12 +263,12 @@ if ($hasMismatches){
 <th><a href="<?=CORE_SITE;?>play.php#cpuloadpercent" title="How do you measure CPU Load?">&asymp;&nbsp;CPU&nbsp;Load</a></th>
 </tr>
 
-<?
+<?php
 
 $hasMismatches = false;
 
 foreach($sorted as $k => $rows){
-   // Why would $k be NULL? No working programs for a test? 
+   // Why would $k be NULL? No working programs for a test?
    if ($k == NULL || $Tests[$k][TEST_WEIGHT]<=0){ continue; }
    $test = $Tests[$k];
    $testname = $test[TEST_NAME];
@@ -285,14 +285,14 @@ foreach($sorted as $k => $rows){
       $firstRow = True;
       foreach($rows as $row){
          if ($firstRow){ $tag0 = '<strong>'; $tag1 = '</strong>'; $firstRow = False; }
-         else { $tag0 = ''; $tag1 = ''; }         
+         else { $tag0 = ''; $tag1 = ''; }
 
          if (is_array($row)){
             $lang = $row[DATA_LANG];
             $name = $Langs[$lang][LANG_FULL];
             $noSpaceName = str_replace(' ','&nbsp;',$name);
             $id = $row[DATA_ID];
-   
+
             printf('<tr><td><a href="program.php?test=%s&amp;lang=%s&amp;id=%d" title="Read the Program Source Code : %s %s">%s%s%s</a></td>',
                   $k,$lang,$id,$name,$testname,$tag0,$noSpaceName,$tag1);
 
@@ -320,7 +320,7 @@ foreach($sorted as $k => $rows){
       }
    }
 
-   else { // empty($rows)     
+   else { // empty($rows)
       printf('<tr><th class="txt" colspan="3">&nbsp;<a name="%s" href="performance.php?test=%s" title="Measurements for all the %s benchmark programs">%s</a></th><th colspan="3"></th></tr>', $k, $k, $testname, $testname);
 
       printf('<tr><td>&nbsp;</td><td colspan="2"><span class="message">&nbsp;&nbsp;%s</span></td><td colspan="3"></td></tr>', 'No&nbsp;programs');
@@ -330,7 +330,7 @@ foreach($sorted as $k => $rows){
 
 </table>
 
-<?
+<?php
 if ($hasMismatches){
    printf('<p>&#8224; possible mismatch - one-core program compared to multi-core program.</p>');
 }
@@ -339,14 +339,14 @@ if ($hasMismatches){
 
 <h2><a href="#measurements" name="measurements">&nbsp;4&nbsp;:&nbsp;Are there other <strong><?=$LangName;?> programs</strong> for these benchmarks?</a></h2>
 <p>Remember - those are just the fastest <em><?=$LangName;?></em> and <i><?=$LangName2;?></i> programs measured on this OS/machine. <b>Check</b> if there are other implementations of these benchmark programs for <?=$LangName;?>.</p>
-<? MkLangsMenuForm($Langs,$SelectedLang); ?>
+<?php MkLangsMenuForm($Langs,$SelectedLang); ?>
 
 <p>Maybe one of those other <?=$LangName;?> programs is fastest on <a href="<?=CORE_SITE;?>dont-jump-to-conclusions.php#multicore" title="x86, x64 and quad-core">a different OS/machine</a>.</p>
 
 
 <h2><a href="#measurements" name="measurements">&nbsp;5&nbsp;:&nbsp;Are there other faster programs for these benchmarks?</a></h2>
 <p>Remember - those are just the fastest <em><?=$LangName;?></em> and <i><?=$LangName2;?></i> programs measured on this OS/machine. <b>Check</b> if there are faster implementations of these benchmark programs for other programming languages.</p>
-<? MkTestsMenuForm($Tests); ?>
+<?php MkTestsMenuForm($Tests); ?>
 <p>Maybe one of those other programs is fastest on <a href="<?=CORE_SITE;?>dont-jump-to-conclusions.php#multicore" title="x86, x64 and quad-core">a different OS/machine</a>.</p>
 
 

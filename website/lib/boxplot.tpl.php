@@ -1,14 +1,14 @@
-<?   // Copyright (c) Isaac Gouy 2009-2014 ?>
+<?php   // Copyright (c) Isaac Gouy 2009-2014 ?>
 
-<?
+<?php
    MkMenuForm($Tests,NULL,$Langs,NULL);
 
    list($labels,$stats) = $Data;
-   unset($Data);  
+   unset($Data);
 
    // make 2 charts -- middle data & first+last data
 
-   $n = sizeof($stats); 
+   $n = sizeof($stats);
    $labels1 = array();
    $stats1 = array();
 
@@ -27,8 +27,8 @@
       $labels2[] = $labels[$i];
       $stats2[] = $stats[$i];
    }
-   unset($labels); 
-   unset($stats); 
+   unset($labels);
+   unset($stats);
 
    $pageUrl = CORE_SITE.SITE_NAME.'/which-programs-are-fastest.php';
    $chart = 'chartbox.php';
@@ -36,7 +36,7 @@
 
 <p><em>"What gets us into trouble is not what we don't know, it's what we know for sure that just ain't so."</em></p>
 
-<? if ($CanonicalPage){ echo '<p><g:plusone annotation="none"></g:plusone></p>
+<?php if ($CanonicalPage){ echo '<p><g:plusone annotation="none"></g:plusone></p>
 <script type="text/javascript">
   (function() {
     var po = document.createElement("script"); po.type = "text/javascript"; po.async = true;

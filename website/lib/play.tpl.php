@@ -1,7 +1,7 @@
-<?   // Copyright (c) Isaac Gouy 2004-2013 ?>
+<?php   // Copyright (c) Isaac Gouy 2004-2013 ?>
 
 
-<p class="timestamp"><? printf('%s GMT', gmdate("d M Y, l, g:i a", $Changed)) ?></p>
+<p class="timestamp"><?php printf('%s GMT', gmdate("d M Y, l, g:i a", $Changed)) ?></p>
 
 <dl>
 
@@ -133,7 +133,7 @@
 
 <p><em>afaict</em> we all feel the same way about this, we all feel that we should sit on our hands and wait for someone else to do the chores we don't wish to do. Of course, measurements of the <em>"proggit popular"</em> language implementations like PyPy and LuaJIT will attract attention and be the basis of yet another successful website (unlike more Fortran or Ada or Pascal or Lisp).</p>
 
-<p>If you're interested in something not shown on the benchmarks game website then <a href="https://alioth.debian.org/snapshots.php?group_id=100815" title="Download the nightly snapshot"><b>please</b> take the program source code</a> and the measurement scripts and <b>publish your own measurements</b>.</p> 
+<p>If you're interested in something not shown on the benchmarks game website then <a href="https://alioth.debian.org/snapshots.php?group_id=100815" title="Download the nightly snapshot"><b>please</b> take the program source code</a> and the measurement scripts and <b>publish your own measurements</b>.</p>
 
 <p>The Python script "bencher does repeated measurements of program cpu time, elapsed time, resident memory usage, cpu load while a program is running, and summarizes those measurements" - <a href="<?=DOWNLOAD_PATH;?>bencher.zip">download bencher</a> and unzip into your ~ directory, check the requirements and <a href="http://www.andre-simon.de/doku/highlight/en/highlight.html" title="highlight, ndiff">recommendations</a>, and read the license before use.</p>
 <p>(As an alternative, you should take a look at these Python measurement scripts designed for statistically rigorous Java performance evaluation - <a href="http://www.elis.ugent.be/JavaStats">JavaStats</a>.)</p>
@@ -152,18 +152,18 @@
 
 
 <dt><a href="#java" name="java">What about Java&#174; VM warm-up?</a></dt>
-<dd><p>Let's see how much, or how little, the time taken to invoke the JVM might contribute to the usual Java program times shown in the benchmarks game. Here are some <b>additional</b> (Intel&#174; Q6600&#174; quad-core) elapsed time measurements, taken after the Java programs started and before they exited.</p> 
+<dd><p>Let's see how much, or how little, the time taken to invoke the JVM might contribute to the usual Java program times shown in the benchmarks game. Here are some <b>additional</b> (Intel&#174; Q6600&#174; quad-core) elapsed time measurements, taken after the Java programs started and before they exited.</p>
 
 <p>In the first case (Cold), we simply started and measured the program 66 times; and then discarded the first measurement leaving 65 data points.</p>
 
 <pre>
    public static void main(String[] args){
-      for (int i=0; i&lt;1; ++i){ 
-         System.gc(); 
+      for (int i=0; i&lt;1; ++i){
+         System.gc();
          long t1 = System.nanoTime();
          nbody.program_main(args);
          long t2 = System.nanoTime();
-         System.err.println( String.format( "%.6f", (t2 - t1) * 1e-9 ) );         
+         System.err.println( String.format( "%.6f", (t2 - t1) * 1e-9 ) );
       }
    }
 </pre>
@@ -172,12 +172,12 @@
 
 <pre>
    public static void main(String[] args){
-      for (int i=0; i&lt;66; ++i){ 
-         System.gc(); 
+      for (int i=0; i&lt;66; ++i){
+         System.gc();
          long t1 = System.nanoTime();
          nbody.program_main(args);
          long t2 = System.nanoTime();
-         System.err.println( String.format( "%.6f", (t2 - t1) * 1e-9 ) );         
+         System.err.println( String.format( "%.6f", (t2 - t1) * 1e-9 ) );
       }
    }
 </pre>
@@ -267,7 +267,7 @@
 <td>0.01</td>
 <td>7.02s</td>
 </tr>
-	
+
 <tr>
 <td>k-nucleotide&nbsp;&nbsp;</td>
 <td>8.09s</td>
@@ -285,7 +285,7 @@
 <td>&nbsp;--&nbsp;</td>
 <td>8.61s</td>
 </tr>
-	
+
 <tr>
 <td>binary-trees&nbsp;&nbsp;</td>
 <td>10.54s</td>
@@ -294,7 +294,7 @@
 <td>0.16</td>
 <td>9.08s</td>
 </tr>
-	
+
 <tr>
 <td>fannkuch-redux&nbsp;&nbsp;</td>
 <td>16.89s</td>
@@ -303,7 +303,7 @@
 <td>0.10</td>
 <td>17.38s</td>
 </tr>
-	
+
 <tr>
 <td>nbody&nbsp;&nbsp;</td>
 <td>22.43s</td>
@@ -321,7 +321,7 @@
 <td>0.31</td>
 <td>33.38s</td>
 </tr>
- 	
+
 </table>
 
 <p>The largest and most obvious effects of bytecode loading and dynamic optimization can be seen with the meteor-contest program which only runs for a fraction of a second.</p>

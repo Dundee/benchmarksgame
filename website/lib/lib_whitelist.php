@@ -1,4 +1,4 @@
-<?
+<?php
 // Copyright (c) Isaac Gouy 2009-2011
 
 // DATA LAYOUT ///////////////////////////////////////////////////
@@ -53,7 +53,7 @@ function WhiteListIn(){
    }
    return $incl;
 }
-   
+
 function WhiteListEx(){
    $excl = array();
    $lines = @file(DESC_PATH.'exclude.csv') or die('Cannot open '.DESC_PATH.'exclude.csv');
@@ -103,7 +103,7 @@ function Encode($x){
             }
             $x = $d;
          }
-      }     
+      }
       $s = implode('O',$x);
    }
    return rawurlencode(base64_encode(gzcompress($s,9)));
@@ -133,9 +133,9 @@ function ValidSort($valid=FALSE){
          $X = base64_decode( rawurldecode($_GET['so']) );
          $X = @gzuncompress($X,$bounds); // returns FALSE on error
          if ($X && ereg("^[a-z]+$",$X)
-           && (($X == 'elapsed') || ($X == 'gz') || ($X == 'kb') || ($X == 'fullcpu')) ){ 
-               $sort = $X; 
-               $valid = TRUE; 
+           && (($X == 'elapsed') || ($X == 'gz') || ($X == 'kb') || ($X == 'fullcpu')) ){
+               $sort = $X;
+               $valid = TRUE;
          }
       }
    }

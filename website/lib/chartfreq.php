@@ -1,4 +1,4 @@
-<?
+<?php
 header("Content-type: image/png");
 
 // Copyright (c) Isaac Gouy 2009-2013
@@ -66,7 +66,7 @@ $d = array(
  ,array(2013,84,'u32',0.95)
  ,array(2014,85,'u32',1.00)
        ) );
-       
+
 
 
 // CHART /////////////////////////////////////////////////////

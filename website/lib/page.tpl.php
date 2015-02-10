@@ -24,7 +24,7 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 <link rel="stylesheet" type="text/css" href="http://benchmarksgame.alioth.debian.org/nohint_css_26jan2011.php" media="screen,print,projection"/>
 <link rel="stylesheet" type="text/css" href="http://benchmarksgame.alioth.debian.org/hint_css_26jan2011.php" media="handheld,aural,braille"/>
 <link rel="shortcut icon" href="http://benchmarksgame.alioth.debian.org/favicon_ico_11dec2009.php" />
-<?
+<?php
    if (isset($LinkCanonical)) { echo $LinkCanonical; }
 ?>
 
@@ -33,11 +33,11 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 <p id="hint"><a href="http://benchmarksgame.alioth.debian.org/mobile/index.php">/mobile Handheld Friendly website</a></p>
 
 
-<?
-   if ($PageId == 'faq') { 
-      $FaqRollover = " Apples and Oranges. Programmer skill and effort. A good starting point."; 
-   } else { 
-      $FaqRollover = "How programs were measured. FAQs. How to contribute programs."; 
+<?php
+   if ($PageId == 'faq') {
+      $FaqRollover = " Apples and Oranges. Programmer skill and effort. A good starting point.";
+   } else {
+      $FaqRollover = "How programs were measured. FAQs. How to contribute programs.";
    }
 ?>
 
@@ -57,6 +57,6 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 </div>
 
 
-<? include_once(IMAGE_PATH.'analyticstracking.php'); ?>
+<?php include_once(IMAGE_PATH.'analyticstracking.php'); ?>
 </body>
 </html>

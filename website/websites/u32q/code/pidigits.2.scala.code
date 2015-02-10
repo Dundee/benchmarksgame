@@ -1,45 +1,0 @@
-<span class="hl com">/* The Computer Language Benchmarks Game </span>
-<span class="hl com">   http://benchmarksgame.alioth.debian.org/   </span>
-<span class="hl com"></span>
-<span class="hl com">   Contributed by John Nilsson </span>
-<span class="hl com">   Major performance improvement by Geoff Reedy  </span>
-<span class="hl com">*/</span>
-
-<span class="hl kwa">object</span> pidigits <span class="hl opt">{</span>
-    <span class="hl kwa">type</span> I <span class="hl opt">=</span> BigInt
-    <span class="hl kwa">import</span> BigInt<span class="hl opt">.</span>_
-    <span class="hl kwa">val</span> <span class="hl kwd">List</span><span class="hl opt">(</span>_0<span class="hl opt">,</span>_1<span class="hl opt">,</span>_10<span class="hl opt">) =</span> List<span class="hl opt">[</span>I<span class="hl opt">](</span><span class="hl num">0</span><span class="hl opt">,</span><span class="hl num">1</span><span class="hl opt">,</span><span class="hl num">10</span><span class="hl opt">)</span>
-  
-    <span class="hl kwa">class</span> <span class="hl kwd">LFT</span><span class="hl opt">(</span><span class="hl kwa">val</span> q<span class="hl opt">:</span>I<span class="hl opt">,</span> <span class="hl kwa">val</span> r<span class="hl opt">:</span>I<span class="hl opt">,</span> <span class="hl kwa">val</span> t<span class="hl opt">:</span>I<span class="hl opt">) {</span>
-        <span class="hl kwa">def</span> <span class="hl kwd">compose</span><span class="hl opt">(</span>o<span class="hl opt">:</span>LFT<span class="hl opt">) =</span> <span class="hl kwa">new</span> <span class="hl kwd">LFT</span><span class="hl opt">(</span>q <span class="hl opt">*</span> o<span class="hl opt">.</span>q<span class="hl opt">, (</span>q <span class="hl opt">*</span> o<span class="hl opt">.</span>r<span class="hl opt">) + (</span>r <span class="hl opt">*</span> o<span class="hl opt">.</span>t<span class="hl opt">),</span> t <span class="hl opt">*</span> o<span class="hl opt">.</span>t<span class="hl opt">)</span>
-        <span class="hl kwa">def</span> extractDigit <span class="hl opt">= {</span>
-            <span class="hl kwa">val</span> <span class="hl opt">(</span>y<span class="hl opt">,</span>rem<span class="hl opt">) = (</span><span class="hl num">3</span><span class="hl opt">*</span>q <span class="hl opt">+</span> r<span class="hl opt">) /%</span> t
-            <span class="hl kwa">if</span><span class="hl opt">((</span>rem <span class="hl opt">+</span> q<span class="hl opt">) &lt;</span> t<span class="hl opt">)</span> <span class="hl kwd">Some</span><span class="hl opt">(</span>y<span class="hl opt">)</span> <span class="hl kwa">else</span> None
-        <span class="hl opt">}</span>
-        <span class="hl kwa">def</span> <span class="hl kwd">next</span><span class="hl opt">(</span>y<span class="hl opt">:</span>I<span class="hl opt">) =</span> <span class="hl kwa">new</span> <span class="hl kwd">LFT</span><span class="hl opt">(</span>_10<span class="hl opt">*</span>q<span class="hl opt">,</span> _10<span class="hl opt">*(</span>r<span class="hl opt">-(</span>y<span class="hl opt">*</span>t<span class="hl opt">)),</span> t<span class="hl opt">)</span>
-        <span class="hl kwa">def</span> reduce <span class="hl opt">= {</span>
-            <span class="hl kwa">val</span> d <span class="hl opt">= (</span>q<span class="hl opt">&gt;&gt;</span>q<span class="hl opt">.</span>lowestSetBit<span class="hl opt">).</span><span class="hl kwd">gcd</span><span class="hl opt">(</span>r<span class="hl opt">).</span><span class="hl kwd">gcd</span><span class="hl opt">(</span>t<span class="hl opt">)</span>
-            <span class="hl kwa">new</span> <span class="hl kwd">LFT</span><span class="hl opt">(</span>q<span class="hl opt">/</span>d<span class="hl opt">,</span>r<span class="hl opt">/</span>d<span class="hl opt">,</span>t<span class="hl opt">/</span>d<span class="hl opt">)</span>
-        <span class="hl opt">}</span>
-    <span class="hl opt">}</span>
-
-    <span class="hl kwa">def</span> pi_digits <span class="hl opt">= {</span>
-        <span class="hl kwa">def</span> _lfts <span class="hl opt">=</span> Stream from <span class="hl num">1</span> map <span class="hl opt">{</span> k <span class="hl opt">=&gt;</span> <span class="hl kwa">new</span> <span class="hl kwd">LFT</span><span class="hl opt">(</span>k<span class="hl opt">,</span> k <span class="hl opt">*</span> <span class="hl num">4</span> <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">,</span> k <span class="hl opt">*</span> <span class="hl num">2</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">) }</span>
-        <span class="hl kwa">def</span> <span class="hl kwd">_pi_digits</span><span class="hl opt">(</span>z<span class="hl opt">:</span>LFT<span class="hl opt">,</span> lfts<span class="hl opt">:</span>Stream<span class="hl opt">[</span>LFT<span class="hl opt">],</span>n<span class="hl opt">:</span>Int<span class="hl opt">):</span> Stream<span class="hl opt">[(</span>Int<span class="hl opt">,</span>I<span class="hl opt">)] = {</span>
-            <span class="hl kwa">val</span> _z <span class="hl opt">=</span> <span class="hl kwa">if</span><span class="hl opt">(</span>lfts<span class="hl opt">.</span>head<span class="hl opt">.</span>q <span class="hl opt">%</span> <span class="hl num">5000</span> <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl opt">)</span> z reduce <span class="hl kwa">else</span> z
-            _z extractDigit match <span class="hl opt">{</span>
-                <span class="hl kwa">case</span> <span class="hl kwd">Some</span><span class="hl opt">(</span>y<span class="hl opt">) =&gt;</span> Stream<span class="hl opt">.</span><span class="hl kwd">cons</span><span class="hl opt">((</span>n<span class="hl opt">,</span>y<span class="hl opt">),</span><span class="hl kwd">_pi_digits</span><span class="hl opt">(</span>_z next y<span class="hl opt">,</span> lfts<span class="hl opt">,</span>n<span class="hl opt">+</span><span class="hl num">1</span><span class="hl opt">))</span>
-                <span class="hl kwa">case</span> None    <span class="hl opt">=&gt;</span> <span class="hl kwd">_pi_digits</span><span class="hl opt">(</span>_z compose lfts<span class="hl opt">.</span>head<span class="hl opt">,</span> lfts<span class="hl opt">.</span>tail<span class="hl opt">,</span>n<span class="hl opt">)</span>
-            <span class="hl opt">}</span>
-        <span class="hl opt">}</span>
-        <span class="hl kwd">_pi_digits</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">LFT</span><span class="hl opt">(</span>_1<span class="hl opt">,</span>_0<span class="hl opt">,</span>_1<span class="hl opt">),</span>_lfts<span class="hl opt">,</span><span class="hl num">1</span><span class="hl opt">)</span>
-    <span class="hl opt">}</span>
-  
-    <span class="hl kwa">def</span> by<span class="hl opt">[</span>T<span class="hl opt">](</span>s<span class="hl opt">:</span> Stream<span class="hl opt">[</span>T<span class="hl opt">],</span> n<span class="hl opt">:</span> Int<span class="hl opt">):</span> Stream<span class="hl opt">[</span>Stream<span class="hl opt">[</span>T<span class="hl opt">]] =</span>
-        <span class="hl kwa">if</span><span class="hl opt">(</span>s<span class="hl opt">.</span>isEmpty<span class="hl opt">)</span> Stream<span class="hl opt">.</span>empty
-        <span class="hl kwa">else</span> Stream<span class="hl opt">.</span><span class="hl kwd">cons</span><span class="hl opt">(</span>s take n<span class="hl opt">,</span> <span class="hl kwd">by</span><span class="hl opt">(</span>s drop n<span class="hl opt">,</span> n<span class="hl opt">))</span>
-
-    <span class="hl kwa">def</span> <span class="hl kwd">main</span><span class="hl opt">(</span>args<span class="hl opt">:</span> Array<span class="hl opt">[</span>String<span class="hl opt">]):</span> Unit <span class="hl opt">=</span>
-        <span class="hl kwa">for</span> <span class="hl opt">(</span>d <span class="hl opt">&lt;-</span> <span class="hl kwd">by</span><span class="hl opt">(</span>pi_digits take <span class="hl kwd">args</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">).</span>toInt<span class="hl opt">,</span> <span class="hl num">10</span><span class="hl opt">))</span>
-            <span class="hl kwd">println</span><span class="hl opt">(</span><span class="hl str">&quot;%-10s</span><span class="hl esc">\t</span><span class="hl str">:%d&quot;</span><span class="hl opt">.</span><span class="hl kwd">format</span><span class="hl opt">(</span>d<span class="hl opt">.</span><span class="hl kwd">map</span><span class="hl opt">(</span>_<span class="hl opt">.</span>_2<span class="hl opt">).</span><span class="hl kwd">mkString</span><span class="hl opt">(</span><span class="hl str">&quot;&quot;</span><span class="hl opt">),</span>d<span class="hl opt">.</span>last<span class="hl opt">.</span>_1<span class="hl opt">))</span>
-<span class="hl opt">}</span>

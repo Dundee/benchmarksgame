@@ -1,47 +1,0 @@
-﻿<span class="hl slc">// The Computer Language Benchmarks Game</span>
-<span class="hl slc">// http://benchmarksgame.alioth.debian.org/</span>
-<span class="hl slc">//</span>
-<span class="hl slc">// Modification by Don Syme &amp; Jomo Fisher to use null as representation</span>
-<span class="hl slc">// of Empty node and to use a single Next element.</span>
-<span class="hl slc">// Based on F# version by Robert Pickering</span>
-<span class="hl slc">// Based on ocaml version by Troestler Christophe &amp; Isaac Gouy</span>
-
-<span class="hl kwa">open</span> <span class="hl kwd">System</span>
-<span class="hl kwa">open</span> <span class="hl kwd">Unchecked</span>
-
-<span class="hl kwa">type</span> <span class="hl kwd">Next</span> <span class="hl opt">= {</span> <span class="hl kwd">Left</span><span class="hl opt">:</span> <span class="hl kwd">Tree</span><span class="hl opt">;</span> <span class="hl kwd">Right</span><span class="hl opt">:</span> <span class="hl kwd">Tree</span> <span class="hl opt">}</span>
-<span class="hl kwa">and</span> <span class="hl opt">[&lt;</span><span class="hl kwd">Struct</span><span class="hl opt">&gt;]</span> <span class="hl kwd">Tree</span><span class="hl opt">(</span>next<span class="hl opt">:</span><span class="hl kwd">Next</span><span class="hl opt">,</span>item<span class="hl opt">:</span><span class="hl kwb">int</span><span class="hl opt">) =</span>
-    <span class="hl kwa">member</span> t<span class="hl opt">.</span><span class="hl kwd">Check</span><span class="hl opt">() =</span>
-        <span class="hl kwa">match</span> box next <span class="hl kwa">with</span> 
-        | <span class="hl kwa">null</span> <span class="hl opt">-&gt;</span> item
-        | _ <span class="hl opt">-&gt;</span> item <span class="hl opt">+</span> next<span class="hl opt">.</span><span class="hl kwd">Left</span><span class="hl opt">.</span><span class="hl kwd">Check</span><span class="hl opt">() -</span> next<span class="hl opt">.</span><span class="hl kwd">Right</span><span class="hl opt">.</span><span class="hl kwd">Check</span><span class="hl opt">()</span>
-
-<span class="hl kwa">let rec</span> make item depth <span class="hl opt">=</span>
-    <span class="hl kwa">if</span> depth <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl kwa">then</span> <span class="hl kwd">Tree</span><span class="hl opt">({</span><span class="hl kwd">Left</span> <span class="hl opt">=</span> make <span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">*</span>item<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">) (</span>depth<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">);</span> <span class="hl kwd">Right</span><span class="hl opt">=</span>make <span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">*</span>item<span class="hl opt">) (</span>depth<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">)},</span> item<span class="hl opt">)</span>
-    <span class="hl kwa">else</span> <span class="hl kwd">Tree</span><span class="hl opt">(</span>defaultof<span class="hl opt">&lt;</span>_<span class="hl opt">&gt;,</span>item<span class="hl opt">)</span>
-
-<span class="hl kwa">let inline</span> check <span class="hl opt">(</span>tree<span class="hl opt">:</span><span class="hl kwd">Tree</span><span class="hl opt">) =</span> tree<span class="hl opt">.</span><span class="hl kwd">Check</span><span class="hl opt">()</span>
-
-<span class="hl kwa">let rec</span> loopDepths maxDepth minDepth d <span class="hl opt">=</span>
-    <span class="hl kwa">if</span> d <span class="hl opt">&lt;=</span> maxDepth <span class="hl kwa">then</span>
-        <span class="hl kwa">let</span> niter <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl opt">&lt;&lt;&lt; (</span>maxDepth <span class="hl opt">-</span> d <span class="hl opt">+</span> minDepth<span class="hl opt">)</span>
-        <span class="hl kwa">let mutable</span> c <span class="hl opt">=</span> <span class="hl num">0</span>
-        <span class="hl kwa">for</span> i <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl kwa">to</span> niter <span class="hl kwa">do</span>
-            c <span class="hl opt">&lt;-</span> c <span class="hl opt">+</span> check <span class="hl opt">(</span>make i d<span class="hl opt">) +</span> check <span class="hl opt">(</span>make <span class="hl opt">(-</span>i<span class="hl opt">)</span> d<span class="hl opt">)</span>
-        <span class="hl kwd">Console</span><span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(</span><span class="hl str">&quot;{0}</span><span class="hl esc">\t</span> <span class="hl str">trees of depth {1}</span><span class="hl esc">\t</span> <span class="hl str">check: {2}&quot;</span><span class="hl opt">,</span><span class="hl num">2</span> <span class="hl opt">*</span> niter<span class="hl opt">,</span>d<span class="hl opt">,</span>c<span class="hl opt">)</span>
-        loopDepths maxDepth minDepth <span class="hl opt">(</span>d <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">)</span>
-
-<span class="hl opt">[&lt;</span><span class="hl kwd">EntryPoint</span><span class="hl opt">&gt;]</span>
-<span class="hl kwa">let</span> main args <span class="hl opt">=</span>
-    <span class="hl kwa">let</span> minDepth <span class="hl opt">=</span> <span class="hl num">4</span>
-    <span class="hl kwa">let</span> maxDepth <span class="hl opt">=</span>
-        <span class="hl kwa">let</span> n <span class="hl opt">=</span> <span class="hl kwa">if</span> args<span class="hl opt">.</span><span class="hl kwd">Length</span> <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl kwa">then</span> <span class="hl kwb">int</span> args<span class="hl opt">.[</span><span class="hl num">0</span><span class="hl opt">]</span> <span class="hl kwa">else</span> <span class="hl num">10</span>
-        max <span class="hl opt">(</span>minDepth <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">)</span> n
-    <span class="hl kwa">let</span> stretchDepth <span class="hl opt">=</span> maxDepth <span class="hl opt">+</span> <span class="hl num">1</span>
-
-    <span class="hl kwa">let</span> c <span class="hl opt">=</span> check <span class="hl opt">(</span>make <span class="hl num">0</span> stretchDepth<span class="hl opt">)</span>
-    <span class="hl kwd">Console</span><span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(</span><span class="hl str">&quot;stretch tree of depth {0}</span><span class="hl esc">\t</span> <span class="hl str">check: {1}&quot;</span><span class="hl opt">,</span>stretchDepth<span class="hl opt">,</span>c<span class="hl opt">)</span>
-    <span class="hl kwa">let</span> longLivedTree <span class="hl opt">=</span> make <span class="hl num">0</span> maxDepth
-    loopDepths maxDepth minDepth minDepth
-    <span class="hl kwd">Console</span><span class="hl opt">.</span><span class="hl kwd">WriteLine</span><span class="hl opt">(</span><span class="hl str">&quot;long lived tree of depth {0}</span><span class="hl esc">\t</span> <span class="hl str">check: {1}&quot;</span><span class="hl opt">,</span>maxDepth<span class="hl opt">,(</span>check longLivedTree<span class="hl opt">))</span>
-    exit <span class="hl num">0</span>

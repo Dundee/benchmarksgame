@@ -1,10 +1,10 @@
-<?   // Copyright (c) Isaac Gouy 2004-2012 ?>
+<?php   // Copyright (c) Isaac Gouy 2004-2012 ?>
 
-<?
+<?php
 MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang);
 ?>
 
-<?
+<?php
    list($score,$labels,$ratio,$selected) = $Data;
    unset($Data);
 ?>
@@ -44,7 +44,7 @@ MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang);
 <th><a href="#about">missing</a></th>
 </tr>
 
-<?
+<?php
 foreach($score as $k => $v){
    $HtmlName = $Langs[$k][LANG_HTML];
 
@@ -55,7 +55,7 @@ foreach($score as $k => $v){
    printf('<td class="score"><p><input type="checkbox" name="%s" %s /></p></td>', $k, $checked);
 
    if (isset($Langs[$k][LANG_SPECIALURL]) && !empty($Langs[$k][LANG_SPECIALURL])){
-      printf('<td><a href="%s.php" title="Compare %s program speed and size against other programs">%s</a></td>', $Langs[$k][LANG_SPECIALURL],$Langs[$k][LANG_FULL],$HtmlName); 
+      printf('<td><a href="%s.php" title="Compare %s program speed and size against other programs">%s</a></td>', $Langs[$k][LANG_SPECIALURL],$Langs[$k][LANG_FULL],$HtmlName);
    } else {
       printf('<td><a href="compare.php?lang=%s" title="Compare %s program speed and size against other programs">%s</a></td>', $k,$Langs[$k][LANG_FULL],$HtmlName);
    }
@@ -89,7 +89,7 @@ foreach($score as $k => $v){
 </tr>
 
 <tr><th>benchmark</th><th>weight</th></tr>
-<?
+<?php
 foreach($Tests as $t){
    $Link = $t[TEST_LINK];
    $Name = $t[TEST_NAME];

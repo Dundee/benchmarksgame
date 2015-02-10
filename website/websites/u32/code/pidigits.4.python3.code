@@ -1,25 +1,0 @@
-<span class="hl slc"># The Computer Language Benchmarks Game</span>
-<span class="hl slc"># http://benchmarksgame.alioth.debian.org/</span>
-<span class="hl slc">#</span>
-<span class="hl slc"># contributed Daniel Nanz</span>
-
-<span class="hl kwa">import</span> sys
-<span class="hl kwa">import</span> gmpy
-
-
-<span class="hl kwa">def</span> <span class="hl kwd">get_pistring</span><span class="hl opt">(</span>n<span class="hl opt">,</span> pi<span class="hl opt">=</span>gmpy<span class="hl opt">.</span>pi<span class="hl opt">):</span>
-
-    <span class="hl kwa">return</span> <span class="hl kwb">str</span><span class="hl opt">(</span><span class="hl kwd">pi</span><span class="hl opt">(</span><span class="hl kwb">int</span><span class="hl opt">(</span><span class="hl num">3.35</span> <span class="hl opt">*</span> n<span class="hl opt">))).</span><span class="hl kwd">replace</span><span class="hl opt">(</span><span class="hl str">'.'</span><span class="hl opt">,</span> <span class="hl str">''</span><span class="hl opt">)[</span><span class="hl num">0</span> <span class="hl opt">:</span> n<span class="hl opt">]</span>
-
-
-<span class="hl kwa">def</span> <span class="hl kwd">main</span><span class="hl opt">(</span>n<span class="hl opt">,</span> width<span class="hl opt">=</span><span class="hl num">10</span><span class="hl opt">,</span> line<span class="hl opt">=</span><span class="hl str">'{}</span><span class="hl esc">\t</span><span class="hl str">:{}'</span><span class="hl opt">):</span>
-
-    pistring <span class="hl opt">=</span> <span class="hl kwd">get_pistring</span><span class="hl opt">(</span>n<span class="hl opt">)</span>
-    <span class="hl kwa">for</span> i <span class="hl kwa">in</span> <span class="hl kwb">range</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> n <span class="hl opt">-</span> width <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">,</span> width<span class="hl opt">):</span>
-        <span class="hl kwa">print</span><span class="hl opt">(</span>line<span class="hl opt">.</span><span class="hl kwd">format</span><span class="hl opt">(</span>pistring<span class="hl opt">[</span>i <span class="hl opt">:</span> i <span class="hl opt">+</span> width<span class="hl opt">],</span> i <span class="hl opt">+</span> width<span class="hl opt">))</span>
-    <span class="hl kwa">if</span> n <span class="hl opt">%</span> width <span class="hl opt">&gt;</span> <span class="hl num">0</span><span class="hl opt">:</span>
-        <span class="hl kwa">print</span><span class="hl opt">(</span>line<span class="hl opt">.</span><span class="hl kwd">format</span><span class="hl opt">(</span>pistring<span class="hl opt">[-(</span>n <span class="hl opt">%</span> width<span class="hl opt">) : ].</span><span class="hl kwd">ljust</span><span class="hl opt">(</span>width<span class="hl opt">),</span> n<span class="hl opt">))</span>
-
-
-<span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">int</span><span class="hl opt">(</span>sys<span class="hl opt">.</span>argv<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">]))</span>
-

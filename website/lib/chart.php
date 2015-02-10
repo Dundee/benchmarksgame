@@ -1,4 +1,4 @@
-<?
+<?php
 header("Content-type: image/png");
 
 // Copyright (c) Isaac Gouy 2004-2011
@@ -45,7 +45,7 @@ if ($valid){
    } elseif ($Sort=='elapsed'){
       $titletext = $Test[0].' - How many times slower? (Elapsed secs)';
       $yaxistext = 'program time ÷ fastest program time';
-   } elseif ($Sort=='gz'){ 
+   } elseif ($Sort=='gz'){
       $titletext = $Test[0].' - How many times more code?';
       $yaxistext = 'program code-used ÷ least code-used';
    }

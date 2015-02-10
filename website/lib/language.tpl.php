@@ -1,12 +1,12 @@
-<?   // Copyright (c) Isaac Gouy 2004-2006 ?>
+<?php   // Copyright (c) Isaac Gouy 2004-2006 ?>
 
-<? 
+<?
 $Row = $Langs[$SelectedLang];
 $LangName = $Row[LANG_FULL];
 $LangTag = $Row[LANG_TAG];
 ?>
 
-<? MkLangsMenuForm($Langs,$SelectedLang); ?>
+<?php MkLangsMenuForm($Langs,$SelectedLang); ?>
 
 <h2><a href="#title" name="title">&nbsp;<strong><?=$LangName;?> measurements</strong></a></h2>
 
@@ -28,7 +28,7 @@ $LangTag = $Row[LANG_TAG];
 <th><a href="<?=CORE_SITE;?>help.php#gzbytes" title="? Help">Code&nbsp;B</a></th>
 </tr>
 
-<?
+<?php
 foreach($Data as $row){
    $test = $row[DATA_TEST];
    $id = $row[DATA_ID];

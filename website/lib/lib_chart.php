@@ -1,4 +1,4 @@
-<?
+<?php
 // Copyright (c) Isaac Gouy 2009-2013
 
 // CONSTANTS ///////////////////////////////////////////////////
@@ -49,11 +49,11 @@ class Chart {
    function defaultWidth(){
       return 480;
    }
-   
+
    function defaultHeight(){
       return 300;
    }
-   
+
    function defaultOriginX(){
       return 48;
    }
@@ -67,7 +67,7 @@ class Chart {
       ImagePNG($this->im);
       ImageDestroy($this->im);
    }
-   
+
    function initializeColours(){
       $this->colour = array();
       $this->colour[WHITE] = ImageColorAllocate($this->im,255,255,255);
@@ -90,7 +90,7 @@ class Chart {
       ImageLine($this->im, $this->w -1, MARGIN, $this->w -1, $this->h-MARGIN, $this->colour[GRAY]);
       ImageLine($this->im, $this->xo, $this->h - $this->yo, $this->w -1, $this->h - $this->yo, $this->colour[DARK_GRAY]); // x-axis
    }
-   
+
 
    function title($label){
       $this->title_($label,3,CHAR_WIDTH_3);
@@ -119,7 +119,7 @@ class Chart {
       $x = ($size - $this->xo - strlen($label)*CHAR_WIDTH_2)/2.0;
       ImageString($this->im, 2, $x + $this->xo, $this->h - 15, $label, $this->colour[BLACK]);
    }
-   
+
    function yAxisLegend($label,$size=null){
       if (!isset($size)){ $size = $this->h; }
       $y = ($size - $this->yo - strlen($label)*CHAR_WIDTH_2)/2.0;
@@ -157,7 +157,7 @@ class Chart {
          }
       }
    }
-   
+
    function xAxis($xaxis,$scale,$shift=null){
       $this->xaxis = $xaxis;
       $this->xscale = $scale;
@@ -251,7 +251,7 @@ class BoxChart extends Chart {
          }
       }
    }
-   
+
    function backgroundText($a){
       $x = $this->xo + 2;
       $count = 0;
@@ -381,7 +381,7 @@ class LineChart extends Chart {
 
                $prevx = $x2;
                $prevy = $y2;
-   
+
                ImageLine($this->im, $x1-1, $y1-1, $x2-1, $y2-1, $this->colour[$linecolour]);
                ImageFilledRectangle($this->im, $prevx-1, $prevy-3, $prevx+3, $prevy+1, $this->colour[$linecolour]);
             }
@@ -397,15 +397,15 @@ class LineChart extends Chart {
 
 
 class StepChart extends Chart {
-   
+
    function defaultWidth(){
       return 400;
    }
-   
+
    function defaultHeight(){
       return 225;
    }
-   
+
    function steps($linecolour,$d){
       $x = $this->xo;
       $y = $this->h - $this->yo;
@@ -418,13 +418,13 @@ class StepChart extends Chart {
 
             $x3 = $x + $p[1] * $this->xscale;
             $y3 = $y - 100.0*$p[3] * $this->yscale;
-   
+
             $x2 = $x3;
             $y2 = $y1;
 
             ImageFilledRectangle($this->im, $x1, $y1-1, $x2+1, $y2, $this->colour[$linecolour]);
             ImageFilledRectangle($this->im, $x3, $y3-1, $x2+1, $y2, $this->colour[$linecolour]);
-   
+
             $prev = $p;
          }
       }
@@ -439,9 +439,9 @@ class StepChart extends Chart {
 
 
 class ShapeChart extends Chart {
-   
+
    // individual points and lines from centroid to those points
-   
+
    function defaultWidth(){
       return 150;
    }
@@ -449,7 +449,7 @@ class ShapeChart extends Chart {
    function defaultHeight(){
       return 120;
    }
-   
+
    function shapes($d,$c){
       $n = sizeof($d);
       if ($n % 2 == 0){

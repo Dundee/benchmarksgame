@@ -1,8 +1,8 @@
-<?   // Copyright (c) Isaac Gouy 2009-2010 ?>
+<?php   // Copyright (c) Isaac Gouy 2009-2010 ?>
 
 <h2>&nbsp;<?= $Title." [".$Mark."]" ?></h2>
 
-<?
+<?php
 echo '<p>name,lang,id,n,size(B),cpu(s),mem(KB),status,load,elapsed(s) [', $Mark, "]<br/>";
 
 foreach($Data as $i => $row){

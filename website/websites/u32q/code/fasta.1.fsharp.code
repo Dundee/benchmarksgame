@@ -1,84 +1,0 @@
-﻿<span class="hl slc">// The Computer Language Benchmarks Game</span>
-<span class="hl slc">// http://benchmarksgame.alioth.debian.org/</span>
-<span class="hl slc">//</span>
-<span class="hl slc">// Contributed by Valentin Kraevskiy</span>
-
-<span class="hl kwa">let</span> im <span class="hl opt">=</span> <span class="hl num">139968</span>
-<span class="hl kwa">let</span> ia <span class="hl opt">=</span> <span class="hl num">3877</span>
-<span class="hl kwa">let</span> ic <span class="hl opt">=</span> <span class="hl num">29573</span>
-<span class="hl kwa">let mutable</span> seed <span class="hl opt">=</span> <span class="hl num">42</span><span class="hl opt">;</span>
-
-<span class="hl kwa">let inline</span> random max <span class="hl opt">=</span>
-    seed <span class="hl opt">&lt;- (</span>seed <span class="hl opt">*</span> ia <span class="hl opt">+</span> ic<span class="hl opt">) %</span> im
-    max <span class="hl opt">*</span> <span class="hl kwb">float</span> seed <span class="hl opt">/</span> <span class="hl kwb">float</span> im
-
-<span class="hl kwa">let</span> alu <span class="hl opt">=</span>
-    <span class="hl str">&quot;GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG\</span>
-<span class="hl str">     GAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGAGA\</span>
-<span class="hl str">     CCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAAT\</span>
-<span class="hl str">     ACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAATCCCA\</span>
-<span class="hl str">     GCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTGAACCCGGG\</span>
-<span class="hl str">     AGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCC\</span>
-<span class="hl str">     AGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAA&quot;</span><span class="hl kwd">B</span>
-
-<span class="hl kwa">let</span> makeCumulative <span class="hl opt">=</span> 
-    <span class="hl kwd">List</span><span class="hl opt">.</span>fold <span class="hl opt">(</span><span class="hl kwa">fun</span> <span class="hl opt">(</span>cp<span class="hl opt">,</span> res<span class="hl opt">) (</span>c<span class="hl opt">,</span> p<span class="hl opt">) -&gt;</span> cp <span class="hl opt">+</span> p<span class="hl opt">, (</span>c<span class="hl opt">,</span> cp <span class="hl opt">+</span> p<span class="hl opt">) ::</span> res<span class="hl opt">) (</span><span class="hl num">0.0</span><span class="hl opt">, [])</span> 
-    <span class="hl opt">&gt;&gt;</span> snd <span class="hl opt">&gt;&gt;</span> <span class="hl kwd">List</span><span class="hl opt">.</span>toArray
-
-<span class="hl kwa">let</span> homoSapiens <span class="hl opt">=</span> 
-    makeCumulative
-        <span class="hl opt">[</span><span class="hl str">'a'</span><span class="hl kwd">B</span><span class="hl opt">,</span> <span class="hl num">0.3029549426680</span>
-         <span class="hl str">'c'</span><span class="hl kwd">B</span><span class="hl opt">,</span> <span class="hl num">0.1979883004921</span>
-         <span class="hl str">'g'</span><span class="hl kwd">B</span><span class="hl opt">,</span> <span class="hl num">0.1975473066391</span>
-         <span class="hl str">'t'</span><span class="hl kwd">B</span><span class="hl opt">,</span> <span class="hl num">0.3015094502008</span><span class="hl opt">]</span>
-     
-<span class="hl kwa">let</span> iub <span class="hl opt">=</span> 
-    makeCumulative 
-        <span class="hl opt">[</span><span class="hl str">'a'</span><span class="hl kwd">B</span><span class="hl opt">,</span> <span class="hl num">0.27</span><span class="hl opt">;</span> <span class="hl str">'c'</span><span class="hl kwd">B</span><span class="hl opt">,</span> <span class="hl num">0.12</span><span class="hl opt">;</span> <span class="hl str">'g'</span><span class="hl kwd">B</span><span class="hl opt">,</span> <span class="hl num">0.12</span>
-         <span class="hl str">'t'</span><span class="hl kwd">B</span><span class="hl opt">,</span> <span class="hl num">0.27</span><span class="hl opt">;</span> <span class="hl str">'B'B, 0.02; '</span><span class="hl kwd">D'B</span><span class="hl opt">,</span> <span class="hl num">0.02</span>
-         <span class="hl str">'H'B, 0.02; '</span><span class="hl kwd">K'B</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">;</span> <span class="hl str">'M'B, 0.02</span>
-<span class="hl str">         '</span><span class="hl kwd">N'B</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">;</span> <span class="hl str">'R'B, 0.02; '</span><span class="hl kwd">S'B</span><span class="hl opt">,</span> <span class="hl num">0.02</span>
-         <span class="hl str">'V'B, 0.02; '</span><span class="hl kwd">W'B</span><span class="hl opt">,</span> <span class="hl num">0.02</span><span class="hl opt">;</span> <span class="hl str">'Y'B, 0.02]</span>
-<span class="hl str"></span>
-<span class="hl str">let inline selectRandom (f: _ [])  =     </span>
-<span class="hl str">    let r = random 1.0 </span>
-<span class="hl str">    let rec find = function</span>
-<span class="hl str">        | 0 -&gt; fst f.[0]</span>
-<span class="hl str">        | n when r &lt; snd f.[n] -&gt; fst f.[n]</span>
-<span class="hl str">        | n -&gt; find (n - 1)</span>
-<span class="hl str">    find &lt;| f.Length - 1</span>
-<span class="hl str">   </span>
-<span class="hl str">let width = 60 </span>
-<span class="hl str">let stream = System.Console.OpenStandardOutput ()</span>
-<span class="hl str">let buffer = Array.create 1024 0uy</span>
-<span class="hl str">let mutable index = 0</span>
-<span class="hl str">let inline flush () =    </span>
-<span class="hl str">    stream.Write (buffer, 0, index)</span>
-<span class="hl str">    index &lt;- 0</span>
-<span class="hl str">let inline write b = </span>
-<span class="hl str">    buffer.[index] &lt;- b</span>
-<span class="hl str">    index &lt;- index + 1</span>
-<span class="hl str">    if index = buffer.Length then flush ()        </span>
-<span class="hl str">    </span>
-<span class="hl str">let randomFasta desc table n =</span>
-<span class="hl str">    Array.iter write desc</span>
-<span class="hl str">    for i in 1 .. n do</span>
-<span class="hl str">        write &lt;| selectRandom table</span>
-<span class="hl str">        if i % width = 0 then write '</span><span class="hl esc">\n</span><span class="hl str">'B</span>
-<span class="hl str">    if n % width &lt;&gt; 0 then write '</span><span class="hl esc">\n</span><span class="hl str">'B</span>
-<span class="hl str"></span>
-<span class="hl str">let repeatFasta desc (table : byte []) n =</span>
-<span class="hl str">    Array.iter write desc </span>
-<span class="hl str">    for i in 1 .. n do</span>
-<span class="hl str">        write &lt;| table.[(i - 1) % table.Length]</span>
-<span class="hl str">        if i % width = 0 then write '</span><span class="hl esc">\n</span><span class="hl str">'B</span>
-<span class="hl str">    if n % width &lt;&gt; 0 then write '</span><span class="hl esc">\n</span><span class="hl str">'B</span>
-<span class="hl str">        </span>
-<span class="hl str">[&lt;EntryPoint&gt;]</span>
-<span class="hl str">let main args =</span>
-<span class="hl str">    let n = try int args.[0] with _ -&gt; 1000</span>
-<span class="hl str">    repeatFasta &quot;&gt;ONE Homo sapiens alu</span><span class="hl esc">\n</span><span class="hl str">&quot;B alu (2 * n)</span>
-<span class="hl str">    randomFasta &quot;&gt;TWO IUB ambiguity codes</span><span class="hl esc">\n</span><span class="hl str">&quot;B iub (3 * n)</span>
-<span class="hl str">    randomFasta &quot;&gt;THREE Homo sapiens frequency</span><span class="hl esc">\n</span><span class="hl str">&quot;B homoSapiens  (5 * n)</span>
-<span class="hl str">    flush ()</span>
-<span class="hl str">    0</span>
