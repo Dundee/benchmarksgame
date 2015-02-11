@@ -78,10 +78,10 @@ PrintHeaders();
 $allsites = array('u64q');
 
 $langs = array(
-   array('php','PHP','php',$allsites),
+   array('php','PHP 5.6','php',$allsites),
    array('python','Python 2','python',$allsites),
    array('python3','Python 3','python3',$allsites),
-   array('pypy3','PyPy 3','pypy',$allsites),
+   array('pypy3','PyPy 3','pypy3',$allsites),
    );
 
 

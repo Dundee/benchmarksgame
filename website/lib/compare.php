@@ -29,7 +29,7 @@ function isMulticore($CPULoad){
    $sum = 0;
    foreach(explode("%",$CPULoad) as $each){
       $i = (integer)$each;
-      if ($i > 0) $sum += $i; 
+      if ($i > 0) $sum += $i;
    }
    return $sum > 120;
 }
@@ -110,7 +110,7 @@ function HeadToHeadData($FileName,$Tests,$Langs,$Incl,$Excl,$L1,$L2,$HasHeading=
       if ($isLang1 || strpos($line,$prefixL2)){
          $row = explode( ',', $line);
          $test = $row[DATA_TEST];
-// do we need to check $test here?  
+// do we need to check $test here?
 //         if (isset($Incl[$test])){
             if (isset($previous) && $previous != $test){ // assume ndata.csv is sorted by test
                AccumulateComparableRows(BestRows($rowsL1),BestRows($rowsL2),$measurements);
@@ -145,15 +145,15 @@ function HeadToHeadData($FileName,$Tests,$Langs,$Incl,$Excl,$L1,$L2,$HasHeading=
    $times = array();
    $mismatches = array();
    foreach($measurements as $v){
-      $test = $v[0][DATA_TEST]; 
+      $test = $v[0][DATA_TEST];
       if (($test!=NULL && $Tests[$test][TEST_WEIGHT]<=0) || $v[DATA_TIME] == NO_VALUE){ continue; }
       $ratios[] = $v[DATA_TIME];
 
       // Too many confuse default memory use with program memory use
       if ($test=='binarytrees'||$test=='regexdna'||
-            $test=='revcomp'||$test=='knucleotide'){ 
+            $test=='revcomp'||$test=='knucleotide'){
          $ratios[] = $v[DATA_MEMORY]; }
-      else { 
+      else {
          $ratios[] = 0.0; }
 
       $ratios[] = $v[DATA_GZ];
@@ -172,7 +172,7 @@ function HeadToHeadData($FileName,$Tests,$Langs,$Incl,$Excl,$L1,$L2,$HasHeading=
    foreach($Tests as $k => $v){
       if (!isset($sorted[$k])){ $sorted[$k] = array(); }
    }
-   
+
    $stats = Percentiles($times);
 
    return array($sorted,$ratios,$stats,$mismatches);
@@ -236,8 +236,8 @@ if (isset($_GET['lang'])
 if (isset($L)){
    $Available = isset($Langs[$L]) && isset($Incl[$L]);
    // specific request which is not available
-   if (!$Available){ 
-      $L = 'java'; 
+   if (!$Available){
+      $L = 'java';
    }
 } else {
    // no specific request
@@ -249,9 +249,9 @@ if (isset($_GET['lang2'])
    $X = $_GET['lang2'];
    if (ereg("^[a-z0-9]+$",$X)){ $L2 = $X; }
 }
-if ($Available && !empty($L2)){ 
+if ($Available && !empty($L2)){
    $Available = isset($Langs[$L2]) && isset($Incl[$L2]) && ($L2 != $L);
-   if (!$Available){ 
+   if (!$Available){
       // assume LANG_COMPARE is always available in every data set
       $L2 = $Langs[$L][LANG_COMPARE];
    }
@@ -293,14 +293,14 @@ $About->set('Version', HtmlFragment(VERSION_PATH.$L.SEPARATOR.'version.php'));
 // META ////////////////////////////////////////////////
 
 $MetaKeywords = '<meta name="description" content="'.$LangName.' programs vs '.$LangName2.' programs (performance on '.PLATFORM_NAME.')." />';
-         
+
 // if the URL parameter is not currently accepted then do not index
-if ($Available) { 
+if ($Available) {
    $canonicalPage = !(isset($LinkRelCanonical) && !(empty($LinkRelCanonical)));
-   if ($canonicalPage){ 
-      $metaRobots = '<meta name="robots" content="index,follow,archive" />'; 
-   } else { 
-      $metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />'; 
+   if ($canonicalPage){
+      $metaRobots = '<meta name="robots" content="index,follow,archive" />';
+   } else {
+      $metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
    }
 } else {
    $metaRobots = '<meta name="robots" content="noindex,nofollow" />';
