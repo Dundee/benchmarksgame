@@ -237,11 +237,11 @@ if (isset($L)){
    $Available = isset($Langs[$L]) && isset($Incl[$L]);
    // specific request which is not available
    if (!$Available){
-      $L = 'java';
+      $L = 'python3';
    }
 } else {
    // no specific request
-   $L = 'java';
+   $L = 'python3';
 }
 
 if (isset($_GET['lang2'])

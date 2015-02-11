@@ -14,5 +14,6 @@ clean:
 
 update-results:
 	cp bencher/tmp/all_measurements.csv ./website/websites/u64q/data/data.csv
+	cp bencher/tmp/all_measurements.csv ./website/websites/u64q/data/ndata.csv
 
 .PHONY: run clean update-results

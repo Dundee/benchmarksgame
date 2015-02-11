@@ -1,0 +1,73 @@
+
+Wed, 11 Feb 2015 20:48:50 GMT
+
+COMMAND LINE:
+/usr/bin/python2 chameneosredux.python 60000
+
+UNEXPECTED OUTPUT 
+
+11,14c11,14
+<  blue red yellow
+< 38591 zero
+< 40991 zero
+< 40418 zero
+---
+> blue red yellow 
+> 40001 zero
+> 39978 zero
+> 40021 zero
+17,27c17,27
+<  blue red yellow red yellow blue red yellow red blue
+< 10251 zero
+< 15254 zero
+< 8218 zero
+< 14886 zero
+< 13772 zero
+< 11534 zero
+< 9358 zero
+< 14570 zero
+< 11360 zero
+< 10797 zero
+---
+> blue red yellow red yellow blue red yellow red blue 
+> 11755 zero
+> 12194 zero
+> 12142 zero
+> 11760 zero
+> 11860 zero
+> 12225 zero
+> 12440 zero
+> 11854 zero
+> 11890 zero
+> 11880 zero
+
+PROGRAM OUTPUT:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
+ blue red yellow
+38591 zero
+40991 zero
+40418 zero
+ one two zero zero zero zero
+
+ blue red yellow red yellow blue red yellow red blue
+10251 zero
+15254 zero
+8218 zero
+14886 zero
+13772 zero
+11534 zero
+9358 zero
+14570 zero
+11360 zero
+10797 zero
+ one two zero zero zero zero
+

@@ -1,0 +1,110 @@
+
+Wed, 11 Feb 2015 20:51:00 GMT
+
+COMMAND LINE:
+/usr/bin/php knucleotide.php 0 < knucleotide-input10000.txt
+
+UNEXPECTED OUTPUT 
+
+1,36d0
+< 
+< Warning: PHP Startup: Unable to load dynamic library '/usr/lib/php/modules/zmq.so' - libzmq.so.3: cannot open shared object file: No such file or directory in Unknown on line 0
+< 
+< Notice: Undefined variable: line in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 21
+< 
+< Notice: Undefined index: AG in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+< 
+< Notice: Undefined index: GA in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+< 
+< Notice: Undefined index: AC in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+< 
+< Notice: Undefined index: CG in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+< 
+< Notice: Undefined index: AT in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+< 
+< Notice: Undefined index: TG in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+< 
+< Notice: Undefined index: AA in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+< 
+< Notice: Undefined index: TT in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+< 
+< Notice: Undefined index: TA in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+< 
+< Notice: Undefined index: TC in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+< 
+< Notice: Undefined index: GT in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+< 
+< Notice: Undefined index: CA in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+< 
+< Notice: Undefined index: GC in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+< 
+< Notice: Undefined index: CT in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+< 
+< Notice: Undefined index: GG in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+< 
+< Notice: Undefined index: CC in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+
+PROGRAM OUTPUT:
+
+Warning: PHP Startup: Unable to load dynamic library '/usr/lib/php/modules/zmq.so' - libzmq.so.3: cannot open shared object file: No such file or directory in Unknown on line 0
+
+Notice: Undefined variable: line in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 21
+
+Notice: Undefined index: AG in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+
+Notice: Undefined index: GA in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+
+Notice: Undefined index: AC in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+
+Notice: Undefined index: CG in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+
+Notice: Undefined index: AT in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+
+Notice: Undefined index: TG in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+
+Notice: Undefined index: AA in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+
+Notice: Undefined index: TT in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+
+Notice: Undefined index: TA in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+
+Notice: Undefined index: TC in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+
+Notice: Undefined index: GT in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+
+Notice: Undefined index: CA in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+
+Notice: Undefined index: GC in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+
+Notice: Undefined index: CT in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+
+Notice: Undefined index: GG in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+
+Notice: Undefined index: CC in /home/dundee/workspace/benchmarksgame/bencher/programs/knucleotide/knucleotide.php on line 52
+A 30.284
+T 29.796
+C 20.312
+G 19.608
+
+AA 9.212
+AT 8.950
+TT 8.948
+TA 8.936
+CA 6.166
+CT 6.100
+AC 6.086
+TC 6.042
+AG 6.036
+GA 5.968
+TG 5.868
+GT 5.798
+CC 4.140
+GC 4.044
+CG 3.906
+GG 3.798
+
+562	GGT
+152	GGTA
+15	GGTATT
+0	GGTATTTTAATT
+0	GGTATTTTAATTTATAGT
