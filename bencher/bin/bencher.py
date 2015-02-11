@@ -109,7 +109,7 @@ affinitymask = None
 
 exes = set()
 makeExeName = 'make'
-ndiffExeName = 'ndiff'
+ndiffExeName = ''
 cmpExeName = 'cmp'
 diffExeName = 'diff'
 highlightExeName = 'highlight'

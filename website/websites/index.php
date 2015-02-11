@@ -75,15 +75,12 @@ function PrintHeaders(){
 
 PrintHeaders();
 
-$basesite = array('u32');
-$onecoresites = array('u32','u64');
-$u32sites = array('u32','u32q');
 $allsites = array('u64q');
 
 $langs = array(
    array('php','PHP','php',$allsites),
-   array('python2','Python 2','python',$allsites),
-   array('python3','Python 3','python',$allsites),
+   array('python','Python 2','python',$allsites),
+   array('python3','Python 3','python3',$allsites),
    array('pypy3','PyPy 3','pypy',$allsites),
    );
 

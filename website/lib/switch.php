@@ -53,32 +53,9 @@ if ($T=='all'){
 
          // canonical links for Google
          $clinks = array(
-            "gnat" => "u64q/ada.php",
-            "ats" => "u64q/ats.php",
-            "gcc" => "u64q/c.php",
-            "csharp" => "u64q/csharp.php",
-            "gpp" => "u64q/cpp.php",
-            "clojure" => "u64q/clojure.php",
-            "dart" => "u64q/dart.php",
-            "hipe" => "u64q/erlang.php",
-            "fsharp" => "u64q/fsharp.php",
-            "ifc" => "u64q/fortran.php",
-            "go" => "u64q/go.php",
-            "ghc" => "u64q/haskell.php",
-            "java" => "u64q/java.php",
-            "v8" => "u64/javascript.php",
-            "sbcl" => "u64q/lisp.php",
-            "lua" => "u64/lua.php",
-            "ocaml" => "u64q/ocaml.php",
-            "fpascal" => "u64q/pascal.php",
-            "perl" => "u64q/perl.php",
             "php" => "u64q/php.php",
             "python3" => "u64q/python.php",
-            "racket" => "u64q/racket.php",
-            "yarv" => "u64q/ruby.php",
-            "jruby" => "u64q/jruby.php",
-            "scala" => "u64q/scala.php",
-            "vw" => "u64/smalltalk.php"
+            "jruby" => "u64q/ruby.php",
          );
 
          if (isset($clinks[$L])){
