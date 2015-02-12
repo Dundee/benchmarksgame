@@ -198,15 +198,13 @@ def printSolution(solution):
         else:
             print("")
 
-if __name__ == "__main__":
+if not len(argv) > 1:
+    exit()
 
-    if not len(argv) > 1:
-        exit()
-
-    solve(int(argv[1]))
-    print(len(solutions), "solutions found")
-    print()
-    printSolution(min(solutions))
-    print()
-    printSolution(max(solutions))
-    print()
+solve(int(argv[1]))
+print(len(solutions), "solutions found")
+print()
+printSolution(min(solutions))
+print()
+printSolution(max(solutions))
+print()

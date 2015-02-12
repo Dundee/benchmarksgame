@@ -84,6 +84,8 @@ $langs = array(
    array('pypy','PyPy 2','pypy',$allsites),
    array('python3','Python 3','python3',$allsites),
    array('pypy3','PyPy 3','pypy3',$allsites),
+   array('jython','Jython','jython',$allsites),
+   array('cython','Cython','cython',$allsites),
    );
 
 

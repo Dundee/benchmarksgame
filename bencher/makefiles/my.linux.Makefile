@@ -12,17 +12,10 @@
 # ASSUME environment variables for compilers and interpreters are set in the header
 
 ########################################
-# Python
+# Cython
 ########################################
 
-%.python_run: %.python $(PYTHON)
-	-mv $< $*.py
-	-$(PYTHON) -OO -c "from py_compile import compile; compile('$*.py')"
+%.cython_run: %.cython
+	cp $< $*.py
+	cythonize -3 -b $*.py
 
-########################################
-# Python3
-########################################
-
-%.python3_run: %.python3 $(PYTHON3)
-	-mv $< $*.py
-	-$(PYTHON3) -OO -c "from py_compile import compile; compile('$*.py')"

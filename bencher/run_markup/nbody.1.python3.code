@@ -6,7 +6,7 @@
 # modified by Maciej Fijalkowski
 # 2to3
 
-import sys 
+import sys
 
 def combinations(l):
     result = []
@@ -112,5 +112,4 @@ def main(n, ref='sun'):
     advance(0.01, n)
     report_energy()
 
-if __name__ == '__main__':
-    main(int(sys.argv[1]))
+main(int(sys.argv[1]))

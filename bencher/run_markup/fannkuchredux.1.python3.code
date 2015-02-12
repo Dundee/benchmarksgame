@@ -17,7 +17,7 @@ MAX_CPU_LIMIT = 4
 def PermutationGenerator(length,idx):
     count = [0] * length
     perm =  list(range(length))
-        
+
     for i in range( length - 1, 0, -1 ):
         d, idx  = divmod(idx, math.factorial(i))
         count[i] = d
@@ -36,9 +36,9 @@ def PermutationGenerator(length,idx):
               break
             count[i] += 1
             perm[:i],perm[i] = perm[1:i+1],perm[0] #rotate
-            
+
         yield perm
-    
+
 
 def task_body( parms ):
   g = PermutationGenerator( parms[0], parms[1] )
@@ -49,7 +49,7 @@ def task_body( parms ):
       data = list(g.next() if sys.version_info[0]<3 else g.__next__() )
       f =  data[0];
       if f > 0:
-          flips = 0;        
+          flips = 0;
           while f:
               data[:f+1] = data[f::-1] #reverse
               flips += 1
@@ -73,7 +73,7 @@ def main():
         return 2
 
     n = min( cpu_count(), MAX_CPU_LIMIT )
-    
+
     index_max = math.factorial(length)
     index_step = (index_max + n-1) // n
 
@@ -85,9 +85,8 @@ def main():
     processors.close()
     processors.join()
     processors.terminate()
-    
+
     print("%d\nPfannkuchen(%d) = %d" % ( sum(res[1]), length, max(res[0])) )
     return 0
 
-if __name__ == "__main__":
-  main()
+main()

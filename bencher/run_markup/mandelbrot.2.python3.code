@@ -18,8 +18,8 @@ def writer(buff_queue,size):  #i/o is slow, so leave it to only one worker
             buff.append(buff_queue.get_nowait())
         except:
             if len(buff):
-                buff.sort() 
-                pos = len(buff) - 1 
+                buff.sort()
+                pos = len(buff) - 1
                 while pos>0:
                     if buff[pos][0] == buff[pos-1][1]:  #connect contiguous segment
                         buff[pos-1] = (buff[pos-1][0],buff[pos][1],buff[pos-1][2]+buff[pos][2])
@@ -60,13 +60,13 @@ def worker(size, task_queue, buff_queue):
         for x in r_size:
             z = 0j
             c = 2. * x / fsize - 1.5 + fy
-     
+
             for i in r_iter:
                 z = z * z + c
                 if local_abs(z) >= 2.: break
             else:
                 byte_acc += 1 << bit_num
-     
+
             if bit_num == 0:
                 result.append(byte_acc)
                 bit_num = 7
@@ -82,7 +82,7 @@ def main():
     for i in range(size):
         task_queue.put(i)
     buff_queue = mp.Queue()
-    num_proc = 64 
+    num_proc = 64
     proc = []
     for i in range(num_proc):
         task_queue.put(None)
@@ -101,6 +101,5 @@ def main():
     for p in proc:
         p.join()
 
-if __name__=='__main__':
-    main()
+main()
 

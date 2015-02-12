@@ -186,9 +186,8 @@ def solve(n):
     solveCell(width*height - 1, 0)
 
 
-if __name__ == "__main__":
-    solve(int(sys.argv[1]))
+solve(int(sys.argv[1]))
 
-    print("%d solutions found\n" % len(solutions))
-    printSolution(min(solutions))
-    printSolution(max(solutions))
+print("%d solutions found\n" % len(solutions))
+printSolution(min(solutions))
+printSolution(max(solutions))

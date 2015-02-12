@@ -57,7 +57,6 @@ def main():
 
     print("%0.9f" % (sqrt(vBv/vv)))
 
-if __name__ == '__main__':
-    pool = Pool(processes=4)
-    main()
-    
+pool = Pool(processes=4)
+main()
+
