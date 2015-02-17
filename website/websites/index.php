@@ -34,7 +34,7 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 <body id="core">
 
 <table class="banner"><tr>
-<td><h1><a><strong>Python</strong>&nbsp;Implementations <br/><strong>Benchmarks</strong>&nbsp;Game</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo $baseUrl ?>/play.php" title="How programs were measured. FAQs. How to contribute programs.">[[ Play ]]</a></h1></td>
+<td><h1><a><strong>Python</strong>&nbsp;Implementations <strong>Benchmarks</strong>&nbsp;Game</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo $baseUrl ?>/play.php" title="How programs were measured. FAQs. How to contribute programs.">[[ Play ]]</a></h1></td>
 </tr></table>
 
 <div id="sitemap">
