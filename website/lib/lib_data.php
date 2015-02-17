@@ -59,10 +59,8 @@ function MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang,$Id=NULL){
    }
 
    $datasets = array(
-      array('u32','x86 one core'),
       array('u64q','x64 dual-core'),
-      array('u32q','x86 dual-core'),
-      array('u64','x64 one core') );
+   );
 
    echo '<select name="data">', "\n";
    foreach($datasets as $Row){

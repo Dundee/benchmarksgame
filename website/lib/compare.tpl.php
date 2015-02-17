@@ -46,6 +46,7 @@ function MkHeadToHeadMenuForm($Tests,$Langs,$SelectedLang,$SelectedLang2){
 
    $datasets = array(
       array('u64q','x64 dual-core'),
+   );
 
    echo '<select name="data">', "\n";
    foreach($datasets as $Row){

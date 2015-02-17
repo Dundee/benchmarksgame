@@ -18,6 +18,7 @@ function MkLangsMenuForm($Langs,$SelectedLang,$Action='measurements.php'){
 
    $datasets = array(
       array('u64q','x64 dual-core'),
+   );
 
    echo '<select name="data">', "\n";
    foreach($datasets as $Row){

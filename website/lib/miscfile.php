@@ -46,7 +46,7 @@ $bannerUrl = CORE_SITE;
 
 $Page = & new Template(LIB_PATH);
 $Page->set('PageTitle', $T.BAR.'Python&nbsp;Implementations&nbsp;Benchmarks&nbsp;Game');
-$Page->set('BannerTitle', 'The&nbsp;Computer&nbsp;Language&nbsp; <br/>Benchmarks&nbsp;Game');
+$Page->set('BannerTitle', 'Python&nbsp;Implementations&nbsp; <br/>Benchmarks&nbsp;Game');
 $Page->set('FaqTitle', '[[ Play ]]');
 $Page->set('BannerUrl', $bannerUrl);
 $Page->set('FaqUrl', $faqUrl);
