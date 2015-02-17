@@ -46,7 +46,7 @@ if (!isset($L2)){
 
 if ($T=='all'){
    if ($L=='all'){
-      $LinkRelCanonical = '<link rel="canonical" href="http://benchmarksgame.alioth.debian.org/u64/which-programs-are-fastest.php" />';
+      $LinkRelCanonical = '<link rel="canonical" href="http://python.milde.cz/u64/which-programs-are-fastest.php" />';
       require_once(LIB_PATH.'boxplot.php');
    } else {
       if ($L!=$L2){
@@ -59,7 +59,7 @@ if ($T=='all'){
          );
 
          if (isset($clinks[$L])){
-            $LinkRelCanonical = '<link rel="canonical" href="http://benchmarksgame.alioth.debian.org/'.$clinks[$L].'" />';
+            $LinkRelCanonical = '<link rel="canonical" href="http://python.milde.cz/'.$clinks[$L].'" />';
          }
 
          require_once(LIB_PATH.'compare.php');
@@ -71,7 +71,7 @@ if ($T=='all'){
    }
 } elseif ($L=='all'){
 
-        $LinkRelCanonical = '<link rel="canonical" href="http://benchmarksgame.alioth.debian.org/u32/performance.php?test='.$T.'" />';
+        $LinkRelCanonical = '<link rel="canonical" href="http://python.milde.cz/u32/performance.php?test='.$T.'" />';
 
    require_once(LIB_PATH.'performance.php');
 

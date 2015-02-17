@@ -45,10 +45,7 @@ function MkHeadToHeadMenuForm($Tests,$Langs,$SelectedLang,$SelectedLang2){
    echo '</select>', "\n";
 
    $datasets = array(
-      array('u32','x86 one core'),
-      array('u64q','x64 quad-core'),
-      array('u32q','x86 quad-core'),
-      array('u64','x64 one core') );
+      array('u64q','x64 dual-core'),
 
    echo '<select name="data">', "\n";
    foreach($datasets as $Row){
@@ -341,13 +338,13 @@ if ($hasMismatches){
 <p>Remember - those are just the fastest <em><?=$LangName;?></em> and <i><?=$LangName2;?></i> programs measured on this OS/machine. <b>Check</b> if there are other implementations of these benchmark programs for <?=$LangName;?>.</p>
 <?php MkLangsMenuForm($Langs,$SelectedLang); ?>
 
-<p>Maybe one of those other <?=$LangName;?> programs is fastest on <a href="<?=CORE_SITE;?>dont-jump-to-conclusions.php#multicore" title="x86, x64 and quad-core">a different OS/machine</a>.</p>
+<p>Maybe one of those other <?=$LangName;?> programs is fastest on <a href="<?=CORE_SITE;?>dont-jump-to-conclusions.php#multicore" title="x86, x64 and dual-core">a different OS/machine</a>.</p>
 
 
 <h2><a href="#measurements" name="measurements">&nbsp;5&nbsp;:&nbsp;Are there other faster programs for these benchmarks?</a></h2>
 <p>Remember - those are just the fastest <em><?=$LangName;?></em> and <i><?=$LangName2;?></i> programs measured on this OS/machine. <b>Check</b> if there are faster implementations of these benchmark programs for other programming languages.</p>
 <?php MkTestsMenuForm($Tests); ?>
-<p>Maybe one of those other programs is fastest on <a href="<?=CORE_SITE;?>dont-jump-to-conclusions.php#multicore" title="x86, x64 and quad-core">a different OS/machine</a>.</p>
+<p>Maybe one of those other programs is fastest on <a href="<?=CORE_SITE;?>dont-jump-to-conclusions.php#multicore" title="x86, x64 and dual-core">a different OS/machine</a>.</p>
 
 
 <h3><a href="#about" name="about">&nbsp;<strong><?=$LangName;?></strong></a>&nbsp;:&nbsp;<?=$LangTag;?>&nbsp;</h3>

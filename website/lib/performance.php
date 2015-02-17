@@ -54,14 +54,14 @@ function BenchmarkData($FileName,$Test,$Langs,$Incl,$Excl,$Sort,$SLangs,$HasHead
                settype($row[DATA_MEMORY],'integer');
                settype($row[DATA_STATUS],'integer');
                settype($row[DATA_ELAPSED],'double');
-   
+
                if (isset($exclude)){
                   $special[] = $row;
                } elseif ($row[DATA_STATUS]){
                   $failed[] = $row;
                } else {
                   $succeeded[] = $row;
-                  
+
                   $row_time = $row[$DATA_TIME_SORT];
                   if ($row_time > 0.0 && $row_time < $time_min){
                      $time_min = $row_time;
@@ -176,12 +176,12 @@ if (!$Available){ $T = 'nbody'; }
 if (isset($_GET['sort'])
       && strlen($_GET['sort']) && (strlen($_GET['sort']) <= 7)){
    $X = $_GET['sort'];
-   if (ereg("^[a-z]+$",$X) && ($X == 'fullcpu' || $X == 'kb' || $X == 'gz' || $X == 'elapsed')){ 
-      $S = $X; 
+   if (ereg("^[a-z]+$",$X) && ($X == 'fullcpu' || $X == 'kb' || $X == 'gz' || $X == 'elapsed')){
+      $S = $X;
    }
 }
 if (!isset($S)){
-   $S = 'elapsed'; 
+   $S = 'elapsed';
 }
 
 
@@ -214,20 +214,20 @@ if (! file_exists(ABOUT_PATH.$AboutTemplateName)){ $AboutTemplateName = 'blank-a
 $MetaKeywords = '<meta name="description" content="Compare programs that '.$Tests[$T][TEST_META].' for ~24 programming languages ('.PLATFORM_NAME.')." />';
 
 // last field of test.csv has linefeed
-$MetaKeywords = str_replace(array("\r", "\n"), '', $MetaKeywords); 
+$MetaKeywords = str_replace(array("\r", "\n"), '', $MetaKeywords);
 
 $canonicalPage = FALSE;
-if ($Available) { 
-   
+if ($Available) {
+
    if (!isset($LinkRelCanonical)){
       $canonicalPage = SITE_NAME == 'u32';
       if ($canonicalPage) {
          $metaRobots = '<meta name="robots" content="index,nofollow,archive" />';
       } else {
-         $LinkRelCanonical = '<link rel="canonical" href="http://benchmarksgame.alioth.debian.org/u32/performance.php?test='.$T.'" />';
+         $LinkRelCanonical = '<link rel="canonical" href="http://python.milde.cz/u32/performance.php?test='.$T.'" />';
          $metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
       }
-   } 
+   }
 } else {
    $metaRobots = '<meta name="robots" content="noindex,nofollow" />';
    unset($LinkRelCanonical);
@@ -236,7 +236,7 @@ if ($Available) {
 
 // TEMPLATE VARS ////////////////////////////////////////////////
 
-$Page->set('PageTitle', $Title.BAR.'Computer&nbsp;Language&nbsp;Benchmarks&nbsp;Game');
+$Page->set('PageTitle', $Title.BAR.'Python&nbsp;Implementations&nbsp;Benchmarks&nbsp;Game');
 $Page->set('BannerTitle', BANNER_TITLE);
 $Page->set('BannerUrl', $bannerUrl);
 $Page->set('FaqTitle', FAQ_TITLE);

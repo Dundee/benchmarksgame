@@ -1,7 +1,7 @@
 <?php
 ob_start('ob_gzhandler');
 $s = time();
-$baseUrl = 'http://localhost/benchmarksgame/website/websites';
+$baseUrl = 'http://python.milde.cz';
 
 // REVISED - don't have all pages expire at the same time!
 // EXPIRE pages 31 hours after they are visited.
@@ -24,7 +24,7 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 <meta name="HandheldFriendly" content="false" />
 <meta name="google-site-verification" content="y9GFMJuxj7Ou4xK9YRagz9hCBfn1lyKcHQakWgkE7gg" />
 
-<title>Computer Language Benchmarks Game</title>
+<title>Python Implementations Benchmarks Game</title>
 <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/benchmark_css_8oct2012.php" />
 <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/nohint_css_26jan2011.php" media="screen,print,projection"/>
 <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/hint_css_26jan2011.php" media="handheld,aural,braille"/>
@@ -34,28 +34,12 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 <body id="core">
 
 <table class="banner"><tr>
-<td><h1><a>The&nbsp;Computer&nbsp;<strong>Language</strong>&nbsp; <br/><strong>Benchmarks</strong>&nbsp;Game</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo $baseUrl ?>/play.php" title="How programs were measured. FAQs. How to contribute programs.">[[ Play ]]</a></h1></td>
+<td><h1><a><strong>Python</strong>&nbsp;Implementations <br/><strong>Benchmarks</strong>&nbsp;Game</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo $baseUrl ?>/play.php" title="How programs were measured. FAQs. How to contribute programs.">[[ Play ]]</a></h1></td>
 </tr></table>
 
 <div id="sitemap">
 
 <p><i>"After all, facts are facts, and although we may quote one to another with a chuckle the words of the Wise Statesman, 'Lies--damned lies--and statistics,' still there are some easy figures the simplest must understand, and the astutest cannot wriggle out of."</i> <span class="smaller">Leonard Henry Courtney, 1895</span></p>
-
-<p><g:plusone annotation="none"></g:plusone></p>
-
-<script type="text/javascript">
-  (function() {
-    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://apis.google.com/js/plusone.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-  })();
-</script>
-
-<p><strong>tl;dr</strong></p>
-
-<p><strong>Measurement is highly specific</strong> -- the time taken for this <a href="<?php echo $baseUrl ?>/u32/performance.php?test=nbody#about" title="Read the task description">benchmark task</a>, by this <a href="<?php echo $baseUrl ?>/u32/program.php?test=nbody&amp;lang=gcc&amp;id=1#sourcecode" title="Read the program source code">toy program</a>, with this <a href="<?php echo $baseUrl ?>/u32/program.php?test=nbody&amp;lang=gcc&amp;id=1#about"  title="Check the version information">programming language implementation</a>, with these <a href="<?php echo $baseUrl ?>/u32/program.php?test=nbody&amp;lang=gcc&amp;id=1#log" title="Check the compiler flags and runtime options">options</a>, on this <a href="<?php echo $baseUrl ?>/more.php#machine" title="What hardware and OS do you measure the programs on?">computer</a>, with these <a href="<?php echo $baseUrl ?>/u32/program.php?test=nbody&amp;lang=gcc&amp;id=1#measurements" title="">workloads</a>.</p>
-
-<p>Same toy program, same computer, same workload -- but <a href="<?php echo $baseUrl ?>/u32/program.php?test=nbody&amp;lang=cint&amp;id=1#measurements" title="">much slower</a>.</p>
 
 <p>Measurement is not prophesy.</p>
 
@@ -67,7 +51,7 @@ $sites = array('u64q');
 function PrintHeaders(){
    echo '<tr><th>&nbsp;</th><th></th><th></th><th></th></tr>';
    echo '<tr>';
-   echo '<th class="u64q">&nbsp;x64&nbsp;Arch Linux&#8482; Intel&#174;&nbsp;Q6600&#174; quad-core&nbsp;</th>';
+   echo '<th class="u64q">&nbsp;x64&nbsp;Arch Linux&#8482; Intel&#174;&nbsp;i5-4210U&#174; dual-core&nbsp;</th>';
    echo '</tr>';
    echo '<tr><th>&nbsp;</th><th></th><th></th><th></th></tr>';
 }
@@ -162,7 +146,7 @@ foreach($page as $p){
 </table>
 
 
-<p class="imgfooter">&nbsp; <a href="<?php echo $baseUrl ?>/mobile/index.php" title="Handheld Friendly website">Mobile</a> &nbsp; <a href="<?php echo $baseUrl ?>/dont-jump-to-conclusions.php">Conclusions</a> &nbsp; <a href="<?php echo $baseUrl ?>/license.php">License</a> &nbsp; <a href="<?php echo $baseUrl ?>/play.php">Play</a> &nbsp;</p>
+<p class="imgfooter">&nbsp; <a href="<?php echo $baseUrl ?>/dont-jump-to-conclusions.php">Conclusions</a> &nbsp; <a href="<?php echo $baseUrl ?>/license.php">License</a> &nbsp; <a href="<?php echo $baseUrl ?>/play.php">Play</a> &nbsp;</p>
 
 </div>
 

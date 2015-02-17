@@ -15,7 +15,7 @@ define('DATA_ID',2);
 define('DATA_GZ',4);
 define('DATA_STATUS',7);
 
-// With quad-core we changed from CPU Time to Elapsed Time
+// With dual-core we changed from CPU Time to Elapsed Time
 // but we still want to show the old stuff
 define('DATA_TIME',9);
 
@@ -36,7 +36,7 @@ function ValidRowsAndMins($FileName,$Tests,$Langs,$Incl,$Excl,$HasHeading=TRUE){
    $gz_mins = array();
    foreach($Tests as $k => $v){
       // unreasonably large initial values, data should always be smaller
-      $time_mins[$k] = 360000.0; // 100 hours 
+      $time_mins[$k] = 360000.0; // 100 hours
       $gz_mins[$k] = 102400; // 100 Kb
    }
    $data = array();
@@ -76,8 +76,8 @@ function ValidRowsAndMins($FileName,$Tests,$Langs,$Incl,$Excl,$HasHeading=TRUE){
             }
 
 
-            // hard-code a shortest programs example 
-            if ($lang == EXAMPLE){ 
+            // hard-code a shortest programs example
+            if ($lang == EXAMPLE){
 
                settype($row[DATA_GZ],'integer');
                $row_gz = $row[DATA_GZ];
@@ -172,7 +172,7 @@ $metaKeywords = '<meta name="description" content="Look for patterns in Code-use
 
 // TEMPLATE VARS ////////////////////////////////////////////////
 
-$Page->set('PageTitle', $Title.BAR.'Computer&nbsp;Language&nbsp;Benchmarks&nbsp;Game');
+$Page->set('PageTitle', $Title.BAR.'Python&nbsp;Implementations&nbsp;Benchmarks&nbsp;Game');
 $Page->set('BannerTitle', BANNER_TITLE);
 $Page->set('FaqTitle', FAQ_TITLE);
 $Page->set('BannerUrl', $bannerUrl);

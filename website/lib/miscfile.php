@@ -4,7 +4,7 @@
 // LIBRARIES ////////////////////////////////////////////////
 
 require_once(LIB_PATH.'lib_whitelist.php');
-require_once(LIB); 
+require_once(LIB);
 
 // DATA ///////////////////////////////////////////
 
@@ -32,7 +32,7 @@ if (SITE_NAME == 'core' || SITE_NAME == 'u32' || SITE_NAME == 'u32q' || SITE_NAM
       $metaKeywords = '<meta name="description" content="Even benchmarks derived from real programs may not help." />';
    } else {
       $metaRobots = '<meta name="robots" content="noindex,nofollow,noarchive" />';
-      $metaKeywords = '<meta name="description" content="Software contributed to The Computer Language Benchmarks Game is published under this revised BSD license." />';
+      $metaKeywords = '<meta name="description" content="Software contributed to The Python Implementations Benchmarks Game is published under this revised BSD license." />';
    }
 } else {
    // Help people choose the up-to-date measurements
@@ -44,8 +44,8 @@ $bannerUrl = CORE_SITE;
 
 // TEMPLATE VARS ////////////////////////////////////////////////
 
-$Page = & new Template(LIB_PATH);  
-$Page->set('PageTitle', $T.BAR.'Computer&nbsp;Language&nbsp;Benchmarks&nbsp;Game');
+$Page = & new Template(LIB_PATH);
+$Page->set('PageTitle', $T.BAR.'Python&nbsp;Implementations&nbsp;Benchmarks&nbsp;Game');
 $Page->set('BannerTitle', 'The&nbsp;Computer&nbsp;Language&nbsp; <br/>Benchmarks&nbsp;Game');
 $Page->set('FaqTitle', '[[ Play ]]');
 $Page->set('BannerUrl', $bannerUrl);

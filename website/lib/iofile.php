@@ -4,7 +4,7 @@
 // LIBRARIES ////////////////////////////////////////////////
 
 require_once(LIB_PATH.'lib_whitelist.php');
-require_once(LIB); 
+require_once(LIB);
 
 // DATA ///////////////////////////////////////////
 
@@ -31,7 +31,7 @@ if (!isset($E)){ $E = 'txt'; }
 
 $TestName = $Tests[$T][TEST_NAME];
 
-if ($F == 'input'){ $Title = $TestName.' input file'; } 
+if ($F == 'input'){ $Title = $TestName.' input file'; }
 elseif ($F == 'output'){ $Title = $TestName.' output file'; }
 elseif ($F == 'extra'){ $Title = $TestName.' file'; }
 else { $Title = $TestName; }
@@ -43,7 +43,7 @@ $bannerUrl = CORE_SITE;
 // TEMPLATE VARS ////////////////////////////////////////////////
 
 $Page = & new Template(LIB_PATH);
-$Page->set('PageTitle', $Title.BAR.'Computer&nbsp;Language&nbsp;Benchmarks&nbsp;Game');
+$Page->set('PageTitle', $Title.BAR.'Python&nbsp;Implementations&nbsp;Benchmarks&nbsp;Game');
 $Page->set('BannerTitle', BANNER_TITLE);
 $Page->set('FaqTitle', FAQ_TITLE);
 $Page->set('BannerUrl', $bannerUrl);

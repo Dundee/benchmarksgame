@@ -1,11 +1,11 @@
 
 	The Computer Language Benchmarks Game - Website
 
-April 2011, December 2012 Isaac Gouy 
+April 2011, December 2012 Isaac Gouy
 
 
  AUDIENCE
- 
+
  - ?
 
 
@@ -21,27 +21,27 @@ April 2011, December 2012 Isaac Gouy
  - this is by-design a very simple website, which only requires HTML and
     CSS support in the browser.
 
- - this is a dynamic website pulling together a dozen different scripts and 
+ - this is a dynamic website pulling together a dozen different scripts and
     data files and configuration files to generate a web page.
-   
+
 
 
  #1 BACKGROUND
 
  - over 5 years this website has changed in small and large ways, and
-    the configuration files and script files provide some functionality 
+    the configuration files and script files provide some functionality
     that is no longer required. Occasionally obsolete functionality is
-    removed but usually not until other changes are being made. 
+    removed but usually not until other changes are being made.
 
    Be aware, there are cobwebs.
 
- 
- - the contents of benchmarksgame/website/websites is no longer swept to the 
+
+ - the contents of benchmarksgame/website/websites is no longer swept to the
     webserver on the hour every hour. Instead ssh is used to explicitly
     update htdocs when needed.
 
  - most of the configurability in the config.php files is no longer used
-    (for example benchmarksgame/website/websites/u64/config.php) 
+    (for example benchmarksgame/website/websites/u64/config.php)
 
 
 
@@ -60,7 +60,7 @@ April 2011, December 2012 Isaac Gouy
 
    <?php
    ob_start('ob_gzhandler');
-   require_once('config.php'); 
+   require_once('config.php');
    $T = 'all'; $L = 'csharp'; $metaRobots = '';
    require_once(LIB_PATH.'compare.php');
    ?>
@@ -71,17 +71,17 @@ April 2011, December 2012 Isaac Gouy
 
    (See Brian E. Lozier's website/lib/lib.php)
 
-    
+
 
  #3 PHP SCRIPTS
 
  - Originally more script functions were placed in library files and
-    those lib_* files were included into the pages; but now some 
+    those lib_* files were included into the pages; but now some
     functions are defined for more than one page, rather than
     include many functions for the sake of reusing one or two.
 
    So website/lib/compare.php defines Percentiles and Median, duplicating
-    the definitions in website/lib/boxplot.php rather than include 
+    the definitions in website/lib/boxplot.php rather than include
     website/lib/lib_boxplot.php
 
    (With the notable exception of the objects in website/lib/lib_chart.php)

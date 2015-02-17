@@ -14,7 +14,7 @@ define('DATA_STATUS',7);
 define('DATA_LOAD',8);
 define('DATA_ELAPSED',9);
 
-// With quad-core we changed from CPU Time to Elapsed Time
+// With dual-core we changed from CPU Time to Elapsed Time
 // but we still want to show the old stuff
 if (SITE_NAME == 'debian' || SITE_NAME == 'gp4'){
    define('DATA_TIME',DATA_FULLCPU);

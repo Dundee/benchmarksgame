@@ -15,7 +15,7 @@ define('MISC_PATH', '../misc/');
 define('DOWNLOAD_PATH', './download/');
 define('IMAGE_PATH', './');
 
-define('CORE_SITE', 'http://localhost/');
+define('CORE_SITE', 'http://python.milde.cz/');
 
 // CONSTANTS ///////////////////////////////////////////////////
 

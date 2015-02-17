@@ -113,19 +113,19 @@
 <ul>
 <li><a href="http://www.dynamic-languages-symposium.org/dls-13/program/media/Wolczko_2013_VMsIHaveKnownAndOrLoved_Dls.pdf">VMs I Have Known and/or Loved: A subjective history</a> pdf slides</li>
 <li><a href="http://design.cs.iastate.edu/vmil/2013/papers/p05-Sarimbekov.pdf">Characteristics of Dynamic JVM Languages</a> pdf</li>
-<li><a href="http://www.dcs.gla.ac.uk/~wingli/jvm_language_study/jvmlanguages.pdf">JVM-Hosted Languages: They Talk the Talk, but do they Walk the Walk?</a> pdf</li> 
-<li><a href="https://www.scss.tcd.ie/~mccandjm/papers/pppj_preprint.pdf">Optimizing Interpreters by Tuning Opcode Orderings on Virtual Machines for Modern Architectures (Or: How I Learned to Stop Worrying and Love Hill Climbing)</a> pdf</li> 
-<li><a href="http://www.ics.uci.edu/~ahomescu/happyjit_paper.pdf">HappyJIT: A Tracing JIT Compiler for PHP</a> pdf</li> 
-<li><a href="http://tratt.net/laurie/research/publications/papers/bolz_tratt__the_impact_of_metatracing_on_vm_design_and_implementation.pdf">The Impact of Meta-Tracing on VM Design and Implementation</a> pdf</li> 
-<li><a href="http://www.ccs.neu.edu/racket/pubs/oopsla12-stf.pdf">Optimization Coaching: Optimizers Learn to Communicate with Programmers</a> pdf</li> 
-<li><a href="http://www.slideshare.net/jandot/l-fu-dao-a-novel-programming-language-for-bioinformatics">Dao: a novel programming language for bioinformatics</a> slides</li> 
-<li><a href="http://safari.ece.cmu.edu/MSPC2012/papers/p58-davis.pdf">Towards Region-Based Memory Management for Go</a> pdf</li> 
-<li><a href="http://soft.vub.ac.be/~smarr/downloads/tools12-smarr-dhondt-identifying-a-unifying-mechanism-for-the-implementation-of-concurrency-abstractions-on-multi-language-virtual-machines.pdf">Identifying A Unifying Mechanism for the Implementation of Concurrency Abstractions on Multi-Language Virtual Machines</a> pdf</li> 
-<li><a href="http://www.cs.rice.edu/~vsarkar/PDF/ipdps09-accumulators-final-submission.pdf">Phaser Accumulators: a New Reduction Construct for Dynamic Parallelism</a> pdf</li> 
-<li><a href="http://www.scss.tcd.ie/publications/tech-reports/reports.09/TCD-CS-2009-37.pdf">Dynamic Interpretation for Dynamic Scripting Languages</a> pdf</li>  
-<li><a href="http://www.softlab.ntua.gr/research/techrep/CSD-SW-TR-8-09.pdf">Race-free and Memory-safe Multithreading: Design and Implementation in Cyclone</a> pdf</li>  
-<li><a href="http://moscova.inria.fr/~zappa/projects/liketypes/paper.pdf">Integrating Typed and Untyped Code in a Scripting Language</a> pdf</li>  
-<li><a href="http://www.springerlink.com/index/P4U0851W34180N74.pdf">Inline Caching Meets Quickening</a> pdf</li> 
+<li><a href="http://www.dcs.gla.ac.uk/~wingli/jvm_language_study/jvmlanguages.pdf">JVM-Hosted Languages: They Talk the Talk, but do they Walk the Walk?</a> pdf</li>
+<li><a href="https://www.scss.tcd.ie/~mccandjm/papers/pppj_preprint.pdf">Optimizing Interpreters by Tuning Opcode Orderings on Virtual Machines for Modern Architectures (Or: How I Learned to Stop Worrying and Love Hill Climbing)</a> pdf</li>
+<li><a href="http://www.ics.uci.edu/~ahomescu/happyjit_paper.pdf">HappyJIT: A Tracing JIT Compiler for PHP</a> pdf</li>
+<li><a href="http://tratt.net/laurie/research/publications/papers/bolz_tratt__the_impact_of_metatracing_on_vm_design_and_implementation.pdf">The Impact of Meta-Tracing on VM Design and Implementation</a> pdf</li>
+<li><a href="http://www.ccs.neu.edu/racket/pubs/oopsla12-stf.pdf">Optimization Coaching: Optimizers Learn to Communicate with Programmers</a> pdf</li>
+<li><a href="http://www.slideshare.net/jandot/l-fu-dao-a-novel-programming-language-for-bioinformatics">Dao: a novel programming language for bioinformatics</a> slides</li>
+<li><a href="http://safari.ece.cmu.edu/MSPC2012/papers/p58-davis.pdf">Towards Region-Based Memory Management for Go</a> pdf</li>
+<li><a href="http://soft.vub.ac.be/~smarr/downloads/tools12-smarr-dhondt-identifying-a-unifying-mechanism-for-the-implementation-of-concurrency-abstractions-on-multi-language-virtual-machines.pdf">Identifying A Unifying Mechanism for the Implementation of Concurrency Abstractions on Multi-Language Virtual Machines</a> pdf</li>
+<li><a href="http://www.cs.rice.edu/~vsarkar/PDF/ipdps09-accumulators-final-submission.pdf">Phaser Accumulators: a New Reduction Construct for Dynamic Parallelism</a> pdf</li>
+<li><a href="http://www.scss.tcd.ie/publications/tech-reports/reports.09/TCD-CS-2009-37.pdf">Dynamic Interpretation for Dynamic Scripting Languages</a> pdf</li>
+<li><a href="http://www.softlab.ntua.gr/research/techrep/CSD-SW-TR-8-09.pdf">Race-free and Memory-safe Multithreading: Design and Implementation in Cyclone</a> pdf</li>
+<li><a href="http://moscova.inria.fr/~zappa/projects/liketypes/paper.pdf">Integrating Typed and Untyped Code in a Scripting Language</a> pdf</li>
+<li><a href="http://www.springerlink.com/index/P4U0851W34180N74.pdf">Inline Caching Meets Quickening</a> pdf</li>
 </ul>
 <p>Having a collection of programs that implement the same tasks in different programming languages is at least convenient. Presumably convenience is why Bjarne Stroustrup refers to the benchmarks game (to support his point about run time typing) in <a href="http://www.stroustrup.com/Software-for-infrastructure.pdf">"Software Development for Infrastructure"</a> pdf, IEEE Computer, January 2012.</p>
 </dd>
@@ -181,7 +181,7 @@
 
 <dt><a href="#multicore" name="multicore">&nbsp;<strong>x64 and multi-core</strong></a></dt>
 <dd>
-<p>By 2008 new computer hardware was commonly dual-core or quad-core; by 2008 operating systems were often 64 bit - so the benchmarks game was moved to a new quad-core Intel® Q6600® machine and <strong>4 sets of measurements</strong> were recorded:</p>
+<p>By 2008 new computer hardware was commonly dual-core or dual-core; by 2008 operating systems were often 64 bit - so the benchmarks game was moved to a new dual-core Intel® i5-4210U® machine and <strong>4 sets of measurements</strong> were recorded:</p>
 <ul>
 <li><p><span class="u32"><a title="" href="./u32/which-programs-are-fastest.php">&nbsp;Ubuntu Linux x86 programs bound to a single core&nbsp;</a></span></p></li>
 <li><p><span class="u32q"><a title="" href="./u32q/which-programs-are-fastest.php">&nbsp;Ubuntu Linux x86 programs enabled for quad core&nbsp;</a></span></p></li>

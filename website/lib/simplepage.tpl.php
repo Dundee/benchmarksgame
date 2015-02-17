@@ -22,13 +22,13 @@ h1 { font-weight: bold; font-size: smaller; }
 
 <body id="<?=SITE_NAME;?>">
 
-<h1>The Computer Language Benchmarks Game</h1>
+<h1>The Python Implementations Benchmarks Game</h1>
 <div id="<?=$PageId;?>">
 <?=$PageBody;?>
 </div>
 
 <p>And please don't jump to conclusions! "The performance of a benchmark, even if it is derived from a real program, may not help to predict the performance of similar programs that have different hot spots."</p>
 
-<p>&nbsp; <a href="http://benchmarksgame.alioth.debian.org/mobile/">Home</a> &nbsp; <a href="http://benchmarksgame.alioth.debian.org/mobile/license.php">License</a> &nbsp; <a href="http://benchmarksgame.alioth.debian.org/mobile/play.php">Play</a> &nbsp;</p>
+<p>&nbsp; <a href="http://python.milde.cz/mobile/">Home</a> &nbsp; <a href="http://python.milde.cz/mobile/license.php">License</a> &nbsp; <a href="http://python.milde.cz/mobile/play.php">Play</a> &nbsp;</p>
 </body>
 </html>

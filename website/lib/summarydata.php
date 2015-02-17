@@ -16,7 +16,7 @@ define('DATA_ID',2);
 define('DATA_TESTVALUE',3);
 define('DATA_STATUS',7);
 
-// With quad-core we changed from CPU Time to Elapsed Time
+// With dual-core we changed from CPU Time to Elapsed Time
 // but we still want to show the old stuff
 define('DATA_TIME',9);
 
@@ -138,7 +138,7 @@ $metaRobots = '<meta name="robots" content="index,follow,archive" />';
 
 // TEMPLATE VARS ////////////////////////////////////////////////
 
-$Page->set('PageTitle', $Title.BAR.'Computer&nbsp;Language&nbsp;Benchmarks&nbsp;Game');
+$Page->set('PageTitle', $Title.BAR.'Python&nbsp;Implementations&nbsp;Benchmarks&nbsp;Game');
 $Page->set('BannerTitle', BANNER_TITLE);
 $Page->set('FaqTitle', FAQ_TITLE);
 $Page->set('BannerUrl', $bannerUrl);

@@ -14,7 +14,7 @@ define('DATA_STATUS',7);
 define('DATA_LOAD',8);
 define('DATA_ELAPSED',9);
 
-// With quad-core we changed from CPU Time to Elapsed Time
+// With dual-core we changed from CPU Time to Elapsed Time
 // but we still want to show the old stuff
 define('DATA_TIME',DATA_ELAPSED);
 
@@ -60,8 +60,8 @@ function MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang,$Id=NULL){
 
    $datasets = array(
       array('u32','x86 one core'),
-      array('u64q','x64 quad-core'),
-      array('u32q','x86 quad-core'),
+      array('u64q','x64 dual-core'),
+      array('u32q','x86 dual-core'),
       array('u64','x64 one core') );
 
    echo '<select name="data">', "\n";

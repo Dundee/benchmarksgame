@@ -197,14 +197,14 @@ $canonicalPage = FALSE;
 if (!isset($LinkRelCanonical)){
    $canonicalPage = SITE_NAME == 'u64';
    if (!$canonicalPage) {
-      $LinkRelCanonical = '<link rel="canonical" href="http://benchmarksgame.alioth.debian.org/u64/which-programs-are-fastest.php" />';
+      $LinkRelCanonical = '<link rel="canonical" href="http://python.milde.cz/u64/which-programs-are-fastest.php" />';
    }
-} 
+}
 
 
 // TEMPLATE VARS ////////////////////////////////////////////////
 
-$Page->set('PageTitle', $Title.BAR.'Computer&nbsp;Language&nbsp;Benchmarks&nbsp;Game');
+$Page->set('PageTitle', $Title.BAR.'Python&nbsp;Implementations&nbsp;Benchmarks&nbsp;Game');
 $Page->set('BannerTitle', BANNER_TITLE);
 $Page->set('BannerUrl', $bannerUrl);
 $Page->set('FaqTitle', FAQ_TITLE);

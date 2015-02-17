@@ -147,8 +147,8 @@ $faqUrl = CORE_SITE.'play.php';
 $A = HtmlFragment(VERSION_PATH.$L.SEPARATOR.'version.php');
 $About = & new Template(ABOUT_PROGRAMS_PATH);
 $AboutTemplateName = $T.SEPARATOR.$L.$Id.SEPARATOR.'about.tpl.php';
-if (file_exists(ABOUT_PROGRAMS_PATH.$AboutTemplateName)){ 
-   $A .= $About->fetch($AboutTemplateName); 
+if (file_exists(ABOUT_PROGRAMS_PATH.$AboutTemplateName)){
+   $A .= $About->fetch($AboutTemplateName);
 }
 
 // META ////////////////////////////////////////////////
@@ -159,7 +159,7 @@ $metaRobots = '<meta name="robots" content="noindex,nofollow,noarchive" />';
 
 // TEMPLATE VARS ////////////////////////////////////////////////
 
-$Page->set('PageTitle', $Title.BAR.'Computer&nbsp;Language&nbsp;Benchmarks&nbsp;Game');
+$Page->set('PageTitle', $Title.BAR.'Python&nbsp;Implementations&nbsp;Benchmarks&nbsp;Game');
 $Page->set('BannerTitle', BANNER_TITLE);
 $Page->set('BannerUrl', $bannerUrl);
 $Page->set('FaqTitle', FAQ_TITLE);

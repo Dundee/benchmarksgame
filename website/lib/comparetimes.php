@@ -97,7 +97,7 @@ function HeadToHeadData($FileName,$Tests,$Langs,$Incl,$Excl,$L1,$L2,$HasHeading=
       if ($isLang1 || strpos($line,$prefixL2)){
          $row = explode( ',', $line);
          $test = $row[DATA_TEST];
-// do we need to check $test here?  
+// do we need to check $test here?
 //         if (isset($Incl[$test])){
             if (isset($previous) && $previous != $test){ // assume ndata.csv is sorted by test
                AccumulateComparableRows(BestRows($rowsL1),BestRows($rowsL2),$measurements);
@@ -150,7 +150,7 @@ function HeadToHeadData($FileName,$Tests,$Langs,$Incl,$Excl,$L1,$L2,$HasHeading=
    foreach($Tests as $k => $v){
       if (!isset($sorted[$k])){ $sorted[$k] = array(); }
    }
-   
+
    $stats = Percentiles($times);
 
    return array($sorted,$ratios,$stats);
@@ -219,7 +219,7 @@ if (isset($_GET['lang2'])
 }
 if (!isset($L2) || $L2 == $L){
    $L2 = $Langs[$L][LANG_COMPARE];
-   
+
    // just use ANY included language for comparison
    // rather than have no comparison
 
@@ -259,12 +259,12 @@ $V2 = HtmlFragment(VERSION_PATH.$L2.SEPARATOR.'version.php');
 // META ////////////////////////////////////////////////
 
 $MetaKeywords = '<meta name="description" content="'.$LangName.' programs vs '.$LangName2.' programs ('.PLATFORM_NAME.')." />';
-         
+
 $metaRobots = '<meta name="robots" content="noindex,nofollow,noarchive" />';
 
 // TEMPLATE VARS ////////////////////////////////////////////////
 
-$Page->set('PageTitle', $Title.BAR.'Computer&nbsp;Language&nbsp;Benchmarks&nbsp;Game');
+$Page->set('PageTitle', $Title.BAR.'Python&nbsp;Implementations&nbsp;Benchmarks&nbsp;Game');
 $Page->set('BannerTitle', BANNER_TITLE);
 $Page->set('BannerUrl', $bannerUrl);
 $Page->set('FaqTitle', FAQ_TITLE);

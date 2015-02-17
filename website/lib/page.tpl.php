@@ -20,17 +20,16 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 <meta name="HandheldFriendly" content="false" />
 
 <title><?=$PageTitle;?></title>
-<link rel="stylesheet" type="text/css" href="http://benchmarksgame.alioth.debian.org/benchmark_css_8oct2012.php" />
-<link rel="stylesheet" type="text/css" href="http://benchmarksgame.alioth.debian.org/nohint_css_26jan2011.php" media="screen,print,projection"/>
-<link rel="stylesheet" type="text/css" href="http://benchmarksgame.alioth.debian.org/hint_css_26jan2011.php" media="handheld,aural,braille"/>
-<link rel="shortcut icon" href="http://benchmarksgame.alioth.debian.org/favicon_ico_11dec2009.php" />
+<link rel="stylesheet" type="text/css" href="http://python.milde.cz/benchmark_css_8oct2012.php" />
+<link rel="stylesheet" type="text/css" href="http://python.milde.cz/nohint_css_26jan2011.php" media="screen,print,projection"/>
+<link rel="stylesheet" type="text/css" href="http://python.milde.cz/hint_css_26jan2011.php" media="handheld,aural,braille"/>
+<link rel="shortcut icon" href="http://python.milde.cz/favicon_ico_11dec2009.php" />
 <?php
    if (isset($LinkCanonical)) { echo $LinkCanonical; }
 ?>
 
 </head>
 <body id="<?=SITE_NAME;?>">
-<p id="hint"><a href="http://benchmarksgame.alioth.debian.org/mobile/index.php">/mobile Handheld Friendly website</a></p>
 
 
 <?php
@@ -42,14 +41,14 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 ?>
 
 <table class="banner"><tr>
-<td><h1><a href="<?=$BannerUrl;?>" title="quad-core and one core, x86 and x64 measurements"><?=$BannerTitle;?></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?=$FaqUrl;?>" title="<?=$FaqRollover;?>"><?=$FaqTitle;?></a></h1></td>
+<td><h1><a href="<?=$BannerUrl;?>" title="dual-core and one core, x86 and x64 measurements"><?=$BannerTitle;?></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?=$FaqUrl;?>" title="<?=$FaqRollover;?>"><?=$FaqTitle;?></a></h1></td>
 </tr></table>
 
 <div id="<?=$PageId;?>">
 <?=$PageBody;?>
 
 <p class="imgfooter">
-<a href="<?=CORE_SITE;?>license.php" title="The Computer Language Benchmarks Game is published under this revised BSD license" >
+<a href="<?=CORE_SITE;?>license.php" title="The Python Implementations Benchmarks Game is published under this revised BSD license" >
    <img src="<?=IMAGE_PATH;?>open_source_button_png_11dec2009.php" alt="Revised BSD license" height="31" width="88" />
 </a>
 </p>
