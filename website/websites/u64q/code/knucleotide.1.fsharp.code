@@ -1,54 +1,0 @@
-﻿<span class="hl com">(* The Computer Language Benchmarks Game</span>
-<span class="hl com"> * http://benchmarksgame.alioth.debian.org/</span>
-<span class="hl com"> *</span>
-<span class="hl com"> * contributed by Jimmy Tang</span>
-<span class="hl com"> *)</span>
-<span class="hl kwa">open</span> <span class="hl kwd">System</span>
-<span class="hl kwa">open</span> <span class="hl kwd">System</span><span class="hl opt">.</span><span class="hl kwd">IO</span>
-<span class="hl kwa">open</span> <span class="hl kwd">System</span><span class="hl opt">.</span><span class="hl kwd">Collections</span><span class="hl opt">.</span><span class="hl kwd">Generic</span>
-
-<span class="hl slc">// make our hashtable using System.Collections.Generic.Dictionary</span>
-<span class="hl kwa">let</span> maketable <span class="hl opt">(</span>dna<span class="hl opt">:</span><span class="hl kwb">string</span><span class="hl opt">) (</span>length<span class="hl opt">:</span><span class="hl kwb">int</span><span class="hl opt">) =</span>
-   <span class="hl kwa">let</span> d <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Dictionary</span><span class="hl opt">&lt;</span>_<span class="hl opt">,</span>_<span class="hl opt">&gt;()</span>
-   <span class="hl kwa">for</span> start <span class="hl kwa">in</span> <span class="hl num">0</span><span class="hl opt">..(</span>dna<span class="hl opt">.</span><span class="hl kwd">Length</span> <span class="hl opt">-</span> length<span class="hl opt">)</span> <span class="hl kwa">do</span>
-      <span class="hl kwa">let</span> substr <span class="hl opt">=</span> dna<span class="hl opt">.</span><span class="hl kwd">Substring</span><span class="hl opt">(</span>start<span class="hl opt">,</span> length<span class="hl opt">)</span>
-      <span class="hl kwa">let</span> x <span class="hl opt">=</span> <span class="hl kwb">ref</span> <span class="hl opt">(</span><span class="hl kwb">ref</span> <span class="hl num">0</span><span class="hl opt">)</span>
-      <span class="hl kwa">if</span> d<span class="hl opt">.</span><span class="hl kwd">TryGetValue</span><span class="hl opt">(</span>substr<span class="hl opt">,</span> x<span class="hl opt">)</span> <span class="hl kwa">then</span> x<span class="hl opt">.</span><span class="hl kwd">Value</span> <span class="hl opt">:= ! !</span>x <span class="hl opt">+</span> <span class="hl num">1</span>
-      <span class="hl kwa">else</span> d<span class="hl opt">.[</span>substr<span class="hl opt">] &lt;-</span> <span class="hl kwb">ref</span> <span class="hl num">1</span>
-   d
-
-<span class="hl slc">// frequency for all substrings of a given length</span>
-<span class="hl kwa">let</span> frequencies <span class="hl opt">(</span>dna<span class="hl opt">:</span><span class="hl kwb">string</span><span class="hl opt">) (</span>length<span class="hl opt">:</span><span class="hl kwb">int</span><span class="hl opt">) = [</span>
-   <span class="hl kwa">let</span> d <span class="hl opt">=</span> maketable dna length
-   <span class="hl kwa">let</span> total <span class="hl opt">=</span> d<span class="hl opt">.</span><span class="hl kwd">Values</span> |<span class="hl opt">&gt;</span> <span class="hl kwd">Seq</span><span class="hl opt">.</span>map <span class="hl opt">(!)</span> |<span class="hl opt">&gt;</span> <span class="hl kwd">Seq</span><span class="hl opt">.</span>sum
-   yield<span class="hl opt">! [</span> <span class="hl kwa">for</span> pair <span class="hl kwa">in</span> d <span class="hl opt">-&gt;</span>
-             pair<span class="hl opt">.</span><span class="hl kwd">Key</span><span class="hl opt">.</span><span class="hl kwd">ToUpper</span><span class="hl opt">(), (</span><span class="hl kwb">float</span><span class="hl opt">(</span>pair<span class="hl opt">.</span><span class="hl kwd">Value</span><span class="hl opt">.</span><span class="hl kwd">Value</span><span class="hl opt">) *</span> <span class="hl num">100.0</span> <span class="hl opt">/</span><span class="hl kwb">float</span><span class="hl opt">(</span>total<span class="hl opt">))]</span>
-         |<span class="hl opt">&gt;</span> <span class="hl kwd">List</span><span class="hl opt">.</span>sortBy <span class="hl opt">(</span>snd <span class="hl opt">&gt;&gt; (</span>~<span class="hl opt">-))</span>
-         |<span class="hl opt">&gt;</span> <span class="hl kwd">List</span><span class="hl opt">.</span>map <span class="hl opt">(</span><span class="hl kwa">fun</span> <span class="hl opt">(</span>s<span class="hl opt">,</span>c<span class="hl opt">) -&gt;</span> sprintf <span class="hl str">&quot;%s %.3f&quot;</span> s c<span class="hl opt">)</span>
-   yield <span class="hl str">&quot;&quot;</span>
-<span class="hl opt">]</span>
-
-<span class="hl slc">// frequency of occurrence for a particular substring</span>
-<span class="hl kwa">let</span> countSubstring dna <span class="hl opt">(</span>substring<span class="hl opt">:</span><span class="hl kwb">string</span><span class="hl opt">) = [</span>
-   <span class="hl kwa">let</span> d <span class="hl opt">=</span> maketable dna <span class="hl opt">(</span>substring<span class="hl opt">.</span><span class="hl kwd">Length</span><span class="hl opt">)</span>
-   yield <span class="hl opt">(</span>sprintf <span class="hl str">&quot;%d</span><span class="hl esc">\t</span><span class="hl str">%s&quot;</span>
-      <span class="hl opt">(</span><span class="hl kwa">if</span> d<span class="hl opt">.</span><span class="hl kwd">ContainsKey</span><span class="hl opt">(</span>substring<span class="hl opt">)</span> <span class="hl kwa">then</span> <span class="hl opt">!</span>d<span class="hl opt">.[</span>substring<span class="hl opt">]</span> <span class="hl kwa">else</span> <span class="hl num">0</span><span class="hl opt">)</span>
-      <span class="hl opt">(</span>substring<span class="hl opt">.</span><span class="hl kwd">ToUpper</span><span class="hl opt">()))</span>
-<span class="hl opt">]</span>
-
-<span class="hl kwa">let</span> input <span class="hl opt">=</span> <span class="hl kwd">Console</span><span class="hl opt">.</span><span class="hl kwd">In</span>
-<span class="hl kwa">let</span> dna <span class="hl opt">=</span> seq <span class="hl opt">{</span> <span class="hl kwa">while true do</span> yield input<span class="hl opt">.</span><span class="hl kwd">ReadLine</span><span class="hl opt">() }</span>
-        |<span class="hl opt">&gt;</span> <span class="hl kwd">Seq</span><span class="hl opt">.</span>takeWhile <span class="hl opt">(</span><span class="hl kwa">fun</span> x <span class="hl opt">-&gt;</span> x <span class="hl opt">&lt;&gt;</span> <span class="hl kwa">null</span><span class="hl opt">)</span>
-        |<span class="hl opt">&gt;</span> <span class="hl kwd">Seq</span><span class="hl opt">.</span>skipWhile <span class="hl opt">(</span><span class="hl kwa">fun</span> x <span class="hl opt">-&gt;</span> not<span class="hl opt">(</span>x<span class="hl opt">.</span><span class="hl kwd">StartsWith</span><span class="hl opt">(</span><span class="hl str">&quot;&gt;THREE&quot;</span><span class="hl opt">)))</span>
-        |<span class="hl opt">&gt;</span> <span class="hl kwd">Seq</span><span class="hl opt">.</span>skip <span class="hl num">1</span>
-        |<span class="hl opt">&gt;</span> <span class="hl kwd">String</span><span class="hl opt">.</span>concat <span class="hl str">&quot;&quot;</span>
-
-<span class="hl opt">[</span><span class="hl kwa">for</span> len <span class="hl kwa">in</span> <span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">;</span><span class="hl num">2</span><span class="hl opt">] -&gt;</span> async <span class="hl opt">{</span> return frequencies dna len <span class="hl opt">}] &#64;</span>
-<span class="hl opt">[</span><span class="hl kwa">for</span> str <span class="hl kwa">in</span> <span class="hl opt">[</span><span class="hl str">&quot;ggt&quot;</span><span class="hl opt">;</span><span class="hl str">&quot;ggta&quot;</span><span class="hl opt">;</span><span class="hl str">&quot;ggtatt&quot;</span><span class="hl opt">;</span><span class="hl str">&quot;ggtattttaatt&quot;</span><span class="hl opt">;</span><span class="hl str">&quot;ggtattttaatttatagt&quot;</span><span class="hl opt">]</span>
- <span class="hl opt">-&gt;</span> async <span class="hl opt">{</span> return countSubstring dna str <span class="hl opt">}]</span>
-|<span class="hl opt">&gt;</span> <span class="hl kwd">List</span><span class="hl opt">.</span>rev
-|<span class="hl opt">&gt;</span> <span class="hl kwd">Async</span><span class="hl opt">.</span><span class="hl kwd">Parallel</span>
-|<span class="hl opt">&gt;</span> <span class="hl kwd">Async</span><span class="hl opt">.</span><span class="hl kwd">RunSynchronously</span>
-|<span class="hl opt">&gt;</span> <span class="hl kwd">Array</span><span class="hl opt">.</span>rev
-|<span class="hl opt">&gt;</span> <span class="hl kwd">Seq</span><span class="hl opt">.</span>concat
-|<span class="hl opt">&gt;</span> <span class="hl kwd">Seq</span><span class="hl opt">.</span>iter <span class="hl opt">(</span>printfn <span class="hl str">&quot;%s&quot;</span><span class="hl opt">)</span>
