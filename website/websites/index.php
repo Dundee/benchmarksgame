@@ -146,7 +146,13 @@ foreach($page as $p){
 </table>
 
 
-<p class="imgfooter">&nbsp; <a href="<?php echo $baseUrl ?>/dont-jump-to-conclusions.php">Conclusions</a> &nbsp; <a href="<?php echo $baseUrl ?>/license.php">License</a> &nbsp; <a href="<?php echo $baseUrl ?>/play.php">Play</a> &nbsp;</p>
+<p class="imgfooter">
+   &nbsp; <a href="<?php echo $baseUrl ?>/dont-jump-to-conclusions.php">Conclusions</a>
+   &nbsp; <a href="<?php echo $baseUrl ?>/license.php">License</a>
+   &nbsp; <a href="<?php echo $baseUrl ?>/play.php">Play</a>
+   &nbsp; <a href="https://github.com/Dundee/benchmarksgame">Source code</a>
+   &nbsp;
+</p>
 
 </div>
 
