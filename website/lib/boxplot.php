@@ -175,8 +175,8 @@ $faqUrl = CORE_SITE.'play.php';
 
 
 // DATA ////////////////////////////////////////////////
-
 $Data = BoxplotData(DATA_PATH.'data.csv',$Tests,$Langs,$Incl,$Excl);
+print_r($Data);
 
 $timeUsed = 'Elapsed secs';
 

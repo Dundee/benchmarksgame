@@ -118,7 +118,10 @@ function ValidMark($valid=FALSE){
       if (isset($_GET['m']) && strlen($_GET['m']) && strlen($_GET['m']) <= $bounds){
          $X = base64_decode( rawurldecode($_GET['m']) );
          $X = @gzuncompress($X,$bounds); // returns FALSE on error
-         if ($X && ereg("^[ a-zA-Z0-9]+$",$X)){ $mark = $X; $valid = TRUE; }
+         if ($X && ereg("^[ a-zA-Z0-9]+$",$X)){
+            $mark = $X;
+            $valid = TRUE;
+         }
       }
    }
    return array($mark,$valid);
