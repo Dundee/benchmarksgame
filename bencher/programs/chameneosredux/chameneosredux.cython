@@ -37,7 +37,7 @@ def check_complement(colors=creature_colors, compl=compl_dict):
 
 
 # reporting
-def spellout(n):
+def spellout(int n):
 
     numbers = ['zero', 'one', 'two', 'three', 'four',
                'five', 'six', 'seven', 'eight', 'nine']
@@ -62,9 +62,10 @@ def creature(my_id, venue, my_lock_acquire, in_lock_acquire, out_lock_release):
         out_lock_release()  # signal "registration ok"
 
 
-def let_them_meet(meetings_left, input_zoo,
+def let_them_meet(int meetings_left, input_zoo,
                   compl=compl_dict, allocate=_thread.allocate_lock):
     # prepare
+    cdef int c_no, ci
     c_no = len(input_zoo)
     venue = [-1]
     met = [0] * c_no
@@ -111,7 +112,7 @@ def let_them_meet(meetings_left, input_zoo,
             report(input_zoo, met, self_met)
 
 
-def chameneosiate(n):
+def chameneosiate(int n):
 
     check_complement()
     let_them_meet(n, ['blue', 'red', 'yellow'])
