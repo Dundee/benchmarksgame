@@ -18,5 +18,5 @@
 %.cython_run: %.cython
 	$(eval NAME=`echo $< | sed 's/cython-..//' | sed 's/.cython//'`)
 	cp $< $(NAME).py
-	cythonize -3 -b $(NAME).py
+	cythonize -3 -bi $(NAME).py
 
