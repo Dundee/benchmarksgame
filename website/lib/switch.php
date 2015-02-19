@@ -16,12 +16,11 @@ if (isset($_GET['test'])
 if (!isset($T)){ $T = 'all'; }
 
 function Alias($l){ // hardcode aliases for old names
-   return $l == "python" ? "python3" :
-         ($l == "ruby" ? "yarv" :
+   return $l == "ruby" ? "yarv" :
          ($l == "javascript" ? "v8" :
          ($l == "mzscheme" ? "racket" :
          ($l == "javaxint" ? "java" :
-         ($l == "javasteady" ? "java" : $l)))));
+         ($l == "javasteady" ? "java" : $l))));
 }
 
 if (isset($_GET['lang'])
@@ -44,6 +43,7 @@ if (!isset($L2)){
 
 // PAGES ///////////////////////////////////////////////////
 
+
 if ($T=='all'){
    if ($L=='all'){
       $LinkRelCanonical = '<link rel="canonical" href="http://python.milde.cz/u64/which-programs-are-fastest.php" />';
@@ -54,7 +54,7 @@ if ($T=='all'){
          // canonical links for Google
          $clinks = array(
             "php" => "u64q/php.php",
-            "python3" => "u64q/python.php",
+            "python3" => "u64q/python3.php",
             "jruby" => "u64q/ruby.php",
          );
 

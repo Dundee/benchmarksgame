@@ -4,7 +4,7 @@
 if (isset($_GET['data'])
       && strlen($_GET['data']) && (strlen($_GET['data']) <= 4)){
    $X = $_GET['data'];
-   if ($X=='u32'||($X=='u64q'||($X=='u32q'||($X=='u64')))){ $D = $X; }
+   if ($X=='u64q'){ $D = $X; }
 }
 
 if (!isset($D)||($D=='u64q')){
