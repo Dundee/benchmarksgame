@@ -29,10 +29,13 @@ homosapiens = [
     ('t', 0.3015094502008),
 ]
 
+cdef int IM, INITIAL_STATE, j
 IM = 139968
 INITIAL_STATE = 42
 
 def makeCumulative(table):
+    cdef float prob, p
+
     P = []
     C = []
     prob = 0.
@@ -45,6 +48,8 @@ def makeCumulative(table):
 randomSeq = None
 j = 0
 def makeRandomSeq():
+    cdef int ia, ic, s
+
     global randomSeq
     ia = 3877; ic = 29573
     randomSeq = []
@@ -56,12 +61,17 @@ def makeRandomSeq():
             break
 
 def makeLookupTable(table):
+    cdef float imf
+    cdef int i
+
     bb = bisect.bisect
     probs, chars = makeCumulative(table)
     imf = float(IM)
     return array.array("u", [chars[bb(probs, i / imf)] for i in range(IM)])
 
-def repeatFasta(src, n):
+def repeatFasta(src, int n):
+    cdef int width, r, j, i
+
     width = 60
     r = len(src)
     s = src + src + src[:n % r]
@@ -72,7 +82,9 @@ def repeatFasta(src, n):
     if n % width:
         sow(s[-(n % width):] + '\n')
 
-def randomFasta(table, n):
+def randomFasta(table, int n):
+    cdef int lj, width, i
+
     global randomSeq, j
     width = 60
 
@@ -92,6 +104,7 @@ def randomFasta(table, n):
         j = k
 
 def main():
+    cdef int n
     n = int(sys.argv[1])
 
     makeRandomSeq()

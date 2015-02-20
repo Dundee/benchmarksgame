@@ -19,7 +19,7 @@ update-results:
 %.cython_run: %.cython
 	$(eval NAME=`echo $< | sed 's/cython-..//' | sed 's/.cython//'`)
 	cp $< $(NAME).pyx
-	cythonize -3 -bi $(NAME).pyx
+	cythonize -3 -bia $(NAME).pyx
 
 
 .PHONY: run clean update-results
