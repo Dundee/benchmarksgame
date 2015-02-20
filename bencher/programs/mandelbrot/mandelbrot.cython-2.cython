@@ -8,7 +8,10 @@
 import multiprocessing as mp
 import sys
 
-def writer(buff_queue,size):  #i/o is slow, so leave it to only one worker
+
+def writer(buff_queue, int size):  # i/o is slow, so leave it to only one worker
+    cdef int pos
+
     from array import array
     buff_pos = 0
     buff = []
@@ -20,36 +23,39 @@ def writer(buff_queue,size):  #i/o is slow, so leave it to only one worker
             if len(buff):
                 buff.sort()
                 pos = len(buff) - 1
-                while pos>0:
-                    if buff[pos][0] == buff[pos-1][1]:  #connect contiguous segment
-                        buff[pos-1] = (buff[pos-1][0],buff[pos][1],buff[pos-1][2]+buff[pos][2])
+                while pos > 0:
+                    if buff[pos][0] == buff[pos-1][1]:  # connect contiguous segment
+                        buff[pos-1] = (buff[pos-1][0], buff[pos][1], buff[pos-1][2]+buff[pos][2])
                         del(buff[pos])
-                    pos-=1
-                if buff[0][0]==buff_pos:  # write if segment is the next needed one
+                    pos -= 1
+                if buff[0][0] == buff_pos:  # write if segment is the next needed one
                     cout(array('B', buff[0][2]).tostring())
                     buff_pos = buff[0][1]
                     del(buff[0])
 
-            if buff_pos>=size:
+            if buff_pos >= size:
                 break
 
-def worker(size, task_queue, buff_queue):
-    cout = sys.stdout.buffer.write
+
+def worker(int size, task_queue, buff_queue):
+    cdef float fsize
+    cdef int i, x, y, bit_num, byte_acc
+
     fsize = float(size)
     r_size = range(size)
     r_iter = range(50)
     local_abs = abs
     result = []
-    y=size  #only to ensure task_head is initialized. not so pretty code
+    y = size  # only to ensure task_head is initialized. not so pretty code
     while 1:
         task = task_queue.get()
         if task is None:
             if len(result):  # push remaining segments
-                buff_queue.put((task_head,y+1,result))
+                buff_queue.put((task_head, y + 1, result))
             break
         elif task-y-1:
             if len(result):      # try to resume from previous segment unless broken
-                buff_queue.put((task_head,y+1,result))
+                buff_queue.put((task_head, y + 1, result))
             task_head = task
             result = []
         #got new job
@@ -63,7 +69,8 @@ def worker(size, task_queue, buff_queue):
 
             for i in r_iter:
                 z = z * z + c
-                if local_abs(z) >= 2.: break
+                if local_abs(z) >= 2.:
+                    break
             else:
                 byte_acc += 1 << bit_num
 
@@ -76,7 +83,10 @@ def worker(size, task_queue, buff_queue):
         if bit_num != 7:
             result.append(byte_acc)
 
+
 def main():
+    cdef int size, i, num_proc, a
+
     size = int(sys.argv[1])
     task_queue = mp.Queue()
     for i in range(size):
@@ -94,7 +104,7 @@ def main():
         p.start()
         proc.append(p)
     sys.stdout.write("P4\n%d %d\n" % (size, size))
-    w = mp.Process(target=writer, args=(buff_queue,size))
+    w = mp.Process(target=writer, args=(buff_queue, size))
     w.start()
     proc.append(w)
 
@@ -102,4 +112,3 @@ def main():
         p.join()
 
 main()
-
