@@ -16,4 +16,10 @@ update-results:
 	cp bencher/tmp/all_measurements.csv ./website/websites/u64q/data/data.csv
 	cp bencher/tmp/all_measurements.csv ./website/websites/u64q/data/ndata.csv
 
+%.cython_run: %.cython
+	$(eval NAME=`echo $< | sed 's/cython-..//' | sed 's/.cython//'`)
+	cp $< $(NAME).pyx
+	cythonize -3 -bi $(NAME).pyx
+
+
 .PHONY: run clean update-results
