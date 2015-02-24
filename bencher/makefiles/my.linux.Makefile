@@ -20,3 +20,20 @@
 	cp $< $(NAME).pyx
 	cythonize -3 -bi $(NAME).pyx
 
+########################################
+# Shedskin
+########################################
+
+%.shedskin_run: %.shedskin
+	cp $< shed.py
+	shedskin shed.py
+	make
+	cp $< $<.shedskin_run
+
+########################################
+# Nuitka
+########################################
+
+%.nuitka_run: %.nuitka
+	nuitka --python-version=3.4 --remove-output --improved $<
+	cp $<.exe $*.nuitka_run
