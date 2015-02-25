@@ -120,6 +120,7 @@ $tests = array(
    ,array('pidigits','pidigits','Calculate the digits of Pi with streaming arbitrary-precision arithmetic')
    ,array('chameneosredux','chameneos-redux','Repeatedly perform symmetrical thread rendezvous requests')
    ,array('threadring','thread-ring','Repeatedly switch from thread to thread passing one token')
+   ,array('templates','templates','Render Jinja2 template')
    ,array('binarytrees','binary-trees','Allocate and deallocate many many binary trees')
    );
 
