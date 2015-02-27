@@ -137,7 +137,7 @@ def trace(a):
     if layout <= 0:
         print
         layout = 50
-    print(a, end='')
+    print a,
 
 
 TASKTABSIZE = 10
@@ -301,11 +301,11 @@ class IdleTask(Task):
         i.count -= 1
         if i.count == 0:
             return self.hold()
-        elif int(i.control) & 1 == 0:
+        elif i.control & 1 == 0:
             i.control /= 2
             return self.release(I_DEVA)
         else:
-            i.control = int(i.control/2) ^ 0xd008
+            i.control = i.control/2 ^ 0xd008
             return self.release(I_DEVB)
 
 
@@ -351,7 +351,7 @@ def schedule():
         pkt = None
 
         if tracing:
-            print("tcb =", t.ident)
+            print "tcb =",t.ident
 
         if t.isTaskHoldingOrWaiting():
             t = t.link
@@ -362,7 +362,7 @@ def schedule():
 class Richards(object):
 
     def run(self, iterations):
-        for i in range(iterations):
+        for i in xrange(iterations):
             taskWorkArea.holdCount = 0
             taskWorkArea.qpktCount = 0
 
@@ -405,14 +405,16 @@ def entry_point(iterations):
 def main(entry_point = entry_point, iterations = 10):
     result, startTime, endTime = entry_point(iterations)
     if not result:
-        print("Incorrect results!")
+        print "Incorrect results!"
         return -1
-    print(iterations)
-    print("finished.")
+    print iterations
+    print "finished."
     return 42
 
-import sys
-if len(sys.argv) >= 2:
-    main(iterations = int(sys.argv[1]))
-else:
-    main()
+
+if __name__ == '__main__':
+    import sys
+    if len(sys.argv) >= 2:
+        main(iterations = int(sys.argv[1]))
+    else:
+        main()

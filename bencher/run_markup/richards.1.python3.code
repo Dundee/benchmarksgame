@@ -411,8 +411,10 @@ def main(entry_point = entry_point, iterations = 10):
     print("finished.")
     return 42
 
-import sys
-if len(sys.argv) >= 2:
-    main(iterations = int(sys.argv[1]))
-else:
-    main()
+
+if __name__ == '__main__':
+    import sys
+    if len(sys.argv) >= 2:
+        main(iterations = int(sys.argv[1]))
+    else:
+        main()
