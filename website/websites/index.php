@@ -121,6 +121,8 @@ $tests = array(
    ,array('threadring','thread-ring','Repeatedly switch from thread to thread passing one token')
    ,array('templates','templates','Render Jinja2 template')
    ,array('binarytrees','binary-trees','Allocate and deallocate many many binary trees')
+   ,array('pystone','pystone','PyStone benchmark')
+   ,array('richards','richards','Richards benchmark')
    );
 
 foreach($tests as $t){
