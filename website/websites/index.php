@@ -40,7 +40,7 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 <div id="sitemap">
 
 <p>
-Benchmarks of main Python implementations (CPython, Cython, PyPy, Jython) and main competitors of Python (PHP, Ruby).
+Benchmarks of Python implementations.
 </p>
 
 <p>
@@ -67,8 +67,6 @@ PrintHeaders();
 $allsites = array('u64q');
 
 $langs = array(
-   array('php','PHP 5.6.6','php',$allsites),
-   array('ruby','Ruby 2.2.0p0','ruby',$allsites),
    array('python','Python 2.7.9','python',$allsites),
    array('pypy','PyPy 2.5.0','pypy',$allsites),
    array('python3','Python 3.4.2','python3',$allsites),
