@@ -34,7 +34,7 @@
 
 <h2><a href="<?=$pageUrl;?>#chart" name="chart">&nbsp;<strong>Which programs are fastest?</strong></a></h2>
 
-<p>Please don't use this summary page to compare 2 programming language implementations -- <b>use the direct comparison</b>, for example <a href="jruby.php" title="Are the JRuby programs faster than the Ruby programs?">-all&nbsp;benchmarks- Ruby&nbsp;JRuby</a>.</p>
+<p>Please don't use this summary page to compare 2 programming language implementations -- <b>use the direct comparison</b>, for example <a href="python.php" title="Are the Python programs faster than the PyPy programs?">-all&nbsp;benchmarks- Python 2&nbsp;PyPy</a>.</p>
 
 
 <p>This box plot shows <em>how many times slower</em>, the fastest benchmark programs for programming language implementations were, compared to the fastest programs written in <em>any of the programming languages</em>.</p>
