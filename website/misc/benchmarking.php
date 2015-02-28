@@ -181,12 +181,9 @@
 
 <dt><a href="#multicore" name="multicore">&nbsp;<strong>x64 and multi-core</strong></a></dt>
 <dd>
-<p>By 2008 new computer hardware was commonly dual-core or dual-core; by 2008 operating systems were often 64 bit - so the benchmarks game was moved to a new dual-core Intel® i5-4210U® machine and <strong>4 sets of measurements</strong> were recorded:</p>
+<p>By 2008 new computer hardware was commonly dual-core or dual-core; by 2008 operating systems were often 64 bit - so the benchmarks game was moved to a new dual-core Intel® i5-4210U® machine:</p>
 <ul>
-<li><p><span class="u32"><a title="" href="./u32/which-programs-are-fastest.php">&nbsp;Ubuntu Linux x86 programs bound to a single core&nbsp;</a></span></p></li>
-<li><p><span class="u32q"><a title="" href="./u32q/which-programs-are-fastest.php">&nbsp;Ubuntu Linux x86 programs enabled for quad core&nbsp;</a></span></p></li>
-<li><p><span class="u64"><a title="" href="./u64/which-programs-are-fastest.php">&nbsp;Ubuntu Linux x64 programs bound to a single core&nbsp;</a></span></p></li>
-<li><p><span class="u64q"><a title="" href="./u64q/which-programs-are-fastest.php">&nbsp;Ubuntu Linux x64 programs enabled for quad core&nbsp;</a></span></p></li>
+<li><p><span class="u64q"><a title="" href="./u64q/which-programs-are-fastest.php">&nbsp;ArchLinux x64 programs enabled for quad core&nbsp;</a></span></p></li>
 </ul>
 <p>That was a lot more work.</p>
 </dd>
