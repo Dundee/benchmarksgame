@@ -1,6 +1,8 @@
 import sys
+from numba import jit, int32
 
 
+@jit((int32,))
 def powLF(n):
     if n == 1:
         return (1, 1)
@@ -12,6 +14,7 @@ def powLF(n):
         return (L, F)
 
 
+@jit((int32,))
 def fib(n):
     if n & 1:
         return powLF(n)[1]
