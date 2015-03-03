@@ -10,12 +10,19 @@
 
 from sys import argv
 from numpy import *
+from numba.decorators import autojit
 
+
+@autojit
+def eval_func(i, j):
+	return 1.0 / ((i + j) * (i + j + 1) / 2 + i + 1)
+
+
+@autojit
 def spectralnorm(n):
 	u = matrix(ones(n))
 	j = arange(n)
-	eval_func = lambda i : 1.0 / ((i + j) * (i + j + 1) / 2 + i + 1)
-	M = matrix([eval_func(i) for i in arange(n)])
+	M = matrix([eval_func(i, j) for i in arange(n)])
 	MT = M.T
 	for i in range (10):
 		v = (u*MT)*M
