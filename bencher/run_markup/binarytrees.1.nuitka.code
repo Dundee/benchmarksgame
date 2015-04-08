@@ -3,8 +3,7 @@
 #
 # contributed by Antoine Pitrou
 # modified by Dominique Wahli and Daniel Nanz
-
-from __future__ import print_function
+# modified by Joerg Baumann
 
 import sys
 import multiprocessing as mp
@@ -13,9 +12,8 @@ import multiprocessing as mp
 def make_tree(i, d):
 
     if d > 0:
-        i2 = i + i
         d -= 1
-        return (i, make_tree(i2 - 1, d), make_tree(i2, d))
+        return (i, make_tree(i, d), make_tree(i + 1, d))
     return (i, None, None)
 
 
