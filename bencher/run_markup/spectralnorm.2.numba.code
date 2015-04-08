@@ -10,7 +10,10 @@
 
 from sys import argv
 from numpy import *
+from numba.decorators import autojit
 
+
+@autojit
 def spectralnorm(n):
 	u = matrix(ones(n))
 	j = arange(n)
