@@ -1,7 +1,6 @@
 <p>This is a specific instance of the <a href="http://www.opensource.org/licenses/bsd-license.php" title="Open Source Initiative (OSI)">Open Source Initiative (OSI) BSD license template</a>.</p>
 <h2><a href="#license" name="license">&nbsp;Revised BSD license</a></h2>
-<p>Copyright &#169; 2015 Daniel Milde</p>
-<p>Copyright &#169; 2004-2013 Brent Fulgham</p>
+<p>Copyright &#169; 2004-2008 Brent Fulgham, 2005-2015 Isaac Gouy, 2015 Daniel Milde</p>
 <p>All rights reserved.</p>
 <p>Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</p>
 <ul>
