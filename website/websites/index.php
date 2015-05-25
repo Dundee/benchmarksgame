@@ -68,14 +68,14 @@ $allsites = array('u64q');
 
 $langs = array(
    array('python','Python 2.7.9','python',$allsites),
-   array('pypy','PyPy 2.5.0','pypy',$allsites),
-   array('python3','Python 3.4.2','python3',$allsites),
+   array('pypy','PyPy 2.5.1','pypy',$allsites),
+   array('python3','Python 3.4.3','python3',$allsites),
    array('pypy3','PyPy3 2.4.0','pypy3',$allsites),
    array('jython','Jython 2.5.3','jython',$allsites),
    array('cython','Cython 0.22','cython',$allsites),
-   array('nuitka','Nuitka 0.5.9','nuitka',$allsites),
+   array('nuitka','Nuitka 0.5.13.1','nuitka',$allsites),
    array('shedskin','Shedskin 0.9.4','shedskin',$allsites),
-   array('numba','Numba 0.17.0','numba',$allsites),
+   array('numba','Numba 0.18.2','numba',$allsites),
    );
 
 
