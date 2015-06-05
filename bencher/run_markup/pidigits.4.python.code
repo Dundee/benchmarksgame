@@ -4,8 +4,13 @@
 # contributed Daniel Nanz
 
 import sys
-import gmpy
+try:
+    import gmpy
+except ImportError:
+    import gmpy_cffi as gmpy
 
+if not hasattr(gmpy, 'pi'):
+    gmpy.pi = gmpy.const_pi
 
 def get_pistring(n, pi=gmpy.pi):
 
