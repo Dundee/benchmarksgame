@@ -1,0 +1,78 @@
+
+Tue, 24 Feb 2015 12:54:12 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
+cp revcomp.shedskin-5.shedskin shed.py
+shedskin shed.py
+*** SHED SKIN Python-to-C++ Compiler 0.9.4 ***
+Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
+
+[analyzing types..]
+0% ****************50% ****************50% ********************************100%
+[generating c++ code..]
+*WARNING* shed.py:11: Function show not called!
+*WARNING* shed.py:20: expression has no type
+*WARNING* shed.py:20: variable 'bytes' has no type
+*WARNING* shed.py:22: expression has no type
+*WARNING* shed.py:23: variable 'seq' has no type
+*WARNING* shed.py:23: variable 'table' has no type
+[elapsed time: 1.58 seconds]
+make
+make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
+g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -o shed
+/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp: In function ‘void* __shed__::__ss_main()’:
+/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:19:23: error: qualified-id in declaration before ‘__9’
+     void::for_in_loop __9;
+                       ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:21:18: error: ‘void*’ is not a pointer-to-object type
+     table = bytes->maketrans();
+                  ^
+In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1050:0,
+                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:1:
+/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:23:42: error: ‘class __shedskin__::file’ has no member named ‘buffer’
+     FOR_IN(seq,((((__sys__::__ss_stdin)->buffer)->read())->split())->__slice__(),6,8,9)
+                                          ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/iter.hpp:15:18: note: in definition of macro ‘FOR_IN’
+     __ ## temp = iter; \
+                  ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/iter.hpp:17:5: error: ‘__9’ was not declared in this scope
+     __ ## t = __ ## temp->for_in_init(); \
+     ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:23:5: note: in expansion of macro ‘FOR_IN’
+     FOR_IN(seq,((((__sys__::__ss_stdin)->buffer)->read())->split())->__slice__(),6,8,9)
+     ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/iter.hpp:17:25: error: ‘void*’ is not a pointer-to-object type
+     __ ## t = __ ## temp->for_in_init(); \
+                         ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:23:5: note: in expansion of macro ‘FOR_IN’
+     FOR_IN(seq,((((__sys__::__ss_stdin)->buffer)->read())->split())->__slice__(),6,8,9)
+     ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/iter.hpp:18:21: error: ‘void*’ is not a pointer-to-object type
+     while(__ ## temp->for_in_has_next(__ ## t)) \
+                     ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:23:5: note: in expansion of macro ‘FOR_IN’
+     FOR_IN(seq,((((__sys__::__ss_stdin)->buffer)->read())->split())->__slice__(),6,8,9)
+     ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/iter.hpp:21:23: error: ‘void*’ is not a pointer-to-object type
+         e = __ ## temp->for_in_next(__ ## t);
+                       ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:23:5: note: in expansion of macro ‘FOR_IN’
+     FOR_IN(seq,((((__sys__::__ss_stdin)->buffer)->read())->split())->__slice__(),6,8,9)
+     ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:24:46: error: ‘show’ was not declared in this scope
+         show(seq, table, default_0, default_1);
+                                              ^
+Makefile:19: návod pro cíl „shed“ selhal
+make[2]: *** [shed] Chyba 1
+make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
+/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:28: návod pro cíl „revcomp.shedskin-5.shedskin_run“ selhal
+make[1]: *** [revcomp.shedskin-5.shedskin_run] Chyba 2
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
+9.18s to complete and log all make actions
+
+COMMAND LINE:
+./shed 0 < revcomp-input1000.txt
+
+MAKE ERROR 
+

@@ -1,0 +1,68 @@
+
+Wed, 17 Jun 2015 17:27:13 GMT
+
+COMMAND LINE:
+/usr/bin/pyston chameneosredux.pyston 60000
+
+UNEXPECTED OUTPUT 
+
+12,14c12,14
+< 36701 zero
+< 40527 zero
+< 42772 zero
+---
+> 40719 zero
+> 40253 zero
+> 39028 zero
+18,22c18,26
+< 13023 zero
+< 12592 zero
+< 12640 zero
+< 10854 zero
+< 11024 zero
+---
+> 11601 zero
+> 9982 zero
+> 13292 zero
+> 9344 zero
+> 12255 zero
+> 12186 zero
+> 11212 zero
+> 14600 zero
+> 14544 zero
+24,27d27
+< 11646 zero
+< 11818 zero
+< 11494 zero
+< 13925 zero
+
+PROGRAM OUTPUT:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
+ blue red yellow
+36701 zero
+40527 zero
+42772 zero
+ one two zero zero zero zero
+
+ blue red yellow red yellow blue red yellow red blue
+13023 zero
+12592 zero
+12640 zero
+10854 zero
+11024 zero
+10984 zero
+11646 zero
+11818 zero
+11494 zero
+13925 zero
+ one two zero zero zero zero
+

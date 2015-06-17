@@ -1,0 +1,15 @@
+
+Tue, 24 Feb 2015 12:43:13 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp“
+nuitka --python-version=3.4 --remove-output --improved threadring.nuitka
+cp threadring.nuitka.exe threadring.nuitka_run
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp“
+2.86s to complete and log all make actions
+
+COMMAND LINE:
+./threadring.nuitka_run 5000000
+
+PROGRAM OUTPUT:
+181

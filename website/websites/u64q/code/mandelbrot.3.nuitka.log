@@ -1,0 +1,26 @@
+
+Wed, 08 Apr 2015 11:44:48 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/mandelbrot/tmp“
+nuitka --python-version=3.4 --remove-output --improved mandelbrot.nuitka-3.nuitka
+cp mandelbrot.nuitka-3.nuitka.exe mandelbrot.nuitka-3.nuitka_run
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/mandelbrot/tmp“
+2.43s to complete and log all make actions
+
+COMMAND LINE:
+./mandelbrot.nuitka-3.nuitka_run 1000
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+P4
+1000 1000
+
+Traceback (most recent call last):
+  File "/home/dundee/workspace/benchmarksgame/bencher/tmp/mandelbrot/tmp/mandelbrot.nuitka-3.nuitka", line 45, in <module>
+    main()
+  File "/home/dundee/workspace/benchmarksgame/bencher/tmp/mandelbrot/tmp/mandelbrot.nuitka-3.nuitka", line 36, in main
+    cout((byte_acc,))
+TypeError: 'tuple' does not support the buffer interface

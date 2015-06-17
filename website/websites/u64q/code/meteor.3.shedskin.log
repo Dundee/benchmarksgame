@@ -1,0 +1,135 @@
+
+Tue, 24 Feb 2015 12:53:09 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
+cp meteor.shedskin-3.shedskin shed.py
+shedskin shed.py
+*** SHED SKIN Python-to-C++ Compiler 0.9.4 ***
+Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
+
+[analyzing types..]
+0% *****16% *********************66% *********************66% *********************66% ********************************100% ********************************100% ********************************100%
+[generating c++ code..]
+*WARNING* shed.py: Variable 'board' has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable 'cti' has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable 'fps' has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable 'pieces' has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable 'se_nh' has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable (Function get_footprints, 'board') has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable (Function get_footprints, 'c') has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable (Function get_footprints, 'cti') has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable (Function get_footprints, 'fp') has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable (Function get_footprints, 'fps') has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable (Function get_footprints, 'p') has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable (Function get_footprints, 'pieces') has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable (Function get_senh, 'board') has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable (Function get_senh, 'c') has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable (Function get_senh, 'cti') has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable (Function get_senh, 'se_nh') has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable (Function solve, 'ci') has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable (Function solve, 'fp') has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable (Function solve, 'fp_cands') has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable (Function solve, 'fp_i_cands') has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable (Function solve, 'fps') has dynamic (sub)type: {int, list}
+*WARNING* shed.py: Variable (Function solve, 'se_nh') has dynamic (sub)type: {int, list}
+*WARNING* shed.py: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:46: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:48: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:49: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:50: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:51: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:52: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:53: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:54: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:55: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:58: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:60: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:62: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:63: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:64: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:67: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:85: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:85: tuple with length > 2 and different types of elements
+*WARNING* shed.py:99: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:100: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:101: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:105: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:107: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:109: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:110: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:111: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:113: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:114: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:116: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:118: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:136: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:137: expression has dynamic (sub)type: {int, list}
+*WARNING* shed.py:138: expression has dynamic (sub)type: {int, list}
+[elapsed time: 17.80 seconds]
+make
+make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
+g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp /usr/lib/python2.7/site-packages/shedskin/lib/bisect.cpp -lgc -lpcre  -o shed
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp: In member function ‘virtual __shedskin__::__ss_int __shed__::list_comp_4::__get_next()’:
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:168:36: error: base operand of ‘->’ is not a pointer
+         if ((cti)->__contains__((c)->__add__(o))) {
+                                    ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:169:29: error: ‘class __shedskin__::pyiter<int>’ has no member named ‘__getitem__’
+             __result = cti->__getitem__((c)->__add__(o));
+                             ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:169:44: error: base operand of ‘->’ is not a pointer
+             __result = cti->__getitem__((c)->__add__(o));
+                                            ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp: In member function ‘virtual __shedskin__::__ss_int __shed__::list_comp_5::__get_next()’:
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:190:36: error: base operand of ‘->’ is not a pointer
+         if ((cti)->__contains__((c)->__add__(o))) {
+                                    ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:191:29: error: ‘class __shedskin__::pyiter<int>’ has no member named ‘__getitem__’
+             __result = cti->__getitem__((c)->__add__(o));
+                             ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:191:44: error: base operand of ‘->’ is not a pointer
+             __result = cti->__getitem__((c)->__add__(o));
+                                            ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp: In function ‘__shedskin__::list<__shedskin__::list<__shedskin__::list<__shedskin__::set<int>*>*>*>* __shed__::get_footprints(__shedskin__::pyiter<int>*, __shedskin__::pyiter<int>*, __shedskin__::pyiter<int>*)’:
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:350:5: error: ‘__ss_in’ has not been declared
+     __ss_in::for_in_loop __42;
+     ^
+In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1050:0,
+                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:1:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/iter.hpp:17:5: error: ‘__42’ was not declared in this scope
+     __ ## t = __ ## temp->for_in_init(); \
+     ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:368:13: note: in expansion of macro ‘FOR_IN’
+             FOR_IN(pp,p,39,41,42)
+             ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/iter.hpp:17:25: error: base operand of ‘->’ is not a pointer
+     __ ## t = __ ## temp->for_in_init(); \
+                         ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:368:13: note: in expansion of macro ‘FOR_IN’
+             FOR_IN(pp,p,39,41,42)
+             ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/iter.hpp:18:21: error: base operand of ‘->’ is not a pointer
+     while(__ ## temp->for_in_has_next(__ ## t)) \
+                     ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:368:13: note: in expansion of macro ‘FOR_IN’
+             FOR_IN(pp,p,39,41,42)
+             ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/iter.hpp:21:23: error: base operand of ‘->’ is not a pointer
+         e = __ ## temp->for_in_next(__ ## t);
+                       ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:368:13: note: in expansion of macro ‘FOR_IN’
+             FOR_IN(pp,p,39,41,42)
+             ^
+Makefile:21: návod pro cíl „shed“ selhal
+make[2]: *** [shed] Chyba 1
+make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
+/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:28: návod pro cíl „meteor.shedskin-3.shedskin_run“ selhal
+make[1]: *** [meteor.shedskin-3.shedskin_run] Chyba 2
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
+26.51s to complete and log all make actions
+
+COMMAND LINE:
+./shed 2098
+
+MAKE ERROR 
+

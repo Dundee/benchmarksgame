@@ -1,0 +1,15 @@
+
+Wed, 17 Jun 2015 17:49:11 GMT
+
+COMMAND LINE:
+/usr/bin/pyston revcomp.pyston-5.pyston 0 < revcomp-input1000.txt
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Traceback (most recent call last):
+  File "revcomp.pyston-5.pyston", line 11, in <module>:
+    def show(seq, table, write=sys.stdout.buffer.write, nl=b'\n'):
+AttributeError: 'file' object has no attribute 'buffer'

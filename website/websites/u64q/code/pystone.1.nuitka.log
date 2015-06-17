@@ -1,0 +1,16 @@
+
+Mon, 02 Mar 2015 08:49:28 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp“
+nuitka --python-version=3.4 --remove-output --improved pystone.nuitka
+cp pystone.nuitka.exe pystone.nuitka_run
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp“
+6.33s to complete and log all make actions
+
+COMMAND LINE:
+./pystone.nuitka_run 50000
+
+PROGRAM OUTPUT:
+50000
+OK

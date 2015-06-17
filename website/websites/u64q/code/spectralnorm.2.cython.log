@@ -1,0 +1,41 @@
+
+Wed, 08 Apr 2015 13:09:54 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
+cp spectralnorm.cython-2.cython `echo spectralnorm.cython-2.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
+cythonize -3 -bi `echo spectralnorm.cython-2.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
+Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx because it changed.
+Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx
+running build_ext
+building 'spectralnorm' extension
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpc_qo_5qy/home
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpc_qo_5qy/home/dundee
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpc_qo_5qy/home/dundee/workspace
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpc_qo_5qy/home/dundee/workspace/benchmarksgame
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpc_qo_5qy/home/dundee/workspace/benchmarksgame/bencher
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpc_qo_5qy/home/dundee/workspace/benchmarksgame/bencher/tmp
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpc_qo_5qy/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpc_qo_5qy/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp
+gcc -pthread -Wno-unused-result -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong --param=ssp-buffer-size=4 -fPIC -I/usr/include/python3.4m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpc_qo_5qy/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpc_qo_5qy/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.o -L/usr/lib -lpython3.4m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.cpython-34m.so
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
+1.28s to complete and log all make actions
+
+COMMAND LINE:
+/usr/bin/python3 -c "import spectralnorm" 50
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "spectralnorm.pyx", line 12, in init spectralnorm (/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.c:1731)
+    from numpy import *
+  File "/usr/lib/python3.4/site-packages/numpy/__init__.py", line 189, in <module>
+    from . import random
+  File "/usr/lib/python3.4/site-packages/numpy/random/__init__.py", line 99, in <module>
+    from .mtrand import *
+ImportError: /usr/lib/python3.4/site-packages/numpy/random/mtrand.cpython-34m.so: undefined symbol: AnnotateIgnoreReadsEnd

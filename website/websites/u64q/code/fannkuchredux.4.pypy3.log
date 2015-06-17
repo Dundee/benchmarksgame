@@ -1,0 +1,17 @@
+
+Mon, 25 May 2015 10:29:19 GMT
+
+COMMAND LINE:
+/usr/bin/pypy3 fannkuchredux.pypy3-4.pypy3 9
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Traceback (most recent call last):
+  File "fannkuchredux.pypy3-4.pypy3", line 106, in <module>
+    fannkuch(int(argv[1]))
+  File "fannkuchredux.pypy3-4.pypy3", line 97, in fannkuch
+    with Pool() as pool:
+AttributeError: 'Pool' object is not a context manager (no __enter__/__exit__ method)

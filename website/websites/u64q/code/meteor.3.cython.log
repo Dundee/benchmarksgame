@@ -1,0 +1,52 @@
+
+Fri, 20 Feb 2015 09:03:17 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
+cp meteor.cython-3.cython `echo meteor.cython-3.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
+cythonize -3 -bi `echo meteor.cython-3.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
+Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.pyx because it changed.
+Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.pyx
+running build_ext
+building 'meteor' extension
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpy52z71w1/home
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpy52z71w1/home/dundee
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpy52z71w1/home/dundee/workspace
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpy52z71w1/home/dundee/workspace/benchmarksgame
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpy52z71w1/home/dundee/workspace/benchmarksgame/bencher
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpy52z71w1/home/dundee/workspace/benchmarksgame/bencher/tmp
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpy52z71w1/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpy52z71w1/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp
+gcc -pthread -Wno-unused-result -DDYNAMIC_ANNOTATIONS_ENABLED=1 -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong --param=ssp-buffer-size=4 -fPIC -I/usr/include/python3.4m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpy52z71w1/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpy52z71w1/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.o -L/usr/lib -lpython3.4m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.cpython-34m.so
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
+4.67s to complete and log all make actions
+
+COMMAND LINE:
+/usr/bin/python3 -c "import meteor" 2098
+
+PROGRAM OUTPUT:
+2098 solutions found
+
+0 0 0 0 1 
+ 2 2 2 0 1 
+2 6 6 1 1 
+ 2 6 1 5 5 
+8 6 5 5 5 
+ 8 6 3 3 3 
+4 8 8 9 3 
+ 4 4 8 9 3 
+4 7 4 7 9 
+ 7 7 7 9 9 
+
+9 9 9 9 8 
+ 9 6 6 8 5 
+6 6 8 8 5 
+ 6 8 2 5 5 
+7 7 7 2 5 
+ 7 4 7 2 0 
+1 4 2 2 0 
+ 1 4 4 0 3 
+1 4 0 0 3 
+ 1 1 3 3 3 
+

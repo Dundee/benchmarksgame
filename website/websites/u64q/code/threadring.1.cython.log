@@ -1,0 +1,29 @@
+
+Fri, 20 Feb 2015 09:07:40 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp“
+cp threadring.cython `echo threadring.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
+cythonize -3 -bi `echo threadring.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
+Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/threadring.pyx because it changed.
+Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/threadring.pyx
+running build_ext
+building 'threadring' extension
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmp3wwb_1bn/home
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmp3wwb_1bn/home/dundee
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmp3wwb_1bn/home/dundee/workspace
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmp3wwb_1bn/home/dundee/workspace/benchmarksgame
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmp3wwb_1bn/home/dundee/workspace/benchmarksgame/bencher
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmp3wwb_1bn/home/dundee/workspace/benchmarksgame/bencher/tmp
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmp3wwb_1bn/home/dundee/workspace/benchmarksgame/bencher/tmp/threadring
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmp3wwb_1bn/home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp
+gcc -pthread -Wno-unused-result -DDYNAMIC_ANNOTATIONS_ENABLED=1 -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong --param=ssp-buffer-size=4 -fPIC -I/usr/include/python3.4m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/threadring.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmp3wwb_1bn/home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/threadring.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmp3wwb_1bn/home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/threadring.o -L/usr/lib -lpython3.4m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/threadring.cpython-34m.so
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp“
+1.87s to complete and log all make actions
+
+COMMAND LINE:
+/usr/bin/python3 -c "import threadring" 5000000
+
+PROGRAM OUTPUT:
+181

@@ -1,0 +1,16 @@
+
+Tue, 24 Feb 2015 12:37:25 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp“
+nuitka --python-version=3.4 --remove-output --improved nbody.nuitka
+cp nbody.nuitka.exe nbody.nuitka_run
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp“
+7.34s to complete and log all make actions
+
+COMMAND LINE:
+./nbody.nuitka_run 5000000
+
+PROGRAM OUTPUT:
+-0.169075164
+-0.169083134

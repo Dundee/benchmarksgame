@@ -1,0 +1,15 @@
+
+Fri, 13 Feb 2015 12:28:49 GMT
+
+COMMAND LINE:
+/usr/bin/python2 revcomp.python-4.python 0 < revcomp-input1000.txt
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Traceback (most recent call last):
+  File "revcomp.python-4.python", line 11, in <module>
+    def show(seq, table=bytes.maketrans(b'ACBDGHKMNSRUTWVYacbdghkmnsrutwvy',
+AttributeError: type object 'str' has no attribute 'maketrans'

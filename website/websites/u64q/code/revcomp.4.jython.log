@@ -1,0 +1,15 @@
+
+Tue, 26 May 2015 13:08:43 GMT
+
+COMMAND LINE:
+/usr/bin/jython revcomp.jython-4.jython 0 < revcomp-input1000.txt
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Traceback (most recent call last):
+  File "revcomp.jython-4.jython", line 11, in <module>
+    def show(seq, table=bytes.maketrans(b'ACBDGHKMNSRUTWVYacbdghkmnsrutwvy',
+AttributeError: type object 'str' has no attribute 'maketrans'

@@ -1,0 +1,17 @@
+
+Tue, 26 May 2015 13:08:40 GMT
+
+COMMAND LINE:
+/usr/bin/jython regexdna.jython-5.jython 0 < regexdna-input10000.txt
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Traceback (most recent call last):
+  File "regexdna.jython-5.jython", line 42, in <module>
+    main()
+  File "regexdna.jython-5.jython", line 11, in main
+    seq = stdin.buffer.read()
+AttributeError: 'file' object has no attribute 'buffer'

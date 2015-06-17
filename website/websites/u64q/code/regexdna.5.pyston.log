@@ -1,0 +1,17 @@
+
+Wed, 17 Jun 2015 17:49:10 GMT
+
+COMMAND LINE:
+/usr/bin/pyston regexdna.pyston-5.pyston 0 < regexdna-input10000.txt
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Traceback (most recent call last):
+  File "regexdna.pyston-5.pyston", line 42, in <module>:
+    main()
+  File "regexdna.pyston-5.pyston", line 11, in main:
+    seq = stdin.buffer.read()
+AttributeError: 'file' object has no attribute 'buffer'
