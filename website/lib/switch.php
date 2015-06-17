@@ -53,9 +53,7 @@ if ($T=='all'){
 
          // canonical links for Google
          $clinks = array(
-            "php" => "u64q/php.php",
             "python3" => "u64q/python3.php",
-            "jruby" => "u64q/ruby.php",
          );
 
          if (isset($clinks[$L])){
