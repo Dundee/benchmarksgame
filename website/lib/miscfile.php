@@ -32,7 +32,7 @@ if (SITE_NAME == 'core' || SITE_NAME == 'u32' || SITE_NAME == 'u32q' || SITE_NAM
       $metaKeywords = '<meta name="description" content="Even benchmarks derived from real programs may not help." />';
    } else {
       $metaRobots = '<meta name="robots" content="noindex,nofollow,noarchive" />';
-      $metaKeywords = '<meta name="description" content="Software contributed to The Python Implementations Benchmarks Game is published under this revised BSD license." />';
+      $metaKeywords = '<meta name="description" content="Software contributed to The Python Implementations Benchmarks is published under this revised BSD license." />';
    }
 } else {
    // Help people choose the up-to-date measurements

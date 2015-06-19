@@ -14,7 +14,7 @@
 <p class="timestamp"><?php printf('%s GMT', '06 Oct 2013, Sunday, 4:12 pm') ?></p>
 <p>You can no longer find the Benchmarks Game with Google or any other search engine. So, if you're interested in programming language comparisons and performance benchmarks, <a href="http://python.milde.cz/">bookmark the website now!</a></p>
 
-<p>Since 2004, The Python Implementations Benchmarks Game has been hosted by <a href="https://wiki.debian.org/Alioth">Alioth</a>, and the <a href="https://wiki.debian.org/Alioth/Web">web hosting</a> has mostly worked well enough for a low volume web site.</p>
+<p>Since 2004, The Python Implementations Benchmarks has been hosted by <a href="https://wiki.debian.org/Alioth">Alioth</a>, and the <a href="https://wiki.debian.org/Alioth/Web">web hosting</a> has mostly worked well enough for a low volume web site.</p>
 
 <p>Not anymore!</p>
 
