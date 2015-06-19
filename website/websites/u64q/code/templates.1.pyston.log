@@ -1,5 +1,5 @@
 
-Wed, 17 Jun 2015 17:58:19 GMT
+Fri, 19 Jun 2015 16:58:18 GMT
 
 COMMAND LINE:
 /usr/bin/pyston templates.pyston 1000
@@ -12,4 +12,14 @@ PROGRAM OUTPUT:
 Traceback (most recent call last):
   File "templates.pyston", line 3, in <module>:
     from jinja2 import Template
-ImportError: No module named jinja2
+  File "/home/dundee/pyston/build/Debug/site-packages/Jinja2-2.7.3-py2.7.egg/jinja2/__init__.py", line 33, in <module>:
+    from jinja2.environment import Environment, Template
+  File "/home/dundee/pyston/build/Debug/site-packages/Jinja2-2.7.3-py2.7.egg/jinja2/environment.py", line 13, in <module>:
+    from jinja2 import nodes
+  File "/home/dundee/pyston/build/Debug/site-packages/Jinja2-2.7.3-py2.7.egg/jinja2/nodes.py", line 18, in <module>:
+    from jinja2.utils import Markup
+  File "/home/dundee/pyston/build/Debug/site-packages/Jinja2-2.7.3-py2.7.egg/jinja2/utils.py", line 14, in <module>:
+    from jinja2._compat import text_type, string_types, implements_iterator, \
+  File "/home/dundee/pyston/build/Debug/site-packages/Jinja2-2.7.3-py2.7.egg/jinja2/_compat.py", line 135, in <module>:
+    frame_type = type(_tb.tb_frame)
+AttributeError: 'traceback' object has no attribute 'tb_frame'
