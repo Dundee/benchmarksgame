@@ -10,8 +10,8 @@ require_once(LIB);
 // TEMPLATE VARS ////////////////////////////////////////////////
 
 $Page = & new Template(LIB_PATH);
-$Page->set('PageTitle', 'Play'.BAR.'Python&nbsp;Implementations&nbsp;Benchmarks&nbsp;Game');
-$Page->set('BannerTitle', 'Python&nbsp;Implementations&nbsp; <br/>Benchmarks&nbsp;Game');
+$Page->set('PageTitle', 'Play'.BAR.'Python&nbsp;Interpreters&nbsp;Benchmarks&nbsp;Game');
+$Page->set('BannerTitle', 'Python&nbsp;Interpreters&nbsp; <br/>Benchmarks&nbsp;Game');
 $Page->set('FaqTitle', '[[ Conclusions ]]');
 $Page->set('PageBody', BLANK);
 

@@ -24,7 +24,7 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 <meta name="HandheldFriendly" content="false" />
 <meta name="google-site-verification" content="y9GFMJuxj7Ou4xK9YRagz9hCBfn1lyKcHQakWgkE7gg" />
 
-<title>Python Implementations Benchmarks</title>
+<title>Python Interpreters Benchmarks</title>
 <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/benchmark_css_8oct2012.php" />
 <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/nohint_css_26jan2011.php" media="screen,print,projection"/>
 <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/hint_css_26jan2011.php" media="handheld,aural,braille"/>
@@ -34,13 +34,13 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 <body id="core">
 
 <table class="banner"><tr>
-<td><h1><a><strong>Python</strong>&nbsp;Implementations <strong>Benchmarks</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo $baseUrl ?>/play.php" title="How programs were measured. FAQs. How to contribute programs.">[[ Play ]]</a></h1></td>
+<td><h1><a><strong>Python</strong>&nbsp;Interpreters <strong>Benchmarks</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo $baseUrl ?>/play.php" title="How programs were measured. FAQs. How to contribute programs.">[[ Play ]]</a></h1></td>
 </tr></table>
 
 <div id="sitemap">
 
 <p>
-Benchmarks of Python implementations.
+Benchmarks of Python interpreters and compilers.
 </p>
 
 <p>
@@ -143,7 +143,7 @@ foreach($tests as $t){
 PrintHeaders();
 
 $page = array(
-    array('which-programs-are-fastest.php','Which programs are fastest?','Which of these language implementations have the fastest benchmark programs?')
+    array('which-programs-are-fastest.php','Which programs are fastest?','Which of these interpreters have the fastest benchmark programs?')
    );
 
 foreach($page as $p){

@@ -32,7 +32,7 @@ if (SITE_NAME == 'core' || SITE_NAME == 'u32' || SITE_NAME == 'u32q' || SITE_NAM
       $metaKeywords = '<meta name="description" content="Even benchmarks derived from real programs may not help." />';
    } else {
       $metaRobots = '<meta name="robots" content="noindex,nofollow,noarchive" />';
-      $metaKeywords = '<meta name="description" content="Software contributed to The Python Implementations Benchmarks is published under this revised BSD license." />';
+      $metaKeywords = '<meta name="description" content="Software contributed to The Python Interpreters Benchmarks is published under this revised BSD license." />';
    }
 } else {
    // Help people choose the up-to-date measurements
@@ -45,8 +45,8 @@ $bannerUrl = CORE_SITE;
 // TEMPLATE VARS ////////////////////////////////////////////////
 
 $Page = & new Template(LIB_PATH);
-$Page->set('PageTitle', $T.BAR.'Python&nbsp;Implementations&nbsp;Benchmarks&nbsp;Game');
-$Page->set('BannerTitle', 'Python&nbsp;Implementations&nbsp; <br/>Benchmarks&nbsp;Game');
+$Page->set('PageTitle', $T.BAR.'Python&nbsp;Interpreters&nbsp;Benchmarks&nbsp;Game');
+$Page->set('BannerTitle', 'Python&nbsp;Interpreters&nbsp; <br/>Benchmarks&nbsp;Game');
 $Page->set('FaqTitle', '[[ Play ]]');
 $Page->set('BannerUrl', $bannerUrl);
 $Page->set('FaqUrl', $faqUrl);

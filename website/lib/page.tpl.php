@@ -48,7 +48,7 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 <?=$PageBody;?>
 
 <p class="imgfooter">
-<a href="<?=CORE_SITE;?>license.php" title="Python Implementations Benchmarks is published under this revised BSD license" >
+<a href="<?=CORE_SITE;?>license.php" title="Python Interpreters Benchmarks is published under this revised BSD license" >
    <img src="<?=IMAGE_PATH;?>open_source_button_png_11dec2009.php" alt="Revised BSD license" height="31" width="88" />
 </a>
 </p>

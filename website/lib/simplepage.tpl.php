@@ -22,7 +22,7 @@ h1 { font-weight: bold; font-size: smaller; }
 
 <body id="<?=SITE_NAME;?>">
 
-<h1>Python Implementations Benchmarks</h1>
+<h1>Python Interpreters Benchmarks</h1>
 <div id="<?=$PageId;?>">
 <?=$PageBody;?>
 </div>

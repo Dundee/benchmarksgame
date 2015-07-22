@@ -203,7 +203,7 @@ if (!isset($LinkRelCanonical)){
 
 // TEMPLATE VARS ////////////////////////////////////////////////
 
-$Page->set('PageTitle', $Title.BAR.'Python&nbsp;Implementations&nbsp;Benchmarks&nbsp;Game');
+$Page->set('PageTitle', $Title.BAR.'Python&nbsp;Interpreters&nbsp;Benchmarks&nbsp;Game');
 $Page->set('BannerTitle', BANNER_TITLE);
 $Page->set('BannerUrl', $bannerUrl);
 $Page->set('FaqTitle', FAQ_TITLE);
