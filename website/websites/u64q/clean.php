@@ -3,6 +3,6 @@
 ob_start('ob_gzhandler');
 require_once('config.php');
 $T = 'all'; $L = 'clean'; $metaRobots = '';
-$LinkRelCanonical = '<link rel="canonical" href="http://python.milde.cz/u64/clean.php" />';
+$LinkRelCanonical = '<link rel="canonical" href="http://pybenchmarks.org/u64/clean.php" />';
 require_once(LIB_PATH.'compare.php');
 ?>

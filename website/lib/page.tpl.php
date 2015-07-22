@@ -20,10 +20,10 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 <meta name="HandheldFriendly" content="false" />
 
 <title><?=$PageTitle;?></title>
-<link rel="stylesheet" type="text/css" href="http://python.milde.cz/benchmark_css_8oct2012.php" />
-<link rel="stylesheet" type="text/css" href="http://python.milde.cz/nohint_css_26jan2011.php" media="screen,print,projection"/>
-<link rel="stylesheet" type="text/css" href="http://python.milde.cz/hint_css_26jan2011.php" media="handheld,aural,braille"/>
-<link rel="shortcut icon" href="http://python.milde.cz/favicon_ico_11dec2009.php" />
+<link rel="stylesheet" type="text/css" href="http://pybenchmarks.org/benchmark_css_8oct2012.php" />
+<link rel="stylesheet" type="text/css" href="http://pybenchmarks.org/nohint_css_26jan2011.php" media="screen,print,projection"/>
+<link rel="stylesheet" type="text/css" href="http://pybenchmarks.org/hint_css_26jan2011.php" media="handheld,aural,braille"/>
+<link rel="shortcut icon" href="http://pybenchmarks.org/favicon_ico_11dec2009.php" />
 <?php
    if (isset($LinkCanonical)) { echo $LinkCanonical; }
 ?>

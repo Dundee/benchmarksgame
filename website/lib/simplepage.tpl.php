@@ -29,6 +29,6 @@ h1 { font-weight: bold; font-size: smaller; }
 
 <p>And please don't jump to conclusions! "The performance of a benchmark, even if it is derived from a real program, may not help to predict the performance of similar programs that have different hot spots."</p>
 
-<p>&nbsp; <a href="http://python.milde.cz/">Home</a> &nbsp; <a href="http://python.milde.cz/license.php">License</a> &nbsp; <a href="http://python.milde.cz/play.php">Play</a> &nbsp;</p>
+<p>&nbsp; <a href="http://pybenchmarks.org/">Home</a> &nbsp; <a href="http://pybenchmarks.org/license.php">License</a> &nbsp; <a href="http://pybenchmarks.org/play.php">Play</a> &nbsp;</p>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <?php
 ob_start('ob_gzhandler');
 $s = time();
-$baseUrl = 'http://python.milde.cz';
+$baseUrl = 'http://pybenchmarks.org';
 
 // REVISED - don't have all pages expire at the same time!
 // EXPIRE pages 31 hours after they are visited.

@@ -1,6 +1,6 @@
 <?php
 header("HTTP/1.1 301 Moved Permanently");
-header("Location: http://python.milde.cz/play.php");
+header("Location: http://pybenchmarks.org/play.php");
 exit;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
@@ -10,6 +10,6 @@ exit;
 <title>Python Interpreters Benchmarks</title>
 </head>
 <body>
-<h3><a href="http://python.milde.cz/play.php">Play</a></h3>
+<h3><a href="http://pybenchmarks.org/play.php">Play</a></h3>
 </body>
 </html>

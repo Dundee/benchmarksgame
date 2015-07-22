@@ -12,7 +12,7 @@ if (!isset($D)||($D=='u64q')){
    require_once('config.php');
    require_once(LIB_PATH.'switch.php');
 } else {
-   header('Location: http://python.milde.cz/'.$D.'/benchmark.php?'.$_SERVER['QUERY_STRING']);
+   header('Location: http://pybenchmarks.org/'.$D.'/benchmark.php?'.$_SERVER['QUERY_STRING']);
    exit;
 }
 ?>
