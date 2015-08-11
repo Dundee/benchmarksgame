@@ -70,7 +70,7 @@ $langs = array(
    array('python','Python 2.7.9','python',$allsites),
    array('pypy','PyPy 2.6.0','pypy',$allsites),
    array('python3','Python 3.4.3','python3',$allsites),
-   array('python35','Python 3.5.0b2','python35',$allsites),
+   array('python35','Python 3.5.0b4','python35',$allsites),
    array('python36','Python 3.6.0a0','python36',$allsites),
    array('pypy3','PyPy3 2.4.0','pypy3',$allsites),
    array('jython','Jython 2.7.0','jython',$allsites),
