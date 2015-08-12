@@ -1,26 +1,26 @@
 
-Fri, 20 Feb 2015 09:06:32 GMT
+Wed, 12 Aug 2015 10:19:23 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
 cp revcomp.cython-3.cython `echo revcomp.cython-3.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 cythonize -3 -bi `echo revcomp.cython-3.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/revcomp.pyx because it changed.
-Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/revcomp.pyx
+[1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/revcomp.pyx
 running build_ext
 building 'revcomp' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmpyxdrhrtq/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmpyxdrhrtq/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmpyxdrhrtq/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmpyxdrhrtq/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmpyxdrhrtq/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmpyxdrhrtq/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmpyxdrhrtq/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmpyxdrhrtq/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp
-gcc -pthread -Wno-unused-result -DDYNAMIC_ANNOTATIONS_ENABLED=1 -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong --param=ssp-buffer-size=4 -fPIC -I/usr/include/python3.4m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/revcomp.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmpyxdrhrtq/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/revcomp.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmpyxdrhrtq/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/revcomp.o -L/usr/lib -lpython3.4m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/revcomp.cpython-34m.so
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp0tuuxu0q/home
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp0tuuxu0q/home/dundee
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp0tuuxu0q/home/dundee/workspace
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp0tuuxu0q/home/dundee/workspace/benchmarksgame
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp0tuuxu0q/home/dundee/workspace/benchmarksgame/bencher
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp0tuuxu0q/home/dundee/workspace/benchmarksgame/bencher/tmp
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp0tuuxu0q/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp0tuuxu0q/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp
+gcc -pthread -Wno-unused-result -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong --param=ssp-buffer-size=4 -fPIC -I/usr/include/python3.4m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/revcomp.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp0tuuxu0q/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/revcomp.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp0tuuxu0q/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/revcomp.o -L/usr/lib -lpython3.4m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/revcomp.cpython-34m.so
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
-1.41s to complete and log all make actions
+1.15s to complete and log all make actions
 
 COMMAND LINE:
 /usr/bin/python3 -c "import revcomp" 0 < revcomp-input1000.txt

@@ -1,30 +1,30 @@
 
-Mon, 02 Mar 2015 08:50:39 GMT
+Wed, 12 Aug 2015 10:19:43 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp“
 cp richards.cython `echo richards.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 cythonize -3 -bi `echo richards.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.pyx because it changed.
-Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.pyx
+[1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.pyx
 running build_ext
 building 'richards' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp0paj4lrg/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp0paj4lrg/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp0paj4lrg/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp0paj4lrg/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp0paj4lrg/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp0paj4lrg/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp0paj4lrg/home/dundee/workspace/benchmarksgame/bencher/tmp/richards
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp0paj4lrg/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp
-gcc -pthread -Wno-unused-result -DDYNAMIC_ANNOTATIONS_ENABLED=1 -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong --param=ssp-buffer-size=4 -fPIC -I/usr/include/python3.4m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp0paj4lrg/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.o
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpxgogtmt4/home
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpxgogtmt4/home/dundee
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpxgogtmt4/home/dundee/workspace
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpxgogtmt4/home/dundee/workspace/benchmarksgame
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpxgogtmt4/home/dundee/workspace/benchmarksgame/bencher
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpxgogtmt4/home/dundee/workspace/benchmarksgame/bencher/tmp
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpxgogtmt4/home/dundee/workspace/benchmarksgame/bencher/tmp/richards
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpxgogtmt4/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp
+gcc -pthread -Wno-unused-result -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong --param=ssp-buffer-size=4 -fPIC -I/usr/include/python3.4m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpxgogtmt4/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.o
 /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.c: In function ‘__pyx_pf_8richards_trace’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.c:3035:5: warning: statement with no effect [-Wunused-value]
+/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.c:3107:5: warning: statement with no effect [-Wunused-value]
      __pyx_builtin_print;
      ^
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp0paj4lrg/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.o -L/usr/lib -lpython3.4m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.cpython-34m.so
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpxgogtmt4/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.o -L/usr/lib -lpython3.4m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.cpython-34m.so
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp“
-4.94s to complete and log all make actions
+5.07s to complete and log all make actions
 
 COMMAND LINE:
 /usr/bin/python3 -c "import richards" 10

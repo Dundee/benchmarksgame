@@ -1,26 +1,26 @@
 
-Fri, 20 Feb 2015 08:58:55 GMT
+Wed, 12 Aug 2015 10:10:14 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
 cp meteor.cython-2.cython `echo meteor.cython-2.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 cythonize -3 -bi `echo meteor.cython-2.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.pyx because it changed.
-Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.pyx
+[1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.pyx
 running build_ext
 building 'meteor' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmp4ul9kzpk/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmp4ul9kzpk/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmp4ul9kzpk/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmp4ul9kzpk/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmp4ul9kzpk/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmp4ul9kzpk/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmp4ul9kzpk/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmp4ul9kzpk/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp
-gcc -pthread -Wno-unused-result -DDYNAMIC_ANNOTATIONS_ENABLED=1 -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong --param=ssp-buffer-size=4 -fPIC -I/usr/include/python3.4m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmp4ul9kzpk/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmp4ul9kzpk/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.o -L/usr/lib -lpython3.4m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.cpython-34m.so
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpufxnauxm/home
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpufxnauxm/home/dundee
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpufxnauxm/home/dundee/workspace
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpufxnauxm/home/dundee/workspace/benchmarksgame
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpufxnauxm/home/dundee/workspace/benchmarksgame/bencher
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpufxnauxm/home/dundee/workspace/benchmarksgame/bencher/tmp
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpufxnauxm/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpufxnauxm/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp
+gcc -pthread -Wno-unused-result -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong --param=ssp-buffer-size=4 -fPIC -I/usr/include/python3.4m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpufxnauxm/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpufxnauxm/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.o -L/usr/lib -lpython3.4m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.cpython-34m.so
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
-110.51s to complete and log all make actions
+3.93s to complete and log all make actions
 
 COMMAND LINE:
 /usr/bin/python3 -c "import meteor" 2098

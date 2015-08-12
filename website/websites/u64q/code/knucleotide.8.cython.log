@@ -1,26 +1,26 @@
 
-Fri, 20 Feb 2015 08:49:32 GMT
+Wed, 12 Aug 2015 09:45:41 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp“
 cp knucleotide.cython-8.cython `echo knucleotide.cython-8.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 cythonize -3 -bi `echo knucleotide.cython-8.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/knucleotide.pyx because it changed.
-Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/knucleotide.pyx
+[1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/knucleotide.pyx
 running build_ext
 building 'knucleotide' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmphpej_4d1/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmphpej_4d1/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmphpej_4d1/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmphpej_4d1/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmphpej_4d1/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmphpej_4d1/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmphpej_4d1/home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmphpej_4d1/home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp
-gcc -pthread -Wno-unused-result -DDYNAMIC_ANNOTATIONS_ENABLED=1 -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong --param=ssp-buffer-size=4 -fPIC -I/usr/include/python3.4m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/knucleotide.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmphpej_4d1/home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/knucleotide.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmphpej_4d1/home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/knucleotide.o -L/usr/lib -lpython3.4m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/knucleotide.cpython-34m.so
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpb1emk8tt/home
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpb1emk8tt/home/dundee
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpb1emk8tt/home/dundee/workspace
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpb1emk8tt/home/dundee/workspace/benchmarksgame
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpb1emk8tt/home/dundee/workspace/benchmarksgame/bencher
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpb1emk8tt/home/dundee/workspace/benchmarksgame/bencher/tmp
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpb1emk8tt/home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpb1emk8tt/home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp
+gcc -pthread -Wno-unused-result -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong --param=ssp-buffer-size=4 -fPIC -I/usr/include/python3.4m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/knucleotide.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpb1emk8tt/home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/knucleotide.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpb1emk8tt/home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/knucleotide.o -L/usr/lib -lpython3.4m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/knucleotide.cpython-34m.so
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp“
-2.04s to complete and log all make actions
+2.27s to complete and log all make actions
 
 COMMAND LINE:
 /usr/bin/python3 -c "import knucleotide" 0 < knucleotide-input10000.txt
