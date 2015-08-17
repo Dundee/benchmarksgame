@@ -1,5 +1,5 @@
 
-Mon, 25 May 2015 10:37:14 GMT
+Mon, 17 Aug 2015 14:40:57 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
@@ -7,21 +7,10 @@ nuitka --python-version=3.4 --remove-output --improved spectralnorm.nuitka-3.nui
 Nuitka:WARNING:Not recursing to 'numpy' (/usr/lib/python3.4/site-packages/numpy), please specify --recurse-none (do not warn), --recurse-all (recurse to all), --recurse-not-to=numpy (ignore it), --recurse-to=numpy (recurse to it) to change.
 cp spectralnorm.nuitka-3.nuitka.exe spectralnorm.nuitka-3.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
-2.79s to complete and log all make actions
+3.45s to complete and log all make actions
 
 COMMAND LINE:
-./spectralnorm.nuitka-3.nuitka_run 50
-
-PROGRAM FAILED 
-
+./spectralnorm.nuitka-3.nuitka_run 550
 
 PROGRAM OUTPUT:
-
-Traceback (most recent call last):
-  File "/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.nuitka-3.nuitka", line 15, in <module>
-    import numpy
-  File "/usr/lib/python3.4/site-packages/numpy/__init__.py", line 189, in <module>
-    from . import random
-  File "/usr/lib/python3.4/site-packages/numpy/random/__init__.py", line 99, in <module>
-    from .mtrand import *
-ImportError: /usr/lib/python3.4/site-packages/numpy/random/mtrand.cpython-34m.so: undefined symbol: AnnotateIgnoreReadsEnd
+1.274224125
