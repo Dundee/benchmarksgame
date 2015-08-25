@@ -74,7 +74,7 @@ $langs = array(
    array('python36','Python 3.6.0a0','python36',$allsites),
    array('pypy3','PyPy3 2.4.0','pypy3',$allsites),
    array('jython','Jython 2.7.0','jython',$allsites),
-   array('cython','Cython 0.23','cython',$allsites),
+   array('cython','Cython 0.23.1','cython',$allsites),
    array('nuitka','Nuitka 0.5.13.8','nuitka',$allsites),
    array('shedskin','Shedskin 0.9.4','shedskin',$allsites),
    array('numba','Numba 0.19.1','numba',$allsites),
