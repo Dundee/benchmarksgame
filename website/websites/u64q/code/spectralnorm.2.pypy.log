@@ -1,38 +1,8 @@
 
-Wed, 03 Jun 2015 13:33:18 GMT
+Mon, 07 Sep 2015 11:19:33 GMT
 
 COMMAND LINE:
-/usr/bin/pypy spectralnorm.pypy-2.pypy 50
-
-PROGRAM FAILED 
-
+/usr/bin/pypy spectralnorm.pypy-2.pypy 550
 
 PROGRAM OUTPUT:
-Assembler messages:
-Fatal error: can't create /opt/pypy/site-packages/numpy/fft/__pycache__/opt/pypy/site-packages/numpy/fft/__pycache__/_cffi__gf1c0eb94x67809c30.o: Operace zamítnuta
-Assembler messages:
-Fatal error: can't create /opt/pypy/site-packages/numpy/fft/__pycache__/opt/pypy/site-packages/numpy/fft/__pycache__/_cffi__gf1c0eb94x67809c30.o: Operace zamítnuta
-
-Traceback (most recent call last):
-  File "<builtin>/app_main.py", line 75, in run_toplevel
-  File "spectralnorm.pypy-2.pypy", line 12, in <module>
-    from numpy import *
-  File "/opt/pypy/site-packages/numpy/__init__.py", line 187, in <module>
-    from . import fft
-  File "/opt/pypy/site-packages/numpy/fft/__init__.py", line 6, in <module>
-    from .fftpack import *
-  File "/opt/pypy/site-packages/numpy/fft/fftpack.py", line 40, in <module>
-    from . import fft_cffi
-  File "/opt/pypy/site-packages/numpy/fft/fft_cffi.py", line 1516, in <module>
-    ''', libraries=[])
-  File "/opt/pypy/lib_pypy/cffi/api.py", line 373, in verify
-    lib = self.verifier.load_library()
-  File "/opt/pypy/lib_pypy/cffi/verifier.py", line 96, in load_library
-    self._compile_module()
-  File "/opt/pypy/lib_pypy/cffi/verifier.py", line 192, in _compile_module
-    outputfilename = ffiplatform.compile(tmpdir, self.get_extension())
-  File "/opt/pypy/lib_pypy/cffi/ffiplatform.py", line 38, in compile
-    outputfilename = _build(tmpdir, ext)
-  File "/opt/pypy/lib_pypy/cffi/ffiplatform.py", line 65, in _build
-    raise VerificationError('%s: %s' % (e.__class__.__name__, e))
-VerificationError: CompileError: Command "cc -O2 -fPIC -Wimplicit -I/opt/pypy/include -c /opt/pypy/site-packages/numpy/fft/__pycache__/_cffi__gf1c0eb94x67809c30.c -o /opt/pypy/site-packages/numpy/fft/__pycache__/opt/pypy/site-packages/numpy/fft/__pycache__/_cffi__gf1c0eb94x67809c30.o" failed with exit status 1
+1.274224125

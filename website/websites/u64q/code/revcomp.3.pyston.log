@@ -1,5 +1,5 @@
 
-Wed, 17 Jun 2015 17:49:11 GMT
+Mon, 07 Sep 2015 10:45:33 GMT
 
 COMMAND LINE:
 /usr/bin/pyston revcomp.pyston-3.pyston 0 < revcomp-input1000.txt
@@ -10,6 +10,6 @@ PROGRAM FAILED
 PROGRAM OUTPUT:
 
 Traceback (most recent call last):
-  File "revcomp.pyston-3.pyston", line 25, in :
-    print(line, end='')
-SyntaxError: Expected `)`
+  File "revcomp.pyston-3.pyston", line 12, in <module>:
+    table=bytes.maketrans(b'ACBDGHK\nMNSRUTWVYacbdghkmnsrutwvy',
+AttributeError: type object 'str' has no attribute 'maketrans'
