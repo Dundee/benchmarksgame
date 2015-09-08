@@ -37,8 +37,8 @@ def check_complement(colors=creature_colors, compl=compl_dict):
 
 
 # reporting
-def spellout(n):
-    
+def spellout(int n):
+
     numbers = ['zero', 'one', 'two', 'three', 'four',
                'five', 'six', 'seven', 'eight', 'nine']
     return ' ' + ' '.join(numbers[int(c)] for c in str(n))
@@ -62,15 +62,16 @@ def creature(my_id, venue, my_lock_acquire, in_lock_acquire, out_lock_release):
         out_lock_release()  # signal "registration ok"
 
 
-def let_them_meet(meetings_left, input_zoo,
+def let_them_meet(int meetings_left, input_zoo,
                   compl=compl_dict, allocate=_thread.allocate_lock):
     # prepare
+    cdef int c_no, ci
     c_no = len(input_zoo)
     venue = [-1]
     met = [0] * c_no
     self_met = [0] * c_no
     colors = input_zoo[:]
-    
+
     in_lock = allocate()
     in_lock_acquire = in_lock.acquire     # function aliases
     in_lock_release = in_lock.release     # (minor performance gain)
@@ -80,13 +81,13 @@ def let_them_meet(meetings_left, input_zoo,
     out_lock_acquire = out_lock.acquire
     out_lock_acquire()
     locks = [allocate() for c in input_zoo]
-    
+
     # let creatures wild
     for ci in range(c_no):
         args = (ci, venue, locks[ci].acquire, in_lock_acquire, out_lock_release)
         new = _thread.start_new_thread(creature, args)
     time.sleep(0.05)     # to reduce work-load imbalance
-    
+
     in_lock_release()   # signal "meeting_place open for registration"
     out_lock_acquire()  # only proceed with a "registration ok" signal
     id1 = venue[0]
@@ -110,8 +111,8 @@ def let_them_meet(meetings_left, input_zoo,
         else:
             report(input_zoo, met, self_met)
 
-           
-def chameneosiate(n):
+
+def chameneosiate(int n):
 
     check_complement()
     let_them_meet(n, ['blue', 'red', 'yellow'])
@@ -120,4 +121,4 @@ def chameneosiate(n):
     #print ''
 
 
-chameneosiate(int(sys.argv[1]))       
+chameneosiate(int(sys.argv[1]))

@@ -1,50 +1,17 @@
 
-Fri, 28 Aug 2015 08:12:16 GMT
+Tue, 08 Sep 2015 10:01:37 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp“
 nuitka --python-version=3.4 --remove-output --improved chameneosredux.nuitka
 cp chameneosredux.nuitka.exe chameneosredux.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp“
-4.26s to complete and log all make actions
+3.75s to complete and log all make actions
 
 COMMAND LINE:
-./chameneosredux.nuitka_run 60000
+./chameneosredux.nuitka_run 6000000
 
-UNEXPECTED OUTPUT 
-
-12,14c12,14
-< 41399 zero
-< 38535 zero
-< 40066 zero
----
-> 40719 zero
-> 40253 zero
-> 39028 zero
-18,27c18,27
-< 17850 zero
-< 11699 zero
-< 9348 zero
-< 9820 zero
-< 13001 zero
-< 14628 zero
-< 11438 zero
-< 8740 zero
-< 12276 zero
-< 11200 zero
----
-> 11601 zero
-> 9982 zero
-> 13292 zero
-> 9344 zero
-> 12255 zero
-> 12186 zero
-> 11212 zero
-> 14600 zero
-> 14544 zero
-> 10984 zero
-
-PROGRAM OUTPUT:
+PROGRAM OUTPUT NOT CHECKED:
 blue + blue -> blue
 blue + red -> yellow
 blue + yellow -> red
@@ -56,21 +23,21 @@ yellow + red -> blue
 yellow + yellow -> yellow
 
  blue red yellow
-41399 zero
-38535 zero
-40066 zero
- one two zero zero zero zero
+3943094 zero
+4037417 zero
+4019489 zero
+ one two zero zero zero zero zero zero
 
  blue red yellow red yellow blue red yellow red blue
-17850 zero
-11699 zero
-9348 zero
-9820 zero
-13001 zero
-14628 zero
-11438 zero
-8740 zero
-12276 zero
-11200 zero
- one two zero zero zero zero
+1150597 zero
+1085684 zero
+1082940 zero
+1354588 zero
+1137312 zero
+1205204 zero
+1370626 zero
+1270698 zero
+1127630 zero
+1214721 zero
+ one two zero zero zero zero zero zero
 

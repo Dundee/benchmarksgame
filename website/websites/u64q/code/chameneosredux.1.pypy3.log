@@ -1,43 +1,10 @@
 
-Fri, 13 Feb 2015 10:48:41 GMT
+Tue, 08 Sep 2015 09:44:18 GMT
 
 COMMAND LINE:
-/usr/bin/pypy3 chameneosredux.pypy3 60000
+/usr/bin/pypy3 chameneosredux.pypy3 6000000
 
-UNEXPECTED OUTPUT 
-
-12,14c12,14
-< 42174 zero
-< 43258 zero
-< 34568 zero
----
-> 40719 zero
-> 40253 zero
-> 39028 zero
-18c18,22
-< 12455 zero
----
-> 11601 zero
-> 9982 zero
-> 13292 zero
-> 9344 zero
-> 12255 zero
-20,27c24,27
-< 11595 zero
-< 13472 zero
-< 13180 zero
-< 12262 zero
-< 10054 zero
-< 11130 zero
-< 11676 zero
-< 11990 zero
----
-> 11212 zero
-> 14600 zero
-> 14544 zero
-> 10984 zero
-
-PROGRAM OUTPUT:
+PROGRAM OUTPUT NOT CHECKED:
 blue + blue -> blue
 blue + red -> yellow
 blue + yellow -> red
@@ -49,21 +16,21 @@ yellow + red -> blue
 yellow + yellow -> yellow
 
  blue red yellow
-42174 zero
-43258 zero
-34568 zero
- one two zero zero zero zero
+3916797 zero
+4099394 zero
+3983809 zero
+ one two zero zero zero zero zero zero
 
  blue red yellow red yellow blue red yellow red blue
-12455 zero
-12186 zero
-11595 zero
-13472 zero
-13180 zero
-12262 zero
-10054 zero
-11130 zero
-11676 zero
-11990 zero
- one two zero zero zero zero
+1247741 zero
+1239738 zero
+1228184 zero
+1204049 zero
+1195384 zero
+1211622 zero
+1129170 zero
+1218052 zero
+1191698 zero
+1134362 zero
+ one two zero zero zero zero zero zero
 
