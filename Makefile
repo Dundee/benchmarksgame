@@ -1,5 +1,6 @@
 PYTHON = python2
 
+
 run:
 	cd bencher; $(PYTHON) ./bin/bencher.py
 
