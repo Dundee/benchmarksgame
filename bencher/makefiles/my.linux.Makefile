@@ -35,5 +35,5 @@
 ########################################
 
 %.nuitka_run: %.nuitka
-	nuitka --python-version=3.4 --remove-output --improved $<
+	nuitka --remove-output --improved $<
 	cp $<.exe $*.nuitka_run
