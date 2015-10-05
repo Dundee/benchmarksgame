@@ -1,5 +1,5 @@
 
-Tue, 15 Sep 2015 08:25:31 GMT
+Mon, 05 Oct 2015 08:52:08 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
@@ -9,18 +9,18 @@ Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spe
 [1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx
 running build_ext
 building 'spectralnorm' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpdiqn6edq/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpdiqn6edq/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpdiqn6edq/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpdiqn6edq/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpdiqn6edq/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpdiqn6edq/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpdiqn6edq/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpdiqn6edq/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp
-gcc -pthread -Wno-unused-result -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong --param=ssp-buffer-size=4 -fPIC -I/usr/include/python3.4m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpdiqn6edq/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpdiqn6edq/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.o -L/usr/lib -lpython3.4m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.cpython-34m.so
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpzb26x1g9/home
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpzb26x1g9/home/dundee
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpzb26x1g9/home/dundee/workspace
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpzb26x1g9/home/dundee/workspace/benchmarksgame
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpzb26x1g9/home/dundee/workspace/benchmarksgame/bencher
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpzb26x1g9/home/dundee/workspace/benchmarksgame/bencher/tmp
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpzb26x1g9/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpzb26x1g9/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp
+gcc -pthread -Wno-unused-result -Wsign-compare -Wunreachable-code -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong --param=ssp-buffer-size=4 -fPIC -I/usr/include/python3.5m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpzb26x1g9/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpzb26x1g9/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.o -L/usr/lib -lpython3.5m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.cpython-35m-x86_64-linux-gnu.so
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
-1.41s to complete and log all make actions
+1.28s to complete and log all make actions
 
 COMMAND LINE:
 /usr/bin/python3 -c "import spectralnorm" 50
@@ -36,8 +36,8 @@ Traceback (most recent call last):
     spectralnorm(int(argv[1]))
   File "spectralnorm.pyx", line 23, in spectralnorm.spectralnorm (/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.c:1262)
     print("%0.9f" % (sum(u*v.T)/sum(v*v.T))**0.5)
-  File "/usr/lib/python3.4/site-packages/numpy/matrixlib/defmatrix.py", line 354, in __pow__
+  File "/usr/lib/python3.5/site-packages/numpy/matrixlib/defmatrix.py", line 354, in __pow__
     return matrix_power(self, other)
-  File "/usr/lib/python3.4/site-packages/numpy/matrixlib/defmatrix.py", line 173, in matrix_power
+  File "/usr/lib/python3.5/site-packages/numpy/matrixlib/defmatrix.py", line 173, in matrix_power
     raise TypeError("exponent must be an integer")
 TypeError: exponent must be an integer
