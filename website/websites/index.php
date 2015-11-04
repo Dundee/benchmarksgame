@@ -77,7 +77,7 @@ $langs = array(
    array('nuitka','Nuitka 0.5.15.0','nuitka',$allsites),
    array('shedskin','Shedskin 0.9.4','shedskin',$allsites),
    array('numba','Numba 0.19.1','numba',$allsites),
-   array('pyston','Pyston v0.3','pyston',$allsites),
+   array('pyston','Pyston v0.4.0','pyston',$allsites),
    );
 
 

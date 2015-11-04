@@ -1,5 +1,5 @@
 
-Wed, 17 Jun 2015 17:33:14 GMT
+Wed, 04 Nov 2015 09:57:57 GMT
 
 COMMAND LINE:
 /usr/bin/pyston fibonacci.pyston 1000000
@@ -9,7 +9,9 @@ PROGRAM FAILED
 
 PROGRAM OUTPUT:
 
+/usr/bin/pyston: /usr/lib/libcrypto.so.1.0.0: no version information available (required by /usr/bin/pyston)
+/usr/bin/pyston: /usr/lib/libssl.so.1.0.0: no version information available (required by /usr/bin/pyston)
 Traceback (most recent call last):
-  File "fibonacci.pyston", line 1, in <module>:
+  File "fibonacci.pyston", line 1, in <module>
     import numpy
 ImportError: No module named numpy

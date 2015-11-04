@@ -1,12 +1,23 @@
 
-Fri, 30 Oct 2015 07:46:23 GMT
+Wed, 04 Nov 2015 11:26:11 GMT
 
 COMMAND LINE:
 /usr/bin/pyston regexdna.pyston 0 < regexdna-input10000.txt
 
-PROGRAM FAILED 
-
-
 PROGRAM OUTPUT:
+agggtaaa|tttaccct 0
+[cgt]gggtaaa|tttaccc[acg] 3
+a[act]ggtaaa|tttacc[agt]t 9
+ag[act]gtaaa|tttac[agt]ct 8
+agg[act]taaa|ttta[agt]cct 10
+aggg[acg]aaa|ttt[cgt]ccct 3
+agggt[cgt]aa|tt[acg]accct 4
+agggta[cgt]a|t[acg]taccct 3
+agggtaa[cgt]|[acg]ttaccct 5
 
-/usr/bin/pyston: error while loading shared libraries: libncursesw.so.5: cannot open shared object file: No such file or directory
+101745
+100000
+133640
+
+/usr/bin/pyston: /usr/lib/libcrypto.so.1.0.0: no version information available (required by /usr/bin/pyston)
+/usr/bin/pyston: /usr/lib/libssl.so.1.0.0: no version information available (required by /usr/bin/pyston)

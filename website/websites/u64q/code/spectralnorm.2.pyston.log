@@ -1,5 +1,5 @@
 
-Wed, 17 Jun 2015 17:58:19 GMT
+Wed, 04 Nov 2015 11:26:26 GMT
 
 COMMAND LINE:
 /usr/bin/pyston spectralnorm.pyston-2.pyston 50
@@ -9,7 +9,9 @@ PROGRAM FAILED
 
 PROGRAM OUTPUT:
 
+/usr/bin/pyston: /usr/lib/libcrypto.so.1.0.0: no version information available (required by /usr/bin/pyston)
+/usr/bin/pyston: /usr/lib/libssl.so.1.0.0: no version information available (required by /usr/bin/pyston)
 Traceback (most recent call last):
-  File "spectralnorm.pyston-2.pyston", line 12, in <module>:
+  File "spectralnorm.pyston-2.pyston", line 12, in <module>
     from numpy import *
 ImportError: No module named numpy

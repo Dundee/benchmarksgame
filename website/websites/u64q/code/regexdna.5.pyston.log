@@ -1,5 +1,5 @@
 
-Wed, 17 Jun 2015 17:49:10 GMT
+Wed, 04 Nov 2015 11:26:11 GMT
 
 COMMAND LINE:
 /usr/bin/pyston regexdna.pyston-5.pyston 0 < regexdna-input10000.txt
@@ -9,9 +9,11 @@ PROGRAM FAILED
 
 PROGRAM OUTPUT:
 
+/usr/bin/pyston: /usr/lib/libcrypto.so.1.0.0: no version information available (required by /usr/bin/pyston)
+/usr/bin/pyston: /usr/lib/libssl.so.1.0.0: no version information available (required by /usr/bin/pyston)
 Traceback (most recent call last):
-  File "regexdna.pyston-5.pyston", line 42, in <module>:
+  File "regexdna.pyston-5.pyston", line 42, in <module>
     main()
-  File "regexdna.pyston-5.pyston", line 11, in main:
+  File "regexdna.pyston-5.pyston", line 11, in main
     seq = stdin.buffer.read()
 AttributeError: 'file' object has no attribute 'buffer'

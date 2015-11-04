@@ -1,5 +1,5 @@
 
-Wed, 17 Jun 2015 17:48:58 GMT
+Wed, 04 Nov 2015 11:26:10 GMT
 
 COMMAND LINE:
 /usr/bin/pyston pidigits.pyston-2.pyston 2000
@@ -9,7 +9,9 @@ PROGRAM FAILED
 
 PROGRAM OUTPUT:
 
+/usr/bin/pyston: /usr/lib/libcrypto.so.1.0.0: no version information available (required by /usr/bin/pyston)
+/usr/bin/pyston: /usr/lib/libssl.so.1.0.0: no version information available (required by /usr/bin/pyston)
 Traceback (most recent call last):
-  File "pidigits.pyston-2.pyston", line 7, in <module>:
+  File "pidigits.pyston-2.pyston", line 7, in <module>
     from gmpy import mpz
 ImportError: No module named gmpy

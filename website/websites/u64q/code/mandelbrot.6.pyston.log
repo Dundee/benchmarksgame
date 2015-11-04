@@ -1,5 +1,5 @@
 
-Wed, 17 Jun 2015 17:38:33 GMT
+Wed, 04 Nov 2015 11:20:02 GMT
 
 COMMAND LINE:
 /usr/bin/pyston mandelbrot.pyston-6.pyston 1000
@@ -9,7 +9,9 @@ PROGRAM FAILED
 
 PROGRAM OUTPUT:
 
+/usr/bin/pyston: /usr/lib/libcrypto.so.1.0.0: no version information available (required by /usr/bin/pyston)
+/usr/bin/pyston: /usr/lib/libssl.so.1.0.0: no version information available (required by /usr/bin/pyston)
 Traceback (most recent call last):
-  File "mandelbrot.pyston-6.pyston", line 6, in <module>:
+  File "mandelbrot.pyston-6.pyston", line 6, in <module>
     import numpy as np
 ImportError: No module named numpy

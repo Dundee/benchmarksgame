@@ -1,5 +1,5 @@
 
-Wed, 17 Jun 2015 17:33:13 GMT
+Wed, 04 Nov 2015 09:57:56 GMT
 
 COMMAND LINE:
 /usr/bin/pyston fastaredux.pyston 25000
@@ -177,13 +177,15 @@ GACCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAATACAAAAATTAGCCGGG
 CGTGGTGGCGCGCGCCTGTAATCCCAGCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTG
 AACCCGGGAGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCCAGCCTGGGCG
 ACAGAGCGAGACTCCGTCTCAAAAAGGCCGG
+/usr/bin/pyston: /usr/lib/libcrypto.so.1.0.0: no version information available (required by /usr/bin/pyston)
+/usr/bin/pyston: /usr/lib/libssl.so.1.0.0: no version information available (required by /usr/bin/pyston)
 Traceback (most recent call last):
-  File "fastaredux.pyston", line 108, in <module>:
+  File "fastaredux.pyston", line 108, in <module>
     main()
-  File "fastaredux.pyston", line 103, in main:
+  File "fastaredux.pyston", line 103, in main
     randomFasta(iub, n*3)
-  File "fastaredux.pyston", line 79, in randomFasta:
+  File "fastaredux.pyston", line 79, in randomFasta
     lut = makeLookupTable(table)
-  File "fastaredux.pyston", line 62, in makeLookupTable:
+  File "fastaredux.pyston", line 62, in makeLookupTable
     return array.array("u", [chars[bb(probs, i / imf)] for i in range(IM)])
 TypeError: array item must be unicode character

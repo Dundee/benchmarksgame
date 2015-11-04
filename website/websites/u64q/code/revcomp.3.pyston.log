@@ -1,5 +1,5 @@
 
-Mon, 07 Sep 2015 10:45:33 GMT
+Wed, 04 Nov 2015 11:26:12 GMT
 
 COMMAND LINE:
 /usr/bin/pyston revcomp.pyston-3.pyston 0 < revcomp-input1000.txt
@@ -9,7 +9,9 @@ PROGRAM FAILED
 
 PROGRAM OUTPUT:
 
+/usr/bin/pyston: /usr/lib/libcrypto.so.1.0.0: no version information available (required by /usr/bin/pyston)
+/usr/bin/pyston: /usr/lib/libssl.so.1.0.0: no version information available (required by /usr/bin/pyston)
 Traceback (most recent call last):
-  File "revcomp.pyston-3.pyston", line 12, in <module>:
+  File "revcomp.pyston-3.pyston", line 12, in <module>
     table=bytes.maketrans(b'ACBDGHK\nMNSRUTWVYacbdghkmnsrutwvy',
 AttributeError: type object 'str' has no attribute 'maketrans'
