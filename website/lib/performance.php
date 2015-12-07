@@ -224,7 +224,7 @@ if ($Available) {
       if ($canonicalPage) {
          $metaRobots = '<meta name="robots" content="index,nofollow,archive" />';
       } else {
-         $LinkRelCanonical = '<link rel="canonical" href="http://pybenchmarks.org/u64q/performance.php?test='.$T.'" />';
+         $LinkRelCanonical = '<link rel="canonical" href="https://pybenchmarks.org/u64q/performance.php?test='.$T.'" />';
          $metaRobots = '<meta name="robots" content="index,nofollow,noarchive" />';
       }
    }

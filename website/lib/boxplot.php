@@ -196,7 +196,7 @@ $canonicalPage = FALSE;
 if (!isset($LinkRelCanonical)){
    $canonicalPage = SITE_NAME == 'u64';
    if (!$canonicalPage) {
-      $LinkRelCanonical = '<link rel="canonical" href="http://pybenchmarks.org/u64/which-programs-are-fastest.php" />';
+      $LinkRelCanonical = '<link rel="canonical" href="https://pybenchmarks.org/u64/which-programs-are-fastest.php" />';
    }
 }
 

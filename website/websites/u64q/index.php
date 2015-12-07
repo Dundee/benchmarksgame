@@ -1,6 +1,6 @@
 <?php
 header("HTTP/1.1 301 Moved Permanently");
-header("Location: http://pybenchmarks.org/");
+header("Location: https://pybenchmarks.org/");
 exit;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
@@ -10,6 +10,6 @@ exit;
 <title>The Python Interpreters Benchmarks</title>
 </head>
 <body>
-<h3><a href="http://pybenchmarks.org/">The Python Interpreters Benchmarks</a></h3>
+<h3><a href="https://pybenchmarks.org/">The Python Interpreters Benchmarks</a></h3>
 </body>
 </html>
