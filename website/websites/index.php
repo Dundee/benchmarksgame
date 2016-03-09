@@ -72,6 +72,7 @@ $langs = array(
    array('python3','Python 3.5.0','python3',$allsites),
    array('python36','Python 3.6.0a0','python36',$allsites),
    array('pypy3','PyPy3 2.4.0','pypy3',$allsites),
+   array('ipy','IronPython 2.7.5','ipy',$allsites),
    array('jython','Jython 2.7.0','jython',$allsites),
    array('cython','Cython 0.23.4','cython',$allsites),
    array('nuitka','Nuitka 0.5.19.0','nuitka',$allsites),
