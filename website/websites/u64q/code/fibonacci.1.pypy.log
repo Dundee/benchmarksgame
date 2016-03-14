@@ -1,5 +1,5 @@
 
-Fri, 20 Nov 2015 13:34:35 GMT
+Mon, 14 Mar 2016 09:53:55 GMT
 
 COMMAND LINE:
 /usr/bin/pypy fibonacci.pypy 1000000
@@ -18,4 +18,4 @@ Traceback (most recent call last):
     return matrix_power(self, other)
   File "/opt/pypy/site-packages/numpy/matrixlib/defmatrix.py", line 196, in matrix_power
     Z = N.dot(Z, Z)
-TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+NotImplementedError: cannot read object from array with no gc hook
