@@ -1,5 +1,5 @@
 
-Mon, 26 Oct 2015 09:15:05 GMT
+Thu, 07 Apr 2016 09:51:23 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp“
@@ -9,18 +9,18 @@ Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/c
 [1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/chameneosredux.pyx
 running build_ext
 building 'chameneosredux' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpywqcbsxv/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpywqcbsxv/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpywqcbsxv/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpywqcbsxv/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpywqcbsxv/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpywqcbsxv/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpywqcbsxv/home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpywqcbsxv/home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -Wunreachable-code -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong --param=ssp-buffer-size=4 -fPIC -I/usr/include/python3.5m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/chameneosredux.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpywqcbsxv/home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/chameneosredux.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpywqcbsxv/home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/chameneosredux.o -L/usr/lib -lpython3.5m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/chameneosredux.cpython-35m-x86_64-linux-gnu.so
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpracy1wx6/home
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpracy1wx6/home/dundee
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpracy1wx6/home/dundee/workspace
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpracy1wx6/home/dundee/workspace/benchmarksgame
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpracy1wx6/home/dundee/workspace/benchmarksgame/bencher
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpracy1wx6/home/dundee/workspace/benchmarksgame/bencher/tmp
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpracy1wx6/home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpracy1wx6/home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp
+gcc -pthread -Wno-unused-result -Wsign-compare -Wunreachable-code -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fPIC -I/usr/include/python3.5m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/chameneosredux.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpracy1wx6/home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/chameneosredux.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/tmpracy1wx6/home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/chameneosredux.o -L/usr/lib -lpython3.5m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp/chameneosredux.cpython-35m-x86_64-linux-gnu.so
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp“
-2.46s to complete and log all make actions
+2.38s to complete and log all make actions
 
 COMMAND LINE:
 /usr/bin/python3 -c "import chameneosredux" 6000000
@@ -37,21 +37,21 @@ yellow + red -> blue
 yellow + yellow -> yellow
 
  blue red yellow
-3995137 zero
-4029140 zero
-3975723 zero
+4255387 zero
+3804683 zero
+3939930 zero
  one two zero zero zero zero zero zero
 
  blue red yellow red yellow blue red yellow red blue
-1259715 zero
-1159442 zero
-1215610 zero
-1175274 zero
-1171544 zero
-1205859 zero
-1188542 zero
-1215796 zero
-1191716 zero
-1216502 zero
+1216960 zero
+1205308 zero
+1200910 zero
+1135234 zero
+1211792 zero
+1233535 zero
+1187718 zero
+1263726 zero
+1247560 zero
+1097257 zero
  one two zero zero zero zero zero zero
 
