@@ -126,6 +126,7 @@ $tests = array(
    ,array('binarytrees','binary-trees','Allocate and deallocate many many binary trees')
    ,array('pystone','pystone','PyStone benchmark')
    ,array('richards','richards','Richards benchmark')
+   ,array('iobench','iobench','Input/output benchmark')
    );
 
 foreach($tests as $t){
