@@ -1,0 +1,28 @@
+
+Thu, 26 May 2016 13:35:50 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
+cp iobench.cython `echo iobench.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
+cythonize -3 -bi `echo iobench.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
+Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/iobench.pyx because it changed.
+[1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/iobench.pyx
+running build_ext
+building 'iobench' extension
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/tmp0gw81wpx/home
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/tmp0gw81wpx/home/dundee
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/tmp0gw81wpx/home/dundee/workspace
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/tmp0gw81wpx/home/dundee/workspace/benchmarksgame
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/tmp0gw81wpx/home/dundee/workspace/benchmarksgame/bencher
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/tmp0gw81wpx/home/dundee/workspace/benchmarksgame/bencher/tmp
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/tmp0gw81wpx/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/tmp0gw81wpx/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp
+gcc -pthread -Wno-unused-result -Wsign-compare -Wunreachable-code -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fPIC -I/usr/include/python3.5m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/iobench.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/tmp0gw81wpx/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/iobench.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/tmp0gw81wpx/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/iobench.o -L/usr/lib -lpython3.5m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/iobench.cpython-35m-x86_64-linux-gnu.so
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
+1.57s to complete and log all make actions
+
+COMMAND LINE:
+/usr/bin/python3 -c "import iobench" 1
+
+PROGRAM OUTPUT NOT CHECKED:
