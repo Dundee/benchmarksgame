@@ -1,17 +1,16 @@
 
-Wed, 04 Nov 2015 11:26:54 GMT
+Thu, 26 May 2016 11:24:14 GMT
 
 COMMAND LINE:
 /usr/bin/pyston templates.pyston 1000
 
-PROGRAM FAILED 
-
-
 PROGRAM OUTPUT:
+
+<ul>
+
+  <li><a href="/user/999">SomeUsername</a></li>
+
+</ul>
 
 /usr/bin/pyston: /usr/lib/libcrypto.so.1.0.0: no version information available (required by /usr/bin/pyston)
 /usr/bin/pyston: /usr/lib/libssl.so.1.0.0: no version information available (required by /usr/bin/pyston)
-Traceback (most recent call last):
-  File "templates.pyston", line 3, in <module>
-    from jinja2 import Template
-ImportError: No module named jinja2
