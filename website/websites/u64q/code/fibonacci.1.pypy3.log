@@ -1,5 +1,5 @@
 
-Wed, 25 Feb 2015 07:39:43 GMT
+Thu, 26 May 2016 11:48:16 GMT
 
 COMMAND LINE:
 /usr/bin/pypy3 fibonacci.pypy3 1000000
@@ -12,4 +12,16 @@ PROGRAM OUTPUT:
 Traceback (most recent call last):
   File "fibonacci.pypy3", line 1, in <module>
     import numpy
-ImportError: No module named numpy
+  File "/opt/pypy3/site-packages/numpy/__init__.py", line 170, in <module>
+    from . import add_newdocs
+  File "/opt/pypy3/site-packages/numpy/add_newdocs.py", line 13, in <module>
+    from numpy.lib import add_newdoc
+  File "/opt/pypy3/site-packages/numpy/lib/__init__.py", line 8, in <module>
+    from .type_check import *
+  File "/opt/pypy3/site-packages/numpy/lib/type_check.py", line 11, in <module>
+    import numpy.core.numeric as _nx
+  File "/opt/pypy3/site-packages/numpy/core/__init__.py", line 6, in <module>
+    from . import multiarray
+  File "/opt/pypy3/site-packages/numpy/core/multiarray.py", line 1, in <module>
+    from _numpypy.multiarray import *
+ImportError: No module named _numpypy
