@@ -114,6 +114,7 @@ $tests = array(
    ,array('meteor','meteor-contest','Search for solutions to shape packing puzzle')
    ,array('fasta','fasta','Generate and write random DNA sequences')
    ,array('fibonacci', 'fibonacci', 'Calculate Fibonacci number')
+   ,array('fib50', 'fib50', 'Calculate 50th Fibonacci number')
    ,array('spectralnorm','spectral-norm','Calculate an eigenvalue using the power method')
    ,array('revcomp','reverse-complement','Read DNA sequences and write their reverse-complement')
    ,array('mandelbrot','mandelbrot','Generate a Mandelbrot set and write a portable bitmap')
@@ -127,6 +128,7 @@ $tests = array(
    ,array('pystone','pystone','PyStone benchmark')
    ,array('richards','richards','Richards benchmark')
    ,array('iobench','iobench','Input/output benchmark')
+   ,array('jsonbench','jsonbench','JSON encoding/decoding benchmark')
    );
 
 foreach($tests as $t){

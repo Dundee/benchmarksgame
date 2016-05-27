@@ -1,10 +1,13 @@
 import sys
 
-
-cdef fib(int n):
-    a, b = 0, 1
+cdef double fib(int n):
+    cdef double a, b, tmp
+    a = 0
+    b = 1
     for i in range(n):
-        a, b = b, a + b
+        tmp = a
+        a = b
+        b = tmp + b
     return a
 
 print(fib(int(sys.argv[1])))
