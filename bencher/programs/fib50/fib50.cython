@@ -1,0 +1,16 @@
+import sys
+
+
+cdef double fib(int n):
+    cdef double a, b, tmp
+    a = 0
+    b = 1
+    for i in range(n):
+        tmp = a
+        a = b
+        b = tmp + b
+    return a
+
+
+for i in range(int(sys.argv[1])):
+    print('{:.0f}'.format(fib(50)))
