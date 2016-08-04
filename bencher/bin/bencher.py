@@ -1203,7 +1203,12 @@ def appendToBulkdataCsv(ms,fp,bdf):
 def appendToCsv(d,path,filename,df,ndf,bdf):
    try:
       f = bz2.BZ2File( join(path,filename),'r')
-      ms = [Record().fromString( s.rstrip('\n')) for s in f.readlines()]
+      try:
+         ms = [Record().fromString( s.rstrip('\n')) for s in f.readlines()]
+      except Exception as ex:
+         print join(path, filename), 'corrupted, deleting'
+         os.remove(join(path, filename))
+         return
       fp = FileNameParts(filename)
       appendToBulkdataCsv(ms,fp,bdf)
       appendToBothDataCsv(ms,fp,df,ndf)
