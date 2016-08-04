@@ -1,5 +1,5 @@
 
-Thu, 26 May 2016 11:53:47 GMT
+Thu, 04 Aug 2016 13:14:38 GMT
 
 COMMAND LINE:
 /usr/bin/pyston fibonacci.pyston-2.pyston 1000000
@@ -11,3 +11,10 @@ PROGRAM OUTPUT:
 
 /usr/bin/pyston: /usr/lib/libcrypto.so.1.0.0: no version information available (required by /usr/bin/pyston)
 /usr/bin/pyston: /usr/lib/libssl.so.1.0.0: no version information available (required by /usr/bin/pyston)
+GNU MP: Cannot reallocate memory (old_size=8 new_size=16656)
+Someone called abort!
+Traceback (most recent call last):
+  File "fibonacci.pyston-2.pyston", line 10, in <module>
+    print fib(int(sys.argv[1]))
+  File "fibonacci.pyston-2.pyston", line 7, in fib
+    a, b = b, a + b

@@ -1,0 +1,17 @@
+
+Thu, 04 Aug 2016 15:34:50 GMT
+
+COMMAND LINE:
+/usr/bin/micropython jsonbench.micropython 1
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Traceback (most recent call last):
+  File "jsonbench.micropython", line 21, in <module>
+  File "jsonbench.micropython", line 17, in main
+  File "/usr/lib/micropython/json/__init__.py", line 236, in dumps
+  File "/usr/lib/micropython/json/encoder.py", line 193, in encode
+MemoryError: memory allocation failed, allocating 131072 bytes

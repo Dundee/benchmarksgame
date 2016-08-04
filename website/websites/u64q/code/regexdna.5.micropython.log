@@ -1,0 +1,15 @@
+
+Thu, 04 Aug 2016 15:42:38 GMT
+
+COMMAND LINE:
+/usr/bin/micropython regexdna.micropython-5.micropython 0 < regexdna-input10000.txt
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Traceback (most recent call last):
+  File "regexdna.micropython-5.micropython", line 42, in <module>
+  File "regexdna.micropython-5.micropython", line 11, in main
+AttributeError: 'TextIOWrapper' object has no attribute 'buffer'

@@ -1,26 +1,26 @@
 
-Thu, 26 May 2016 13:26:44 GMT
+Thu, 04 Aug 2016 13:47:41 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
 nuitka --remove-output --improved iobench.nuitka
 cp iobench.nuitka.exe iobench.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
-3.74s to complete and log all make actions
+3.86s to complete and log all make actions
 
 COMMAND LINE:
 ./iobench.nuitka_run 1
 
 PROGRAM OUTPUT NOT CHECKED:
-fread 100 bytes, 0.36us per write
-fwrite 100 bytes, 0.37us per write
-fread 1000 bytes, 0.46us per write
-fwrite 1000 bytes, 0.46us per write
-fread 10000 bytes, 0.94us per write
-fwrite 10000 bytes, 0.59us per write
-file_read 100 bytes, 0.30us per write
-file_write 100 bytes, 0.30us per write
-file_read 1000 bytes, 1.02us per write
-file_write 1000 bytes, 0.59us per write
-file_read 10000 bytes, 5.63us per write
-file_write 10000 bytes, 1.74us per write
+<compiled_function fread at 0x7f0149f3dc18> 100 bytes, 0.36us per write
+<compiled_function fwrite at 0x7f0149f3db40> 100 bytes, 0.36us per write
+<compiled_function fread at 0x7f0149f3dc18> 1000 bytes, 0.45us per write
+<compiled_function fwrite at 0x7f0149f3db40> 1000 bytes, 0.44us per write
+<compiled_function fread at 0x7f0149f3dc18> 10000 bytes, 0.92us per write
+<compiled_function fwrite at 0x7f0149f3db40> 10000 bytes, 0.56us per write
+<compiled_function file_read at 0x7f0149f3ddc8> 100 bytes, 0.29us per write
+<compiled_function file_write at 0x7f0149f3dcf0> 100 bytes, 0.29us per write
+<compiled_function file_read at 0x7f0149f3ddc8> 1000 bytes, 0.97us per write
+<compiled_function file_write at 0x7f0149f3dcf0> 1000 bytes, 0.57us per write
+<compiled_function file_read at 0x7f0149f3ddc8> 10000 bytes, 5.28us per write
+<compiled_function file_write at 0x7f0149f3dcf0> 10000 bytes, 1.73us per write

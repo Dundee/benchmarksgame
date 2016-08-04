@@ -4,7 +4,7 @@ def measure(func, num1, num2):
     t0 = time.time()
     func(num1, num2)
     print(
-        func.__code__.co_name, 
+        func, 
         "%d bytes, %.2fus per write" % (
             num2, 
             (time.time() - t0) / num1 * 1000 * 1000

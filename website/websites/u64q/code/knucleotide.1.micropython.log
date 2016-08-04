@@ -1,0 +1,42 @@
+
+Thu, 04 Aug 2016 15:36:46 GMT
+
+COMMAND LINE:
+/usr/bin/micropython knucleotide.micropython 0 < knucleotide-input10000.txt
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+A 30.284
+T 29.796
+C 20.312
+G 19.608
+
+AA 9.212
+AT 8.950
+TT 8.948
+TA 8.936
+CA 6.166
+CT 6.100
+AC 6.086
+TC 6.042
+AG 6.036
+GA 5.968
+TG 5.868
+GT 5.798
+CC 4.140
+GC 4.044
+CG 3.906
+GG 3.798
+
+562	GGT
+152	GGTA
+15	GGTATT
+
+Traceback (most recent call last):
+  File "knucleotide.micropython", line 56, in <module>
+  File "knucleotide.micropython", line 54, in main
+  File "knucleotide.micropython", line 33, in find_seq
+  File "knucleotide.micropython", line 19, in gen_freq
+MemoryError: memory allocation failed, allocating 416272 bytes
