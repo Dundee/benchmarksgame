@@ -83,8 +83,8 @@ function ProgramData($FileName,$T,$L,$I,$Langs,$Incl,$Excl){
 
 // PAGE ////////////////////////////////////////////////
 
-$Page = & new Template(LIB_PATH);
-$Body = & new Template(LIB_PATH);
+$Page = new Template(LIB_PATH);
+$Body = new Template(LIB_PATH);
 $PageId = 'program';
 $TemplateName = 'program.tpl.php';
 
@@ -98,7 +98,7 @@ $Langs = WhiteListUnique('lang.csv',$Incl); // assume lang.csv in name order
 if (isset($_GET['test'])
       && strlen($_GET['test']) && (strlen($_GET['test']) <= NAME_LEN)){
    $X = $_GET['test'];
-   if (ereg("^[a-z]+$",$X) && isset($Tests[$X]) && isset($Incl[$X])){ $T = $X; }
+   if (preg_match("~^[a-z]+$~",$X) && isset($Tests[$X]) && isset($Incl[$X])){ $T = $X; }
 }
 if (!isset($T)){ $T = 'nbody'; }
 
@@ -106,7 +106,7 @@ if (!isset($T)){ $T = 'nbody'; }
 if (isset($_GET['lang'])
       && strlen($_GET['lang']) && (strlen($_GET['lang']) <= NAME_LEN)){
    $X = $_GET['lang'];
-   if (ereg("^[a-z0-9]+$",$X)){ $L = $X; }
+   if (preg_match("~^[a-z0-9-]+$~",$X)){ $L = $X; }
 }
 $Available = isset($L) && isset($Langs[$L]) && isset($Incl[$L]);
 if (!$Available){ $L = 'java'; }
@@ -114,7 +114,7 @@ if (!$Available){ $L = 'java'; }
 
 if (isset($_GET['id']) && strlen($_GET['id']) == 1){
    $X = $_GET['id'];
-   if (ereg("^[0-9]$",$X)){ $I = $X; }
+   if (preg_match("~^[0-9]$~",$X)){ $I = $X; }
 }
 if (!isset($I)){ $I = -1; }
 
@@ -145,7 +145,7 @@ $faqUrl = CORE_SITE.'play.php';
 // ABOUT ////////////////////////////////////////////////
 
 $A = HtmlFragment(VERSION_PATH.$L.SEPARATOR.'version.php');
-$About = & new Template(ABOUT_PROGRAMS_PATH);
+$About = new Template(ABOUT_PROGRAMS_PATH);
 $AboutTemplateName = $T.SEPARATOR.$L.$Id.SEPARATOR.'about.tpl.php';
 if (file_exists(ABOUT_PROGRAMS_PATH.$AboutTemplateName)){
    $A .= $About->fetch($AboutTemplateName);
