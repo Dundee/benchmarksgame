@@ -118,7 +118,7 @@ function ValidMark($valid=FALSE){
       if (isset($_GET['m']) && strlen($_GET['m']) && strlen($_GET['m']) <= $bounds){
          $X = base64_decode( rawurldecode($_GET['m']) );
          $X = @gzuncompress($X,$bounds); // returns FALSE on error
-         if ($X && ereg("^[ a-zA-Z0-9]+$",$X)){
+         if ($X && preg_match("~^[ a-zA-Z0-9]+$~",$X)){
             $mark = $X;
             $valid = TRUE;
          }
@@ -155,7 +155,7 @@ function ValidMatrix($V,$size,$valid=FALSE){
          $X = base64_decode( rawurldecode($_GET[$V]) );
          $X = @gzuncompress($X,$bounds); // returns FALSE on error
 
-         if ($X && ereg("^[0-9O]+$",$X)){
+         if ($X && preg_match("~^[0-9O]+$~",$X)){
             foreach(explode('O',$X) as $v){
                if (strlen($v) && (strlen($v) <= 10) && is_numeric($v)){
                   $d[] = pow(10.0,(doubleval($v)/VALUE_RESCALE - VALUE_SHIFT));
@@ -174,11 +174,11 @@ function ValidMatrix($V,$size,$valid=FALSE){
 
 
 function ValidLangs($Langs,$valid=FALSE){
-   return ValidWhiteList('w',$Langs,"^[a-z0-9O]+$",24,LANG_FULL,$valid);
+   return ValidWhiteList('w',$Langs,"~^[a-z0-9O-]+$~",24,LANG_FULL,$valid);
 }
 
 function ValidTests($Tests,$valid=FALSE){
-   return ValidWhiteList('ww',$Tests,"^[a-zO]+$",32,TEST_NAME,$valid);
+   return ValidWhiteList('ww',$Tests,"~^[a-zO]+$~",32,TEST_NAME,$valid);
 }
 
 // private
@@ -191,7 +191,7 @@ function ValidWhiteList($V,$WhiteList,$regex,$size,$index,$valid){
          $X = base64_decode( rawurldecode($_GET[$V]) );
          $X = @gzuncompress($X,$bounds); // returns FALSE on error
 
-         if ($X && ereg($regex,$X)){
+         if ($X && preg_match($regex,$X)){
             foreach(explode('O',$X) as $v){
                if (strlen($v) && (strlen($v) <= $size) && isset($WhiteList[$v])){
                   $d[] = $WhiteList[$v][$index];
