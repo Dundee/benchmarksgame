@@ -1,26 +1,26 @@
 
-Mon, 05 Sep 2016 17:44:44 GMT
+Wed, 19 Oct 2016 09:07:40 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
 nuitka --remove-output --improved iobench.nuitka
 cp iobench.nuitka.exe iobench.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
-4.04s to complete and log all make actions
+3.09s to complete and log all make actions
 
 COMMAND LINE:
 ./iobench.nuitka_run 1
 
 PROGRAM OUTPUT NOT CHECKED:
-<compiled_function fread at 0x7fd139fabc18> 100 bytes, 0.38us per write
-<compiled_function fwrite at 0x7fd139fabb40> 100 bytes, 0.40us per write
-<compiled_function fread at 0x7fd139fabc18> 1000 bytes, 0.50us per write
-<compiled_function fwrite at 0x7fd139fabb40> 1000 bytes, 0.48us per write
-<compiled_function fread at 0x7fd139fabc18> 10000 bytes, 1.02us per write
-<compiled_function fwrite at 0x7fd139fabb40> 10000 bytes, 0.72us per write
-<compiled_function file_read at 0x7fd139fabdc8> 100 bytes, 0.31us per write
-<compiled_function file_write at 0x7fd139fabcf0> 100 bytes, 0.31us per write
-<compiled_function file_read at 0x7fd139fabdc8> 1000 bytes, 1.07us per write
-<compiled_function file_write at 0x7fd139fabcf0> 1000 bytes, 0.63us per write
-<compiled_function file_read at 0x7fd139fabdc8> 10000 bytes, 5.83us per write
-<compiled_function file_write at 0x7fd139fabcf0> 10000 bytes, 1.96us per write
+<compiled_function fread at 0x7fdc99052c18> 100 bytes, 0.35us per write
+<compiled_function fwrite at 0x7fdc99052b40> 100 bytes, 0.36us per write
+<compiled_function fread at 0x7fdc99052c18> 1000 bytes, 0.45us per write
+<compiled_function fwrite at 0x7fdc99052b40> 1000 bytes, 0.44us per write
+<compiled_function fread at 0x7fdc99052c18> 10000 bytes, 0.93us per write
+<compiled_function fwrite at 0x7fdc99052b40> 10000 bytes, 0.55us per write
+<compiled_function file_read at 0x7fdc99052dc8> 100 bytes, 0.29us per write
+<compiled_function file_write at 0x7fdc99052cf0> 100 bytes, 0.28us per write
+<compiled_function file_read at 0x7fdc99052dc8> 1000 bytes, 0.98us per write
+<compiled_function file_write at 0x7fdc99052cf0> 1000 bytes, 0.61us per write
+<compiled_function file_read at 0x7fdc99052dc8> 10000 bytes, 5.38us per write
+<compiled_function file_write at 0x7fdc99052cf0> 10000 bytes, 2.02us per write
