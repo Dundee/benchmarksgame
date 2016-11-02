@@ -1,5 +1,5 @@
 
-Mon, 25 May 2015 10:37:07 GMT
+Wed, 02 Nov 2016 10:20:51 GMT
 
 COMMAND LINE:
 /usr/bin/pypy3 revcomp.pypy3-6.pypy3 0 < revcomp-input1000.txt
@@ -9,7 +9,7 @@ PROGRAM FAILED
 
 PROGRAM OUTPUT:
 
-  File "revcomp.pypy3-6.pypy3", line 59
-    yield v; yield from g
-                  ^
-SyntaxError: invalid syntax
+Traceback (most recent call last):
+  File "revcomp.pypy3-6.pypy3", line 7, in <module>
+    from os import cpu_count
+ImportError: cannot import name 'cpu_count'

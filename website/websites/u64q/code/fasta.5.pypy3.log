@@ -1,5 +1,5 @@
 
-Mon, 25 May 2015 10:29:19 GMT
+Wed, 02 Nov 2016 10:06:27 GMT
 
 COMMAND LINE:
 /usr/bin/pypy3 fasta.pypy3-5.pypy3 25000
@@ -9,7 +9,7 @@ PROGRAM FAILED
 
 PROGRAM OUTPUT:
 
-  File "fasta.pypy3-5.pypy3", line 98
-    yield from lookup(probabilities, prng)
-         ^
-SyntaxError: invalid syntax
+Traceback (most recent call last):
+  File "fasta.pypy3-5.pypy3", line 10, in <module>
+    from os import cpu_count
+ImportError: cannot import name 'cpu_count'
