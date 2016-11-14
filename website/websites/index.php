@@ -68,7 +68,7 @@ $allsites = array('u64q');
 
 $langs = array(
    array('python','Python 2.7.12','python',$allsites),
-   array('pypy','PyPy 5.4.1','pypy',$allsites),
+   array('pypy','PyPy 5.6.0','pypy',$allsites),
    array('python3','Python 3.5.2','python3',$allsites),
    array('python-dev','Python 3.7.0a0','python-dev',$allsites),
    array('pypy3','PyPy3 5.5.0','pypy3',$allsites),
