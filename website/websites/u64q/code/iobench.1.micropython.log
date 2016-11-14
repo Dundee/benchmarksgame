@@ -1,13 +1,19 @@
 
-Thu, 04 Aug 2016 15:29:49 GMT
+Mon, 14 Nov 2016 13:13:21 GMT
 
 COMMAND LINE:
 /usr/bin/micropython iobench.micropython 1
 
-TIMED OUT after 300s
-
-
 PROGRAM OUTPUT NOT CHECKED:
-<function fread at 0xf5a65a40> 100 bytes, 4.23us per write
-<function fwrite at 0xf5a65a20> 100 bytes, 3.91us per write
-<function fread at 0xf5a65a40> 1000 bytes, 7.09us per write
+<function fread at 0x4b8aa40> 100 bytes, 3.63us per write
+<function fwrite at 0x4b8aa20> 100 bytes, 3.29us per write
+<function fread at 0x4b8aa40> 1000 bytes, 6.40us per write
+<function fwrite at 0x4b8aa20> 1000 bytes, 16.92us per write
+<function fread at 0x4b8aa40> 10000 bytes, 56.22us per write
+<function fwrite at 0x4b8aa20> 10000 bytes, 158.18us per write
+<function file_read at 0x4b842a0> 100 bytes, 1.45us per write
+<function file_write at 0x4b8aa60> 100 bytes, 2.60us per write
+<function file_read at 0x4b842a0> 1000 bytes, 5.68us per write
+<function file_write at 0x4b8aa60> 1000 bytes, 17.44us per write
+<function file_read at 0x4b842a0> 10000 bytes, 53.77us per write
+<function file_write at 0x4b8aa60> 10000 bytes, 172.03us per write
