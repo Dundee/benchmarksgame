@@ -1,5 +1,5 @@
 
-Thu, 26 May 2016 13:06:04 GMT
+Mon, 14 Nov 2016 13:36:53 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
@@ -12,21 +12,19 @@ Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 0% ********************************100% ********************************100% ********************************100%
 [generating c++ code..]
 *WARNING* shed.py:6: expression has no type
-[elapsed time: 2.58 seconds]
+[elapsed time: 3.36 seconds]
 make
 make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
 g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/time.cpp /usr/lib/python2.7/site-packages/shedskin/lib/stat.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/os/path.cpp /usr/lib/python2.7/site-packages/shedskin/lib/os/__init__.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -lutil -o shed
-/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/shed.cpp: In function ‘void* __shed__::measure(__shed__::lambda0, __shedskin__::__ss_int, __shedskin__::__ss_int)’:
+/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/shed.cpp: In function ‘void* __shed__::measure(__shed__::lambda2, __shedskin__::__ss_int, __shedskin__::__ss_int)’:
 /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/shed.cpp:22:29: error: request for member ‘__code__’ in ‘* func’, which is of non-class type ‘void*(__shedskin__::__ss_int, __shedskin__::__ss_int) {aka void*(int, int)}’
      print2(NULL,0,2, (func->__code__)->co_name, __modct(const_0, 2, ___box(num2), ___box(((((__time__::time()-t0)/num1)*1000)*1000))));
                              ^~~~~~~~
-Makefile:25: návod pro cíl „shed“ selhal
-make[2]: *** [shed] Chyba 1
+make[2]: *** [Makefile:25: shed] Chyba 1
 make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
-/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:28: návod pro cíl „iobench.shedskin_run“ selhal
-make[1]: *** [iobench.shedskin_run] Chyba 2
+make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: iobench.shedskin_run] Chyba 2
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
-15.93s to complete and log all make actions
+21.46s to complete and log all make actions
 
 COMMAND LINE:
 ./shed 1
