@@ -1,5 +1,5 @@
 
-Wed, 02 Nov 2016 10:20:14 GMT
+Wed, 21 Dec 2016 14:54:32 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp“
@@ -9,27 +9,25 @@ Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/pidigit
 [1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/pidigits.pyx
 running build_ext
 building 'pidigits' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmpt2aaue6y/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmpt2aaue6y/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmpt2aaue6y/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmpt2aaue6y/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmpt2aaue6y/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmpt2aaue6y/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmpt2aaue6y/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmpt2aaue6y/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fPIC -I/usr/include/python3.5m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/pidigits.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmpt2aaue6y/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/pidigits.o
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmp769xibzu/home
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmp769xibzu/home/dundee
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmp769xibzu/home/dundee/workspace
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmp769xibzu/home/dundee/workspace/benchmarksgame
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmp769xibzu/home/dundee/workspace/benchmarksgame/bencher
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmp769xibzu/home/dundee/workspace/benchmarksgame/bencher/tmp
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmp769xibzu/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmp769xibzu/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp
+gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fPIC -I/usr/include/python3.5m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/pidigits.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmp769xibzu/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/pidigits.o
 /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/pidigits.c: In function ‘__pyx_pf_8pidigits_get_pistring’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/pidigits.c:1117:55: warning: passing argument 3 of ‘__Pyx_PyUnicode_Substring’ makes integer from pointer without a cast [-Wint-conversion]
+/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/pidigits.c:1126:55: warning: passing argument 3 of ‘__Pyx_PyUnicode_Substring’ makes integer from pointer without a cast [-Wint-conversion]
    __pyx_t_1 = __Pyx_PyUnicode_Substring(__pyx_t_2, 0, __pyx_v_n); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
                                                        ^~~~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/pidigits.c:759:32: note: expected ‘Py_ssize_t {aka long int}’ but argument is of type ‘PyObject * {aka struct _object *}’
+/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/pidigits.c:768:32: note: expected ‘Py_ssize_t {aka long int}’ but argument is of type ‘PyObject * {aka struct _object *}’
  static CYTHON_INLINE PyObject* __Pyx_PyUnicode_Substring(
                                 ^~~~~~~~~~~~~~~~~~~~~~~~~
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmpt2aaue6y/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/pidigits.o -L/usr/lib -lpython3.5m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/pidigits.cpython-35m-x86_64-linux-gnu.so
-/usr/lib/python3.5/site-packages/Cython/Distutils/old_build_ext.py:30: UserWarning: Cython.Distutils.old_build_ext does not properly handle dependencies and is deprecated.
-  "Cython.Distutils.old_build_ext does not properly handle dependencies "
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/tmp769xibzu/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/pidigits.o -L/usr/lib -lpython3.5m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp/pidigits.cpython-35m-x86_64-linux-gnu.so
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp“
-1.36s to complete and log all make actions
+1.74s to complete and log all make actions
 
 COMMAND LINE:
 /usr/bin/python3 -c "import pidigits" 10000

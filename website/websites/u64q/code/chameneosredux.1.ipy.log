@@ -1,8 +1,11 @@
 
-Wed, 09 Mar 2016 17:42:39 GMT
+Wed, 21 Dec 2016 11:44:45 GMT
 
 COMMAND LINE:
 /usr/bin/ipy chameneosredux.ipy 6000000
+
+PROGRAM FAILED 
+
 
 PROGRAM OUTPUT NOT CHECKED:
 blue + blue -> blue
@@ -16,21 +19,152 @@ yellow + red -> blue
 yellow + yellow -> yellow
 
  blue red yellow
-3908197 zero
-4035080 zero
-4056723 zero
+4113075 zero
+3937981 zero
+3948944 zero
  one two zero zero zero zero zero zero
 
  blue red yellow red yellow blue red yellow red blue
-1192455 zero
-1211989 zero
-1211998 zero
-1173352 zero
-1209838 zero
-1219004 zero
-1215150 zero
-1162460 zero
-1199180 zero
-1204574 zero
+1182095 zero
+1120488 zero
+1117428 zero
+1230404 zero
+1271074 zero
+1181918 zero
+1183272 zero
+1315949 zero
+1133384 zero
+1263988 zero
  one two zero zero zero zero zero zero
 
+
+Unhandled exception on thread
+Unhandled exception on threadUnhandled exception on thread
+
+Unhandled exception on thread
+Unhandled exception on thread
+Unhandled exception on thread
+Unhandled exception on thread
+Unhandled exception on thread
+Unhandled exception on thread
+Unhandled exception on thread
+Unhandled exception on thread
+Unhandled exception on thread
+Unhandled exception on thread
+
+Unhandled Exception:
+System.ArgumentNullException: Value cannot be null.
+Parameter name: method
+  at Microsoft.Scripting.Interpreter.InterpretedFrame.IsInterpretedFrame (System.Reflection.MethodBase method) [0x00038] in <9fb5ad5c9f4c4582ae540a5da3b28151>:0 
+  at Microsoft.Scripting.Interpreter.InterpretedFrame+<GroupStackFrames>c__Iterator0.MoveNext () [0x0006b] in <9fb5ad5c9f4c4582ae540a5da3b28151>:0 
+  at IronPython.Runtime.Exceptions.PythonExceptions.GetDynamicStackFrames (System.Exception e) [0x0012d] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraceNoDetail (System.Exception e, System.Boolean& printedHeader) [0x0005a] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraces (System.Exception e, System.Boolean& printedHeader) [0x000da] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraces (System.Exception e) [0x00002] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatException (System.Exception exception) [0x00026] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Modules.PythonThread+ThreadObj.Start () [0x000fa] in <1b9fa25e22f14f64a5ec76beb4c92fed>:0 
+  at System.Threading.ThreadHelper.ThreadStart_Context (System.Object state) [0x00017] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x0008d] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state) [0x00031] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ThreadHelper.ThreadStart () [0x0000b] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+
+Unhandled Exception:
+System.ArgumentNullException: Value cannot be null.
+Parameter name: method
+  at Microsoft.Scripting.Interpreter.InterpretedFrame.IsInterpretedFrame (System.Reflection.MethodBase method) [0x00038] in <9fb5ad5c9f4c4582ae540a5da3b28151>:0 
+  at Microsoft.Scripting.Interpreter.InterpretedFrame+<GroupStackFrames>c__Iterator0.MoveNext () [0x0006b] in <9fb5ad5c9f4c4582ae540a5da3b28151>:0 
+  at IronPython.Runtime.Exceptions.PythonExceptions.GetDynamicStackFrames (System.Exception e) [0x0012d] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraceNoDetail (System.Exception e, System.Boolean& printedHeader) [0x0005a] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraces (System.Exception e, System.Boolean& printedHeader) [0x000da] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraces (System.Exception e) [0x00002] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatException (System.Exception exception) [0x00026] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Modules.PythonThread+ThreadObj.Start () [0x000fa] in <1b9fa25e22f14f64a5ec76beb4c92fed>:0 
+  at System.Threading.ThreadHelper.ThreadStart_Context (System.Object state) [0x00017] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x0008d] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state) [0x00031] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ThreadHelper.ThreadStart () [0x0000b] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+
+Unhandled Exception:
+System.ArgumentNullException: Value cannot be null.
+Parameter name: method
+  at Microsoft.Scripting.Interpreter.InterpretedFrame.IsInterpretedFrame (System.Reflection.MethodBase method) [0x00038] in <9fb5ad5c9f4c4582ae540a5da3b28151>:0 
+  at Microsoft.Scripting.Interpreter.InterpretedFrame+<GroupStackFrames>c__Iterator0.MoveNext () [0x0006b] in <9fb5ad5c9f4c4582ae540a5da3b28151>:0 
+  at IronPython.Runtime.Exceptions.PythonExceptions.GetDynamicStackFrames (System.Exception e) [0x0012d] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraceNoDetail (System.Exception e, System.Boolean& printedHeader) [0x0005a] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraces (System.Exception e, System.Boolean& printedHeader) [0x000da] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraces (System.Exception e) [0x00002] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatException (System.Exception exception) [0x00026] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Modules.PythonThread+ThreadObj.Start () [0x000fa] in <1b9fa25e22f14f64a5ec76beb4c92fed>:0 
+  at System.Threading.ThreadHelper.ThreadStart_Context (System.Object state) [0x00017] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x0008d] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state) [0x00031] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ThreadHelper.ThreadStart () [0x0000b] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+
+Unhandled Exception:
+System.ArgumentNullException: Value cannot be null.
+Parameter name: method
+  at Microsoft.Scripting.Interpreter.InterpretedFrame.IsInterpretedFrame (System.Reflection.MethodBase method) [0x00038] in <9fb5ad5c9f4c4582ae540a5da3b28151>:0 
+  at Microsoft.Scripting.Interpreter.InterpretedFrame+<GroupStackFrames>c__Iterator0.MoveNext () [0x0006b] in <9fb5ad5c9f4c4582ae540a5da3b28151>:0 
+  at IronPython.Runtime.Exceptions.PythonExceptions.GetDynamicStackFrames (System.Exception e) [0x0012d] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraceNoDetail (System.Exception e, System.Boolean& printedHeader) [0x0005a] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraces (System.Exception e, System.Boolean& printedHeader) [0x000da] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraces (System.Exception e) [0x00002] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatException (System.Exception exception) [0x00026] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Modules.PythonThread+ThreadObj.Start () [0x000fa] in <1b9fa25e22f14f64a5ec76beb4c92fed>:0 
+  at System.Threading.ThreadHelper.ThreadStart_Context (System.Object state) [0x00017] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x0008d] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state) [0x00031] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ThreadHelper.ThreadStart () [0x0000b] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+
+Unhandled Exception:
+System.ArgumentNullException: Value cannot be null.
+Parameter name: method
+  at Microsoft.Scripting.Interpreter.InterpretedFrame.IsInterpretedFrame (System.Reflection.MethodBase method) [0x00038] in <9fb5ad5c9f4c4582ae540a5da3b28151>:0 
+  at Microsoft.Scripting.Interpreter.InterpretedFrame+<GroupStackFrames>c__Iterator0.MoveNext () [0x0006b] in <9fb5ad5c9f4c4582ae540a5da3b28151>:0 
+  at IronPython.Runtime.Exceptions.PythonExceptions.GetDynamicStackFrames (System.Exception e) [0x0012d] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraceNoDetail (System.Exception e, System.Boolean& printedHeader) [0x0005a] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraces (System.Exception e, System.Boolean& printedHeader) [0x000da] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraces (System.Exception e) [0x00002] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatException (System.Exception exception) [0x00026] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Modules.PythonThread+ThreadObj.Start () [0x000fa] in <1b9fa25e22f14f64a5ec76beb4c92fed>:0 
+  at System.Threading.ThreadHelper.ThreadStart_Context (System.Object state) [0x00017] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x0008d] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state) [0x00031] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ThreadHelper.ThreadStart () [0x0000b] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+
+Unhandled Exception:
+System.ArgumentNullException: Value cannot be null.
+Parameter name: method
+  at Microsoft.Scripting.Interpreter.InterpretedFrame.IsInterpretedFrame (System.Reflection.MethodBase method) [0x00038] in <9fb5ad5c9f4c4582ae540a5da3b28151>:0 
+  at Microsoft.Scripting.Interpreter.InterpretedFrame+<GroupStackFrames>c__Iterator0.MoveNext () [0x0006b] in <9fb5ad5c9f4c4582ae540a5da3b28151>:0 
+  at IronPython.Runtime.Exceptions.PythonExceptions.GetDynamicStackFrames (System.Exception e) [0x0012d] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraceNoDetail (System.Exception e, System.Boolean& printedHeader) [0x0005a] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraces (System.Exception e, System.Boolean& printedHeader) [0x000da] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraces (System.Exception e) [0x00002] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatException (System.Exception exception) [0x00026] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Modules.PythonThread+ThreadObj.Start () [0x000fa] in <1b9fa25e22f14f64a5ec76beb4c92fed>:0 
+  at System.Threading.ThreadHelper.ThreadStart_Context (System.Object state) [0x00017] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x0008d] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state) [0x00031] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ThreadHelper.ThreadStart () [0x0000b] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+[ERROR] FATAL UNHANDLED EXCEPTION: System.ArgumentNullException: Value cannot be null.
+Parameter name: method
+  at Microsoft.Scripting.Interpreter.InterpretedFrame.IsInterpretedFrame (System.Reflection.MethodBase method) [0x00038] in <9fb5ad5c9f4c4582ae540a5da3b28151>:0 
+  at Microsoft.Scripting.Interpreter.InterpretedFrame+<GroupStackFrames>c__Iterator0.MoveNext () [0x0006b] in <9fb5ad5c9f4c4582ae540a5da3b28151>:0 
+  at IronPython.Runtime.Exceptions.PythonExceptions.GetDynamicStackFrames (System.Exception e) [0x0012d] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraceNoDetail (System.Exception e, System.Boolean& printedHeader) [0x0005a] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraces (System.Exception e, System.Boolean& printedHeader) [0x000da] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatStackTraces (System.Exception e) [0x00002] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Runtime.PythonContext.FormatException (System.Exception exception) [0x00026] in <e8c1b96994d9405cadb3975179b249c0>:0 
+  at IronPython.Modules.PythonThread+ThreadObj.Start () [0x000fa] in <1b9fa25e22f14f64a5ec76beb4c92fed>:0 
+  at System.Threading.ThreadHelper.ThreadStart_Context (System.Object state) [0x00017] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x0008d] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state) [0x00031] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 
+  at System.Threading.ThreadHelper.ThreadStart () [0x0000b] in <dca3b561b8ad4f9fb10141d81b39ff45>:0 

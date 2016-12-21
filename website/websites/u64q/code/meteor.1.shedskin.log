@@ -1,5 +1,5 @@
 
-Tue, 24 Feb 2015 12:53:22 GMT
+Wed, 21 Dec 2016 14:20:06 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
@@ -19,66 +19,64 @@ Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 *WARNING* shed.py:57: 'dict' instance containing function reference
 *WARNING* shed.py:57: 'list' instance containing function reference
 *WARNING* shed.py:83: 'dict' instance containing function reference
-[elapsed time: 4.86 seconds]
+[elapsed time: 4.85 seconds]
 make
 make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
 g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -o shed
 /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp: In function ‘__shedskin__::__ss_bool __shed__::__lambda8__(__shedskin__::__ss_int)’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:152:35: error: could not convert ‘__shedskin__::__sum<__shedskin__::list<__shedskin__::__ss_bool> >(__shed__::list_comp_1(mask))’ from ‘__shedskin__::__sumtype1<__shedskin__::__ss_bool>::type {aka int}’ to ‘__shedskin__::__ss_bool’
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:152:17: error: could not convert ‘__shedskin__::__sum<__shedskin__::list<__shedskin__::__ss_bool> >(__shed__::list_comp_1(mask))’ from ‘__shedskin__::__sumtype1<__shedskin__::__ss_bool>::type {aka int}’ to ‘__shedskin__::__ss_bool’
      return __sum(list_comp_1(mask));
-                                   ^
+            ~~~~~^~~~~~~~~~~~~~~~~~~
 In file included from /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:1:0:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp: In instantiation of ‘__shedskin__::str* __shedskin__::repr(T) [with T = __shedskin__::tuple2<int, int>* (*)(int, int)]’:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/tuple.hpp:248:59:   required from ‘__shedskin__::str* __shedskin__::tuple2<A, B>::__repr__() [with A = __shedskin__::str*; B = __shedskin__::tuple2<int, int>* (*)(int, int)]’
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/tuple.hpp:248:52:   required from ‘__shedskin__::str* __shedskin__::tuple2<A, B>::__repr__() [with A = __shedskin__::str*; B = __shedskin__::tuple2<int, int>* (*)(int, int)]’
 /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:504:1:   required from here
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1035:87: error: request for member ‘__repr__’ in ‘* t’, which is of non-class type ‘__shedskin__::tuple2<int, int>*(int, int)’
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1035:78: error: request for member ‘__repr__’ in ‘* t’, which is of non-class type ‘__shedskin__::tuple2<int, int>*(int, int)’
  template<class T> str *repr(T t) { if (!t) return new str("None"); return t->__repr__(); }
-                                                                                       ^
+                                                                           ~~~^~~~~~~~
 In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:949:0,
                  from /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:1:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin/hash.hpp: In instantiation of ‘long int __shedskin__::hasher(T) [with T = __shedskin__::tuple2<int, int>* (*)(int, int)]’:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/tuple.hpp:243:47:   required from ‘long int __shedskin__::tuple2<A, B>::__hash__() [with A = __shedskin__::str*; B = __shedskin__::tuple2<int, int>* (*)(int, int)]’
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/tuple.hpp:243:40:   required from ‘long int __shedskin__::tuple2<A, B>::__hash__() [with A = __shedskin__::str*; B = __shedskin__::tuple2<int, int>* (*)(int, int)]’
 /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:504:1:   required from here
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/hash.hpp:11:24: error: request for member ‘__hash__’ in ‘* t’, which is of non-class type ‘__shedskin__::tuple2<int, int>*(int, int)’
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/hash.hpp:11:15: error: request for member ‘__hash__’ in ‘* t’, which is of non-class type ‘__shedskin__::tuple2<int, int>*(int, int)’
      return t->__hash__();
-                        ^
+            ~~~^~~~~~~~
 In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:950:0,
                  from /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:1:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin/compare.hpp: In instantiation of ‘__shedskin__::__ss_int __shedskin__::__cmp(T, T) [with T = __shedskin__::tuple2<int, int>* (*)(int, int); __shedskin__::__ss_int = int]’:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/tuple.hpp:237:35:   required from ‘__shedskin__::__ss_int __shedskin__::tuple2<A, B>::__cmp__(__shedskin__::pyobj*) [with A = __shedskin__::str*; B = __shedskin__::tuple2<int, int>* (*)(int, int); __shedskin__::__ss_int = int]’
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/tuple.hpp:237:17:   required from ‘__shedskin__::__ss_int __shedskin__::tuple2<A, B>::__cmp__(__shedskin__::pyobj*) [with A = __shedskin__::str*; B = __shedskin__::tuple2<int, int>* (*)(int, int); __shedskin__::__ss_int = int]’
 /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:504:1:   required from here
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/compare.hpp:88:24: error: request for member ‘__cmp__’ in ‘* a’, which is of non-class type ‘__shedskin__::tuple2<int, int>*(int, int)’
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/compare.hpp:88:15: error: request for member ‘__cmp__’ in ‘* a’, which is of non-class type ‘__shedskin__::tuple2<int, int>*(int, int)’
      return a->__cmp__(b);
-                        ^
+            ~~~^~~~~~~
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin/compare.hpp: In instantiation of ‘__shedskin__::__ss_bool __shedskin__::__eq(T, T) [with T = __shedskin__::tuple2<int, int>* (*)(int, int)]’:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/tuple.hpp:230:84:   required from ‘__shedskin__::__ss_bool __shedskin__::tuple2<A, B>::__eq__(__shedskin__::pyobj*) [with A = __shedskin__::str*; B = __shedskin__::tuple2<int, int>* (*)(int, int)]’
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/tuple.hpp:230:57:   required from ‘__shedskin__::__ss_bool __shedskin__::tuple2<A, B>::__eq__(__shedskin__::pyobj*) [with A = __shedskin__::str*; B = __shedskin__::tuple2<int, int>* (*)(int, int)]’
 /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:504:1:   required from here
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/compare.hpp:6:67: error: request for member ‘__eq__’ in ‘* a’, which is of non-class type ‘__shedskin__::tuple2<int, int>*(int, int)’
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/compare.hpp:6:72: error: request for member ‘__eq__’ in ‘* a’, which is of non-class type ‘__shedskin__::tuple2<int, int>*(int, int)’
  template<class T> inline __ss_bool __eq(T a, T b) { return ((a&&b)?(a->__eq__(b)):__mbool(a==b)); }
-                                                                   ^
+                                                                     ~~~^~~~~~
 In file included from /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:1:0:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp: In instantiation of ‘T __shedskin__::__deepcopy(T, __shedskin__::dict<void*, __shedskin__::pyobj*>*) [with T = __shedskin__::tuple2<int, int>* (*)(int, int)]’:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/tuple.hpp:259:40:   required from ‘__shedskin__::tuple2<K, V>* __shedskin__::tuple2<A, B>::__deepcopy__(__shedskin__::dict<void*, __shedskin__::pyobj*>*) [with A = __shedskin__::str*; B = __shedskin__::tuple2<int, int>* (*)(int, int)]’
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/tuple.hpp:259:27:   required from ‘__shedskin__::tuple2<K, V>* __shedskin__::tuple2<A, B>::__deepcopy__(__shedskin__::dict<void*, __shedskin__::pyobj*>*) [with A = __shedskin__::str*; B = __shedskin__::tuple2<int, int>* (*)(int, int)]’
 /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:504:1:   required from here
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1180:30: error: invalid conversion from ‘__shedskin__::tuple2<int, int>* (*)(int, int)’ to ‘void*’ [-fpermissive]
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1180:11: error: invalid conversion from ‘__shedskin__::tuple2<int, int>* (*)(int, int)’ to ‘void*’ [-fpermissive]
      T u = (T)(memo->get(t, 0));
-                              ^
+            
 In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1211:0,
                  from /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/dict.hpp:313:31: note: initializing argument 1 of ‘V __shedskin__::dict<K, V>::get(K, V) [with K = void*; V = __shedskin__::pyobj*]’
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/dict.hpp:313:31: note:   initializing argument 1 of ‘V __shedskin__::dict<K, V>::get(K, V) [with K = void*; V = __shedskin__::pyobj*]’
  template <class K, class V> V dict<K,V>::get(K key, V d) {
-                               ^
+                               ^~~~~~~~~
 In file included from /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:1:0:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1184:37: error: request for member ‘__deepcopy__’ in ‘* t’, which is of non-class type ‘__shedskin__::tuple2<int, int>*(int, int)’
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1184:19: error: request for member ‘__deepcopy__’ in ‘* t’, which is of non-class type ‘__shedskin__::tuple2<int, int>*(int, int)’
      return (T)(t->__deepcopy__(memo));
-                                     ^
-Makefile:19: návod pro cíl „shed“ selhal
-make[2]: *** [shed] Chyba 1
+                ~~~^~~~~~~~~~~~
+make[2]: *** [Makefile:19: shed] Chyba 1
 make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
-/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:28: návod pro cíl „meteor.shedskin_run“ selhal
-make[1]: *** [meteor.shedskin_run] Chyba 2
+make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: meteor.shedskin_run] Chyba 2
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
-12.47s to complete and log all make actions
+13.15s to complete and log all make actions
 
 COMMAND LINE:
 ./shed 2098

@@ -1,5 +1,5 @@
 
-Fri, 27 May 2016 16:22:11 GMT
+Wed, 21 Dec 2016 12:40:15 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp“
@@ -13,7 +13,7 @@ Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 [generating c++ code..]
 *WARNING* shed.py:12: class 'str' has no method 'format'
 *WARNING* shed.py:12: expression has no type
-[elapsed time: 1.48 seconds]
+[elapsed time: 1.73 seconds]
 make
 make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp“
 g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -o shed
@@ -21,16 +21,14 @@ g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/s
 /home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp/shed.cpp:38:37: error: ‘class __shedskin__::str’ has no member named ‘format’
          print2(NULL,0,1, (const_0)->format());
                                      ^~~~~~
-Makefile:19: návod pro cíl „shed“ selhal
-make[2]: *** [shed] Chyba 1
+make[2]: *** [Makefile:19: shed] Chyba 1
 make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp“
-/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:28: návod pro cíl „fib50.shedskin_run“ selhal
-make[1]: *** [fib50.shedskin_run] Chyba 2
+make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: fib50.shedskin_run] Chyba 2
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp“
-9.76s to complete and log all make actions
+10.38s to complete and log all make actions
 
 COMMAND LINE:
-./shed 1000
+./shed 1000000
 
 MAKE ERROR 
 

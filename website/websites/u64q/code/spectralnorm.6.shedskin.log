@@ -1,5 +1,5 @@
 
-Wed, 08 Apr 2015 13:12:23 GMT
+Wed, 21 Dec 2016 15:10:38 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
@@ -12,24 +12,22 @@ Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 0% ********************************100% ********************************100% ********************************100%
 [generating c++ code..]
 *WARNING* shed.py:48: incompatible types
-[elapsed time: 2.98 seconds]
+[elapsed time: 2.51 seconds]
 make
 make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
 g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/math.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -o shed
 /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/shed.cpp: In function ‘void* __shed__::__ss_main()’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/shed.cpp:118:7: error: cannot convert ‘__shedskin__::list<int>*’ to ‘__shedskin__::list<double>*’ in assignment
+/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/shed.cpp:118:47: error: cannot convert ‘__shedskin__::list<int>*’ to ‘__shedskin__::list<double>*’ in assignment
      u = ((new list<__ss_int>(1,1)))->__mul__(n);
-       ^
-Makefile:21: návod pro cíl „shed“ selhal
-make[2]: *** [shed] Chyba 1
+                                               ^
+make[2]: *** [Makefile:21: shed] Chyba 1
 make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
-/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:28: návod pro cíl „spectralnorm.shedskin-6.shedskin_run“ selhal
-make[1]: *** [spectralnorm.shedskin-6.shedskin_run] Chyba 2
+make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: spectralnorm.shedskin-6.shedskin_run] Chyba 2
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
-11.52s to complete and log all make actions
+10.83s to complete and log all make actions
 
 COMMAND LINE:
-./shed 50
+./shed 550
 
 MAKE ERROR 
 

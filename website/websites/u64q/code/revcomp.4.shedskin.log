@@ -1,5 +1,5 @@
 
-Tue, 24 Feb 2015 12:54:03 GMT
+Wed, 21 Dec 2016 15:06:35 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
@@ -14,24 +14,22 @@ Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 *WARNING* shed.py:11: Function show not called!
 *WARNING* shed.py:26: class 'file' has no method 'detach'
 *WARNING* shed.py:26: expression has no type
-[elapsed time: 1.57 seconds]
+[elapsed time: 1.69 seconds]
 make
 make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
 g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -o shed
 /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp: In function ‘void* __shed__::__ss_main()’:
 /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:44:50: error: ‘class __shedskin__::file’ has no member named ‘detach’
      __sys__::__ss_stdin = (__sys__::__ss_stdin)->detach();
-                                                  ^
+                                                  ^~~~~~
 /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:48:50: error: ‘show’ was not declared in this scope
          show(seq, default_0, default_1, default_2);
                                                   ^
-Makefile:19: návod pro cíl „shed“ selhal
-make[2]: *** [shed] Chyba 1
+make[2]: *** [Makefile:19: shed] Chyba 1
 make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
-/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:28: návod pro cíl „revcomp.shedskin-4.shedskin_run“ selhal
-make[1]: *** [revcomp.shedskin-4.shedskin_run] Chyba 2
+make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: revcomp.shedskin-4.shedskin_run] Chyba 2
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
-9.43s to complete and log all make actions
+9.53s to complete and log all make actions
 
 COMMAND LINE:
 ./shed 0 < revcomp-input1000.txt

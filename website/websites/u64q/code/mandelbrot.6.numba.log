@@ -1,41 +1,10 @@
 
-Mon, 30 Nov 2015 16:02:23 GMT
+Wed, 21 Dec 2016 15:35:14 GMT
 
 COMMAND LINE:
-/opt/anaconda/bin/python mandelbrot.numba-6.numba 1000
+/opt/anaconda/bin/python mandelbrot.numba-6.numba 16000
 
-PROGRAM FAILED 
+TIMED OUT after 300s
 
 
 PROGRAM OUTPUT:
-
-multiprocessing.pool.RemoteTraceback: 
-"""
-Traceback (most recent call last):
-  File "/opt/anaconda/lib/python3.5/multiprocessing/pool.py", line 119, in worker
-    result = (True, func(*args, **kwds))
-  File "/opt/anaconda/lib/python3.5/multiprocessing/pool.py", line 44, in mapstar
-    return list(map(*args))
-  File "mandelbrot.numba-6.numba", line 261, in work
-    mandelbrot = mandeliterations(block)
-  File "/opt/anaconda/lib/python3.5/site-packages/numba/dispatcher.py", line 248, in typeof_pyval
-    tp = typeof(val)
-  File "/opt/anaconda/lib/python3.5/site-packages/numba/typing/typeof.py", line 29, in typeof
-    return typeof_impl(val, c)
-  File "/opt/anaconda/lib/python3.5/functools.py", line 743, in wrapper
-    return dispatch(args[0].__class__)(*args, **kw)
-  File "/opt/anaconda/lib/python3.5/site-packages/numba/typing/typeof.py", line 126, in _typeof_list
-    raise ValueError("Cannot type empty list")
-ValueError: Cannot type empty list
-"""
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "mandelbrot.numba-6.numba", line 269, in <module>
-    pool.map(work, tasks)
-  File "/opt/anaconda/lib/python3.5/multiprocessing/pool.py", line 260, in map
-    return self._map_async(func, iterable, mapstar, chunksize).get()
-  File "/opt/anaconda/lib/python3.5/multiprocessing/pool.py", line 608, in get
-    raise self._value
-ValueError: Cannot type empty list

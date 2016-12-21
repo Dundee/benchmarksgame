@@ -1,5 +1,5 @@
 
-Tue, 24 Feb 2015 12:51:59 GMT
+Wed, 21 Dec 2016 12:33:55 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp“
@@ -16,7 +16,7 @@ Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 *WARNING* shed.py:68: variable 'x' has no type
 *WARNING* shed.py:70: unresolved call to 'gR'
 *WARNING* shed.py:70: unresolved call to 'jn'
-[elapsed time: 2.77 seconds]
+[elapsed time: 2.84 seconds]
 make
 make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp“
 g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp /usr/lib/python2.7/site-packages/shedskin/lib/bisect.cpp -lgc -lpcre  -o shed
@@ -32,56 +32,53 @@ g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/s
 /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/shed.cpp:50:32: error: no matching function for call to ‘bisect(__shedskin__::list<double>*&)’
      return __bisect__::bisect(a);
                                 ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/shed.cpp:50:32: note: candidates are:
 In file included from /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/shed.cpp:3:0:
-/usr/lib/python2.7/site-packages/shedskin/lib/bisect.hpp:55:29: note: template<class A> __shedskin__::__ss_int __bisect__::bisect(__shedskin__::list<T>*, A, __shedskin__::__ss_int, __shedskin__::__ss_int)
+/usr/lib/python2.7/site-packages/shedskin/lib/bisect.hpp:55:29: note: candidate: template<class A> __shedskin__::__ss_int __bisect__::bisect(__shedskin__::list<T>*, A, __shedskin__::__ss_int, __shedskin__::__ss_int)
  template <class A> __ss_int bisect(list<A> *a, A x, __ss_int lo, __ss_int hi) {
-                             ^
+                             ^~~~~~
 /usr/lib/python2.7/site-packages/shedskin/lib/bisect.hpp:55:29: note:   template argument deduction/substitution failed:
 /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/shed.cpp:50:32: note:   candidate expects 4 arguments, 1 provided
      return __bisect__::bisect(a);
                                 ^
 In file included from /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/shed.cpp:3:0:
-/usr/lib/python2.7/site-packages/shedskin/lib/bisect.hpp:99:29: note: template<class A> __shedskin__::__ss_int __bisect__::bisect(__shedskin__::list<T>*, A, __shedskin__::__ss_int)
+/usr/lib/python2.7/site-packages/shedskin/lib/bisect.hpp:99:29: note: candidate: template<class A> __shedskin__::__ss_int __bisect__::bisect(__shedskin__::list<T>*, A, __shedskin__::__ss_int)
  template <class A> __ss_int bisect(list<A> *a, A x, __ss_int lo=0) {
-                             ^
+                             ^~~~~~
 /usr/lib/python2.7/site-packages/shedskin/lib/bisect.hpp:99:29: note:   template argument deduction/substitution failed:
 /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/shed.cpp:50:32: note:   candidate expects 3 arguments, 1 provided
      return __bisect__::bisect(a);
                                 ^
 /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/shed.cpp: In function ‘void* __shed__::randomFasta(__shedskin__::list<__shedskin__::tuple2<__shedskin__::str*, double>*>*, __shedskin__::__ss_int)’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/shed.cpp:149:8: error: cannot convert ‘__shedskin__::__iter<T>::next<double>’ from type ‘double (__shedskin__::__iter<double>::)()’ to type ‘void*’
+/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/shed.cpp:149:18: error: cannot convert ‘__shedskin__::__iter<T>::next<double>’ from type ‘double (__shedskin__::__iter<double>::)()’ to type ‘void*’
      gR = Random->next;
-        ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/shed.cpp:150:8: error: no matches converting function ‘bisect’ to type ‘__shed__::lambda0 {aka int (*)(class __shedskin__::list<double>*)}’
+                  ^~~~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/shed.cpp:150:22: error: no matches converting function ‘bisect’ to type ‘__shed__::lambda0 {aka int (*)(class __shedskin__::list<double>*)}’
      bb = __bisect__::bisect;
-        ^
+                      ^~~~~~
 In file included from /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/shed.cpp:3:0:
 /usr/lib/python2.7/site-packages/shedskin/lib/bisect.hpp:99:29: note: candidates are: template<class A> __shedskin__::__ss_int __bisect__::bisect(__shedskin__::list<T>*, A, __shedskin__::__ss_int)
  template <class A> __ss_int bisect(list<A> *a, A x, __ss_int lo=0) {
-                             ^
+                             ^~~~~~
 /usr/lib/python2.7/site-packages/shedskin/lib/bisect.hpp:55:29: note:                 template<class A> __shedskin__::__ss_int __bisect__::bisect(__shedskin__::list<T>*, A, __shedskin__::__ss_int, __shedskin__::__ss_int)
  template <class A> __ss_int bisect(list<A> *a, A x, __ss_int lo, __ss_int hi) {
-                             ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/shed.cpp:151:8: error: cannot resolve overloaded function ‘join’ based on conversion to type ‘void*’
+                             ^~~~~~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/shed.cpp:151:21: error: cannot resolve overloaded function ‘join’ based on conversion to type ‘void*’
      jn = (const_0)->join;
-        ^
+                     ^~~~
 /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/shed.cpp:157:13: error: expected primary-expression before ‘;’ token
          x = ;
              ^
 /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/shed.cpp:162:26: error: expected primary-expression before ‘)’ token
          print2(NULL,0,1, );
                           ^
-Makefile:21: návod pro cíl „shed“ selhal
-make[2]: *** [shed] Chyba 1
+make[2]: *** [Makefile:21: shed] Chyba 1
 make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp“
-/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:28: návod pro cíl „fasta.shedskin_run“ selhal
-make[1]: *** [fasta.shedskin_run] Chyba 2
+make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: fasta.shedskin_run] Chyba 2
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp“
-10.63s to complete and log all make actions
+12.80s to complete and log all make actions
 
 COMMAND LINE:
-./shed 25000
+./shed 2500000
 
 MAKE ERROR 
 
