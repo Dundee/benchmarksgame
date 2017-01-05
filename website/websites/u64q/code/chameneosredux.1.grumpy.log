@@ -1,0 +1,19 @@
+
+Thu, 05 Jan 2017 10:00:58 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp“
+grumpc chameneosredux.grumpy > chameneosredux.grumpy.go
+go build -o chameneosredux.grumpy_run chameneosredux.grumpy.go
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/chameneosredux/tmp“
+1.92s to complete and log all make actions
+
+COMMAND LINE:
+./chameneosredux.grumpy_run 6000000
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT NOT CHECKED:
+
+AttributeError: 'module' object has no attribute 'allocate_lock'

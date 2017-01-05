@@ -1,0 +1,25 @@
+
+Thu, 05 Jan 2017 10:03:07 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
+grumpc meteor.grumpy > meteor.grumpy.go
+go build -o meteor.grumpy_run meteor.grumpy.go
+meteor.grumpy.go:4:2: cannot find package "grumpy/lib/__future__" in any of:
+	/usr/lib/go/src/grumpy/lib/__future__ (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/__future__ (from $GOPATH)
+meteor.grumpy.go:5:2: cannot find package "grumpy/lib/__future__/print_function" in any of:
+	/usr/lib/go/src/grumpy/lib/__future__/print_function (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/__future__/print_function (from $GOPATH)
+meteor.grumpy.go:7:2: cannot find package "grumpy/lib/sys/argv" in any of:
+	/usr/lib/go/src/grumpy/lib/sys/argv (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/sys/argv (from $GOPATH)
+make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:48: meteor.grumpy_run] Chyba 1
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
+0.15s to complete and log all make actions
+
+COMMAND LINE:
+./meteor.grumpy_run 2098
+
+MAKE ERROR 
+

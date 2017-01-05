@@ -1,0 +1,19 @@
+
+Thu, 05 Jan 2017 10:03:06 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
+grumpc iobench.grumpy > iobench.grumpy.go
+go build -o iobench.grumpy_run iobench.grumpy.go
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
+2.03s to complete and log all make actions
+
+COMMAND LINE:
+./iobench.grumpy_run 1
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT NOT CHECKED:
+
+AttributeError: 'module' object has no attribute 'O_RDONLY'

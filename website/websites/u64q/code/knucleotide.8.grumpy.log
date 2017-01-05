@@ -1,0 +1,28 @@
+
+Thu, 05 Jan 2017 10:03:07 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp“
+grumpc knucleotide.grumpy-8.grumpy > knucleotide.grumpy-8.grumpy.go
+go build -o knucleotide.grumpy-8.grumpy_run knucleotide.grumpy-8.grumpy.go
+knucleotide.grumpy-8.grumpy.go:5:2: cannot find package "grumpy/lib/collections/defaultdict" in any of:
+	/usr/lib/go/src/grumpy/lib/collections/defaultdict (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/collections/defaultdict (from $GOPATH)
+knucleotide.grumpy-8.grumpy.go:6:2: cannot find package "grumpy/lib/multiprocessing" in any of:
+	/usr/lib/go/src/grumpy/lib/multiprocessing (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/multiprocessing (from $GOPATH)
+knucleotide.grumpy-8.grumpy.go:7:2: cannot find package "grumpy/lib/multiprocessing/Pool" in any of:
+	/usr/lib/go/src/grumpy/lib/multiprocessing/Pool (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/multiprocessing/Pool (from $GOPATH)
+knucleotide.grumpy-8.grumpy.go:9:2: cannot find package "grumpy/lib/sys/stdin" in any of:
+	/usr/lib/go/src/grumpy/lib/sys/stdin (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/sys/stdin (from $GOPATH)
+make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:48: knucleotide.grumpy-8.grumpy_run] Chyba 1
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp“
+0.12s to complete and log all make actions
+
+COMMAND LINE:
+./knucleotide.grumpy-8.grumpy_run 0 < knucleotide-input10000.txt
+
+MAKE ERROR 
+

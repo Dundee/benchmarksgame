@@ -1,0 +1,19 @@
+
+Thu, 05 Jan 2017 10:03:10 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
+grumpc revcomp.grumpy-4.grumpy > revcomp.grumpy-4.grumpy.go
+go build -o revcomp.grumpy-4.grumpy_run revcomp.grumpy-4.grumpy.go
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
+1.70s to complete and log all make actions
+
+COMMAND LINE:
+./revcomp.grumpy-4.grumpy_run 0 < revcomp-input1000.txt
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+NameError: name 'bytes' is not defined

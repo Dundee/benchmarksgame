@@ -37,3 +37,12 @@
 %.nuitka_run: %.nuitka
 	nuitka --remove-output --improved $<
 	cp $<.exe $*.nuitka_run
+
+
+########################################
+# Grumpy
+########################################
+
+%.grumpy_run: %.grumpy
+	grumpc $< > $<.go
+	go build -o $<_run $<.go

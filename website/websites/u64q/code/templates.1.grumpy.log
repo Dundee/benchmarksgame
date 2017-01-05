@@ -1,0 +1,22 @@
+
+Thu, 05 Jan 2017 10:03:38 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp“
+grumpc templates.grumpy > templates.grumpy.go
+go build -o templates.grumpy_run templates.grumpy.go
+templates.grumpy.go:4:2: cannot find package "grumpy/lib/jinja2" in any of:
+	/usr/lib/go/src/grumpy/lib/jinja2 (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/jinja2 (from $GOPATH)
+templates.grumpy.go:5:2: cannot find package "grumpy/lib/jinja2/Template" in any of:
+	/usr/lib/go/src/grumpy/lib/jinja2/Template (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/jinja2/Template (from $GOPATH)
+make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:48: templates.grumpy_run] Chyba 1
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp“
+0.11s to complete and log all make actions
+
+COMMAND LINE:
+./templates.grumpy_run 1000
+
+MAKE ERROR 
+

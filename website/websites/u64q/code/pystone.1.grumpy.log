@@ -1,0 +1,19 @@
+
+Thu, 05 Jan 2017 10:03:08 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp“
+grumpc pystone.grumpy > pystone.grumpy.go
+go build -o pystone.grumpy_run pystone.grumpy.go
+pystone.grumpy.go:6:2: cannot find package "grumpy/lib/time/clock" in any of:
+	/usr/lib/go/src/grumpy/lib/time/clock (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/time/clock (from $GOPATH)
+make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:48: pystone.grumpy_run] Chyba 1
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp“
+0.14s to complete and log all make actions
+
+COMMAND LINE:
+./pystone.grumpy_run 50000
+
+MAKE ERROR 
+

@@ -1,0 +1,19 @@
+
+Thu, 05 Jan 2017 10:00:58 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp“
+grumpc fasta.grumpy > fasta.grumpy.go
+go build -o fasta.grumpy_run fasta.grumpy.go
+fasta.grumpy.go:4:2: cannot find package "grumpy/lib/bisect" in any of:
+	/usr/lib/go/src/grumpy/lib/bisect (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/bisect (from $GOPATH)
+make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:48: fasta.grumpy_run] Chyba 1
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp“
+0.13s to complete and log all make actions
+
+COMMAND LINE:
+./fasta.grumpy_run 2500000
+
+MAKE ERROR 
+

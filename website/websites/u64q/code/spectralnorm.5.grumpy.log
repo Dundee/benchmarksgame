@@ -1,0 +1,31 @@
+
+Thu, 05 Jan 2017 10:03:38 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
+grumpc spectralnorm.grumpy-5.grumpy > spectralnorm.grumpy-5.grumpy.go
+go build -o spectralnorm.grumpy-5.grumpy_run spectralnorm.grumpy-5.grumpy.go
+spectralnorm.grumpy-5.grumpy.go:4:2: cannot find package "grumpy/lib/math" in any of:
+	/usr/lib/go/src/grumpy/lib/math (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/math (from $GOPATH)
+spectralnorm.grumpy-5.grumpy.go:5:2: cannot find package "grumpy/lib/math/sqrt" in any of:
+	/usr/lib/go/src/grumpy/lib/math/sqrt (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/math/sqrt (from $GOPATH)
+spectralnorm.grumpy-5.grumpy.go:6:2: cannot find package "grumpy/lib/multiprocessing" in any of:
+	/usr/lib/go/src/grumpy/lib/multiprocessing (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/multiprocessing (from $GOPATH)
+spectralnorm.grumpy-5.grumpy.go:7:2: cannot find package "grumpy/lib/multiprocessing/Pool" in any of:
+	/usr/lib/go/src/grumpy/lib/multiprocessing/Pool (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/multiprocessing/Pool (from $GOPATH)
+spectralnorm.grumpy-5.grumpy.go:9:2: cannot find package "grumpy/lib/sys/argv" in any of:
+	/usr/lib/go/src/grumpy/lib/sys/argv (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/sys/argv (from $GOPATH)
+make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:48: spectralnorm.grumpy-5.grumpy_run] Chyba 1
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
+0.12s to complete and log all make actions
+
+COMMAND LINE:
+./spectralnorm.grumpy-5.grumpy_run 550
+
+MAKE ERROR 
+

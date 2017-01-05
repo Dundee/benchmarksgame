@@ -1,0 +1,22 @@
+
+Thu, 05 Jan 2017 10:03:08 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp“
+grumpc pidigits.grumpy-4.grumpy > pidigits.grumpy-4.grumpy.go
+go build -o pidigits.grumpy-4.grumpy_run pidigits.grumpy-4.grumpy.go
+pidigits.grumpy-4.grumpy.go:4:2: cannot find package "grumpy/lib/gmpy" in any of:
+	/usr/lib/go/src/grumpy/lib/gmpy (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/gmpy (from $GOPATH)
+pidigits.grumpy-4.grumpy.go:5:2: cannot find package "grumpy/lib/gmpy_cffi" in any of:
+	/usr/lib/go/src/grumpy/lib/gmpy_cffi (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/gmpy_cffi (from $GOPATH)
+make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:48: pidigits.grumpy-4.grumpy_run] Chyba 1
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp“
+0.11s to complete and log all make actions
+
+COMMAND LINE:
+./pidigits.grumpy-4.grumpy_run 10000
+
+MAKE ERROR 
+

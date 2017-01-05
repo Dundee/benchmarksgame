@@ -1,0 +1,22 @@
+
+Thu, 05 Jan 2017 10:00:58 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp“
+grumpc fastaredux.grumpy > fastaredux.grumpy.go
+go build -o fastaredux.grumpy_run fastaredux.grumpy.go
+fastaredux.grumpy.go:4:2: cannot find package "grumpy/lib/array" in any of:
+	/usr/lib/go/src/grumpy/lib/array (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/array (from $GOPATH)
+fastaredux.grumpy.go:5:2: cannot find package "grumpy/lib/bisect" in any of:
+	/usr/lib/go/src/grumpy/lib/bisect (from $GOROOT)
+	/home/dundee/workspace/go/src/grumpy/lib/bisect (from $GOPATH)
+make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:48: fastaredux.grumpy_run] Chyba 1
+make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp“
+0.13s to complete and log all make actions
+
+COMMAND LINE:
+./fastaredux.grumpy_run 2500000
+
+MAKE ERROR 
+
