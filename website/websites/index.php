@@ -80,7 +80,7 @@ $langs = array(
    array('numba','Numba 0.22.1 (with NumPy)','numba',$allsites),
    array('pyston','Pyston 0.6.0','pyston',$allsites),
    array('micropython','MicroPython 1.6','micropython',$allsites),
-   array('grumpy','Grumpy r71.61bd06c','grumpy',$allsites),
+   array('grumpy','Grumpy r123.08f9c2e','grumpy',$allsites),
    );
 
 

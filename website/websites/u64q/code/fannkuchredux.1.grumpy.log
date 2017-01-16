@@ -1,13 +1,10 @@
 
-Thu, 05 Jan 2017 10:00:58 GMT
+Mon, 16 Jan 2017 14:27:40 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp“
 grumpc fannkuchredux.grumpy > fannkuchredux.grumpy.go
 go build -o fannkuchredux.grumpy_run fannkuchredux.grumpy.go
-fannkuchredux.grumpy.go:4:2: cannot find package "grumpy/lib/math" in any of:
-	/usr/lib/go/src/grumpy/lib/math (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/math (from $GOPATH)
 fannkuchredux.grumpy.go:5:2: cannot find package "grumpy/lib/multiprocessing" in any of:
 	/usr/lib/go/src/grumpy/lib/multiprocessing (from $GOROOT)
 	/home/dundee/workspace/go/src/grumpy/lib/multiprocessing (from $GOPATH)
@@ -19,7 +16,7 @@ fannkuchredux.grumpy.go:7:2: cannot find package "grumpy/lib/multiprocessing/cpu
 	/home/dundee/workspace/go/src/grumpy/lib/multiprocessing/cpu_count (from $GOPATH)
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:48: fannkuchredux.grumpy_run] Chyba 1
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp“
-0.13s to complete and log all make actions
+0.12s to complete and log all make actions
 
 COMMAND LINE:
 ./fannkuchredux.grumpy_run 10

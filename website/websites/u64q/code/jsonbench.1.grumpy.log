@@ -1,22 +1,16 @@
 
-Thu, 05 Jan 2017 10:03:07 GMT
+Mon, 16 Jan 2017 14:29:48 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/jsonbench/tmp“
 grumpc jsonbench.grumpy > jsonbench.grumpy.go
 go build -o jsonbench.grumpy_run jsonbench.grumpy.go
-jsonbench.grumpy.go:4:2: cannot find package "grumpy/lib/__future__" in any of:
-	/usr/lib/go/src/grumpy/lib/__future__ (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/__future__ (from $GOPATH)
-jsonbench.grumpy.go:5:2: cannot find package "grumpy/lib/__future__/print_function" in any of:
-	/usr/lib/go/src/grumpy/lib/__future__/print_function (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/__future__/print_function (from $GOPATH)
-jsonbench.grumpy.go:6:2: cannot find package "grumpy/lib/json" in any of:
+jsonbench.grumpy.go:4:2: cannot find package "grumpy/lib/json" in any of:
 	/usr/lib/go/src/grumpy/lib/json (from $GOROOT)
 	/home/dundee/workspace/go/src/grumpy/lib/json (from $GOPATH)
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:48: jsonbench.grumpy_run] Chyba 1
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/jsonbench/tmp“
-0.11s to complete and log all make actions
+0.12s to complete and log all make actions
 
 COMMAND LINE:
 ./jsonbench.grumpy_run 1

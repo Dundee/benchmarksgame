@@ -1,34 +1,28 @@
 
-Thu, 05 Jan 2017 10:03:08 GMT
+Mon, 16 Jan 2017 14:29:50 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp“
 grumpc regexdna.grumpy > regexdna.grumpy.go
 go build -o regexdna.grumpy_run regexdna.grumpy.go
-regexdna.grumpy.go:4:2: cannot find package "grumpy/lib/__future__" in any of:
-	/usr/lib/go/src/grumpy/lib/__future__ (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/__future__ (from $GOPATH)
-regexdna.grumpy.go:5:2: cannot find package "grumpy/lib/__future__/print_function" in any of:
-	/usr/lib/go/src/grumpy/lib/__future__/print_function (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/__future__/print_function (from $GOPATH)
-regexdna.grumpy.go:6:2: cannot find package "grumpy/lib/multiprocessing" in any of:
+regexdna.grumpy.go:4:2: cannot find package "grumpy/lib/multiprocessing" in any of:
 	/usr/lib/go/src/grumpy/lib/multiprocessing (from $GOROOT)
 	/home/dundee/workspace/go/src/grumpy/lib/multiprocessing (from $GOPATH)
-regexdna.grumpy.go:7:2: cannot find package "grumpy/lib/multiprocessing/Pool" in any of:
+regexdna.grumpy.go:5:2: cannot find package "grumpy/lib/multiprocessing/Pool" in any of:
 	/usr/lib/go/src/grumpy/lib/multiprocessing/Pool (from $GOROOT)
 	/home/dundee/workspace/go/src/grumpy/lib/multiprocessing/Pool (from $GOPATH)
-regexdna.grumpy.go:9:2: cannot find package "grumpy/lib/re/findall" in any of:
+regexdna.grumpy.go:7:2: cannot find package "grumpy/lib/re/findall" in any of:
 	/usr/lib/go/src/grumpy/lib/re/findall (from $GOROOT)
 	/home/dundee/workspace/go/src/grumpy/lib/re/findall (from $GOPATH)
-regexdna.grumpy.go:10:2: cannot find package "grumpy/lib/re/sub" in any of:
+regexdna.grumpy.go:8:2: cannot find package "grumpy/lib/re/sub" in any of:
 	/usr/lib/go/src/grumpy/lib/re/sub (from $GOROOT)
 	/home/dundee/workspace/go/src/grumpy/lib/re/sub (from $GOPATH)
-regexdna.grumpy.go:12:2: cannot find package "grumpy/lib/sys/stdin" in any of:
+regexdna.grumpy.go:10:2: cannot find package "grumpy/lib/sys/stdin" in any of:
 	/usr/lib/go/src/grumpy/lib/sys/stdin (from $GOROOT)
 	/home/dundee/workspace/go/src/grumpy/lib/sys/stdin (from $GOPATH)
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:48: regexdna.grumpy_run] Chyba 1
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp“
-0.11s to complete and log all make actions
+0.12s to complete and log all make actions
 
 COMMAND LINE:
 ./regexdna.grumpy_run 0 < regexdna-input10000.txt

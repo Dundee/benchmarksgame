@@ -1,25 +1,19 @@
 
-Thu, 05 Jan 2017 10:03:10 GMT
+Mon, 16 Jan 2017 14:29:54 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
 grumpc revcomp.grumpy-3.grumpy > revcomp.grumpy-3.grumpy.go
 go build -o revcomp.grumpy-3.grumpy_run revcomp.grumpy-3.grumpy.go
-revcomp.grumpy-3.grumpy.go:4:2: cannot find package "grumpy/lib/__future__" in any of:
-	/usr/lib/go/src/grumpy/lib/__future__ (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/__future__ (from $GOPATH)
-revcomp.grumpy-3.grumpy.go:5:2: cannot find package "grumpy/lib/__future__/print_function" in any of:
-	/usr/lib/go/src/grumpy/lib/__future__/print_function (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/__future__/print_function (from $GOPATH)
-revcomp.grumpy-3.grumpy.go:6:2: cannot find package "grumpy/lib/string" in any of:
-	/usr/lib/go/src/grumpy/lib/string (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/string (from $GOPATH)
-make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:48: revcomp.grumpy-3.grumpy_run] Chyba 1
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
-0.11s to complete and log all make actions
+2.38s to complete and log all make actions
 
 COMMAND LINE:
 ./revcomp.grumpy-3.grumpy_run 0 < revcomp-input1000.txt
 
-MAKE ERROR 
+PROGRAM FAILED 
 
+
+PROGRAM OUTPUT:
+
+NameError: name 'bytes' is not defined
