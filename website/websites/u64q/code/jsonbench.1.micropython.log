@@ -1,5 +1,5 @@
 
-Wed, 21 Dec 2016 13:52:03 GMT
+Wed, 25 Jan 2017 10:14:28 GMT
 
 COMMAND LINE:
 /usr/bin/micropython jsonbench.micropython 1
@@ -11,7 +11,9 @@ PROGRAM OUTPUT:
 
 Traceback (most recent call last):
   File "jsonbench.micropython", line 21, in <module>
-  File "jsonbench.micropython", line 17, in main
-  File "/usr/lib/micropython/json/__init__.py", line 236, in dumps
-  File "/usr/lib/micropython/json/encoder.py", line 193, in encode
-MemoryError: memory allocation failed, allocating 131072 bytes
+  File "jsonbench.micropython", line 18, in main
+  File "/usr/lib/micropython/json/__init__.py", line 319, in loads
+  File "/usr/lib/micropython/json/decoder.py", line 343, in decode
+  File "/usr/lib/micropython/re.py", line 81, in match
+  File "/usr/lib/micropython/re.py", line 70, in search
+TypeError: function missing 1 required positional arguments

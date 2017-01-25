@@ -1,14 +1,36 @@
 
-Wed, 21 Dec 2016 11:43:18 GMT
+Wed, 25 Jan 2017 10:00:24 GMT
 
 COMMAND LINE:
 /usr/bin/micropython chameneosredux.micropython 6000000
 
-PROGRAM FAILED 
-
-
 PROGRAM OUTPUT NOT CHECKED:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
 
-Traceback (most recent call last):
-  File "chameneosredux.micropython", line 7, in <module>
-ImportError: no module named '_thread'
+ blue red yellow
+3950049 zero
+4065072 zero
+3984879 zero
+ one two zero zero zero zero zero zero
+
+ blue red yellow red yellow blue red yellow red blue
+1151800 zero
+1257430 zero
+1227641 zero
+1167702 zero
+1192066 zero
+1201450 zero
+1120554 zero
+1170627 zero
+1282070 zero
+1228660 zero
+ one two zero zero zero zero zero zero
+

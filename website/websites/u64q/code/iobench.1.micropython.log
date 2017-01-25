@@ -1,19 +1,23 @@
 
-Wed, 21 Dec 2016 13:46:47 GMT
+Wed, 25 Jan 2017 10:13:37 GMT
 
 COMMAND LINE:
 /usr/bin/micropython iobench.micropython 1
 
+PROGRAM FAILED 
+
+
 PROGRAM OUTPUT NOT CHECKED:
-<function fread at 0xca4d2a40> 100 bytes, 3.66us per write
-<function fwrite at 0xca4d2a20> 100 bytes, 3.75us per write
-<function fread at 0xca4d2a40> 1000 bytes, 7.07us per write
-<function fwrite at 0xca4d2a20> 1000 bytes, 19.11us per write
-<function fread at 0xca4d2a40> 10000 bytes, 61.04us per write
-<function fwrite at 0xca4d2a20> 10000 bytes, 171.32us per write
-<function file_read at 0xca4cc2a0> 100 bytes, 1.50us per write
-<function file_write at 0xca4d2a60> 100 bytes, 3.14us per write
-<function file_read at 0xca4cc2a0> 1000 bytes, 6.71us per write
-<function file_write at 0xca4d2a60> 1000 bytes, 19.34us per write
-<function file_read at 0xca4cc2a0> 10000 bytes, 57.90us per write
-<function file_write at 0xca4d2a60> 10000 bytes, 177.35us per write
+<function fread at 0xef24b2a0> 100 bytes, 2.34us per write
+<function fwrite at 0xef24b280> 100 bytes, 2.38us per write
+<function fread at 0xef24b2a0> 1000 bytes, 4.96us per write
+<function fwrite at 0xef24b280> 1000 bytes, 15.79us per write
+<function fread at 0xef24b2a0> 10000 bytes, 52.62us per write
+<function fwrite at 0xef24b280> 10000 bytes, 155.23us per write
+<function file_read at 0xef24bc40> 100 bytes, 1.58us per write
+
+Traceback (most recent call last):
+  File "iobench.micropython", line 43, in <module>
+  File "iobench.micropython", line 5, in measure
+  File "iobench.micropython", line 28, in file_write
+OSError: [Errno 22] EINVAL
