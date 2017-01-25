@@ -1,9 +1,7 @@
 import sys
 
 
-def powLF(n):
-    #cdef int L, F
-
+def powLF(int n):
     if n == 1:
         return (1, 1)
     L, F = powLF(n//2)
@@ -14,9 +12,7 @@ def powLF(n):
         return (L, F)
 
 
-cdef int fib(int n):
-    #cdef int L, F
-
+def fib(int n):
     if n & 1:
         return powLF(n)[1]
     else:
