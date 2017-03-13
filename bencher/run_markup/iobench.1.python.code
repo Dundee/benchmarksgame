@@ -8,23 +8,23 @@ def measure(func, num1, num2):
 
 def fwrite(num, num2):
     fd = os.open("/dev/null", os.O_WRONLY)
-    for i in range(num):
+    for i in xrange(num):
         os.write(fd, " " * num2)
 
 def fread(num, num2):
     fd = os.open("/dev/full", os.O_RDONLY)
-    for i in range(num):
+    for i in xrange(num):
         os.read(fd, num2)
 
 def file_write(num, num2):
     f = open("/dev/null", "w")
-    for i in range(num):
+    for i in xrange(num):
         f.write(" " * num2)
     f.flush()
 
 def file_read(num, num2):
     f = open("/dev/full")
-    for i in range(num):
+    for i in xrange(num):
         f.read(num2)
 
 if __name__ == '__main__':

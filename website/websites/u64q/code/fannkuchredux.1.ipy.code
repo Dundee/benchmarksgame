@@ -16,7 +16,7 @@ MAX_CPU_LIMIT = 4
 
 def PermutationGenerator(length,idx):
     count = [0] * length
-    perm =  list(range(length))
+    perm =  range(length)
         
     for i in range( length - 1, 0, -1 ):
         d, idx  = divmod(idx, math.factorial(i))
@@ -45,7 +45,7 @@ def task_body( parms ):
 
   maxflips = 0
   checksum = 0
-  for i in range(parms[1], parms[2]):
+  for i in xrange(parms[1], parms[2]):
       data = list(g.next() if sys.version_info[0]<3 else g.__next__() )
       f =  data[0];
       if f > 0:
@@ -77,7 +77,7 @@ def main():
     index_max = math.factorial(length)
     index_step = (index_max + n-1) // n
 
-    parms =  [(length,i,i+index_step) for i in range(0,index_max,index_step) ]
+    parms =  [(length,i,i+index_step) for i in xrange(0,index_max,index_step) ]
 
     processors = Pool(processes=n)
     res=list(zip(*processors.map(task_body , parms)))

@@ -1,5 +1,5 @@
 
-Wed, 21 Dec 2016 13:30:14 GMT
+Mon, 13 Mar 2017 16:42:58 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
@@ -12,7 +12,7 @@ Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 0% ********************************100% ********************************100% ********************************100%
 [generating c++ code..]
 *WARNING* shed.py:6: expression has no type
-[elapsed time: 3.20 seconds]
+[elapsed time: 2.81 seconds]
 make
 make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
 g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/time.cpp /usr/lib/python2.7/site-packages/shedskin/lib/stat.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/os/path.cpp /usr/lib/python2.7/site-packages/shedskin/lib/os/__init__.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -lutil -o shed
@@ -20,11 +20,35 @@ g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/s
 /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/shed.cpp:22:29: error: request for member ‘__code__’ in ‘* func’, which is of non-class type ‘void*(__shedskin__::__ss_int, __shedskin__::__ss_int) {aka void*(int, int)}’
      print2(NULL,0,2, (func->__code__)->co_name, __modct(const_0, 2, ___box(num2), ___box(((((__time__::time()-t0)/num1)*1000)*1000))));
                              ^~~~~~~~
+/usr/lib/python2.7/site-packages/shedskin/lib/os/__init__.cpp:1059:13: warning: In the GNU C Library, "makedev" is defined
+ by <sys/sysmacros.h>. For historical compatibility, it is
+ currently defined by <sys/types.h> as well, but we plan to
+ remove this soon. To use "makedev", include <sys/sysmacros.h>
+ directly. If you did not intend to use a system-defined macro
+ "makedev", you should undefine it after including <sys/types.h>.
+     return makedev(major, minor);
+             ^~~~~~~~~~~~~~~~~~~~~                                                                                                                                                                                                                                                                                                                                                         
+/usr/lib/python2.7/site-packages/shedskin/lib/os/__init__.cpp:1062:13: warning: In the GNU C Library, "major" is defined
+ by <sys/sysmacros.h>. For historical compatibility, it is
+ currently defined by <sys/types.h> as well, but we plan to
+ remove this soon. To use "major", include <sys/sysmacros.h>
+ directly. If you did not intend to use a system-defined macro
+ "major", you should undefine it after including <sys/types.h>.
+     return major(dev);
+             ^~~~~~~~~~                                                                                                                                                                                                                                                                                                                                                              
+/usr/lib/python2.7/site-packages/shedskin/lib/os/__init__.cpp:1065:13: warning: In the GNU C Library, "minor" is defined
+ by <sys/sysmacros.h>. For historical compatibility, it is
+ currently defined by <sys/types.h> as well, but we plan to
+ remove this soon. To use "minor", include <sys/sysmacros.h>
+ directly. If you did not intend to use a system-defined macro
+ "minor", you should undefine it after including <sys/types.h>.
+     return minor(dev);
+             ^~~~~~~~~~                                                                                                                                                                                                                                                                                                                                                              
 make[2]: *** [Makefile:25: shed] Chyba 1
 make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: iobench.shedskin_run] Chyba 2
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
-18.61s to complete and log all make actions
+16.15s to complete and log all make actions
 
 COMMAND LINE:
 ./shed 1

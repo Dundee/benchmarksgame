@@ -1,5 +1,5 @@
 
-Wed, 21 Dec 2016 13:24:12 GMT
+Mon, 13 Mar 2017 16:49:17 GMT
 
 COMMAND LINE:
 /usr/bin/jython iobench.jython 1
@@ -8,11 +8,15 @@ TIMED OUT after 300s
 
 
 PROGRAM OUTPUT NOT CHECKED:
-fread 100 bytes, 1.75us per write
-fwrite 100 bytes, 2.40us per write
-fread 1000 bytes, 3.69us per write
-fwrite 1000 bytes, 11.68us per write
-fread 10000 bytes, 19.09us per write
+fread 100 bytes, 0.80us per write
+fwrite 100 bytes, 1.57us per write
+fread 1000 bytes, 2.26us per write
+fwrite 1000 bytes, 9.01us per write
+fread 10000 bytes, 15.78us per write
+fwrite 10000 bytes, 82.82us per write
+file_read 100 bytes, 0.57us per write
+file_write 100 bytes, 1.01us per write
+file_read 1000 bytes, 2.12us per write
 
 Picked up _JAVA_OPTIONS: -Dawt.useSystemAAFontSettings=lcd
 *sys-package-mgr*: can't write cache file for '/usr/lib/jvm/java-8-openjdk/jre/lib/resources.jar'
