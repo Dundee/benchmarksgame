@@ -1,12 +1,13 @@
 
-Mon, 13 Mar 2017 17:06:38 GMT
+Tue, 25 Apr 2017 11:30:27 GMT
 
 COMMAND LINE:
 /usr/bin/pyston nbody.pyston 5000000
 
-PROGRAM OUTPUT:
--0.169075164
--0.169083134
+PROGRAM FAILED 
 
-/usr/bin/pyston: /usr/lib/libcrypto.so.1.0.0: no version information available (required by /usr/bin/pyston)
-/usr/bin/pyston: /usr/lib/libssl.so.1.0.0: no version information available (required by /usr/bin/pyston)
+
+PROGRAM OUTPUT:
+
+/usr/bin/pyston: /usr/lib/libcrypto.so.1.0.0: version `OPENSSL_1.0.0' not found (required by /usr/bin/pyston)
+/usr/bin/pyston: /usr/lib/libssl.so.1.0.0: version `OPENSSL_1.0.0' not found (required by /usr/bin/pyston)

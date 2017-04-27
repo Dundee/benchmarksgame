@@ -1,22 +1,13 @@
 
-Mon, 13 Mar 2017 16:39:28 GMT
+Tue, 25 Apr 2017 10:40:50 GMT
 
 COMMAND LINE:
 /usr/bin/pyston iobench.pyston 1
 
-PROGRAM OUTPUT NOT CHECKED:
-fread 100 bytes, 0.28us per write
-fwrite 100 bytes, 0.33us per write
-fread 1000 bytes, 0.35us per write
-fwrite 1000 bytes, 0.37us per write
-fread 10000 bytes, 0.92us per write
-fwrite 10000 bytes, 0.61us per write
-file_read 100 bytes, 0.17us per write
-file_write 100 bytes, 0.17us per write
-file_read 1000 bytes, 0.29us per write
-file_write 1000 bytes, 0.24us per write
-file_read 10000 bytes, 1.13us per write
-file_write 10000 bytes, 0.76us per write
+PROGRAM FAILED 
 
-/usr/bin/pyston: /usr/lib/libcrypto.so.1.0.0: no version information available (required by /usr/bin/pyston)
-/usr/bin/pyston: /usr/lib/libssl.so.1.0.0: no version information available (required by /usr/bin/pyston)
+
+PROGRAM OUTPUT NOT CHECKED:
+
+/usr/bin/pyston: /usr/lib/libcrypto.so.1.0.0: version `OPENSSL_1.0.0' not found (required by /usr/bin/pyston)
+/usr/bin/pyston: /usr/lib/libssl.so.1.0.0: version `OPENSSL_1.0.0' not found (required by /usr/bin/pyston)
