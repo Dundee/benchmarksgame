@@ -1,5 +1,5 @@
 
-Tue, 25 Apr 2017 11:30:27 GMT
+Tue, 13 Jun 2017 17:43:34 GMT
 
 COMMAND LINE:
 /usr/bin/pypy3 pidigits.pypy3-4.pypy3 10000
@@ -27,8 +27,8 @@ Traceback (most recent call last):
     """, libraries=['gmp', 'mpfr', 'mpc'])
   File "/opt/pypy3/lib_pypy/cffi/api.py", line 438, in verify
     lib = self.verifier.load_library()
-  File "/opt/pypy3/lib_pypy/cffi/verifier.py", line 113, in load_library
+  File "/opt/pypy3/lib_pypy/cffi/verifier.py", line 103, in load_library
     self._write_source()
-  File "/opt/pypy3/lib_pypy/cffi/verifier.py", line 202, in _write_source
+  File "/opt/pypy3/lib_pypy/cffi/verifier.py", line 192, in _write_source
     with open(self.sourcefilename, "w") as fp:
 FileNotFoundError: [Errno 2] No such file or directory: '/opt/pypy3/site-packages/gmpy_cffi/__pycache__/_cffi__g5052c3cex9cbb9358.c'

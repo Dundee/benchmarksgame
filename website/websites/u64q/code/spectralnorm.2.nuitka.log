@@ -1,5 +1,5 @@
 
-Wed, 25 Jan 2017 16:36:30 GMT
+Tue, 13 Jun 2017 17:45:18 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
@@ -7,7 +7,7 @@ nuitka --remove-output --improved spectralnorm.nuitka-2.nuitka
 Nuitka:WARNING:Not recursing to 'numpy' (/usr/lib/python3.6/site-packages/numpy), please specify --recurse-none (do not warn), --recurse-all (recurse to all), --recurse-not-to=numpy (ignore it), --recurse-to=numpy (recurse to it) to change.
 cp spectralnorm.nuitka-2.nuitka.exe spectralnorm.nuitka-2.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
-3.10s to complete and log all make actions
+3.75s to complete and log all make actions
 
 COMMAND LINE:
 ./spectralnorm.nuitka-2.nuitka_run 550
@@ -22,8 +22,8 @@ Traceback (most recent call last):
     spectralnorm(int(argv[1]))
   File "/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.nuitka-2.nuitka", line 23, in spectralnorm
     print("%0.9f" % (sum(u*v.T)/sum(v*v.T))**0.5)
-  File "/usr/lib/python3.6/site-packages/numpy/matrixlib/defmatrix.py", line 356, in __pow__
+  File "/usr/lib/python3.6/site-packages/numpy/matrixlib/defmatrix.py", line 322, in __pow__
     return matrix_power(self, other)
-  File "/usr/lib/python3.6/site-packages/numpy/matrixlib/defmatrix.py", line 175, in matrix_power
+  File "/usr/lib/python3.6/site-packages/numpy/matrixlib/defmatrix.py", line 141, in matrix_power
     raise TypeError("exponent must be an integer")
 TypeError: exponent must be an integer
