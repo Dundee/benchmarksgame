@@ -1,8 +1,8 @@
 
-Wed, 21 Dec 2016 11:40:05 GMT
+Tue, 25 Jul 2017 14:51:33 GMT
 
 COMMAND LINE:
-/usr/bin/ipy binarytrees.ipy 14
+/usr/bin/mono /opt/ipy/ipy.exe binarytrees.ipy 14
 
 PROGRAM FAILED 
 
@@ -10,7 +10,5 @@ PROGRAM FAILED
 PROGRAM OUTPUT:
 
 Traceback (most recent call last):
-  File "binarytrees.ipy", line 78, in <module>
-  File "binarytrees.ipy", line 54, in main
-  File "/usr/lib/ipy/Lib/multiprocessing/__init__.py", line 140, in cpu_count
-NotImplementedError: cannot determine number of cpus
+  File "binarytrees.ipy", line 10, in <module>
+ImportError: No module named multiprocessing

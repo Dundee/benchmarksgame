@@ -1,0 +1,19 @@
+
+Wed, 19 Jul 2017 17:18:20 GMT
+
+COMMAND LINE:
+/opt/anaconda/bin/python iobench.numba 1
+
+PROGRAM OUTPUT NOT CHECKED:
+CPUDispatcher(<function fread at 0x7fed01a97730>) 100 bytes, 3.81us per write
+CPUDispatcher(<function fwrite at 0x7fed01a97488>) 100 bytes, 4.02us per write
+CPUDispatcher(<function fread at 0x7fed01a97730>) 1000 bytes, 3.50us per write
+CPUDispatcher(<function fwrite at 0x7fed01a97488>) 1000 bytes, 3.62us per write
+CPUDispatcher(<function fread at 0x7fed01a97730>) 10000 bytes, 6.25us per write
+CPUDispatcher(<function fwrite at 0x7fed01a97488>) 10000 bytes, 4.83us per write
+CPUDispatcher(<function file_read at 0x7fed017e71e0>) 100 bytes, 3.16us per write
+CPUDispatcher(<function file_write at 0x7fed01a97d90>) 100 bytes, 3.50us per write
+CPUDispatcher(<function file_read at 0x7fed017e71e0>) 1000 bytes, 6.38us per write
+CPUDispatcher(<function file_write at 0x7fed01a97d90>) 1000 bytes, 4.60us per write
+CPUDispatcher(<function file_read at 0x7fed017e71e0>) 10000 bytes, 35.00us per write
+CPUDispatcher(<function file_write at 0x7fed01a97d90>) 10000 bytes, 12.26us per write

@@ -1,14 +1,16 @@
 
-Tue, 25 Apr 2017 10:48:52 GMT
+Tue, 25 Jul 2017 14:58:42 GMT
 
 COMMAND LINE:
-/usr/bin/ipy iobench.ipy 1
+/usr/bin/mono /opt/ipy/ipy.exe iobench.ipy 1
 
-TIMED OUT after 300s
+PROGRAM FAILED 
 
 
 PROGRAM OUTPUT NOT CHECKED:
-fread 100 bytes, 2.12us per write
-fwrite 100 bytes, 0.85us per write
-fread 1000 bytes, 18.31us per write
-fwrite 1000 bytes, 4.40us per write
+
+Unhandled exception:
+Traceback (most recent call last):
+TypeError: Value cannot be null.
+Parameter name: method
+

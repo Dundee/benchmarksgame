@@ -1,8 +1,8 @@
 
-Wed, 21 Dec 2016 15:01:49 GMT
+Tue, 25 Jul 2017 15:04:20 GMT
 
 COMMAND LINE:
-/usr/bin/ipy regexdna.ipy 0 < regexdna-input10000.txt
+/usr/bin/mono /opt/ipy/ipy.exe regexdna.ipy 0 < regexdna-input10000.txt
 
 PROGRAM FAILED 
 
@@ -10,10 +10,5 @@ PROGRAM FAILED
 PROGRAM OUTPUT:
 
 Traceback (most recent call last):
-  File "regexdna.ipy", line 55, in <module>
-  File "regexdna.ipy", line 27, in main
-  File "/usr/lib/ipy/Lib/multiprocessing/__init__.py", line 236, in Pool
-  File "/usr/lib/ipy/Lib/multiprocessing/pool.py", line 115, in __init__
-  File "/usr/lib/ipy/Lib/multiprocessing/pool.py", line 207, in _setup_queues
-  File "/usr/lib/ipy/Lib/multiprocessing/queues.py", line 46, in <module>
-ImportError: No module named _multiprocessing
+  File "regexdna.ipy", line 11, in <module>
+ImportError: No module named multiprocessing

@@ -1,8 +1,8 @@
 
-Wed, 21 Dec 2016 15:06:56 GMT
+Tue, 25 Jul 2017 15:04:23 GMT
 
 COMMAND LINE:
-/usr/bin/ipy revcomp.ipy-3.ipy 0 < revcomp-input1000.txt
+/usr/bin/mono /opt/ipy/ipy.exe revcomp.ipy-3.ipy 0 < revcomp-input1000.txt
 
 PROGRAM FAILED 
 
@@ -11,4 +11,4 @@ PROGRAM OUTPUT:
 
 Traceback (most recent call last):
   File "revcomp.ipy-3.ipy", line 9, in <module>
-AttributeError: 'type' object has no attribute 'maketrans'
+ImportError: No module named string

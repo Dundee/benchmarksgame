@@ -1,10 +1,31 @@
 
-Wed, 21 Dec 2016 15:35:14 GMT
+Wed, 19 Jul 2017 18:03:55 GMT
 
 COMMAND LINE:
 /opt/anaconda/bin/python mandelbrot.numba-6.numba 16000
 
-TIMED OUT after 300s
+PROGRAM FAILED 
 
 
 PROGRAM OUTPUT:
+
+Traceback (most recent call last):
+  File "mandelbrot.numba-6.numba", line 92, in <module>
+    sharedbitmap = multiprocessing.Array(ctypes.c_char, bufferlen, lock=False)
+  File "/opt/anaconda/lib/python3.6/multiprocessing/context.py", line 141, in Array
+    ctx=self.get_context())
+  File "/opt/anaconda/lib/python3.6/multiprocessing/sharedctypes.py", line 87, in Array
+    obj = RawArray(typecode_or_type, size_or_initializer)
+  File "/opt/anaconda/lib/python3.6/multiprocessing/sharedctypes.py", line 60, in RawArray
+    obj = _new_value(type_)
+  File "/opt/anaconda/lib/python3.6/multiprocessing/sharedctypes.py", line 40, in _new_value
+    wrapper = heap.BufferWrapper(size)
+  File "/opt/anaconda/lib/python3.6/multiprocessing/heap.py", line 248, in __init__
+    block = BufferWrapper._heap.malloc(size)
+  File "/opt/anaconda/lib/python3.6/multiprocessing/heap.py", line 230, in malloc
+    (arena, start, stop) = self._malloc(size)
+  File "/opt/anaconda/lib/python3.6/multiprocessing/heap.py", line 128, in _malloc
+    arena = Arena(length)
+  File "/opt/anaconda/lib/python3.6/multiprocessing/heap.py", line 77, in __init__
+    f.write(zeros)
+OSError: [Errno 28] No space left on device

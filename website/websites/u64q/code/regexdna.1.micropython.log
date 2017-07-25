@@ -1,5 +1,5 @@
 
-Wed, 25 Jan 2017 10:17:38 GMT
+Thu, 20 Jul 2017 08:22:24 GMT
 
 COMMAND LINE:
 /usr/bin/micropython regexdna.micropython 0 < regexdna-input10000.txt
@@ -11,8 +11,5 @@ PROGRAM OUTPUT:
 
 Traceback (most recent call last):
   File "regexdna.micropython", line 53, in <module>
-  File "regexdna.micropython", line 23, in main
-  File "/usr/lib/micropython/re.py", line 162, in sub
-  File "/usr/lib/micropython/re.py", line 88, in sub
-  File "/usr/lib/micropython/re.py", line 70, in search
-TypeError: function missing 1 required positional arguments
+  File "regexdna.micropython", line 26, in main
+TypeError: unexpected keyword argument 'initializer'

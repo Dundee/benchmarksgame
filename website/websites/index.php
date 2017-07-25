@@ -69,17 +69,17 @@ $allsites = array('u64q');
 $langs = array(
    array('python','Python 2.7.13 (with NumPy and gmpy)','python',$allsites),
    array('pypy','PyPy 5.8.0 (with gmpy_cffi)','pypy',$allsites),
-   array('python3','Python 3.6.1 (with NumPy and gmpy2)','python3',$allsites),
+   array('python3','Python 3.6.2 (with NumPy and gmpy2)','python3',$allsites),
    array('python-dev','Python 3.7.0a0','python-dev',$allsites),
    array('pypy3','PyPy3 5.8.0 (with gmpy_cffi)','pypy3',$allsites),
-   array('ipy','IronPython 2.7.5','ipy',$allsites),
-   array('jython','Jython 2.7.0','jython',$allsites),
-   array('cython','Cython 0.25.2 (with NumPy and gmpy)','cython',$allsites),
+   array('ipy','IronPython 2.7.8a1 (with Mono 5.0.0.100)','ipy',$allsites),
+   array('jython','Jython 2.7.1 (with JDK 8.u131)','jython',$allsites),
+   array('cython','Cython 0.26 (with NumPy and gmpy)','cython',$allsites),
    array('nuitka','Nuitka 0.5.26','nuitka',$allsites),
    array('shedskin','Shedskin 0.9.4','shedskin',$allsites),
-   array('numba','Numba 0.22.1 (with NumPy)','numba',$allsites),
+   array('numba','Numba 0.34.0 (with NumPy)','numba',$allsites),
    array('pyston','Pyston 0.6.1','pyston',$allsites),
-   array('micropython','MicroPython 1.8.7','micropython',$allsites),
+   array('micropython','MicroPython 1.9.1','micropython',$allsites),
    array('grumpy','Grumpy r123.08f9c2e','grumpy',$allsites),
    );
 

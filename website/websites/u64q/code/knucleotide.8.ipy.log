@@ -1,8 +1,8 @@
 
-Wed, 21 Dec 2016 14:10:40 GMT
+Tue, 25 Jul 2017 14:58:44 GMT
 
 COMMAND LINE:
-/usr/bin/ipy knucleotide.ipy-8.ipy 0 < knucleotide-input10000.txt
+/usr/bin/mono /opt/ipy/ipy.exe knucleotide.ipy-8.ipy 0 < knucleotide-input10000.txt
 
 PROGRAM FAILED 
 
@@ -10,10 +10,5 @@ PROGRAM FAILED
 PROGRAM OUTPUT:
 
 Traceback (most recent call last):
-  File "knucleotide.ipy-8.ipy", line 71, in <module>
-  File "knucleotide.ipy-8.ipy", line 60, in main
-  File "/usr/lib/ipy/Lib/multiprocessing/__init__.py", line 236, in Pool
-  File "/usr/lib/ipy/Lib/multiprocessing/pool.py", line 115, in __init__
-  File "/usr/lib/ipy/Lib/multiprocessing/pool.py", line 207, in _setup_queues
-  File "/usr/lib/ipy/Lib/multiprocessing/queues.py", line 46, in <module>
-ImportError: No module named _multiprocessing
+  File "knucleotide.ipy-8.ipy", line 11, in <module>
+ImportError: No module named collections

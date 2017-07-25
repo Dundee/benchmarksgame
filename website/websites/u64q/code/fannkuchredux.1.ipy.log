@@ -1,8 +1,8 @@
 
-Tue, 25 Apr 2017 10:30:54 GMT
+Tue, 25 Jul 2017 14:53:37 GMT
 
 COMMAND LINE:
-/usr/bin/ipy fannkuchredux.ipy 10
+/usr/bin/mono /opt/ipy/ipy.exe fannkuchredux.ipy 10
 
 PROGRAM FAILED 
 
@@ -10,7 +10,5 @@ PROGRAM FAILED
 PROGRAM OUTPUT:
 
 Traceback (most recent call last):
-  File "fannkuchredux.ipy", line 93, in <module>
-  File "fannkuchredux.ipy", line 75, in main
-  File "/usr/lib/ipy/Lib/multiprocessing/__init__.py", line 140, in cpu_count
-NotImplementedError: cannot determine number of cpus
+  File "fannkuchredux.ipy", line 12, in <module>
+ImportError: No module named multiprocessing
