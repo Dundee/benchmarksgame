@@ -1,27 +1,24 @@
 
-Tue, 13 Jun 2017 17:44:28 GMT
+Mon, 21 Aug 2017 15:31:57 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp“
 nuitka --remove-output --improved regexdna.nuitka-5.nuitka
 cp regexdna.nuitka-5.nuitka.exe regexdna.nuitka-5.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp“
-3.76s to complete and log all make actions
+3.71s to complete and log all make actions
 
 COMMAND LINE:
 ./regexdna.nuitka-5.nuitka_run 0 < regexdna-input10000.txt
 
-PROGRAM OUTPUT:
-agggtaaa|tttaccct 0
-[cgt]gggtaaa|tttaccc[acg] 3
-a[act]ggtaaa|tttacc[agt]t 9
-ag[act]gtaaa|tttac[agt]ct 8
-agg[act]taaa|ttta[agt]cct 10
-aggg[acg]aaa|ttt[cgt]ccct 3
-agggt[cgt]aa|tt[acg]accct 4
-agggta[cgt]a|t[acg]taccct 3
-agggtaa[cgt]|[acg]ttaccct 5
+PROGRAM FAILED 
 
-101745
-100000
-133640
+
+PROGRAM OUTPUT:
+
+Traceback (most recent call last):
+  File "/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/regexdna.nuitka-5.nuitka", line 42, in <module>
+    main()
+  File "/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/regexdna.nuitka-5.nuitka", line 29, in main
+    write(f + b' ' +bytes(str(len(findall(f, seq))),encoding='latin1') + b'\n')
+TypeError: bytes() takes no keyword arguments
