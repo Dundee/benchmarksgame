@@ -1,22 +1,29 @@
 
-Mon, 16 Jan 2017 14:29:49 GMT
+Mon, 13 Nov 2017 12:46:48 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp“
 grumpc pidigits.grumpy-3.grumpy > pidigits.grumpy-3.grumpy.go
 go build -o pidigits.grumpy-3.grumpy_run pidigits.grumpy-3.grumpy.go
-pidigits.grumpy-3.grumpy.go:4:2: cannot find package "grumpy/lib/gmpy" in any of:
-	/usr/lib/go/src/grumpy/lib/gmpy (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/gmpy (from $GOPATH)
-pidigits.grumpy-3.grumpy.go:5:2: cannot find package "grumpy/lib/gmpy/mpz" in any of:
-	/usr/lib/go/src/grumpy/lib/gmpy/mpz (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/gmpy/mpz (from $GOPATH)
-pidigits.grumpy-3.grumpy.go:7:2: cannot find package "grumpy/lib/itertools/islice" in any of:
+warning: GOPATH set to GOROOT (/usr/lib/go) has no effect
+pidigits.grumpy-3.grumpy.go:4:2: cannot find package "grumpy/lib/gmpy2" in any of:
+	/usr/lib/go/src/grumpy/lib/gmpy2 (from $GOROOT)
+	($GOPATH not set. For more details see: 'go help gopath')
+pidigits.grumpy-3.grumpy.go:5:2: cannot find package "grumpy/lib/gmpy2/mpz" in any of:
+	/usr/lib/go/src/grumpy/lib/gmpy2/mpz (from $GOROOT)
+	($GOPATH not set. For more details see: 'go help gopath')
+pidigits.grumpy-3.grumpy.go:6:2: cannot find package "grumpy/lib/gmpy_cffi" in any of:
+	/usr/lib/go/src/grumpy/lib/gmpy_cffi (from $GOROOT)
+	($GOPATH not set. For more details see: 'go help gopath')
+pidigits.grumpy-3.grumpy.go:7:2: cannot find package "grumpy/lib/gmpy_cffi/mpz" in any of:
+	/usr/lib/go/src/grumpy/lib/gmpy_cffi/mpz (from $GOROOT)
+	($GOPATH not set. For more details see: 'go help gopath')
+pidigits.grumpy-3.grumpy.go:9:2: cannot find package "grumpy/lib/itertools/islice" in any of:
 	/usr/lib/go/src/grumpy/lib/itertools/islice (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/itertools/islice (from $GOPATH)
+	($GOPATH not set. For more details see: 'go help gopath')
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:48: pidigits.grumpy-3.grumpy_run] Chyba 1
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp“
-0.12s to complete and log all make actions
+0.09s to complete and log all make actions
 
 COMMAND LINE:
 ./pidigits.grumpy-3.grumpy_run 10000

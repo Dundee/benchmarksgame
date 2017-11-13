@@ -27,7 +27,10 @@ homosapiens = [
 ]
 
 
-def genRandom(ia = 3877, ic = 29573, im = 139968):
+def genRandom(int ia = 3877, int ic = 29573, int im = 139968):
+    cdef int seed
+    cdef float imf
+
     seed = 42
     imf = float(im)
     while 1:
@@ -37,6 +40,8 @@ def genRandom(ia = 3877, ic = 29573, im = 139968):
 Random = genRandom()
 
 def makeCumulative(table):
+    cdef float prob, p
+
     P = []
     C = []
     prob = 0.
@@ -46,7 +51,9 @@ def makeCumulative(table):
         C += [char]
     return (P, C)
 
-def repeatFasta(src, n):
+def repeatFasta(src, int n):
+    cdef int width, r, j, i
+
     width = 60
     r = len(src)
     s = src + src + src[:n % r]
@@ -56,7 +63,9 @@ def repeatFasta(src, n):
     if n % width:
         print(s[-(n % width):])
 
-def randomFasta(table, n):
+def randomFasta(table, int n):
+    cdef int width, i, j
+
     width = 60
     r = range(width)
     gR = Random.__next__
@@ -70,6 +79,8 @@ def randomFasta(table, n):
         print(jn([chars[bb(probs, gR())] for i in range(n % width)]))
 
 def main():
+    cdef int n
+
     n = int(sys.argv[1])
 
     print('>ONE Homo sapiens alu')

@@ -1,5 +1,5 @@
 
-Wed, 21 Dec 2016 14:20:06 GMT
+Fri, 10 Nov 2017 19:39:43 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
@@ -19,7 +19,7 @@ Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 *WARNING* shed.py:57: 'dict' instance containing function reference
 *WARNING* shed.py:57: 'list' instance containing function reference
 *WARNING* shed.py:83: 'dict' instance containing function reference
-[elapsed time: 4.85 seconds]
+[elapsed time: 3.20 seconds]
 make
 make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
 g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -o shed
@@ -62,7 +62,6 @@ In file included from /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/t
 /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:504:1:   required from here
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1180:11: error: invalid conversion from ‘__shedskin__::tuple2<int, int>* (*)(int, int)’ to ‘void*’ [-fpermissive]
      T u = (T)(memo->get(t, 0));
-            
 In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1211:0,
                  from /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:1:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin/dict.hpp:313:31: note:   initializing argument 1 of ‘V __shedskin__::dict<K, V>::get(K, V) [with K = void*; V = __shedskin__::pyobj*]’
@@ -76,7 +75,7 @@ make[2]: *** [Makefile:19: shed] Chyba 1
 make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: meteor.shedskin_run] Chyba 2
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
-13.15s to complete and log all make actions
+10.33s to complete and log all make actions
 
 COMMAND LINE:
 ./shed 2098

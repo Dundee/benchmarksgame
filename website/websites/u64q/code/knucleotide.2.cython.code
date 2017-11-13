@@ -43,7 +43,7 @@ def main():
     sequence = "".join(load()).upper()
     plres = []
     pl = Pool(processes=cpu_count() + 1)
-    
+
     for nl in 1,2:
         plres.append(pl.apply_async(sort_seq, (sequence, nl, )))
     for se in nucleos.split():

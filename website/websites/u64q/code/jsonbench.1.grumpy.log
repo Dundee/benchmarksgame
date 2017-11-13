@@ -1,16 +1,17 @@
 
-Mon, 16 Jan 2017 14:29:48 GMT
+Mon, 13 Nov 2017 12:46:47 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/jsonbench/tmp“
 grumpc jsonbench.grumpy > jsonbench.grumpy.go
 go build -o jsonbench.grumpy_run jsonbench.grumpy.go
+warning: GOPATH set to GOROOT (/usr/lib/go) has no effect
 jsonbench.grumpy.go:4:2: cannot find package "grumpy/lib/json" in any of:
 	/usr/lib/go/src/grumpy/lib/json (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/json (from $GOPATH)
+	($GOPATH not set. For more details see: 'go help gopath')
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:48: jsonbench.grumpy_run] Chyba 1
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/jsonbench/tmp“
-0.12s to complete and log all make actions
+0.09s to complete and log all make actions
 
 COMMAND LINE:
 ./jsonbench.grumpy_run 1

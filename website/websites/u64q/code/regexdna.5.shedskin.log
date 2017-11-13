@@ -1,5 +1,5 @@
 
-Wed, 21 Dec 2016 15:02:05 GMT
+Mon, 13 Nov 2017 16:00:03 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp“
@@ -11,53 +11,24 @@ Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 [analyzing types..]
 0% ********************************100% ********************************100% ********************************100%
 [generating c++ code..]
-*WARNING* shed.py:11: expression has no type
-*WARNING* shed.py:12: expression has no type
-*WARNING* shed.py:13: variable 'seq' has no type
-*WARNING* shed.py:15: variable 'seq' has no type
-*WARNING* shed.py:16: variable 'seq' has no type
 *WARNING* shed.py:29: unresolved call to 'write'
-*WARNING* shed.py:36: variable 'seq' has no type
 *WARNING* shed.py:37: unresolved call to 'write'
 *WARNING* shed.py:38: unresolved call to 'write'
 *WARNING* shed.py:39: unresolved call to 'write'
 *WARNING* shed.py:40: unresolved call to 'write'
-[elapsed time: 1.86 seconds]
+[elapsed time: 1.35 seconds]
 make
 make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp“
 g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -o shed
 /home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/shed.cpp: In function ‘void* __shed__::__ss_main()’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/shed.cpp:29:24: error: ‘class __shedskin__::file’ has no member named ‘buffer’
-     seq = (__ss_stdin->buffer)->read();
-                        ^~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/shed.cpp:30:27: error: ‘class __shedskin__::file’ has no member named ‘buffer’
-     write = (__ss_stdout->buffer)->write;
-                           ^~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/shed.cpp:31:15: error: invalid conversion from ‘__shedskin__::__ss_int {aka int}’ to ‘void*’ [-fpermissive]
-     ilen = len(seq);
-            ~~~^~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/shed.cpp:32:39: error: ‘sub’ was not declared in this scope
-     seq = sub(const_0, const_1, seq, 0);
-                                       ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/shed.cpp:32:39: note: suggested alternative:
-In file included from /home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/shed.cpp:2:0:
-/usr/lib/python2.7/site-packages/shedskin/lib/re.hpp:154:6: note:   ‘__re__::sub’
- str *sub(str *pat, replfunc repl, str *subj, __ss_int maxn = 0);
-      ^~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/shed.cpp:33:15: error: invalid conversion from ‘__shedskin__::__ss_int {aka int}’ to ‘void*’ [-fpermissive]
-     clen = len(seq);
-            ~~~^~~~~
-In file included from /home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/shed.cpp:1:0:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp: In instantiation of ‘__shedskin__::__ss_int __shedskin__::len(T) [with T = void*; __shedskin__::__ss_int = int]’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/shed.cpp:31:19:   required from here
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1054:53: error: ‘void*’ is not a pointer-to-object type
- template<class T> inline __ss_int len(T x) { return x->__len__(); }
-                                                     ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/shed.cpp:32:26: error: cannot convert ‘__shedskin__::file::write’ from type ‘void* (__shedskin__::file::)(__shedskin__::str*)’ to type ‘void*’
+     write = __ss_stdout->write;
+                          ^~~~~
 make[2]: *** [Makefile:19: shed] Chyba 1
 make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp“
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: regexdna.shedskin-5.shedskin_run] Chyba 2
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp“
-9.97s to complete and log all make actions
+8.22s to complete and log all make actions
 
 COMMAND LINE:
 ./shed 0 < regexdna-input10000.txt

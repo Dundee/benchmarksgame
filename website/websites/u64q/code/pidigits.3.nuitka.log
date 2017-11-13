@@ -1,12 +1,13 @@
 
-Tue, 24 Oct 2017 09:28:19 GMT
+Fri, 10 Nov 2017 20:10:00 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp“
 nuitka --remove-output --improved pidigits.nuitka-3.nuitka
+Nuitka:WARNING:pidigits.nuitka-3.nuitka:13: Cannot find 'gmpy_cffi' as absolute import.
 cp pidigits.nuitka-3.nuitka.exe pidigits.nuitka-3.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp“
-4.16s to complete and log all make actions
+2.99s to complete and log all make actions
 
 COMMAND LINE:
 ./pidigits.nuitka-3.nuitka_run 10000

@@ -1,28 +1,29 @@
 
-Mon, 16 Jan 2017 14:29:50 GMT
+Mon, 13 Nov 2017 16:00:09 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp“
 grumpc regexdna.grumpy > regexdna.grumpy.go
 go build -o regexdna.grumpy_run regexdna.grumpy.go
+warning: GOPATH set to GOROOT (/usr/lib/go) has no effect
 regexdna.grumpy.go:4:2: cannot find package "grumpy/lib/multiprocessing" in any of:
 	/usr/lib/go/src/grumpy/lib/multiprocessing (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/multiprocessing (from $GOPATH)
+	($GOPATH not set. For more details see: 'go help gopath')
 regexdna.grumpy.go:5:2: cannot find package "grumpy/lib/multiprocessing/Pool" in any of:
 	/usr/lib/go/src/grumpy/lib/multiprocessing/Pool (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/multiprocessing/Pool (from $GOPATH)
+	($GOPATH not set. For more details see: 'go help gopath')
 regexdna.grumpy.go:7:2: cannot find package "grumpy/lib/re/findall" in any of:
 	/usr/lib/go/src/grumpy/lib/re/findall (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/re/findall (from $GOPATH)
+	($GOPATH not set. For more details see: 'go help gopath')
 regexdna.grumpy.go:8:2: cannot find package "grumpy/lib/re/sub" in any of:
 	/usr/lib/go/src/grumpy/lib/re/sub (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/re/sub (from $GOPATH)
+	($GOPATH not set. For more details see: 'go help gopath')
 regexdna.grumpy.go:10:2: cannot find package "grumpy/lib/sys/stdin" in any of:
 	/usr/lib/go/src/grumpy/lib/sys/stdin (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/sys/stdin (from $GOPATH)
+	($GOPATH not set. For more details see: 'go help gopath')
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:48: regexdna.grumpy_run] Chyba 1
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp“
-0.12s to complete and log all make actions
+0.09s to complete and log all make actions
 
 COMMAND LINE:
 ./regexdna.grumpy_run 0 < regexdna-input10000.txt

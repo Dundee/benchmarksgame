@@ -4,7 +4,10 @@
 # transliterated from Mike Pall's Lua program
 # contributed by Mario Pernici
 
-from gmpy2 import mpz
+try:
+    from gmpy2 import mpz
+except ImportError:
+    from gmpy_cffi import mpz
 from sys import argv
 
 try:

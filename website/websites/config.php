@@ -26,7 +26,7 @@ define('HOMEPAGE_ROWS',0);         // show N rows of languages on the homepage
 define('SITE_NAME', 'core');
 define('SITE_TITLE','Python Interpreters Benchmarks');
 define('BANNER_TITLE','The&nbsp;Python&nbsp;<strong>Interpreters</strong>&nbsp;<br/><strong>Benchmarks</strong>');
-define('PLATFORM_NAME', 'ArchLinux : Intel i5-4210U');
+define('PLATFORM_NAME', 'ArchLinux : Intel i5-7200U');
 define('FAQ_TITLE','[[ More ]]');
 define('BAR',' | ');
 define('DASH',' - ');

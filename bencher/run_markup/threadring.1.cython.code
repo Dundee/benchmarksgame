@@ -8,11 +8,11 @@
 
 import sys
 import itertools
-      
+
 def main(n = int(sys.argv[1]), n_threads=503, cycle=itertools.cycle):
 
     def worker(worker_id):
-        
+
         n = 1
         while True:
             if n > 0:

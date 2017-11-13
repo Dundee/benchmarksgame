@@ -1,5 +1,5 @@
 
-Wed, 21 Dec 2016 15:07:14 GMT
+Mon, 13 Nov 2017 16:01:08 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
@@ -9,29 +9,27 @@ shedskin shed.py
 Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 
 [analyzing types..]
-0% ****************50% ****************50% ********************************100%
+0% ********************************100% ********************************100% ********************************100%
 [generating c++ code..]
-*WARNING* shed.py:11: Function show not called!
 *WARNING* shed.py:29: unresolved call to 'add_line'
-[elapsed time: 1.71 seconds]
+[elapsed time: 1.28 seconds]
 make
 make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
 g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/string.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -o shed
+/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp: In function ‘void* __shed__::show(__shedskin__::pyseq<__shedskin__::str*>*, __shedskin__::str*)’:
+/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:23:32: error: ‘class __shedskin__::pyseq<__shedskin__::str*>’ has no member named ‘__slice__’; did you mean ‘__le__’?
+         print(1, 0, 0, 0, seq->__slice__(3, i, (i+60), 0));
+                                ^~~~~~~~~
+                                __le__
 /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp: In function ‘void* __shed__::__ss_main()’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:28:21: error: cannot convert ‘__shedskin__::list<T>::append<void*>’ from type ‘void* (__shedskin__::list<void*>::)(void*)’ to type ‘void*’
+/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:39:21: error: cannot convert ‘__shedskin__::list<void*>::append’ from type ‘void* (__shedskin__::list<void*>::)(void*)’ to type ‘void*’
      add_line = seq->append;
                      ^~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:32:32: error: ‘show’ was not declared in this scope
-             show(seq, default_0);
-                                ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:40:24: error: ‘show’ was not declared in this scope
-     show(seq, default_0);
-                        ^
 make[2]: *** [Makefile:21: shed] Chyba 1
 make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: revcomp.shedskin-3.shedskin_run] Chyba 2
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
-10.76s to complete and log all make actions
+9.17s to complete and log all make actions
 
 COMMAND LINE:
 ./shed 0 < revcomp-input1000.txt

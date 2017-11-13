@@ -1,5 +1,5 @@
 
-Wed, 21 Dec 2016 12:40:15 GMT
+Fri, 10 Nov 2017 18:53:46 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp“
@@ -13,7 +13,7 @@ Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 [generating c++ code..]
 *WARNING* shed.py:12: class 'str' has no method 'format'
 *WARNING* shed.py:12: expression has no type
-[elapsed time: 1.73 seconds]
+[elapsed time: 1.00 seconds]
 make
 make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp“
 g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -o shed
@@ -25,7 +25,7 @@ make[2]: *** [Makefile:19: shed] Chyba 1
 make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp“
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: fib50.shedskin_run] Chyba 2
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp“
-10.38s to complete and log all make actions
+7.62s to complete and log all make actions
 
 COMMAND LINE:
 ./shed 1000000

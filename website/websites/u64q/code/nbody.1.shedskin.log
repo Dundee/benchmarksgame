@@ -1,5 +1,5 @@
 
-Tue, 25 Apr 2017 11:04:24 GMT
+Fri, 10 Nov 2017 20:00:18 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp“
@@ -93,168 +93,180 @@ Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 *WARNING* shed.py:106: expression has dynamic (sub)type: {float, list}
 *WARNING* shed.py:107: expression has dynamic (sub)type: {float, list}
 *WARNING* shed.py:110: expression has dynamic (sub)type: {float, list}
-[elapsed time: 3.92 seconds]
+[elapsed time: 2.20 seconds]
 make
 make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp“
 g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -o shed
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp: In function ‘__shedskin__::list<__shedskin__::tuple2<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*, __shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*>* __shed__::combinations(__shedskin__::list<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*)’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:33:87: error: cannot convert ‘__shedskin__::list<__shedskin__::tuple2<__shedskin__::tuple2<double, double>*, __shedskin__::tuple2<double, double>*>*>*’ to ‘__shedskin__::list<__shedskin__::tuple2<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*, __shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*>*’ in assignment
-     result = (new list<tuple2<tuple2<double, double> *, tuple2<double, double> *> *>());
-                                                                                       ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:39:115: error: no matching function for call to ‘__shedskin__::list<__shedskin__::tuple2<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*, __shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*>::append(__shedskin__::tuple2<__shedskin__::tuple2<double, double>*, __shedskin__::tuple2<double, double>*>*)’
-             result->append((new tuple2<tuple2<double, double> *, tuple2<double, double> *>(2,l->__getfast__(x),y)));
-                                                                                                                   ^
-In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1207:0,
-                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/list.hpp:96:25: note: candidate: void* __shedskin__::list<T>::append(T) [with T = __shedskin__::tuple2<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*, __shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*]
- template<class T> void *list<T>::append(T a) {
-                         ^~~~~~~
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/list.hpp:96:25: note:   no known conversion for argument 1 from ‘__shedskin__::tuple2<__shedskin__::tuple2<double, double>*, __shedskin__::tuple2<double, double>*>*’ to ‘__shedskin__::tuple2<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*, __shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*’
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp: In function ‘void* __shed__::advance(double, __shedskin__::__ss_int, __shedskin__::list<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*, __shedskin__::list<__shedskin__::tuple2<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*, __shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*>*)’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:87:61: error: invalid operands of types ‘double’ and ‘__shedskin__::list<double>*’ to binary ‘operator-’
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp: In function ‘void* __shed__::advance(double, __shedskin__::__ss_int, __shedskin__::list<__shedskin__::tuple2<double, double>*>*, __shedskin__::list<__shedskin__::tuple2<__shedskin__::tuple2<double, double>*, __shedskin__::tuple2<double, double>*>*>*)’:
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:66:22: error: base operand of ‘->’ is not a pointer
+             x1 = __13->__getitem__(0);
+                      ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:67:22: error: base operand of ‘->’ is not a pointer
+             y1 = __13->__getitem__(1);
+                      ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:68:22: error: base operand of ‘->’ is not a pointer
+             z1 = __13->__getitem__(2);
+                      ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:73:22: error: base operand of ‘->’ is not a pointer
+             x2 = __15->__getitem__(0);
+                      ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:74:22: error: base operand of ‘->’ is not a pointer
+             y2 = __15->__getitem__(1);
+                      ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:75:22: error: base operand of ‘->’ is not a pointer
+             z2 = __15->__getitem__(2);
+                      ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:82:23: error: base operand of ‘->’ is not a pointer
+             b1m = (m1)->__mul__(mag);
+                       ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:83:23: error: base operand of ‘->’ is not a pointer
+             b2m = (m2)->__mul__(mag);
+                       ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:86:17: error: base operand of ‘->’ is not a pointer
              __20->__setitem__(__21, (__20->__getitem__(__21)-__mul2(dx, b2m)));
-                                      ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:90:61: error: invalid operands of types ‘double’ and ‘__shedskin__::list<double>*’ to binary ‘operator-’
+                 ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:86:42: error: base operand of ‘->’ is not a pointer
+             __20->__setitem__(__21, (__20->__getitem__(__21)-__mul2(dx, b2m)));
+                                          ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:89:17: error: base operand of ‘->’ is not a pointer
              __22->__setitem__(__23, (__22->__getitem__(__23)-__mul2(dy, b2m)));
-                                      ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:93:61: error: invalid operands of types ‘double’ and ‘__shedskin__::list<double>*’ to binary ‘operator-’
+                 ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:89:42: error: base operand of ‘->’ is not a pointer
+             __22->__setitem__(__23, (__22->__getitem__(__23)-__mul2(dy, b2m)));
+                                          ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:92:17: error: base operand of ‘->’ is not a pointer
              __24->__setitem__(__25, (__24->__getitem__(__25)-__mul2(dz, b2m)));
-                                      ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:96:61: error: invalid operands of types ‘double’ and ‘__shedskin__::list<double>*’ to binary ‘operator+’
+                 ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:92:42: error: base operand of ‘->’ is not a pointer
+             __24->__setitem__(__25, (__24->__getitem__(__25)-__mul2(dz, b2m)));
+                                          ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:95:17: error: base operand of ‘->’ is not a pointer
              __26->__setitem__(__27, (__26->__getitem__(__27)+__mul2(dx, b1m)));
-                                      ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:99:61: error: invalid operands of types ‘double’ and ‘__shedskin__::list<double>*’ to binary ‘operator+’
+                 ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:95:42: error: base operand of ‘->’ is not a pointer
+             __26->__setitem__(__27, (__26->__getitem__(__27)+__mul2(dx, b1m)));
+                                          ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:98:17: error: base operand of ‘->’ is not a pointer
              __28->__setitem__(__29, (__28->__getitem__(__29)+__mul2(dy, b1m)));
-                                      ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:102:61: error: invalid operands of types ‘double’ and ‘__shedskin__::list<double>*’ to binary ‘operator+’
+                 ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:98:42: error: base operand of ‘->’ is not a pointer
+             __28->__setitem__(__29, (__28->__getitem__(__29)+__mul2(dy, b1m)));
+                                          ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:101:17: error: base operand of ‘->’ is not a pointer
              __30->__setitem__(__31, (__30->__getitem__(__31)+__mul2(dz, b1m)));
-                                      ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp: In function ‘void* __shed__::report_energy(__shedskin__::list<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*, __shedskin__::list<__shedskin__::tuple2<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*, __shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*>*, double)’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:163:33: error: invalid conversion from ‘__shedskin__::list<double>*’ to ‘__shedskin__::__ss_int {aka int}’ [-fpermissive]
+                 ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:101:42: error: base operand of ‘->’ is not a pointer
+             __30->__setitem__(__31, (__30->__getitem__(__31)+__mul2(dz, b1m)));
+                                          ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:109:22: error: base operand of ‘->’ is not a pointer
+             vx = __33->__getitem__(0);
+                      ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:110:22: error: base operand of ‘->’ is not a pointer
+             vy = __33->__getitem__(1);
+                      ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:111:22: error: base operand of ‘->’ is not a pointer
+             vz = __33->__getitem__(2);
+                      ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:115:17: error: base operand of ‘->’ is not a pointer
+             __38->__setitem__(__39, (__38->__getitem__(__39)+(dt*vx)));
+                 ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:115:42: error: base operand of ‘->’ is not a pointer
+             __38->__setitem__(__39, (__38->__getitem__(__39)+(dt*vx)));
+                                          ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:118:17: error: base operand of ‘->’ is not a pointer
+             __40->__setitem__(__41, (__40->__getitem__(__41)+(dt*vy)));
+                 ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:118:42: error: base operand of ‘->’ is not a pointer
+             __40->__setitem__(__41, (__40->__getitem__(__41)+(dt*vy)));
+                                          ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:121:17: error: base operand of ‘->’ is not a pointer
+             __42->__setitem__(__43, (__42->__getitem__(__43)+(dt*vz)));
+                 ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:121:42: error: base operand of ‘->’ is not a pointer
+             __42->__setitem__(__43, (__42->__getitem__(__43)+(dt*vz)));
+                                          ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp: In function ‘void* __shed__::report_energy(__shedskin__::list<__shedskin__::tuple2<double, double>*>*, __shedskin__::list<__shedskin__::tuple2<__shedskin__::tuple2<double, double>*, __shedskin__::tuple2<double, double>*>*>*, double)’:
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:146:18: error: base operand of ‘->’ is not a pointer
+         x1 = __46->__getitem__(0);
+                  ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:147:18: error: base operand of ‘->’ is not a pointer
+         y1 = __46->__getitem__(1);
+                  ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:148:18: error: base operand of ‘->’ is not a pointer
+         z1 = __46->__getitem__(2);
+                  ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:153:18: error: base operand of ‘->’ is not a pointer
+         x2 = __48->__getitem__(0);
+                  ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:154:18: error: base operand of ‘->’ is not a pointer
+         y2 = __48->__getitem__(1);
+                  ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:155:18: error: base operand of ‘->’ is not a pointer
+         z2 = __48->__getitem__(2);
+                  ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:161:21: error: base operand of ‘->’ is not a pointer
          e = (e-((m1)->__mul__(m2))->__div__(__power((((dx*dx)+(dy*dy))+(dz*dz)), 0.5)));
-                                 ^
-In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1207:0,
-                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/list.hpp:273:28: note:   initializing argument 1 of ‘__shedskin__::list<T>* __shedskin__::list<T>::__mul__(__shedskin__::__ss_int) [with T = double; __shedskin__::__ss_int = int]’
- template<class T> list<T> *list<T>::__mul__(__ss_int b) {
-                            ^~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:163:37: error: ‘class __shedskin__::list<double>’ has no member named ‘__div__’; did you mean ‘__eq__’?
-         e = (e-((m1)->__mul__(m2))->__div__(__power((((dx*dx)+(dy*dy))+(dz*dz)), 0.5)));
-                                     ^~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:175:61: error: ‘class __shedskin__::list<double>’ has no member named ‘__div__’; did you mean ‘__eq__’?
+                     ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:169:18: error: base operand of ‘->’ is not a pointer
+         vx = __54->__getitem__(0);
+                  ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:170:18: error: base operand of ‘->’ is not a pointer
+         vy = __54->__getitem__(1);
+                  ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:171:18: error: base operand of ‘->’ is not a pointer
+         vz = __54->__getitem__(2);
+                  ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:173:20: error: base operand of ‘->’ is not a pointer
          e = (e+((m)->__mul__((((vx*vx)+(vy*vy))+(vz*vz))))->__div__(2.0));
-                                                             ^~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp: In function ‘void* __shed__::offset_momentum(__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*, __shedskin__::list<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*, double, double, double)’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:200:17: error: invalid operands of types ‘double’ and ‘__shedskin__::list<double>*’ to binary ‘operator-’
-         px = (px-__mul2(vx, m));
-               ~~^~~~~~~~~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:201:17: error: invalid operands of types ‘double’ and ‘__shedskin__::list<double>*’ to binary ‘operator-’
-         py = (py-__mul2(vy, m));
-               ~~^~~~~~~~~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:202:17: error: invalid operands of types ‘double’ and ‘__shedskin__::list<double>*’ to binary ‘operator-’
-         pz = (pz-__mul2(vz, m));
-               ~~^~~~~~~~~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:209:36: error: no matching function for call to ‘__shedskin__::list<double>::__setitem__(int, __shedskin__::list<double>*)’
+                    ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp: In function ‘void* __shed__::offset_momentum(__shedskin__::tuple2<double, double>*, __shedskin__::list<__shedskin__::tuple2<double, double>*>*, double, double, double)’:
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:193:18: error: base operand of ‘->’ is not a pointer
+         vx = __60->__getitem__(0);
+                  ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:194:18: error: base operand of ‘->’ is not a pointer
+         vy = __60->__getitem__(1);
+                  ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:195:18: error: base operand of ‘->’ is not a pointer
+         vz = __60->__getitem__(2);
+                  ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:206:6: error: base operand of ‘->’ is not a pointer
      v->__setitem__(0, __div2(px, m));
-                                    ^
-In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1207:0,
-                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/list.hpp:139:25: note: candidate: void* __shedskin__::list<T>::__setitem__(__shedskin__::__ss_int, T) [with T = double; __shedskin__::__ss_int = int]
- template<class T> void *list<T>::__setitem__(__ss_int i, T e) {
-                         ^~~~~~~
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/list.hpp:139:25: note:   no known conversion for argument 2 from ‘__shedskin__::list<double>*’ to ‘double’
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:210:36: error: no matching function for call to ‘__shedskin__::list<double>::__setitem__(int, __shedskin__::list<double>*)’
+      ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:207:6: error: base operand of ‘->’ is not a pointer
      v->__setitem__(1, __div2(py, m));
-                                    ^
-In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1207:0,
-                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/list.hpp:139:25: note: candidate: void* __shedskin__::list<T>::__setitem__(__shedskin__::__ss_int, T) [with T = double; __shedskin__::__ss_int = int]
- template<class T> void *list<T>::__setitem__(__ss_int i, T e) {
-                         ^~~~~~~
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/list.hpp:139:25: note:   no known conversion for argument 2 from ‘__shedskin__::list<double>*’ to ‘double’
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:211:36: error: no matching function for call to ‘__shedskin__::list<double>::__setitem__(int, __shedskin__::list<double>*)’
+      ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:208:6: error: base operand of ‘->’ is not a pointer
      v->__setitem__(2, __div2(pz, m));
-                                    ^
-In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1207:0,
-                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/list.hpp:139:25: note: candidate: void* __shedskin__::list<T>::__setitem__(__shedskin__::__ss_int, T) [with T = double; __shedskin__::__ss_int = int]
- template<class T> void *list<T>::__setitem__(__ss_int i, T e) {
-                         ^~~~~~~
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/list.hpp:139:25: note:   no known conversion for argument 2 from ‘__shedskin__::list<double>*’ to ‘double’
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp: In function ‘void* __shed__::__ss_main(__shedskin__::__ss_int, __shedskin__::str*)’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:217:71: error: cannot convert ‘__shedskin__::list<__shedskin__::tuple2<double, double>*>*’ to ‘__shedskin__::list<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*’ for argument ‘2’ to ‘void* __shed__::offset_momentum(__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*, __shedskin__::list<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*, double, double, double)’
-     offset_momentum(BODIES->__getitem__(ref), default_4, 0.0, 0.0, 0.0);
-                                                                       ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:218:44: error: cannot convert ‘__shedskin__::list<__shedskin__::tuple2<double, double>*>*’ to ‘__shedskin__::list<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*’ for argument ‘1’ to ‘void* __shed__::report_energy(__shedskin__::list<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*, __shedskin__::list<__shedskin__::tuple2<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*, __shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*>*, double)’
-     report_energy(default_2, default_3, 0.0);
-                                            ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:219:42: error: cannot convert ‘__shedskin__::list<__shedskin__::tuple2<double, double>*>*’ to ‘__shedskin__::list<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*’ for argument ‘3’ to ‘void* __shed__::advance(double, __shedskin__::__ss_int, __shedskin__::list<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*, __shedskin__::list<__shedskin__::tuple2<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*, __shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*>*)’
-     advance(0.01, n, default_0, default_1);
-                                          ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:220:44: error: cannot convert ‘__shedskin__::list<__shedskin__::tuple2<double, double>*>*’ to ‘__shedskin__::list<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*’ for argument ‘1’ to ‘void* __shed__::report_energy(__shedskin__::list<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*, __shedskin__::list<__shedskin__::tuple2<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*, __shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*>*, double)’
-     report_energy(default_2, default_3, 0.0);
-                                            ^
+      ^~
 /home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp: In function ‘void __shed__::__init()’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:238:150: error: expected type-specifier before ‘doubl’
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:235:150: error: expected type-specifier before ‘doubl’
      BODIES = (new dict<str *, tuple2<double, double> *>(5, (new tuple2<str *, tuple2<double, double> *>(2,const_1,(new tuple2<double, double>(3,(new doubl(3,0.0,0.0,0.0)),(new doubl(3,0.0,0.0,0.0)),SOLAR_MASS)))),(new tuple2<str *, tuple2<double, double> *>(2,const_2,(new tuple2<double, double>(3,(new doubl(3,4.84143144246,(-1.16032004403),(-0.103622044471))),(new doubl(3,(0.00166007664274*DAYS_PER_YEAR),(0.0076990111842*DAYS_PER_YEAR),((-6.90460016972e-05)*DAYS_PER_YEAR))),(0.000954791938424*SOLAR_MASS))))),(new tuple2<str *, tuple2<double, double> *>(2,const_3,(new tuple2<double, double>(3,(new doubl(3,8.34336671824,4.12479856412,(-0.403523417114))),(new doubl(3,((-0.00276742510727)*DAYS_PER_YEAR),(0.00499852801235*DAYS_PER_YEAR),(2.30417297574e-05*DAYS_PER_YEAR))),(0.000285885980666*SOLAR_MASS))))),(new tuple2<str *, tuple2<double, double> *>(2,const_4,(new tuple2<double, double>(3,(new doubl(3,12.8943695621,(-15.1111514017),(-0.223307578893))),(new doubl(3,(0.00296460137565*DAYS_PER_YEAR),(0.00237847173959*DAYS_PER_YEAR),((-2.9658956854e-05)*DAYS_PER_YEAR))),(4.36624404335e-05*SOLAR_MASS))))),(new tuple2<str *, tuple2<double, double> *>(2,const_5,(new tuple2<double, double>(3,(new doubl(3,15.3796971149,(-25.91931461),0.17925877295)),(new doubl(3,(0.0026806777249*DAYS_PER_YEAR),(0.00162824170038*DAYS_PER_YEAR),((-9.5159225452e-05)*DAYS_PER_YEAR))),(5.15138902047e-05*SOLAR_MASS)))))));
                                                                                                                                                       ^~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:238:150: error: expected ‘)’ before ‘doubl’
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:249:2: error: expected ‘)’ before ‘;’ token
-     }
-  ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:249:2: error: expected ‘)’ before ‘;’ token
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:249:2: error: expected ‘)’ before ‘;’ token
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:249:2: error: expected ‘)’ before ‘;’ token
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:249:2: error: expected ‘)’ before ‘;’ token
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:249:2: error: cannot convert ‘__shedskin__::dict<__shedskin__::str*, __shedskin__::tuple2<double, double>*>*’ to ‘__shedskin__::dict<__shedskin__::str*, __shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*’ in assignment
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:239:67: error: cannot convert ‘__shedskin__::list<__shedskin__::tuple2<double, double>*>*’ to ‘__shedskin__::list<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*’ in assignment
-     SYSTEM = (new list<tuple2<double, double> *>(BODIES->values()));
-                                                                   ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:241:17: error: cannot convert ‘__shedskin__::list<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*’ to ‘__shedskin__::list<__shedskin__::tuple2<double, double>*>*’ in assignment
-     default_0 = SYSTEM;
-                 ^~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:242:17: error: cannot convert ‘__shedskin__::list<__shedskin__::tuple2<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*, __shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*>*’ to ‘__shedskin__::list<__shedskin__::tuple2<__shedskin__::tuple2<double, double>*, __shedskin__::tuple2<double, double>*>*>*’ in assignment
-     default_1 = PAIRS;
-                 ^~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:243:17: error: cannot convert ‘__shedskin__::list<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*’ to ‘__shedskin__::list<__shedskin__::tuple2<double, double>*>*’ in assignment
-     default_2 = SYSTEM;
-                 ^~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:244:17: error: cannot convert ‘__shedskin__::list<__shedskin__::tuple2<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*, __shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*>*’ to ‘__shedskin__::list<__shedskin__::tuple2<__shedskin__::tuple2<double, double>*, __shedskin__::tuple2<double, double>*>*>*’ in assignment
-     default_3 = PAIRS;
-                 ^~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:245:17: error: cannot convert ‘__shedskin__::list<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>*’ to ‘__shedskin__::list<__shedskin__::tuple2<double, double>*>*’ in assignment
-     default_4 = SYSTEM;
-                 ^~~~~~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:235:150: error: expected ‘)’ before ‘doubl’
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:235:1410: error: expected ‘)’ before ‘;’ token
+     BODIES = (new dict<str *, tuple2<double, double> *>(5, (new tuple2<str *, tuple2<double, double> *>(2,const_1,(new tuple2<double, double>(3,(new doubl(3,0.0,0.0,0.0)),(new doubl(3,0.0,0.0,0.0)),SOLAR_MASS)))),(new tuple2<str *, tuple2<double, double> *>(2,const_2,(new tuple2<double, double>(3,(new doubl(3,4.84143144246,(-1.16032004403),(-0.103622044471))),(new doubl(3,(0.00166007664274*DAYS_PER_YEAR),(0.0076990111842*DAYS_PER_YEAR),((-6.90460016972e-05)*DAYS_PER_YEAR))),(0.000954791938424*SOLAR_MASS))))),(new tuple2<str *, tuple2<double, double> *>(2,const_3,(new tuple2<double, double>(3,(new doubl(3,8.34336671824,4.12479856412,(-0.403523417114))),(new doubl(3,((-0.00276742510727)*DAYS_PER_YEAR),(0.00499852801235*DAYS_PER_YEAR),(2.30417297574e-05*DAYS_PER_YEAR))),(0.000285885980666*SOLAR_MASS))))),(new tuple2<str *, tuple2<double, double> *>(2,const_4,(new tuple2<double, double>(3,(new doubl(3,12.8943695621,(-15.1111514017),(-0.223307578893))),(new doubl(3,(0.00296460137565*DAYS_PER_YEAR),(0.00237847173959*DAYS_PER_YEAR),((-2.9658956854e-05)*DAYS_PER_YEAR))),(4.36624404335e-05*SOLAR_MASS))))),(new tuple2<str *, tuple2<double, double> *>(2,const_5,(new tuple2<double, double>(3,(new doubl(3,15.3796971149,(-25.91931461),0.17925877295)),(new doubl(3,(0.0026806777249*DAYS_PER_YEAR),(0.00162824170038*DAYS_PER_YEAR),((-9.5159225452e-05)*DAYS_PER_YEAR))),(5.15138902047e-05*SOLAR_MASS)))))));
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:235:1410: error: expected ‘)’ before ‘;’ token
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:235:1410: error: expected ‘)’ before ‘;’ token
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:235:1410: error: expected ‘)’ before ‘;’ token
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:235:1410: error: expected ‘)’ before ‘;’ token
 In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1210:0,
                  from /home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/math.hpp: In instantiation of ‘T __shedskin__::__div2(double, T) [with T = __shedskin__::list<double>*]’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:209:35:   required from here
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/math.hpp:172:55: error: ‘class __shedskin__::list<double>’ has no member named ‘__rdiv__’; did you mean ‘__repr__’?
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/math.hpp: In instantiation of ‘T __shedskin__::__mul2(double, T) [with T = double]’:
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:86:76:   required from here
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/math.hpp:170:52: error: base operand of ‘->’ is not a pointer
+ template<class T> T __mul2(double n, T a) { return a->__mul__(n); }
+                                                    ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/math.hpp: In instantiation of ‘T __shedskin__::__div2(double, T) [with T = double]’:
+/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:206:35:   required from here
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/math.hpp:172:52: error: base operand of ‘->’ is not a pointer
  template<class T> T __div2(double n, T a) { return a->__rdiv__(n); }
-                                                    ~~~^~~~~~~~
-In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1207:0,
-                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/list.hpp: In instantiation of ‘__shedskin__::list<T>::list(U*) [with U = __shedskin__::list<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>; T = __shedskin__::tuple2<double, double>*]’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:239:66:   required from here
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/list.hpp:27:9: error: no matching function for call to ‘std::vector<__shedskin__::tuple2<double, double>*, gc_allocator<__shedskin__::tuple2<double, double>*> >::push_back(__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*&)’
-         this->units.push_back(e);
-         ^~~~
-In file included from /usr/include/c++/6.3.1/vector:64:0,
-                 from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:13,
-                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp/shed.cpp:1:
-/usr/include/c++/6.3.1/bits/stl_vector.h:914:7: note: candidate: void std::vector<_Tp, _Alloc>::push_back(const value_type&) [with _Tp = __shedskin__::tuple2<double, double>*; _Alloc = gc_allocator<__shedskin__::tuple2<double, double>*>; std::vector<_Tp, _Alloc>::value_type = __shedskin__::tuple2<double, double>*]
-       push_back(const value_type& __x)
-       ^~~~~~~~~
-/usr/include/c++/6.3.1/bits/stl_vector.h:914:7: note:   no known conversion for argument 1 from ‘__shedskin__::pyseq<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>::for_in_unit {aka __shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*}’ to ‘__shedskin__::tuple2<double, double>* const&’
-/usr/include/c++/6.3.1/bits/stl_vector.h:932:7: note: candidate: void std::vector<_Tp, _Alloc>::push_back(std::vector<_Tp, _Alloc>::value_type&&) [with _Tp = __shedskin__::tuple2<double, double>*; _Alloc = gc_allocator<__shedskin__::tuple2<double, double>*>; std::vector<_Tp, _Alloc>::value_type = __shedskin__::tuple2<double, double>*]
-       push_back(value_type&& __x)
-       ^~~~~~~~~
-/usr/include/c++/6.3.1/bits/stl_vector.h:932:7: note:   no known conversion for argument 1 from ‘__shedskin__::pyseq<__shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*>::for_in_unit {aka __shedskin__::tuple2<__shedskin__::list<double>*, __shedskin__::list<double>*>*}’ to ‘__shedskin__::tuple2<double, double>*&&’
+                                                    ^
 make[2]: *** [Makefile:19: shed] Chyba 1
 make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp“
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: nbody.shedskin_run] Chyba 2
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/nbody/tmp“
-13.11s to complete and log all make actions
+8.96s to complete and log all make actions
 
 COMMAND LINE:
 ./shed 5000000

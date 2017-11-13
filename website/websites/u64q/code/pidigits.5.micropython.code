@@ -6,7 +6,11 @@
 # Modified by Christopher Sean Forgeron
 
 # CSF - Use xmpz, it does in-place updates of integers, which is faster than mpz
-from gmpy2 import xmpz, f_divmod
+try:
+    from gmpy2 import xmpz, f_divmod
+except ImportError:
+    from gmpy_cffi import mpz as xmpz
+    from gmpy_cffi import f_divmod
 import sys
 
 def main():

@@ -5,7 +5,7 @@
 # modified by Sokolov Yura
 # modified by bearophile
 # modified by xfm for parallelization
-# modified by Justin Peel 
+# modified by Justin Peel
 
 from sys import stdin
 from collections import defaultdict
@@ -59,10 +59,10 @@ def main():
     sequence = prepare()
     p=Pool()
 
-    
+
     res2 = p.map_async(find_seq,reversed("GGT GGTA GGTATT GGTATTTTAATT GGTATTTTAATTTATAGT".split()))
     res1 = p.map_async(sort_seq,(1,2))
-    
+
     for s in res1.get() : print (s+'\n')
     res2 = reversed([r for r in res2.get()])
     print ("\n".join("{1:d}\t{0}".format(*s) for s in res2))

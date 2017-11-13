@@ -110,8 +110,8 @@
 
 <dt><a href="#machine" name="machine">What hardware and OS do you measure the programs on?</a></dt>
 <dd>
-<p><b>dual-core 2.4Ghz Intel<sup>&#174;</sup> i5-4210U<sup>&#174;</sup></b> with 4GB of RAM and 250GB SATA II disk drive.</p>
-<p><b>Ubuntu&#8482; 13.10</b> Kernel Linux 3.11.0-15-generic</p>
+<p><b>dual-core 2.5Ghz Intel<sup>&#174;</sup> i5-7200U<sup>&#174;</sup></b> with 16GB of RAM and 250GB SSD disk drive.</p>
+<p><b>Archlinux&#8482;</b> Kernel Linux 4.13.11-1-ARCH</p>
 </dd>
 
 
@@ -152,7 +152,7 @@
 
 
 <dt><a href="#java" name="java">What about Java&#174; VM warm-up?</a></dt>
-<dd><p>Let's see how much, or how little, the time taken to invoke the JVM might contribute to the usual Java program times shown in the benchmarks game. Here are some <b>additional</b> (Intel&#174; i5-4210U&#174; dual-core) elapsed time measurements, taken after the Java programs started and before they exited.</p>
+<dd><p>Let's see how much, or how little, the time taken to invoke the JVM might contribute to the usual Java program times shown in the benchmarks game. Here are some <b>additional</b> (Intel&#174; i5-7200U&#174; dual-core) elapsed time measurements, taken after the Java programs started and before they exited.</p>
 
 <p>In the first case (Cold), we simply started and measured the program 66 times; and then discarded the first measurement leaving 65 data points.</p>
 

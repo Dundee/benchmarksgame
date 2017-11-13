@@ -1,29 +1,64 @@
 
-Tue, 24 Oct 2017 09:30:11 GMT
+Fri, 10 Nov 2017 20:17:57 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
 cp spectralnorm.cython-5.cython `echo spectralnorm.cython-5.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 cythonize -3 -bi `echo spectralnorm.cython-5.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
+
+Error compiling Cython file:
+------------------------------------------------------------
+...
+    cdef int i, j, u_j, partial_sum
+
+    (i, u) = xxx_todo_changeme
+    partial_sum = 0
+    for j, u_j in enumerate(u):
+        partial_sum += eval_A(i, j) * u_j
+       ^
+------------------------------------------------------------
+
+spectralnorm.pyx:42:8: Cannot assign type 'float' to 'int'
+
+Error compiling Cython file:
+------------------------------------------------------------
+...
+    cdef int i, j, u_j, partial_sum
+
+    (i, u) = xxx_todo_changeme1
+    partial_sum = 0
+    for j, u_j in enumerate(u):
+        partial_sum += eval_A(j, i) * u_j
+       ^
+------------------------------------------------------------
+
+spectralnorm.pyx:52:8: Cannot assign type 'float' to 'int'
 Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx because it changed.
 [1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx
-running build_ext
-building 'spectralnorm' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmp2n0ubssu/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmp2n0ubssu/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmp2n0ubssu/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmp2n0ubssu/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmp2n0ubssu/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmp2n0ubssu/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmp2n0ubssu/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmp2n0ubssu/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fPIC -I/usr/include/python3.6m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmp2n0ubssu/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmp2n0ubssu/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.o -L/usr/lib -lpython3.6m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.cpython-36m-x86_64-linux-gnu.so
+Traceback (most recent call last):
+  File "/usr/bin/cythonize", line 11, in <module>
+    load_entry_point('Cython==0.27.3', 'console_scripts', 'cythonize')()
+  File "/usr/lib/python3.6/site-packages/Cython/Build/Cythonize.py", line 196, in main
+    cython_compile(path, options)
+  File "/usr/lib/python3.6/site-packages/Cython/Build/Cythonize.py", line 90, in cython_compile
+    **options.options)
+  File "/usr/lib/python3.6/site-packages/Cython/Build/Dependencies.py", line 1039, in cythonize
+    cythonize_one(*args)
+  File "/usr/lib/python3.6/site-packages/Cython/Build/Dependencies.py", line 1161, in cythonize_one
+    raise CompileError(None, pyx_file)
+Cython.Compiler.Errors.CompileError: /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx
+make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:21: spectralnorm.cython-5.cython_run] Chyba 1
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
-2.41s to complete and log all make actions
+0.42s to complete and log all make actions
 
 COMMAND LINE:
 /usr/bin/python3 -c "import spectralnorm" 550
 
+PROGRAM FAILED 
+
+
 PROGRAM OUTPUT:
-1.274224125
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'spectralnorm'

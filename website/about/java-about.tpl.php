@@ -3,7 +3,7 @@
 <p>Download: <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Java SE Downloads</a></p>
 
 
-<p>Let's see how much, or how little, the time taken to invoke the JVM might contribute to the usual Java program times shown in the benchmarks game. Here are some <b>additional</b> (Intel&#174; i5-4210U&#174; dual-core) elapsed time measurements, taken after the Java programs started and before they exited.</p>
+<p>Let's see how much, or how little, the time taken to invoke the JVM might contribute to the usual Java program times shown in the benchmarks game. Here are some <b>additional</b> (Intel&#174; i5-7200U&#174; dual-core) elapsed time measurements, taken after the Java programs started and before they exited.</p>
 
 <p>In the first case (Cold), we simply started and measured the program 66 times; and then discarded the first measurement leaving 65 data points.</p>
 

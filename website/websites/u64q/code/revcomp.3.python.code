@@ -9,7 +9,7 @@ from __future__ import print_function
 import sys, string
 
 def show(seq, 
-         table=bytes.maketrans(b'ACBDGHK\nMNSRUTWVYacbdghkmnsrutwvy',
+         table=string.maketrans(b'ACBDGHK\nMNSRUTWVYacbdghkmnsrutwvy',
                                 b'TGVHCDM\nKNSYAAWBRTGVHCDMKNSYAAWBR')):
                                 
    seq = (''.join(seq)).translate(table)[::-1]

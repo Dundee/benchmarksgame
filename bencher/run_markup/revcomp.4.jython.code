@@ -5,12 +5,12 @@
 # 2to3, fixed by Daniele Varrazzo
 # modified by Daniel Nanz
 
-import sys
+import sys, string
 
 
-def show(seq, table=bytes.maketrans(b'ACBDGHKMNSRUTWVYacbdghkmnsrutwvy',
+def show(seq, table=string.maketrans(b'ACBDGHKMNSRUTWVYacbdghkmnsrutwvy',
                                     b'TGVHCDMKNSYAAWBRTGVHCDMKNSYAAWBR'),
-         write=sys.stdout.buffer.write, nl=b'\n'):
+         write=sys.stdout.write, nl=b'\n'):
     
     [header, s] = seq.split(nl, 1)
     s = s.translate(table, nl)[: : -1]
@@ -23,7 +23,6 @@ def show(seq, table=bytes.maketrans(b'ACBDGHKMNSRUTWVYacbdghkmnsrutwvy',
 
 def main():
     
-    sys.stdin = sys.stdin.detach()
     seqs = b''.join([line for line in sys.stdin]).split(b'>')[1 : ]
     
     for seq in seqs:

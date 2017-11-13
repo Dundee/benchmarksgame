@@ -1,28 +1,29 @@
 
-Mon, 16 Jan 2017 14:30:23 GMT
+Mon, 13 Nov 2017 12:47:11 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
 grumpc spectralnorm.grumpy-8.grumpy > spectralnorm.grumpy-8.grumpy.go
 go build -o spectralnorm.grumpy-8.grumpy_run spectralnorm.grumpy-8.grumpy.go
+warning: GOPATH set to GOROOT (/usr/lib/go) has no effect
 spectralnorm.grumpy-8.grumpy.go:4:2: cannot find package "grumpy/lib/array" in any of:
 	/usr/lib/go/src/grumpy/lib/array (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/array (from $GOPATH)
+	($GOPATH not set. For more details see: 'go help gopath')
 spectralnorm.grumpy-8.grumpy.go:5:2: cannot find package "grumpy/lib/array/array" in any of:
 	/usr/lib/go/src/grumpy/lib/array/array (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/array/array (from $GOPATH)
+	($GOPATH not set. For more details see: 'go help gopath')
 spectralnorm.grumpy-8.grumpy.go:7:2: cannot find package "grumpy/lib/itertools/izip" in any of:
 	/usr/lib/go/src/grumpy/lib/itertools/izip (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/itertools/izip (from $GOPATH)
+	($GOPATH not set. For more details see: 'go help gopath')
 spectralnorm.grumpy-8.grumpy.go:9:2: cannot find package "grumpy/lib/math/sqrt" in any of:
 	/usr/lib/go/src/grumpy/lib/math/sqrt (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/math/sqrt (from $GOPATH)
+	($GOPATH not set. For more details see: 'go help gopath')
 spectralnorm.grumpy-8.grumpy.go:11:2: cannot find package "grumpy/lib/sys/argv" in any of:
 	/usr/lib/go/src/grumpy/lib/sys/argv (from $GOROOT)
-	/home/dundee/workspace/go/src/grumpy/lib/sys/argv (from $GOPATH)
+	($GOPATH not set. For more details see: 'go help gopath')
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:48: spectralnorm.grumpy-8.grumpy_run] Chyba 1
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
-0.12s to complete and log all make actions
+0.09s to complete and log all make actions
 
 COMMAND LINE:
 ./spectralnorm.grumpy-8.grumpy_run 550

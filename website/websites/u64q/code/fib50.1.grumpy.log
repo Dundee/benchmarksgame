@@ -1,12 +1,13 @@
 
-Mon, 16 Jan 2017 14:27:42 GMT
+Mon, 13 Nov 2017 12:45:57 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp“
 grumpc fib50.grumpy > fib50.grumpy.go
 go build -o fib50.grumpy_run fib50.grumpy.go
+warning: GOPATH set to GOROOT (/usr/lib/go) has no effect
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp“
-1.78s to complete and log all make actions
+1.27s to complete and log all make actions
 
 COMMAND LINE:
 ./fib50.grumpy_run 1000000

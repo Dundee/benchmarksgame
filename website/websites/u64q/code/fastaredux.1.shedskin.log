@@ -1,5 +1,5 @@
 
-Wed, 21 Dec 2016 12:36:13 GMT
+Fri, 10 Nov 2017 18:52:48 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp“
@@ -16,7 +16,7 @@ Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 *WARNING* shed.py:73: unresolved call to 'sow'
 *WARNING* shed.py:86: unresolved call to 'sow'
 *WARNING* shed.py:91: unresolved call to 'sow'
-[elapsed time: 2.43 seconds]
+[elapsed time: 1.66 seconds]
 make
 make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp“
 g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp /usr/lib/python2.7/site-packages/shedskin/lib/bisect.cpp /usr/lib/python2.7/site-packages/shedskin/lib/array.cpp -lgc -lpcre  -o shed
@@ -24,7 +24,7 @@ g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/s
 /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:119:22: error: no matches converting function ‘bisect’ to type ‘__shed__::lambda0 {aka int (*)(class __shedskin__::list<double>*, double)}’
      bb = __bisect__::bisect;
                       ^~~~~~
-In file included from /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:2:0:
+In file included from /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:3:0:
 /usr/lib/python2.7/site-packages/shedskin/lib/bisect.hpp:99:29: note: candidates are: template<class A> __shedskin__::__ss_int __bisect__::bisect(__shedskin__::list<T>*, A, __shedskin__::__ss_int)
  template <class A> __ss_int bisect(list<A> *a, A x, __ss_int lo=0) {
                              ^~~~~~
@@ -46,25 +46,25 @@ In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin/str.hpp:36:9: error: no matching function for call to ‘push_back(void*&)’
          __join_cache->units.push_back(e);
          ^~~~~~~~~~~~
-In file included from /usr/include/c++/6.2.1/vector:64:0,
+In file included from /usr/include/c++/7.2.0/vector:64:0,
                  from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:13,
                  from /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:1:
-/usr/include/c++/6.2.1/bits/stl_vector.h:914:7: note: candidate: void std::vector<_Tp, _Alloc>::push_back(const value_type&) [with _Tp = __shedskin__::str*; _Alloc = gc_allocator<__shedskin__::str*>; std::vector<_Tp, _Alloc>::value_type = __shedskin__::str*] <near match>
+/usr/include/c++/7.2.0/bits/stl_vector.h:939:7: note: candidate: void std::vector<_Tp, _Alloc>::push_back(const value_type&) [with _Tp = __shedskin__::str*; _Alloc = gc_allocator<__shedskin__::str*>; std::vector<_Tp, _Alloc>::value_type = __shedskin__::str*] <near match>
        push_back(const value_type& __x)
        ^~~~~~~~~
-/usr/include/c++/6.2.1/bits/stl_vector.h:914:7: note:   conversion of argument 1 would be ill-formed:
+/usr/include/c++/7.2.0/bits/stl_vector.h:939:7: note:   conversion of argument 1 would be ill-formed:
 In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1209:0,
                  from /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:1:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin/str.hpp:36:9: error: invalid conversion from ‘__shedskin__::pyiter<void*>::for_in_unit {aka void*}’ to ‘std::vector<__shedskin__::str*, gc_allocator<__shedskin__::str*> >::value_type {aka __shedskin__::str*}’ [-fpermissive]
          __join_cache->units.push_back(e);
          ^~~~~~~~~~~~
-In file included from /usr/include/c++/6.2.1/vector:64:0,
+In file included from /usr/include/c++/7.2.0/vector:64:0,
                  from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:13,
                  from /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:1:
-/usr/include/c++/6.2.1/bits/stl_vector.h:932:7: note: candidate: void std::vector<_Tp, _Alloc>::push_back(std::vector<_Tp, _Alloc>::value_type&&) [with _Tp = __shedskin__::str*; _Alloc = gc_allocator<__shedskin__::str*>; std::vector<_Tp, _Alloc>::value_type = __shedskin__::str*] <near match>
+/usr/include/c++/7.2.0/bits/stl_vector.h:953:7: note: candidate: void std::vector<_Tp, _Alloc>::push_back(std::vector<_Tp, _Alloc>::value_type&&) [with _Tp = __shedskin__::str*; _Alloc = gc_allocator<__shedskin__::str*>; std::vector<_Tp, _Alloc>::value_type = __shedskin__::str*] <near match>
        push_back(value_type&& __x)
        ^~~~~~~~~
-/usr/include/c++/6.2.1/bits/stl_vector.h:932:7: note:   conversion of argument 1 would be ill-formed:
+/usr/include/c++/7.2.0/bits/stl_vector.h:953:7: note:   conversion of argument 1 would be ill-formed:
 In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1209:0,
                  from /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:1:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin/str.hpp:36:9: error: invalid conversion from ‘__shedskin__::pyiter<void*>::for_in_unit {aka void*}’ to ‘std::vector<__shedskin__::str*, gc_allocator<__shedskin__::str*> >::value_type {aka __shedskin__::str*}’ [-fpermissive]
@@ -76,9 +76,9 @@ In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:
 In file included from /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:4:0:
 /usr/lib/python2.7/site-packages/shedskin/lib/array.hpp: In instantiation of ‘void __array__::array<T>::fillbuf(T) [with T = void*]’:
 /usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:291:12:   required from ‘void* __array__::array<T>::append(T) [with T = void*]’
-/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:109:13:   required from ‘void* __array__::array<T>::extend(U*) [with U = __shedskin__::list<__shedskin__::str*>; T = void*]’
+/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:109:19:   required from ‘void* __array__::array<T>::extend(U*) [with U = __shedskin__::list<__shedskin__::str*>; T = void*]’
 /usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:92:5:   required from ‘void* __array__::array<T>::__init__(__shedskin__::str*, U*) [with U = __shedskin__::list<__shedskin__::str*>; T = void*]’
-/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:34:9:   required from ‘__array__::array<T>::array(__shedskin__::str*, U*) [with U = __shedskin__::list<__shedskin__::str*>; T = void*]’
+/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:34:17:   required from ‘__array__::array<T>::array(__shedskin__::str*, U*) [with U = __shedskin__::list<__shedskin__::str*>; T = void*]’
 /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:124:85:   required from here
 /usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:247:43: error: invalid conversion from ‘void*’ to ‘signed char’ [-fpermissive]
          case 'b': *((signed char *)buffy) = t; break;
@@ -114,7 +114,7 @@ make[2]: *** [Makefile:23: shed] Chyba 1
 make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp“
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: fastaredux.shedskin_run] Chyba 2
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp“
-11.71s to complete and log all make actions
+9.56s to complete and log all make actions
 
 COMMAND LINE:
 ./shed 2500000

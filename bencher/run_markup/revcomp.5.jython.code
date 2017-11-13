@@ -6,9 +6,9 @@
 # modified by Daniel Nanz
 # read() input, write in reverse, cleanups by J. Kleint
 
-import sys
+import sys, string
 
-def show(seq, table, write=sys.stdout.buffer.write, nl=b'\n'):
+def show(seq, table, write=sys.stdout.write, nl=b'\n'):
     header, s = seq.split(nl, 1)
     s = s.translate(table, nl)
     write(b'>' + header + nl)
@@ -17,9 +17,9 @@ def show(seq, table, write=sys.stdout.buffer.write, nl=b'\n'):
     write(s[0:i + 1][::-1] + nl)
 
 def main():
-    table = bytes.maketrans(b'ACBDGHKMNSRUTWVYacbdghkmnsrutwvy', 
+    table = string.maketrans(b'ACBDGHKMNSRUTWVYacbdghkmnsrutwvy', 
                             b'TGVHCDMKNSYAAWBRTGVHCDMKNSYAAWBR')
-    for seq in sys.stdin.buffer.read().split(b'>')[1:]:
+    for seq in sys.stdin.read().split(b'>')[1:]:
         show(seq, table)
 
 main()

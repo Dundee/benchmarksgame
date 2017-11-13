@@ -3,22 +3,21 @@
 #
 # contributed by Antoine Pitrou
 # modified by Dominique Wahli and Daniel Nanz
-# modified by Joerg Baumann
 
 import sys
 import multiprocessing as mp
 
 
-def make_tree(i, d):
-
+def make_tree(int i, int d):
     if d > 0:
+        i2 = i + i
         d -= 1
-        return (i, make_tree(i, d), make_tree(i + 1, d))
+        return (i, make_tree(i2 - 1, d), make_tree(i2, d))
     return (i, None, None)
 
 
-def check_tree(node):
-
+cdef int check_tree(node):
+    cdef int i
     (i, l, r) = node
     if l is None:
         return i
@@ -27,13 +26,13 @@ def check_tree(node):
 
 
 def make_check(itde, make=make_tree, check=check_tree):
-
+    cdef int i, d
     i, d = itde
     return check(make(i, d))
 
 
-def get_argchunks(i, d, chunksize=5000):
-
+def get_argchunks(int i, int d, int chunksize=5000):
+    cdef int k
     assert chunksize % 2 == 0
     chunk = []
     for k in range(1, i + 1):
@@ -45,7 +44,8 @@ def get_argchunks(i, d, chunksize=5000):
         yield chunk
 
 
-def main(n, min_depth=4):
+def main(int n, int min_depth=4):
+    cdef int max_depth, stretch_depth, mmd, i, d, cs
 
     max_depth = max(min_depth + 2, n)
     stretch_depth = max_depth + 1

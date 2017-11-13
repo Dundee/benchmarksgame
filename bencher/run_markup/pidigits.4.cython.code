@@ -4,10 +4,7 @@
 # contributed Daniel Nanz
 
 import sys
-try:
-    import gmpy2
-except ImportError:
-    import gmpy_cffi as gmpy2
+import gmpy2
 
 if not hasattr(gmpy2, 'pi'):
     gmpy2.pi = gmpy2.const_pi

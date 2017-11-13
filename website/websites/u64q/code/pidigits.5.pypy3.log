@@ -1,5 +1,5 @@
 
-Wed, 18 Oct 2017 09:28:45 GMT
+Fri, 10 Nov 2017 20:10:06 GMT
 
 COMMAND LINE:
 /usr/bin/pypy3 pidigits.pypy3-5.pypy3 10000
@@ -10,6 +10,13 @@ PROGRAM FAILED
 PROGRAM OUTPUT:
 
 Traceback (most recent call last):
-  File "pidigits.pypy3-5.pypy3", line 9, in <module>
+  File "pidigits.pypy3-5.pypy3", line 10, in <module>
     from gmpy2 import xmpz, f_divmod
 ImportError: No module named 'gmpy2'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "pidigits.pypy3-5.pypy3", line 13, in <module>
+    from gmpy_cffi import f_divmod
+ImportError: cannot import name 'f_divmod'

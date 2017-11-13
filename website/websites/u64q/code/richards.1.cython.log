@@ -1,5 +1,5 @@
 
-Tue, 24 Oct 2017 09:29:37 GMT
+Fri, 10 Nov 2017 20:15:57 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp“
@@ -9,22 +9,22 @@ Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richard
 [1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.pyx
 running build_ext
 building 'richards' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp6ah0te1i/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp6ah0te1i/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp6ah0te1i/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp6ah0te1i/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp6ah0te1i/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp6ah0te1i/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp6ah0te1i/home/dundee/workspace/benchmarksgame/bencher/tmp/richards
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp6ah0te1i/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fPIC -I/usr/include/python3.6m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp6ah0te1i/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.o
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpp0ji6_a6/home
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpp0ji6_a6/home/dundee
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpp0ji6_a6/home/dundee/workspace
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpp0ji6_a6/home/dundee/workspace/benchmarksgame
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpp0ji6_a6/home/dundee/workspace/benchmarksgame/bencher
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpp0ji6_a6/home/dundee/workspace/benchmarksgame/bencher/tmp
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpp0ji6_a6/home/dundee/workspace/benchmarksgame/bencher/tmp/richards
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpp0ji6_a6/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp
+gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt -fPIC -I/usr/include/python3.6m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpp0ji6_a6/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.o
 /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.c: In function ‘__pyx_pf_8richards_trace’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.c:3492:5: warning: statement with no effect [-Wunused-value]
+/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.c:3493:5: warning: statement with no effect [-Wunused-value]
      __pyx_builtin_print;
      ^~~~~~~~~~~~~~~~~~~
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro -Wl,-O1,--sort-common,--as-needed,-z,relro /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmp6ah0te1i/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.o -L/usr/lib -lpython3.6m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.cpython-36m-x86_64-linux-gnu.so
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/tmpp0ji6_a6/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.o -L/usr/lib -lpython3.6m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp/richards.cpython-36m-x86_64-linux-gnu.so
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/richards/tmp“
-5.88s to complete and log all make actions
+4.66s to complete and log all make actions
 
 COMMAND LINE:
 /usr/bin/python3 -c "import richards" 10

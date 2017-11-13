@@ -56,7 +56,7 @@ $sites = array('u64q');
 function PrintHeaders(){
    echo '<tr><th>&nbsp;</th><th></th><th></th><th></th></tr>';
    echo '<tr>';
-   echo '<th class="u64q">&nbsp;x64&nbsp;Arch Linux&#8482; Intel&#174;&nbsp;i5-4210U&#174; dual-core&nbsp;</th>';
+   echo '<th class="u64q">&nbsp;x64&nbsp;Arch Linux&#8482; Intel&#174;&nbsp;i5-7200U&#174; dual-core&nbsp;</th>';
    echo '</tr>';
    echo '<tr><th>&nbsp;</th><th></th><th></th><th></th></tr>';
 }
@@ -77,7 +77,7 @@ $langs = array(
    array('cython','Cython 0.27.2 (with NumPy and gmpy)','cython',$allsites),
    array('nuitka','Nuitka 0.5.28.1','nuitka',$allsites),
    array('shedskin','Shedskin 0.9.4','shedskin',$allsites),
-   array('numba','Numba 0.34.0 (with NumPy and Anaconda 4.4.0)','numba',$allsites),
+   array('numba','Numba 0.35.0 (with NumPy and Anaconda 5.0.1)','numba',$allsites),
    array('pyston','Pyston 0.6.1','pyston',$allsites),
    array('micropython','MicroPython 1.9.2','micropython',$allsites),
    array('grumpy','Grumpy r123.08f9c2e','grumpy',$allsites),

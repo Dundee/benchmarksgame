@@ -17,7 +17,7 @@ def show(seq, table, write=sys.stdout.buffer.write, nl=b'\n'):
     write(s[0:i + 1][::-1] + nl)
 
 def main():
-    table = bytes.maketrans(b'ACBDGHKMNSRUTWVYacbdghkmnsrutwvy', 
+    table = bytes.maketrans(b'ACBDGHKMNSRUTWVYacbdghkmnsrutwvy',
                             b'TGVHCDMKNSYAAWBRTGVHCDMKNSYAAWBR')
     for seq in sys.stdin.buffer.read().split(b'>')[1:]:
         show(seq, table)

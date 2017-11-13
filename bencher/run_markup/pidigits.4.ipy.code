@@ -5,7 +5,7 @@
 
 import sys
 try:
-    import gmpy
+    import gmpy2 as gmpy
 except ImportError:
     import gmpy_cffi as gmpy
 

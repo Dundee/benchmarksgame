@@ -1,12 +1,12 @@
 
-Tue, 24 Oct 2017 09:08:47 GMT
+Fri, 10 Nov 2017 18:46:56 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp“
 nuitka --remove-output --improved fasta.nuitka-5.nuitka
 cp fasta.nuitka-5.nuitka.exe fasta.nuitka-5.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp“
-7.30s to complete and log all make actions
+5.27s to complete and log all make actions
 
 COMMAND LINE:
 ./fasta.nuitka-5.nuitka_run 2500000
@@ -18,7 +18,7 @@ PROGRAM OUTPUT:
 
 Process Process-1:
 Traceback (most recent call last):
-  File "/usr/lib/python3.6/multiprocessing/process.py", line 249, in _bootstrap
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
     self.run()
   File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
     self._target(*self._args, **self._kwargs)

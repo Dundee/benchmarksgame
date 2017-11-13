@@ -1,5 +1,5 @@
 
-Wed, 21 Dec 2016 14:16:58 GMT
+Fri, 10 Nov 2017 19:41:20 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
@@ -66,135 +66,73 @@ Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 *WARNING* shed.py:136: expression has dynamic (sub)type: {int, list}
 *WARNING* shed.py:137: expression has dynamic (sub)type: {int, list}
 *WARNING* shed.py:138: expression has dynamic (sub)type: {int, list}
-[elapsed time: 24.31 seconds]
+[elapsed time: 14.00 seconds]
 make
 make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
 g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp /usr/lib/python2.7/site-packages/shedskin/lib/bisect.cpp -lgc -lpcre  -o shed
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp: In function ‘__shedskin__::list<__shedskin__::list<__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*>*>* __shed__::list_comp_2(__shedskin__::pyiter<__shedskin__::list<__shedskin__::list<int>*>*>*)’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:138:58: error: no matching function for call to ‘__shedskin__::list<__shedskin__::list<__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*>*>::append(__shedskin__::list<__shedskin__::set<int>*>*)’
-         __ss_result->append((new list<set<__ss_int> *>()));
-                                                          ^
-In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1207:0,
-                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/list.hpp:96:25: note: candidate: void* __shedskin__::list<T>::append(T) [with T = __shedskin__::list<__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*>*]
- template<class T> void *list<T>::append(T a) {
-                         ^~~~~~~
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/list.hpp:96:25: note:   no known conversion for argument 1 from ‘__shedskin__::list<__shedskin__::set<int>*>*’ to ‘__shedskin__::list<__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*>*’
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp: In member function ‘virtual __shedskin__::list<__shedskin__::list<int>*>* __shed__::list_comp_4::__get_next()’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:168:46: error: invalid conversion from ‘__shedskin__::__ss_int {aka int}’ to ‘__shedskin__::list<__shedskin__::list<int>*>*’ [-fpermissive]
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp: In member function ‘virtual __shedskin__::__ss_int __shed__::list_comp_4::__get_next()’:
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:168:36: error: base operand of ‘->’ is not a pointer
          if ((cti)->__contains__((c)->__add__(o))) {
-                                              ^
-In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1207:0,
-                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/list.hpp:258:28: note:   initializing argument 1 of ‘__shedskin__::list<T>* __shedskin__::list<T>::__add__(__shedskin__::list<T>*) [with T = __shedskin__::list<int>*]’
- template<class T> list<T> *list<T>::__add__(list<T> *b) {
-                            ^~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:169:29: error: ‘class __shedskin__::pyiter<__shedskin__::list<__shedskin__::list<int>*>*>’ has no member named ‘__getitem__’; did you mean ‘__iter__’?
+                                    ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:169:29: error: ‘class __shedskin__::pyiter<int>’ has no member named ‘__getitem__’; did you mean ‘__iter__’?
              __result = cti->__getitem__((c)->__add__(o));
                              ^~~~~~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:169:54: error: invalid conversion from ‘__shedskin__::__ss_int {aka int}’ to ‘__shedskin__::list<__shedskin__::list<int>*>*’ [-fpermissive]
+                             __iter__
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:169:44: error: base operand of ‘->’ is not a pointer
              __result = cti->__getitem__((c)->__add__(o));
-                                                      ^
-In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1207:0,
-                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/list.hpp:258:28: note:   initializing argument 1 of ‘__shedskin__::list<T>* __shedskin__::list<T>::__add__(__shedskin__::list<T>*) [with T = __shedskin__::list<int>*]’
- template<class T> list<T> *list<T>::__add__(list<T> *b) {
-                            ^~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp: In member function ‘virtual __shedskin__::list<__shedskin__::list<int>*>* __shed__::list_comp_5::__get_next()’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:190:46: error: invalid conversion from ‘__shedskin__::__ss_int {aka int}’ to ‘__shedskin__::list<__shedskin__::list<int>*>*’ [-fpermissive]
+                                            ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp: In member function ‘virtual __shedskin__::__ss_int __shed__::list_comp_5::__get_next()’:
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:190:36: error: base operand of ‘->’ is not a pointer
          if ((cti)->__contains__((c)->__add__(o))) {
-                                              ^
-In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1207:0,
-                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/list.hpp:258:28: note:   initializing argument 1 of ‘__shedskin__::list<T>* __shedskin__::list<T>::__add__(__shedskin__::list<T>*) [with T = __shedskin__::list<int>*]’
- template<class T> list<T> *list<T>::__add__(list<T> *b) {
-                            ^~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:191:29: error: ‘class __shedskin__::pyiter<__shedskin__::list<__shedskin__::list<int>*>*>’ has no member named ‘__getitem__’; did you mean ‘__iter__’?
+                                    ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:191:29: error: ‘class __shedskin__::pyiter<int>’ has no member named ‘__getitem__’; did you mean ‘__iter__’?
              __result = cti->__getitem__((c)->__add__(o));
                              ^~~~~~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:191:54: error: invalid conversion from ‘__shedskin__::__ss_int {aka int}’ to ‘__shedskin__::list<__shedskin__::list<int>*>*’ [-fpermissive]
+                             __iter__
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:191:44: error: base operand of ‘->’ is not a pointer
              __result = cti->__getitem__((c)->__add__(o));
-                                                      ^
-In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1207:0,
+                                            ^~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp: In function ‘__shedskin__::list<__shedskin__::list<__shedskin__::list<__shedskin__::set<int>*>*>*>* __shed__::get_footprints(__shedskin__::pyiter<int>*, __shedskin__::pyiter<int>*, __shedskin__::pyiter<int>*)’:
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:350:5: error: ‘__ss_in’ has not been declared
+     __ss_in::for_in_loop __42;
+     ^~~~~~~
+In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1050:0,
                  from /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/list.hpp:258:28: note:   initializing argument 1 of ‘__shedskin__::list<T>* __shedskin__::list<T>::__add__(__shedskin__::list<T>*) [with T = __shedskin__::list<int>*]’
- template<class T> list<T> *list<T>::__add__(list<T> *b) {
-                            ^~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp: In function ‘__shedskin__::list<__shedskin__::list<__shedskin__::list<__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*>*>*>* __shed__::get_footprints(__shedskin__::pyiter<__shedskin__::list<__shedskin__::list<int>*>*>*, __shedskin__::pyiter<__shedskin__::list<__shedskin__::list<int>*>*>*, __shedskin__::pyiter<__shedskin__::list<__shedskin__::list<int>*>*>*)’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:372:46: error: invalid conversion from ‘__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>::for_in_unit {aka __shedskin__::list<__shedskin__::list<int>*>*}’ to ‘__shedskin__::__ss_int {aka int}’ [-fpermissive]
-                     ((fps->__getfast__(___min(1, 0, fp)))->__getfast__(pi))->append(fp);
-                                        ~~~~~~^~~~~~~~~~
-In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1207:0,
-                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/list.hpp:134:28: note:   initializing argument 1 of ‘T __shedskin__::list<T>::__getfast__(__shedskin__::__ss_int) [with T = __shedskin__::list<__shedskin__::list<__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*>*>*; __shedskin__::__ss_int = int]’
- template<class T> inline T list<T>::__getfast__(__ss_int i) {
-                            ^~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp: In function ‘__shedskin__::list<__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*>* __shed__::get_senh(__shedskin__::pyiter<__shedskin__::list<__shedskin__::list<int>*>*>*, __shedskin__::pyiter<__shedskin__::list<__shedskin__::list<int>*>*>*)’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:395:41: error: cannot convert ‘__shedskin__::list<__shedskin__::set<int>*>*’ to ‘__shedskin__::list<__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*>*’ in assignment
-     se_nh = (new list<set<__ss_int> *>());
-                                         ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp: In function ‘__shedskin__::tuple2<__shedskin__::pyiter<__shedskin__::list<__shedskin__::list<int>*>*>*, __shedskin__::pyiter<__shedskin__::list<__shedskin__::list<int>*>*>*>* __shed__::get_puzzle(__shedskin__::__ss_int, __shedskin__::__ss_int)’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:417:155: error: cannot convert ‘__shedskin__::tuple2<__shedskin__::pyiter<int>*, __shedskin__::pyiter<int>*>*’ to ‘__shedskin__::tuple2<__shedskin__::pyiter<__shedskin__::list<__shedskin__::list<int>*>*>*, __shedskin__::pyiter<__shedskin__::list<__shedskin__::list<int>*>*>*>*’ in return
-     return (new tuple2<pyiter<__ss_int> *, pyiter<__ss_int> *>(3,((pyiter<__ss_int> *)(board)),((pyiter<__ss_int> *)(cti)),((pyiter<__ss_int> *)(pieces))));
-                                                                                                                                                           ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp: In function ‘void* __shed__::solve(__shedskin__::__ss_int, __shedskin__::__ss_int, __shedskin__::set<int>*, __shedskin__::list<int>*, __shedskin__::list<int>*, __shedskin__::list<__shedskin__::str*>*, __shedskin__::list<__shedskin__::list<__shedskin__::list<__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*>*>*>*, __shedskin__::list<__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*>*, __shed__::lambda3)’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:462:30: error: no matching function for call to ‘__le(__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*&, __shedskin__::set<int>*&)’
-             if (__le(fp, free)) {
-                              ^
-In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:950:0,
-                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/compare.hpp:41:36: note: candidate: template<class T> __shedskin__::__ss_bool __shedskin__::__le(T, T)
- template<class T> inline __ss_bool __le(T a, T b) { return a->__le__(b); }
-                                    ^~~~
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/compare.hpp:41:36: note:   template argument deduction/substitution failed:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:462:30: note:   deduced conflicting types for parameter ‘T’ (‘__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*’ and ‘__shedskin__::set<int>*’)
-             if (__le(fp, free)) {
-                              ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:466:52: error: invalid conversion from ‘__shedskin__::list<__shedskin__::list<int>*>*’ to ‘__shedskin__::__ss_int {aka int}’ [-fpermissive]
-                     n_curr_board->__setitem__(ci, p);
-                                                    ^
-In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1207:0,
-                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/list.hpp:139:25: note:   initializing argument 1 of ‘void* __shedskin__::list<T>::__setitem__(__shedskin__::__ss_int, T) [with T = int; __shedskin__::__ss_int = int]’
- template<class T> void *list<T>::__setitem__(__ss_int i, T e) {
-                         ^~~~~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:470:48: error: no matching function for call to ‘__shedskin__::set<int>::__sub__(__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*&)’
-                     n_free = (free)->__sub__(fp);
-                                                ^
-In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1212:0,
-                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/set.hpp:664:27: note: candidate: __shedskin__::set<T>* __shedskin__::set<T>::__sub__(__shedskin__::set<T>*) [with T = int]
- template<class T> set<T> *set<T>::__sub__(set<T> *s) {
-                           ^~~~~~
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/set.hpp:664:27: note:   no known conversion for argument 1 from ‘__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*’ to ‘__shedskin__::set<int>*’
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:472:76: error: no matching function for call to ‘__shedskin__::set<int>::__and__(__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*)’
-                     if ((len(((n_free)->__and__(se_nh->__getfast__(n_i_min))))>0)) {
-                                                                            ^
-In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1212:0,
-                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/set.hpp:655:27: note: candidate: __shedskin__::set<T>* __shedskin__::set<T>::__and__(__shedskin__::set<T>*) [with T = int]
- template<class T> set<T> *set<T>::__and__(set<T> *s) {
-                           ^~~~~~
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/set.hpp:655:27: note:   no known conversion for argument 1 from ‘__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*’ to ‘__shedskin__::set<int>*’
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:475:123: error: cannot convert ‘__shedskin__::list<__shedskin__::list<__shedskin__::list<__shedskin__::set<int>*>*>*>*’ to ‘__shedskin__::list<__shedskin__::list<__shedskin__::list<__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*>*>*>*’ for argument ‘7’ to ‘void* __shed__::solve(__shedskin__::__ss_int, __shedskin__::__ss_int, __shedskin__::set<int>*, __shedskin__::list<int>*, __shedskin__::list<int>*, __shedskin__::list<__shedskin__::str*>*, __shedskin__::list<__shedskin__::list<__shedskin__::list<__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*>*>*>*, __shedskin__::list<__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*>*, __shed__::lambda3)’
-                         solve(n, n_i_min, n_free, n_curr_board, n_pieces_left, solutions, default_8, default_9, default_10);
-                                                                                                                           ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp: In function ‘void* __shed__::__ss_main(__shedskin__::__ss_int)’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:511:91: error: cannot convert ‘__shedskin__::list<__shedskin__::list<__shedskin__::list<__shedskin__::set<int>*>*>*>*’ to ‘__shedskin__::list<__shedskin__::list<__shedskin__::list<__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*>*>*>*’ for argument ‘7’ to ‘void* __shed__::solve(__shedskin__::__ss_int, __shedskin__::__ss_int, __shedskin__::set<int>*, __shedskin__::list<int>*, __shedskin__::list<int>*, __shedskin__::list<__shedskin__::str*>*, __shedskin__::list<__shedskin__::list<__shedskin__::list<__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*>*>*>*, __shedskin__::list<__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*>*, __shed__::lambda3)’
-     solve(n, 0, free, curr_board, pieces_left, solutions, default_8, default_9, default_10);
-                                                                                           ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp: In function ‘void __shed__::__init()’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:556:17: error: cannot convert ‘__shedskin__::list<__shedskin__::list<__shedskin__::list<__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*>*>*>*’ to ‘__shedskin__::list<__shedskin__::list<__shedskin__::list<__shedskin__::set<int>*>*>*>*’ in assignment
-     default_8 = fps;
-                 ^~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:557:17: error: cannot convert ‘__shedskin__::list<__shedskin__::set<__shedskin__::list<__shedskin__::list<int>*>*>*>*’ to ‘__shedskin__::list<__shedskin__::set<int>*>*’ in assignment
-     default_9 = se_nh;
-                 ^~~~~
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/iter.hpp:17:5: error: ‘__42’ was not declared in this scope
+     __ ## t = __ ## temp->for_in_init(); \
+     ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:368:13: note: in expansion of macro ‘FOR_IN’
+             FOR_IN(pp,p,39,41,42)
+             ^~~~~~
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/iter.hpp:17:5: note: suggested alternative: ‘__41’
+     __ ## t = __ ## temp->for_in_init(); \
+     ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:368:13: note: in expansion of macro ‘FOR_IN’
+             FOR_IN(pp,p,39,41,42)
+             ^~~~~~
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/iter.hpp:17:25: error: base operand of ‘->’ is not a pointer
+     __ ## t = __ ## temp->for_in_init(); \
+                         ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:368:13: note: in expansion of macro ‘FOR_IN’
+             FOR_IN(pp,p,39,41,42)
+             ^~~~~~
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/iter.hpp:18:21: error: base operand of ‘->’ is not a pointer
+     while(__ ## temp->for_in_has_next(__ ## t)) \
+                     ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:368:13: note: in expansion of macro ‘FOR_IN’
+             FOR_IN(pp,p,39,41,42)
+             ^~~~~~
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/iter.hpp:21:23: error: base operand of ‘->’ is not a pointer
+         e = __ ## temp->for_in_next(__ ## t);
+                       ^
+/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/shed.cpp:368:13: note: in expansion of macro ‘FOR_IN’
+             FOR_IN(pp,p,39,41,42)
+             ^~~~~~
 make[2]: *** [Makefile:21: shed] Chyba 1
 make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: meteor.shedskin-3.shedskin_run] Chyba 2
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
-33.13s to complete and log all make actions
+21.45s to complete and log all make actions
 
 COMMAND LINE:
 ./shed 2098
