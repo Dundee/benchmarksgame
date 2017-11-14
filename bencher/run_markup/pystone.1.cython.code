@@ -74,15 +74,19 @@ cdef void pystones(int loops):
     Proc0(loops)
 
 cdef int IntGlob
+cdef char Char1Glob
+cdef char Char2Glob
+cdef int* Array1Glob
 
 IntGlob = 0
 BoolGlob = FALSE
-Char1Glob = '\0'
-Char2Glob = '\0'
+Char1Glob = b'\0'
+Char2Glob = b'\0'
 Array1Glob = [0]*51
-Array2Glob = [x[:] for x in [Array1Glob]*51]
+Array2Glob = list([x[:] for x in [[0]*51]*51])
 PtrGlb = None
 PtrGlbNext = None
+
 
 cdef void Proc0(int loops):
     cdef int i
@@ -107,16 +111,19 @@ cdef void Proc0(int loops):
     PtrGlb.Discr = Ident1
     PtrGlb.EnumComp = Ident3
     PtrGlb.IntComp = 40
-    PtrGlb.StringComp = "DHRYSTONE PROGRAM, SOME STRING"
-    String1Loc = "DHRYSTONE PROGRAM, 1'ST STRING"
+    PtrGlb.StringComp = b"DHRYSTONE PROGRAM, SOME STRING"
+    String1Loc = b"DHRYSTONE PROGRAM, 1'ST STRING"
     Array2Glob[8][7] = 10
+
+    cdef char CharIndex
+    cdef int IntLoc1, IntLoc2, IntLoc3, EnumLoc
 
     for i in range(loops):
         Proc5()
         Proc4()
         IntLoc1 = 2
         IntLoc2 = 3
-        String2Loc = "DHRYSTONE PROGRAM, 2'ND STRING"
+        String2Loc = b"DHRYSTONE PROGRAM, 2'ND STRING"
         EnumLoc = Ident2
         BoolGlob = not Func2(String1Loc, String2Loc)
         while IntLoc1 < IntLoc2:
@@ -125,13 +132,13 @@ cdef void Proc0(int loops):
             IntLoc1 = IntLoc1 + 1
         Proc8(Array1Glob, Array2Glob, IntLoc1, IntLoc3)
         PtrGlb = Proc1(PtrGlb)
-        CharIndex = 'A'
+        CharIndex = b'A'
         while CharIndex <= Char2Glob:
-            if EnumLoc == Func1(CharIndex, 'C'):
+            if EnumLoc == Func1(CharIndex, b'C'):
                 EnumLoc = Proc6(Ident1)
-            CharIndex = chr(ord(CharIndex)+1)
+            CharIndex += 1 # chr(ord(CharIndex)+1)
         IntLoc3 = IntLoc2 * IntLoc1
-        IntLoc2 = IntLoc3 / IntLoc1
+        IntLoc2 = IntLoc3 // IntLoc1
         IntLoc2 = 7 * (IntLoc3 - IntLoc2) - IntLoc1
         IntLoc1 = Proc2(IntLoc1)
 
@@ -155,7 +162,7 @@ def Proc1(PtrParIn):
 cdef int Proc2(int IntParIO):
     IntLoc = IntParIO + 10
     while 1:
-        if Char1Glob == 'A':
+        if Char1Glob == b'A':
             IntLoc = IntLoc - 1
             IntParIO = IntLoc - IntGlob
             EnumLoc = Ident1
@@ -173,21 +180,22 @@ def Proc3(PtrParOut):
     PtrGlb.IntComp = Proc7(10, IntGlob)
     return PtrParOut
 
-def Proc4():
+cdef void Proc4():
     global Char2Glob
+    cdef bint BoolLoc
 
-    BoolLoc = Char1Glob == 'A'
+    BoolLoc = Char1Glob == b'A'
     BoolLoc = BoolLoc or BoolGlob
-    Char2Glob = 'B'
+    Char2Glob = b'B'
 
-def Proc5():
+cdef void Proc5():
     global Char1Glob
     global BoolGlob
 
-    Char1Glob = 'A'
+    Char1Glob = b'A'
     BoolGlob = FALSE
 
-def Proc6(EnumParIn):
+cdef int Proc6(int EnumParIn):
     EnumParOut = EnumParIn
     if not Func3(EnumParIn):
         EnumParOut = Ident4
@@ -213,8 +221,9 @@ cdef int Proc7(int IntParI1, int IntParI2):
     IntParOut = IntParI2 + IntLoc
     return IntParOut
 
-def Proc8(Array1Par, Array2Par, int IntParI1, int IntParI2):
+cdef void Proc8(int* Array1Par, object Array2Par, int IntParI1, int IntParI2):
     global IntGlob
+    cdef int IntLoc, IntIndex
 
     IntLoc = IntParI1 + 5
     Array1Par[IntLoc] = IntParI2
@@ -226,7 +235,9 @@ def Proc8(Array1Par, Array2Par, int IntParI1, int IntParI2):
     Array2Par[IntLoc+20][IntLoc] = Array1Par[IntLoc]
     IntGlob = 5
 
-cdef int Func1(unicode CharPar1, unicode CharPar2):
+cdef int Func1(char CharPar1, char CharPar2):
+    cdef char CharLoc1, CharLoc2
+
     CharLoc1 = CharPar1
     CharLoc2 = CharLoc1
     if CharLoc2 != CharPar2:
@@ -234,15 +245,18 @@ cdef int Func1(unicode CharPar1, unicode CharPar2):
     else:
         return Ident2
 
-def Func2(unicode StrParI1, unicode StrParI2):
+cdef bint Func2(char* StrParI1, char* StrParI2):
+    cdef int IntLoc
+    cdef char CharLoc
+
     IntLoc = 1
     while IntLoc <= 1:
         if Func1(StrParI1[IntLoc], StrParI2[IntLoc+1]) == Ident1:
-            CharLoc = 'A'
+            CharLoc = b'A'
             IntLoc = IntLoc + 1
-    if CharLoc >= 'W' and CharLoc <= 'Z':
+    if CharLoc >= b'W' and CharLoc <= b'Z':
         IntLoc = 7
-    if CharLoc == 'X':
+    if CharLoc == b'X':
         return TRUE
     else:
         if StrParI1 > StrParI2:
@@ -251,7 +265,7 @@ def Func2(unicode StrParI1, unicode StrParI2):
         else:
             return FALSE
 
-def Func3(EnumParIn):
+cdef bint Func3(int EnumParIn):
     EnumLoc = EnumParIn
     if EnumLoc == Ident3: return TRUE
     return FALSE
