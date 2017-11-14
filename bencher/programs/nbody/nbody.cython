@@ -16,6 +16,8 @@ def combinations(l):
             result.append((l[x],y))
     return result
 
+cdef double PI, SOLAR_MASS, DAYS_PER_YEAR
+
 PI = 3.14159265358979323
 SOLAR_MASS = 4 * PI * PI
 DAYS_PER_YEAR = 365.24
@@ -60,7 +62,8 @@ SYSTEM = list(BODIES.values())
 PAIRS = combinations(SYSTEM)
 
 
-def advance(dt, n, bodies=SYSTEM, pairs=PAIRS):
+cdef void advance(double dt, int n, bodies=SYSTEM, pairs=PAIRS):
+    cdef double x1, y1, z1, x2, y2, z2, dx, dy, dz, mag, m1, m2, b1m, b2m, vx, vy, vz, m
 
     for i in range(n):
         for (([x1, y1, z1], v1, m1),
@@ -83,7 +86,8 @@ def advance(dt, n, bodies=SYSTEM, pairs=PAIRS):
             r[2] += dt * vz
 
 
-def report_energy(bodies=SYSTEM, pairs=PAIRS, e=0.0):
+cdef void report_energy(bodies=SYSTEM, pairs=PAIRS, double e=0.0):
+    cdef double x1, y1, z1, x2, y2, z2, dx, dy, dz, m1, m2, vx, vy, vz, m
 
     for (((x1, y1, z1), v1, m1),
          ((x2, y2, z2), v2, m2)) in pairs:
@@ -95,7 +99,8 @@ def report_energy(bodies=SYSTEM, pairs=PAIRS, e=0.0):
         e += m * (vx * vx + vy * vy + vz * vz) / 2.
     print("%.9f" % e)
 
-def offset_momentum(ref, bodies=SYSTEM, px=0.0, py=0.0, pz=0.0):
+cdef void offset_momentum(ref, bodies=SYSTEM, double px=0.0, double py=0.0, double pz=0.0):
+    cdef double vx, vy, vz, m 
 
     for (r, [vx, vy, vz], m) in bodies:
         px -= vx * m
