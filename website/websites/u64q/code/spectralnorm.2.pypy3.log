@@ -1,8 +1,39 @@
 
-Fri, 10 Nov 2017 20:17:37 GMT
+Thu, 04 Jan 2018 10:36:54 GMT
 
 COMMAND LINE:
 /usr/bin/pypy3 spectralnorm.pypy3-2.pypy3 550
 
+PROGRAM FAILED 
+
+
 PROGRAM OUTPUT:
-1.274224125
+
+Traceback (most recent call last):
+  File "/opt/pypy3/site-packages/numpy/core/__init__.py", line 16, in <module>
+    from . import multiarray
+ImportError: cannot import name 'multiarray'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "spectralnorm.pypy3-2.pypy3", line 12, in <module>
+    from numpy import *
+  File "/opt/pypy3/site-packages/numpy/__init__.py", line 142, in <module>
+    from . import add_newdocs
+  File "/opt/pypy3/site-packages/numpy/add_newdocs.py", line 13, in <module>
+    from numpy.lib import add_newdoc
+  File "/opt/pypy3/site-packages/numpy/lib/__init__.py", line 8, in <module>
+    from .type_check import *
+  File "/opt/pypy3/site-packages/numpy/lib/type_check.py", line 11, in <module>
+    import numpy.core.numeric as _nx
+  File "/opt/pypy3/site-packages/numpy/core/__init__.py", line 26, in <module>
+    raise ImportError(msg)
+ImportError: 
+Importing the multiarray numpy extension module failed.  Most
+likely you are trying to import a failed build of numpy.
+If you're working with a numpy git repo, try `git clean -xdf` (removes all
+files not under version control).  Otherwise reinstall numpy.
+
+Original error was: cannot import name 'multiarray'
+
