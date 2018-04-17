@@ -1,13 +1,14 @@
 
-Wed, 06 Dec 2017 11:09:39 GMT
+Tue, 17 Apr 2018 10:29:37 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp“
-nuitka --remove-output --improved pidigits.nuitka-3.nuitka
+nuitka3 --remove-output --improved pidigits.nuitka-3.nuitka
+Nuitka:WARNING:Not recursing to 'gmpy2' (/usr/lib/python3.6/site-packages/gmpy2), please specify --recurse-none (do not warn), --recurse-all (recurse to all), --recurse-not-to=gmpy2 (ignore it), --recurse-to=gmpy2 (recurse to it) to change.
 Nuitka:WARNING:pidigits.nuitka-3.nuitka:13: Cannot find 'gmpy_cffi' as absolute import.
 cp pidigits.nuitka-3.nuitka.exe pidigits.nuitka-3.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/pidigits/tmp“
-2.99s to complete and log all make actions
+3.11s to complete and log all make actions
 
 COMMAND LINE:
 ./pidigits.nuitka-3.nuitka_run 10000

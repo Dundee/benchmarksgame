@@ -35,7 +35,7 @@
 ########################################
 
 %.nuitka_run: %.nuitka
-	nuitka --remove-output --improved $<
+	nuitka3 --remove-output --improved $<
 	cp $<.exe $*.nuitka_run
 
 
