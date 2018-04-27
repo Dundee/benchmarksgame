@@ -1,5 +1,5 @@
 
-Tue, 27 Feb 2018 11:34:04 GMT
+Thu, 26 Apr 2018 16:46:24 GMT
 
 COMMAND LINE:
 /usr/bin/pypy3 pidigits.pypy3-2.pypy3 10000
@@ -25,7 +25,7 @@ Traceback (most recent call last):
     from gmpy_cffi.interface import gmp, ffi
   File "/opt/pypy3/site-packages/gmpy_cffi/interface.py", line 503, in <module>
     """, libraries=['gmp', 'mpfr', 'mpc'])
-  File "/opt/pypy3/lib_pypy/cffi/api.py", line 444, in verify
+  File "/opt/pypy3/lib_pypy/cffi/api.py", line 451, in verify
     lib = self.verifier.load_library()
   File "/opt/pypy3/lib_pypy/cffi/verifier.py", line 103, in load_library
     self._write_source()
