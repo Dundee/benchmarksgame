@@ -81,6 +81,7 @@ $langs = array(
    array('pyston','Pyston 0.6.1','pyston',$allsites),
    array('micropython','MicroPython 1.9.3','micropython',$allsites),
    array('grumpy','Grumpy r123.08f9c2e','grumpy',$allsites),
+   array('graal','Graal python 1.0.0_rc1','graal',$allsites),
    );
 
 

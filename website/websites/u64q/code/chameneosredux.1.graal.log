@@ -1,0 +1,315 @@
+
+Wed, 06 Jun 2018 08:51:26 GMT
+
+COMMAND LINE:
+/usr/bin/graalpython chameneosredux.graal 6000000
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT NOT CHECKED:
+
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+[ [ SubstrateSegfaultHandler caught signal 11 ] ]
+
+General Purpose Register Set Values: 
+
+  RAX 0000000003e27441
+  RBX 0000000004be2010
+  RCX 00007fe122a9d2d0
+  RDX 0000000002c17030
+  RBP 0000000000000000
+  RSI 00007fe122a9d2d0
+  RDI 5700000000040678
+  RSP 00007fe0ff3fe0c0
+  R8  0000000002c17030
+  R9  00007fe122a9d2d0
+  R10 0000000002a0c140
+  R11 0000000002a0c140
+  R12 000000000464bc68
+  R13 0000000002c17030
+  R14 0000000003f5ba20
+  R15 00007fe0f8000b20
+  EFL 0000000000010206
+  RIP 0000000000b0e936
+  
+
+JavaFrameAnchor dump:
+
+  No anchors
+  
+DeoptStubPointer address: 0000000000a9eb50
+
+TopFrame info:
+
+  Lookup TotalFrameSize in CodeInfoTable:
+  SourceTotalFrameSize 64
+  
+VMThreads info:
+
+  VMThread 00007fe0f8000b20  STATUS_IN_JAVA
+  VMThread 00007fe100000b20  STATUS_IN_NATIVE
+  VMThread 000000000a0f3260  STATUS_IN_JAVA
+  
+VM Thread State for current thread 00007fe0f8000b20:
+
+  0 (8 bytes): com.oracle.svm.core.genscavenge.PinnedAllocatorImpl.openPinnedAllocator = null
+  8 (8 bytes): com.oracle.svm.core.heap.NoAllocationVerifier.openVerifiers = null
+  16 (8 bytes): com.oracle.svm.core.jdk.IdentityHashCodeSupport.hashCodeGeneratorTL = java.util.SplittableRandom  00007fe10be110e8
+  24 (8 bytes): com.oracle.svm.core.snippets.SnippetRuntime.currentException = null
+  32 (8 bytes): com.oracle.svm.core.thread.JavaThreads.currentThread = org.graalvm.compiler.core.CompilerThread  00007fe128af9d40
+  40 (8 bytes): com.oracle.svm.core.thread.ThreadingSupportImpl.activeTimer = null
+  48 (8 bytes): com.oracle.svm.truffle.nfi.TruffleNFISupport.currentScope = null
+  56 (32 bytes): com.oracle.svm.core.genscavenge.ThreadLocalAllocation.pinnedTLAB = 
+    00007fe0f8000b58: 0000000000000000 0000000000000000
+    00007fe0f8000b68: 0000000000000000 0000000000000000
+    
+  
+  88 (32 bytes): com.oracle.svm.core.genscavenge.ThreadLocalAllocation.regularTLAB = 
+    00007fe0f8000b78: 00007fe122a00000 00007fe122b00000
+    00007fe0f8000b88: 00007fe122a9d2e8 00007fe12a66c000
+    
+  
+  120 (8 bytes): com.oracle.svm.core.genscavenge.ThreadLocalAllocation.freeList = 0  0000000000000000
+  128 (8 bytes): com.oracle.svm.core.posix.thread.PosixVMThreads.IsolateTL = 94598687557484880  0150150150150150
+  136 (8 bytes): com.oracle.svm.core.stack.JavaFrameAnchors.lastAnchor = 0  0000000000000000
+  144 (8 bytes): com.oracle.svm.core.thread.VMThreads.nextTL = 140604344372000  00007fe100000b20
+  152 (8 bytes): com.oracle.svm.truffle.nfi.ErrnoMirror.errnoMirror = 
+    00007fe0f8000bb8: 0000000000000000
+  
+  160 (4 bytes): com.oracle.svm.core.thread.Safepoint.safepointRequested = -4063  fffff021
+  164 (4 bytes): com.oracle.svm.core.thread.Safepoint.safepointRequestedValueBeforeSafepoint = -6500166  ff9cd0ba
+  168 (4 bytes): com.oracle.svm.core.thread.VMOperationControl.isLockOwner = 0  00000000
+  172 (4 bytes): com.oracle.svm.core.thread.VMThreads$StatusSupport.statusTL = 1  00000001
+  
+VMOperation dump:
+
+  No VMOperation in progress
+  
+
+RuntimeCodeCache dump:
+
+  == [Recent RuntimeCodeCache operations: 
+  Add: <builtin function __setitem__ at a2767350>  ip: 0x405af000 - 0x405af500  size: 1280  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fe106e0c608 at 0x0 1:{
+  }:1
+  Invalidate: <builtin function __setitem__ at a2767350>  ip: 0x405af000 - 0x405af500  size: 1280  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fe105625210 at 0x405af000 2:{
+  }:2
+  Add: <builtin function __setitem__ at a2767350>  ip: 0x41a90000 - 0x41a90af0  size: 2800  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fe105625210 at 0x0 3:{
+  }:3
+  Add: <builtin function __getitem__ at b65cb74f>  ip: 0x40644000 - 0x40649661  size: 22113  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fe1058de5c0 at 0x0 4:{
+  }:4
+  Add: <function root generator_exp:59 at 786f3c38>  ip: 0x40ba6000 - 0x40babad9  size: 23257  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fe12722e678 at 0x0 5:{
+  }:5]
+  
+  == [RuntimeCodeCache: 3 methods
+  0x40644000  <builtin function __getitem__ at b65cb74f>  ip: 0x40644000 - 0x40649661  size: 22113  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fe1058de5c0 at 0x40644000
+  0x40ba6000  <function root generator_exp:59 at 786f3c38>  ip: 0x40ba6000 - 0x40babad9  size: 23257  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fe12722e678 at 0x40ba6000
+  0x41a90000  <builtin function __setitem__ at a2767350>  ip: 0x41a90000 - 0x41a90af0  size: 2800  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fe105625210 at 0x41a90000]
+  
+Deoptimizer dump:
+
+  == [Recent Deoptimizer Events: 
+  deoptSourceFrameOperation: DeoptimizedFrame at 0x7fe128ccca90: [Deoptimization of frame
+      name: <builtin function __setitem__ at a2767350>
+      sp: 0x7ffc9dfc3a30  ip: 0x405af158
+  ]
+  deoptStub: completed for DeoptimizedFrame at 0x7fe128ccca90
+  ]
+  
+Dump Counters:
+
+  
+Raw Stacktrace:
+
+  00007fe0ff3fe0c0: 00007fe122a6ba10 0000000001957262
+  00007fe0ff3fe0d0: 00007fe122a9a550 0000000000000000
+  00007fe0ff3fe0e0: 0000000003e27441 00007fe122a9d2d0
+  00007fe0ff3fe0f0: 0000000002c17030 000000000179ec63
+  00007fe0ff3fe100: 00007fe10accf040 00000000017349b1
+  00007fe0ff3fe110: 00007fe122a6ba10 0000000000ae81c0
+  00007fe0ff3fe120: 0000000002c17030 00007fe122a9d2d0
+  00007fe0ff3fe130: 0000000004be2010 00000000018f50e0
+  00007fe0ff3fe140: 00007fe10accf040 0000000001941317
+  00007fe0ff3fe150: 0000000000000000 0000000002c17030
+  00007fe0ff3fe160: 0000000000000001 00007fe122a9d2d0
+  00007fe0ff3fe170: 0000000004be2010 000000000199f33d
+  00007fe0ff3fe180: 00007fe122a9d2b0 0000000001818bb3
+  00007fe0ff3fe190: 0000000100000000 0000000004be2010
+  00007fe0ff3fe1a0: 00000000019b9a30 0000000001933f30
+  00007fe0ff3fe1b0: 0000000122a9d2b0 0000000000000010
+  00007fe0ff3fe1c0: 00007fe124086268 0000000122a93130
+  00007fe0ff3fe1d0: 0000000002c17030 00007fe122a9d2d0
+  00007fe0ff3fe1e0: 00007fe122a9a550 00007fe122a9a550
+  00007fe0ff3fe1f0: 000000000465a1d8 00007fe122a93130
+  00007fe0ff3fe200: 00007fe122a93268 000000000199eeb4
+  00007fe0ff3fe210: 0000000100000002 00007fe124086268
+  00007fe0ff3fe220: 00007fe10ac88d60 00007fe122a9a550
+  00007fe0ff3fe230: 00007fe122a93268 00000000019bb465
+  00007fe0ff3fe240: 00007fe10ac88d60 0000000000000001
+  00007fe0ff3fe250: 00007fe10ac88d60 00000000019bbedf
+  00007fe0ff3fe260: 0000000000000000 0000000000000000
+  00007fe0ff3fe270: 0000000004396490 00007fe122a93268
+  00007fe0ff3fe280: 00007fe122a992c8 00000000019ba183
+  00007fe0ff3fe290: 00007fe122a99358 00000000018194bf
+  00007fe0ff3fe2a0: 000000d10231c878 00007fe122a93268
+  00007fe0ff3fe2b0: 00007fe122a995c8 00000000018190b8
+  00007fe0ff3fe2c0: 00007fe122a9a598 00007fe10ac88c58
+  00007fe0ff3fe2d0: 0000000004396490 00007fe122a93268
+  00007fe0ff3fe2e0: 00007fe122a992c8 00000000019ba893
+  00007fe0ff3fe2f0: 00007fe122a99148 0000000122a8c2e0
+  00007fe0ff3fe300: 00007fe122a9a598 00007fe122a93268
+  00007fe0ff3fe310: 00007fe122a9a580 00007fe10ac88c58
+  00007fe0ff3fe320: 00007fe122a992c8 00000000019baf8e
+  00007fe0ff3fe330: 00000000062fbc48 00000000019b4f00
+  00007fe0ff3fe340: 0000000006281d18 00007fe122a99330
+  00007fe0ff3fe350: 00007fe10ac88c58 00000001019b6d90
+  00007fe0ff3fe360: 00007fe122a992c8 00000000019b89ec
+  00007fe0ff3fe370: 000000000471e1e8 000000000155b230
+  00007fe0ff3fe380: 0000000000000000 00007fe10ac88c58
+  00007fe0ff3fe390: 00007fe122a992c8 00000000019b5d32
+  00007fe0ff3fe3a0: 000000000575b520 00000000019b69de
+  00007fe0ff3fe3b0: 0000000000000000 00000000019b58db
+  00007fe0ff3fe3c0: 000000000231d508 0000000000000001
+  00007fe0ff3fe3d0: 0000000000000000 00000000019b58db
+  00007fe0ff3fe3e0: 000000000231d508 0000000003f5ba20
+  00007fe0ff3fe3f0: 0000000002a0c1f8 0000000000000000
+  00007fe0ff3fe400: 000000000437db10 0000000002a0c1f8
+  00007fe0ff3fe410: 00007fe10ac88d60 0000000000000000
+  00007fe0ff3fe420: 0000000022a61cb0 00007fe10ac88c58
+  00007fe0ff3fe430: 00007fe122a992c8 00000000019bc44c
+  00007fe0ff3fe440: 00007fe122a84928 00000000019b8c87
+  00007fe0ff3fe450: 00007fe122a992c8 0000000022a84a68
+  00007fe0ff3fe460: 0000000000000000 00007fe122a84a38
+  00007fe0ff3fe470: 00007fe122a61cb0 00007fe10ac88c58
+  00007fe0ff3fe480: 0000000008606718 00000000019dfccf
+  00007fe0ff3fe490: 00000000062fbc48 00000000019b4f00
+  00007fe0ff3fe4a0: 00000000062830f8 00007fe122a84a18
+  00007fe0ff3fe4b0: 00007fe122a61cb0 00007fe10ac88c58
+  
+Stacktrace Stage0:
+
+  RSP 00007fe0ff3fe0c0 RIP 0000000000b0e936 FrameSize 64
+  RSP 00007fe0ff3fe100 RIP 000000000179ec63 FrameSize 64
+  RSP 00007fe0ff3fe140 RIP 00000000018f50e0 FrameSize 64
+  RSP 00007fe0ff3fe180 RIP 000000000199f33d FrameSize 144
+  RSP 00007fe0ff3fe210 RIP 000000000199eeb4 FrameSize 48
+  RSP 00007fe0ff3fe240 RIP 00000000019bb465 FrameSize 80
+  RSP 00007fe0ff3fe290 RIP 00000000019ba183 FrameSize 96
+  RSP 00007fe0ff3fe2f0 RIP 00000000019ba893 FrameSize 64
+  RSP 00007fe0ff3fe330 RIP 00000000019baf8e FrameSize 64
+  RSP 00007fe0ff3fe370 RIP 00000000019b89ec FrameSize 48
+  RSP 00007fe0ff3fe3a0 RIP 00000000019b5d32 FrameSize 160
+  RSP 00007fe0ff3fe440 RIP 00000000019bc44c FrameSize 80
+  RSP 00007fe0ff3fe490 RIP 00000000019dfccf FrameSize 64
+  RSP 00007fe0ff3fe4d0 RIP 00000000019dfae8 FrameSize 48
+  RSP 00007fe0ff3fe500 RIP 00000000019b5d32 FrameSize 160
+  RSP 00007fe0ff3fe5a0 RIP 00000000019e6198 FrameSize 80
+  RSP 00007fe0ff3fe5f0 RIP 00000000019e6b2f FrameSize 48
+  RSP 00007fe0ff3fe620 RIP 00000000019b5d32 FrameSize 160
+  RSP 00007fe0ff3fe6c0 RIP 00000000019b8cf1 FrameSize 64
+  RSP 00007fe0ff3fe700 RIP 00000000019b5d32 FrameSize 160
+  RSP 00007fe0ff3fe7a0 RIP 000000000175d461 FrameSize 176
+  RSP 00007fe0ff3fe850 RIP 000000000175ae78 FrameSize 96
+  RSP 00007fe0ff3fe8b0 RIP 000000000175b36b FrameSize 112
+  RSP 00007fe0ff3fe920 RIP 0000000001a931fd FrameSize 240
+  RSP 00007fe0ff3fea10 RIP 0000000001a927a2 FrameSize 192
+  RSP 00007fe0ff3fead0 RIP 00000000017579f4 FrameSize 240
+  RSP 00007fe0ff3febc0 RIP 0000000001a93e8e FrameSize 144
+  RSP 00007fe0ff3fec50 RIP 0000000001ab3047 FrameSize 128
+  RSP 00007fe0ff3fecd0 RIP 0000000001ab066c FrameSize 64
+  RSP 00007fe0ff3fed10 RIP 0000000001614bdd FrameSize 80
+  RSP 00007fe0ff3fed60 RIP 0000000001622b9e FrameSize 112
+  RSP 00007fe0ff3fedd0 RIP 000000000161fcf4 FrameSize 32
+  RSP 00007fe0ff3fedf0 RIP 000000000175a1ef FrameSize 32
+  RSP 00007fe0ff3fee10 RIP 0000000000afe837 FrameSize 96
+  RSP 00007fe0ff3fee70 RIP 0000000000a869e4 FrameSize 144
+  
+Stacktrace Stage1:
+
+  RSP 00007fe0ff3fe0c0 RIP 0000000000b0e936  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe100 RIP 000000000179ec63  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe140 RIP 00000000018f50e0  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe180 RIP 000000000199f33d  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe210 RIP 000000000199eeb4  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe240 RIP 00000000019bb465  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe290 RIP 00000000019ba183  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe2f0 RIP 00000000019ba893  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe330 RIP 00000000019baf8e  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe370 RIP 00000000019b89ec  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe3a0 RIP 00000000019b5d32  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe440 RIP 00000000019bc44c  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe490 RIP 00000000019dfccf  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe4d0 RIP 00000000019dfae8  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe500 RIP 00000000019b5d32  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe5a0 RIP 00000000019e6198  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe5f0 RIP 00000000019e6b2f  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe620 RIP 00000000019b5d32  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe6c0 RIP 00000000019b8cf1  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe700 RIP 00000000019b5d32  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe7a0 RIP 000000000175d461  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe850 RIP 000000000175ae78  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe8b0 RIP 000000000175b36b  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fe920 RIP 0000000001a931fd  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fea10 RIP 0000000001a927a2  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fead0 RIP 00000000017579f4  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3febc0 RIP 0000000001a93e8e  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fec50 RIP 0000000001ab3047  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fecd0 RIP 0000000001ab066c  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fed10 RIP 0000000001614bdd  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fed60 RIP 0000000001622b9e  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fedd0 RIP 000000000161fcf4  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fedf0 RIP 000000000175a1ef  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fee10 RIP 0000000000afe837  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  RSP 00007fe0ff3fee70 RIP 0000000000a869e4  com.oracle.svm.core.code.ImageCodeInfo@0x3f55448 name = image code
+  
+Full Stacktrace:
+
+  
+  RSP 00007fe0ff3fe100 RIP 000000000179ec63  [image code] org.graalvm.compiler.core.common.type.AbstractObjectStamp.constant(AbstractObjectStamp.java:69)
+  RSP 00007fe0ff3fe140 RIP 00000000018f50e0  [image code] org.graalvm.compiler.nodes.ConstantNode.forConstant(ConstantNode.java:188)
+  RSP 00007fe0ff3fe180 RIP 000000000199f33d  [image code] org.graalvm.compiler.nodes.memory.ReadNode.canonicalizeRead(ReadNode.java:120)
+  RSP 00007fe0ff3fe210 RIP 000000000199eeb4  [image code] org.graalvm.compiler.nodes.memory.ReadNode.canonical(ReadNode.java:86)
+  RSP 00007fe0ff3fe240 RIP 00000000019bb465  [image code] org.graalvm.compiler.phases.common.CanonicalizerPhase$Instance.tryCanonicalize(CanonicalizerPhase.java:333)
+  RSP 00007fe0ff3fe290 RIP 00000000019ba183  [image code] org.graalvm.compiler.phases.common.CanonicalizerPhase$Instance.processNode(CanonicalizerPhase.java:260)
+  RSP 00007fe0ff3fe2f0 RIP 00000000019ba893  [image code] org.graalvm.compiler.phases.common.CanonicalizerPhase$Instance.processWorkSet(CanonicalizerPhase.java:239)
+  RSP 00007fe0ff3fe330 RIP 00000000019baf8e  [image code] org.graalvm.compiler.phases.common.CanonicalizerPhase$Instance.run(CanonicalizerPhase.java:209)
+  RSP 00007fe0ff3fe370 RIP 00000000019b89ec  [image code] org.graalvm.compiler.phases.Phase.run(Phase.java:47)
+  RSP 00007fe0ff3fe3a0 RIP 00000000019b5d32  [image code] org.graalvm.compiler.phases.BasePhase.apply(BasePhase.java:195)
+  RSP 00007fe0ff3fe440 RIP 00000000019bc44c  [image code] org.graalvm.compiler.phases.Phase.apply(Phase.java:40)
+  RSP 00007fe0ff3fe440 RIP 00000000019bc44c  [image code] org.graalvm.compiler.phases.common.CanonicalizerPhase.applyIncremental(CanonicalizerPhase.java:155)
+  RSP 00007fe0ff3fe490 RIP 00000000019dfccf  [image code] org.graalvm.compiler.phases.common.IncrementalCanonicalizerPhase.run(IncrementalCanonicalizerPhase.java:58)
+  RSP 00007fe0ff3fe4d0 RIP 00000000019dfae8  [image code] org.graalvm.compiler.phases.common.IncrementalCanonicalizerPhase.run(IncrementalCanonicalizerPhase.java:36)
+  RSP 00007fe0ff3fe500 RIP 00000000019b5d32  [image code] org.graalvm.compiler.phases.BasePhase.apply(BasePhase.java:195)
+  RSP 00007fe0ff3fe5a0 RIP 00000000019e6198  [image code] org.graalvm.compiler.phases.BasePhase.apply(BasePhase.java:137)
+  RSP 00007fe0ff3fe5a0 RIP 00000000019e6198  [image code] org.graalvm.compiler.phases.common.LoweringPhase.lower(LoweringPhase.java:256)
+  RSP 00007fe0ff3fe5f0 RIP 00000000019e6b2f  [image code] org.graalvm.compiler.phases.common.LoweringPhase.run(LoweringPhase.java:249)
+  RSP 00007fe0ff3fe5f0 RIP 00000000019e6b2f  [image code] org.graalvm.compiler.phases.common.LoweringPhase.run(LoweringPhase.java:89)
+  RSP 00007fe0ff3fe620 RIP 00000000019b5d32  [image code] org.graalvm.compiler.phases.BasePhase.apply(BasePhase.java:195)
+  RSP 00007fe0ff3fe6c0 RIP 00000000019b8cf1  [image code] org.graalvm.compiler.phases.BasePhase.apply(BasePhase.java:137)
+  RSP 00007fe0ff3fe6c0 RIP 00000000019b8cf1  [image code] org.graalvm.compiler.phases.PhaseSuite.run(PhaseSuite.java:210)
+  RSP 00007fe0ff3fe700 RIP 00000000019b5d32  [image code] org.graalvm.compiler.phases.BasePhase.apply(BasePhase.java:195)
+  RSP 00007fe0ff3fe7a0 RIP 000000000175d461  [image code] org.graalvm.compiler.phases.BasePhase.apply(BasePhase.java:137)
+  RSP 00007fe0ff3fe7a0 RIP 000000000175d461  [image code] org.graalvm.compiler.core.GraalCompiler.emitFrontEnd(GraalCompiler.java:247)
+  RSP 00007fe0ff3fe850 RIP 000000000175ae78  [image code] org.graalvm.compiler.core.GraalCompiler.compile(GraalCompiler.java:174)
+  RSP 00007fe0ff3fe8b0 RIP 000000000175b36b  [image code] org.graalvm.compiler.core.GraalCompiler.compileGraph(GraalCompiler.java:160)
+  RSP 00007fe0ff3fe920 RIP 0000000001a931fd  [image code] org.graalvm.compiler.truffle.compiler.TruffleCompilerImpl.compilePEGraph(TruffleCompilerImpl.java:445)
+  RSP 00007fe0ff3fea10 RIP 0000000001a927a2  [image code] org.graalvm.compiler.truffle.compiler.TruffleCompilerImpl.compileAST(TruffleCompilerImpl.java:391)
+  RSP 00007fe0ff3fead0 RIP 00000000017579f4  [image code] org.graalvm.compiler.truffle.compiler.TruffleCompilerImpl$TruffleCompilationWrapper.performCompilation(TruffleCompilerImpl.java:544)
+  RSP 00007fe0ff3fead0 RIP 00000000017579f4  [image code] org.graalvm.compiler.truffle.compiler.TruffleCompilerImpl$TruffleCompilationWrapper.performCompilation(TruffleCompilerImpl.java:493)
+  RSP 00007fe0ff3fead0 RIP 00000000017579f4  [image code] org.graalvm.compiler.core.CompilationWrapper.run(CompilationWrapper.java:167)
+  RSP 00007fe0ff3febc0 RIP 0000000001a93e8e  [image code] org.graalvm.compiler.truffle.compiler.TruffleCompilerImpl.doCompile(TruffleCompilerImpl.java:222)
+  RSP 00007fe0ff3fec50 RIP 0000000001ab3047  [image code] org.graalvm.compiler.truffle.runtime.GraalTruffleRuntime.doCompile(GraalTruffleRuntime.java:679)
+  RSP 00007fe0ff3fecd0 RIP 0000000001ab066c  [image code] org.graalvm.compiler.truffle.runtime.GraalTruffleRuntime$1.run(GraalTruffleRuntime.java:745)
+  RSP 00007fe0ff3fed10 RIP 0000000001614bdd  [image code] java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+  RSP 00007fe0ff3fed10 RIP 0000000001614bdd  [image code] java.util.concurrent.FutureTask.run(FutureTask.java:266)
+  RSP 00007fe0ff3fed60 RIP 0000000001622b9e  [image code] java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+  RSP 00007fe0ff3fedd0 RIP 000000000161fcf4  [image code] java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+  RSP 00007fe0ff3fedf0 RIP 000000000175a1ef  [image code] java.lang.Thread.run(Thread.java:748)
+  RSP 00007fe0ff3fedf0 RIP 000000000175a1ef  [image code] org.graalvm.compiler.core.CompilerThread.run(CompilerThread.java:40)
+  RSP 00007fe0ff3fee10 RIP 0000000000afe837  [image code] com.oracle.svm.core.posix.thread.PosixJavaThreads.pthreadStartRoutine(PosixJavaThreads.java:222)
+  RSP 00007fe0ff3fee70 RIP 0000000000a869e4  [image code] Lcom/oracle/svm/core/code/CEntryPointCallStubs;.com_002eoracle_002esvm_002ecore_002eposix_002ethread_002ePosixJavaThreads_002epthreadStartRoutine_0028com_002eoracle_002esvm_002ecore_002eposix_002ethread_002ePosixJavaThreads_0024ThreadStartData_0029(generated:0)
+  
+Use runtime option -R:-InstallSegfaultHandler if you don't want to use SubstrateSegfaultHandler.
+
+Bye bye ...
+

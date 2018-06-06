@@ -1,0 +1,146 @@
+
+Wed, 06 Jun 2018 08:57:41 GMT
+
+COMMAND LINE:
+/usr/bin/graalpython iobench.graal 1
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT NOT CHECKED:
+<function fread at -1890847899> 100 bytes, 1.45us per write
+<function fwrite at -1633532779> 100 bytes, 1.99us per write
+<function fread at -1890847899> 1000 bytes, 1.36us per write
+<function fwrite at -1633532779> 1000 bytes, 12.30us per write
+<function fread at -1890847899> 10000 bytes, 2.34us per write
+<function fwrite at -1633532779> 10000 bytes, 114.39us per write
+
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+[ [ SubstrateSegfaultHandler caught signal 11 ] ]
+
+General Purpose Register Set Values: 
+
+  RAX 0000000003e27441
+  RBX 0000000004be2010
+  RCX 00007f05d9014048
+  RDX 0000000002c17030
+  RBP 0000000000000000
+  RSI 00007f05d9014048
+  RDI 5700000000040678
+  RSP 00007f05cdffe0c0
+  R8  0000000002c17030
+  R9  00007f05d9014048
+  R10 0000000002a0c140
+  R11 0000000002a0c140
+  R12 000000000464bc68
+  R13 0000000002c17030
+  R14 0000000003f5ba20
+  R15 00007f05c8000b20
+  EFL 0000000000010206
+  RIP 0000000000b0e936
+  
+
+JavaFrameAnchor dump:
+
+  No anchors
+  
+DeoptStubPointer address: 0000000000a9eb50
+
+TopFrame info:
+
+  Lookup TotalFrameSize in CodeInfoTable:
+  SourceTotalFrameSize 64
+  
+VMThreads info:
+
+  VMThread 00007f05c0000b20  STATUS_IN_NATIVE
+  VMThread 00007f05c8000b20  STATUS_IN_JAVA
+  VMThread 00000000091cb260  STATUS_IN_JAVA
+  
+VM Thread State for current thread 00007f05c8000b20:
+
+  0 (8 bytes): com.oracle.svm.core.genscavenge.PinnedAllocatorImpl.openPinnedAllocator = null
+  8 (8 bytes): com.oracle.svm.core.heap.NoAllocationVerifier.openVerifiers = null
+  16 (8 bytes): com.oracle.svm.core.jdk.IdentityHashCodeSupport.hashCodeGeneratorTL = java.util.SplittableRandom  00007f05c5a0b868
+  24 (8 bytes): com.oracle.svm.core.snippets.SnippetRuntime.currentException = null
+  32 (8 bytes): com.oracle.svm.core.thread.JavaThreads.currentThread = org.graalvm.compiler.core.CompilerThread  00007f05c5a0aa38
+  40 (8 bytes): com.oracle.svm.core.thread.ThreadingSupportImpl.activeTimer = null
+  48 (8 bytes): com.oracle.svm.truffle.nfi.TruffleNFISupport.currentScope = null
+  56 (32 bytes): com.oracle.svm.core.genscavenge.ThreadLocalAllocation.pinnedTLAB = 
+    00007f05c8000b58: 0000000000000000 0000000000000000
+    00007f05c8000b68: 0000000000000000 0000000000000000
+    
+  
+  88 (32 bytes): com.oracle.svm.core.genscavenge.ThreadLocalAllocation.regularTLAB = 
+    00007f05c8000b78: 00007f05d9000000 00007f05d9100000
+    00007f05c8000b88: 00007f05d9014060 00007f05f23d2000
+    
+  
+  120 (8 bytes): com.oracle.svm.core.genscavenge.ThreadLocalAllocation.freeList = 0  0000000000000000
+  128 (8 bytes): com.oracle.svm.core.posix.thread.PosixVMThreads.IsolateTL = 94598687557484880  0150150150150150
+  136 (8 bytes): com.oracle.svm.core.stack.JavaFrameAnchors.lastAnchor = 0  0000000000000000
+  144 (8 bytes): com.oracle.svm.core.thread.VMThreads.nextTL = 152875616  00000000091cb260
+  152 (8 bytes): com.oracle.svm.truffle.nfi.ErrnoMirror.errnoMirror = 
+    00007f05c8000bb8: 0000000000000000
+  
+  160 (4 bytes): com.oracle.svm.core.thread.Safepoint.safepointRequested = -1231  fffffb31
+  164 (4 bytes): com.oracle.svm.core.thread.Safepoint.safepointRequestedValueBeforeSafepoint = -1257  fffffb17
+  168 (4 bytes): com.oracle.svm.core.thread.VMOperationControl.isLockOwner = 0  00000000
+  172 (4 bytes): com.oracle.svm.core.thread.VMThreads$StatusSupport.statusTL = 1  00000001
+  
+VMOperation dump:
+
+  No VMOperation in progress
+  
+
+RuntimeCodeCache dump:
+
+  == [Recent RuntimeCodeCache operations: 
+  Add: <builtin function __mul__ at 400b1158>  ip: 0x416fe000 - 0x416fe562  size: 1378  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05e68ec570 at 0x0 4:{
+  }:4
+  Add: ForRepeatingNode@b6274177<OSR>  ip: 0x4062d000 - 0x4062e431  size: 5169  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05daaf2ab8 at 0x0 5:{
+  }:5
+  Add: <builtin function __setitem__ at 730cc584>  ip: 0x408bf000 - 0x408bf500  size: 1280  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05f06ffc30 at 0x0 6:{
+  }:6
+  Add: <builtin function __getitem__ at 5c6bb584>  ip: 0x404be000 - 0x404c3661  size: 22113  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05f06fff78 at 0x0 7:{
+  }:7
+  Invalidate: <builtin function __setitem__ at 730cc584>  ip: 0x408bf000 - 0x408bf500  size: 1280  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05d8e27dd8 at 0x408bf000 8:{
+  }:8
+  Add: <builtin function __setitem__ at 730cc584>  ip: 0x402e8000 - 0x402e8af0  size: 2800  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05d8e27dd8 at 0x0 9:{
+  }:9
+  Add: <function root generator_exp:59 at 25516f5>  ip: 0x40a39000 - 0x40a3ead9  size: 23257  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05d06331b0 at 0x0 10:{
+  }:10
+  Invalidate: <builtin function __getitem__ at 5c6bb584>  ip: 0x404be000 - 0x404c3661  size: 22113  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05c7409518 at 0x404be000 11:{
+  }:11
+  Add: <builtin function __getitem__ at 5c6bb584>  ip: 0x411b7000 - 0x411bc6b1  size: 22193  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05c7409518 at 0x0 12:{
+  }:12
+  Invalidate: <builtin function __setitem__ at 730cc584>  ip: 0x402e8000 - 0x402e8af0  size: 2800  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05c5a2fce0 at 0x402e8000 13:{
+  }:13
+  Add: <builtin function __setitem__ at 730cc584>  ip: 0x41d15000 - 0x41d15f70  size: 3952  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05c5a2fce0 at 0x0 14:{
+  }:14
+  Invalidate: <builtin function __setitem__ at 730cc584>  ip: 0x41d15000 - 0x41d15f70  size: 3952  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05c5a2fce0 at 0x41d15000 15:{
+  }:15
+  Add: <builtin function __setitem__ at 730cc584>  ip: 0x40f11000 - 0x40f11fca  size: 4042  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05c5a2fce0 at 0x0 16:{
+  }:16
+  Invalidate: <builtin function __getitem__ at 5c6bb584>  ip: 0x411b7000 - 0x411bc6b1  size: 22193  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05c5a0aef0 at 0x411b7000 17:{
+  }:17
+  Invalidate: <builtin function __setitem__ at 730cc584>  ip: 0x40f11000 - 0x40f11fca  size: 4042  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05c5a2fce0 at 0x40f11000 18:{
+  }:18
+  Add: <builtin function __getitem__ at 5c6bb584>  ip: 0x40123000 - 0x401290c2  size: 24770  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05c5a0aef0 at 0x0 19:{
+  }:19]
+  
+  == [RuntimeCodeCache: 7 methods
+  0x40123000  <builtin function __getitem__ at 5c6bb584>  ip: 0x40123000 - 0x401290c2  size: 24770  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05c5a0aef0 at 0x40123000
+  0x4041c000  <builtin function write at 5bb080e8>  ip: 0x4041c000 - 0x4041c111  size: 273  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05c5a2f1e8 at 0x4041c000
+  0x4062d000  ForRepeatingNode@b6274177<OSR>  ip: 0x4062d000 - 0x4062e431  size: 5169  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05c5a2f580 at 0x4062d000
+Traceback (most recent call last):
+  0x406d5000  ForRepeatingNode@e8d61196<OSR>  ip: 0x406d5000 - 0x406d57f8  size: 2040  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f05c5a2eed0 at 0x406d5000
+  File "iobench.graal", line 42, in <module>
+    b'measure(file_read, 1000000, 100)'
+  File "iobench.graal", line 5, in measure
+    b'func(repetitions, size)'
+  File "iobench.graal", line 31, in file_read
+    b'f = open("/dev/full")'
+  File "_io", line 780, in open
+    
+TypeError: __init__() takes exactly one argument (3 given)

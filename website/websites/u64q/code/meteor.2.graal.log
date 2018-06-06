@@ -1,0 +1,321 @@
+
+Wed, 06 Jun 2018 08:58:46 GMT
+
+COMMAND LINE:
+/usr/bin/graalpython meteor.graal-2.graal 2098
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+[ [ SubstrateSegfaultHandler caught signal 11 ] ]
+
+General Purpose Register Set Values: 
+
+  RAX 0000000004049a51
+  RBX 0000000004be2010
+  RCX 00007f0a1bcb1030
+  RDX 0000000002c17030
+
+  RBP 0000000000000000
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+    RSI 000
+07f0a1bcb1030
+    [ [ SubstrateSegfaultHandler already handling signal RDI 115700000000040678 ] ]
+
+    RSP 00
+007f0a093fe0c0
+    [ [ SubstrateSegfaultHandler already handling signal R8  110 ] ]0
+00000002c17030
+    R9  000
+07f0a1bcb1030
+    R10 [ [ SubstrateSegfaultHandler already handling signal 0110 ] ]0
+0000002a0c140
+    R11 000
+0000002a0c140
+    R12 [ [ SubstrateSegfaultHandler already handling signal 0110 ] ]0
+000000464bc68
+    R13 000
+0000002c17030
+    R14 [ [ SubstrateSegfaultHandler already handling signal 0110 ] ]0
+0000003f5ba20
+    R15 000
+07f0a04000b20
+    EFL [ [ SubstrateSegfaultHandler already handling signal 0110 ] ]0
+0000000010206
+    RIP 000
+0000000b0e936
+    
+[ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+
+
+JavaFrameAnchor dump:
+[ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+
+  
+  No anchors
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  
+
+DeoptStubPointer address: 0000000000a9eb50
+[ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+
+
+TopFrame info:
+[ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+
+  
+  Lookup TotalFrameSize in CodeInfoTable:
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  SourceTotalFrameSize 64
+  
+  
+[ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+VMThreads info:
+
+
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  VMThread 00007f09fc000b20  STATUS_IN_NATIVE
+  
+  VMThread 00007f0a04000b20  STATUS_IN_JAVA
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  VMThread 0000000008a9f260  STATUS_IN_JAVA
+  
+  
+[ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+VM Thread State for current thread 00007f0a04000b20:
+
+
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  0 (8 bytes): com.oracle.svm.core.genscavenge.PinnedAllocatorImpl.openPinnedAllocator = null
+  
+  8 (8 bytes): com.oracle.svm.core.heap.NoAllocationVerifier.openVerifiers = null
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  16 (8 bytes): com.oracle.svm.core.jdk.IdentityHashCodeSupport.hashCodeGeneratorTL = java.util.SplittableRandom  00007f09f480ca90
+  
+  24 (8 bytes): com.oracle.svm.core.snippets.SnippetRuntime.currentException = null
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  32 (8 bytes): com.oracle.svm.core.thread.JavaThreads.currentThread = org.graalvm.compiler.core.CompilerThread  00007f09f480c7d0
+  
+  40 (8 bytes): com.oracle.svm.core.thread.ThreadingSupportImpl.activeTimer = null
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  48 (8 bytes): com.oracle.svm.truffle.nfi.TruffleNFISupport.currentScope = null
+  
+  56 (32 bytes): com.oracle.svm.core.genscavenge.ThreadLocalAllocation.pinnedTLAB = 
+    [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+    00007f0a04000b58: 0000000000000000 0000000000000000
+    
+    00007f0a04000b68: 0000000000000000 0000000000000000
+    [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+    
+  
+  
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  88 (32 bytes): com.oracle.svm.core.genscavenge.ThreadLocalAllocation.regularTLAB = 
+    
+    00007f0a04000b78: 00007f0a1bc00000 00007f0a1bd00000
+    [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+    00007f0a04000b88: 00007f0a1bcb1048 0000000000000000
+    
+    
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  
+  
+  120 (8 bytes): com.oracle.svm.core.genscavenge.ThreadLocalAllocation.freeList = 0  0000000000000000
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  128 (8 bytes): com.oracle.svm.core.posix.thread.PosixVMThreads.IsolateTL = 94598687557484880  0150150150150150
+  
+  136 (8 bytes): com.oracle.svm.core.stack.JavaFrameAnchors.lastAnchor = 0  0000000000000000
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  144 (8 bytes): com.oracle.svm.core.thread.VMThreads.nextTL = 145355360  0000000008a9f260
+  
+  152 (8 bytes): com.oracle.svm.truffle.nfi.ErrnoMirror.errnoMirror = 
+    [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+    00007f0a04000bb8: 0000000000000000
+  
+  
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  160 (4 bytes): com.oracle.svm.core.thread.Safepoint.safepointRequested = -4072  fffff018
+  
+  164 (4 bytes): com.oracle.svm.core.thread.Safepoint.safepointRequestedValueBeforeSafepoint = -14279671  ff261c09
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  168 (4 bytes): com.oracle.svm.core.thread.VMOperationControl.isLockOwner = 0  00000000
+  
+  172 (4 bytes): com.oracle.svm.core.thread.VMThreads$StatusSupport.statusTL = 1  00000001
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  
+
+VMOperation dump:
+[ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+
+  
+  No VMOperation in progress
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  
+
+
+[ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+RuntimeCodeCache dump:
+
+
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  == [Recent RuntimeCodeCache operations: 
+  
+  Add: <builtin function __getitem__ at 4cd4573d>  ip: 0x40a05000 - 0x40a050d7  size: 215  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f0a09cad3a8 at 0x0 1:{
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  }:1
+  
+  Add: <function root anonymous at 50ad58bb>  ip: 0x412c9000 - 0x412c9093  size: 147  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f0a0a2f8c10 at 0x0 2:{
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  }:2
+  
+  Invalidate: <function root anonymous at 50ad58bb>  ip: 0x412c9000 - 0x412c9093  size: 147  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f0a0a2f8c10 at 0x412c9000 3:{
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  }:3
+  
+  Add: <builtin function __getitem__ at 26bc8050>  ip: 0x405d2000 - 0x405d48e4  size: 10468  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f0a09cb46d0 at 0x0 4:{
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  }:4
+  
+  Add: <function root anonymous at 50ad58bb>  ip: 0x4119a000 - 0x4119a503  size: 1283  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f0a0a2f8c10 at 0x0 5:{
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  }:5
+  
+  Add: <function root generator_exp:26 at 44a1a006>  ip: 0x40bc5000 - 0x40bc919c  size: 16796  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f09f480c5d8 at 0x0 6:{
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  }:6]
+  
+  
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  == [RuntimeCodeCache: 4 methods
+  
+  0x405d2000  <builtin function __getitem__ at 26bc8050>  ip: 0x405d2000 - 0x405d48e4  size: 10468  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f09f4801128 at 0x405d2000
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  0x40a05000  <builtin function __getitem__ at 4cd4573d>  ip: 0x40a05000 - 0x40a050d7  size: 215  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f09f48010a8 at 0x40a05000
+  
+  0x40bc5000  <function root generator_exp:26 at 44a1a006>  ip: 0x40bc5000 - 0x40bc919c  size: 16796  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f09f480c5d8 at 0x40bc5000
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  0x4119a000  <function root anonymous at 50ad58bb>  ip: 0x4119a000 - 0x4119a503  size: 1283  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7f09f4824258 at 0x4119a000]
+  
+  
+[ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+Deoptimizer dump:
+
+
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  == [Recent Deoptimizer Events: 
+  
+  deoptSourceFrameOperation: DeoptimizedFrame at 0x7f0a030200b8: [Deoptimization of frame
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+      name: <function root anonymous at 50ad58bb>
+  
+      sp: 0x7ffd4e239de0  ip: 0x412c9050
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  ]
+  
+  deoptStub: completed for DeoptimizedFrame at 0x7f0a030200b8
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  ]
+  
+  
+[ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+Dump Counters:
+
+
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  
+
+Raw Stacktrace:
+[ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+
+  
+  00007f0a093fe0c0: 00007f0a1bc85b30 0000000001957262
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe0d0: 00007f0a1bcaefc0 0000000000000000
+  
+  00007f0a093fe0e0: 0000000004049a51 00007f0a1bcb1030
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe0f0: 0000000002c17030 000000000179ec63
+  
+  00007f0a093fe100: 00007f0a1c0fbe40 00000000017349b1
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe110: 00007f0a1bc85b30 0000000000ae81c0
+  
+  00007f0a093fe120: 0000000002c17030 00007f0a1bcb1030
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe130: 0000000004be2010 00000000018f50e0
+  
+  00007f0a093fe140: 00007f0a1c0fbe40 0000000001941317
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe150: 0000000000000000 0000000002c17030
+  
+  00007f0a093fe160: 0000000000000001 00007f0a1bcb1030
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe170: 0000000004be2010 000000000199f33d
+  
+  00007f0a093fe180: 00007f0a1bcb1010 0000000001818bb3
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe190: 0000000100000000 0000000004be2010
+  
+  00007f0a093fe1a0: 00000000019b9a30 0000000001933f30
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe1b0: 000000011bcb1010 0000000000000010
+  
+  00007f0a093fe1c0: 00007f0a1bc12d78 000000011bca9058
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe1d0: 0000000002c17030 00007f0a1bcb1030
+  
+  00007f0a093fe1e0: 00007f0a1bcaefc0 00007f0a1bcaefc0
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe1f0: 000000000465a1d8 00007f0a1bca9058
+  
+  00007f0a093fe200: 00007f0a1bca9190 000000000199eeb4
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe210: 0000000100000002 00007f0a1bc12d78
+  
+  00007f0a093fe220: 00007f0a1c0f9cb8 00007f0a1bcaefc0
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe230: 00007f0a1bca9190 00000000019bb465
+  
+  00007f0a093fe240: 00007f0a1c0f9cb8 0000000000000001
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe250: 00007f0a1c0f9cb8 00000000019bbedf
+  
+  00007f0a093fe260: 0000000000000000 0000000000000000
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe270: 0000000004396490 00007f0a1bca9190
+  
+  00007f0a093fe280: 00007f0a1bcae550 00000000019ba183
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe290: 00007f0a1bcae5e0 00000000018194bf
+  
+  00007f0a093fe2a0: 000000b10231c878 00007f0a1bca9190
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe2b0: 00007f0a1bcae848 00000000018190b8
+  
+  00007f0a093fe2c0: 00007f0a1bcaf008 00007f0a1c0fa120
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe2d0: 0000000004396490 00007f0a1bca9190
+  
+  00007f0a093fe2e0: 00007f0a1bcae550 00000000019ba893
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe2f0: 00007f0a1bcae3d0 000000011bca3bc0
+  
+  00007f0a093fe300: 00007f0a1bcaf008 00007f0a1bca9190
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe310: 00007f0a1bcaeff0 00007f0a1c0fa120
+  
+  00007f0a093fe320: 00007f0a1bcae550 00000000019baf8e
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  00007f0a093fe330: 00000000062fbc48 00000000019b4f00
+  
+  00007f0a093fe340: 0000000006281d18 00007f0a1bcae5b8
+  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
+  Traceback (most recent call last):00
+0  File "meteor.graal-2.graal", line 189, in <module 'meteor.graal-2.graal'>0
+7f0a093fe350  File "meteor.graal-2.graal", line 185, in solve:
+   File "meteor.graal-2.graal", line 107, in generateBitmasks0
+0java.lang.ClassCastException0
+07f0a1c0fa120 00000001019b6d90
