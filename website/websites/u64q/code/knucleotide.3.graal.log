@@ -1,5 +1,5 @@
 
-Wed, 06 Jun 2018 08:58:30 GMT
+Mon, 18 Jun 2018 12:07:06 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython knucleotide.graal-3.graal 0 < knucleotide-input10000.txt
@@ -10,190 +10,16 @@ PROGRAM FAILED
 PROGRAM OUTPUT:
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
-[ [ SubstrateSegfaultHandler caught signal 11 ] ]
-
-General Purpose Register Set Values: 
-
-  RAX 0000000003e27441
-  RBX 0000000004be2010
-  RCX 00007fb5c54611e0
-  RDX 0000000002c17030
-  RBP 0000000000000000
-  RSI 00007fb5c54611e0
-  RDI 5700000000040678
-  RSP 00007fb5a51fe0c0
-  R8  0000000002c17030
-  R9  00007fb5c54611e0
-  R10 0000000002a0c140
-  R11 0000000002a0c140
-  R12 000000000464bc68
-  R13 0000000002c17030
-  R14 0000000003f5ba20
-  R15 00007fb5a0000b20
-  EFL 0000000000010206
-  RIP 0000000000b0e936
-  
-
-JavaFrameAnchor dump:
-
-  No anchors
-  
-DeoptStubPointer address: 0000000000a9eb50
-
-TopFrame info:
-
-  Lookup TotalFrameSize in CodeInfoTable:
-  SourceTotalFrameSize 64
-  
-VMThreads info:
-
-  VMThread 00007fb598000b20  STATUS_IN_NATIVE
-  VMThread 00007fb5a0000b20  STATUS_IN_JAVA
-  VMThread 000000000a465260  STATUS_IN_JAVA
-  
-VM Thread State for current thread 00007fb5a0000b20:
-
-  0 (8 bytes): com.oracle.svm.core.genscavenge.PinnedAllocatorImpl.openPinnedAllocator = null
-  8 (8 bytes): com.oracle.svm.core.heap.NoAllocationVerifier.openVerifiers = null
-  16 (8 bytes): com.oracle.svm.core.jdk.IdentityHashCodeSupport.hashCodeGeneratorTL = java.util.SplittableRandom  00007fb59e60a688
-  24 (8 bytes): com.oracle.svm.core.snippets.SnippetRuntime.currentException = null
-  32 (8 bytes): com.oracle.svm.core.thread.JavaThreads.currentThread = org.graalvm.compiler.core.CompilerThread  00007fb59e609be0
-  40 (8 bytes): com.oracle.svm.core.thread.ThreadingSupportImpl.activeTimer = null
-  48 (8 bytes): com.oracle.svm.truffle.nfi.TruffleNFISupport.currentScope = null
-  56 (32 bytes): com.oracle.svm.core.genscavenge.ThreadLocalAllocation.pinnedTLAB = 
-    00007fb5a0000b58: 0000000000000000 0000000000000000
-    00007fb5a0000b68: 0000000000000000 0000000000000000
-    
-  
-  88 (32 bytes): com.oracle.svm.core.genscavenge.ThreadLocalAllocation.regularTLAB = 
-    00007fb5a0000b78: 00007fb5c5400000 00007fb5c5500000
-    00007fb5a0000b88: 00007fb5c54611f8 00007fb5cb096000
-    
-  
-  120 (8 bytes): com.oracle.svm.core.genscavenge.ThreadLocalAllocation.freeList = 0  0000000000000000
-  128 (8 bytes): com.oracle.svm.core.posix.thread.PosixVMThreads.IsolateTL = 94598687557484880  0150150150150150
-  136 (8 bytes): com.oracle.svm.core.stack.JavaFrameAnchors.lastAnchor = 0  0000000000000000
-  144 (8 bytes): com.oracle.svm.core.thread.VMThreads.nextTL = 172380768  000000000a465260
-  152 (8 bytes): com.oracle.svm.truffle.nfi.ErrnoMirror.errnoMirror = 
-    00007fb5a0000bb8: 0000000000000000
-  
-  160 (4 bytes): com.oracle.svm.core.thread.Safepoint.safepointRequested = -1483  fffffa35
-  164 (4 bytes): com.oracle.svm.core.thread.Safepoint.safepointRequestedValueBeforeSafepoint = -1065  fffffbd7
-  168 (4 bytes): com.oracle.svm.core.thread.VMOperationControl.isLockOwner = 0  00000000
-  172 (4 bytes): com.oracle.svm.core.thread.VMThreads$StatusSupport.statusTL = 1  00000001
-  
-VMOperation dump:
-
-  No VMOperation in progress
-  
-
-RuntimeCodeCache dump:
-
-  == [Recent RuntimeCodeCache operations: 
-  Add: <builtin function __setitem__ at 88706bbf>  ip: 0x41e00000 - 0x41e00500  size: 1280  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fb5a74e65e8 at 0x0 1:{
-  }:1
-  Add: <builtin function __getitem__ at 287c6c33>  ip: 0x41353000 - 0x41358661  size: 22113  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fb5a6e24780 at 0x0 2:{
-  }:2
-  Invalidate: <builtin function __setitem__ at 88706bbf>  ip: 0x41e00000 - 0x41e00500  size: 1280  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fb5a6a27e00 at 0x41e00000 3:{
-  }:3
-  Add: <builtin function __setitem__ at 88706bbf>  ip: 0x40d74000 - 0x40d74af0  size: 2800  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fb5a6a27e00 at 0x0 4:{
-  }:4
-  Add: <function root generator_exp:59 at 947c347>  ip: 0x402e0000 - 0x402e5ad9  size: 23257  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fb5c8805b40 at 0x0 5:{
-  }:5
-  Invalidate: <builtin function __getitem__ at 287c6c33>  ip: 0x41353000 - 0x41358661  size: 22113  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fb5a4208af0 at 0x41353000 6:{
-  }:6
-  Add: <builtin function __getitem__ at 287c6c33>  ip: 0x410b1000 - 0x410b66b1  size: 22193  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fb5a4208af0 at 0x0 7:{
-  }:7
-  Invalidate: <builtin function __setitem__ at 88706bbf>  ip: 0x40d74000 - 0x40d74af0  size: 2800  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fb59e61c068 at 0x40d74000 8:{
-  }:8
-  Add: <builtin function __setitem__ at 88706bbf>  ip: 0x41b17000 - 0x41b17f70  size: 3952  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fb59e61c068 at 0x0 9:{
-  }:9
-  Invalidate: <builtin function __setitem__ at 88706bbf>  ip: 0x41b17000 - 0x41b17f70  size: 3952  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fb59e61c068 at 0x41b17000 10:{
-  }:10
-  Add: <builtin function __setitem__ at 88706bbf>  ip: 0x40a23000 - 0x40a23fca  size: 4042  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fb59e61c068 at 0x0 11:{
-  }:11
-  Invalidate: <builtin function __getitem__ at 287c6c33>  ip: 0x410b1000 - 0x410b66b1  size: 22193  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fb59e60a098 at 0x410b1000 12:{
-  }:12
-  Invalidate: <builtin function __setitem__ at 88706bbf>  ip: 0x40a23000 - 0x40a23fca  size: 4042  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fb59e61c068 at 0x40a23000 13:{
-  }:13
-  Add: <builtin function __getitem__ at 287c6c33>  ip: 0x4014d000 - 0x401530c2  size: 24770  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fb59e60a098 at 0x0 14:{
-  }:14]
-  
-  == [RuntimeCodeCache: 2 methods
-  0x4014d000  <builtin function __getitem__ at 287c6c33>  ip: 0x4014d000 - 0x401530c2  size: 24770  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fb59e60a098 at 0x4014d000
-  0x402e0000  <function root generator_exp:59 at 947c347>  ip: 0x402e0000 - 0x402e5ad9  size: 23257  installedCode: com.oracle.svm.truffle.api.SubstrateOptimizedCallTarget@0x7fb59e60a578 at 0x402e0000]
-  
-Deoptimizer dump:
-
-  == [Recent Deoptimizer Events: 
-  deoptSourceFrameOperation: DeoptimizedFrame at 0x7fb5b34a9610: [Deoptimization of frame
-      name: <builtin function __setitem__ at 88706bbf>
-      sp: 0x7ffc78ea7940  ip: 0x41e00158
-  ]
-  deoptStub: completed for DeoptimizedFrame at 0x7fb5b34a9610
-  deoptSourceFrameOperation: DeoptimizedFrame at 0x7fb5bb677028: [Deoptimization of frame
-      name: <builtin function __getitem__ at 287c6c33>
-      sp: 0x7ffc78ea1940  ip: 0x41357725
-  ]
-  deoptStub: completed for DeoptimizedFrame at 0x7fb5bb677028
-  deoptSourceFrameOperation: DeoptimizedFrame at 0x7fb5c564f4d8: [Deoptimization of frame
-      name: <builtin function __setitem__ at 88706bbf>
-      sp: 0x7ffc78ea2650  ip: 0x41b17ec1
-  ]
-  deoptStub: completed for DeoptimizedFrame at 0x7fb5c564f4d8
-  deoptSourceFrameOperation: DeoptimizedFrame at 0x7fb5bd0e10f8: [Deoptimization of frame
-      name: <builtin function __setitem__ at 88706bbf>
-      sp: 0x7ffc78ea80a0  ip: 0x40a23ed2
-  ]
-  deoptStub: completed for DeoptimizedFrame at 0x7fb5bd0e10f8
-  ]
-  
-Dump Counters:
-
-  
-Raw Stacktrace:
-
-
-  00007fb5a51fe0c0: 00007fb5c542f908 0000000001957262
-  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
-  00007fb5a51fe0d0: 00007fb5c545e478 0000000000000000
-  
-  00007fb5a51fe0e0: 0000000003e27441 00007fb5c54611e0
-  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
-  00007fb5a51fe0f0: 0000000002c17030 000000000179ec63
-  
-  00007fb5a51fe100: 00007fb5aac23f10 00000000017349b1
-  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
-  00007fb5a51fe110: 00007fb5c542f908 0000000000ae81c0
-  
-  00007fb5a51fe120: 0000000002c17030 00007fb5c54611e0
-  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
-  00007fb5a51fe130: 0000000004be2010 00000000018f50e0
-  
-  00007fb5a51fe140: 00007fb5aac23f10 0000000001941317
-  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
-  00007fb5a51fe150: 0000000000000000 0000000002c17030
-  
-  00007fb5a51fe160: 0000000000000001 00007fb5c54611e0
-  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
-  00007fb5a51fe170: 0000000004be2010 000000000199f33d
-  
-  00007fb5a51fe180: 00007fb5c54611c0 0000000001818bb3
-  [ [ SubstrateSegfaultHandler already handling signal 11 ] ]
-  00007fb5a51fe190: 0000000100000000 0000000004be2010
-  
-  00007fb5a51fe1a0: 00000000019b9a30 0000000001933f30
 Error in sys.excepthook:
 
 Traceback (most recent call last):
-  File "sys", line 137, in __print_traceback__
+  File "sys", line 135, in __print_traceback__
   File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 99, in print_exception
   File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 495, in TracebackException.__init__
   File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 358, in StackSummary.extract
   File "property", line 79, in property.__get__
   File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 282, in FrameSummary.line
-    File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/linecache.py", line 16, in getline[ [ SubstrateSegfaultHandler already handling signal 11 ] ]
-
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/linecache.py", line 16, in getline
   File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/linecache.py", line 47, in getlines
   File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/linecache.py", line 141, in updatecache
 TypeError: can't concat bytes to str
