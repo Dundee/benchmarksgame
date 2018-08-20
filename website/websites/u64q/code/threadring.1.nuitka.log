@@ -1,15 +1,29 @@
 
-Wed, 06 Jun 2018 10:02:16 GMT
+Mon, 20 Aug 2018 09:32:51 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp“
 nuitka3 --remove-output --improved threadring.nuitka
 cp threadring.nuitka.exe threadring.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp“
-2.73s to complete and log all make actions
+2.75s to complete and log all make actions
 
 COMMAND LINE:
 ./threadring.nuitka_run 5000000
 
+PROGRAM FAILED 
+
+
 PROGRAM OUTPUT:
 181
+
+StopIteration
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/threadring.nuitka", line 34, in <module>
+    main()
+  File "/home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/threadring.nuitka", line 30, in main
+    n = send(n)
+RuntimeError: generator raised StopIteration

@@ -1,5 +1,5 @@
 
-Mon, 18 Jun 2018 12:10:44 GMT
+Mon, 20 Aug 2018 09:29:59 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython pidigits.graal 10000
@@ -10,34 +10,15 @@ PROGRAM FAILED
 PROGRAM OUTPUT:
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
-Error in sys.excepthook:
-
 Traceback (most recent call last):
-  File "sys", line 135, in __print_traceback__
-  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 99, in print_exception
-  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 495, in TracebackException.__init__
-  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 341, in StackSummary.extract
-AttributeError: 'NoneType' object has no attribute co_filename
-
-Original exception was:
-
-Traceback (most recent call last):
-org.graalvm.launcher.Launcher$AbortException
-Caused by: java.lang.ArrayIndexOutOfBoundsException: Index 2 out of bounds for length 2
-	at com.oracle.graal.python.runtime.formatting.ErrorMessageFormatter.format(ErrorMessageFormatter.java:84)
-	at com.oracle.graal.python.runtime.formatting.ErrorMessageFormatter.format(ErrorMessageFormatter.java:71)
-	at com.oracle.graal.python.builtins.objects.exception.PBaseException.toString(PBaseException.java:145)
-	at com.oracle.graal.python.runtime.exception.PException.getMessage(PException.java:65)
-	at com.oracle.truffle.api.vm.PolyglotExceptionImpl.<init>(PolyglotExceptionImpl.java:150)
-	at com.oracle.truffle.api.vm.PolyglotExceptionImpl.<init>(PolyglotExceptionImpl.java:80)
-	at com.oracle.truffle.api.vm.PolyglotImpl.wrapGuestException(PolyglotImpl.java:275)
-	at com.oracle.truffle.api.vm.PolyglotContextImpl.eval(PolyglotContextImpl.java:753)
-	at org.graalvm.polyglot.Context.eval(Context.java:311)
-	at com.oracle.graal.python.shell.GraalPythonMain.evalNonInteractive(GraalPythonMain.java:261)
-	at com.oracle.graal.python.shell.GraalPythonMain.launch(GraalPythonMain.java:185)
-	at org.graalvm.launcher.AbstractLanguageLauncher.launch(AbstractLanguageLauncher.java:107)
-	at org.graalvm.launcher.AbstractLanguageLauncher.launch(AbstractLanguageLauncher.java:54)
-	at com.oracle.graal.python.shell.GraalPythonMain.main(GraalPythonMain.java:56)
-	at com.oracle.svm.reflect.proxies.Proxy_1_GraalPythonMain_main.invoke(Unknown Source)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at com.oracle.svm.core.JavaMainWrapper.run(JavaMainWrapper.java:173)
+  File "__builtins_patches__", line 48, in <module '__builtins_patches__'>
+  File "_bootstrap.py", line 1066, in __import__
+  File "_bootstrap.py", line 985, in _gcd_import
+  File "_bootstrap.py", line 968, in _find_and_load
+  File "_bootstrap.py", line 957, in _find_and_load_unlocked
+  File "_bootstrap.py", line 662, in _load_unlocked
+  File "_bootstrap_external.py", line 682, in _LoaderBasics.exec_module
+  File "_bootstrap_external.py", line 789, in SourceLoader.get_code
+  File "_bootstrap_external.py", line 841, in FileLoader.get_data
+  File "_io", line 345, in FileIO.__init__
+OSError: /usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/_pyio.py

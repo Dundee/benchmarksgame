@@ -1,12 +1,12 @@
 
-Wed, 06 Jun 2018 09:59:55 GMT
+Mon, 20 Aug 2018 09:30:19 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp“
 nuitka3 --remove-output --improved pystone.nuitka
 cp pystone.nuitka.exe pystone.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp“
-4.14s to complete and log all make actions
+3.75s to complete and log all make actions
 
 COMMAND LINE:
 ./pystone.nuitka_run 50000
@@ -14,3 +14,12 @@ COMMAND LINE:
 PROGRAM OUTPUT:
 50000
 OK
+
+/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.nuitka:88: DeprecationWarning: time.clock has been deprecated in Python 3.3 and will be removed from Python 3.8: use time.perf_counter or time.process_time instead
+  starttime = clock()
+/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.nuitka:91: DeprecationWarning: time.clock has been deprecated in Python 3.3 and will be removed from Python 3.8: use time.perf_counter or time.process_time instead
+  nulltime = clock() - starttime
+/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.nuitka:103: DeprecationWarning: time.clock has been deprecated in Python 3.3 and will be removed from Python 3.8: use time.perf_counter or time.process_time instead
+  starttime = clock()
+/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.nuitka:129: DeprecationWarning: time.clock has been deprecated in Python 3.3 and will be removed from Python 3.8: use time.perf_counter or time.process_time instead
+  benchtime = clock() - starttime - nulltime

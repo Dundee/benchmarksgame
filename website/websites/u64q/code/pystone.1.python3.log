@@ -1,5 +1,5 @@
 
-Tue, 17 Apr 2018 09:18:08 GMT
+Mon, 20 Aug 2018 09:30:10 GMT
 
 COMMAND LINE:
 /usr/bin/python3 pystone.python3 50000
@@ -7,3 +7,12 @@ COMMAND LINE:
 PROGRAM OUTPUT:
 50000
 OK
+
+pystone.python3:88: DeprecationWarning: time.clock has been deprecated in Python 3.3 and will be removed from Python 3.8: use time.perf_counter or time.process_time instead
+  starttime = clock()
+pystone.python3:91: DeprecationWarning: time.clock has been deprecated in Python 3.3 and will be removed from Python 3.8: use time.perf_counter or time.process_time instead
+  nulltime = clock() - starttime
+pystone.python3:103: DeprecationWarning: time.clock has been deprecated in Python 3.3 and will be removed from Python 3.8: use time.perf_counter or time.process_time instead
+  starttime = clock()
+pystone.python3:129: DeprecationWarning: time.clock has been deprecated in Python 3.3 and will be removed from Python 3.8: use time.perf_counter or time.process_time instead
+  benchtime = clock() - starttime - nulltime
