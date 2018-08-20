@@ -1,5 +1,5 @@
 
-Mon, 20 Aug 2018 09:17:02 GMT
+Mon, 20 Aug 2018 10:14:33 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython fibonacci.graal-3.graal 1000000
@@ -10,8 +10,18 @@ PROGRAM FAILED
 PROGRAM OUTPUT:
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Error in sys.excepthook:
+
 Traceback (most recent call last):
-  File "__builtins_patches__", line 48, in <module '__builtins_patches__'>
+  File "_bootstrap.py", line 1066, in __import__
+  File "_bootstrap.py", line 985, in _gcd_import
+  File "_bootstrap.py", line 968, in _find_and_load
+  File "_bootstrap.py", line 957, in _find_and_load_unlocked
+  File "_bootstrap.py", line 662, in _load_unlocked
+  File "_bootstrap_external.py", line 687, in _LoaderBasics.exec_module
+  File "_bootstrap.py", line 206, in _call_with_frames_removed
+  File "functions", line 112, in exec
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 3, in <module>
   File "_bootstrap.py", line 1066, in __import__
   File "_bootstrap.py", line 985, in _gcd_import
   File "_bootstrap.py", line 968, in _find_and_load
@@ -21,4 +31,23 @@ Traceback (most recent call last):
   File "_bootstrap_external.py", line 789, in SourceLoader.get_code
   File "_bootstrap_external.py", line 841, in FileLoader.get_data
   File "_io", line 345, in FileIO.__init__
-OSError: /usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/_pyio.py
+OSError: /usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/collections/__init__.py
+
+Original exception was:
+
+Traceback (most recent call last):
+  File "fibonacci.graal-3.graal", line 22, in <module>
+  File "fibonacci.graal-3.graal", line 19, in fib
+  File "fibonacci.graal-3.graal", line 7, in powLF
+  File "fibonacci.graal-3.graal", line 7, in powLF
+  File "fibonacci.graal-3.graal", line 7, in powLF
+  File "fibonacci.graal-3.graal", line 7, in powLF
+  File "fibonacci.graal-3.graal", line 7, in powLF
+  File "fibonacci.graal-3.graal", line 7, in powLF
+  File "fibonacci.graal-3.graal", line 7, in powLF
+  File "fibonacci.graal-3.graal", line 7, in powLF
+  File "fibonacci.graal-3.graal", line 7, in powLF
+  File "fibonacci.graal-3.graal", line 7, in powLF
+  File "fibonacci.graal-3.graal", line 7, in powLF
+  File "fibonacci.graal-3.graal", line 8, in powLF
+TypeError: unsupported operand type(s) for ** or pow()(): 'int' and 'int'
