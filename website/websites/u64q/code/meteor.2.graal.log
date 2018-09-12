@@ -1,47 +1,33 @@
 
-Mon, 20 Aug 2018 10:15:11 GMT
+Wed, 12 Sep 2018 09:18:46 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython meteor.graal-2.graal 2098
 
-PROGRAM FAILED 
-
-
 PROGRAM OUTPUT:
+2098 solutions found
+
+0 0 0 0 1 
+ 2 2 2 0 1 
+2 6 6 1 1 
+ 2 6 1 5 5 
+8 6 5 5 5 
+ 8 6 3 3 3 
+4 8 8 9 3 
+ 4 4 8 9 3 
+4 7 4 7 9 
+ 7 7 7 9 9 
+
+9 9 9 9 8 
+ 9 6 6 8 5 
+6 6 8 8 5 
+ 6 8 2 5 5 
+7 7 7 2 5 
+ 7 4 7 2 0 
+1 4 2 2 0 
+ 1 4 4 0 3 
+1 4 0 0 3 
+ 1 1 3 3 3 
+
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
-Error in sys.excepthook:
-
-Traceback (most recent call last):
-  File "_bootstrap.py", line 1066, in __import__
-  File "_bootstrap.py", line 985, in _gcd_import
-  File "_bootstrap.py", line 968, in _find_and_load
-  File "_bootstrap.py", line 957, in _find_and_load_unlocked
-  File "_bootstrap.py", line 662, in _load_unlocked
-  File "_bootstrap_external.py", line 687, in _LoaderBasics.exec_module
-  File "_bootstrap.py", line 206, in _call_with_frames_removed
-  File "functions", line 112, in exec
-  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 3, in <module>
-  File "_bootstrap.py", line 1066, in __import__
-  File "_bootstrap.py", line 985, in _gcd_import
-  File "_bootstrap.py", line 968, in _find_and_load
-  File "_bootstrap.py", line 957, in _find_and_load_unlocked
-  File "_bootstrap.py", line 662, in _load_unlocked
-  File "_bootstrap_external.py", line 682, in _LoaderBasics.exec_module
-  File "_bootstrap_external.py", line 789, in SourceLoader.get_code
-  File "_bootstrap_external.py", line 841, in FileLoader.get_data
-  File "_io", line 345, in FileIO.__init__
-OSError: /usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/collections/__init__.py
-
-Original exception was:
-
-Traceback (most recent call last):
-  File "meteor.graal-2.graal", line 189, in <module>
-  File "meteor.graal-2.graal", line 185, in solve
-  File "meteor.graal-2.graal", line 107, in generateBitmasks
-  File "list", line 58, in sort
-  File "timsort", line 580, in TimSort.sort
-  File "timsort", line 530, in TimSort.merge_force_collapse
-  File "timsort", line 475, in TimSort.merge_at
-  File "timsort", line 170, in TimSort.gallop
-NameError: name 'ovfcheck' is not defined

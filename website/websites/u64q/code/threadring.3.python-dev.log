@@ -1,8 +1,25 @@
 
-Fri, 10 Nov 2017 20:22:22 GMT
+Wed, 12 Sep 2018 09:26:52 GMT
 
 COMMAND LINE:
 /usr/bin/python3.7 threadring.python-dev-3.python-dev 5000000
 
+PROGRAM FAILED 
+
+
 PROGRAM OUTPUT:
 181
+
+Traceback (most recent call last):
+  File "threadring.python-dev-3.python-dev", line 22, in worker
+    raise StopIteration
+StopIteration
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "threadring.python-dev-3.python-dev", line 34, in <module>
+    main()
+  File "threadring.python-dev-3.python-dev", line 30, in main
+    n = send(n)
+RuntimeError: generator raised StopIteration

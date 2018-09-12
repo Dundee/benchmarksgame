@@ -1,63 +1,21 @@
 
-Mon, 20 Aug 2018 10:14:33 GMT
+Wed, 12 Sep 2018 09:12:39 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython iobench.graal 1
 
-PROGRAM FAILED 
-
-
 PROGRAM OUTPUT NOT CHECKED:
-<function fread at 0xf37f1ddd> 100 bytes, 1.95us per write
-<function fwrite at 0x11b70d84> 100 bytes, 3.21us per write
-<function fread at 0xf37f1ddd> 1000 bytes, 1.64us per write
-<function fwrite at 0x11b70d84> 1000 bytes, 15.47us per write
-<function fread at 0xf37f1ddd> 10000 bytes, 1.39us per write
-<function fwrite at 0x11b70d84> 10000 bytes, 128.45us per write
+<function fread at 0x3c63a1bd> 100 bytes, 1.63us per write
+<function fwrite at 0x1d29172a> 100 bytes, 2.23us per write
+<function fread at 0x3c63a1bd> 1000 bytes, 1.48us per write
+<function fwrite at 0x1d29172a> 1000 bytes, 13.36us per write
+<function fread at 0x3c63a1bd> 10000 bytes, 1.44us per write
+<function fwrite at 0x1d29172a> 10000 bytes, 125.71us per write
+<function file_read at 0x3fb1ab52> 100 bytes, 8.21us per write
+<function file_write at 0x533a8fc7> 100 bytes, 8.31us per write
+<function file_read at 0x3fb1ab52> 1000 bytes, 7.09us per write
+<function file_write at 0x533a8fc7> 1000 bytes, 40.60us per write
+<function file_read at 0x3fb1ab52> 10000 bytes, 7.79us per write
+<function file_write at 0x533a8fc7> 10000 bytes, 371.96us per write
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
-Error in sys.excepthook:
-
-Traceback (most recent call last):
-  File "_bootstrap.py", line 1066, in __import__
-  File "_bootstrap.py", line 985, in _gcd_import
-  File "_bootstrap.py", line 968, in _find_and_load
-  File "_bootstrap.py", line 957, in _find_and_load_unlocked
-  File "_bootstrap.py", line 662, in _load_unlocked
-  File "_bootstrap_external.py", line 687, in _LoaderBasics.exec_module
-  File "_bootstrap.py", line 206, in _call_with_frames_removed
-  File "functions", line 112, in exec
-  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 3, in <module>
-  File "_bootstrap.py", line 1066, in __import__
-  File "_bootstrap.py", line 985, in _gcd_import
-  File "_bootstrap.py", line 968, in _find_and_load
-  File "_bootstrap.py", line 957, in _find_and_load_unlocked
-  File "_bootstrap.py", line 662, in _load_unlocked
-  File "_bootstrap_external.py", line 682, in _LoaderBasics.exec_module
-  File "_bootstrap_external.py", line 789, in SourceLoader.get_code
-  File "_bootstrap_external.py", line 841, in FileLoader.get_data
-  File "_io", line 345, in FileIO.__init__
-OSError: /usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/collections/__init__.py
-
-Original exception was:
-
-Traceback (most recent call last):
-  File "_bootstrap.py", line 1066, in __import__
-  File "_bootstrap.py", line 985, in _gcd_import
-  File "_bootstrap.py", line 968, in _find_and_load
-  File "_bootstrap.py", line 957, in _find_and_load_unlocked
-  File "_bootstrap.py", line 662, in _load_unlocked
-  File "_bootstrap_external.py", line 687, in _LoaderBasics.exec_module
-  File "_bootstrap.py", line 206, in _call_with_frames_removed
-  File "functions", line 112, in exec
-  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/locale.py", line 14, in <module>
-  File "_bootstrap.py", line 1066, in __import__
-  File "_bootstrap.py", line 985, in _gcd_import
-  File "_bootstrap.py", line 968, in _find_and_load
-  File "_bootstrap.py", line 957, in _find_and_load_unlocked
-  File "_bootstrap.py", line 662, in _load_unlocked
-  File "_bootstrap_external.py", line 682, in _LoaderBasics.exec_module
-  File "_bootstrap_external.py", line 789, in SourceLoader.get_code
-  File "_bootstrap_external.py", line 841, in FileLoader.get_data
-  File "_io", line 345, in FileIO.__init__
-OSError: /usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/encodings/__init__.py
