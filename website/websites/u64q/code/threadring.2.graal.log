@@ -1,5 +1,5 @@
 
-Mon, 12 Nov 2018 12:15:35 GMT
+Mon, 10 Dec 2018 18:00:22 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython threadring.graal-2.graal 5000000
@@ -11,10 +11,8 @@ PROGRAM OUTPUT:
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
-  File "threadring.graal-2.graal", line 8, in <module>
-    import _thread
-  File "/b/b/e/graalpython/graalpython/lib-python/3/importlib/_bootstrap.py", line 1074, in __import__
-  File "/b/b/e/graalpython/graalpython/lib-python/3/importlib/_bootstrap.py", line 994, in _gcd_import
-  File "/b/b/e/graalpython/graalpython/lib-python/3/importlib/_bootstrap.py", line 971, in _find_and_load
-  File "/b/b/e/graalpython/graalpython/lib-python/3/importlib/_bootstrap.py", line 953, in _find_and_load_unlocked
-ModuleNotFoundError: No module named '_thread'
+  File "threadring.graal-2.graal", line 12, in <module>
+    _thread.stack_size(32*1024)
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/_dummy_thread.py", line 81, in stack_size
+    raise error("setting thread stack size not supported")
+RuntimeError: setting thread stack size not supported

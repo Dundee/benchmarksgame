@@ -1,21 +1,53 @@
 
-Mon, 12 Nov 2018 12:07:47 GMT
+Mon, 10 Dec 2018 17:55:07 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython knucleotide.graal 0 < knucleotide-input10000.txt
 
-PROGRAM FAILED 
+UNEXPECTED OUTPUT 
 
+0a1,4
+> A 30.284
+> T 29.796
+> C 20.312
+> G 19.608
+1a6,21
+> AA 9.212
+> AT 8.950
+> TT 8.948
+> TA 8.936
+> CA 6.166
+> CT 6.100
+> AC 6.086
+> TC 6.042
+> AG 6.036
+> GA 5.968
+> TG 5.868
+> GT 5.798
+> CC 4.140
+> GC 4.044
+> CG 3.906
+> GG 3.798
+3,7c23,25
+< 
+< 
+< 0	GGT
+< 0	GGTA
+< 0	GGTATT
+---
+> 562	GGT
+> 152	GGTA
+> 15	GGTATT
 
 PROGRAM OUTPUT:
 
+
+
+
+0	GGT
+0	GGTA
+0	GGTATT
+0	GGTATTTTAATT
+0	GGTATTTTAATTTATAGT
+
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
-Traceback (most recent call last):
-  File "knucleotide.graal", line 56, in <module>
-    main()
-  File "knucleotide.graal", line 39, in main
-    for line in stdin:
-  File "_io", line 56, in _IOBase.__next__
-  File "_io", line 160, in _IOBase.readline
-  File "_io", line 499, in FileIO.read
-OSError: Bad file descriptor
