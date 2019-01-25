@@ -1,5 +1,5 @@
 
-Mon, 10 Dec 2018 17:55:05 GMT
+Fri, 25 Jan 2019 12:42:28 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython jsonbench.graal 1
@@ -10,13 +10,27 @@ PROGRAM FAILED
 PROGRAM OUTPUT:
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Error in sys.excepthook:
+
+Traceback (most recent call last):
+  File "sys", line 159, in __print_traceback__
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 99, in print_exception
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 495, in __init__
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 341, in extract
+AttributeError: 'NoneType' object has no attribute 'co_filename'
+
+Original exception was:
+
 Traceback (most recent call last):
   File "jsonbench.graal", line 2, in <module>
-    import json
-  File "jsonbench.graal", line 17, in main
-    json_data = json.dumps(data)
-  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/__init__.py", line 231, in dumps
-    return _default_encoder.encode(obj)
-  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/encoder.py", line 202, in JSONEncoder.encode
-    return ''.join(chunks)
-TypeError: sequence item 0: expected str instance, generator found
+Traceback (most recent call last):
+  File "jsonbench.graal", line 21, in <module 'jsonbench.graal'>
+  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/__init__.py", line 354, in loads
+  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/decoder.py", line 339, in decode
+  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/decoder.py", line 355, in raw_decode
+  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/scanner.py", line 37, in _scan_once
+  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/decoder.py", line 185, in JSONObject
+  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/scanner.py", line 35, in _scan_once
+  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/decoder.py", line 116, in py_scanstring
+  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/decoder.py", line 67, in _decode_uXXXX
+JSONDecodeError: Invalid \uXXXX escape: line 1 column 294 (char 293)

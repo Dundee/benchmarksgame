@@ -1,5 +1,5 @@
 
-Mon, 10 Dec 2018 17:49:33 GMT
+Fri, 25 Jan 2019 12:13:09 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython chameneosredux.graal-2.graal 6000000
@@ -8,7 +8,6 @@ PROGRAM FAILED
 
 
 PROGRAM OUTPUT NOT CHECKED:
-blue + blue -> blue
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
@@ -18,4 +17,4 @@ Traceback (most recent call last):
     check_complement()
   File "chameneosredux.graal-2.graal", line 35, in check_complement
     print('%s + %s -> %s' % (c1, c2, compl[(c1, c2)]))
-KeyError: ('blue', 'red')
+KeyError: ('blue', 'blue')

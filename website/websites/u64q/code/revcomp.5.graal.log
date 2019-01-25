@@ -1,5 +1,5 @@
 
-Mon, 10 Dec 2018 17:59:40 GMT
+Fri, 25 Jan 2019 13:12:49 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython revcomp.graal-5.graal 0 < revcomp-input1000.txt
@@ -11,6 +11,8 @@ PROGRAM OUTPUT:
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
-  File "revcomp.graal-5.graal", line 11, in <module>
-    def show(seq, table, write=sys.stdout.buffer.write, nl=b'\n'):
-AttributeError: 'FileIO' object has no attribute 'buffer'
+  File "revcomp.graal-5.graal", line 25, in <module>
+    main()
+  File "revcomp.graal-5.graal", line 22, in main
+    for seq in sys.stdin.buffer.read().split(b'>')[1:]:
+AttributeError: 'bytearray' object has no attribute 'split'

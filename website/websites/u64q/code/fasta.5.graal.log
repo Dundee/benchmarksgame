@@ -1,5 +1,5 @@
 
-Mon, 10 Dec 2018 17:50:49 GMT
+Fri, 25 Jan 2019 12:23:56 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython fasta.graal-5.graal 2500000
@@ -11,6 +11,10 @@ PROGRAM OUTPUT:
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
-  File "fasta.graal-5.graal", line 7, in <module>
-    from contextlib import closing, contextmanager
-ImportError: cannot import name 'zip_longest'
+  File "fasta.graal-5.graal", line 9, in <module 'fasta.graal-5.graal'>
+  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/multiprocessing/__init__.py", line 16, in <module '/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/multiprocessing/__init__.py'>
+  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/multiprocessing/context.py", line 6, in <module '/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/multiprocessing/context.py'>
+  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/multiprocessing/reduction.py", line 15, in <module '/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/multiprocessing/reduction.py'>
+  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/pickle.py", line 33, in <module '/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/pickle.py'>
+  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/struct.py", line 13, in <module '/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/struct.py'>
+'libsulong++.bc' is not a file or does not exist.
