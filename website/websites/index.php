@@ -79,7 +79,7 @@ $langs = array(
    array('shedskin','Shedskin 0.9.4','shedskin',$allsites),
    array('numba','Numba 0.35.0 (with NumPy and Anaconda 5.0.1)','numba',$allsites),
    array('pyston','Pyston 0.6.1','pyston',$allsites),
-   array('micropython','MicroPython 1.9.4','micropython',$allsites),
+   array('micropython','MicroPython 1.10','micropython',$allsites),
    array('grumpy','Grumpy r123.08f9c2e','grumpy',$allsites),
    array('graal','Graal python 1.0.0_rc11','graal',$allsites),
    );

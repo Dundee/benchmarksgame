@@ -1,8 +1,17 @@
 
-Fri, 25 Jan 2019 13:14:31 GMT
+Tue, 29 Jan 2019 18:07:33 GMT
 
 COMMAND LINE:
 /usr/bin/micropython threadring.micropython-3.micropython 5000000
 
+PROGRAM FAILED 
+
+
 PROGRAM OUTPUT:
 181
+
+Traceback (most recent call last):
+  File "threadring.micropython-3.micropython", line 34, in <module>
+  File "threadring.micropython-3.micropython", line 32, in main
+  File "threadring.micropython-3.micropython", line 30, in main
+RuntimeError: generator raised StopIteration
