@@ -1,5 +1,5 @@
 
-Fri, 25 Jan 2019 12:13:10 GMT
+Tue, 12 Feb 2019 11:46:56 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython chameneosredux.graal 6000000
@@ -8,13 +8,73 @@ PROGRAM FAILED
 
 
 PROGRAM OUTPUT NOT CHECKED:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
   File "chameneosredux.graal", line 123, in <module>
     chameneosiate(int(sys.argv[1]))
-  File "chameneosredux.graal", line 116, in chameneosiate
-    check_complement()
-  File "chameneosredux.graal", line 35, in check_complement
-    print('%s + %s -> %s' % (c1, c2, compl[(c1, c2)]))
-KeyError: ('blue', 'blue')
+  File "chameneosredux.graal", line 117, in chameneosiate
+    let_them_meet(n, ['blue', 'red', 'yellow'])
+  File "chameneosredux.graal", line 87, in let_them_meet
+    new = _thread.start_new_thread(creature, args)
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/_dummy_thread.py", line 54, in start_new_thread
+    traceback.print_exc()
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 159, in print_exc
+    print_exception(*sys.exc_info(), limit=limit, file=file, chain=chain)
+  File "chameneosredux.graal", line 62, in creature
+    out_lock_release()  # signal "registration ok"
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/_dummy_thread.py", line 136, in release
+    raise error
+RuntimeError
+Traceback (most recent call last):
+  File "chameneosredux.graal", line 123, in <module>
+    chameneosiate(int(sys.argv[1]))
+  File "chameneosredux.graal", line 117, in chameneosiate
+    let_them_meet(n, ['blue', 'red', 'yellow'])
+  File "chameneosredux.graal", line 87, in let_them_meet
+    new = _thread.start_new_thread(creature, args)
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/_dummy_thread.py", line 54, in start_new_thread
+    traceback.print_exc()
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 159, in print_exc
+    print_exception(*sys.exc_info(), limit=limit, file=file, chain=chain)
+  File "chameneosredux.graal", line 62, in creature
+    out_lock_release()  # signal "registration ok"
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/_dummy_thread.py", line 136, in release
+    raise error
+RuntimeError
+Traceback (most recent call last):
+  File "chameneosredux.graal", line 123, in <module>
+    chameneosiate(int(sys.argv[1]))
+  File "chameneosredux.graal", line 117, in chameneosiate
+    let_them_meet(n, ['blue', 'red', 'yellow'])
+  File "chameneosredux.graal", line 87, in let_them_meet
+    new = _thread.start_new_thread(creature, args)
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/_dummy_thread.py", line 54, in start_new_thread
+    traceback.print_exc()
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 159, in print_exc
+    print_exception(*sys.exc_info(), limit=limit, file=file, chain=chain)
+  File "chameneosredux.graal", line 62, in creature
+    out_lock_release()  # signal "registration ok"
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/_dummy_thread.py", line 136, in release
+    raise error
+RuntimeError
+Traceback (most recent call last):
+  File "chameneosredux.graal", line 123, in <module>
+    chameneosiate(int(sys.argv[1]))
+  File "chameneosredux.graal", line 117, in chameneosiate
+    let_them_meet(n, ['blue', 'red', 'yellow'])
+  File "chameneosredux.graal", line 87, in let_them_meet
+    new = _thread.start_new_thread(creature, args)
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/_dummy_thread.py", line 136, in release
+    raise error
+RuntimeError

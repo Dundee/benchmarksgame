@@ -1,5 +1,5 @@
 
-Thu, 26 Apr 2018 16:44:59 GMT
+Tue, 12 Feb 2019 12:18:36 GMT
 
 COMMAND LINE:
 /usr/bin/pypy mandelbrot.pypy-6.pypy 16000
@@ -28,5 +28,5 @@ likely you are trying to import a failed build of numpy.
 If you're working with a numpy git repo, try `git clean -xdf` (removes all
 files not under version control).  Otherwise reinstall numpy.
 
-Original error was: unable to load extension module '/opt/pypy/site-packages/numpy/core/multiarray.pypy-41.so': /opt/pypy/site-packages/numpy/core/multiarray.pypy-41.so: undefined symbol: _PyPy_Dealloc
+Original error was: unable to load extension module '/opt/pypy/site-packages/numpy/core/multiarray.pypy-41.so': /opt/pypy/site-packages/numpy/core/multiarray.pypy-41.so: undefined symbol: PyPySlice_Check
 
