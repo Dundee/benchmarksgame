@@ -75,7 +75,7 @@ $langs = array(
    array('ipy','IronPython 2.7.8a1 (with Mono 5.0.0.100)','ipy',$allsites),
    array('jython','Jython 2.7.1 (with JDK 8.u131)','jython',$allsites),
    array('cython','Cython 0.29.5 (with NumPy and gmpy)','cython',$allsites),
-   array('nuitka','Nuitka 0.6.0','nuitka',$allsites),
+   array('nuitka','Nuitka 0.6.2','nuitka',$allsites),
    array('shedskin','Shedskin 0.9.4','shedskin',$allsites),
    array('numba','Numba 0.35.0 (with NumPy and Anaconda 5.0.1)','numba',$allsites),
    array('pyston','Pyston 0.6.1','pyston',$allsites),

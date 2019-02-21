@@ -1,5 +1,5 @@
 
-Mon, 15 Oct 2018 13:04:02 GMT
+Thu, 21 Feb 2019 10:57:38 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
@@ -7,30 +7,10 @@ nuitka3 --remove-output spectralnorm.nuitka-2.nuitka
 Nuitka:WARNING:Not recursing to 'numpy' (/usr/lib/python3.7/site-packages/numpy), please specify --nofollow-imports (do not warn), --follow-imports (recurse to all), --nofollow-import-to=numpy (ignore it), --follow-import-to=numpy (recurse to it) to change.
 cp spectralnorm.nuitka-2.nuitka.bin spectralnorm.nuitka-2.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
-2.81s to complete and log all make actions
+3.30s to complete and log all make actions
 
 COMMAND LINE:
 ./spectralnorm.nuitka-2.nuitka_run 550
 
-PROGRAM FAILED 
-
-
 PROGRAM OUTPUT:
-
-Traceback (most recent call last):
-  File "/usr/lib/python3.7/site-packages/numpy/linalg/linalg.py", line 605, in matrix_power
-    n = operator.index(n)
-TypeError: 'float' object cannot be interpreted as an integer
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.nuitka-2.nuitka", line 25, in <module>
-    spectralnorm(int(argv[1]))
-  File "/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.nuitka-2.nuitka", line 23, in spectralnorm
-    print("%0.9f" % (sum(u*v.T)/sum(v*v.T))**0.5)
-  File "/usr/lib/python3.7/site-packages/numpy/matrixlib/defmatrix.py", line 228, in __pow__
-    return matrix_power(self, other)
-  File "/usr/lib/python3.7/site-packages/numpy/linalg/linalg.py", line 607, in matrix_power
-    raise TypeError("exponent must be an integer")
-TypeError: exponent must be an integer
+1.274224125
