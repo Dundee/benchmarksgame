@@ -1,5 +1,5 @@
 
-Tue, 12 Feb 2019 12:07:22 GMT
+Mon, 25 Mar 2019 12:10:13 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython jsonbench.graal 1
@@ -10,27 +10,28 @@ PROGRAM FAILED
 PROGRAM OUTPUT:
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
-Error in sys.excepthook:
-
 Traceback (most recent call last):
-  File "sys", line 163, in __print_traceback__
-  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 99, in print_exception
-  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 495, in __init__
-  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 341, in extract
-AttributeError: 'NoneType' object has no attribute 'co_filename'
-
-Original exception was:
-
-Traceback (most recent call last):
-  File "jsonbench.graal", line 2, in <module>
-Traceback (most recent call last):
-  File "jsonbench.graal", line 21, in <module 'jsonbench.graal'>
-  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/__init__.py", line 354, in loads
-  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/decoder.py", line 339, in decode
-  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/decoder.py", line 355, in raw_decode
-  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/scanner.py", line 37, in _scan_once
-  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/decoder.py", line 185, in JSONObject
-  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/scanner.py", line 35, in _scan_once
-  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/decoder.py", line 116, in py_scanstring
-  "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/decoder.py", line 67, in _decode_uXXXX
-JSONDecodeError: Invalid \uXXXX escape: line 1 column 294 (char 293)
+  File "jsonbench.graal", line 2, in <module 'jsonbench.graal'>
+    import json
+  File "jsonbench.graal", line -1, in main
+  File "jsonbench.graal", line 18, in main
+    json.loads(json_data)
+  File "__init__.py", line 348, in loads
+    return _default_decoder.decode(s)
+  File "decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "decoder.py", line 353, in raw_decode
+    obj, end = self.scan_once(s, idx)
+  File "scanner.py", line 67, in scan_once
+    return _scan_once(string, idx)
+  File "scanner.py", line 37, in _scan_once
+    return parse_object((string, idx + 1), strict,
+  File "decoder.py", line 186, in JSONObject
+    value, end = scan_once(s, end)
+  File "scanner.py", line 35, in _scan_once
+    return parse_string(string, idx + 1, strict)
+  File "decoder.py", line 117, in py_scanstring
+    uni = _decode_uXXXX(s, end)
+  File "decoder.py", line 67, in _decode_uXXXX
+    raise JSONDecodeError(msg, s, pos)
+json.decoder.JSONDecodeError: Invalid \uXXXX escape: line 1 column 294 (char 293)

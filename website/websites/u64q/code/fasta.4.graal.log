@@ -1,5 +1,5 @@
 
-Tue, 12 Feb 2019 11:58:46 GMT
+Mon, 25 Mar 2019 12:00:35 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython fasta.graal-4.graal 2500000
@@ -11,10 +11,10 @@ PROGRAM OUTPUT:
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
-  File "fasta.graal-4.graal", line 138, in <module>
+  File "fasta.graal-4.graal", line 138, in <module 'fasta.graal-4.graal'>
     main()
   File "fasta.graal-4.graal", line 127, in main
     repeat_fasta(alu, n * 2)
   File "fasta.graal-4.graal", line 52, in repeat_fasta
     s = bytearray(ss, encoding='utf8')
-TypeError: bytearray() got an unexpected keyword argument 'encoding'
+TypeError: got an unexpected keyword argument 'encoding'
