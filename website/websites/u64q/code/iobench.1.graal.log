@@ -1,21 +1,19 @@
 
-Mon, 25 Mar 2019 12:05:34 GMT
+Mon, 29 Apr 2019 21:18:10 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython iobench.graal 1
 
+TIMED OUT after 300s
+
+
 PROGRAM OUTPUT NOT CHECKED:
-<function fread at 0x1dac0994> 100 bytes, 1.81us per write
-<function fwrite at 0x1d8ac1d2> 100 bytes, 2.79us per write
-<function fread at 0x1dac0994> 1000 bytes, 1.56us per write
-<function fwrite at 0x1d8ac1d2> 1000 bytes, 13.79us per write
-<function fread at 0x1dac0994> 10000 bytes, 1.51us per write
-<function fwrite at 0x1d8ac1d2> 10000 bytes, 129.76us per write
-<function file_read at 0x7465049b> 100 bytes, 5.51us per write
-<function file_write at 0x50ef243b> 100 bytes, 7.10us per write
-<function file_read at 0x7465049b> 1000 bytes, 6.40us per write
-<function file_write at 0x50ef243b> 1000 bytes, 41.77us per write
-<function file_read at 0x7465049b> 10000 bytes, 30.41us per write
-<function file_write at 0x50ef243b> 10000 bytes, 394.92us per write
+<function fread at 0x47026047> 100 bytes, 1.70us per write
+<function fwrite at 0x637fe480> 100 bytes, 2.65us per write
+<function fread at 0x47026047> 1000 bytes, 1.55us per write
+<function fwrite at 0x637fe480> 1000 bytes, 14.22us per write
+<function fread at 0x47026047> 10000 bytes, 1.55us per write
+<function fwrite at 0x637fe480> 10000 bytes, 134.56us per write
+<function file_read at 0x606a8d09> 100 bytes, 160.35us per write
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.

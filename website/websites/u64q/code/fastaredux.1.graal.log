@@ -1,5 +1,5 @@
 
-Mon, 25 Mar 2019 12:02:09 GMT
+Mon, 29 Apr 2019 21:07:03 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython fastaredux.graal 2500000
@@ -179,12 +179,8 @@ AACCCGGGAGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCCAGCCTGGGCG
 ACAGAGCGAGACTCCGTCTCAAAAAGGCCGG
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
-  File "fastaredux.graal", line 108, in <module 'fastaredux.graal'>
-    main()
-  File "fastaredux.graal", line 103, in main
-    randomFasta(iub, n*3)
-  File "fastaredux.graal", line 79, in randomFasta
-    lut = makeLookupTable(table)
-  File "fastaredux.graal", line 62, in makeLookupTable
-    return array.array("u", [chars[bb(probs, i / imf)] for i in range(IM)])
+  File "fastaredux.python3", line 108, in <module 'fastaredux.python3'>
+  File "fastaredux.python3", line 103, in main
+  File "fastaredux.python3", line 79, in randomFasta
+  File "fastaredux.python3", line 62, in makeLookupTable
 ValueError: bad typecode (must be i, d, b, or l)

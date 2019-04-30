@@ -1,5 +1,5 @@
 
-Mon, 25 Mar 2019 12:03:21 GMT
+Mon, 29 Apr 2019 21:14:01 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython fibonacci.graal-3.graal 1000000
@@ -11,17 +11,11 @@ PROGRAM OUTPUT:
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
-  File "fibonacci.graal-3.graal", line 22, in <module 'fibonacci.graal-3.graal'>
-    print(fib(int(sys.argv[1])))
-  File "fibonacci.graal-3.graal", line 19, in fib
-    L, F = powLF(n // 2)
-  File "fibonacci.graal-3.graal", line 7, in powLF
-    L, F = powLF(n//2)
-  File "fibonacci.graal-3.graal", line 7, in powLF
-    L, F = powLF(n//2)
-  File "fibonacci.graal-3.graal", line 7, in powLF
-    L, F = powLF(n//2)
+  File "fibonacci.python3-3.python3", line 22, in <module 'fibonacci.python3-3.python3'>
+  File "fibonacci.python3-3.python3", line 19, in fib
+  File "fibonacci.python3-3.python3", line 7, in powLF
+  File "fibonacci.python3-3.python3", line 7, in powLF
+  File "fibonacci.python3-3.python3", line 7, in powLF
   [Previous line repeated {count-3} more times]
-  File "fibonacci.graal-3.graal", line 8, in powLF
-    L, F = (L**2 + 5*F**2) >> 1, L*F
+  File "fibonacci.python3-3.python3", line 8, in powLF
 TypeError: unsupported operand type(s) for ** or pow()(): 'int' and 'int'
