@@ -1,5 +1,5 @@
 
-Mon, 29 Apr 2019 21:18:10 GMT
+Tue, 14 May 2019 09:17:52 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython iobench.graal 1
@@ -8,12 +8,13 @@ TIMED OUT after 300s
 
 
 PROGRAM OUTPUT NOT CHECKED:
-<function fread at 0x47026047> 100 bytes, 1.70us per write
-<function fwrite at 0x637fe480> 100 bytes, 2.65us per write
-<function fread at 0x47026047> 1000 bytes, 1.55us per write
-<function fwrite at 0x637fe480> 1000 bytes, 14.22us per write
-<function fread at 0x47026047> 10000 bytes, 1.55us per write
-<function fwrite at 0x637fe480> 10000 bytes, 134.56us per write
-<function file_read at 0x606a8d09> 100 bytes, 160.35us per write
+<function fread at 0x547932e3> 100 bytes, 1.67us per write
+<function fwrite at 0xa8f72da> 100 bytes, 2.47us per write
+<function fread at 0x547932e3> 1000 bytes, 1.52us per write
+<function fwrite at 0xa8f72da> 1000 bytes, 13.77us per write
+<function fread at 0x547932e3> 10000 bytes, 1.54us per write
+<function fwrite at 0xa8f72da> 10000 bytes, 129.35us per write
+<function file_read at 0x4dfc11d4> 100 bytes, 117.94us per write
+<function file_write at 0xdf83ddb> 100 bytes, 92.99us per write
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.

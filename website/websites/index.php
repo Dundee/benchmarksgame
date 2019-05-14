@@ -71,7 +71,7 @@ $langs = array(
    array('pypy','PyPy 7.1.1 (with gmpy_cffi)','pypy',$allsites),
    array('python3','Python 3.7.1 (with NumPy and gmpy2)','python3',$allsites),
    array('python-dev','Python 3.8.0a3+','python-dev',$allsites),
-   array('pypy3','PyPy3 7.1.0 (with gmpy_cffi)','pypy3',$allsites),
+   array('pypy3','PyPy3 7.1.1 (with gmpy_cffi)','pypy3',$allsites),
    array('ipy','IronPython 2.7.8a1 (with Mono 5.0.0.100)','ipy',$allsites),
    array('jython','Jython 2.7.1 (with JDK 8.u131)','jython',$allsites),
    array('cython','Cython 0.29.7 (with NumPy and gmpy)','cython',$allsites),
@@ -81,7 +81,7 @@ $langs = array(
    array('pyston','Pyston 0.6.1','pyston',$allsites),
    array('micropython','MicroPython 1.10','micropython',$allsites),
    array('grumpy','Grumpy r123.08f9c2e','grumpy',$allsites),
-   array('graal','Graal python 1.0.0_rc16','graal',$allsites),
+   array('graal','Graal python 19.0.0','graal',$allsites),
    );
 
 
