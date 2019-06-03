@@ -1,5 +1,5 @@
 
-Mon, 29 Apr 2019 21:54:46 GMT
+Mon, 03 Jun 2019 09:33:24 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
@@ -37,7 +37,7 @@ Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spe
 [1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx
 Traceback (most recent call last):
   File "/usr/bin/cythonize", line 11, in <module>
-    load_entry_point('Cython==0.29.7', 'console_scripts', 'cythonize')()
+    load_entry_point('Cython==0.29.10', 'console_scripts', 'cythonize')()
   File "/usr/lib/python3.7/site-packages/Cython/Build/Cythonize.py", line 223, in main
     cython_compile(path, options)
   File "/usr/lib/python3.7/site-packages/Cython/Build/Cythonize.py", line 106, in cython_compile
@@ -49,7 +49,7 @@ Traceback (most recent call last):
 Cython.Compiler.Errors.CompileError: /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:21: spectralnorm.cython-5.cython_run] Chyba 1
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
-0.49s to complete and log all make actions
+0.52s to complete and log all make actions
 
 COMMAND LINE:
 /usr/bin/python3 -c "import spectralnorm" 550
