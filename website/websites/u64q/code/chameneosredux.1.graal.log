@@ -1,5 +1,5 @@
 
-Wed, 19 Jun 2019 09:02:54 GMT
+Tue, 09 Jul 2019 18:02:16 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython chameneosredux.graal 6000000
@@ -21,38 +21,61 @@ yellow + yellow -> yellow
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
+  File "traceback.py", line 163, in print_exc
+    print_exception(*sys.exc_info(), limit=limit, file=file, chain=chain)
   File "chameneosredux.python3", line 123, in <module 'chameneosredux.python3'>
   File "chameneosredux.python3", line 117, in chameneosiate
   File "chameneosredux.python3", line 87, in let_them_meet
-  File "_dummy_thread.py", line 54, in start_new_thread
-  File "traceback.py", line 159, in print_exc
+  File "traceback.py", line 163, in print_exc
     print_exception(*sys.exc_info(), limit=limit, file=file, chain=chain)
+  File "traceback.py", line 103, in print_exception
+    for line in TracebackException(
+  File "traceback.py", line 506, in __init__
+    self.stack = StackSummary.extract(
+  File "traceback.py", line 344, in extract
+    for f, lineno in frame_gen:
+  File "traceback.py", line 310, in walk_tb
+    tb = tb.tb_next
   File "chameneosredux.python3", line 62, in creature
-  File "_dummy_thread.py", line 136, in release
+RuntimeError
+Traceback (most recent call last):
+  File "traceback.py", line 163, in print_exc
+    print_exception(*sys.exc_info(), limit=limit, file=file, chain=chain)
+  File "chameneosredux.python3", line 123, in <module 'chameneosredux.python3'>
+  File "chameneosredux.python3", line 117, in chameneosiate
+  File "chameneosredux.python3", line 87, in let_them_meet
+  File "traceback.py", line 163, in print_exc
+    print_exception(*sys.exc_info(), limit=limit, file=file, chain=chain)
+  File "traceback.py", line 103, in print_exception
+    for line in TracebackException(
+  File "traceback.py", line 506, in __init__
+    self.stack = StackSummary.extract(
+  File "traceback.py", line 344, in extract
+    for f, lineno in frame_gen:
+  File "traceback.py", line 310, in walk_tb
+    tb = tb.tb_next
+  File "chameneosredux.python3", line 62, in creature
+RuntimeError
+Traceback (most recent call last):
+  File "traceback.py", line 163, in print_exc
+    print_exception(*sys.exc_info(), limit=limit, file=file, chain=chain)
+  File "chameneosredux.python3", line 123, in <module 'chameneosredux.python3'>
+  File "chameneosredux.python3", line 117, in chameneosiate
+  File "chameneosredux.python3", line 87, in let_them_meet
+  File "traceback.py", line 163, in print_exc
+    print_exception(*sys.exc_info(), limit=limit, file=file, chain=chain)
+  File "traceback.py", line 103, in print_exception
+    for line in TracebackException(
+  File "traceback.py", line 506, in __init__
+    self.stack = StackSummary.extract(
+  File "traceback.py", line 344, in extract
+    for f, lineno in frame_gen:
+  File "traceback.py", line 310, in walk_tb
+    tb = tb.tb_next
+  File "chameneosredux.python3", line 62, in creature
 RuntimeError
 Traceback (most recent call last):
   File "chameneosredux.python3", line 123, in <module 'chameneosredux.python3'>
   File "chameneosredux.python3", line 117, in chameneosiate
   File "chameneosredux.python3", line 87, in let_them_meet
-  File "_dummy_thread.py", line 54, in start_new_thread
-  File "traceback.py", line 159, in print_exc
-    print_exception(*sys.exc_info(), limit=limit, file=file, chain=chain)
-  File "chameneosredux.python3", line 62, in creature
-  File "_dummy_thread.py", line 136, in release
-RuntimeError
-Traceback (most recent call last):
-  File "chameneosredux.python3", line 123, in <module 'chameneosredux.python3'>
-  File "chameneosredux.python3", line 117, in chameneosiate
-  File "chameneosredux.python3", line 87, in let_them_meet
-  File "_dummy_thread.py", line 54, in start_new_thread
-  File "traceback.py", line 159, in print_exc
-    print_exception(*sys.exc_info(), limit=limit, file=file, chain=chain)
-  File "chameneosredux.python3", line 62, in creature
-  File "_dummy_thread.py", line 136, in release
-RuntimeError
-Traceback (most recent call last):
-  File "chameneosredux.python3", line 123, in <module 'chameneosredux.python3'>
-  File "chameneosredux.python3", line 117, in chameneosiate
-  File "chameneosredux.python3", line 87, in let_them_meet
-  File "_dummy_thread.py", line 136, in release
 RuntimeError

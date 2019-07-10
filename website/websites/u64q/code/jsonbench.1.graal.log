@@ -1,5 +1,5 @@
 
-Wed, 19 Jun 2019 09:26:10 GMT
+Tue, 09 Jul 2019 18:32:17 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython jsonbench.graal 1
@@ -11,10 +11,8 @@ PROGRAM OUTPUT:
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
-  File "jsonbench.python3", line 2, in <module 'jsonbench.python3'>
-  File "jsonbench.python3", line -1, in main
-  File "jsonbench.python3", line 18, in main
-  File "__init__.py", line 348, in loads
+  File "jsonbench.python3", line 21, in <module 'jsonbench.python3'>
+  File "__init__.py", line 349, in loads
     return _default_decoder.decode(s)
   File "decoder.py", line 337, in decode
     obj, end = self.raw_decode(s, idx=_w(s, 0).end())

@@ -1,18 +1,15 @@
 
-Mon, 29 Apr 2019 21:48:10 GMT
+Tue, 09 Jul 2019 18:49:50 GMT
 
 COMMAND LINE:
-/usr/bin/python3.8 pystone.python-dev 50000
+/usr/bin/python3.9 pystone.python-dev 50000
+
+PROGRAM FAILED 
+
 
 PROGRAM OUTPUT:
-50000
-OK
 
-pystone.python-dev:88: DeprecationWarning: time.clock has been deprecated in Python 3.3 and will be removed from Python 3.8: use time.perf_counter or time.process_time instead
-  starttime = clock()
-pystone.python-dev:91: DeprecationWarning: time.clock has been deprecated in Python 3.3 and will be removed from Python 3.8: use time.perf_counter or time.process_time instead
-  nulltime = clock() - starttime
-pystone.python-dev:103: DeprecationWarning: time.clock has been deprecated in Python 3.3 and will be removed from Python 3.8: use time.perf_counter or time.process_time instead
-  starttime = clock()
-pystone.python-dev:129: DeprecationWarning: time.clock has been deprecated in Python 3.3 and will be removed from Python 3.8: use time.perf_counter or time.process_time instead
-  benchtime = clock() - starttime - nulltime
+Traceback (most recent call last):
+  File "/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.python-dev", line 37, in <module>
+    from time import clock
+ImportError: cannot import name 'clock' from 'time' (unknown location)
