@@ -71,7 +71,7 @@ $langs = array(
    array('python','Python 2.7.15 (with NumPy and gmpy)','python',$allsites),
    array('python-dev','Python 3.9.0a0','python-dev',$allsites),
    array('pypy3','PyPy3 7.2.0 (with gmpy_cffi)','pypy3',$allsites),
-   array('pypy','PyPy 7.1.1 (with gmpy_cffi)','pypy',$allsites),
+   array('pypy','PyPy 7.2.0 (with gmpy_cffi)','pypy',$allsites),
    array('ipy','IronPython 2.7.8a1 (with Mono 5.0.0.100)','ipy',$allsites),
    array('jython','Jython 2.7.1 (with JDK 8.u131)','jython',$allsites),
    array('cython','Cython 0.29.13 (with NumPy and gmpy)','cython',$allsites),
