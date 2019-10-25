@@ -1,0 +1,14 @@
+
+Fri, 25 Oct 2019 13:49:36 GMT
+
+COMMAND LINE:
+/usr/bin/rustpython threadring.rustpython 5000000
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+Traceback (most recent call last):
+  File "threadring.rustpython", line 12, in <module>
+    def main(n = int(sys.argv[1]), n_threads=503, cycle=itertools.cycle):
+AttributeError: module 'itertools' has no attribute 'cycle'

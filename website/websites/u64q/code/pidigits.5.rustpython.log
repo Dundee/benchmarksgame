@@ -1,0 +1,21 @@
+
+Fri, 25 Oct 2019 13:44:18 GMT
+
+COMMAND LINE:
+/usr/bin/rustpython pidigits.rustpython-5.rustpython 10000
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+Traceback (most recent call last):
+  File "pidigits.rustpython-5.rustpython", line 10, in <module>
+    from gmpy2 import xmpz, f_divmod
+ModuleNotFoundError: No module named 'gmpy2'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "pidigits.rustpython-5.rustpython", line 12, in <module>
+    from gmpy_cffi import mpz as xmpz
+ModuleNotFoundError: No module named 'gmpy_cffi'

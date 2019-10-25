@@ -1,0 +1,28 @@
+
+Fri, 25 Oct 2019 13:25:56 GMT
+
+COMMAND LINE:
+/usr/bin/rustpython chameneosredux.rustpython 6000000
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT NOT CHECKED:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
+Traceback (most recent call last):
+  File "chameneosredux.rustpython", line 123, in <module>
+    chameneosiate(int(sys.argv[1]))       
+  File "chameneosredux.rustpython", line 117, in chameneosiate
+    let_them_meet(n, ['blue', 'red', 'yellow'])
+  File "chameneosredux.rustpython", line 87, in let_them_meet
+    new = _thread.start_new_thread(creature, args)
+AttributeError: module '_thread' has no attribute 'start_new_thread'

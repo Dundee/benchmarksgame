@@ -1,0 +1,14 @@
+
+Fri, 25 Oct 2019 13:30:57 GMT
+
+COMMAND LINE:
+/usr/bin/rustpython fib50.rustpython 1000000
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+Traceback (most recent call last):
+  File "fib50.rustpython", line 12, in <module>
+    print('{:.0f}'.format(fib(50)))
+TypeError: unsupported format string passed to object.__format__

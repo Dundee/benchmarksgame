@@ -1,0 +1,16 @@
+
+Fri, 25 Oct 2019 13:49:36 GMT
+
+COMMAND LINE:
+/usr/bin/rustpython spectralnorm.rustpython-8.rustpython 550
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+Traceback (most recent call last):
+  File "spectralnorm.rustpython-8.rustpython", line 74, in <module>
+    main() 
+  File "spectralnorm.rustpython-8.rustpython", line 57, in main
+    u = array("d", [1]) * n
+TypeError: Expected type <class 'float'>, not <class 'int'>
