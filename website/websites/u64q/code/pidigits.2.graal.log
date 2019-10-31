@@ -1,5 +1,5 @@
 
-Mon, 29 Jul 2019 09:45:46 GMT
+Wed, 30 Oct 2019 18:15:33 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython pidigits.graal-2.graal 10000
@@ -11,5 +11,6 @@ PROGRAM OUTPUT:
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
-  File "pidigits.python3-2.python3", line 10, in <module 'pidigits.python3-2.python3'>
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/pidigits/pidigits.python3-2.python3", line 10, in <module 'pidigits.python3-2.python3'>
+    from gmpy_cffi import mpz
 ModuleNotFoundError: No module named 'gmpy_cffi'

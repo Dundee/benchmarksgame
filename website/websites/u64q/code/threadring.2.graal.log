@@ -1,5 +1,5 @@
 
-Mon, 29 Jul 2019 09:52:29 GMT
+Wed, 30 Oct 2019 18:16:38 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython threadring.graal-2.graal 5000000
@@ -11,5 +11,6 @@ PROGRAM OUTPUT:
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
-  File "threadring.python3-2.python3", line 12, in <module 'threadring.python3-2.python3'>
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/threadring/threadring.python3-2.python3", line 12, in <module 'threadring.python3-2.python3'>
+    _thread.stack_size(32*1024)
 RuntimeError: setting thread stack size not supported

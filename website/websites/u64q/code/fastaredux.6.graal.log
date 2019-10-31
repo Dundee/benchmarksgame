@@ -1,5 +1,5 @@
 
-Mon, 29 Jul 2019 09:19:07 GMT
+Wed, 30 Oct 2019 18:00:39 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython fastaredux.graal-6.graal 2500000
@@ -179,8 +179,12 @@ AACCCGGGAGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCCAGCCTGGGCG
 ACAGAGCGAGACTCCGTCTCAAAAAGGCCGG
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
-  File "fastaredux.python3-6.python3", line 105, in <module 'fastaredux.python3-6.python3'>
-  File "fastaredux.python3-6.python3", line 100, in main
-  File "fastaredux.python3-6.python3", line 73, in randomFasta
-  File "fastaredux.python3-6.python3", line 55, in makeLookupTable
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/fastaredux/fastaredux.python3-6.python3", line 105, in <module 'fastaredux.python3-6.python3'>
+    main()
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/fastaredux/fastaredux.python3-6.python3", line 100, in main
+    randomFasta(iub, n*3)
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/fastaredux/fastaredux.python3-6.python3", line 73, in randomFasta
+    lut = makeLookupTable(table)
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/fastaredux/fastaredux.python3-6.python3", line 55, in makeLookupTable
+    return array.array("u", [chars[bb(probs, i / imf)] for i in range(IM)])
 ValueError: bad typecode (must be i, d, b, or l)

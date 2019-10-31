@@ -1,5 +1,5 @@
 
-Mon, 29 Jul 2019 09:05:50 GMT
+Wed, 30 Oct 2019 17:55:28 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython chameneosredux.graal-2.graal 6000000
@@ -21,61 +21,76 @@ yellow + yellow -> yellow
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
-  File "traceback.py", line 163, in print_exc
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 163, in print_exc
     print_exception(*sys.exc_info(), limit=limit, file=file, chain=chain)
-  File "chameneosredux.python3-2.python3", line 123, in <module 'chameneosredux.python3-2.python3'>
-  File "chameneosredux.python3-2.python3", line 117, in chameneosiate
-  File "chameneosredux.python3-2.python3", line 87, in let_them_meet
-  File "traceback.py", line 163, in print_exc
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 123, in <module 'chameneosredux.python3-2.python3'>
+    chameneosiate(int(sys.argv[1]))
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 117, in chameneosiate
+    let_them_meet(n, ['blue', 'red', 'yellow'])
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 87, in let_them_meet
+    new = _thread.start_new_thread(creature, args)
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 163, in print_exc
     print_exception(*sys.exc_info(), limit=limit, file=file, chain=chain)
-  File "traceback.py", line 103, in print_exception
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 103, in print_exception
     for line in TracebackException(
-  File "traceback.py", line 506, in __init__
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 506, in __init__
     self.stack = StackSummary.extract(
-  File "traceback.py", line 344, in extract
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 344, in extract
     for f, lineno in frame_gen:
-  File "traceback.py", line 310, in walk_tb
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 310, in walk_tb
     tb = tb.tb_next
-  File "chameneosredux.python3-2.python3", line 62, in creature
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 62, in creature
+    out_lock_release()  # signal "registration ok"
 RuntimeError
 Traceback (most recent call last):
-  File "traceback.py", line 163, in print_exc
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 163, in print_exc
     print_exception(*sys.exc_info(), limit=limit, file=file, chain=chain)
-  File "chameneosredux.python3-2.python3", line 123, in <module 'chameneosredux.python3-2.python3'>
-  File "chameneosredux.python3-2.python3", line 117, in chameneosiate
-  File "chameneosredux.python3-2.python3", line 87, in let_them_meet
-  File "traceback.py", line 163, in print_exc
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 123, in <module 'chameneosredux.python3-2.python3'>
+    chameneosiate(int(sys.argv[1]))
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 117, in chameneosiate
+    let_them_meet(n, ['blue', 'red', 'yellow'])
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 87, in let_them_meet
+    new = _thread.start_new_thread(creature, args)
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 163, in print_exc
     print_exception(*sys.exc_info(), limit=limit, file=file, chain=chain)
-  File "traceback.py", line 103, in print_exception
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 103, in print_exception
     for line in TracebackException(
-  File "traceback.py", line 506, in __init__
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 506, in __init__
     self.stack = StackSummary.extract(
-  File "traceback.py", line 344, in extract
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 344, in extract
     for f, lineno in frame_gen:
-  File "traceback.py", line 310, in walk_tb
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 310, in walk_tb
     tb = tb.tb_next
-  File "chameneosredux.python3-2.python3", line 62, in creature
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 62, in creature
+    out_lock_release()  # signal "registration ok"
 RuntimeError
 Traceback (most recent call last):
-  File "traceback.py", line 163, in print_exc
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 163, in print_exc
     print_exception(*sys.exc_info(), limit=limit, file=file, chain=chain)
-  File "chameneosredux.python3-2.python3", line 123, in <module 'chameneosredux.python3-2.python3'>
-  File "chameneosredux.python3-2.python3", line 117, in chameneosiate
-  File "chameneosredux.python3-2.python3", line 87, in let_them_meet
-  File "traceback.py", line 163, in print_exc
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 123, in <module 'chameneosredux.python3-2.python3'>
+    chameneosiate(int(sys.argv[1]))
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 117, in chameneosiate
+    let_them_meet(n, ['blue', 'red', 'yellow'])
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 87, in let_them_meet
+    new = _thread.start_new_thread(creature, args)
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 163, in print_exc
     print_exception(*sys.exc_info(), limit=limit, file=file, chain=chain)
-  File "traceback.py", line 103, in print_exception
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 103, in print_exception
     for line in TracebackException(
-  File "traceback.py", line 506, in __init__
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 506, in __init__
     self.stack = StackSummary.extract(
-  File "traceback.py", line 344, in extract
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 344, in extract
     for f, lineno in frame_gen:
-  File "traceback.py", line 310, in walk_tb
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/traceback.py", line 310, in walk_tb
     tb = tb.tb_next
-  File "chameneosredux.python3-2.python3", line 62, in creature
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 62, in creature
+    out_lock_release()  # signal "registration ok"
 RuntimeError
 Traceback (most recent call last):
-  File "chameneosredux.python3-2.python3", line 123, in <module 'chameneosredux.python3-2.python3'>
-  File "chameneosredux.python3-2.python3", line 117, in chameneosiate
-  File "chameneosredux.python3-2.python3", line 87, in let_them_meet
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 123, in <module 'chameneosredux.python3-2.python3'>
+    chameneosiate(int(sys.argv[1]))
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 117, in chameneosiate
+    let_them_meet(n, ['blue', 'red', 'yellow'])
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 87, in let_them_meet
+    new = _thread.start_new_thread(creature, args)
 RuntimeError

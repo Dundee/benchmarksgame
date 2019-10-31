@@ -1,5 +1,5 @@
 
-Mon, 29 Jul 2019 09:31:53 GMT
+Wed, 30 Oct 2019 18:13:33 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython jsonbench.graal 1
@@ -11,23 +11,24 @@ PROGRAM OUTPUT:
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
-  File "jsonbench.python3", line 21, in <module 'jsonbench.python3'>
-  File "__init__.py", line 349, in loads
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/jsonbench/jsonbench.python3", line 21, in <module 'jsonbench.python3'>
+    main(int(sys.argv[1]))
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/__init__.py", line 349, in loads
     return _default_decoder.decode(s)
-  File "decoder.py", line 337, in decode
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/decoder.py", line 337, in decode
     obj, end = self.raw_decode(s, idx=_w(s, 0).end())
-  File "decoder.py", line 353, in raw_decode
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/decoder.py", line 353, in raw_decode
     obj, end = self.scan_once(s, idx)
-  File "scanner.py", line 67, in scan_once
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/scanner.py", line 67, in scan_once
     return _scan_once(string, idx)
-  File "scanner.py", line 37, in _scan_once
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/scanner.py", line 37, in _scan_once
     return parse_object((string, idx + 1), strict,
-  File "decoder.py", line 186, in JSONObject
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/decoder.py", line 186, in JSONObject
     value, end = scan_once(s, end)
-  File "scanner.py", line 35, in _scan_once
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/scanner.py", line 35, in _scan_once
     return parse_string(string, idx + 1, strict)
-  File "decoder.py", line 117, in py_scanstring
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/decoder.py", line 117, in py_scanstring
     uni = _decode_uXXXX(s, end)
-  File "decoder.py", line 67, in _decode_uXXXX
+  File "/usr/lib/jvm/java-8-graal/jre/languages/python/lib-python/3/json/decoder.py", line 67, in _decode_uXXXX
     raise JSONDecodeError(msg, s, pos)
 json.decoder.JSONDecodeError: Invalid \uXXXX escape: line 1 column 294 (char 293)

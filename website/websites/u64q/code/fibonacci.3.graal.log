@@ -1,5 +1,5 @@
 
-Mon, 29 Jul 2019 09:24:36 GMT
+Wed, 30 Oct 2019 18:08:31 GMT
 
 COMMAND LINE:
 /usr/bin/graalpython fibonacci.graal-3.graal 1000000
@@ -11,11 +11,17 @@ PROGRAM OUTPUT:
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
-  File "fibonacci.python3-3.python3", line 22, in <module 'fibonacci.python3-3.python3'>
-  File "fibonacci.python3-3.python3", line 19, in fib
-  File "fibonacci.python3-3.python3", line 7, in powLF
-  File "fibonacci.python3-3.python3", line 7, in powLF
-  File "fibonacci.python3-3.python3", line 7, in powLF
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/fibonacci/fibonacci.python3-3.python3", line 22, in <module 'fibonacci.python3-3.python3'>
+    print(fib(int(sys.argv[1])))
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/fibonacci/fibonacci.python3-3.python3", line 19, in fib
+    L, F = powLF(n // 2)
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/fibonacci/fibonacci.python3-3.python3", line 7, in powLF
+    L, F = powLF(n//2)
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/fibonacci/fibonacci.python3-3.python3", line 7, in powLF
+    L, F = powLF(n//2)
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/fibonacci/fibonacci.python3-3.python3", line 7, in powLF
+    L, F = powLF(n//2)
   [Previous line repeated {count} more time{"s" if count > 1 else ""}]
-  File "fibonacci.python3-3.python3", line 8, in powLF
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/fibonacci/fibonacci.python3-3.python3", line 8, in powLF
+    L, F = (L**2 + 5*F**2) >> 1, L*F
 TypeError: unsupported operand type(s) for ** or pow()(): 'int' and 'int'

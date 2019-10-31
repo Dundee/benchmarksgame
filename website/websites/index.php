@@ -81,7 +81,7 @@ $langs = array(
    array('pyston','Pyston 0.6.1','pyston',$allsites),
    array('micropython','MicroPython 1.11','micropython',$allsites),
    array('grumpy','Grumpy r123.08f9c2e','grumpy',$allsites),
-   array('graal','Graal python 19.2.0','graal',$allsites),
+   array('graal','Graal python 19.2.1','graal',$allsites),
    array('rustpython','RustPython 0.1.1','rustpython',$allsites),
    );
 
