@@ -1,5 +1,5 @@
 
-Mon, 29 Jul 2019 09:46:00 GMT
+Mon, 25 Nov 2019 15:53:44 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp“
@@ -9,29 +9,36 @@ Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.
 [1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.pyx
 running build_ext
 building 'pystone' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpm3c9s8km/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpm3c9s8km/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpm3c9s8km/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpm3c9s8km/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpm3c9s8km/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpm3c9s8km/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpm3c9s8km/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpm3c9s8km/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.7m -c /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpm3c9s8km/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.o
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpc1og18vn/home
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpc1og18vn/home/dundee
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpc1og18vn/home/dundee/workspace
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpc1og18vn/home/dundee/workspace/benchmarksgame
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpc1og18vn/home/dundee/workspace/benchmarksgame/bencher
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpc1og18vn/home/dundee/workspace/benchmarksgame/bencher/tmp
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpc1og18vn/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone
+creating /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpc1og18vn/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp
+gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpc1og18vn/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.o
 /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.c: In function ‘__pyx_f_7pystone_Proc0’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.c:2881:8: warning: ‘__pyx_v_EnumLoc’ may be used uninitialized in this function [-Wmaybe-uninitialized]
- 2881 |     if (__pyx_t_2) {
+/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.c:2882:8: warning: ‘__pyx_v_EnumLoc’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+ 2882 |     if (__pyx_t_2) {
       |        ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.c:2787:7: note: ‘__pyx_v_EnumLoc’ was declared here
- 2787 |   int __pyx_v_EnumLoc;
+/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.c:2788:7: note: ‘__pyx_v_EnumLoc’ was declared here
+ 2788 |   int __pyx_v_EnumLoc;
       |       ^~~~~~~~~~~~~~~
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpm3c9s8km/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.o -L/usr/lib -lpython3.7m -o /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.cpython-37m-x86_64-linux-gnu.so
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/tmpc1og18vn/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.o -L/usr/lib -o /home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.cpython-38-x86_64-linux-gnu.so
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp“
-2.57s to complete and log all make actions
+2.64s to complete and log all make actions
 
 COMMAND LINE:
 /usr/bin/python3 -c "import pystone" 50000
 
+PROGRAM FAILED 
+
+
 PROGRAM OUTPUT:
-50000
-OK
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "pystone.pyx", line 37, in init pystone
+    from time import clock
+ImportError: cannot import name clock

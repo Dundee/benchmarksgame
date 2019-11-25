@@ -1,8 +1,8 @@
 
-Wed, 30 Oct 2019 18:00:36 GMT
+Mon, 25 Nov 2019 15:11:32 GMT
 
 COMMAND LINE:
-/usr/bin/graalpython fasta.graal-5.graal 2500000
+/usr/lib/jvm/java-8-graalvm/bin/graalpython fasta.graal-5.graal 2500000
 
 PROGRAM FAILED 
 
@@ -11,10 +11,12 @@ PROGRAM OUTPUT:
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
-  File "fasta.python3-5.python3", line 9, in <module 'fasta.python3-5.python3'>
-  File "__init__.py", line 16, in <module '__init__.py'>
-  File "context.py", line 6, in <module 'context.py'>
-  File "reduction.py", line 15, in <module 'reduction.py'>
-  File "pickle.py", line 33, in <module 'pickle.py'>
-  File "struct.py", line 13, in <module 'struct.py'>
-'libsulong.bc' is not a file or does not exist.
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/fasta/fasta.python3-5.python3", line 210, in <module 'fasta.python3-5.python3'>
+    fasta(int(argv[1]))
+  File "/home/dundee/workspace/benchmarksgame/bencher/programs/fasta/fasta.python3-5.python3", line 176, in fasta
+    seed = RawValue('f', 42)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 123, in RawValue
+    from .sharedctypes import RawValue
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/sharedctypes.py", line 26, in <module 'sharedctypes.py'>
+    'c': ctypes.c_char,     'u': ctypes.c_wchar,
+AttributeError: 'module' object has no attribute 'c_char'
