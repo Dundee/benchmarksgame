@@ -1,22 +1,17 @@
 
-Wed, 19 Jun 2019 09:00:03 GMT
+Wed, 22 Jan 2020 17:44:43 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp“
 nuitka3 --remove-output binarytrees.nuitka
 cp binarytrees.nuitka.bin binarytrees.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp“
-4.51s to complete and log all make actions
+5.62s to complete and log all make actions
 
 COMMAND LINE:
 ./binarytrees.nuitka_run 14
 
+TIMED OUT after 300s
+
+
 PROGRAM OUTPUT:
-stretch tree of depth 15	 check: -1
-32768	 trees of depth 4	 check: -32768
-8192	 trees of depth 6	 check: -8192
-2048	 trees of depth 8	 check: -2048
-512	 trees of depth 10	 check: -512
-128	 trees of depth 12	 check: -128
-32	 trees of depth 14	 check: -32
-long lived tree of depth 14	 check: -1

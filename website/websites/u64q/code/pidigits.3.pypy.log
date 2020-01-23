@@ -1,5 +1,5 @@
 
-Wed, 16 Oct 2019 06:55:45 GMT
+Wed, 22 Jan 2020 19:00:24 GMT
 
 COMMAND LINE:
 /usr/bin/pypy pidigits.pypy-3.pypy 10000
@@ -20,10 +20,12 @@ Traceback (most recent call last):
     """, libraries=['gmp', 'mpfr', 'mpc'])
   File "/opt/pypy/lib_pypy/cffi/api.py", line 464, in verify
     lib = self.verifier.load_library()
-  File "/opt/pypy/lib_pypy/cffi/verifier.py", line 105, in load_library
-    return self._load_library()
-  File "/opt/pypy/lib_pypy/cffi/verifier.py", line 216, in _load_library
-    return self._vengine.load_library()
-  File "/opt/pypy/lib_pypy/cffi/vengine_gen.py", line 70, in load_library
-    module = backend.load_library(filename, flags)
-OSError: Cannot load library /opt/pypy/site-packages/_cffi__g9a660983x9cbb9358.pypy-41.so: libmpfr.so.4: cannot open shared object file: No such file or directory
+  File "/opt/pypy/lib_pypy/cffi/verifier.py", line 103, in load_library
+    self._write_source()
+  File "/opt/pypy/lib_pypy/cffi/verifier.py", line 191, in _write_source
+    _ensure_dir(self.sourcefilename)
+  File "/opt/pypy/lib_pypy/cffi/verifier.py", line 306, in _ensure_dir
+    os.makedirs(dirname)
+  File "/opt/pypy/lib-python/2.7/os.py", line 157, in makedirs
+    mkdir(name, mode)
+OSError: [Errno 13] Permission denied: '/opt/pypy/site-packages/gmpy_cffi/__pycache__'
