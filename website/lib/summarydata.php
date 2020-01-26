@@ -124,8 +124,8 @@ $bannerUrl = CORE_SITE;
 
 // PAGES ///////////////////////////////////////////////////
 
-$Page = & new Template(LIB_PATH);
-$Body = & new Template(LIB_PATH);
+$Page = new Template(LIB_PATH);
+$Body = new Template(LIB_PATH);
 
 $PageId = 'summarydata';
 $Title = 'Summary Data';

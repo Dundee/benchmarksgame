@@ -150,8 +150,8 @@ function CompareElapsed($a, $b){
 
 // PAGE ////////////////////////////////////////////////
 
-$Page = & new Template(LIB_PATH);
-$Body = & new Template(LIB_PATH);
+$Page = new Template(LIB_PATH);
+$Body = new Template(LIB_PATH);
 $PageId = 'benchmark';
 $TemplateName = 'performance.tpl.php';
 
@@ -204,7 +204,7 @@ $Data = BenchmarkData(DATA_PATH.'data.csv',$T,$Langs, $Incl,$Excl,$S,$SLangs);
 
 // ABOUT ////////////////////////////////////////////////
 
-$About = & new Template(ABOUT_PATH);
+$About = new Template(ABOUT_PATH);
 $AboutTemplateName = $T.SEPARATOR.'about.tpl.php';
 if (! file_exists(ABOUT_PATH.$AboutTemplateName)){ $AboutTemplateName = 'blank-about.tpl.php'; }
 

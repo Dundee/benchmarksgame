@@ -24,8 +24,8 @@ function SelectedLangs($Langs, $Action){
 
 // PAGE ////////////////////////////////////////////////
 
-$Page = & new Template(LIB_PATH);
-$Body = & new Template(LIB_PATH);
+$Page = new Template(LIB_PATH);
+$Body = new Template(LIB_PATH);
 $PageId = 'scorecard';
 $TemplateName = 'scorecard.tpl.php';
 
@@ -74,7 +74,7 @@ $timeUsed = 'Elapsed secs';
 
 // ABOUT ////////////////////////////////////////////////
 
-$About = & new Template(ABOUT_PATH);
+$About = new Template(ABOUT_PATH);
 $AboutTemplateName = 'scorecard-about.tpl.php';
 
 

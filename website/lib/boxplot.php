@@ -151,8 +151,8 @@ function Median($a){
 
 // PAGE ////////////////////////////////////////////////
 
-$Page = & new Template(LIB_PATH);
-$Body = & new Template(LIB_PATH);
+$Page = new Template(LIB_PATH);
+$Body = new Template(LIB_PATH);
 $PageId = 'boxplot';
 $TemplateName = 'boxplot.tpl.php';
 
@@ -182,7 +182,7 @@ $timeUsed = 'Elapsed secs';
 
 // ABOUT ////////////////////////////////////////////////
 
-$About = & new Template(ABOUT_PATH);
+$About = new Template(ABOUT_PATH);
 $AboutTemplateName = 'boxplot-about.tpl.php';
 if (! file_exists(ABOUT_PATH.$AboutTemplateName)){ $AboutTemplateName = 'blank-about.tpl.php'; }
 

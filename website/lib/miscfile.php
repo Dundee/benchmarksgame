@@ -44,7 +44,7 @@ $bannerUrl = CORE_SITE;
 
 // TEMPLATE VARS ////////////////////////////////////////////////
 
-$Page = & new Template(LIB_PATH);
+$Page = new Template(LIB_PATH);
 $Page->set('PageTitle', $T.BAR.'Python&nbsp;Interpreters&nbsp;Benchmarks&nbsp;Game');
 $Page->set('BannerTitle', 'Python&nbsp;Interpreters&nbsp; <br/>Benchmarks&nbsp;Game');
 $Page->set('FaqTitle', '[[ Play ]]');
@@ -53,7 +53,7 @@ $Page->set('FaqUrl', $faqUrl);
 $Page->set('PageBody', BLANK);
 $Page->set('PicturePath', CORE_SITE);
 
-$Body = & new Template(LIB_PATH);
+$Body = new Template(LIB_PATH);
 $Body->set('Title', $T);
 $Body->set('MiscFile', MISC_PATH.$F.'.php');
 $Body->set('Changed', filemtime(MISC_PATH.$F.'.php'));

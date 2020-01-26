@@ -149,15 +149,15 @@ $MetaKeywords = '';
 
 // PAGES ///////////////////////////////////////////////////
 
-$Page = & new Template(LIB_PATH);
-$Body = & new Template(LIB_PATH);
+$Page = new Template(LIB_PATH);
+$Body = new Template(LIB_PATH);
 
 $PageId = 'shapes';
 $Title = 'Code-used Time-used Shapes';
 
 $Body->set('Title', $Title);
 $TemplateName = 'shapes.tpl.php';
-$About = & new Template(ABOUT_PATH);
+$About = new Template(ABOUT_PATH);
 $AboutTemplateName = 'shapes-about.tpl.php';
 if (! file_exists(ABOUT_PATH.$AboutTemplateName)){ $AboutTemplateName = 'blank-about.tpl.php'; }
 $Body->set('DataSet', $DataSet);

@@ -151,8 +151,8 @@ function Median($a){
 
 // PAGE ////////////////////////////////////////////////
 
-$Page = & new Template(LIB_PATH);
-$Body = & new Template(LIB_PATH);
+$Page = new Template(LIB_PATH);
+$Body = new Template(LIB_PATH);
 $PageId = 'median';
 $TemplateName = 'median.tpl.php';
 

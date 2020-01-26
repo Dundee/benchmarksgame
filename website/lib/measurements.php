@@ -35,8 +35,8 @@ function LanguageData($FileName,$Langs,$Incl,$Excl,$L,$HasHeading=TRUE){
 
 // PAGE ////////////////////////////////////////////////
 
-$Page = & new Template(LIB_PATH);
-$Body = & new Template(LIB_PATH);
+$Page = new Template(LIB_PATH);
+$Body = new Template(LIB_PATH);
 $PageId = 'headtohead';
 $TemplateName = 'measurements.tpl.php';
 
@@ -77,7 +77,7 @@ $timeUsed = 'Elapsed secs';
 
 // ABOUT ////////////////////////////////////////////////
 
-$About = & new Template(ABOUT_PATH);
+$About = new Template(ABOUT_PATH);
 $AboutTemplateName = $L.SEPARATOR.'about.tpl.php';
 if (! file_exists(ABOUT_PATH.$AboutTemplateName)){ $AboutTemplateName = 'blank-about.tpl.php'; }
 $About->set('Version', HtmlFragment(VERSION_PATH.$L.SEPARATOR.'version.php'));
