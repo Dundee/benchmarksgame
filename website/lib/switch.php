@@ -11,7 +11,7 @@ $LANG_COMPARE = 8;
 if (isset($_GET['test'])
       && strlen($_GET['test']) && (strlen($_GET['test']) <= $NAME_LEN)){
    $X = $_GET['test'];
-   if (ereg("^[a-z]+$",$X)){ $T = $X; }
+   if (preg_match("~^[a-z]+$~",$X)){ $T = $X; }
 }
 if (!isset($T)){ $T = 'all'; }
 
@@ -26,7 +26,7 @@ function Alias($l){ // hardcode aliases for old names
 if (isset($_GET['lang'])
       && strlen($_GET['lang']) && (strlen($_GET['lang']) <= $NAME_LEN)){
    $X = $_GET['lang'];
-   if (ereg("^[a-z0-9]+$",$X)){ $L = Alias($X); }
+   if (preg_match("~^[a-z0-9]+$~",$X)){ $L = Alias($X); }
 }
 if (!isset($L)){ $L = 'all'; }
 
@@ -34,7 +34,7 @@ if (!isset($L)){ $L = 'all'; }
 if (isset($_GET['lang2'])
       && strlen($_GET['lang2']) && (strlen($_GET['lang2']) <= $NAME_LEN)){
    $X = $_GET['lang2'];
-   if (ereg("^[a-z0-9]+$",$X)){ $L2 = Alias($X); }
+   if (preg_match("~^[a-z0-9]+$~",$X)){ $L2 = Alias($X); }
 }
 if (!isset($L2)){
    if ($L!='all'){ $L2 = ''; }

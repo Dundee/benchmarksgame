@@ -8,7 +8,7 @@ function Weights($Tests, $Action, $Vars){
       $link = $t[TEST_LINK];
 
       if (isset($Vars[$link]) && (strlen($Vars[$link]) == 1)
-            && (ereg("^[0-9]$",$Vars[$link]))){ $x = intval($Vars[$link]); }
+            && (preg_match("~^[0-9]$~",$Vars[$link]))){ $x = intval($Vars[$link]); }
       else { $x = intval($t[TEST_WEIGHT]); }
 
       $w[$link] = $x;
@@ -20,7 +20,7 @@ function Weights($Tests, $Action, $Vars){
    foreach($Metrics as $k => $v){
 
       if (isset($Vars[$k]) && (strlen($Vars[$k]) == 1)
-            && (ereg("^[0-9]$",$Vars[$k]))){ $x = intval($Vars[$k]); }
+            && (preg_match("~^[0-9]$~",$Vars[$k]))){ $x = intval($Vars[$k]); }
       else { $x = $v; }
 
       $w[$k] = $x;
@@ -80,7 +80,7 @@ function ValidRowsAndMins($FileName,$Tests,$Langs,$Incl,$Excl,$HasHeading=TRUE){
                      $row[DATA_TIME] < $data[$lang][$test][$testvalue][DATA_TIME])))){
 
                $data[$lang][$test][$testvalue] = $row;
-               
+
                if ($row[DATA_TIME] > 0.0){
                   if (!isset($mins[$test][$testvalue][CPU_MIN])){
                      $mins[$test][$testvalue][CPU_MIN] = $row[DATA_TIME];
@@ -186,7 +186,7 @@ function FullWeightedData($FileName,$Tests,$Langs,$Incl,$Excl,$W,$SLangs,$HasHea
 
       if (isset($SLangs[$k])){
          $labels[] = $k;
-         $ratio[] = $r;  
+         $ratio[] = $r;
          $allowed[$k] = 1;
          $count++;
       }

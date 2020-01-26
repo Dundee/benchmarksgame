@@ -11,7 +11,7 @@ require_once(LIB);
 if (isset($_GET['file'])
       && strlen($_GET['file']) && (strlen($_GET['file']) <= NAME_LEN)){
    $X = $_GET['file'];
-   if (ereg("^[a-z]+$",$X) && (
+   if (preg_match("~^[a-z]+$~",$X) && (
          $X == 'benchmarking' ||
          $X == 'license'
       )){ $F = $X; }

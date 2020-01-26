@@ -50,7 +50,7 @@ $Langs = WhiteListUnique('lang.csv',$Incl); // assume lang.csv in name order
 if (isset($_GET['lang'])
       && strlen($_GET['lang']) && (strlen($_GET['lang']) <= NAME_LEN)){
    $X = $_GET['lang'];
-   if (ereg("^[a-z0-9]+$",$X)){ $L = $X; }
+   if (preg_match("~^[a-z0-9]+$~",$X)){ $L = $X; }
 }
 $Available = isset($L) && isset($Langs[$L]) && isset($Incl[$L]);
 if (!$Available){ $L = 'java'; }

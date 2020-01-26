@@ -167,7 +167,7 @@ $SLangs = SelectedLangs($Langs);
 if (isset($_GET['test'])
       && strlen($_GET['test']) && (strlen($_GET['test']) <= NAME_LEN)){
    $X = $_GET['test'];
-   if (ereg("^[a-z]+$",$X)){ $T = $X; }
+   if (preg_match("~^[a-z]+$~",$X)){ $T = $X; }
 }
 $Available = isset($T) && isset($Tests[$T]) && isset($Incl[$T]);
 if (!$Available){ $T = 'nbody'; }
@@ -176,7 +176,7 @@ if (!$Available){ $T = 'nbody'; }
 if (isset($_GET['sort'])
       && strlen($_GET['sort']) && (strlen($_GET['sort']) <= 7)){
    $X = $_GET['sort'];
-   if (ereg("^[a-z]+$",$X) && ($X == 'fullcpu' || $X == 'kb' || $X == 'gz' || $X == 'elapsed')){
+   if (preg_match("~^[a-z]+$~",$X) && ($X == 'fullcpu' || $X == 'kb' || $X == 'gz' || $X == 'elapsed')){
       $S = $X;
    }
 }

@@ -207,7 +207,7 @@ $Langs = WhiteListUnique('lang.csv',$Incl); // assume lang.csv in name order
 if (isset($_GET['lang'])
       && strlen($_GET['lang']) && (strlen($_GET['lang']) <= NAME_LEN)){
    $X = $_GET['lang'];
-   if (ereg("^[a-z0-9]+$",$X) && (isset($Langs[$X]) && isset($Incl[$X]))){ $L = $X; }
+   if (preg_match("~^[a-z0-9]+$~",$X) && (isset($Langs[$X]) && isset($Incl[$X]))){ $L = $X; }
 }
 if (!isset($L)){ $L = 'java'; }
 
@@ -215,7 +215,7 @@ if (!isset($L)){ $L = 'java'; }
 if (isset($_GET['lang2'])
       && strlen($_GET['lang2']) && (strlen($_GET['lang2']) <= NAME_LEN)){
    $X = $_GET['lang2'];
-   if (ereg("^[a-z0-9]+$",$X) && (isset($Langs[$X]) && isset($Incl[$X]))){ $L2 = $X; }
+   if (preg_match("~^[a-z0-9]+$~",$X) && (isset($Langs[$X]) && isset($Incl[$X]))){ $L2 = $X; }
 }
 if (!isset($L2) || $L2 == $L){
    $L2 = $Langs[$L][LANG_COMPARE];

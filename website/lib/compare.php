@@ -231,7 +231,7 @@ $Langs = WhiteListUnique('lang.csv',$Incl); // assume lang.csv in name order
 if (isset($_GET['lang'])
       && strlen($_GET['lang']) && (strlen($_GET['lang']) <= NAME_LEN)){
    $X = $_GET['lang'];
-   if (ereg("^[a-z0-9]+$",$X)){ $L = $X; }
+   if (preg_match("~^[a-z0-9]+$~",$X)){ $L = $X; }
 }
 if (isset($L)){
    $Available = isset($Langs[$L]) && isset($Incl[$L]);
@@ -247,7 +247,7 @@ if (isset($L)){
 if (isset($_GET['lang2'])
       && strlen($_GET['lang2']) && (strlen($_GET['lang2']) <= NAME_LEN)){
    $X = $_GET['lang2'];
-   if (ereg("^[a-z0-9]+$",$X)){ $L2 = $X; }
+   if (preg_match("~^[a-z0-9]+$~",$X)){ $L2 = $X; }
 }
 if ($Available && !empty($L2)){
    $Available = isset($Langs[$L2]) && isset($Incl[$L2]) && ($L2 != $L);

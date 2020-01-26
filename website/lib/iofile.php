@@ -14,7 +14,7 @@ $Tests = WhiteListUnique('test.csv',$Incl);
 if (isset($_GET['test'])
       && strlen($_GET['test']) && (strlen($_GET['test']) <= NAME_LEN)){
    $X = $_GET['test'];
-   if (ereg("^[a-z]+$",$X) && (isset($Tests[$X]) || $X == 'all')){ $T = $X; }
+   if (preg_match("~^[a-z]+$~",$X) && (isset($Tests[$X]) || $X == 'all')){ $T = $X; }
 }
 if (!isset($T)){ $T = 'nbody'; }
 
@@ -22,7 +22,7 @@ if (!isset($T)){ $T = 'nbody'; }
 if (isset($_GET['file'])
       && strlen($_GET['file']) && (strlen($_GET['file']) <= 6)){
    $X = $_GET['file'];
-   if (ereg("^[a-z]+$",$X) && ($X == 'input' || $X == 'extra')){ $F = $X; }
+   if (preg_match("~^[a-z]+$~",$X) && ($X == 'input' || $X == 'extra')){ $F = $X; }
 }
 if (!isset($F)){ $F = 'output'; }
 

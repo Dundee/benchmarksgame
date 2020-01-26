@@ -39,7 +39,7 @@ $Langs = WhiteListUnique('lang.csv',$Incl); // assume lang.csv in name order
 if (isset($_GET['calc'])
       && strlen($_GET['calc']) && (strlen($_GET['calc']) <= 9)){
    $X = $_GET['calc'];
-   if (ereg("^[a-z]+$",$X) && ($X == 'reset')){ $Action = $X; }
+   if (preg_match("~^[a-z]+$~",$X) && ($X == 'reset')){ $Action = $X; }
 }
 if (!isset($Action)){ $Action = 'calculate'; }
 
@@ -49,7 +49,7 @@ $SLangs = SelectedLangs($Langs, $Action);
 if (isset($_GET['d'])
       && strlen($_GET['d']) && (strlen($_GET['d']) <= 5)){
    $X = $_GET['d'];
-   if (ereg("^[a-z]+$",$X) && ($X == 'ndata')){ $DataSet = $X; }
+   if (preg_match("~^[a-z]+$~",$X) && ($X == 'ndata')){ $DataSet = $X; }
 }
 if (!isset($DataSet)||isset($Action)&&$Action=='reset'){ $DataSet = 'data'; }
 
