@@ -1,5 +1,5 @@
 
-Wed, 22 Jan 2020 18:19:32 GMT
+Wed, 11 Mar 2020 18:35:28 GMT
 
 COMMAND LINE:
 /usr/lib/jvm/java-8-graalvm/bin/graalpython fasta.graal-3.graal 2500000
@@ -17,4 +17,4 @@ Traceback (most recent call last):
     repeat_fasta(alu, n * 2)
   File "/home/dundee/workspace/benchmarksgame/bencher/programs/fasta/fasta.python3-3.python3", line 52, in repeat_fasta
     s = bytearray(ss, encoding='utf8')
-TypeError: got an unexpected keyword argument 'encoding'
+TypeError: __new__() got an unexpected keyword argument 'encoding'

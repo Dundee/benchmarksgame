@@ -1,28 +1,323 @@
 
-Wed, 22 Jan 2020 17:50:28 GMT
+Wed, 11 Mar 2020 17:33:05 GMT
 
 COMMAND LINE:
 /usr/lib/jvm/java-8-graalvm/bin/graalpython binarytrees.graal-6.graal 14
 
-PROGRAM FAILED 
+TIMED OUT after 300s
 
 
 PROGRAM OUTPUT:
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
-  File "/home/dundee/workspace/benchmarksgame/bencher/programs/binarytrees/binarytrees.python3-6.python3", line 78, in <module 'binarytrees.python3-6.python3'>
-    main(int(sys.argv[1]))
-  File "/home/dundee/workspace/benchmarksgame/bencher/programs/binarytrees/binarytrees.python3-6.python3", line 55, in main
-    pool = mp.Pool()
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 118, in Pool
-    return Pool(processes, initializer, initargs, maxtasksperchild,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 158, in __init__
-    self._setup_queues()
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 251, in _setup_queues
-    self._inqueue = self._ctx.SimpleQueue()
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 111, in SimpleQueue
-    from .queues import SimpleQueue
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/queues.py", line 22, in <module 'queues.py'>
-    import _multiprocessing
-ModuleNotFoundError: No module named '_multiprocessing'
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/semaphore_tracker.py", line 123, in main
+    with open(fd, 'rb') as f:
+OSError: invalid fd
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/semaphore_tracker.py:55: UserWarning: semaphore_tracker: process died unexpectedly, relaunching.  Some semaphores might leak.
+  warnings.warn('semaphore_tracker: process died unexpectedly, '
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/semaphore_tracker.py", line 123, in main
+    with open(fd, 'rb') as f:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/semaphore_tracker.py", line 123, in main
+    with open(fd, 'rb') as f:
+OSError: invalid fd
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/semaphore_tracker.py", line 123, in main
+    with open(fd, 'rb') as f:
+OSError: invalid fd
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/semaphore_tracker.py", line 123, in main
+    with open(fd, 'rb') as f:
+OSError: invalid fd
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/semaphore_tracker.py", line 123, in main
+    with open(fd, 'rb') as f:
+OSError: invalid fd
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/semaphore_tracker.py", line 123, in main
+    with open(fd, 'rb') as f:
+OSError: invalid fd
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/semaphore_tracker.py", line 123, in main
+    with open(fd, 'rb') as f:
+OSError: invalid fd
+Traceback (most recent call last):
+  File "<string>", line 1, in <module '<string>'>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 110, in _main
+    with os.fdopen(fd, 'rb', closefd=True) as from_parent:
+OSError: invalid fd
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
+Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.

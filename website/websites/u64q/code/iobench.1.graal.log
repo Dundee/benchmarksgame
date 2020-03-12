@@ -1,19 +1,21 @@
 
-Wed, 22 Jan 2020 18:31:16 GMT
+Wed, 11 Mar 2020 18:42:55 GMT
 
 COMMAND LINE:
 /usr/lib/jvm/java-8-graalvm/bin/graalpython iobench.graal 1
 
-TIMED OUT after 300s
-
-
 PROGRAM OUTPUT NOT CHECKED:
-<function fread at 0x257c130a> 100 bytes, 2.45us per write
-<function fwrite at 0x14efdb6e> 100 bytes, 1.80us per write
-<function fread at 0x257c130a> 1000 bytes, 2.29us per write
-<function fwrite at 0x14efdb6e> 1000 bytes, 3.24us per write
-<function fread at 0x257c130a> 10000 bytes, 2.31us per write
-<function fwrite at 0x14efdb6e> 10000 bytes, 22.45us per write
-<function file_read at 0x6c2fff45> 100 bytes, 157.56us per write
+<function fread at 0x26a4d162> 100 bytes, 9.61us per write
+<function fwrite at 0x4636d607> 100 bytes, 1.69us per write
+<function fread at 0x26a4d162> 1000 bytes, 2.91us per write
+<function fwrite at 0x4636d607> 1000 bytes, 3.79us per write
+<function fread at 0x26a4d162> 10000 bytes, 4.43us per write
+<function fwrite at 0x4636d607> 10000 bytes, 31.74us per write
+<function file_read at 0x6d190d1e> 100 bytes, 24.52us per write
+<function file_write at 0x7ebc4e99> 100 bytes, 9.96us per write
+<function file_read at 0x6d190d1e> 1000 bytes, 8.62us per write
+<function file_write at 0x7ebc4e99> 1000 bytes, 51.86us per write
+<function file_read at 0x6d190d1e> 10000 bytes, 26.99us per write
+<function file_write at 0x7ebc4e99> 10000 bytes, 469.12us per write
 
 Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.

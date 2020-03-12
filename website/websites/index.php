@@ -74,14 +74,14 @@ $langs = array(
    array('pypy','PyPy 7.3.0 (with gmpy_cffi)','pypy',$allsites),
    array('ipy','IronPython 2.7.8a1 (with Mono 5.0.0.100)','ipy',$allsites),
    array('jython','Jython 2.7.1 (with JDK 8.u131)','jython',$allsites),
-   array('cython','Cython 0.29.14 (with NumPy and gmpy)','cython',$allsites),
-   array('nuitka','Nuitka 0.6.6','nuitka',$allsites),
+   array('cython','Cython 0.29.15 (with NumPy and gmpy)','cython',$allsites),
+   array('nuitka','Nuitka 0.6.7','nuitka',$allsites),
    array('shedskin','Shedskin 0.9.4','shedskin',$allsites),
    array('numba','Numba 0.35.0 (with NumPy and Anaconda 5.0.1)','numba',$allsites),
    array('pyston','Pyston 0.6.1','pyston',$allsites),
    array('micropython','MicroPython 1.11','micropython',$allsites),
    array('grumpy','Grumpy r123.08f9c2e','grumpy',$allsites),
-   array('graal','Graal python 19.3.1','graal',$allsites),
+   array('graal','Graal python 20.0.0','graal',$allsites),
    array('rustpython','RustPython 0.1.1','rustpython',$allsites),
    );
 
