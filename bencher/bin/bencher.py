@@ -1,6 +1,3 @@
-# The Computer Language Benchmarks Game
-# $Id: bencher.py,v 1.1 2012/12/29 19:19:30 igouy-guest Exp $
-
 """
 Description: bencher does repeated measurements of program
 cpu time, elapsed time, resident memory usage, cpu load while
@@ -16,30 +13,40 @@ __author__ = 'Isaac Gouy'
 # imports
 # =============================
 
-import bz2, copy, fnmatch, logging, os, re, sys
-
+import bz2
+import copy
+import fnmatch
+import logging
+import os
+import re
+import sys
 # need to use ConfigParser not SafeConfigParser
-from configparser import RawConfigParser, NoSectionError, NoOptionError
-
-from io import StringIO
-from domain import FileNameParts, LinkNameParts, Record
-from errno import ENOENT, EEXIST
+from configparser import NoOptionError, NoSectionError, RawConfigParser
+from errno import EEXIST, ENOENT
 from filecmp import cmp
-from getopt import getopt, GetoptError
+from getopt import GetoptError, getopt
 from gzip import GzipFile
+from io import StringIO
 from logging.handlers import RotatingFileHandler
-from os.path import expanduser, expandvars, normpath, isdir, join, realpath, getmtime, isfile, getsize, split, splitext
-from shutil import copyfile, move, rmtree, copy2
-from subprocess import call, STDOUT
-from time import strftime, localtime, gmtime, time
+from os.path import (
+    expanduser,
+    expandvars,
+    getmtime,
+    getsize,
+    isdir,
+    isfile,
+    join,
+    normpath,
+    realpath,
+    split,
+    splitext
+)
+from shutil import copy2, copyfile, move, rmtree
+from subprocess import STDOUT, call
+from time import gmtime, localtime, strftime, time
 
-
-# =============================
-# platform specifics
-# =============================
-
-
-from uselinux import nullName, planDesc, linkToSource, linkToIncludeDir, measure
+from domain import FileNameParts, LinkNameParts, Record
+from uselinux import linkToIncludeDir, linkToSource, measure, nullName, planDesc
 
 
 # =============================
@@ -370,8 +377,8 @@ def targets(originalFiles, aliasedFiles):
         # IGNORE files or links with these extensions
         ignore = frozenset(filters['ignore'])
         if ignore:
-            links = [f for f in links if not f.imp in ignore]
-            files = [f for f in files if not f.imp in ignore]
+            links = [f for f in links if f.imp not in ignore]
+            files = [f for f in files if f.imp not in ignore]
 
     # assume dat file is only written once, when all data is available
 
@@ -476,14 +483,14 @@ def cmdTemplate(p):
 
     s = commandlines.get(p.imp, None)
     if s:
-        for m in re.finditer('\$[\w]+', s):
+        for m in re.finditer(r'\$[\w]+', s):
             k = m.group(0)
             v = os.environ.get(k.lstrip('$'), '')
-            s = re.sub('\\' + k + '(?P<c>[\W])', v + '\g<c>', s)  # ate [\W] !
+            s = re.sub(r'\\' + k + r'(?P<c>[\W])', v + r'\g<c>', s)  # ate [\W] !
 
-        for m in re.finditer('\%[XTBI]', s):
+        for m in re.finditer(r'\%[XTBI]', s):
             value = specials.get(m.group(0), '')
-            s = re.sub('\\' + m.group(0), value, s)
+            s = re.sub(r'\\' + m.group(0), value, s)
 
     else:
         s = join('.', p.runName) + ' %A'
@@ -493,8 +500,8 @@ def cmdTemplate(p):
 
 def cmdWithArg(s, arg):
     _a = '0' if testdata.get(testname, None) else arg
-    for m in re.finditer('\%A', s):
-        s = re.sub('\\' + m.group(0), _a, s)
+    for m in re.finditer(r'\%A', s):
+        s = re.sub(r'\\' + m.group(0), _a, s)
     return s
 
 
@@ -622,21 +629,21 @@ def sizeCompressedSourceCode(p):
     try:
         with open(join(codedir, p.highlightName), 'r') as sf:
             s = sf.read()
-            s = re.sub('<span class="com">.*<\/span>', '', s)
-            s = re.sub('<span class="slc">.*<\/span>', '', s)
-            s = re.sub('<span class="[a-z]{3}">', '', s)
+            s = re.sub(r'<span class="com">.*<\/span>', '', s)
+            s = re.sub(r'<span class="slc">.*<\/span>', '', s)
+            s = re.sub(r'<span class="[a-z]{3}">', '', s)
 
-            s = re.sub('<span class="hl com">.*<\/span>', '', s)
-            s = re.sub('<span class="hl slc">.*<\/span>', '', s)
-            s = re.sub('<span class="hl [a-z]{3}">', '', s)
+            s = re.sub(r'<span class="hl com">.*<\/span>', '', s)
+            s = re.sub(r'<span class="hl slc">.*<\/span>', '', s)
+            s = re.sub(r'<span class="hl [a-z]{3}">', '', s)
 
-            s = re.sub('<\/span>', '', s)
+            s = re.sub(r'<\/span>', '', s)
 
-            s = re.sub('\s+', ' ', s)
-            s = re.sub('&quot;', '"', s)
-            s = re.sub('&lt;', '<', s)
-            s = re.sub('&gt;', '>', s)
-            s = re.sub('&#64;', '@', s)
+            s = re.sub(r'\s+', ' ', s)
+            s = re.sub(r'&quot;', '"', s)
+            s = re.sub(r'&lt;', '<', s)
+            s = re.sub(r'&gt;', '>', s)
+            s = re.sub(r'&#64;', '@', s)
     except (OSError, IOError) as err:
         if logger:
             logger.error(err)
@@ -879,7 +886,7 @@ def measurePrograms(name, programs, allowed, total):
     global loggerLine
 
     def fillInMissingRecords(ms):
-        for a in testvalues[len(ms) :]:
+        for a in testvalues[len(ms):]:
             c = copy.deepcopy(ms[-1:])
             if c:
                 c[0].argString = a
@@ -1040,7 +1047,7 @@ def measureProgramsRepeatLargest(name, programs, allowed, total):
     global loggerLine
 
     def fillInMissingRecords(ms):
-        for a in testvalues[len(ms) :]:
+        for a in testvalues[len(ms):]:
             c = copy.deepcopy(ms[-1:])
             if c:
                 c[0].argString = a

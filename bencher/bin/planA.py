@@ -1,22 +1,23 @@
-# The Computer Language Benchmarks Game
-# $Id: planA.py,v 1.1 2012/12/29 19:19:30 igouy-guest Exp $
-
 """
 measure with libgtop2 and CPU affinity
 """
 __author__ = 'Isaac Gouy'
 
 
-from domain import Record
+import os
+import pickle
+import signal
+import sys
+import threading
+import time
+from errno import ENOENT
+from subprocess import Popen
 
 import gi
-
 gi.require_version('GTop', '2.0')
 from gi.repository import GTop
 
-import os, sys, pickle, time, threading, signal
-from errno import ENOENT
-from subprocess import Popen
+from domain import Record
 
 
 def set_process_affinity_mask(pid, mask):
@@ -69,7 +70,7 @@ def measure(arg, commandline, delay, maxtime, outFile=None, errFile=None, inFile
                         logger.error('%s %s', e, err)
 
             def childmem(self):
-                if self.childpids == None:
+                if self.childpids is None:
                     self.childpids = set()
                     proc_list = GTop.glibtop_proclist()
                     for each in GTop.glibtop_get_proclist(proc_list, 0, 0):

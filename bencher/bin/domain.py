@@ -1,7 +1,3 @@
-# The Computer Language Benchmarks Game
-# $Id: domain.py,v 1.1 2012/12/29 19:19:30 igouy-guest Exp $
-
-
 __author__ = 'Isaac Gouy'
 
 
