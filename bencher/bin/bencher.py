@@ -9,10 +9,6 @@ a program is running.
 copyright Isaac Gouy 2010-2011
 """
 
-
-
-from __future__ import with_statement
-
 __author__ =  'Isaac Gouy'
 
 
@@ -21,15 +17,12 @@ __author__ =  'Isaac Gouy'
 # imports
 # =============================
 
-
-
 import bz2, copy, fnmatch, logging, os, re, sys
 
 # need to use ConfigParser not SafeConfigParser
-from ConfigParser import ConfigParser, NoSectionError, NoOptionError
+from configparser import RawConfigParser, NoSectionError, NoOptionError
 
-from contextlib import nested
-from cStringIO import StringIO
+from io import StringIO
 from domain import FileNameParts, LinkNameParts, Record
 from errno import ENOENT, EEXIST
 from filecmp import cmp
@@ -49,11 +42,7 @@ from time import strftime, localtime, gmtime, time
 # =============================
 
 
-
-if sys.platform == 'win32':
-   from usewin32 import nullName, planDesc, linkToSource, linkToIncludeDir, measure
-else:
-   from uselinux import nullName, planDesc, linkToSource, linkToIncludeDir, measure
+from uselinux import nullName, planDesc, linkToSource, linkToIncludeDir, measure
 
 
 
@@ -128,19 +117,19 @@ def setDefaultDirectories():
    bencher = split( split(script)[0] )[0]
    dirs['bencher'] = bencher if isdir(bencher) else None
 
-   d = join(bencher,'tmp')
+   d = join(bencher, 'tmp')
    dirs['tmp'] = d if isdir(d) else None
 
-   d = join(bencher,'programs')
+   d = join(bencher, 'programs')
    dirs['src'] = d if isdir(d) else None
 
-   d = join(bencher,'summary')
+   d = join(bencher, 'summary')
    dirs['dat_sweep'] = d if isdir(d) else None
 
-   d = join(bencher,'run_markup')
+   d = join(bencher, 'run_markup')
    dirs['code_sweep'] = d if isdir(d) else None
 
-   d = join(bencher,'run_logs')
+   d = join(bencher, 'run_logs')
    dirs['log_sweep'] = d if isdir(d) else None
 
 
@@ -154,11 +143,11 @@ def defaultMakefile():
 
 
 def defaultMakefiles(ext):
-   f = 'my.win32.' if sys.platform == 'win32' else 'my.linux.'
+   f = 'my.linux.'
    # check default location
    script = realpath(sys.argv[0])
    d = split( split(script)[0] )[0]
-   default = join(d,'makefiles',f+ext)
+   default = join(d, 'makefiles', f+ext)
    return default if isfile(default) else None
 
 
@@ -168,18 +157,18 @@ def configure(ini):
       make, makefile, affinitymask
 
    try:
-      parser = ConfigParser()
+      parser = RawConfigParser()
       parser.read(ini)
 
       # override default directory locations
-      for k,v in parser.items('dirs'):
+      for k, v in parser.items('dirs'):
          dirs[k] = normpath( expandvars( expanduser( v )))
 
-      for k,v in parser.items('filters'):
+      for k, v in parser.items('filters'):
          filters[k] = v.split()
       filters['onlydirs'] = frozenset( filters['onlydirs'])
 
-      for k,v in parser.items('alias'):
+      for k, v in parser.items('alias'):
          alias[k] = v.split()
 
       make = frozenset( parser.get('build', 'make').split() )
@@ -188,21 +177,21 @@ def configure(ini):
       makefile = normpath( expandvars( expanduser( f ))) if f else None
 
       # compiler interpreter runtime location shell vars
-      for k,v in parser.items('tools'):
+      for k, v in parser.items('tools'):
          os.environ[k.upper()] = v
 
       commandlines.update( parser.items('commandlines') )
 
-      for k,v in parser.items('testrange'):
+      for k, v in parser.items('testrange'):
          testrange[k] = v.split()
 
-      for k,v in parser.items('testdata'):
+      for k, v in parser.items('testdata'):
          testdata[k] = v
 
-      for k,v in parser.items('outputcheck'):
+      for k, v in parser.items('outputcheck'):
          outputcheck[k] = frozenset( v.split() )
 
-      for k,v in parser.items('ndiff_outputcheck'):
+      for k, v in parser.items('ndiff_outputcheck'):
          ndiff_outputcheck[k] = v
 
       # test specific shell vars
@@ -210,7 +199,7 @@ def configure(ini):
       for each in filters['onlydirs']:
          if parser.has_section(each):
             d = {}
-            for k,v in parser.items(each):
+            for k, v in parser.items(each):
                d[k.upper()] = v
                default[k.upper()] = ''
             testenv[each] = d
@@ -221,25 +210,25 @@ def configure(ini):
       if parser.has_section(s):
          for o in parser.options(s):
             if o in ('runs'):
-               runs = parser.getint(s,o)
+               runs = parser.getint(s, o)
             elif o in ('repeatevery'):
-               repeatevery = parser.getboolean(s,o)
+               repeatevery = parser.getboolean(s, o)
             elif o in ('cutoff'):
-               cutoff = parser.getint(s,o)
+               cutoff = parser.getint(s, o)
             elif o in ('delay'):
-               delay = parser.getfloat(s,o)
+               delay = parser.getfloat(s, o)
             elif o in ('maxtime'):
-               maxtime = parser.getint(s,o)
+               maxtime = parser.getint(s, o)
             elif o in ('logfilemax'):
-               logfilemax = parser.getint(s,o)
+               logfilemax = parser.getint(s, o)
             elif o in ('outputmax'):
-               outputmax = parser.getint(s,o)
+               outputmax = parser.getint(s, o)
             elif o in ('affinitymask'):
-               affinitymask = parser.getint(s,o)
+               affinitymask = parser.getint(s, o)
 
-   except (NoSectionError,NoOptionError), e:
+   except (NoSectionError, NoOptionError) as e:
       if logger: logger.debug(e)
-      print e, 'in', realpath(ini)
+      print(e, 'in', realpath(ini))
       sys.exit(2)
 
 
@@ -262,17 +251,17 @@ def checkDirectories():
 def makeSubDirectoriesFor(dirName):
    global datdir
 
-   def ifNoneMkdir(path,name):
-      d = join(path,name)
+   def ifNoneMkdir(path, name):
+      d = join(path, name)
       if not isdir(d):
          os.mkdir(d)
          if logger: logger.debug('mkdir %s' % d)
       return d
 
-   workingdir = ifNoneMkdir(dirs['tmp'],dirName)
-   ifNoneMkdir(workingdir,logdirName)
-   datdir = ifNoneMkdir(workingdir,datdirName)
-   ifNoneMkdir(workingdir,codedirName)
+   workingdir = ifNoneMkdir(dirs['tmp'], dirName)
+   ifNoneMkdir(workingdir, logdirName)
+   datdir = ifNoneMkdir(workingdir, datdirName)
+   ifNoneMkdir(workingdir, codedirName)
 
 
 
@@ -282,8 +271,8 @@ def configureLogger(logfilemax,loggerDir=None):
    # (as well as logging program-run by program-run to stdout)
 
    if logfilemax:
-      f = join(loggerDir,'bencher.log') if loggerDir else join('bencher.log')
-      h = RotatingFileHandler(filename=f,maxBytes=logfilemax,backupCount=1)
+      f = join(loggerDir, 'bencher.log') if loggerDir else join('bencher.log')
+      h = RotatingFileHandler(filename=f, maxBytes=logfilemax, backupCount=1)
 
       fmt = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
       h.setFormatter(fmt)
@@ -299,9 +288,10 @@ def checkExes():
    def check(cmd):
       try:
          with open( nullName, 'w') as df:
-            call(cmd,stdout=df,stderr=STDOUT)
+            call(cmd, stdout=df, stderr=STDOUT)
             exes.add(cmd[0])
-      except OSError, (e,err):
+      except OSError as xxx_todo_changeme3:
+         (e, err) = xxx_todo_changeme3.args
          if e == ENOENT: # No such file or directory
             if logger: logger.debug('%s program not found', cmd[0])
 
@@ -309,7 +299,7 @@ def checkExes():
    check([ndiffExeName])
    check([cmpExeName])
    check([diffExeName])
-   check([highlightExeName,' -h'])
+   check([highlightExeName, ' -h'])
 
 
 
@@ -324,19 +314,19 @@ def isexe(exename):
 
 
 
-def clean(d,srcSet):
+def clean(d, srcSet):
 
    def cleanLocal(name,localDirName,ext,sweepDir=None,isSymlink=False):
       names = frozenset( [n.__getattribute__(name) for n in srcSet] )
 
-      localdir = join(dirs['tmp'],d,localDirName)
+      localdir = join(dirs['tmp'], d, localDirName)
       filelist = os.listdir(localdir) if isdir(localdir) else []
       localNames = frozenset([f for f in os.listdir(localdir) if f.endswith(ext)])
 
       obsolete = localNames - names
-      if obsolete and logger: logger.debug('cleaning %s', join(d,localDirName))
+      if obsolete and logger: logger.debug('cleaning %s', join(d, localDirName))
       for f in obsolete:
-         os.remove( join(localdir,f) )
+         os.remove( join(localdir, f) )
 
       if sweepDir:
          sweepNames = frozenset(
@@ -347,7 +337,7 @@ def clean(d,srcSet):
          # probably want this to be a CVS remove?
 
 
-   cleanLocal('datName',datdirName,'dat')
+   cleanLocal('datName', datdirName, 'dat')
    #cleanLocal('logName',logdirName,'log',sweepDir=dirs['log_sweep'])
    #cleanLocal('codeName',codedirName,'_code',isSymlink=True)
    #cleanLocal('highlightName',codedirName,'.code', dirs['code_sweep'])
@@ -355,7 +345,7 @@ def clean(d,srcSet):
 
 
 
-def targets(originalFiles,aliasedFiles):
+def targets(originalFiles, aliasedFiles):
    # ALLOW these helper file extensions to be available unchanged
    # from the working directory - they will never be measured
    a = frozenset( filters['allow'] )
@@ -370,7 +360,7 @@ def targets(originalFiles,aliasedFiles):
 
    # reverse alias dictionary so we can look up the target for each alias
    revAlias = {}
-   for k,vs in alias.iteritems():
+   for k, vs in alias.items():
       for v in vs:
          revAlias[v] = k
 
@@ -382,11 +372,11 @@ def targets(originalFiles,aliasedFiles):
       _files = files; files = []
 
       for imp in o:
-         reva = revAlias.get(imp,None)
+         reva = revAlias.get(imp, None)
          for f in _files:
             if reva:
                if f.imp == reva:
-                  links.append(LinkNameParts(f.filename,imp))
+                  links.append(LinkNameParts(f.filename, imp))
             else:
                if f.imp == imp:
                   files.append(f)
@@ -405,16 +395,17 @@ def targets(originalFiles,aliasedFiles):
 
    # assume dat file is only written once, when all data is available
 
-   def notUpToDate(s,d):
+   def notUpToDate(s, d):
       try:
-         return getmtime( join(srcdir,s) ) > getmtime( join(datdir,d) )
-      except OSError, (e,_):
+         return getmtime( join(srcdir, s) ) > getmtime( join(datdir, d) )
+      except OSError as xxx_todo_changeme4:
+         (e, _) = xxx_todo_changeme4.args
          return e == ENOENT # No such file or directory
 
-   links = [f for f in links if notUpToDate(f.filename,f.datName)]
-   files = [f for f in files if notUpToDate(f.filename,f.datName)]
+   links = [f for f in links if notUpToDate(f.filename, f.datName)]
+   files = [f for f in files if notUpToDate(f.filename, f.datName)]
 
-   return allowed,files,links
+   return allowed, files, links
 
 
 
@@ -431,7 +422,7 @@ def worklist():
 
       # take all likely names in src directory
       # create simpleNames for each name and each possible alias
-      srcdir = join(dirs['src'],d)
+      srcdir = join(dirs['src'], d)
 
       # include undeleted filenames that might have a file extension
       files = fnmatch.filter( os.listdir(srcdir), '*.*[!~]' )
@@ -444,20 +435,20 @@ def worklist():
       src = set( original )
       aliased = []
       for o in original:
-         for imp in alias.get(o.imp,[]):
-            aliased.append( LinkNameParts(o.filename,imp))
+         for imp in alias.get(o.imp, []):
+            aliased.append( LinkNameParts(o.filename, imp))
       src.update(aliased)
 
-      clean(d,src)
+      clean(d, src)
 
-      allowed,sources,links = targets(original,aliased)
+      allowed, sources, links = targets(original, aliased)
 
       programs = set(sources)
       programs.update(links)
 
       # symlink these programs from codedir so they are available
       # for conversion to highlight-ed xml files
-      codedir = join(dirs['tmp'],d,'code')
+      codedir = join(dirs['tmp'], d, 'code')
       for f in programs:
          linkToSource(directory=srcdir, srcFilename=f.filename,
             dstDir=codedir, filename=f.programName)
@@ -465,7 +456,7 @@ def worklist():
          linkToSource(directory=srcdir, srcFilename=f.filename,
             dstDir=codedir, filename=f.codeName)
 
-      w.append( (d,programs,allowed) )
+      w.append( (d, programs, allowed) )
 
    return w
 
@@ -494,11 +485,11 @@ def callMake(p):
    with open( makeName(), 'a') as mf:
       if isexe(makeExeName):
          startmake = time()
-         call(cmd.split(),stdout=mf,stderr=STDOUT)
+         call(cmd.split(), stdout=mf, stderr=STDOUT)
          endmake = time()
-         print >>mf, '%0.2fs to complete and log all make actions' % (endmake - startmake)
+         print('%0.2fs to complete and log all make actions' % (endmake - startmake), file=mf)
       else:
-         print >>mf, '%s program not found' % (makeExeName)
+         print('%s program not found' % (makeExeName), file=mf)
          if logger: logger.debug('%s %s - %s program not found', \
             makeExeName, p.runName, makeExeName)
 
@@ -510,27 +501,27 @@ def cmdTemplate(p):
    specials['%B'] = p.baseName
    specials['%I'] = '' if p.id == '1' else p.id
 
-   s = commandlines.get(p.imp,None)
+   s = commandlines.get(p.imp, None)
    if s:
-      for m in re.finditer('\$[\w]+' ,s):
+      for m in re.finditer('\$[\w]+', s):
          k = m.group(0)
          v = os.environ.get( k.lstrip('$'), '' )
          s = re.sub('\\' + k + '(?P<c>[\W])', v + '\g<c>', s) # ate [\W] !
 
-      for m in re.finditer('\%[XTBI]' ,s):
+      for m in re.finditer('\%[XTBI]', s):
          value = specials.get( m.group(0), '' )
          s = re.sub('\\'+ m.group(0), value, s)
 
    else:
-      s = join('.',p.runName) + ' %A'
+      s = join('.', p.runName) + ' %A'
 
    return s
 
 
 
-def cmdWithArg(s,arg):
-   _a = '0' if testdata.get(testname,None) else arg
-   for m in re.finditer('\%A' ,s):
+def cmdWithArg(s, arg):
+   _a = '0' if testdata.get(testname, None) else arg
+   for m in re.finditer('\%A', s):
       s = re.sub('\\'+ m.group(0), _a, s)
    return s
 
@@ -538,8 +529,8 @@ def cmdWithArg(s,arg):
 def qsplit(cmd):
 #  for Smalltalk commandline
    if cmd.count('"') == 2:
-      s0,_,s = cmd.partition('"')
-      s1,_,s2 = s.partition('"')
+      s0, _, s = cmd.partition('"')
+      s1, _, s2 = s.partition('"')
       cmdline = s0.split()
       cmdline.append(s1)
       cmdline += s2.split()
@@ -574,46 +565,47 @@ def outName(index):
 
 
 
-def dataName(f,arg):
+def dataName(f, arg):
    # assume there is a data file
-   stem,ext = splitext(f)
+   stem, ext = splitext(f)
    return normpath( expandvars( expanduser( stem + arg + ext )))
 
 
 
 def setVariables(name):
-   global testname,testvalues,testdir,codedir,datdir,logdir,srcdir
+   global testname, testvalues, testdir, codedir, datdir, logdir, srcdir
    testname = name
 
    # export test specific environment variables for tools
    os.environ['TEST'] = testname
 
-   for k,v in testenv.get('default',{}).iteritems():
+   for k, v in testenv.get('default', {}).items():
       os.environ[k] = v
 
-   for k,v in testenv.get(testname,{}).iteritems():
+   for k, v in testenv.get(testname, {}).items():
       os.environ[k] = v
 
-   testvalues = testrange.get(testname,['0'])
-   testdir = join(dirs['tmp'],testname)
-   codedir = join(testdir,codedirName)
-   datdir = join(testdir,datdirName)
-   logdir = join(testdir,logdirName)
-   srcdir = join(dirs['src'],testname)
+   testvalues = testrange.get(testname, ['0'])
+   testdir = join(dirs['tmp'], testname)
+   codedir = join(testdir, codedirName)
+   datdir = join(testdir, datdirName)
+   logdir = join(testdir, logdirName)
+   srcdir = join(dirs['src'], testname)
 
 
 
-def cleanTmpdirFor(p,allowed):
+def cleanTmpdirFor(p, allowed):
    # every time, provide each program with a clean empty tmpdir
    os.chdir(testdir)
-   tmpdir = join(testdir,tmpdirName)
+   tmpdir = join(testdir, tmpdirName)
 
    if isdir(tmpdir):
       try:
          rmtree(tmpdir)
-      except OSError, (e,err):
-         if logger: logger.error('%s %s',err,tmpdir)
-         print "Please exit all other programs using " + tmpdir
+      except OSError as xxx_todo_changeme5:
+         (e, err) = xxx_todo_changeme5.args
+         if logger: logger.error('%s %s', err, tmpdir)
+         print("Please exit all other programs using " + tmpdir)
          sys.exit(0)
 
    # make sure all build files and crash files are created in tmpdir
@@ -621,45 +613,46 @@ def cleanTmpdirFor(p,allowed):
    os.chdir(tmpdir)
 
    # symlink from tmpdir to Include directory
-   linkToIncludeDir(dirs['src'],'Include')
+   linkToIncludeDir(dirs['src'], 'Include')
 
    # symlink from tmpdir to these allowed helper files
    for f in allowed:
-      linkToSource(srcdir,f.filename)
+      linkToSource(srcdir, f.filename)
 
    # symlink from tmpdir to expected output files
    for f in [f for f in os.listdir(testdir) if f.endswith(_OUT)]:
-      linkToSource(testdir,f)
+      linkToSource(testdir, f)
 
    # symlink from tmpdir to the program source code file
-   linkToSource(codedir,p.programName)
+   linkToSource(codedir, p.programName)
 
 
 
 def callHighlightSourceCodeMarkup(p):
    hidir = join( dirs['bencher'], 'highlight')
 
-   cmd = [highlightExeName,'--fragment'
-         ,'--add-config-dir=' + hidir + '/'
-         ,'--style=edit-eclipse'
-         ,'--force'
-         ,'-i'
-         ,join(codedir,p.codeName)
-         ,'-o'
-         ,join(codedir,p.highlightName)
+   cmd = [highlightExeName, '--fragment'
+         , '--add-config-dir=' + hidir + '/'
+         , '--style=edit-eclipse'
+         , '--force'
+         , '-i'
+         , join(codedir, p.codeName)
+         , '-o'
+         , join(codedir, p.highlightName)
          ]
 
    try:
       call(cmd)
-   except OSError, (e,err):
-      if logger: logger.debug('%s %s',e,err)
+   except OSError as xxx_todo_changeme6:
+      (e, err) = xxx_todo_changeme6.args
+      if logger: logger.debug('%s %s', e, err)
 
 
 
 def sizeCompressedSourceCode(p):
    s = ''
    try:
-      with open( join(codedir,p.highlightName), 'r') as sf:
+      with open( join(codedir, p.highlightName), 'r') as sf:
          s = sf.read()
          s = re.sub('<span class="com">.*<\/span>', '', s)
          s = re.sub('<span class="slc">.*<\/span>', '', s)
@@ -676,16 +669,16 @@ def sizeCompressedSourceCode(p):
          s = re.sub('&lt;', '<', s)
          s = re.sub('&gt;', '>', s)
          s = re.sub('&#64;', '@', s)
-   except (OSError,IOError), err:
+   except (OSError, IOError) as err:
       if logger: logger.error(err)
 
    sz = 0
    if s:
       path = join('_gz')
       try:
-         gz = GzipFile(path,'wb',1)
-         gz.write(s)
-      except (OSError,IOError), err:
+         gz = GzipFile(path, 'wb', 1)
+         gz.write(s.encode())
+      except (OSError, IOError) as err:
          if logger: logger.error(err)
       finally:
          gz.close()
@@ -702,7 +695,7 @@ def isNotChecked(testname):
 
 
 def isCheckNDiff(testname):
-   return ndiff_outputcheck.has_key(testname)
+   return testname in ndiff_outputcheck
 
 
 
@@ -711,11 +704,11 @@ def isCheckCmp(testname):
 
 
 
-def checkAndLog(m,outFile,logf):
+def checkAndLog(m, outFile, logf):
 
-   def cmpCheck(f1,f2,df):
-      if not cmp(f1,f2):
-         print >>df, '\n %s %s differ\n' % (f1,f2)
+   def cmpCheck(f1, f2, df):
+      if not cmp(f1, f2):
+         print('\n %s %s differ\n' % (f1, f2), file=df)
 
 
    if m.isOkay():
@@ -735,30 +728,31 @@ def checkAndLog(m,outFile,logf):
                elif isCheckNDiff(testname):
                   if isexe(ndiffExeName):
                      optionkv = ndiff_outputcheck[testname].split()
-                     call([ndiffExeName,'-quiet',optionkv[0],optionkv[1],_OUT,argFile], \
-                        stdout=df,stderr=STDOUT)
+                     call([ndiffExeName, '-quiet', optionkv[0], optionkv[1], _OUT, argFile], \
+                        stdout=df, stderr=STDOUT)
                   elif isexe(diffExeName):
-                     call([diffExeName,_OUT,argFile],stdout=df,stderr=STDOUT)
+                     call([diffExeName, _OUT, argFile], stdout=df, stderr=STDOUT)
                   else:
-                     cmpCheck(_OUT,argFile,df)
+                     cmpCheck(_OUT, argFile, df)
 
                elif isCheckCmp(testname):
                   if isexe(cmpExeName):
-                     call([cmpExeName,_OUT,argFile],stdout=df,stderr=STDOUT)
+                     call([cmpExeName, _OUT, argFile], stdout=df, stderr=STDOUT)
                   else:
-                     cmpCheck(_OUT,argFile,df)
+                     cmpCheck(_OUT, argFile, df)
 
                else:
                   if isexe(diffExeName):
-                     call([diffExeName,_OUT,argFile],stdout=df,stderr=STDOUT)
+                     call([diffExeName, _OUT, argFile], stdout=df, stderr=STDOUT)
                   else:
-                     cmpCheck(_OUT,argFile,df)
+                     cmpCheck(_OUT, argFile, df)
 
-            except OSError, (e,err):
+            except OSError as xxx_todo_changeme1:
+               (e, err) = xxx_todo_changeme1.args
                if e == ENOENT: # No such file or directory
                   m.setBadOutput()
-                  print >>logf, '\nFAIL:', err, '\n'
-                  print 'FAIL ', err,
+                  print('\nFAIL:', err, '\n', file=logf)
+                  print('FAIL ', err, end=' ')
 
             if df.tell():
                m.setBadOutput()
@@ -767,27 +761,27 @@ def checkAndLog(m,outFile,logf):
          copyfile(outFile, join('..', m.argString + _OUT))
 
    if not m.isOkay():
-      extra = '' if not m.hasTimedout() else '%s %d%s' % ('after',maxtime,'s')
-      print >>logf, '\n%s%s\n' % (m.statusStr(),extra)
+      extra = '' if not m.hasTimedout() else '%s %d%s' % ('after', maxtime, 's')
+      print('\n%s%s\n' % (m.statusStr(), extra), file=logf)
 
 
 
-def measureOnly(a,t,ms):
-   for i in range(1,runs):
-      cmd = cmdWithArg(t,a)
+def measureOnly(a, t, ms):
+   for i in range(1, runs):
+      cmd = cmdWithArg(t, a)
       with open( outName(i), 'w') as of:
 
          # pass the test data file to program stdin
-         if testdata.get(testname,None):
-            dfName = dataName(testdata[testname],a)
-            with open(dfName,'r') as df:
-               m = measure(a,qsplit(cmd),delay,maxtime,of,STDOUT,df,
-                  logger=logger,affinitymask=affinitymask)
+         if testdata.get(testname, None):
+            dfName = dataName(testdata[testname], a)
+            with open(dfName, 'r') as df:
+               m = measure(a, qsplit(cmd), delay, maxtime, of, STDOUT, df,
+                  logger=logger, affinitymask=affinitymask)
 
          # pass the test value as a command line argument in cmd
          else:
-               m = measure(a,qsplit(cmd),delay,maxtime,of,STDOUT,
-                  logger=logger,affinitymask=affinitymask)
+               m = measure(a, qsplit(cmd), delay, maxtime, of, STDOUT,
+                  logger=logger, affinitymask=affinitymask)
 
          # add to the measurements
          ms.append(m)
@@ -822,51 +816,51 @@ def measureOnly(a,t,ms):
 
 
 
-def measureCheckAndLog(p,t,ms):
+def measureCheckAndLog(p, t, ms):
    repeatTestValues = []
 
    for a in testvalues:
-      cmd = cmdWithArg(t,a)
+      cmd = cmdWithArg(t, a)
       ofName = outName(0)
 
       # a logged Empty record will reveal a bencher failure
       m = Record()
 
       try:
-         with open(logName(p),'w') as logf:
-            with open(ofName,'w') as of:
+         with open(logName(p), 'w') as logf:
+            with open(ofName, 'w') as of:
                # append timestamp to log
-               print >>logf, '\n', strftime("%a, %d %b %Y %H:%M:%S GMT", gmtime())
+               print('\n', strftime("%a, %d %b %Y %H:%M:%S GMT", gmtime()), file=logf)
 
                # append Make output to log
                if hasMake(p.imp):
                   with open( makeName(), 'r') as mf:
                      logf.write( mf.read() )
 
-               with open(errName(),'w+') as ef:
+               with open(errName(), 'w+') as ef:
                   # append command line showing redirected test data file to log
-                  if testdata.get(testname,None):
-                     dfName = dataName(testdata[testname],a)
-                     print >>logf, '\nCOMMAND LINE:\n', cmd, '<', split(dfName)[1]
-                     with open(dfName,'r') as df:
-                        m = measure(a,qsplit(cmd),delay,maxtime,of,ef,df,
-                           logger=logger,affinitymask=affinitymask)
+                  if testdata.get(testname, None):
+                     dfName = dataName(testdata[testname], a)
+                     print('\nCOMMAND LINE:\n', cmd, '<', split(dfName)[1], file=logf)
+                     with open(dfName, 'r') as df:
+                        m = measure(a, qsplit(cmd), delay, maxtime, of, ef, df,
+                           logger=logger, affinitymask=affinitymask)
 
                   # append command line showing test value argument to log
                   else:
-                     print >>logf, '\nCOMMAND LINE:\n', cmd
-                     m = measure(a,qsplit(cmd),delay,maxtime,of,ef,
-                        logger=logger,affinitymask=affinitymask)
+                     print('\nCOMMAND LINE:\n', cmd, file=logf)
+                     m = measure(a, qsplit(cmd), delay, maxtime, of, ef,
+                        logger=logger, affinitymask=affinitymask)
 
             # check the program output was as expected
-            checkAndLog(m,ofName,logf)
+            checkAndLog(m, ofName, logf)
 
             # add to the measurements
             ms.append(m)
 
             # if there was a problem finding the program just ignore the program output
             if not m.isMissing():
-               with open(ofName,'r+') as of:
+               with open(ofName, 'r+') as of:
                   # append diff or ndiff or cmp output to log
                   if m.hasBadOutput():
                      with open(diffName(), 'r') as df:
@@ -899,7 +893,7 @@ def measureCheckAndLog(p,t,ms):
             break
 
 
-      except IOError, err:
+      except IOError as err:
          if logger: logger.error(err)
 
       finally:
@@ -913,7 +907,7 @@ def measureCheckAndLog(p,t,ms):
 
 
 
-def measurePrograms(name,programs,allowed,total):
+def measurePrograms(name, programs, allowed, total):
    global loggerLine
 
    def fillInMissingRecords(ms):
@@ -926,7 +920,7 @@ def measurePrograms(name,programs,allowed,total):
    setVariables(name)
 
    for p in programs:
-      cleanTmpdirFor(p,allowed)
+      cleanTmpdirFor(p, allowed)
 
       sys.stdout.write('%s ' % strftime('%a %H:%M:%S', localtime()))
       sys.stdout.flush()
@@ -934,7 +928,7 @@ def measurePrograms(name,programs,allowed,total):
       if isexe(highlightExeName):
          callHighlightSourceCodeMarkup(p)
       else:
-         copyfile( join(codedir,p.codeName), join(codedir,p.highlightName) )
+         copyfile( join(codedir, p.codeName), join(codedir, p.highlightName) )
 
       srcSize = sizeCompressedSourceCode(p)
 
@@ -944,24 +938,24 @@ def measurePrograms(name,programs,allowed,total):
       loggerLine = StringIO()
       t = cmdTemplate(p)
       ms = []
-      repeatTestValues = measureCheckAndLog(p,t,ms)
+      repeatTestValues = measureCheckAndLog(p, t, ms)
       fillInMissingRecords(ms)
       for testValue in repeatTestValues:
-         measureOnly(testValue,t,ms)
+         measureOnly(testValue, t, ms)
 
       # Write compressed dat file once, when all data is available
       try:
-         datf = bz2.BZ2File( join(datdir,p.datName) ,'w')
+         datf = bz2.BZ2File( join(datdir, p.datName), 'w')
          for m in ms:
             m.gz = srcSize
-            print >>datf, m
-      except IOError, err:
+            print(m, file=datf)
+      except IOError as err:
          if logger: logger.error(err)
       finally:
          datf.close()
 
-      loggerLine.write('%s [%d]' % (p.programName,total))
-      sys.stdout.write('%s [%d]\n' % (p.programName,total)); sys.stdout.flush()
+      loggerLine.write('%s [%d]' % (p.programName, total))
+      sys.stdout.write('%s [%d]\n' % (p.programName, total)); sys.stdout.flush()
       total -= 1
 
       if logger: logger.info( loggerLine.getvalue() )
@@ -977,51 +971,51 @@ def measurePrograms(name,programs,allowed,total):
 
 
 
-def measureCheckAndLogRepeatLargest(p,t,ms):
+def measureCheckAndLogRepeatLargest(p, t, ms):
    repeatTestValue = None
 
    for a in testvalues:
-      cmd = cmdWithArg(t,a)
+      cmd = cmdWithArg(t, a)
       ofName = outName(0)
 
       # a logged Empty record will reveal a bencher failure
       m = Record()
 
       try:
-         with open(logName(p),'w') as logf:
-            with open(ofName,'w') as of:
+         with open(logName(p), 'w') as logf:
+            with open(ofName, 'w') as of:
                # append timestamp to log
-               print >>logf, '\n', strftime("%a, %d %b %Y %H:%M:%S GMT", gmtime())
+               print('\n', strftime("%a, %d %b %Y %H:%M:%S GMT", gmtime()), file=logf)
 
                # append Make output to log
                if hasMake(p.imp):
                   with open( makeName(), 'r') as mf:
                      logf.write( mf.read() )
 
-               with open(errName(),'w+') as ef:
+               with open(errName(), 'w+') as ef:
                   # append command line showing redirected test data file to log
-                  if testdata.get(testname,None):
-                     dfName = dataName(testdata[testname],a)
-                     print >>logf, '\nCOMMAND LINE:\n', cmd, '<', split(dfName)[1]
-                     with open(dfName,'r') as df:
-                        m = measure(a,qsplit(cmd),delay,maxtime,of,ef,df,
-                           logger=logger,affinitymask=affinitymask)
+                  if testdata.get(testname, None):
+                     dfName = dataName(testdata[testname], a)
+                     print('\nCOMMAND LINE:\n', cmd, '<', split(dfName)[1], file=logf)
+                     with open(dfName, 'r') as df:
+                        m = measure(a, qsplit(cmd), delay, maxtime, of, ef, df,
+                           logger=logger, affinitymask=affinitymask)
 
                   # append command line showing test value argument to log
                   else:
-                     print >>logf, '\nCOMMAND LINE:\n', cmd
-                     m = measure(a,qsplit(cmd),delay,maxtime,of,ef,
-                        logger=logger,affinitymask=affinitymask)
+                     print('\nCOMMAND LINE:\n', cmd, file=logf)
+                     m = measure(a, qsplit(cmd), delay, maxtime, of, ef,
+                        logger=logger, affinitymask=affinitymask)
 
             # check the program output was as expected
-            checkAndLog(m,ofName,logf)
+            checkAndLog(m, ofName, logf)
 
             # add to the measurements
             ms.append(m)
 
             # if there was a problem finding the program just ignore the program output
             if not m.isMissing():
-               with open(ofName,'r+') as of:
+               with open(ofName, 'r+') as of:
                   # append diff or ndiff or cmp output to log
                   if m.hasBadOutput():
                      with open(diffName(), 'r') as df:
@@ -1056,7 +1050,7 @@ def measureCheckAndLogRepeatLargest(p,t,ms):
             break
 
 
-      except IOError, err:
+      except IOError as err:
          if logger: logger.error(err)
 
       finally:
@@ -1070,7 +1064,7 @@ def measureCheckAndLogRepeatLargest(p,t,ms):
 
 
 
-def measureProgramsRepeatLargest(name,programs,allowed,total):
+def measureProgramsRepeatLargest(name, programs, allowed, total):
    global loggerLine
 
    def fillInMissingRecords(ms):
@@ -1083,7 +1077,7 @@ def measureProgramsRepeatLargest(name,programs,allowed,total):
    setVariables(name)
 
    for p in programs:
-      cleanTmpdirFor(p,allowed)
+      cleanTmpdirFor(p, allowed)
 
       sys.stdout.write('%s ' % strftime('%a %H:%M:%S', localtime()))
       sys.stdout.flush()
@@ -1091,7 +1085,7 @@ def measureProgramsRepeatLargest(name,programs,allowed,total):
       if isexe(highlightExeName):
          callHighlightSourceCodeMarkup(p)
       else:
-         copyfile( join(codedir,p.codeName), join(codedir,p.highlightName) )
+         copyfile( join(codedir, p.codeName), join(codedir, p.highlightName) )
 
       srcSize = sizeCompressedSourceCode(p)
 
@@ -1101,24 +1095,24 @@ def measureProgramsRepeatLargest(name,programs,allowed,total):
       loggerLine = StringIO()
       t = cmdTemplate(p)
       ms = []
-      repeatTestValue = measureCheckAndLogRepeatLargest(p,t,ms)
+      repeatTestValue = measureCheckAndLogRepeatLargest(p, t, ms)
       fillInMissingRecords(ms)
       if repeatTestValue:
-         measureOnly(repeatTestValue,t,ms)
+         measureOnly(repeatTestValue, t, ms)
 
       # Write compressed dat file once, when all data is available
       try:
-         datf = bz2.BZ2File( join(datdir,p.datName) ,'w')
+         datf = bz2.BZ2File( join(datdir, p.datName), 'wb')
          for m in ms:
             m.gz = srcSize
-            print >>datf, m
-      except IOError, err:
+            datf.write(str(m).encode())
+      except IOError as err:
          if logger: logger.error(err)
       finally:
          datf.close()
 
-      loggerLine.write('%s [%d]' % (p.programName,total))
-      sys.stdout.write('%s [%d]\n' % (p.programName,total)); sys.stdout.flush()
+      loggerLine.write('%s [%d]' % (p.programName, total))
+      sys.stdout.write('%s [%d]\n' % (p.programName, total)); sys.stdout.flush()
       total -= 1
 
       if logger: logger.info( loggerLine.getvalue() )
@@ -1140,25 +1134,25 @@ def measureProgramsRepeatLargest(name,programs,allowed,total):
 
 
 
-def appendNames(fp,f):
+def appendNames(fp, f):
    # append benchmark name, language implementation and program id
-   f.write('%s,%s,%s,' % (fp.name,fp.imp,fp.id))
+   f.write('%s,%s,%s,' % (fp.name, fp.imp, fp.id))
 
 
 
-def appendToBothDataCsv(ms,fp,df,ndf):
+def appendToBothDataCsv(ms, fp, df, ndf):
    # for each test value find the measurements with lowest time
    d = {}
    mem = {}
    for each in ms:
       # find lowest time
-      v = d.get(each.arg,None)
+      v = d.get(each.arg, None)
       #if not v or (each.isOkay() and each.userSysTime < v.userSysTime):
       if not v or (each.isOkay() and each.elapsed < v.elapsed):
          d[each.arg] = each
 
       # find highest maxMem
-      v = mem.get(each.arg,None)
+      v = mem.get(each.arg, None)
       if not v or (each.isOkay() and each.maxMem > v):
          mem[each.arg] = each.maxMem
 
@@ -1169,14 +1163,14 @@ def appendToBothDataCsv(ms,fp,df,ndf):
 
 
    # set maxMem to the highest recorded memory for that test value
-   for k,v in d.iteritems():
+   for k, v in d.items():
       v.maxMem = mem[k]
 
    # sort and append measurements to ndatacsv
-   ms = d.values()
+   ms = list(d.values())
    ms.sort()
    for each in ms:
-      appendNames(fp,ndf)
+      appendNames(fp, ndf)
       ndf.write(str(each)); ndf.write('\n')
 
    # there should be a measurement for each test value
@@ -1184,57 +1178,57 @@ def appendToBothDataCsv(ms,fp,df,ndf):
    # the last measurement should be the largest test value
    # append that last measurement to datacsv
    try:
-      appendNames(fp,df)
+      appendNames(fp, df)
       df.write(str(ms[-1:][0])); df.write('\n')
-   except IndexError, err:
+   except IndexError as err:
       if logger: logger.error(err)
 
 
 
-def appendToBulkdataCsv(ms,fp,bdf):
+def appendToBulkdataCsv(ms, fp, bdf):
    # append every measurement to bulkdatacsv
    for each in ms:
       if each.isOkay():
-         appendNames(fp,bdf)
+         appendNames(fp, bdf)
          bdf.write(str(each)); bdf.write('\n')
 
 
 
-def appendToCsv(d,path,filename,df,ndf,bdf):
+def appendToCsv(d, path, filename, df, ndf, bdf):
    try:
-      f = bz2.BZ2File( join(path,filename),'r')
+      f = bz2.BZ2File( join(path, filename), 'r')
       try:
-         ms = [Record().fromString( s.rstrip('\n')) for s in f.readlines()]
+         ms = [Record().fromString(s.decode().rstrip('\n')) for s in f.readlines()]
       except Exception as ex:
-         print join(path, filename), 'corrupted, deleting'
+         print(join(path, filename), 'corrupted, deleting')
          os.remove(join(path, filename))
          return
       fp = FileNameParts(filename)
-      appendToBulkdataCsv(ms,fp,bdf)
-      appendToBothDataCsv(ms,fp,df,ndf)
+      appendToBulkdataCsv(ms, fp, bdf)
+      appendToBothDataCsv(ms, fp, df, ndf)
 
-   except IOError, err:
+   except IOError as err:
       if logger: logger.error(err)
    finally:
       f.close()
 
 
 
-def walkDatFiles(df,ndf,bdf):
+def walkDatFiles(df, ndf, bdf):
    subdirs = [each for each in os.listdir( dirs['tmp'] )
       if each in filters['onlydirs']]
    subdirs.sort()
    for d in subdirs:
       try:
-         path = join(d,datdirName)
+         path = join(d, datdirName)
          datfiles = os.listdir(path)
-      except OSError, err:
+      except OSError as err:
          if err[0] == ENOENT:
             if logger: logger.debug(err)
             continue # No such file or directory
       else:
-         if logger: logger.info('mkcsv building csv files from %s',path)
-         for f in datfiles: appendToCsv(d,path,f,df,ndf,bdf)
+         if logger: logger.info('mkcsv building csv files from %s', path)
+         for f in datfiles: appendToCsv(d, path, f, df, ndf, bdf)
 
 
 
@@ -1250,17 +1244,16 @@ def makeSummaryFiles(iniName):
    ndatacsv = 'fastest_measurements.csv'
    bulkdatacsv = 'all_measurements.csv'
 
-   with nested( open( join(datacsv), 'w'),
-                open( join(ndatacsv), 'w')) as (df,ndf):
+   with open(join(datacsv), 'w') as df, open(join(ndatacsv), 'w') as ndf:
 
       try:
          #bdf = bz2.BZ2File( join(bulkdatacsv), 'w')
          bdf = open( join(bulkdatacsv), 'w')
 
          writeHeader(df); writeHeader(ndf); writeHeader(bdf)
-         walkDatFiles(df,ndf,bdf)
+         walkDatFiles(df, ndf, bdf)
 
-      except (OSError,IOError), err:
+      except (OSError, IOError) as err:
          if logger: logger.error(err)
       finally:
          bdf.close()
@@ -1270,9 +1263,9 @@ def makeSummaryFiles(iniName):
          copy2( join(datacsv), dirs['dat_sweep'])
          copy2( join(ndatacsv), dirs['dat_sweep'])
          copy2( join(bulkdatacsv), dirs['dat_sweep'])
-         if logger: logger.info('copy %s files to %s','*.csv',dirs['dat_sweep'])
+         if logger: logger.info('copy %s files to %s', '*.csv', dirs['dat_sweep'])
 
-   except (OSError,IOError), err:
+   except (OSError, IOError) as err:
       if logger: logger.error(err)
 
 
@@ -1286,18 +1279,18 @@ def sweepLogAndCodeFiles():
 
    def sweep(sweepName, pattern, subdirs, dirName):
       if dirs[sweepName]:
-         if logger: logger.info('copy %s files to %s',pattern,dirs[sweepName])
+         if logger: logger.info('copy %s files to %s', pattern, dirs[sweepName])
          for d in subdirs:
             try:
-               path = join(d,dirName)
+               path = join(d, dirName)
                fs = fnmatch.filter( os.listdir(path), pattern)
-            except OSError, err:
+            except OSError as err:
                if err[0] == ENOENT:
                   if logger: logger.debug(err)
                   continue # No such file or directory
             else:
                for f in fs:
-                  copy2( join(path,f), dirs[sweepName])
+                  copy2( join(path, f), dirs[sweepName])
 
    subdirs = [each for each in os.listdir( dirs['tmp'] )
       if each in filters['onlydirs']]
@@ -1316,25 +1309,25 @@ def sweepLogAndCodeFiles():
 def benchmarksGame(ini):
    checkDirectories()
    w = worklist()
-   total = sum([len(s) for k,s,a in w])
+   total = sum([len(s) for k, s, a in w])
 
    if total == 0:
-      print 'nothing to be done - measurements are up-to-date'
+      print('nothing to be done - measurements are up-to-date')
       if logger: logger.info('nothing to be done - measurements are up-to-date')
 
    else:
       # do repeated measurements at every [testrange] value
       if repeatevery:
-         for d,s,a in w:
-            total = measurePrograms(d,s,a,total)
+         for d, s, a in w:
+            total = measurePrograms(d, s, a, total)
 
       # do repeated measurements at largest [testrange] value
       else:
-         for d,s,a in w:
-            total = measureProgramsRepeatLargest(d,s,a,total)
+         for d, s, a in w:
+            total = measureProgramsRepeatLargest(d, s, a, total)
 
-      _,iniName= split(ini)
-      iniName,_ = splitext(iniName)
+      _, iniName= split(ini)
+      iniName, _ = splitext(iniName)
       makeSummaryFiles(iniName)
       sweepLogAndCodeFiles()
 
@@ -1347,43 +1340,45 @@ def force(items):
    impsToForce = items.difference(onlydirs)
 
    for each in dirsToForce:
-      d = join(dirs['tmp'],each,datdirName)
+      d = join(dirs['tmp'], each, datdirName)
       if not isdir(d):
-         if logger: logger.info('no %s directory - no *.dat to remove',d)
+         if logger: logger.info('no %s directory - no *.dat to remove', d)
       else:
-         if logger: logger.info('remove %s *.dat',d)
+         if logger: logger.info('remove %s *.dat', d)
          fs = fnmatch.filter( os.listdir(d), '*.*' )
          for f in fs:
             try:
-               os.remove( join(d,f) )
-            except OSError, (e,err):
-               if logger: logger.error('%s %s %s %s',e,err,d,f)
+               os.remove( join(d, f) )
+            except OSError as xxx_todo_changeme2:
+               (e, err) = xxx_todo_changeme2.args
+               if logger: logger.error('%s %s %s %s', e, err, d, f)
 
    for each in onlydirs:
-      d = join(dirs['tmp'],each,datdirName)
+      d = join(dirs['tmp'], each, datdirName)
       if not isdir(d):
-         if logger: logger.info('no %s directory - no *.dat to remove',d)
+         if logger: logger.info('no %s directory - no *.dat to remove', d)
       else:
          for i in impsToForce:
             fs = fnmatch.filter( os.listdir(d), '*.' + i + '_dat' )
             for f in fs:
                try:
-                  os.remove( join(d,f) )
-                  if logger: logger.info('remove %s %s',d,f)
-               except OSError, (e,err):
-                  if logger: logger.error('%s %s %s %s',e,err,d,f)
+                  os.remove( join(d, f) )
+                  if logger: logger.info('remove %s %s', d, f)
+               except OSError as xxx_todo_changeme:
+                  (e, err) = xxx_todo_changeme.args
+                  if logger: logger.error('%s %s %s %s', e, err, d, f)
 
 
 
 def main():
-   print 'bencher release 0.9'
+   print('bencher release 0.9')
 
    try:
       # check for default directory locations
       setDefaultDirectories()
 
       # check for ini file in command line args
-      options,remeasure = getopt(sys.argv[1:],'',['conf='])
+      options, remeasure = getopt(sys.argv[1:], '', ['conf='])
       ini = None
       for o, v in options:
          if o in ('--conf'):
@@ -1396,9 +1391,9 @@ def main():
       if ini:
          configure(ini)
          if dirs['tmp'] and isdir(dirs['tmp']):
-            if not logger: configureLogger(logfilemax,dirs['tmp'])
+            if not logger: configureLogger(logfilemax, dirs['tmp'])
          else:
-            print 'No bencher/tmp'
+            print('No bencher/tmp')
             sys.exit(0)
 
          checkExes()
@@ -1406,20 +1401,20 @@ def main():
          if remeasure:
             force(remeasure)
 
-         print planDesc
+         print(planDesc)
          benchmarksGame(ini)
 
       else:
-         print 'No .ini file'
+         print('No .ini file')
          sys.exit(0)
 
    except KeyboardInterrupt:
       if logger: logger.debug('Keyboard Interrupt')
       sys.exit(1)
 
-   except GetoptError, err:
+   except GetoptError as err:
       if logger: logger.debug(err)
-      print err
+      print(err)
       sys.exit(2)
 
 

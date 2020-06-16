@@ -6,7 +6,7 @@ __author__ =  'Isaac Gouy'
 
 
 class FileNameParts(object):
-   """ 
+   """
    self.filename = 'binarytrees.gcc' | self.filename = 'binarytrees.gcc-4.gcc'
    self.name = 'binarytrees' | self.name = 'binarytrees'
    self.imp = 'gcc' | self.imp = 'gcc'
@@ -14,7 +14,7 @@ class FileNameParts(object):
    self.programName = 'binarytrees.gcc' | self.programName = 'binarytrees.gcc-4.gcc'
    self.simpleName = 'binarytrees.1.gcc' | self.simpleName = 'binarytrees.4.gcc'
    """
-   def __init__(self,filename):
+   def __init__(self, filename):
       self.filename = filename
       part = filename.split('.')
       self.name = part[0]
@@ -24,14 +24,14 @@ class FileNameParts(object):
          if len(part) == 4:
             self.imp = part[2]
          elif len(part) == 3:
-            a,_,b = part[2].rpartition('_')
+            a, _, b = part[2].rpartition('_')
             if a:
                self.imp = a
             else:
                self.imp = b
 
       else: # binarytrees.gcc binarytrees.gcc-4.gcc
-         a,_,b = part[1].rpartition('-') 
+         a, _, b = part[1].rpartition('-')
          if a:
             self.imp = part[2]
             self.id = b
@@ -59,8 +59,8 @@ class FileNameParts(object):
 
    def _baseName(self):
       if self.isNumbered():
-         impid = '-'.join( (self.imp,self.id) )
-         return '.'.join( (self.name,impid) )
+         impid = '-'.join( (self.imp, self.id) )
+         return '.'.join( (self.name, impid) )
       else:
          return self.name
 
@@ -92,8 +92,8 @@ class FileNameParts(object):
 
 
    def _simpleName(self):
-      if not self.__simpleName: 
-         self.__simpleName = '.'.join( (self.name,self.id,self.imp) )
+      if not self.__simpleName:
+         self.__simpleName = '.'.join( (self.name, self.id, self.imp) )
       return self.__simpleName
 
    simpleName = property(_simpleName)
@@ -109,24 +109,24 @@ class FileNameParts(object):
 
 
 class LinkNameParts(FileNameParts):
-   """ 
+   """
    self.filename = 'binarytrees.gcc' | self.filename = 'binarytrees.gcc-4.gcc'
    imp = 'icc'
    self.programName = 'binarytrees.icc' | self.programName = 'binarytrees.icc-4.icc'
    """
-   def __init__(self,filename,imp): 
-      FileNameParts.__init__(self,filename)  
+   def __init__(self, filename, imp):
+      FileNameParts.__init__(self, filename)
       self.imp = imp
 
       if self.isNumbered():
-         impid = '-'.join( (self.imp,self.id) )
-         self.__programName = '.'.join( (self.name,impid,self.imp) )
+         impid = '-'.join( (self.imp, self.id) )
+         self.__programName = '.'.join( (self.name, impid, self.imp) )
       else:
-         self.__programName = '.'.join( (self.name,self.imp) )
+         self.__programName = '.'.join( (self.name, self.imp) )
 
 
    def _programName(self):
-      return self.__programName 
+      return self.__programName
 
 
 
@@ -144,21 +144,21 @@ class Record(object):
 
    def __init__(self,arg='0'):
       self.arg = 0
-      self.elapsed = 0.0 
-      self.userSysTime = 0.0 
+      self.elapsed = 0.0
+      self.userSysTime = 0.0
       self.maxMem = 0
       self.gz = 0
-      self.status = self._EMPTY 
-      self.cpuLoad = '%' 
+      self.status = self._EMPTY
+      self.cpuLoad = '%'
       self.argString = arg
 
-   def fromString(self,s):
+   def fromString(self, s):
       a = s.split(',')
       self.arg = int(a[0])
       self.gz = int(a[1])
       self.userSysTime = float(a[2])
       self.maxMem = int(a[3])
-      self.status = int(a[4]) 
+      self.status = int(a[4])
       self.cpuLoad = a[5]
       self.elapsed = float(a[6])
       return self
@@ -168,7 +168,7 @@ class Record(object):
          self.arg, self.gz, self.userSysTime, self.maxMem, self.status, self.cpuLoad, self.elapsed)
 
 
-   def __cmp__(self,other):
+   def __cmp__(self, other):
       return \
         -1 if self.arg < other.arg else (
          1 if self.arg > other.arg else (
@@ -211,7 +211,7 @@ class Record(object):
    def isMissing(self):
       return self.status == self._MISSING
 
-   def hasExceeded(self,cutoff):
+   def hasExceeded(self, cutoff):
       return self.userSysTime > cutoff
 
    def statusStr(self):
@@ -219,14 +219,14 @@ class Record(object):
          'PROGRAM FAILED ' if self.hasError() else (
          'EMPTY ' if self.isEmpty() else (
          'TIMED OUT ' if self.hasTimedout() else (
-         'UNEXPECTED OUTPUT ' if self.hasBadOutput() else 
+         'UNEXPECTED OUTPUT ' if self.hasBadOutput() else
          'MAKE ERROR ' ))))
 
    def _getArgString(self):
       return str(self.arg)
 
-   def _setArgString(self,arg):
+   def _setArgString(self, arg):
       self.arg = int(arg)
 
-   argString = property(_getArgString,_setArgString)
+   argString = property(_getArgString, _setArgString)
 
