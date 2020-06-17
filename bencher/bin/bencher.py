@@ -21,7 +21,7 @@ import os
 import re
 import sys
 # need to use ConfigParser not SafeConfigParser
-from configparser import NoOptionError, NoSectionError, RawConfigParser
+from configparser import NoOptionError, NoSectionError, ConfigParser, ExtendedInterpolation
 from errno import EEXIST, ENOENT
 from filecmp import cmp
 from getopt import GetoptError, getopt
@@ -147,7 +147,7 @@ def configure(ini):
     global runs, repeatevery, cutoff, delay, maxtime, logfilemax, outputmax, make, makefile, affinitymask
 
     try:
-        parser = RawConfigParser()
+        parser = ConfigParser(interpolation=ExtendedInterpolation())
         parser.read(ini)
 
         # override default directory locations
@@ -486,11 +486,11 @@ def cmdTemplate(p):
         for m in re.finditer(r'\$[\w]+', s):
             k = m.group(0)
             v = os.environ.get(k.lstrip('$'), '')
-            s = re.sub(r'\\' + k + r'(?P<c>[\W])', v + r'\g<c>', s)  # ate [\W] !
+            s = re.sub(k + r'(?P<c>[\W])', v + r'\g<c>', s)  # ate [\W] !
 
         for m in re.finditer(r'\%[XTBI]', s):
             value = specials.get(m.group(0), '')
-            s = re.sub(r'\\' + m.group(0), value, s)
+            s = re.sub(m.group(0), value, s)
 
     else:
         s = join('.', p.runName) + ' %A'
@@ -501,7 +501,7 @@ def cmdTemplate(p):
 def cmdWithArg(s, arg):
     _a = '0' if testdata.get(testname, None) else arg
     for m in re.finditer(r'\%A', s):
-        s = re.sub(r'\\' + m.group(0), _a, s)
+        s = re.sub(m.group(0), _a, s)
     return s
 
 
