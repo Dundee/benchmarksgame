@@ -30,12 +30,12 @@
   })();
 </script>'; } ?>
 
-<h2><a href="<?=$pageUrl;?>#chart" name="chart">&nbsp;<strong>Which programs are fastest?</strong></a></h2>
+<h2><a href="<?=$pageUrl;?>#chart" name="chart">&nbsp;<strong>Which interpreters/compilers are fastest?</strong></a></h2>
 
-<p>Please don't use this summary page to compare 2 programming language implementations -- <b>use the direct comparison</b>, for example <a href="python.php" title="Are the Python programs faster than the PyPy programs?">-all&nbsp;benchmarks- Python 2&nbsp;PyPy</a>.</p>
+<p>Please don't use this summary page to compare 2 interpreters -- <b>use the direct comparison</b>, for example <a href="python.php" title="Are the Python programs faster than the PyPy programs?">-all&nbsp;benchmarks- Python 2&nbsp;PyPy</a>.</p>
 
 
-<p>This box plot shows <em>how many times slower</em>, the fastest benchmark programs for programming language implementations were, compared to the fastest programs written in <em>any of the programming languages</em>.</p>
+<p>This box plot shows <em>how many times slower</em>, the fastest benchmark for interpreters were, compared to the fastest benchmarks in <em>any of the interpreters</em>.</p>
 
 
 <p><img src="<?=$chart;?>?<?='s='.Encode($stats1);?>&amp;<?='m='.Encode($Mark);?>&amp;<?='w='.Encode($labels1);?>"
@@ -44,7 +44,7 @@
    width="480" height="300"
  /></p>
 
-<p>Please don't obsess about which programming language implementation is shown 10<sup>th</sup> and which is shown 11<sup>th</sup>. You can see that the order would be different if it was based on the median scores instead of <a href="http://portal.acm.org/citation.cfm?id=5666.5673" title="How not to lie with statistics: the correct way to summarize benchmark results">the geometric mean</a> scores.</p>
+<p>Please don't obsess about which interpreter is shown 10<sup>th</sup> and which is shown 11<sup>th</sup>. You can see that the order would be different if it was based on the median scores instead of <a href="http://portal.acm.org/citation.cfm?id=5666.5673" title="How not to lie with statistics: the correct way to summarize benchmark results">the geometric mean</a> scores.</p>
 
 
 <h3><a href="<?=$pageUrl;?>#about" name="about">&nbsp;</a></h3>

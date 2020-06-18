@@ -2,12 +2,6 @@
 ob_start('ob_gzhandler');
 $s = time();
 $baseUrl = 'https://pybenchmarks.org';
-
-// REVISED - don't have all pages expire at the same time!
-// EXPIRE pages 31 hours after they are visited.
-header("Pragma: public");
-header("Cache-Control: maxage=".(1*3600).",public");
-header("Expires: " . gmdate("D, d M Y H:i:s", $s + (1*3600)) . " GMT");
 ?>
 <?php echo '<?xml version="1.0" encoding="utf-8"?>'; ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -31,9 +25,7 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (1*3600)) . " GMT");
 
 <body id="core">
 
-<table class="banner"><tr>
-<td><h1><a><strong>Python</strong>&nbsp;Interpreters <strong>Benchmarks</strong></a></h1></td>
-</tr></table>
+<h1><a><strong>Python</strong>&nbsp;Interpreters <strong>Benchmarks</strong></a></h1>
 
 <div id="sitemap">
 
@@ -45,6 +37,10 @@ Benchmarks of Python interpreters and compilers.
 Benchmarks are only tentative.
 Feel free to <a href="https://github.com/Dundee/benchmarksgame">contribute</a> if you know how to improve the test programs.
 </p>
+
+<div class="row">
+
+<div class="left">
 
 <h2>Interpreters and compilers</h2>
 
@@ -97,10 +93,17 @@ foreach($langs as $lang){
    printf('</tr>');
 }
 
+?>
 
-echo '</table>';
-echo '<h2>Benchmarks</h2>';
-echo '<table>';
+</table>
+</div>
+
+<div class="right">
+
+<h2>Benchmarks</h2>
+<table>
+
+<?php
 
 $tests = array(
    array('nbody','n-body','Perform an N-body simulation of the Jovian planets')
@@ -137,7 +140,13 @@ foreach($tests as $t){
    printf('</tr>');
 }
 
-echo '</table>';
+?>
+
+</table>
+</div>
+</div>
+
+<?php
 
 $page = array(
     array('which-programs-are-fastest.php','Which interpreters/compilers are fastest?','Which of these interpreters have the fastest benchmark programs?')
@@ -158,8 +167,6 @@ foreach($page as $p){
    &nbsp; <a href="https://github.com/Dundee/benchmarksgame">Source code</a>
    &nbsp;
 </p>
-
-</div>
 
 
 <?php include_once("analyticstracking.php") ?>

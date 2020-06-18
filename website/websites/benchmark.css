@@ -1,10 +1,23 @@
 body {
     background-color: white;
-    margin: 0
+    margin: 0;
+    line-height: 1.5em;
 }
 
 table.banner {
     width: 100%
+}
+
+h1 {
+   background-color: black;
+   display: block;
+   padding: 0.5em;
+   text-align: center;
+   line-height: 1.1em;
+}
+
+h1 a {
+   color: white;
 }
 
 h4 {
@@ -34,7 +47,6 @@ dd {
 }
 
 h1,
-h2,
 h3,
 h4,
 #faq dt a:link,
@@ -59,28 +71,7 @@ span.u32q a:visited,
 span.u64q a:visited,
 span.demo a:visited,
 #sitemap th {
-    color: white;
     font-weight: bold
-}
-
-#u32 h2,
-#u32 h3,
-#u32 #faq dt,
-#u32 #miscfile dt,
-#u32 table.banner,
-span.u32,
-#sitemap th.u32 {
-    background-color: #ffb515
-}
-
-#u32q h2,
-#u32q h3,
-#u32q #faq dt,
-#u32q #miscfile dt,
-#u32q table.banner,
-span.u32q,
-#sitemap th.u32q {
-    background-color: #ff6309
 }
 
 #u64q h2,
@@ -90,7 +81,6 @@ span.u32q,
 #u64q table.banner,
 span.u64q,
 #sitemap th.u64q {
-    background-color: #c90016
 }
 
 #u64 h2,
@@ -100,10 +90,8 @@ span.u64q,
 #u64 table.banner,
 span.u64,
 #sitemap th.u64 {
-    background-color: #c90016
 }
 
-#core h2,
 #core h3,
 #core #faq dt,
 #core #miscfile dt,
@@ -167,7 +155,9 @@ a:link,
 a:visited {
     text-decoration: none
 }
-
+a{
+   color: #007bff;
+}
 a:hover {
     text-decoration: underline
 }
@@ -201,7 +191,6 @@ body h2,
 body h3,
 body h4,
 body h5 {
-    font-size: small
 }
 
 html>body,
@@ -221,7 +210,6 @@ html>body h2,
 html>body h3,
 html>body h4,
 html>body h5 {
-    font-size: small
 }
 
 .banner h1,
@@ -235,9 +223,6 @@ html>body h5 {
     font-size: smaller
 }
 
-h1,
-h2,
-h3,
 h4,
 h5,
 form,
@@ -418,4 +403,16 @@ pre {
 .kwc {
     color: #7f0055;
     font-weight: bold
+}
+
+.row {
+	display: flex;
+	justify-content: space-around;
+}
+
+.left {
+}
+
+.right {
+	
 }
