@@ -2,6 +2,7 @@ body {
     background-color: white;
     margin: 0;
     line-height: 1.5em;
+    font-size: 1.1em;
 }
 
 table.banner {
@@ -410,9 +411,11 @@ pre {
 	justify-content: space-around;
 }
 
-.left {
-}
+@media only screen and (max-width: 564px) {
 
-.right {
-	
+    .row {
+	display: block;
+    }
+
+
 }

@@ -3,19 +3,14 @@ ob_start('ob_gzhandler');
 $s = time();
 $baseUrl = 'https://pybenchmarks.org';
 ?>
-<?php echo '<?xml version="1.0" encoding="utf-8"?>'; ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!doctype html>
+<html>
 <head>
-<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta charset="utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css" />
-
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="index,follow,archive" /><meta name="revisit" content="14 days" />
-
 <meta name="description" content="Compare the time and memory use of programs written in ~24 programming languages to solve ~12 simple benchmark tasks. Contribute your own programs." />
-
-<meta name="HandheldFriendly" content="false" />
 <meta name="google-site-verification" content="y9GFMJuxj7Ou4xK9YRagz9hCBfn1lyKcHQakWgkE7gg" />
 
 <title>Python Interpreters Benchmarks</title>
