@@ -28,7 +28,7 @@ define('HOMEPAGE_ROWS',0);         // show N rows of languages on the homepage
 
 define('SITE_NAME', 'u64q');
 define('SITE_TITLE','x64 ArchLinux : Intel&#174; i5-7200U&#174; Python Interpreters Benchmarks');
-define('BANNER_TITLE','x64&nbsp;ArchLinux&nbsp;:&nbsp;Intel&#174;&nbsp;i5-7200U&#174;&nbsp;<br/>Python&nbsp;<strong>Interpreters</strong>&nbsp;<strong>Benchmarks</strong>&nbsp;');
+define('BANNER_TITLE','Python&nbsp;<strong>Interpreters</strong>&nbsp;<strong>Benchmarks</strong><br>x64&nbsp;ArchLinux&nbsp;:&nbsp;Intel&#174;&nbsp;i5-7200U&#174;');
 define('PLATFORM_NAME', 'x64 ArchLinux : Intel i5-7200U');
 define('FAQ_TITLE','[[ Play ]]');
 define('BAR',' | ');

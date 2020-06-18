@@ -25,16 +25,14 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (1*3600)) . " GMT");
 <meta name="google-site-verification" content="y9GFMJuxj7Ou4xK9YRagz9hCBfn1lyKcHQakWgkE7gg" />
 
 <title>Python Interpreters Benchmarks</title>
-<link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/benchmark_css_8oct2012.php" />
-<link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/nohint_css_26jan2011.php" media="screen,print,projection"/>
-<link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/hint_css_26jan2011.php" media="handheld,aural,braille"/>
-<link rel="shortcut icon" href="<?php echo $baseUrl ?>/favicon_ico_11dec2009.php" />
+<link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/benchmark.css" />
+<link rel="shortcut icon" href="<?php echo $baseUrl ?>/favicon.ico" />
 </head>
 
 <body id="core">
 
 <table class="banner"><tr>
-<td><h1><a><strong>Python</strong>&nbsp;Interpreters <strong>Benchmarks</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo $baseUrl ?>/play.php" title="How programs were measured. FAQs. How to contribute programs.">[[ Play ]]</a></h1></td>
+<td><h1><a><strong>Python</strong>&nbsp;Interpreters <strong>Benchmarks</strong></a></h1></td>
 </tr></table>
 
 <div id="sitemap">
@@ -48,21 +46,11 @@ Benchmarks are only tentative.
 Feel free to <a href="https://github.com/Dundee/benchmarksgame">contribute</a> if you know how to improve the test programs.
 </p>
 
+<h2>Interpreters and compilers</h2>
 
 <table>
 <?php
 $sites = array('u64q');
-
-function PrintHeaders(){
-   echo '<tr><th>&nbsp;</th><th></th><th></th><th></th></tr>';
-   echo '<tr>';
-   echo '<th class="u64q">&nbsp;x64&nbsp;Arch Linux&#8482; Intel&#174;&nbsp;i5-7200U&#174; dual-core&nbsp;</th>';
-   echo '</tr>';
-   echo '<tr><th>&nbsp;</th><th></th><th></th><th></th></tr>';
-}
-
-
-PrintHeaders();
 
 $allsites = array('u64q');
 
@@ -110,7 +98,9 @@ foreach($langs as $lang){
 }
 
 
-PrintHeaders();
+echo '</table>';
+echo '<h2>Benchmarks</h2>';
+echo '<table>';
 
 $tests = array(
    array('nbody','n-body','Perform an N-body simulation of the Jovian planets')
@@ -147,24 +137,19 @@ foreach($tests as $t){
    printf('</tr>');
 }
 
-PrintHeaders();
+echo '</table>';
 
 $page = array(
-    array('which-programs-are-fastest.php','Which programs are fastest?','Which of these interpreters have the fastest benchmark programs?')
+    array('which-programs-are-fastest.php','Which interpreters/compilers are fastest?','Which of these interpreters have the fastest benchmark programs?')
    );
 
 foreach($page as $p){
-   printf('<tr>');
    foreach($sites as $s){
-      printf('<td><a href="' . $baseUrl . '/%s/%s" title="%s">%s</a></td>', $s, $p[0], $p[2], $p[1] );
+      printf('<strong><a href="' . $baseUrl . '/%s/%s" title="%s">%s</a></strong>', $s, $p[0], $p[2], $p[1] );
    }
-   echo "</tr>";
 }
 
 ?>
-
-</table>
-
 
 <p class="imgfooter">
    &nbsp; <a href="<?php echo $baseUrl ?>/dont-jump-to-conclusions.php">Conclusions</a>

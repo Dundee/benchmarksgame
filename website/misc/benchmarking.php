@@ -63,39 +63,8 @@
 <dl>
 
 <dd>
-<p>No attempt has been made to assess whether programs contributed for a particular language were consistently the work of more highly skilled programmers than programs contributed for other languages. The source code comments show that some programs were contributed by core developers of the programming language implementation - world renowned expert programmers. It's fair to say that other programs were contributed by programmers who are less skilled.</p>
+<p>No attempt has been made to assess whether programs contributed for a particular interpreter were consistently the work of more highly skilled programmers than programs contributed for other. The source code comments show that some programs were contributed by core developers of the interpreter implementation - world renowned expert programmers. It's fair to say that other programs were contributed by programmers who are less skilled.</p>
 <p>No attempt has been made to assess whether programs contributed for a particular language were consistently worked on longer and harder than programs contributed for other languages. As a very crude indication of how that may vary, look at which languages have had more programs contributed and which have had fewer programs contributed (than an even split).</p>
-
-<table>
-<tr><th colspan="2">% programs contributed 2005-2010, by language</th></tr>
-<tr><td>Python</td><td>12.2</td></tr>
-<tr><td>C++</td><td>9.0</td></tr>
-<tr><td>C</td><td>7.1</td></tr>
-<tr><td>Haskell</td><td>7.1</td></tr>
-<tr><td>Java</td><td>6.4</td></tr>
-<tr><td>Pascal</td><td>6.2</td></tr>
-<tr><td>Perl</td><td>5.8</td></tr>
-<tr><td>Lisp</td><td>5.0</td></tr>
-<tr><td>OCaml</td><td>4.2</td></tr>
-<tr><td>Ruby</td><td>4.1</td></tr>
-<tr><td>==</td><td>&nbsp;</td></tr>
-<tr><td>Lua</td><td>3.5</td></tr>
-<tr><td>Erlang</td><td>3.5</td></tr>
-<tr><td>Scala</td><td>3.2</td></tr>
-<tr><td>Ada</td><td>2.9</td></tr>
-<tr><td>ATS</td><td>2.9</td></tr>
-<tr><td>Scheme</td><td>2.9</td></tr>
-<tr><td>C#</td><td>2.4</td></tr>
-<tr><td>F#</td><td>2.0</td></tr>
-<tr><td>Fortran</td><td>1.6</td></tr>
-<tr><td>Clojure</td><td>1.5</td></tr>
-<tr><td>JavaScript</td><td>1.5</td></tr>
-<tr><td>PHP</td><td>1.5</td></tr>
-<tr><td>Smalltalk</td><td>1.0</td></tr>
-<tr><td>Go</td><td>1.0</td></tr>
-</table>
-
-<p>Some source code comments show that programs were translated from one language to a similar language - the programmer skill and effort was transfered to programs written in a different language.</p>
 </dd>
 
 </dl>
@@ -131,29 +100,6 @@
 </dd>
 
 <dd>
-<p>The Go programming language distribution includes Go programs for the tasks shown on the benchmarks game website, and those programs are compiled during install&nbsp;-</p>
-<pre>
-    --- cd ../test/bench
-    fasta
-    reverse-complement
-    nbody
-    binary-tree
-    binary-tree-freelist
-    fannkuch
-    fannkuch-parallel
-    regex-dna
-    regex-dna-parallel
-    spectral-norm
-    k-nucleotide
-    k-nucleotide-parallel
-    mandelbrot
-    meteor-contest
-    pidigits
-    threadring
-    chameneosredux
-</pre>
-
-<p>Similarly, <a href="https://github.com/mozilla/rust/tree/master/src/test/bench">mozilla/<b>rust</b>/src/test/bench</a></p>
 
 <p>Several of the tasks had already been used as benchmarks and were adopted almost unchanged for the benchmarks game, for example - fannkuch (now fannkuch-redux) and binary-trees. Similarly, many of the tasks from the benchmarks game have been adopted by other projects - for example, 10 of the 26 WebKit SunSpider JavaScript tests.</p>
 </dd>
@@ -208,21 +154,6 @@
 
 </dl>
 </dd>
-
-
-
-<dt><a href="#lastwords" name="lastwords">&nbsp;<strong>Last words -- A good starting point</strong></a></dt>
-<dd>
-<dl>
-
-<dd>
-<blockquote><p>"<strong>How does Java compare in terms of speed to C or C++ or C# or Python?</strong> The answer depends greatly on the type of application you're running. No benchmark is perfect, but Computer Language Benchmarks Game is a good starting point." <br/><a href="http://algs4.cs.princeton.edu/faq/">Algorithms, 4th Edition - FAQ</a></p></blockquote>
-</dd>
-
-
-</dl>
-</dd>
-
 
 </dl>
 

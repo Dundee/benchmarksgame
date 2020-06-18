@@ -20,10 +20,8 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 <meta name="HandheldFriendly" content="false" />
 
 <title><?=$PageTitle;?></title>
-<link rel="stylesheet" type="text/css" href="https://pybenchmarks.org/benchmark_css_8oct2012.php" />
-<link rel="stylesheet" type="text/css" href="https://pybenchmarks.org/nohint_css_26jan2011.php" media="screen,print,projection"/>
-<link rel="stylesheet" type="text/css" href="https://pybenchmarks.org/hint_css_26jan2011.php" media="handheld,aural,braille"/>
-<link rel="shortcut icon" href="https://pybenchmarks.org/favicon_ico_11dec2009.php" />
+<link rel="stylesheet" type="text/css" href="https://pybenchmarks.org/benchmark.css" />
+<link rel="shortcut icon" href="https://pybenchmarks.org/favicon.ico" />
 <?php
    if (isset($LinkCanonical)) { echo $LinkCanonical; }
 ?>
@@ -41,7 +39,7 @@ header("Expires: " . gmdate("D, d M Y H:i:s", $s + (31*3600)) . " GMT");
 ?>
 
 <table class="banner"><tr>
-<td><h1><a href="<?=$BannerUrl;?>" title="dual-core and one core, x86 and x64 measurements"><?=$BannerTitle;?></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?=$FaqUrl;?>" title="<?=$FaqRollover;?>"><?=$FaqTitle;?></a></h1></td>
+<td><h1><a href="<?=$BannerUrl;?>" title="dual-core and one core, x86 and x64 measurements"><?=$BannerTitle;?></a></h1></td>
 </tr></table>
 
 <div id="<?=$PageId;?>">
