@@ -3,6 +3,7 @@
 
 # contributed by Dieter Weber
 
+import base64
 import numpy as np
 import sys
 import os
@@ -269,7 +270,5 @@ pool.map(work, tasks)
 
 
 # dump it!
-if V3:
-    sys.stdout.buffer.write(sharedbitmap)
-else:
-    sys.stdout.write(sharedbitmap.raw)
+out = base64.b64encode(sharedbitmap.value).decode()
+sys.stdout.write(out)

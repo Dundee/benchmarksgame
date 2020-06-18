@@ -1,8 +1,8 @@
 
-Wed, 22 Jan 2020 19:00:14 GMT
+ Thu, 18 Jun 2020 09:08:57 GMT
 
 COMMAND LINE:
-/usr/bin/pypy pidigits.pypy-4.pypy 10000
+ /usr/bin/pypy pidigits.pypy-4.pypy 10000
 
 PROGRAM FAILED 
 
@@ -18,7 +18,7 @@ Traceback (most recent call last):
     from gmpy_cffi.interface import gmp, ffi
   File "/opt/pypy/site-packages/gmpy_cffi/interface.py", line 503, in <module>
     """, libraries=['gmp', 'mpfr', 'mpc'])
-  File "/opt/pypy/lib_pypy/cffi/api.py", line 464, in verify
+  File "/opt/pypy/lib_pypy/cffi/api.py", line 468, in verify
     lib = self.verifier.load_library()
   File "/opt/pypy/lib_pypy/cffi/verifier.py", line 103, in load_library
     self._write_source()

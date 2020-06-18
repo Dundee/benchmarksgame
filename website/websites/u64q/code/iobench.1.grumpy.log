@@ -1,20 +1,43 @@
 
-Mon, 13 Nov 2017 12:46:47 GMT
+ Thu, 18 Jun 2020 00:30:07 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
 grumpc iobench.grumpy > iobench.grumpy.go
-go build -o iobench.grumpy_run iobench.grumpy.go
-warning: GOPATH set to GOROOT (/usr/lib/go) has no effect
+Traceback (most recent call last):
+  File "/usr/bin/grumpc", line 106, in <module>
+    sys.exit(main(parser.parse_args()))
+  File "/usr/bin/grumpc", line 76, in main
+    visitor.visit(mod)
+  File "/usr/lib/python2.7/site-packages/grumpy/pythonparser/algorithm.py", line 41, in visit
+    return self._visit_one(obj)
+  File "/usr/lib/python2.7/site-packages/grumpy/pythonparser/algorithm.py", line 32, in _visit_one
+    return getattr(self, visit_attr)(node)
+  File "/usr/lib/python2.7/site-packages/grumpy/compiler/stmt.py", line 290, in visit_Module
+    self._visit_each(node.body)
+  File "/usr/lib/python2.7/site-packages/grumpy/compiler/stmt.py", line 657, in _visit_each
+    self.visit(node)
+  File "/usr/lib/python2.7/site-packages/grumpy/pythonparser/algorithm.py", line 41, in visit
+    return self._visit_one(obj)
+  File "/usr/lib/python2.7/site-packages/grumpy/pythonparser/algorithm.py", line 32, in _visit_one
+    return getattr(self, visit_attr)(node)
+  File "/usr/lib/python2.7/site-packages/grumpy/compiler/stmt.py", line 277, in visit_Import
+    for imp in self.block.root.importer.visit(node):
+  File "/usr/lib/python2.7/site-packages/grumpy/pythonparser/algorithm.py", line 41, in visit
+    return self._visit_one(obj)
+  File "/usr/lib/python2.7/site-packages/grumpy/pythonparser/algorithm.py", line 32, in _visit_one
+    return getattr(self, visit_attr)(node)
+  File "/usr/lib/python2.7/site-packages/grumpy/compiler/imputil.py", line 93, in visit_Import
+    imp = self._resolve_import(node, alias.name)
+  File "/usr/lib/python2.7/site-packages/grumpy/compiler/imputil.py", line 158, in _resolve_import
+    raise util.ImportError(node, 'no such module: {}'.format(modname))
+grumpy.compiler.util.ImportError: line 1: no such module: os
+make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:47: iobench.grumpy_run] Chyba 1
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
-1.51s to complete and log all make actions
+0.09s to complete and log all make actions
 
 COMMAND LINE:
-./iobench.grumpy_run 1
+ ./iobench.grumpy_run 1
 
-PROGRAM FAILED 
+MAKE ERROR 
 
-
-PROGRAM OUTPUT NOT CHECKED:
-
-AttributeError: 'module' object has no attribute 'O_RDONLY'

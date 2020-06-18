@@ -1,13 +1,15 @@
 
-Wed, 06 Jun 2018 10:02:04 GMT
+ Thu, 18 Jun 2020 09:29:12 GMT
 
 COMMAND LINE:
-/usr/bin/python2 templates.python 1000
+ /usr/bin/python2 templates.python 1000
+
+PROGRAM FAILED 
+
 
 PROGRAM OUTPUT:
 
-<ul>
-
-  <li><a href="/user/999">SomeUsername</a></li>
-
-</ul>
+Traceback (most recent call last):
+  File "templates.python", line 3, in <module>
+    from jinja2 import Template
+ImportError: No module named jinja2

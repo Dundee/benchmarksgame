@@ -1,5 +1,5 @@
 
-Fri, 10 Nov 2017 18:52:48 GMT
+ Wed, 17 Jun 2020 23:58:29 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp“
@@ -9,115 +9,323 @@ shedskin shed.py
 Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 
 [analyzing types..]
-0% ********************************100% ********************************100% ********************************100%
+
+0% 
+********************************100% 
+********************************100% 
+********************************100%
 [generating c++ code..]
 *WARNING* shed.py:62: non-constant or unsupported type code
 *WARNING* shed.py:71: unresolved call to 'sow'
 *WARNING* shed.py:73: unresolved call to 'sow'
 *WARNING* shed.py:86: unresolved call to 'sow'
 *WARNING* shed.py:91: unresolved call to 'sow'
-[elapsed time: 1.66 seconds]
+[elapsed time: 1.81 seconds]
 make
 make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp“
 g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp /usr/lib/python2.7/site-packages/shedskin/lib/bisect.cpp /usr/lib/python2.7/site-packages/shedskin/lib/array.cpp -lgc -lpcre  -o shed
+In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1216,
+                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:1:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In member function ‘__shedskin__::complex& __shedskin__::complex::operator=(double)’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:72:1: warning: no return statement in function returning non-void [-Wreturn-type]
+   71 |     imag = 0.0;
+  +++ |+    return *this;
+   72 | }
+      | ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_int __shedskin__::__cmp(T, T) [with T = __shedskin__::complex; __shedskin__::__ss_int = int]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:107:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  107 | template<> inline __ss_int __cmp(complex a, complex b) {} /* unused, satisfy templates */
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__gt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:108:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  108 | template<> inline __ss_bool __gt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__ge(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:109:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  109 | template<> inline __ss_bool __ge(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__lt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:110:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  110 | template<> inline __ss_bool __lt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__le(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:111:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  111 | template<> inline __ss_bool __le(complex a, complex b) {}
+      |                                                         ^
 /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp: In function ‘__array__::array<void*>* __shed__::makeLookupTable(__shedskin__::list<__shedskin__::tuple2<__shedskin__::str*, double>*>*)’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:119:22: error: no matches converting function ‘bisect’ to type ‘__shed__::lambda0 {aka int (*)(class __shedskin__::list<double>*, double)}’
-     bb = __bisect__::bisect;
-                      ^~~~~~
-In file included from /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:3:0:
-/usr/lib/python2.7/site-packages/shedskin/lib/bisect.hpp:99:29: note: candidates are: template<class A> __shedskin__::__ss_int __bisect__::bisect(__shedskin__::list<T>*, A, __shedskin__::__ss_int)
- template <class A> __ss_int bisect(list<A> *a, A x, __ss_int lo=0) {
-                             ^~~~~~
-/usr/lib/python2.7/site-packages/shedskin/lib/bisect.hpp:55:29: note:                 template<class A> __shedskin__::__ss_int __bisect__::bisect(__shedskin__::list<T>*, A, __shedskin__::__ss_int, __shedskin__::__ss_int)
- template <class A> __ss_int bisect(list<A> *a, A x, __ss_int lo, __ss_int hi) {
-                             ^~~~~~
+/home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:119:22: error: no matches converting function ‘bisect’ to type ‘__shed__::lambda0’ {aka ‘int (*)(class __shedskin__::list<double>*, double)’}
+  119 |     bb = __bisect__::bisect;
+      |                      ^~~~~~
+In file included from /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:4:
+/usr/lib/python2.7/site-packages/shedskin/lib/bisect.hpp:99:29: note: candidates are: ‘template<class A> __shedskin__::__ss_int __bisect__::bisect(__shedskin__::list<T>*, A, __shedskin__::__ss_int)’
+   99 | template <class A> __ss_int bisect(list<A> *a, A x, __ss_int lo=0) {
+      |                             ^~~~~~
+/usr/lib/python2.7/site-packages/shedskin/lib/bisect.hpp:55:29: note:                 ‘template<class A> __shedskin__::__ss_int __bisect__::bisect(__shedskin__::list<T>*, A, __shedskin__::__ss_int, __shedskin__::__ss_int)’
+   55 | template <class A> __ss_int bisect(list<A> *a, A x, __ss_int lo, __ss_int hi) {
+      |                             ^~~~~~
 /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp: In function ‘void* __shed__::repeatFasta(__shedskin__::str*, __shedskin__::__ss_int)’:
 /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:135:35: error: cannot convert ‘__shedskin__::file::write’ from type ‘void* (__shedskin__::file::)(__shedskin__::str*)’ to type ‘void*’
-     sow = (__sys__::__ss_stdout)->write;
-                                   ^~~~~
+  135 |     sow = (__sys__::__ss_stdout)->write;
+      |                                   ^~~~~
 /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp: In function ‘void* __shed__::randomFasta(__shedskin__::list<__shedskin__::tuple2<__shedskin__::str*, double>*>*, __shedskin__::__ss_int)’:
 /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:157:35: error: cannot convert ‘__shedskin__::file::write’ from type ‘void* (__shedskin__::file::)(__shedskin__::str*)’ to type ‘void*’
-     sow = (__sys__::__ss_stdout)->write;
-                                   ^~~~~
-In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1209:0,
+  157 |     sow = (__sys__::__ss_stdout)->write;
+      |                                   ^~~~~
+In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1209,
                  from /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:1:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin/str.hpp: In instantiation of ‘__shedskin__::str* __shedskin__::str::join(U*) [with U = __shed__::list_comp_1]’:
 /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:154:49:   required from here
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/str.hpp:36:9: error: no matching function for call to ‘push_back(void*&)’
-         __join_cache->units.push_back(e);
-         ^~~~~~~~~~~~
-In file included from /usr/include/c++/7.2.0/vector:64:0,
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/str.hpp:36:38: error: no matching function for call to ‘push_back(void*&)’
+   36 |         __join_cache->units.push_back(e);
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+In file included from /usr/include/c++/10.1.0/vector:67,
                  from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:13,
                  from /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:1:
-/usr/include/c++/7.2.0/bits/stl_vector.h:939:7: note: candidate: void std::vector<_Tp, _Alloc>::push_back(const value_type&) [with _Tp = __shedskin__::str*; _Alloc = gc_allocator<__shedskin__::str*>; std::vector<_Tp, _Alloc>::value_type = __shedskin__::str*] <near match>
-       push_back(const value_type& __x)
-       ^~~~~~~~~
-/usr/include/c++/7.2.0/bits/stl_vector.h:939:7: note:   conversion of argument 1 would be ill-formed:
-In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1209:0,
+/usr/include/c++/10.1.0/bits/stl_vector.h:1187:7: note: candidate: ‘void std::vector<_Tp, _Alloc>::push_back(const value_type&) [with _Tp = __shedskin__::str*; _Alloc = gc_allocator<__shedskin__::str*>; std::vector<_Tp, _Alloc>::value_type = __shedskin__::str*]’ (near match)
+ 1187 |       push_back(const value_type& __x)
+      |       ^~~~~~~~~
+/usr/include/c++/10.1.0/bits/stl_vector.h:1187:7: note:   conversion of argument 1 would be ill-formed:
+In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1209,
                  from /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/str.hpp:36:9: error: invalid conversion from ‘__shedskin__::pyiter<void*>::for_in_unit {aka void*}’ to ‘std::vector<__shedskin__::str*, gc_allocator<__shedskin__::str*> >::value_type {aka __shedskin__::str*}’ [-fpermissive]
-         __join_cache->units.push_back(e);
-         ^~~~~~~~~~~~
-In file included from /usr/include/c++/7.2.0/vector:64:0,
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/str.hpp:36:39: error: invalid conversion from ‘__shedskin__::pyiter<void*>::for_in_unit’ {aka ‘void*’} to ‘std::vector<__shedskin__::str*, gc_allocator<__shedskin__::str*> >::value_type’ {aka ‘__shedskin__::str*’} [-fpermissive]
+   36 |         __join_cache->units.push_back(e);
+      |                                       ^
+      |                                       |
+      |                                       __shedskin__::pyiter<void*>::for_in_unit {aka void*}
+In file included from /usr/include/c++/10.1.0/vector:67,
                  from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:13,
                  from /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:1:
-/usr/include/c++/7.2.0/bits/stl_vector.h:953:7: note: candidate: void std::vector<_Tp, _Alloc>::push_back(std::vector<_Tp, _Alloc>::value_type&&) [with _Tp = __shedskin__::str*; _Alloc = gc_allocator<__shedskin__::str*>; std::vector<_Tp, _Alloc>::value_type = __shedskin__::str*] <near match>
-       push_back(value_type&& __x)
-       ^~~~~~~~~
-/usr/include/c++/7.2.0/bits/stl_vector.h:953:7: note:   conversion of argument 1 would be ill-formed:
-In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1209:0,
+/usr/include/c++/10.1.0/bits/stl_vector.h:1203:7: note: candidate: ‘void std::vector<_Tp, _Alloc>::push_back(std::vector<_Tp, _Alloc>::value_type&&) [with _Tp = __shedskin__::str*; _Alloc = gc_allocator<__shedskin__::str*>; std::vector<_Tp, _Alloc>::value_type = __shedskin__::str*]’ (near match)
+ 1203 |       push_back(value_type&& __x)
+      |       ^~~~~~~~~
+/usr/include/c++/10.1.0/bits/stl_vector.h:1203:7: note:   conversion of argument 1 would be ill-formed:
+In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1209,
                  from /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:1:
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/str.hpp:36:9: error: invalid conversion from ‘__shedskin__::pyiter<void*>::for_in_unit {aka void*}’ to ‘std::vector<__shedskin__::str*, gc_allocator<__shedskin__::str*> >::value_type {aka __shedskin__::str*}’ [-fpermissive]
-         __join_cache->units.push_back(e);
-         ^~~~~~~~~~~~
-/usr/lib/python2.7/site-packages/shedskin/lib/builtin/str.hpp:37:14: error: ‘__shedskin__::pyiter<void*>::for_in_unit {aka void*}’ is not a pointer-to-object type
-         sz = e->unit.size();
-              ^
-In file included from /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:4:0:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/str.hpp:36:39: error: invalid conversion from ‘__shedskin__::pyiter<void*>::for_in_unit’ {aka ‘void*’} to ‘std::vector<__shedskin__::str*, gc_allocator<__shedskin__::str*> >::value_type’ {aka ‘__shedskin__::str*’} [-fpermissive]
+   36 |         __join_cache->units.push_back(e);
+      |                                       ^
+      |                                       |
+      |                                       __shedskin__::pyiter<void*>::for_in_unit {aka void*}
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/str.hpp:37:14: error: ‘__shedskin__::pyiter<void*>::for_in_unit’ {aka ‘void*’} is not a pointer-to-object type
+   37 |         sz = e->unit.size();
+      |              ^
+In file included from /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:2:
 /usr/lib/python2.7/site-packages/shedskin/lib/array.hpp: In instantiation of ‘void __array__::array<T>::fillbuf(T) [with T = void*]’:
-/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:291:12:   required from ‘void* __array__::array<T>::append(T) [with T = void*]’
+/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:291:5:   required from ‘void* __array__::array<T>::append(T) [with T = void*]’
 /usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:109:19:   required from ‘void* __array__::array<T>::extend(U*) [with U = __shedskin__::list<__shedskin__::str*>; T = void*]’
-/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:92:5:   required from ‘void* __array__::array<T>::__init__(__shedskin__::str*, U*) [with U = __shedskin__::list<__shedskin__::str*>; T = void*]’
+/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:92:17:   required from ‘void* __array__::array<T>::__init__(__shedskin__::str*, U*) [with U = __shedskin__::list<__shedskin__::str*>; T = void*]’
 /usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:34:17:   required from ‘__array__::array<T>::array(__shedskin__::str*, U*) [with U = __shedskin__::list<__shedskin__::str*>; T = void*]’
 /home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:124:85:   required from here
-/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:247:43: error: invalid conversion from ‘void*’ to ‘signed char’ [-fpermissive]
-         case 'b': *((signed char *)buffy) = t; break;
-                   ~~~~~~~~~~~~~~~~~~~~~~~~^~~
-/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:248:45: error: invalid conversion from ‘void*’ to ‘unsigned char’ [-fpermissive]
-         case 'B': *((unsigned char *)buffy) = t; break;
-                   ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
-/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:249:44: error: invalid conversion from ‘void*’ to ‘short int’ [-fpermissive]
-         case 'h': *((signed short *)buffy) = t; break;
-                   ~~~~~~~~~~~~~~~~~~~~~~~~~^~~
-/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:250:46: error: invalid conversion from ‘void*’ to ‘short unsigned int’ [-fpermissive]
-         case 'H': *((unsigned short *)buffy) = t; break;
-                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
-/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:251:42: error: invalid conversion from ‘void*’ to ‘int’ [-fpermissive]
-         case 'i': *((signed int *)buffy) = t; break;
-                   ~~~~~~~~~~~~~~~~~~~~~~~^~~
-/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:252:44: error: invalid conversion from ‘void*’ to ‘unsigned int’ [-fpermissive]
-         case 'I': *((unsigned int *)buffy) = t; break;
-                   ~~~~~~~~~~~~~~~~~~~~~~~~~^~~
-/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:253:43: error: invalid conversion from ‘void*’ to ‘long int’ [-fpermissive]
-         case 'l': *((signed long *)buffy) = t; break;
-                   ~~~~~~~~~~~~~~~~~~~~~~~~^~~
-/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:254:45: error: invalid conversion from ‘void*’ to ‘long unsigned int’ [-fpermissive]
-         case 'L': *((unsigned long *)buffy) = t; break;
-                   ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
-/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:255:37: error: cannot convert ‘void*’ to ‘float’ in assignment
-         case 'f': *((float *)buffy) = t; break;
-                   ~~~~~~~~~~~~~~~~~~^~~
-/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:256:38: error: cannot convert ‘void*’ to ‘double’ in assignment
-         case 'd': *((double *)buffy) = t; break;
-                   ~~~~~~~~~~~~~~~~~~~^~~
+/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:247:45: error: invalid conversion from ‘void*’ to ‘signed char’ [-fpermissive]
+  247 |         case 'b': *((signed char *)buffy) = t; break;
+      |                                             ^
+      |                                             |
+      |                                             void*
+/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:248:47: error: invalid conversion from ‘void*’ to ‘unsigned char’ [-fpermissive]
+  248 |         case 'B': *((unsigned char *)buffy) = t; break;
+      |                                               ^
+      |                                               |
+      |                                               void*
+/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:249:46: error: invalid conversion from ‘void*’ to ‘short int’ [-fpermissive]
+  249 |         case 'h': *((signed short *)buffy) = t; break;
+      |                                              ^
+      |                                              |
+      |                                              void*
+/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:250:48: error: invalid conversion from ‘void*’ to ‘short unsigned int’ [-fpermissive]
+  250 |         case 'H': *((unsigned short *)buffy) = t; break;
+      |                                                ^
+      |                                                |
+      |                                                void*
+/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:251:44: error: invalid conversion from ‘void*’ to ‘int’ [-fpermissive]
+  251 |         case 'i': *((signed int *)buffy) = t; break;
+      |                                            ^
+      |                                            |
+      |                                            void*
+/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:252:46: error: invalid conversion from ‘void*’ to ‘unsigned int’ [-fpermissive]
+  252 |         case 'I': *((unsigned int *)buffy) = t; break;
+      |                                              ^
+      |                                              |
+      |                                              void*
+/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:253:45: error: invalid conversion from ‘void*’ to ‘long int’ [-fpermissive]
+  253 |         case 'l': *((signed long *)buffy) = t; break;
+      |                                             ^
+      |                                             |
+      |                                             void*
+/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:254:47: error: invalid conversion from ‘void*’ to ‘long unsigned int’ [-fpermissive]
+  254 |         case 'L': *((unsigned long *)buffy) = t; break;
+      |                                               ^
+      |                                               |
+      |                                               void*
+/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:255:39: error: cannot convert ‘void*’ to ‘float’ in assignment
+  255 |         case 'f': *((float *)buffy) = t; break;
+      |                                       ^
+      |                                       |
+      |                                       void*
+/usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:256:40: error: cannot convert ‘void*’ to ‘double’ in assignment
+  256 |         case 'd': *((double *)buffy) = t; break;
+      |                                        ^
+      |                                        |
+      |                                        void*
+/home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp: In member function ‘virtual void* __shed__::list_comp_1::__get_next()’:
+/home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp/shed.cpp:59:22: warning: control reaches end of non-void function [-Wreturn-type]
+   59 |     __stop_iteration = true;
+      |     ~~~~~~~~~~~~~~~~~^~~~~~
+In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1216,
+                 from /usr/lib/python2.7/site-packages/shedskin/lib/sys.hpp:6,
+                 from /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp:3:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In member function ‘__shedskin__::complex& __shedskin__::complex::operator=(double)’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:72:1: warning: no return statement in function returning non-void [-Wreturn-type]
+   71 |     imag = 0.0;
+  +++ |+    return *this;
+   72 | }
+      | ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_int __shedskin__::__cmp(T, T) [with T = __shedskin__::complex; __shedskin__::__ss_int = int]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:107:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  107 | template<> inline __ss_int __cmp(complex a, complex b) {} /* unused, satisfy templates */
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__gt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:108:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  108 | template<> inline __ss_bool __gt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__ge(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:109:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  109 | template<> inline __ss_bool __ge(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__lt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:110:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  110 | template<> inline __ss_bool __lt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__le(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:111:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  111 | template<> inline __ss_bool __le(complex a, complex b) {}
+      |                                                         ^
+In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1216,
+                 from /usr/lib/python2.7/site-packages/shedskin/lib/re.hpp:9,
+                 from /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp:3:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In member function ‘__shedskin__::complex& __shedskin__::complex::operator=(double)’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:72:1: warning: no return statement in function returning non-void [-Wreturn-type]
+   71 |     imag = 0.0;
+  +++ |+    return *this;
+   72 | }
+      | ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_int __shedskin__::__cmp(T, T) [with T = __shedskin__::complex; __shedskin__::__ss_int = int]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:107:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  107 | template<> inline __ss_int __cmp(complex a, complex b) {} /* unused, satisfy templates */
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__gt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:108:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  108 | template<> inline __ss_bool __gt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__ge(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:109:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  109 | template<> inline __ss_bool __ge(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__lt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:110:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  110 | template<> inline __ss_bool __lt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__le(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:111:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  111 | template<> inline __ss_bool __le(complex a, complex b) {}
+      |                                                         ^
+In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1216,
+                 from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp:3:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In member function ‘__shedskin__::complex& __shedskin__::complex::operator=(double)’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:72:1: warning: no return statement in function returning non-void [-Wreturn-type]
+   71 |     imag = 0.0;
+  +++ |+    return *this;
+   72 | }
+      | ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_int __shedskin__::__cmp(T, T) [with T = __shedskin__::complex; __shedskin__::__ss_int = int]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:107:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  107 | template<> inline __ss_int __cmp(complex a, complex b) {} /* unused, satisfy templates */
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__gt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:108:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  108 | template<> inline __ss_bool __gt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__ge(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:109:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  109 | template<> inline __ss_bool __ge(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__lt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:110:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  110 | template<> inline __ss_bool __lt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__le(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:111:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  111 | template<> inline __ss_bool __le(complex a, complex b) {}
+      |                                                         ^
+In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1216,
+                 from /usr/lib/python2.7/site-packages/shedskin/lib/bisect.hpp:6,
+                 from /usr/lib/python2.7/site-packages/shedskin/lib/bisect.cpp:3:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In member function ‘__shedskin__::complex& __shedskin__::complex::operator=(double)’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:72:1: warning: no return statement in function returning non-void [-Wreturn-type]
+   71 |     imag = 0.0;
+  +++ |+    return *this;
+   72 | }
+      | ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_int __shedskin__::__cmp(T, T) [with T = __shedskin__::complex; __shedskin__::__ss_int = int]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:107:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  107 | template<> inline __ss_int __cmp(complex a, complex b) {} /* unused, satisfy templates */
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__gt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:108:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  108 | template<> inline __ss_bool __gt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__ge(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:109:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  109 | template<> inline __ss_bool __ge(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__lt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:110:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  110 | template<> inline __ss_bool __lt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__le(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:111:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  111 | template<> inline __ss_bool __le(complex a, complex b) {}
+      |                                                         ^
+In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1216,
+                 from /usr/lib/python2.7/site-packages/shedskin/lib/array.hpp:6,
+                 from /usr/lib/python2.7/site-packages/shedskin/lib/array.cpp:3:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In member function ‘__shedskin__::complex& __shedskin__::complex::operator=(double)’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:72:1: warning: no return statement in function returning non-void [-Wreturn-type]
+   71 |     imag = 0.0;
+  +++ |+    return *this;
+   72 | }
+      | ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_int __shedskin__::__cmp(T, T) [with T = __shedskin__::complex; __shedskin__::__ss_int = int]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:107:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  107 | template<> inline __ss_int __cmp(complex a, complex b) {} /* unused, satisfy templates */
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__gt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:108:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  108 | template<> inline __ss_bool __gt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__ge(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:109:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  109 | template<> inline __ss_bool __ge(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__lt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:110:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  110 | template<> inline __ss_bool __lt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__le(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:111:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  111 | template<> inline __ss_bool __le(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/array.cpp: In member function ‘void* __array__::array<T>::extend(U*) [with U = __shedskin__::str; T = __shedskin__::str*]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/array.cpp:91:1: warning: no return statement in function returning non-void [-Wreturn-type]
+   91 | }
+      | ^
 make[2]: *** [Makefile:23: shed] Chyba 1
 make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp“
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: fastaredux.shedskin_run] Chyba 2
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fastaredux/tmp“
-9.56s to complete and log all make actions
+11.84s to complete and log all make actions
 
 COMMAND LINE:
-./shed 2500000
+ ./shed 2500000
 
 MAKE ERROR 
 

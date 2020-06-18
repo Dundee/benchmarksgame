@@ -1,8 +1,8 @@
 
-Wed, 11 Mar 2020 18:31:45 GMT
+ Wed, 17 Jun 2020 23:49:42 GMT
 
 COMMAND LINE:
-/usr/lib/jvm/java-8-graalvm/bin/graalpython fasta.graal-5.graal 2500000
+ /usr/lib/jvm/java-8-graalvm/bin/graalpython fasta.graal-5.graal 2500000
 
 PROGRAM FAILED 
 
@@ -15,7 +15,7 @@ Traceback (most recent call last):
     fasta(int(argv[1]))
   File "/home/dundee/workspace/benchmarksgame/bencher/programs/fasta/fasta.python3-5.python3", line 176, in fasta
     seed = RawValue('f', 42)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 123, in RawValue
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 124, in RawValue
     from .sharedctypes import RawValue
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/sharedctypes.py", line 26, in <module 'sharedctypes.py'>
     'c': ctypes.c_char,     'u': ctypes.c_wchar,

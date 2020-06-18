@@ -1,8 +1,15 @@
 
-Fri, 10 Nov 2017 20:17:53 GMT
+ Thu, 18 Jun 2020 09:20:50 GMT
 
 COMMAND LINE:
-/opt/anaconda/bin/python spectralnorm.numba 550
+ /opt/anaconda/bin/python spectralnorm.numba 550
+
+PROGRAM FAILED 
+
 
 PROGRAM OUTPUT:
-1.274224125
+
+Traceback (most recent call last):
+  File "spectralnorm.numba", line 13, in <module>
+    from numba.decorators import autojit
+ImportError: cannot import name 'autojit' from 'numba.decorators' (/opt/anaconda/lib/python3.7/site-packages/numba/decorators.py)

@@ -1,29 +1,43 @@
 
-Mon, 13 Nov 2017 12:47:12 GMT
+ Thu, 18 Jun 2020 09:27:11 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
 grumpc spectralnorm.grumpy-5.grumpy > spectralnorm.grumpy-5.grumpy.go
-go build -o spectralnorm.grumpy-5.grumpy_run spectralnorm.grumpy-5.grumpy.go
-warning: GOPATH set to GOROOT (/usr/lib/go) has no effect
-spectralnorm.grumpy-5.grumpy.go:5:2: cannot find package "grumpy/lib/math/sqrt" in any of:
-	/usr/lib/go/src/grumpy/lib/math/sqrt (from $GOROOT)
-	($GOPATH not set. For more details see: 'go help gopath')
-spectralnorm.grumpy-5.grumpy.go:6:2: cannot find package "grumpy/lib/multiprocessing" in any of:
-	/usr/lib/go/src/grumpy/lib/multiprocessing (from $GOROOT)
-	($GOPATH not set. For more details see: 'go help gopath')
-spectralnorm.grumpy-5.grumpy.go:7:2: cannot find package "grumpy/lib/multiprocessing/Pool" in any of:
-	/usr/lib/go/src/grumpy/lib/multiprocessing/Pool (from $GOROOT)
-	($GOPATH not set. For more details see: 'go help gopath')
-spectralnorm.grumpy-5.grumpy.go:9:2: cannot find package "grumpy/lib/sys/argv" in any of:
-	/usr/lib/go/src/grumpy/lib/sys/argv (from $GOROOT)
-	($GOPATH not set. For more details see: 'go help gopath')
-make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:48: spectralnorm.grumpy-5.grumpy_run] Chyba 1
+Traceback (most recent call last):
+  File "/usr/bin/grumpc", line 106, in <module>
+    sys.exit(main(parser.parse_args()))
+  File "/usr/bin/grumpc", line 76, in main
+    visitor.visit(mod)
+  File "/usr/lib/python2.7/site-packages/grumpy/pythonparser/algorithm.py", line 41, in visit
+    return self._visit_one(obj)
+  File "/usr/lib/python2.7/site-packages/grumpy/pythonparser/algorithm.py", line 32, in _visit_one
+    return getattr(self, visit_attr)(node)
+  File "/usr/lib/python2.7/site-packages/grumpy/compiler/stmt.py", line 290, in visit_Module
+    self._visit_each(node.body)
+  File "/usr/lib/python2.7/site-packages/grumpy/compiler/stmt.py", line 657, in _visit_each
+    self.visit(node)
+  File "/usr/lib/python2.7/site-packages/grumpy/pythonparser/algorithm.py", line 41, in visit
+    return self._visit_one(obj)
+  File "/usr/lib/python2.7/site-packages/grumpy/pythonparser/algorithm.py", line 32, in _visit_one
+    return getattr(self, visit_attr)(node)
+  File "/usr/lib/python2.7/site-packages/grumpy/compiler/stmt.py", line 286, in visit_ImportFrom
+    for imp in self.block.root.importer.visit(node):
+  File "/usr/lib/python2.7/site-packages/grumpy/pythonparser/algorithm.py", line 41, in visit
+    return self._visit_one(obj)
+  File "/usr/lib/python2.7/site-packages/grumpy/pythonparser/algorithm.py", line 32, in _visit_one
+    return getattr(self, visit_attr)(node)
+  File "/usr/lib/python2.7/site-packages/grumpy/compiler/imputil.py", line 140, in visit_ImportFrom
+    member_imp = resolver(node, node.module)
+  File "/usr/lib/python2.7/site-packages/grumpy/compiler/imputil.py", line 158, in _resolve_import
+    raise util.ImportError(node, 'no such module: {}'.format(modname))
+grumpy.compiler.util.ImportError: line 11: no such module: multiprocessing
+make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:47: spectralnorm.grumpy-5.grumpy_run] Chyba 1
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
 0.09s to complete and log all make actions
 
 COMMAND LINE:
-./spectralnorm.grumpy-5.grumpy_run 550
+ ./spectralnorm.grumpy-5.grumpy_run 550
 
 MAKE ERROR 
 

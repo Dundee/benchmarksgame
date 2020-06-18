@@ -1,5 +1,5 @@
 
-Mon, 13 Nov 2017 16:00:48 GMT
+ Thu, 18 Jun 2020 09:17:00 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
@@ -9,29 +9,172 @@ shedskin shed.py
 Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 
 [analyzing types..]
-0% ****************50% ****************50% ********************************100%
+
+0% 
+****************50% 
+****************50% 
+********************************100%
 [generating c++ code..]
 *WARNING* shed.py:11: Function show not called!
-[elapsed time: 1.26 seconds]
+[elapsed time: 1.22 seconds]
 make
 make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
 g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/string.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -o shed
+In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1216,
+                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:1:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In member function ‘__shedskin__::complex& __shedskin__::complex::operator=(double)’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:72:1: warning: no return statement in function returning non-void [-Wreturn-type]
+   71 |     imag = 0.0;
+  +++ |+    return *this;
+   72 | }
+      | ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_int __shedskin__::__cmp(T, T) [with T = __shedskin__::complex; __shedskin__::__ss_int = int]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:107:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  107 | template<> inline __ss_int __cmp(complex a, complex b) {} /* unused, satisfy templates */
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__gt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:108:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  108 | template<> inline __ss_bool __gt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__ge(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:109:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  109 | template<> inline __ss_bool __ge(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__lt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:110:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  110 | template<> inline __ss_bool __lt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__le(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:111:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  111 | template<> inline __ss_bool __le(complex a, complex b) {}
+      |                                                         ^
 /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp: In function ‘void* __shed__::__ss_main()’:
 /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:47:9: error: ‘show’ was not declared in this scope
-         show(seq, default_0, default_1, default_2);
-         ^~~~
-/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:47:9: note: suggested alternative: ‘pow’
-         show(seq, default_0, default_1, default_2);
-         ^~~~
-         pow
+   47 |         show(seq, default_0, default_1, default_2);
+      |         ^~~~
+In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1216,
+                 from /usr/lib/python2.7/site-packages/shedskin/lib/sys.hpp:6,
+                 from /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp:3:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In member function ‘__shedskin__::complex& __shedskin__::complex::operator=(double)’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:72:1: warning: no return statement in function returning non-void [-Wreturn-type]
+   71 |     imag = 0.0;
+  +++ |+    return *this;
+   72 | }
+      | ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_int __shedskin__::__cmp(T, T) [with T = __shedskin__::complex; __shedskin__::__ss_int = int]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:107:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  107 | template<> inline __ss_int __cmp(complex a, complex b) {} /* unused, satisfy templates */
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__gt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:108:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  108 | template<> inline __ss_bool __gt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__ge(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:109:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  109 | template<> inline __ss_bool __ge(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__lt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:110:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  110 | template<> inline __ss_bool __lt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__le(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:111:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  111 | template<> inline __ss_bool __le(complex a, complex b) {}
+      |                                                         ^
+In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1216,
+                 from /usr/lib/python2.7/site-packages/shedskin/lib/string.hpp:6,
+                 from /usr/lib/python2.7/site-packages/shedskin/lib/string.cpp:3:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In member function ‘__shedskin__::complex& __shedskin__::complex::operator=(double)’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:72:1: warning: no return statement in function returning non-void [-Wreturn-type]
+   71 |     imag = 0.0;
+  +++ |+    return *this;
+   72 | }
+      | ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_int __shedskin__::__cmp(T, T) [with T = __shedskin__::complex; __shedskin__::__ss_int = int]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:107:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  107 | template<> inline __ss_int __cmp(complex a, complex b) {} /* unused, satisfy templates */
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__gt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:108:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  108 | template<> inline __ss_bool __gt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__ge(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:109:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  109 | template<> inline __ss_bool __ge(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__lt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:110:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  110 | template<> inline __ss_bool __lt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__le(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:111:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  111 | template<> inline __ss_bool __le(complex a, complex b) {}
+      |                                                         ^
+In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1216,
+                 from /usr/lib/python2.7/site-packages/shedskin/lib/re.hpp:9,
+                 from /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp:3:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In member function ‘__shedskin__::complex& __shedskin__::complex::operator=(double)’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:72:1: warning: no return statement in function returning non-void [-Wreturn-type]
+   71 |     imag = 0.0;
+  +++ |+    return *this;
+   72 | }
+      | ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_int __shedskin__::__cmp(T, T) [with T = __shedskin__::complex; __shedskin__::__ss_int = int]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:107:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  107 | template<> inline __ss_int __cmp(complex a, complex b) {} /* unused, satisfy templates */
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__gt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:108:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  108 | template<> inline __ss_bool __gt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__ge(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:109:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  109 | template<> inline __ss_bool __ge(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__lt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:110:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  110 | template<> inline __ss_bool __lt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__le(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:111:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  111 | template<> inline __ss_bool __le(complex a, complex b) {}
+      |                                                         ^
+In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1216,
+                 from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp:3:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In member function ‘__shedskin__::complex& __shedskin__::complex::operator=(double)’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:72:1: warning: no return statement in function returning non-void [-Wreturn-type]
+   71 |     imag = 0.0;
+  +++ |+    return *this;
+   72 | }
+      | ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_int __shedskin__::__cmp(T, T) [with T = __shedskin__::complex; __shedskin__::__ss_int = int]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:107:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  107 | template<> inline __ss_int __cmp(complex a, complex b) {} /* unused, satisfy templates */
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__gt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:108:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  108 | template<> inline __ss_bool __gt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__ge(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:109:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  109 | template<> inline __ss_bool __ge(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__lt(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:110:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  110 | template<> inline __ss_bool __lt(complex a, complex b) {}
+      |                                                         ^
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In function ‘__shedskin__::__ss_bool __shedskin__::__le(T, T) [with T = __shedskin__::complex]’:
+/usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:111:57: warning: no return statement in function returning non-void [-Wreturn-type]
+  111 | template<> inline __ss_bool __le(complex a, complex b) {}
+      |                                                         ^
 make[2]: *** [Makefile:21: shed] Chyba 1
 make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: revcomp.shedskin-4.shedskin_run] Chyba 2
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
-9.14s to complete and log all make actions
+11.11s to complete and log all make actions
 
 COMMAND LINE:
-./shed 0 < revcomp-input1000.txt
+ ./shed 0 < revcomp-input1000.txt
 
 MAKE ERROR 
 
