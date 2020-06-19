@@ -3,7 +3,9 @@ PYTHON = python
 .PHONY: run clean update-results
 
 run:
+	sudo cpupower frequency-set -g performance
 	cd bencher; ulimit -m 4000000; $(PYTHON) ./bin/bencher.py
+	sudo cpupower frequency-set -g powersave
 
 clean:
 	rm -R bencher/tmp/*
