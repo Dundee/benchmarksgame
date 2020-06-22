@@ -1,22 +1,16 @@
 
- Thu, 18 Jun 2020 09:09:29 GMT
+ Mon, 22 Jun 2020 15:26:45 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp“
 nuitka3 --remove-output pystone.nuitka
 cp pystone.nuitka.bin pystone.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp“
-9.31s to complete and log all make actions
+10.95s to complete and log all make actions
 
 COMMAND LINE:
  ./pystone.nuitka_run 50000
 
-PROGRAM FAILED 
-
-
 PROGRAM OUTPUT:
-
-Traceback (most recent call last):
-  File "/home/dundee/workspace/benchmarksgame/bencher/tmp/pystone/tmp/pystone.nuitka", line 37, in <module>
-    from time import clock
-ImportError: cannot import name 'clock' from 'time' (unknown location)
+50000
+OK
