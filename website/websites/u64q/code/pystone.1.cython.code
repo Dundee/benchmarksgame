@@ -34,7 +34,7 @@ Version History:
 
 LOOPS = 50000
 
-from time import clock
+from time import time
 
 __version__ = "1.1"
 
@@ -100,10 +100,10 @@ cdef void Proc0(int loops):
     global PtrGlb
     global PtrGlbNext
 
-    starttime = clock()
+    starttime = time()
     for i in range(loops):
         pass
-    nulltime = clock() - starttime
+    nulltime = time() - starttime
 
     PtrGlbNext = Record()
     PtrGlb = Record()
