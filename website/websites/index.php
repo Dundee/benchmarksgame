@@ -10,7 +10,7 @@ $baseUrl = 'https://pybenchmarks.org';
 <meta http-equiv="Content-Style-Type" content="text/css" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="index,follow,archive" /><meta name="revisit" content="14 days" />
-<meta name="description" content="Compare the time and memory use of programs written in ~24 programming languages to solve ~12 simple benchmark tasks. Contribute your own programs." />
+<meta name="description" content="Compare the time and memory use of benchmarks runned by ~15 Python interpreters/compilers." />
 <meta name="google-site-verification" content="y9GFMJuxj7Ou4xK9YRagz9hCBfn1lyKcHQakWgkE7gg" />
 
 <title>Python Interpreters Benchmarks</title>
