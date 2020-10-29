@@ -1,36 +1,15 @@
 
- Wed, 17 Jun 2020 23:21:26 GMT
+ Thu, 29 Oct 2020 13:12:57 GMT
 
 COMMAND LINE:
  /usr/bin/pyston chameneosredux.pyston 6000000
 
+PROGRAM FAILED 
+
+
 PROGRAM OUTPUT NOT CHECKED:
-blue + blue -> blue
-blue + red -> yellow
-blue + yellow -> red
-red + blue -> yellow
-red + red -> red
-red + yellow -> blue
-yellow + blue -> red
-yellow + red -> blue
-yellow + yellow -> yellow
 
- blue red yellow
-3937947 zero
-4090121 zero
-3971932 zero
- one two zero zero zero zero zero zero
-
- blue red yellow red yellow blue red yellow red blue
-1202685 zero
-1198906 zero
-1201352 zero
-1188828 zero
-1214542 zero
-1183435 zero
-1233558 zero
-1193890 zero
-1186556 zero
-1196248 zero
- one two zero zero zero zero zero zero
-
+Traceback (most recent call last):
+  File "chameneosredux.pyston", line 7, in <module>
+    import thread
+ModuleNotFoundError: No module named 'thread'

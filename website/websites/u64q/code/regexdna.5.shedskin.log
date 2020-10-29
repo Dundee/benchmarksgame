@@ -1,5 +1,5 @@
 
- Thu, 18 Jun 2020 09:10:29 GMT
+ Tue, 06 Oct 2020 17:05:54 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp“
@@ -20,7 +20,7 @@ Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 *WARNING* shed.py:38: unresolved call to 'write'
 *WARNING* shed.py:39: unresolved call to 'write'
 *WARNING* shed.py:40: unresolved call to 'write'
-[elapsed time: 1.43 seconds]
+[elapsed time: 1.27 seconds]
 make
 make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp“
 g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -o shed
@@ -146,7 +146,7 @@ make[2]: *** [Makefile:19: shed] Chyba 1
 make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp“
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: regexdna.shedskin-5.shedskin_run] Chyba 2
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp“
-10.20s to complete and log all make actions
+9.80s to complete and log all make actions
 
 COMMAND LINE:
  ./shed 0 < regexdna-input10000.txt

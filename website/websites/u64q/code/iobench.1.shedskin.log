@@ -1,5 +1,5 @@
 
- Thu, 18 Jun 2020 00:27:30 GMT
+ Tue, 06 Oct 2020 16:43:34 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
@@ -16,7 +16,7 @@ Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 ********************************100%
 [generating c++ code..]
 *WARNING* shed.py:6: expression has no type
-[elapsed time: 1.98 seconds]
+[elapsed time: 2.03 seconds]
 make
 make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
 g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/time.cpp /usr/lib/python2.7/site-packages/shedskin/lib/stat.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/os/path.cpp /usr/lib/python2.7/site-packages/shedskin/lib/os/__init__.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -lutil -o shed
@@ -48,7 +48,7 @@ In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:111:57: warning: no return statement in function returning non-void [-Wreturn-type]
   111 | template<> inline __ss_bool __le(complex a, complex b) {}
       |                                                         ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/shed.cpp: In function ‘void* __shed__::measure(__shed__::lambda2, __shedskin__::__ss_int, __shedskin__::__ss_int)’:
+/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/shed.cpp: In function ‘void* __shed__::measure(__shed__::lambda1, __shedskin__::__ss_int, __shedskin__::__ss_int)’:
 /home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp/shed.cpp:22:29: error: request for member ‘__code__’ in ‘* func’, which is of non-class type ‘void*(__shedskin__::__ss_int, __shedskin__::__ss_int)’ {aka ‘void*(int, int)’}
    22 |     print2(NULL,0,2, (func->__code__)->co_name, __modct(const_0, 2, ___box(num2), ___box(((((__time__::time()-t0)/num1)*1000)*1000))));
       |                             ^~~~~~~~
@@ -241,7 +241,7 @@ make[2]: *** [Makefile:25: shed] Chyba 1
 make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: iobench.shedskin_run] Chyba 2
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/iobench/tmp“
-14.25s to complete and log all make actions
+13.55s to complete and log all make actions
 
 COMMAND LINE:
  ./shed 1

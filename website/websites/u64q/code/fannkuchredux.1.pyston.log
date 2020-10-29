@@ -1,9 +1,17 @@
 
- Wed, 17 Jun 2020 23:31:54 GMT
+ Thu, 29 Oct 2020 13:13:22 GMT
 
 COMMAND LINE:
  /usr/bin/pyston fannkuchredux.pyston 10
 
+PROGRAM FAILED 
+
+
 PROGRAM OUTPUT:
-73196
-Pfannkuchen(10) = 38
+
+Traceback (most recent call last):
+  File "fannkuchredux.pyston", line 93, in <module>
+    main()
+  File "fannkuchredux.pyston", line 80, in main
+    parms =  [(length,i,i+index_step) for i in xrange(0,index_max,index_step) ]
+NameError: name 'xrange' is not defined

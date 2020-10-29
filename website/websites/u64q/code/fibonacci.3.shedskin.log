@@ -1,5 +1,5 @@
 
- Thu, 18 Jun 2020 00:07:46 GMT
+ Tue, 06 Oct 2020 15:31:45 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fibonacci/tmp“
@@ -15,7 +15,7 @@ Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 ********************************100% 
 ********************************100%
 [generating c++ code..]
-[elapsed time: 1.28 seconds]
+[elapsed time: 1.22 seconds]
 make
 make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fibonacci/tmp“
 g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/fibonacci/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -o shed
@@ -133,21 +133,21 @@ In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:111:57: warning: no return statement in function returning non-void [-Wreturn-type]
   111 | template<> inline __ss_bool __le(complex a, complex b) {}
       |                                                         ^
-/usr/bin/ld: /tmp/ccoCkf2E.o: in function `__shed__::powLF(int)':
+/usr/bin/ld: /tmp/ccu5jeas.o: in function `__shed__::powLF(int)':
 shed.cpp:(.text+0xfe): undefined reference to `GC_throw_bad_alloc()'
 /usr/bin/ld: shed.cpp:(.text+0x108): undefined reference to `GC_throw_bad_alloc()'
 /usr/bin/ld: shed.cpp:(.text+0x10f): undefined reference to `GC_throw_bad_alloc()'
-/usr/bin/ld: /tmp/ccoCkf2E.o: in function `__shed__::__init()':
+/usr/bin/ld: /tmp/ccu5jeas.o: in function `__shed__::__init()':
 shed.cpp:(.text+0x20c): undefined reference to `GC_throw_bad_alloc()'
-/usr/bin/ld: /tmp/ccoCkf2E.o: in function `__shedskin__::__iter<int>::__repr__()':
+/usr/bin/ld: /tmp/ccu5jeas.o: in function `__shedskin__::__iter<int>::__repr__()':
 shed.cpp:(.text._ZN12__shedskin__6__iterIiE8__repr__Ev[_ZN12__shedskin__6__iterIiE8__repr__Ev]+0x34): undefined reference to `GC_throw_bad_alloc()'
-/usr/bin/ld: /tmp/ccoCkf2E.o:shed.cpp:(.text._ZN12__shedskin__5pyseqIiE8__iter__Ev[_ZN12__shedskin__5pyseqIiE8__iter__Ev]+0x78): more undefined references to `GC_throw_bad_alloc()' follow
+/usr/bin/ld: /tmp/ccu5jeas.o:shed.cpp:(.text._ZN12__shedskin__5pyseqIiE8__iter__Ev[_ZN12__shedskin__5pyseqIiE8__iter__Ev]+0x78): more undefined references to `GC_throw_bad_alloc()' follow
 collect2: error: ld returned 1 exit status
 make[2]: *** [Makefile:19: shed] Chyba 1
 make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fibonacci/tmp“
 make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: fibonacci.shedskin-3.shedskin_run] Chyba 2
 make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fibonacci/tmp“
-10.50s to complete and log all make actions
+10.13s to complete and log all make actions
 
 COMMAND LINE:
  ./shed 1000000

@@ -1,11 +1,8 @@
 
- Wed, 17 Jun 2020 23:58:29 GMT
+ Thu, 29 Oct 2020 13:14:39 GMT
 
 COMMAND LINE:
  /usr/bin/pyston fastaredux.pyston 2500000
-
-PROGRAM FAILED 
-
 
 (TRUNCATED) PROGRAM OUTPUT:
 >ONE Homo sapiens alu
@@ -177,13 +174,3 @@ GACCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAATACAAAAATTAGCCGGG
 CGTGGTGGCGCGCGCCTGTAATCCCAGCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTG
 AACCCGGGAGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCCAGCCTGGGCG
 ACAGAGCGAGACTCCGTCTCAAAAAGGCCGG
-Traceback (most recent call last):
-  File "fastaredux.pyston", line 108, in <module>
-    main()
-  File "fastaredux.pyston", line 103, in main
-    randomFasta(iub, n*3)
-  File "fastaredux.pyston", line 79, in randomFasta
-    lut = makeLookupTable(table)
-  File "fastaredux.pyston", line 62, in makeLookupTable
-    return array.array("u", [chars[bb(probs, i / imf)] for i in range(IM)])
-TypeError: array item must be unicode character
