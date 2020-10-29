@@ -1,19 +1,20 @@
 
- Thu, 29 Oct 2020 13:15:23 GMT
+ Thu, 29 Oct 2020 14:00:23 GMT
 
 COMMAND LINE:
  /usr/bin/pyston regexdna.pyston-5.pyston 0 < regexdna-input10000.txt
 
-PROGRAM FAILED 
-
-
 PROGRAM OUTPUT:
+agggtaaa|tttaccct 0
+[cgt]gggtaaa|tttaccc[acg] 3
+a[act]ggtaaa|tttacc[agt]t 9
+ag[act]gtaaa|tttac[agt]ct 8
+agg[act]taaa|ttta[agt]cct 10
+aggg[acg]aaa|ttt[cgt]ccct 3
+agggt[cgt]aa|tt[acg]accct 4
+agggta[cgt]a|t[acg]taccct 3
+agggtaa[cgt]|[acg]ttaccct 5
 
-Traceback (most recent call last):
-  File "regexdna.pyston-5.pyston", line 42, in <module>
-    main()
-  File "regexdna.pyston-5.pyston", line 15, in main
-    seq = sub(b'>.*\n|\n', b'', seq)
-  File "/usr/lib/pyston3.8/re.py", line 208, in sub
-    return _compile(pattern, flags).sub(repl, string, count)
-TypeError: cannot use a bytes pattern on a string-like object
+101745
+100000
+133640

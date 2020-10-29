@@ -1,11 +1,8 @@
 
- Thu, 29 Oct 2020 13:13:39 GMT
+ Thu, 29 Oct 2020 13:55:46 GMT
 
 COMMAND LINE:
  /usr/bin/pyston fasta.pyston 2500000
-
-PROGRAM FAILED 
-
 
 (TRUNCATED) PROGRAM OUTPUT:
 >ONE Homo sapiens alu
@@ -177,11 +174,3 @@ GACCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAATACAAAAATTAGCCGGG
 CGTGGTGGCGCGCGCCTGTAATCCCAGCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTG
 AACCCGGGAGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCCAGCCTGGGCG
 ACAGAGCGAGACTCCGTCTCAAAAAGGCCGG
-Traceback (most recent call last):
-  File "fasta.pyston", line 84, in <module>
-    main()
-  File "fasta.pyston", line 79, in main
-    randomFasta(iub, n*3)
-  File "fasta.pyston", line 62, in randomFasta
-    gR = Random.next
-AttributeError: 'generator' object has no attribute 'next'

@@ -1,5 +1,5 @@
 
- Thu, 29 Oct 2020 13:15:14 GMT
+ Thu, 29 Oct 2020 14:00:13 GMT
 
 COMMAND LINE:
  /usr/bin/pyston pidigits.pyston-4.pyston 10000
@@ -11,12 +11,12 @@ PROGRAM OUTPUT:
 
 Traceback (most recent call last):
   File "pidigits.pyston-4.pyston", line 8, in <module>
-    import gmpy2 as gmpy
+    import gmpy2
 ModuleNotFoundError: No module named 'gmpy2'
 
 During handling of the above exception, another exception occurred:
 
 Traceback (most recent call last):
   File "pidigits.pyston-4.pyston", line 10, in <module>
-    import gmpy_cffi as gmpy
+    import gmpy_cffi as gmpy2
 ModuleNotFoundError: No module named 'gmpy_cffi'
