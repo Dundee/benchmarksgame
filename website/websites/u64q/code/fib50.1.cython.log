@@ -1,26 +1,26 @@
 
- Tue, 06 Oct 2020 15:30:34 GMT
+ Fri, 30 Oct 2020 19:04:42 GMT
 
 MAKE:
-make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp“
+make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp“
 cp fib50.cython `echo fib50.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 cythonize -3 -bi `echo fib50.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
-Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp/fib50.pyx because it changed.
-[1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp/fib50.pyx
+Compiling /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/fib50.pyx because it changed.
+[1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/fib50.pyx
 running build_ext
 building 'fib50' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp/tmp746aiwi6/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp/tmp746aiwi6/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp/tmp746aiwi6/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp/tmp746aiwi6/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp/tmp746aiwi6/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp/tmp746aiwi6/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp/tmp746aiwi6/home/dundee/workspace/benchmarksgame/bencher/tmp/fib50
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp/tmp746aiwi6/home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp/fib50.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp/tmp746aiwi6/home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp/fib50.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp/tmp746aiwi6/home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp/fib50.o -L/usr/lib -o /home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp/fib50.cpython-38-x86_64-linux-gnu.so
-make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fib50/tmp“
-0.74s to complete and log all make actions
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmp7osc9uju/home
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmp7osc9uju/home/dundee
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmp7osc9uju/home/dundee/work
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmp7osc9uju/home/dundee/work/pybenchmarks
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmp7osc9uju/home/dundee/work/pybenchmarks/bencher
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmp7osc9uju/home/dundee/work/pybenchmarks/bencher/tmp
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmp7osc9uju/home/dundee/work/pybenchmarks/bencher/tmp/fib50
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmp7osc9uju/home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp
+gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/fib50.c -o /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmp7osc9uju/home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/fib50.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmp7osc9uju/home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/fib50.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/fib50.cpython-38-x86_64-linux-gnu.so
+make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp“
+0.59s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import fib50" 1000000

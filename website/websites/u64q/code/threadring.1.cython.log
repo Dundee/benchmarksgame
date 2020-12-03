@@ -1,26 +1,26 @@
 
- Tue, 06 Oct 2020 17:08:57 GMT
+ Fri, 30 Oct 2020 20:47:05 GMT
 
 MAKE:
-make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp“
+make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp“
 cp threadring.cython `echo threadring.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 cythonize -3 -bi `echo threadring.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
-Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/threadring.pyx because it changed.
-[1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/threadring.pyx
+Compiling /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.pyx because it changed.
+[1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.pyx
 running build_ext
 building 'threadring' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmpub5usmgg/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmpub5usmgg/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmpub5usmgg/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmpub5usmgg/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmpub5usmgg/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmpub5usmgg/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmpub5usmgg/home/dundee/workspace/benchmarksgame/bencher/tmp/threadring
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmpub5usmgg/home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/threadring.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmpub5usmgg/home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/threadring.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/tmpub5usmgg/home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/threadring.o -L/usr/lib -o /home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp/threadring.cpython-38-x86_64-linux-gnu.so
-make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/threadring/tmp“
-2.03s to complete and log all make actions
+creating /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpei7si3_e/home
+creating /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpei7si3_e/home/dundee
+creating /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpei7si3_e/home/dundee/work
+creating /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpei7si3_e/home/dundee/work/pybenchmarks
+creating /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpei7si3_e/home/dundee/work/pybenchmarks/bencher
+creating /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpei7si3_e/home/dundee/work/pybenchmarks/bencher/tmp
+creating /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpei7si3_e/home/dundee/work/pybenchmarks/bencher/tmp/threadring
+creating /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpei7si3_e/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp
+gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.c -o /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpei7si3_e/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpei7si3_e/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.cpython-38-x86_64-linux-gnu.so
+make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp“
+1.59s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import threadring" 5000000

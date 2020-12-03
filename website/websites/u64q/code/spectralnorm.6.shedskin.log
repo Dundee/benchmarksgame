@@ -1,8 +1,8 @@
 
- Tue, 06 Oct 2020 17:07:09 GMT
+ Fri, 30 Oct 2020 21:38:35 GMT
 
 MAKE:
-make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
+make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp“
 cp spectralnorm.shedskin-6.shedskin shed.py
 shedskin shed.py
 *** SHED SKIN Python-to-C++ Compiler 0.9.4 ***
@@ -16,12 +16,12 @@ Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 ********************************100%
 [generating c++ code..]
 *WARNING* shed.py:48: incompatible types
-[elapsed time: 1.82 seconds]
+[elapsed time: 2.32 seconds]
 make
-make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
-g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/math.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -o shed
+make[2]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp“
+g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/math.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -o shed
 In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1216,
-                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/shed.cpp:1:
+                 from /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/shed.cpp:1:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In member function ‘__shedskin__::complex& __shedskin__::complex::operator=(double)’:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:72:1: warning: no return statement in function returning non-void [-Wreturn-type]
    71 |     imag = 0.0;
@@ -48,8 +48,8 @@ In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:111:57: warning: no return statement in function returning non-void [-Wreturn-type]
   111 | template<> inline __ss_bool __le(complex a, complex b) {}
       |                                                         ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/shed.cpp: In function ‘void* __shed__::__ss_main()’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/shed.cpp:118:45: error: cannot convert ‘__shedskin__::list<int>*’ to ‘__shedskin__::list<double>*’ in assignment
+/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/shed.cpp: In function ‘void* __shed__::__ss_main()’:
+/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/shed.cpp:118:45: error: cannot convert ‘__shedskin__::list<int>*’ to ‘__shedskin__::list<double>*’ in assignment
   118 |     u = ((new list<__ss_int>(1,1)))->__mul__(n);
       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
       |                                             |
@@ -170,10 +170,10 @@ In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:
   111 | template<> inline __ss_bool __le(complex a, complex b) {}
       |                                                         ^
 make[2]: *** [Makefile:21: shed] Chyba 1
-make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
-make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: spectralnorm.shedskin-6.shedskin_run] Chyba 2
-make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
-10.90s to complete and log all make actions
+make[2]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp“
+make[1]: *** [/home/dundee/work/pybenchmarks/bencher/makefiles/my.linux.Makefile:30: spectralnorm.shedskin-6.shedskin_run] Chyba 2
+make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp“
+9.89s to complete and log all make actions
 
 COMMAND LINE:
  ./shed 550

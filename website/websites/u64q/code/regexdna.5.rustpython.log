@@ -1,5 +1,5 @@
 
- Thu, 18 Jun 2020 09:10:12 GMT
+ Fri, 30 Oct 2020 20:19:47 GMT
 
 COMMAND LINE:
  /usr/bin/rustpython regexdna.rustpython-5.rustpython 0 < regexdna-input10000.txt
@@ -8,7 +8,8 @@ PROGRAM FAILED
 
 
 PROGRAM OUTPUT:
+
 Traceback (most recent call last):
-  File "regexdna.rustpython-5.rustpython", line 7, in <module>
-    from sys import stdin,stdout
-ImportError: cannot import name 'stdin'
+  File "regexdna.rustpython-5.rustpython", line 8, in <module>
+    from re import sub, findall
+ModuleNotFoundError: No module named 're'

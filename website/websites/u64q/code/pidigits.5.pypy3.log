@@ -1,5 +1,5 @@
 
- Tue, 06 Oct 2020 17:00:25 GMT
+ Fri, 30 Oct 2020 20:16:31 GMT
 
 COMMAND LINE:
  /usr/bin/pypy3 pidigits.pypy3-5.pypy3 10000
@@ -19,16 +19,4 @@ During handling of the above exception, another exception occurred:
 Traceback (most recent call last):
   File "pidigits.pypy3-5.pypy3", line 12, in <module>
     from gmpy_cffi import mpz as xmpz
-  File "/opt/pypy3/site-packages/gmpy_cffi/__init__.py", line 1, in <module>
-    from .mpz import mpz
-  File "/opt/pypy3/site-packages/gmpy_cffi/mpz.py", line 4, in <module>
-    from gmpy_cffi.interface import gmp, ffi
-  File "/opt/pypy3/site-packages/gmpy_cffi/interface.py", line 503, in <module>
-    """, libraries=['gmp', 'mpfr', 'mpc'])
-  File "/opt/pypy3/lib_pypy/cffi/api.py", line 468, in verify
-    lib = self.verifier.load_library()
-  File "/opt/pypy3/lib_pypy/cffi/verifier.py", line 103, in load_library
-    self._write_source()
-  File "/opt/pypy3/lib_pypy/cffi/verifier.py", line 192, in _write_source
-    with open(self.sourcefilename, "w") as fp:
-PermissionError: [Errno 13] Permission denied: '/opt/pypy3/site-packages/gmpy_cffi/__pycache__/_cffi__gcfc15ee1x9cbb9358.c'
+ModuleNotFoundError: No module named 'gmpy_cffi'

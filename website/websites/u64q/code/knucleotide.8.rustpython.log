@@ -1,5 +1,5 @@
 
- Thu, 18 Jun 2020 00:41:55 GMT
+ Fri, 30 Oct 2020 19:31:47 GMT
 
 COMMAND LINE:
  /usr/bin/rustpython knucleotide.rustpython-8.rustpython 0 < knucleotide-input10000.txt
@@ -8,7 +8,8 @@ PROGRAM FAILED
 
 
 PROGRAM OUTPUT:
+
 Traceback (most recent call last):
-  File "knucleotide.rustpython-8.rustpython", line 10, in <module>
-    from sys import stdin
-ImportError: cannot import name 'stdin'
+  File "knucleotide.rustpython-8.rustpython", line 11, in <module>
+    from collections import defaultdict
+ModuleNotFoundError: No module named 'collections'

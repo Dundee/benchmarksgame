@@ -1,5 +1,5 @@
 
- Thu, 18 Jun 2020 00:17:44 GMT
+ Fri, 30 Oct 2020 19:19:39 GMT
 
 COMMAND LINE:
  /usr/bin/micropython iobench.micropython 1
@@ -8,16 +8,9 @@ PROGRAM FAILED
 
 
 PROGRAM OUTPUT NOT CHECKED:
-<function fread at 0x7f94c43c1da0> 100 bytes, 2.51us per write
-<function fwrite at 0x7f94c43c1d80> 100 bytes, 2.31us per write
-<function fread at 0x7f94c43c1da0> 1000 bytes, 5.50us per write
-<function fwrite at 0x7f94c43c1d80> 1000 bytes, 12.43us per write
-<function fread at 0x7f94c43c1da0> 10000 bytes, 62.32us per write
-<function fwrite at 0x7f94c43c1d80> 10000 bytes, 118.65us per write
-<function file_read at 0x7f94c43c2460> 100 bytes, 2.60us per write
 
 Traceback (most recent call last):
-  File "iobench.micropython", line 43, in <module>
+  File "iobench.micropython", line 36, in <module>
   File "iobench.micropython", line 5, in measure
-  File "iobench.micropython", line 28, in file_write
-OSError: [Errno 22] EINVAL
+  File "iobench.micropython", line 20, in fread
+AttributeError: 'module' object has no attribute 'open'

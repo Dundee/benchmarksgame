@@ -1,5 +1,5 @@
 
- Thu, 18 Jun 2020 09:34:38 GMT
+ Fri, 30 Oct 2020 21:04:49 GMT
 
 COMMAND LINE:
  /usr/bin/micropython threadring.micropython 5000000
@@ -8,9 +8,7 @@ PROGRAM FAILED
 
 
 PROGRAM OUTPUT:
-181
 
 Traceback (most recent call last):
-  File "threadring.micropython", line 34, in <module>
-  File "threadring.micropython", line 30, in main
-RuntimeError: generator raised StopIteration
+  File "threadring.micropython", line 10, in <module>
+ImportError: no module named 'itertools'

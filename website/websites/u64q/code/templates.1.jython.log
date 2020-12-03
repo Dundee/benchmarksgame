@@ -1,5 +1,5 @@
 
- Thu, 18 Jun 2020 09:29:30 GMT
+ Fri, 30 Oct 2020 20:47:00 GMT
 
 COMMAND LINE:
  /usr/bin/jython templates.jython 1000
@@ -9,8 +9,9 @@ PROGRAM FAILED
 
 PROGRAM OUTPUT:
 
-Picked up _JAVA_OPTIONS: -Dawt.useSystemAAFontSettings=lcd
 Traceback (most recent call last):
   File "templates.jython", line 3, in <module>
     from jinja2 import Template
-ImportError: No module named jinja2
+  File "/opt/jython/Lib/site-packages/jinja2/__init__.py", line 6, in <module>
+    from markupsafe import escape
+IOError: [Errno 2] File not found - /opt/jython/Lib/site-packages/markupsafe/__init__$py.class (Operace zamítnuta)

@@ -1,26 +1,26 @@
 
- Tue, 06 Oct 2020 15:23:29 GMT
+ Fri, 30 Oct 2020 18:51:58 GMT
 
 MAKE:
-make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp“
+make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp“
 cp fannkuchredux.cython `echo fannkuchredux.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 cythonize -3 -bi `echo fannkuchredux.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
-Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp/fannkuchredux.pyx because it changed.
-[1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp/fannkuchredux.pyx
+Compiling /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/fannkuchredux.pyx because it changed.
+[1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/fannkuchredux.pyx
 running build_ext
 building 'fannkuchredux' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp/tmps31ft16i/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp/tmps31ft16i/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp/tmps31ft16i/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp/tmps31ft16i/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp/tmps31ft16i/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp/tmps31ft16i/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp/tmps31ft16i/home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp/tmps31ft16i/home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp/fannkuchredux.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp/tmps31ft16i/home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp/fannkuchredux.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp/tmps31ft16i/home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp/fannkuchredux.o -L/usr/lib -o /home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp/fannkuchredux.cpython-38-x86_64-linux-gnu.so
-make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fannkuchredux/tmp“
-3.46s to complete and log all make actions
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpf472zxoq/home
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpf472zxoq/home/dundee
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpf472zxoq/home/dundee/work
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpf472zxoq/home/dundee/work/pybenchmarks
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpf472zxoq/home/dundee/work/pybenchmarks/bencher
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpf472zxoq/home/dundee/work/pybenchmarks/bencher/tmp
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpf472zxoq/home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpf472zxoq/home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp
+gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/fannkuchredux.c -o /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpf472zxoq/home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/fannkuchredux.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpf472zxoq/home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/fannkuchredux.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/fannkuchredux.cpython-38-x86_64-linux-gnu.so
+make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp“
+2.60s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import fannkuchredux" 10

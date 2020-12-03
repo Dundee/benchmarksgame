@@ -1,26 +1,26 @@
 
- Tue, 06 Oct 2020 15:28:54 GMT
+ Fri, 30 Oct 2020 19:00:29 GMT
 
 MAKE:
-make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp“
+make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp“
 cp fasta.cython `echo fasta.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 cythonize -3 -bi `echo fasta.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
-Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/fasta.pyx because it changed.
-[1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/fasta.pyx
+Compiling /home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp/fasta.pyx because it changed.
+[1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp/fasta.pyx
 running build_ext
 building 'fasta' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/tmp0eg5mwbv/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/tmp0eg5mwbv/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/tmp0eg5mwbv/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/tmp0eg5mwbv/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/tmp0eg5mwbv/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/tmp0eg5mwbv/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/tmp0eg5mwbv/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/tmp0eg5mwbv/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/fasta.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/tmp0eg5mwbv/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/fasta.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/tmp0eg5mwbv/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/fasta.o -L/usr/lib -o /home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp/fasta.cpython-38-x86_64-linux-gnu.so
-make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fasta/tmp“
-2.84s to complete and log all make actions
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp/tmp_6bot2q8/home
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp/tmp_6bot2q8/home/dundee
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp/tmp_6bot2q8/home/dundee/work
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp/tmp_6bot2q8/home/dundee/work/pybenchmarks
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp/tmp_6bot2q8/home/dundee/work/pybenchmarks/bencher
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp/tmp_6bot2q8/home/dundee/work/pybenchmarks/bencher/tmp
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp/tmp_6bot2q8/home/dundee/work/pybenchmarks/bencher/tmp/fasta
+creating /home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp/tmp_6bot2q8/home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp
+gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp/fasta.c -o /home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp/tmp_6bot2q8/home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp/fasta.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp/tmp_6bot2q8/home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp/fasta.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp/fasta.cpython-38-x86_64-linux-gnu.so
+make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp“
+2.10s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import fasta" 2500000

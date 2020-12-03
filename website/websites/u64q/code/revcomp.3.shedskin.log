@@ -1,8 +1,8 @@
 
- Tue, 06 Oct 2020 17:06:20 GMT
+ Fri, 30 Oct 2020 21:37:21 GMT
 
 MAKE:
-make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
+make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp“
 cp revcomp.shedskin-3.shedskin shed.py
 shedskin shed.py
 *** SHED SKIN Python-to-C++ Compiler 0.9.4 ***
@@ -16,12 +16,12 @@ Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 ********************************100%
 [generating c++ code..]
 *WARNING* shed.py:29: unresolved call to 'add_line'
-[elapsed time: 1.25 seconds]
+[elapsed time: 1.17 seconds]
 make
-make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
-g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/string.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -o shed
+make[2]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp“
+g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/string.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -o shed
 In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1216,
-                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:1:
+                 from /home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/shed.cpp:1:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In member function ‘__shedskin__::complex& __shedskin__::complex::operator=(double)’:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:72:1: warning: no return statement in function returning non-void [-Wreturn-type]
    71 |     imag = 0.0;
@@ -48,13 +48,13 @@ In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:111:57: warning: no return statement in function returning non-void [-Wreturn-type]
   111 | template<> inline __ss_bool __le(complex a, complex b) {}
       |                                                         ^
-/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp: In function ‘void* __shed__::show(__shedskin__::pyseq<__shedskin__::str*>*, __shedskin__::str*)’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:23:32: error: ‘class __shedskin__::pyseq<__shedskin__::str*>’ has no member named ‘__slice__’; did you mean ‘__le__’?
+/home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/shed.cpp: In function ‘void* __shed__::show(__shedskin__::pyseq<__shedskin__::str*>*, __shedskin__::str*)’:
+/home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/shed.cpp:23:32: error: ‘class __shedskin__::pyseq<__shedskin__::str*>’ has no member named ‘__slice__’; did you mean ‘__le__’?
    23 |         print(1, 0, 0, 0, seq->__slice__(3, i, (i+60), 0));
       |                                ^~~~~~~~~
       |                                __le__
-/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp: In function ‘void* __shed__::__ss_main()’:
-/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/shed.cpp:39:21: error: cannot convert ‘__shedskin__::list<void*>::append’ from type ‘void* (__shedskin__::list<void*>::)(void*)’ to type ‘void*’
+/home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/shed.cpp: In function ‘void* __shed__::__ss_main()’:
+/home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/shed.cpp:39:21: error: cannot convert ‘__shedskin__::list<void*>::append’ from type ‘void* (__shedskin__::list<void*>::)(void*)’ to type ‘void*’
    39 |     add_line = seq->append;
       |                     ^~~~~~
 In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1216,
@@ -173,10 +173,10 @@ In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:
   111 | template<> inline __ss_bool __le(complex a, complex b) {}
       |                                                         ^
 make[2]: *** [Makefile:21: shed] Chyba 1
-make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
-make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: revcomp.shedskin-3.shedskin_run] Chyba 2
-make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
-11.07s to complete and log all make actions
+make[2]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp“
+make[1]: *** [/home/dundee/work/pybenchmarks/bencher/makefiles/my.linux.Makefile:30: revcomp.shedskin-3.shedskin_run] Chyba 2
+make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp“
+9.12s to complete and log all make actions
 
 COMMAND LINE:
  ./shed 0 < revcomp-input1000.txt

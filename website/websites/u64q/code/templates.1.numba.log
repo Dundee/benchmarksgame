@@ -1,44 +1,16 @@
 
- Thu, 18 Jun 2020 09:29:21 GMT
+ Fri, 30 Oct 2020 21:38:37 GMT
 
 COMMAND LINE:
- /opt/anaconda/bin/python templates.numba 1000
+ /usr/bin/numba templates.numba 1000
+
+PROGRAM FAILED 
+
 
 PROGRAM OUTPUT:
 
-<ul>
-
-  <li><a href="/user/999">SomeUsername</a></li>
-
-</ul>
-
-templates.numba:24: NumbaWarning: [1m
-Compilation is falling back to object mode WITH looplifting enabled because Function "render_template" failed type inference due to: [1mUntyped global name 'User':[0m [1m[1mcannot determine Numba type of <class 'type'>[0m
-[1m
-File "templates.numba", line 27:[0m
-[1mdef render_template(user_id):
-    <source elided>
-    users = [
-[1m        User(user_id, 'SomeUsername')
-[0m        [1m^[0m[0m
-[0m[0m
-  @jit
-/opt/anaconda/lib/python3.7/site-packages/numba/object_mode_passes.py:178: NumbaWarning: [1mFunction "render_template" was compiled in object mode without forceobj=True.
-[1m
-File "templates.numba", line 25:[0m
-[1m@jit
-[1mdef render_template(user_id):
-[0m[1m^[0m[0m
-[0m
-  state.func_ir.loc))
-/opt/anaconda/lib/python3.7/site-packages/numba/object_mode_passes.py:188: NumbaDeprecationWarning: [1m
-Fall-back from the nopython compilation path to the object mode compilation path has been detected, this is deprecated behaviour.
-
-For more information visit http://numba.pydata.org/numba-doc/latest/reference/deprecation.html#deprecation-of-object-mode-fall-back-behaviour-when-using-jit
-[1m
-File "templates.numba", line 25:[0m
-[1m@jit
-[1mdef render_template(user_id):
-[0m[1m^[0m[0m
-[0m
-  state.func_ir.loc))
+usage: numba [-h] [--annotate] [--dump-llvm] [--dump-optimized]
+             [--dump-assembly] [--dump-cfg] [--dump-ast]
+             [--annotate-html ANNOTATE_HTML] [-s] [--sys-json SYS_JSON]
+             [filename]
+numba: error: unrecognized arguments: 1000

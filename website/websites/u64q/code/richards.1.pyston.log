@@ -1,9 +1,15 @@
 
- Thu, 29 Oct 2020 14:00:23 GMT
+ Fri, 30 Oct 2020 20:27:15 GMT
 
 COMMAND LINE:
  /usr/bin/pyston richards.pyston 10
 
+PROGRAM FAILED 
+
+
 PROGRAM OUTPUT:
-10
-finished.
+
+  File "richards.pyston", line 140
+    print a,
+          ^
+SyntaxError: Missing parentheses in call to 'print'. Did you mean print(a, end=" ")?

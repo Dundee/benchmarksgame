@@ -1,5 +1,5 @@
 
- Thu, 18 Jun 2020 09:05:08 GMT
+ Fri, 30 Oct 2020 21:36:42 GMT
 
 COMMAND LINE:
  /usr/lib/jvm/java-8-graalvm/bin/graalpython pidigits.graal-5.graal 10000
@@ -9,8 +9,16 @@ PROGRAM FAILED
 
 PROGRAM OUTPUT:
 
-Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
-  File "/home/dundee/workspace/benchmarksgame/bencher/programs/pidigits/pidigits.python3-5.python3", line 12, in <module 'pidigits.python3-5.python3'>
+  File "/home/dundee/work/pybenchmarks/bencher/programs/pidigits/pidigits.python3-5.python3", line 10, in <module 'pidigits.python3-5.python3'>
+    from gmpy2 import xmpz, f_divmod
+  File "/importlib/_bootstrap.py", line 991, in _find_and_load
+ModuleNotFoundError: No module named 'gmpy2'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dundee/work/pybenchmarks/bencher/programs/pidigits/pidigits.python3-5.python3", line 12, in <module 'pidigits.python3-5.python3'>
     from gmpy_cffi import mpz as xmpz
+  File "/importlib/_bootstrap.py", line 991, in _find_and_load
 ModuleNotFoundError: No module named 'gmpy_cffi'

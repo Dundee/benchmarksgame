@@ -1,15 +1,16 @@
 
- Thu, 18 Jun 2020 07:14:42 GMT
+ Fri, 30 Oct 2020 21:33:37 GMT
 
 COMMAND LINE:
- /opt/anaconda/bin/python mandelbrot.numba-6.numba 16000
+ /usr/bin/numba mandelbrot.numba-6.numba 16000
 
 PROGRAM FAILED 
 
 
 PROGRAM OUTPUT:
 
-Traceback (most recent call last):
-  File "mandelbrot.numba-6.numba", line 12, in <module>
-    from numba.decorators import autojit
-ImportError: cannot import name 'autojit' from 'numba.decorators' (/opt/anaconda/lib/python3.7/site-packages/numba/decorators.py)
+usage: numba [-h] [--annotate] [--dump-llvm] [--dump-optimized]
+             [--dump-assembly] [--dump-cfg] [--dump-ast]
+             [--annotate-html ANNOTATE_HTML] [-s] [--sys-json SYS_JSON]
+             [filename]
+numba: error: unrecognized arguments: 16000

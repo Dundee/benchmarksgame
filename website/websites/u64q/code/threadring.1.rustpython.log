@@ -1,5 +1,5 @@
 
- Thu, 18 Jun 2020 09:34:42 GMT
+ Fri, 30 Oct 2020 21:04:49 GMT
 
 COMMAND LINE:
  /usr/bin/rustpython threadring.rustpython 5000000
@@ -8,7 +8,20 @@ PROGRAM FAILED
 
 
 PROGRAM OUTPUT:
+181
+
 Traceback (most recent call last):
-  File "threadring.rustpython", line 12, in <module>
-    def main(n = int(sys.argv[1]), n_threads=503, cycle=itertools.cycle):
-AttributeError: module 'itertools' has no attribute 'cycle'
+  File "threadring.rustpython", line 22, in worker
+    raise StopIteration
+StopIteration
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "threadring.rustpython", line 34, in <module>
+    main()
+  File "threadring.rustpython", line 32, in main
+    break
+  File "threadring.rustpython", line 30, in main
+    n = send(n)
+RuntimeError: generator raised StopIteration

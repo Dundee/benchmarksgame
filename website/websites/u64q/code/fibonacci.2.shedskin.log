@@ -1,8 +1,8 @@
 
- Tue, 06 Oct 2020 15:30:51 GMT
+ Fri, 30 Oct 2020 21:26:46 GMT
 
 MAKE:
-make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fibonacci/tmp“
+make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/fibonacci/tmp“
 cp fibonacci.shedskin-2.shedskin shed.py
 shedskin shed.py
 *** SHED SKIN Python-to-C++ Compiler 0.9.4 ***
@@ -15,12 +15,12 @@ Copyright 2005-2011 Mark Dufour; License GNU GPL version 3 (See LICENSE)
 ********************************100% 
 ********************************100%
 [generating c++ code..]
-[elapsed time: 1.62 seconds]
+[elapsed time: 1.01 seconds]
 make
-make[2]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/fibonacci/tmp“
-g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/workspace/benchmarksgame/bencher/tmp/fibonacci/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -o shed
+make[2]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/fibonacci/tmp“
+g++  -O2 -march=native -Wno-deprecated  -I. -I/usr/lib/python2.7/site-packages/shedskin/lib /home/dundee/work/pybenchmarks/bencher/tmp/fibonacci/tmp/shed.cpp /usr/lib/python2.7/site-packages/shedskin/lib/sys.cpp /usr/lib/python2.7/site-packages/shedskin/lib/re.cpp /usr/lib/python2.7/site-packages/shedskin/lib/builtin.cpp -lgc -lpcre  -o shed
 In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:1216,
-                 from /home/dundee/workspace/benchmarksgame/bencher/tmp/fibonacci/tmp/shed.cpp:1:
+                 from /home/dundee/work/pybenchmarks/bencher/tmp/fibonacci/tmp/shed.cpp:1:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp: In member function ‘__shedskin__::complex& __shedskin__::complex::operator=(double)’:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:72:1: warning: no return statement in function returning non-void [-Wreturn-type]
    71 |     imag = 0.0;
@@ -133,20 +133,20 @@ In file included from /usr/lib/python2.7/site-packages/shedskin/lib/builtin.hpp:
 /usr/lib/python2.7/site-packages/shedskin/lib/builtin/complex.hpp:111:57: warning: no return statement in function returning non-void [-Wreturn-type]
   111 | template<> inline __ss_bool __le(complex a, complex b) {}
       |                                                         ^
-/usr/bin/ld: /tmp/cccW4h42.o: in function `__shed__::__init()':
+/usr/bin/ld: /tmp/ccrO4XTi.o: in function `__shed__::__init()':
 shed.cpp:(.text+0xb5): undefined reference to `GC_throw_bad_alloc()'
-/usr/bin/ld: /tmp/cc0mBxA4.o: in function `__sys__::__init(int, char**)':
-sys.cpp:(.text+0x2f5): undefined reference to `GC_throw_bad_alloc()'
-/usr/bin/ld: sys.cpp:(.text+0x2ff): undefined reference to `GC_throw_bad_alloc()'
-/usr/bin/ld: sys.cpp:(.text+0x309): undefined reference to `GC_throw_bad_alloc()'
-/usr/bin/ld: sys.cpp:(.text+0x313): undefined reference to `GC_throw_bad_alloc()'
-/usr/bin/ld: /tmp/cc0mBxA4.o:sys.cpp:(.text+0x31d): more undefined references to `GC_throw_bad_alloc()' follow
+/usr/bin/ld: /tmp/cc8sdBLk.o: in function `__sys__::__init(int, char**)':
+sys.cpp:(.text+0x305): undefined reference to `GC_throw_bad_alloc()'
+/usr/bin/ld: sys.cpp:(.text+0x30f): undefined reference to `GC_throw_bad_alloc()'
+/usr/bin/ld: sys.cpp:(.text+0x319): undefined reference to `GC_throw_bad_alloc()'
+/usr/bin/ld: sys.cpp:(.text+0x323): undefined reference to `GC_throw_bad_alloc()'
+/usr/bin/ld: /tmp/cc8sdBLk.o:sys.cpp:(.text+0x32d): more undefined references to `GC_throw_bad_alloc()' follow
 collect2: error: ld returned 1 exit status
 make[2]: *** [Makefile:19: shed] Chyba 1
-make[2]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fibonacci/tmp“
-make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:30: fibonacci.shedskin-2.shedskin_run] Chyba 2
-make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/fibonacci/tmp“
-10.67s to complete and log all make actions
+make[2]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/fibonacci/tmp“
+make[1]: *** [/home/dundee/work/pybenchmarks/bencher/makefiles/my.linux.Makefile:30: fibonacci.shedskin-2.shedskin_run] Chyba 2
+make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/fibonacci/tmp“
+7.38s to complete and log all make actions
 
 COMMAND LINE:
  ./shed 1000000

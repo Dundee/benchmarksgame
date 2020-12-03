@@ -1,0 +1,25 @@
+
+ Fri, 30 Oct 2020 21:01:38 GMT
+
+COMMAND LINE:
+ /usr/bin/pyston threadring.pyston-3.pyston 5000000
+
+PROGRAM FAILED 
+
+
+PROGRAM OUTPUT:
+181
+
+Traceback (most recent call last):
+  File "threadring.pyston-3.pyston", line 22, in worker
+    raise StopIteration
+StopIteration
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "threadring.pyston-3.pyston", line 34, in <module>
+    main()
+  File "threadring.pyston-3.pyston", line 30, in main
+    n = send(n)
+RuntimeError: generator raised StopIteration

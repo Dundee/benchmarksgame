@@ -1,26 +1,26 @@
 
- Tue, 06 Oct 2020 16:46:18 GMT
+ Fri, 30 Oct 2020 19:26:46 GMT
 
 MAKE:
-make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp“
+make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp“
 cp knucleotide.cython-2.cython `echo knucleotide.cython-2.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 cythonize -3 -bi `echo knucleotide.cython-2.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
-Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/knucleotide.pyx because it changed.
-[1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/knucleotide.pyx
+Compiling /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/knucleotide.pyx because it changed.
+[1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/knucleotide.pyx
 running build_ext
 building 'knucleotide' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpns4ei3dw/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpns4ei3dw/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpns4ei3dw/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpns4ei3dw/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpns4ei3dw/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpns4ei3dw/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpns4ei3dw/home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpns4ei3dw/home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/knucleotide.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpns4ei3dw/home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/knucleotide.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/tmpns4ei3dw/home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/knucleotide.o -L/usr/lib -o /home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp/knucleotide.cpython-38-x86_64-linux-gnu.so
-make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/knucleotide/tmp“
-3.18s to complete and log all make actions
+creating /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp85_adohd/home
+creating /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp85_adohd/home/dundee
+creating /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp85_adohd/home/dundee/work
+creating /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp85_adohd/home/dundee/work/pybenchmarks
+creating /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp85_adohd/home/dundee/work/pybenchmarks/bencher
+creating /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp85_adohd/home/dundee/work/pybenchmarks/bencher/tmp
+creating /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp85_adohd/home/dundee/work/pybenchmarks/bencher/tmp/knucleotide
+creating /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp85_adohd/home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp
+gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/knucleotide.c -o /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp85_adohd/home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/knucleotide.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp85_adohd/home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/knucleotide.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/knucleotide.cpython-38-x86_64-linux-gnu.so
+make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp“
+2.57s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import knucleotide" 0 < knucleotide-input10000.txt

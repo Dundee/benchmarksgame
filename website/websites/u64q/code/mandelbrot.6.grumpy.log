@@ -1,40 +1,13 @@
 
- Thu, 18 Jun 2020 07:14:43 GMT
+ Fri, 30 Oct 2020 19:33:22 GMT
 
 MAKE:
-make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/mandelbrot/tmp“
+make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/mandelbrot/tmp“
 grumpc mandelbrot.grumpy-6.grumpy > mandelbrot.grumpy-6.grumpy.go
-Traceback (most recent call last):
-  File "/usr/bin/grumpc", line 106, in <module>
-    sys.exit(main(parser.parse_args()))
-  File "/usr/bin/grumpc", line 76, in main
-    visitor.visit(mod)
-  File "/usr/lib/python2.7/site-packages/grumpy/pythonparser/algorithm.py", line 41, in visit
-    return self._visit_one(obj)
-  File "/usr/lib/python2.7/site-packages/grumpy/pythonparser/algorithm.py", line 32, in _visit_one
-    return getattr(self, visit_attr)(node)
-  File "/usr/lib/python2.7/site-packages/grumpy/compiler/stmt.py", line 290, in visit_Module
-    self._visit_each(node.body)
-  File "/usr/lib/python2.7/site-packages/grumpy/compiler/stmt.py", line 657, in _visit_each
-    self.visit(node)
-  File "/usr/lib/python2.7/site-packages/grumpy/pythonparser/algorithm.py", line 41, in visit
-    return self._visit_one(obj)
-  File "/usr/lib/python2.7/site-packages/grumpy/pythonparser/algorithm.py", line 32, in _visit_one
-    return getattr(self, visit_attr)(node)
-  File "/usr/lib/python2.7/site-packages/grumpy/compiler/stmt.py", line 277, in visit_Import
-    for imp in self.block.root.importer.visit(node):
-  File "/usr/lib/python2.7/site-packages/grumpy/pythonparser/algorithm.py", line 41, in visit
-    return self._visit_one(obj)
-  File "/usr/lib/python2.7/site-packages/grumpy/pythonparser/algorithm.py", line 32, in _visit_one
-    return getattr(self, visit_attr)(node)
-  File "/usr/lib/python2.7/site-packages/grumpy/compiler/imputil.py", line 93, in visit_Import
-    imp = self._resolve_import(node, alias.name)
-  File "/usr/lib/python2.7/site-packages/grumpy/compiler/imputil.py", line 158, in _resolve_import
-    raise util.ImportError(node, 'no such module: {}'.format(modname))
-grumpy.compiler.util.ImportError: line 6: no such module: base64
-make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:47: mandelbrot.grumpy-6.grumpy_run] Chyba 1
-make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/mandelbrot/tmp“
-0.13s to complete and log all make actions
+GOPATH not set
+make[1]: *** [/home/dundee/work/pybenchmarks/bencher/makefiles/my.linux.Makefile:47: mandelbrot.grumpy-6.grumpy_run] Chyba 1
+make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/mandelbrot/tmp“
+0.05s to complete and log all make actions
 
 COMMAND LINE:
  ./mandelbrot.grumpy-6.grumpy_run 16000

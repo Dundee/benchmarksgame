@@ -1,26 +1,26 @@
 
- Tue, 06 Oct 2020 16:58:15 GMT
+ Fri, 30 Oct 2020 19:56:58 GMT
 
 MAKE:
-make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
+make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp“
 cp meteor.cython `echo meteor.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 cythonize -3 -bi `echo meteor.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
-Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.pyx because it changed.
-[1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.pyx
+Compiling /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/meteor.pyx because it changed.
+[1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/meteor.pyx
 running build_ext
 building 'meteor' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpq0xit0go/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpq0xit0go/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpq0xit0go/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpq0xit0go/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpq0xit0go/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpq0xit0go/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpq0xit0go/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpq0xit0go/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpq0xit0go/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/tmpq0xit0go/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.o -L/usr/lib -o /home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp/meteor.cpython-38-x86_64-linux-gnu.so
-make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/meteor/tmp“
-4.94s to complete and log all make actions
+creating /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmpviiey6bs/home
+creating /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmpviiey6bs/home/dundee
+creating /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmpviiey6bs/home/dundee/work
+creating /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmpviiey6bs/home/dundee/work/pybenchmarks
+creating /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmpviiey6bs/home/dundee/work/pybenchmarks/bencher
+creating /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmpviiey6bs/home/dundee/work/pybenchmarks/bencher/tmp
+creating /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmpviiey6bs/home/dundee/work/pybenchmarks/bencher/tmp/meteor
+creating /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmpviiey6bs/home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp
+gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/meteor.c -o /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmpviiey6bs/home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/meteor.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmpviiey6bs/home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/meteor.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/meteor.cpython-38-x86_64-linux-gnu.so
+make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp“
+3.82s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import meteor" 2098

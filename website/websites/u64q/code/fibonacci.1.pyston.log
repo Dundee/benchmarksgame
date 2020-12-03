@@ -1,5 +1,5 @@
 
- Thu, 29 Oct 2020 13:57:11 GMT
+ Fri, 30 Oct 2020 19:08:23 GMT
 
 COMMAND LINE:
  /usr/bin/pyston fibonacci.pyston 1000000
@@ -9,7 +9,7 @@ PROGRAM FAILED
 
 PROGRAM OUTPUT:
 
-Traceback (most recent call last):
-  File "fibonacci.pyston", line 1, in <module>
-    import numpy
-ModuleNotFoundError: No module named 'numpy'
+  File "fibonacci.pyston", line 8
+    print fib(int(sys.argv[1]))
+          ^
+SyntaxError: invalid syntax

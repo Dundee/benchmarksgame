@@ -1,26 +1,26 @@
 
- Tue, 06 Oct 2020 17:00:41 GMT
+ Fri, 30 Oct 2020 20:19:56 GMT
 
 MAKE:
-make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp“
+make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp“
 cp regexdna.cython `echo regexdna.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 cythonize -3 -bi `echo regexdna.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
-Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/regexdna.pyx because it changed.
-[1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/regexdna.pyx
+Compiling /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/regexdna.pyx because it changed.
+[1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/regexdna.pyx
 running build_ext
 building 'regexdna' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/tmp3f2ivw9q/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/tmp3f2ivw9q/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/tmp3f2ivw9q/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/tmp3f2ivw9q/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/tmp3f2ivw9q/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/tmp3f2ivw9q/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/tmp3f2ivw9q/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/tmp3f2ivw9q/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/regexdna.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/tmp3f2ivw9q/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/regexdna.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/tmp3f2ivw9q/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/regexdna.o -L/usr/lib -o /home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp/regexdna.cpython-38-x86_64-linux-gnu.so
-make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/regexdna/tmp“
-1.41s to complete and log all make actions
+creating /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmp1jlb7mt9/home
+creating /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmp1jlb7mt9/home/dundee
+creating /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmp1jlb7mt9/home/dundee/work
+creating /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmp1jlb7mt9/home/dundee/work/pybenchmarks
+creating /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmp1jlb7mt9/home/dundee/work/pybenchmarks/bencher
+creating /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmp1jlb7mt9/home/dundee/work/pybenchmarks/bencher/tmp
+creating /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmp1jlb7mt9/home/dundee/work/pybenchmarks/bencher/tmp/regexdna
+creating /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmp1jlb7mt9/home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp
+gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/regexdna.c -o /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmp1jlb7mt9/home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/regexdna.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmp1jlb7mt9/home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/regexdna.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/regexdna.cpython-38-x86_64-linux-gnu.so
+make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp“
+1.09s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import regexdna" 0 < regexdna-input10000.txt

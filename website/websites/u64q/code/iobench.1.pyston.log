@@ -1,19 +1,15 @@
 
- Thu, 29 Oct 2020 13:57:42 GMT
+ Fri, 30 Oct 2020 19:19:31 GMT
 
 COMMAND LINE:
  /usr/bin/pyston iobench.pyston 1
 
+PROGRAM FAILED 
+
+
 PROGRAM OUTPUT NOT CHECKED:
-<function fread at 0x7f56dce97ee0> 100 bytes, 0.78us per write
-<function fwrite at 0x7f56dce97e50> 100 bytes, 0.77us per write
-<function fread at 0x7f56dce97ee0> 1000 bytes, 0.85us per write
-<function fwrite at 0x7f56dce97e50> 1000 bytes, 0.81us per write
-<function fread at 0x7f56dce97ee0> 10000 bytes, 1.28us per write
-<function fwrite at 0x7f56dce97e50> 10000 bytes, 0.98us per write
-<function file_read at 0x7f56dcea6040> 100 bytes, 0.13us per write
-<function file_write at 0x7f56dce97f70> 100 bytes, 0.13us per write
-<function file_read at 0x7f56dcea6040> 1000 bytes, 0.53us per write
-<function file_write at 0x7f56dce97f70> 1000 bytes, 0.30us per write
-<function file_read at 0x7f56dcea6040> 10000 bytes, 3.29us per write
-<function file_write at 0x7f56dce97f70> 10000 bytes, 1.31us per write
+
+  File "iobench.pyston", line 6
+    print func.__code__.co_name, "%d bytes, %.2fus per write" % (
+          ^
+SyntaxError: invalid syntax

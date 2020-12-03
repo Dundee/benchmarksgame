@@ -59,7 +59,7 @@ function MkMenuForm($Tests,$SelectedTest,$Langs,$SelectedLang,$Id=NULL){
    }
 
    $datasets = array(
-      array('u64q','x64 dual-core'),
+      array('u64q','x64 octa-core'),
    );
 
    echo '<select name="data">', "\n";

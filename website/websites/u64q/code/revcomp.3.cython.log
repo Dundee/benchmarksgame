@@ -1,26 +1,26 @@
 
- Tue, 06 Oct 2020 17:06:09 GMT
+ Fri, 30 Oct 2020 20:25:38 GMT
 
 MAKE:
-make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
+make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp“
 cp revcomp.cython-3.cython `echo revcomp.cython-3.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 cythonize -3 -bi `echo revcomp.cython-3.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
-Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/revcomp.pyx because it changed.
-[1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/revcomp.pyx
+Compiling /home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/revcomp.pyx because it changed.
+[1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/revcomp.pyx
 running build_ext
 building 'revcomp' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp8qd90pes/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp8qd90pes/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp8qd90pes/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp8qd90pes/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp8qd90pes/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp8qd90pes/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp8qd90pes/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp8qd90pes/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/revcomp.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp8qd90pes/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/revcomp.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/tmp8qd90pes/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/revcomp.o -L/usr/lib -o /home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp/revcomp.cpython-38-x86_64-linux-gnu.so
-make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/revcomp/tmp“
-1.19s to complete and log all make actions
+creating /home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/tmp2ncjakiq/home
+creating /home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/tmp2ncjakiq/home/dundee
+creating /home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/tmp2ncjakiq/home/dundee/work
+creating /home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/tmp2ncjakiq/home/dundee/work/pybenchmarks
+creating /home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/tmp2ncjakiq/home/dundee/work/pybenchmarks/bencher
+creating /home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/tmp2ncjakiq/home/dundee/work/pybenchmarks/bencher/tmp
+creating /home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/tmp2ncjakiq/home/dundee/work/pybenchmarks/bencher/tmp/revcomp
+creating /home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/tmp2ncjakiq/home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp
+gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/revcomp.c -o /home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/tmp2ncjakiq/home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/revcomp.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/tmp2ncjakiq/home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/revcomp.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp/revcomp.cpython-38-x86_64-linux-gnu.so
+make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp“
+0.87s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import revcomp" 0 < revcomp-input1000.txt

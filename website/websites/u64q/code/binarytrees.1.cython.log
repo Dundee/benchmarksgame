@@ -1,31 +1,23 @@
 
- Tue, 06 Oct 2020 15:09:50 GMT
+ Thu, 29 Oct 2020 15:09:34 GMT
 
 MAKE:
-make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp“
+make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/binarytrees/tmp“
 cp binarytrees.cython `echo binarytrees.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 cythonize -3 -bi `echo binarytrees.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
-Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp/binarytrees.pyx because it changed.
-[1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp/binarytrees.pyx
-running build_ext
-building 'binarytrees' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp/tmpfllr0l4w/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp/tmpfllr0l4w/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp/tmpfllr0l4w/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp/tmpfllr0l4w/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp/tmpfllr0l4w/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp/tmpfllr0l4w/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp/tmpfllr0l4w/home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp/tmpfllr0l4w/home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp/binarytrees.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp/tmpfllr0l4w/home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp/binarytrees.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp/tmpfllr0l4w/home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp/binarytrees.o -L/usr/lib -o /home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp/binarytrees.cpython-38-x86_64-linux-gnu.so
-make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/binarytrees/tmp“
-3.80s to complete and log all make actions
+/bin/sh: cythonize: příkaz nenalezen
+make[1]: *** [/home/dundee/work/pybenchmarks/bencher/makefiles/my.linux.Makefile:21: binarytrees.cython_run] Chyba 127
+make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/binarytrees/tmp“
+0.02s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import binarytrees" 14
 
-TIMED OUT after 300s
+PROGRAM FAILED 
 
 
 PROGRAM OUTPUT:
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'binarytrees'

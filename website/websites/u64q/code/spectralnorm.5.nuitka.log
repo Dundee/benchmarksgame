@@ -1,12 +1,12 @@
 
- Thu, 18 Jun 2020 09:27:56 GMT
+ Fri, 30 Oct 2020 20:28:36 GMT
 
 MAKE:
-make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
+make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp“
 nuitka3 --remove-output spectralnorm.nuitka-5.nuitka
 cp spectralnorm.nuitka-5.nuitka.bin spectralnorm.nuitka-5.nuitka_run
-make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
-9.13s to complete and log all make actions
+make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp“
+5.76s to complete and log all make actions
 
 COMMAND LINE:
  ./spectralnorm.nuitka-5.nuitka_run 550
@@ -14,7 +14,7 @@ COMMAND LINE:
 PROGRAM OUTPUT:
 1.274224125
 
-Exception ignored in: <function Pool.__del__ at 0x7fcb42757280>
+Exception ignored in: <function Pool.__del__ at 0x7fbc4b9e5040>
 Traceback (most recent call last):
   File "/usr/lib/python3.8/multiprocessing/pool.py", line 268, in __del__
   File "/usr/lib/python3.8/multiprocessing/queues.py", line 368, in put

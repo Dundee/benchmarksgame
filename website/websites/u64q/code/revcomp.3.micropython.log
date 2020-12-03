@@ -1,5 +1,5 @@
 
- Thu, 18 Jun 2020 09:16:08 GMT
+ Fri, 30 Oct 2020 20:25:14 GMT
 
 COMMAND LINE:
  /usr/bin/micropython revcomp.micropython-3.micropython 0 < revcomp-input1000.txt
@@ -10,5 +10,5 @@ PROGRAM FAILED
 PROGRAM OUTPUT:
 
 Traceback (most recent call last):
-  File "revcomp.micropython-3.micropython", line 11, in <module>
-AttributeError: type object 'bytes' has no attribute 'maketrans'
+  File "revcomp.micropython-3.micropython", line 8, in <module>
+ImportError: no module named 'string'

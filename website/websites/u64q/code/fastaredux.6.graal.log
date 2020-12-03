@@ -1,5 +1,5 @@
 
- Wed, 17 Jun 2020 23:58:09 GMT
+ Fri, 30 Oct 2020 21:25:36 GMT
 
 COMMAND LINE:
  /usr/lib/jvm/java-8-graalvm/bin/graalpython fastaredux.graal-6.graal 2500000
@@ -177,14 +177,13 @@ GACCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAATACAAAAATTAGCCGGG
 CGTGGTGGCGCGCGCCTGTAATCCCAGCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTG
 AACCCGGGAGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCCAGCCTGGGCG
 ACAGAGCGAGACTCCGTCTCAAAAAGGCCGG
-Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
-  File "/home/dundee/workspace/benchmarksgame/bencher/programs/fastaredux/fastaredux.python3-6.python3", line 105, in <module 'fastaredux.python3-6.python3'>
+  File "/home/dundee/work/pybenchmarks/bencher/programs/fastaredux/fastaredux.python3-6.python3", line 105, in <module 'fastaredux.python3-6.python3'>
     main()
-  File "/home/dundee/workspace/benchmarksgame/bencher/programs/fastaredux/fastaredux.python3-6.python3", line 100, in main
+  File "/home/dundee/work/pybenchmarks/bencher/programs/fastaredux/fastaredux.python3-6.python3", line 100, in main
     randomFasta(iub, n*3)
-  File "/home/dundee/workspace/benchmarksgame/bencher/programs/fastaredux/fastaredux.python3-6.python3", line 73, in randomFasta
+  File "/home/dundee/work/pybenchmarks/bencher/programs/fastaredux/fastaredux.python3-6.python3", line 73, in randomFasta
     lut = makeLookupTable(table)
-  File "/home/dundee/workspace/benchmarksgame/bencher/programs/fastaredux/fastaredux.python3-6.python3", line 55, in makeLookupTable
+  File "/home/dundee/work/pybenchmarks/bencher/programs/fastaredux/fastaredux.python3-6.python3", line 55, in makeLookupTable
     return array.array("u", [chars[bb(probs, i / imf)] for i in range(IM)])
 ValueError: bad typecode (must be i, d, b, B, or l)

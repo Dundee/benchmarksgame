@@ -1,5 +1,5 @@
 
- Thu, 18 Jun 2020 09:16:20 GMT
+ Fri, 30 Oct 2020 20:25:25 GMT
 
 COMMAND LINE:
  /usr/bin/rustpython revcomp.rustpython-4.rustpython 0 < revcomp-input1000.txt
@@ -8,7 +8,10 @@ PROGRAM FAILED
 
 
 PROGRAM OUTPUT:
+
 Traceback (most recent call last):
-  File "revcomp.rustpython-4.rustpython", line 13, in <module>
-    write=sys.stdout.buffer.write, nl=b'\n'):
-AttributeError: module 'sys' has no attribute 'stdout'
+  File "revcomp.rustpython-4.rustpython", line 33, in <module>
+    main()
+  File "revcomp.rustpython-4.rustpython", line 26, in main
+    sys.stdin = sys.stdin.detach()
+AttributeError: 'TextIOWrapper' object has no attribute 'detach'

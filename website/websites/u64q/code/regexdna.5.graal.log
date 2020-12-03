@@ -1,5 +1,5 @@
 
- Thu, 18 Jun 2020 09:10:11 GMT
+ Fri, 30 Oct 2020 21:36:57 GMT
 
 COMMAND LINE:
  /usr/lib/jvm/java-8-graalvm/bin/graalpython regexdna.graal-5.graal 0 < regexdna-input10000.txt
@@ -9,10 +9,9 @@ PROGRAM FAILED
 
 PROGRAM OUTPUT:
 
-Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
-  File "/home/dundee/workspace/benchmarksgame/bencher/programs/regexdna/regexdna.python3-5.python3", line 42, in <module 'regexdna.python3-5.python3'>
+  File "/home/dundee/work/pybenchmarks/bencher/programs/regexdna/regexdna.python3-5.python3", line 42, in <module 'regexdna.python3-5.python3'>
     main()
-  File "/home/dundee/workspace/benchmarksgame/bencher/programs/regexdna/regexdna.python3-5.python3", line 29, in main
+  File "/home/dundee/work/pybenchmarks/bencher/programs/regexdna/regexdna.python3-5.python3", line 29, in main
     write(f + b' ' +bytes(str(len(findall(f, seq))),encoding='latin1') + b'\n')
 TypeError: __new__() got an unexpected keyword argument 'encoding'

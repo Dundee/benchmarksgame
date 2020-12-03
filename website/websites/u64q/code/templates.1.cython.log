@@ -1,34 +1,37 @@
 
- Tue, 06 Oct 2020 17:07:30 GMT
+ Fri, 30 Oct 2020 20:46:53 GMT
 
 MAKE:
-make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp“
+make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp“
 cp templates.cython `echo templates.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 cythonize -3 -bi `echo templates.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
-Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp/templates.pyx because it changed.
-[1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp/templates.pyx
+Compiling /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/templates.pyx because it changed.
+[1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/templates.pyx
 running build_ext
 building 'templates' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp/tmpr4uce83u/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp/tmpr4uce83u/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp/tmpr4uce83u/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp/tmpr4uce83u/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp/tmpr4uce83u/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp/tmpr4uce83u/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp/tmpr4uce83u/home/dundee/workspace/benchmarksgame/bencher/tmp/templates
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp/tmpr4uce83u/home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp/templates.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp/tmpr4uce83u/home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp/templates.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp/tmpr4uce83u/home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp/templates.o -L/usr/lib -o /home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp/templates.cpython-38-x86_64-linux-gnu.so
-make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/templates/tmp“
-1.36s to complete and log all make actions
+creating /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmpys3y_4rb/home
+creating /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmpys3y_4rb/home/dundee
+creating /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmpys3y_4rb/home/dundee/work
+creating /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmpys3y_4rb/home/dundee/work/pybenchmarks
+creating /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmpys3y_4rb/home/dundee/work/pybenchmarks/bencher
+creating /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmpys3y_4rb/home/dundee/work/pybenchmarks/bencher/tmp
+creating /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmpys3y_4rb/home/dundee/work/pybenchmarks/bencher/tmp/templates
+creating /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmpys3y_4rb/home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp
+gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/templates.c -o /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmpys3y_4rb/home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/templates.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmpys3y_4rb/home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/templates.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/templates.cpython-38-x86_64-linux-gnu.so
+make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp“
+1.04s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import templates" 1000
 
+PROGRAM FAILED 
+
+
 PROGRAM OUTPUT:
 
-<ul>
-
-  <li><a href="/user/999">SomeUsername</a></li>
-
-</ul>
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "templates.pyx", line 3, in init templates
+    from jinja2 import Template
+ModuleNotFoundError: No module named 'jinja2'

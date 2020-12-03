@@ -1,5 +1,5 @@
 
- Thu, 18 Jun 2020 09:29:33 GMT
+ Thu, 03 Dec 2020 23:11:56 GMT
 
 COMMAND LINE:
  /usr/bin/python3 threadring.python3-3.python3 5000000
@@ -11,15 +11,15 @@ PROGRAM OUTPUT:
 181
 
 Traceback (most recent call last):
-  File "threadring.python3-3.python3", line 22, in worker
+  File "/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.python3-3.python3", line 22, in worker
     raise StopIteration
 StopIteration
 
 The above exception was the direct cause of the following exception:
 
 Traceback (most recent call last):
-  File "threadring.python3-3.python3", line 34, in <module>
+  File "/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.python3-3.python3", line 34, in <module>
     main()
-  File "threadring.python3-3.python3", line 30, in main
+  File "/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.python3-3.python3", line 30, in main
     n = send(n)
 RuntimeError: generator raised StopIteration

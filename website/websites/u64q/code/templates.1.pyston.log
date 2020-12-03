@@ -1,13 +1,15 @@
 
- Thu, 29 Oct 2020 14:05:41 GMT
+ Fri, 30 Oct 2020 20:46:49 GMT
 
 COMMAND LINE:
  /usr/bin/pyston templates.pyston 1000
 
+PROGRAM FAILED 
+
+
 PROGRAM OUTPUT:
 
-<ul>
-
-  <li><a href="/user/999">SomeUsername</a></li>
-
-</ul>
+  File "templates.pyston", line 35
+    print res
+          ^
+SyntaxError: Missing parentheses in call to 'print'. Did you mean print(res)?

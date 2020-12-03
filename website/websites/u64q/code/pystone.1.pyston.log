@@ -1,9 +1,15 @@
 
- Thu, 29 Oct 2020 14:00:22 GMT
+ Fri, 30 Oct 2020 20:19:06 GMT
 
 COMMAND LINE:
  /usr/bin/pyston pystone.pyston 50000
 
+PROGRAM FAILED 
+
+
 PROGRAM OUTPUT:
-50000
-OK
+
+  File "pystone.pyston", line 62
+    print loops
+          ^
+SyntaxError: Missing parentheses in call to 'print'. Did you mean print(loops)?

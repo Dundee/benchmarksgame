@@ -1,5 +1,5 @@
 
- Thu, 18 Jun 2020 09:16:43 GMT
+ Fri, 30 Oct 2020 20:25:33 GMT
 
 COMMAND LINE:
  /usr/bin/rustpython revcomp.rustpython-6.rustpython 0 < revcomp-input1000.txt
@@ -8,7 +8,8 @@ PROGRAM FAILED
 
 
 PROGRAM OUTPUT:
+
 Traceback (most recent call last):
-  File "revcomp.rustpython-6.rustpython", line 6, in <module>
-    from sys import stdin, stdout
-ImportError: cannot import name 'stdin'
+  File "revcomp.rustpython-6.rustpython", line 7, in <module>
+    from os import cpu_count
+ModuleNotFoundError: No module named 'os'

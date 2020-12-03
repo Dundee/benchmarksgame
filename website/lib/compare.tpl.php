@@ -45,7 +45,7 @@ function MkHeadToHeadMenuForm($Tests,$Langs,$SelectedLang,$SelectedLang2){
    echo '</select>', "\n";
 
    $datasets = array(
-      array('u64q','x64 dual-core'),
+      array('u64q','x64 octa-core'),
    );
 
    echo '<select name="data">', "\n";

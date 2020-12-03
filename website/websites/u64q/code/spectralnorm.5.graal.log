@@ -1,5 +1,5 @@
 
- Thu, 18 Jun 2020 09:28:12 GMT
+ Fri, 30 Oct 2020 21:38:21 GMT
 
 COMMAND LINE:
  /usr/lib/jvm/java-8-graalvm/bin/graalpython spectralnorm.graal-5.graal 550
@@ -9,9 +9,8 @@ PROGRAM FAILED
 
 PROGRAM OUTPUT:
 
-Please note: This Python implementation is in the very early stages, and can run little more than basic benchmarks at this point.
 Traceback (most recent call last):
-  File "/home/dundee/workspace/benchmarksgame/bencher/programs/spectralnorm/spectralnorm.python3-5.python3", line 60, in <module 'spectralnorm.python3-5.python3'>
+  File "/home/dundee/work/pybenchmarks/bencher/programs/spectralnorm/spectralnorm.python3-5.python3", line 60, in <module 'spectralnorm.python3-5.python3'>
     pool = Pool(processes=4)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 119, in Pool
     return Pool(processes, initializer, initargs, maxtasksperchild,
@@ -31,6 +30,10 @@ Traceback (most recent call last):
     self._launch(process_obj)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 39, in _launch
     from . import resource_tracker
+  File "/importlib/_bootstrap.py", line 1042, in _handle_fromlist
+  File "/importlib/_bootstrap.py", line 991, in _find_and_load
+  File "/importlib/_bootstrap.py", line 671, in _load_unlocked
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/resource_tracker.py", line 38, in <module 'resource_tracker.py'>
     import _posixshmem
+  File "/importlib/_bootstrap.py", line 991, in _find_and_load
 ModuleNotFoundError: No module named '_posixshmem'

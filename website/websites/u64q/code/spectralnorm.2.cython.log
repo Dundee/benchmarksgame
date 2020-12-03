@@ -1,26 +1,26 @@
 
- Tue, 06 Oct 2020 17:07:16 GMT
+ Fri, 30 Oct 2020 20:46:06 GMT
 
 MAKE:
-make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
+make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp“
 cp spectralnorm.cython-2.cython `echo spectralnorm.cython-2.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 cythonize -3 -bi `echo spectralnorm.cython-2.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
-Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx because it changed.
-[1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx
+Compiling /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx because it changed.
+[1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx
 running build_ext
 building 'spectralnorm' extension
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpr2vbbwyu/home
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpr2vbbwyu/home/dundee
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpr2vbbwyu/home/dundee/workspace
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpr2vbbwyu/home/dundee/workspace/benchmarksgame
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpr2vbbwyu/home/dundee/workspace/benchmarksgame/bencher
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpr2vbbwyu/home/dundee/workspace/benchmarksgame/bencher/tmp
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpr2vbbwyu/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm
-creating /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpr2vbbwyu/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.c -o /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpr2vbbwyu/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/tmpr2vbbwyu/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.o -L/usr/lib -o /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.cpython-38-x86_64-linux-gnu.so
-make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
-1.40s to complete and log all make actions
+creating /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/tmp9bksh139/home
+creating /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/tmp9bksh139/home/dundee
+creating /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/tmp9bksh139/home/dundee/work
+creating /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/tmp9bksh139/home/dundee/work/pybenchmarks
+creating /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/tmp9bksh139/home/dundee/work/pybenchmarks/bencher
+creating /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/tmp9bksh139/home/dundee/work/pybenchmarks/bencher/tmp
+creating /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/tmp9bksh139/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm
+creating /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/tmp9bksh139/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp
+gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/spectralnorm.c -o /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/tmp9bksh139/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/spectralnorm.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/tmp9bksh139/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/spectralnorm.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/spectralnorm.cpython-38-x86_64-linux-gnu.so
+make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp“
+1.06s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import spectralnorm" 550

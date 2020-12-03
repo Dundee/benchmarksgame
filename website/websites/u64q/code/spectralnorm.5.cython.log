@@ -1,8 +1,8 @@
 
- Tue, 06 Oct 2020 17:07:14 GMT
+ Fri, 30 Oct 2020 20:27:18 GMT
 
 MAKE:
-make[1]: Vstupuje se do adresáře „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
+make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp“
 cp spectralnorm.cython-5.cython `echo spectralnorm.cython-5.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 cythonize -3 -bi `echo spectralnorm.cython-5.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 
@@ -33,8 +33,8 @@ Error compiling Cython file:
 ------------------------------------------------------------
 
 spectralnorm.pyx:52:8: Cannot assign type 'float' to 'int'
-Compiling /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx because it changed.
-[1/1] Cythonizing /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx
+Compiling /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx because it changed.
+[1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx
 Traceback (most recent call last):
   File "/usr/bin/cythonize", line 33, in <module>
     sys.exit(load_entry_point('Cython==0.29.21', 'console_scripts', 'cythonize')())
@@ -46,10 +46,10 @@ Traceback (most recent call last):
     cythonize_one(*args)
   File "/usr/lib/python3.8/site-packages/Cython/Build/Dependencies.py", line 1225, in cythonize_one
     raise CompileError(None, pyx_file)
-Cython.Compiler.Errors.CompileError: /home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx
-make[1]: *** [/home/dundee/workspace/benchmarksgame/bencher/makefiles/my.linux.Makefile:21: spectralnorm.cython-5.cython_run] Chyba 1
-make[1]: Opouští se adresář „/home/dundee/workspace/benchmarksgame/bencher/tmp/spectralnorm/tmp“
-0.32s to complete and log all make actions
+Cython.Compiler.Errors.CompileError: /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx
+make[1]: *** [/home/dundee/work/pybenchmarks/bencher/makefiles/my.linux.Makefile:21: spectralnorm.cython-5.cython_run] Chyba 1
+make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp“
+0.25s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import spectralnorm" 550
