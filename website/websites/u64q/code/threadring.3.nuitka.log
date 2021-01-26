@@ -1,12 +1,21 @@
 
- Fri, 30 Oct 2020 21:01:37 GMT
+ Mon, 25 Jan 2021 21:46:03 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp“
 nuitka3 --remove-output threadring.nuitka-3.nuitka
+Nuitka:INFO: Starting Python compilation.
+Nuitka:INFO: Completed Python level compilation and optimization.
+Nuitka:INFO: Generating source code for C backend compiler.
+Nuitka:INFO: Running data composer tool for optimal constant value handling.
+Nuitka:INFO: Running C level backend compilation via Scons.
+Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
+Nuitka-Scons:WARNING: You are not using ccache.
+Nuitka:INFO: Removing build directory 'threadring.nuitka-3.nuitka.build'.
+Nuitka:INFO: Successfully created 'threadring.nuitka-3.nuitka.bin'.
 cp threadring.nuitka-3.nuitka.bin threadring.nuitka-3.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp“
-6.27s to complete and log all make actions
+6.77s to complete and log all make actions
 
 COMMAND LINE:
  ./threadring.nuitka-3.nuitka_run 5000000

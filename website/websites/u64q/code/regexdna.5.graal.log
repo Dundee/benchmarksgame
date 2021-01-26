@@ -1,5 +1,5 @@
 
- Fri, 30 Oct 2020 21:36:57 GMT
+ Mon, 25 Jan 2021 21:36:02 GMT
 
 COMMAND LINE:
  /usr/lib/jvm/java-8-graalvm/bin/graalpython regexdna.graal-5.graal 0 < regexdna-input10000.txt
@@ -14,4 +14,4 @@ Traceback (most recent call last):
     main()
   File "/home/dundee/work/pybenchmarks/bencher/programs/regexdna/regexdna.python3-5.python3", line 29, in main
     write(f + b' ' +bytes(str(len(findall(f, seq))),encoding='latin1') + b'\n')
-TypeError: __new__() got an unexpected keyword argument 'encoding'
+TypeError: __init__() got an unexpected keyword argument 'encoding'

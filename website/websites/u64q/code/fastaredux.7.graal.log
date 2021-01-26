@@ -1,11 +1,8 @@
 
- Fri, 30 Oct 2020 21:25:51 GMT
+ Mon, 25 Jan 2021 21:21:43 GMT
 
 COMMAND LINE:
  /usr/lib/jvm/java-8-graalvm/bin/graalpython fastaredux.graal-7.graal 2500000
-
-PROGRAM FAILED 
-
 
 (TRUNCATED) PROGRAM OUTPUT:
 >ONE Homo sapiens alu
@@ -177,13 +174,3 @@ GACCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAATACAAAAATTAGCCGGG
 CGTGGTGGCGCGCGCCTGTAATCCCAGCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTG
 AACCCGGGAGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCCAGCCTGGGCG
 ACAGAGCGAGACTCCGTCTCAAAAAGGCCGG
-Traceback (most recent call last):
-  File "/home/dundee/work/pybenchmarks/bencher/programs/fastaredux/fastaredux.python3-7.python3", line 108, in <module 'fastaredux.python3-7.python3'>
-    main()
-  File "/home/dundee/work/pybenchmarks/bencher/programs/fastaredux/fastaredux.python3-7.python3", line 103, in main
-    randomFasta(iub, n*3)
-  File "/home/dundee/work/pybenchmarks/bencher/programs/fastaredux/fastaredux.python3-7.python3", line 79, in randomFasta
-    lut = makeLookupTable(table)
-  File "/home/dundee/work/pybenchmarks/bencher/programs/fastaredux/fastaredux.python3-7.python3", line 62, in makeLookupTable
-    return array.array("u", [chars[bb(probs, i / imf)] for i in range(IM)])
-ValueError: bad typecode (must be i, d, b, B, or l)

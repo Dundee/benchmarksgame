@@ -1,16 +1,31 @@
 
- Thu, 29 Oct 2020 22:07:51 GMT
+ Mon, 25 Jan 2021 21:04:22 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/binarytrees/tmp“
 nuitka3 --remove-output binarytrees.nuitka-6.nuitka
-make[1]: nuitka3: Adresář nebo soubor neexistuje
-make[1]: *** [/home/dundee/work/pybenchmarks/bencher/makefiles/my.linux.Makefile:38: binarytrees.nuitka-6.nuitka_run] Chyba 127
+Nuitka:INFO: Starting Python compilation.
+Nuitka:INFO: Completed Python level compilation and optimization.
+Nuitka:INFO: Generating source code for C backend compiler.
+Nuitka:INFO: Running data composer tool for optimal constant value handling.
+Nuitka:INFO: Running C level backend compilation via Scons.
+Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
+Nuitka-Scons:WARNING: You are not using ccache.
+Nuitka:INFO: Removing build directory 'binarytrees.nuitka-6.nuitka.build'.
+Nuitka:INFO: Successfully created 'binarytrees.nuitka-6.nuitka.bin'.
+cp binarytrees.nuitka-6.nuitka.bin binarytrees.nuitka-6.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/binarytrees/tmp“
-0.01s to complete and log all make actions
+6.63s to complete and log all make actions
 
 COMMAND LINE:
  ./binarytrees.nuitka-6.nuitka_run 14
 
-MAKE ERROR 
-
+PROGRAM OUTPUT:
+stretch tree of depth 15	 check: -1
+32768	 trees of depth 4	 check: -32768
+8192	 trees of depth 6	 check: -8192
+2048	 trees of depth 8	 check: -2048
+512	 trees of depth 10	 check: -512
+128	 trees of depth 12	 check: -128
+32	 trees of depth 14	 check: -32
+long lived tree of depth 14	 check: -1

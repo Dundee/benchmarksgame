@@ -1,5 +1,5 @@
 
- Fri, 30 Oct 2020 21:24:58 GMT
+ Mon, 25 Jan 2021 21:17:36 GMT
 
 COMMAND LINE:
  /usr/lib/jvm/java-8-graalvm/bin/graalpython fasta.graal-5.graal 2500000
@@ -16,8 +16,6 @@ Traceback (most recent call last):
     seed = RawValue('f', 42)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 124, in RawValue
     from .sharedctypes import RawValue
-  File "/importlib/_bootstrap.py", line 991, in _find_and_load
-  File "/importlib/_bootstrap.py", line 671, in _load_unlocked
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/sharedctypes.py", line 26, in <module 'sharedctypes.py'>
     'c': ctypes.c_char,     'u': ctypes.c_wchar,
 AttributeError: module 'ctypes' has no attribute 'c_wchar'

@@ -1,8 +1,51 @@
 
- Fri, 30 Oct 2020 20:46:04 GMT
+ Mon, 25 Jan 2021 21:37:33 GMT
 
 COMMAND LINE:
  /usr/bin/pyston spectralnorm.pyston-3.pyston 550
 
+PROGRAM FAILED 
+
+
 PROGRAM OUTPUT:
-1.274224125
+
+Traceback (most recent call last):
+  File "/usr/lib/pyston3.8/site-packages/numpy/core/__init__.py", line 22, in <module>
+    from . import multiarray
+  File "/usr/lib/pyston3.8/site-packages/numpy/core/multiarray.py", line 12, in <module>
+    from . import overrides
+  File "/usr/lib/pyston3.8/site-packages/numpy/core/overrides.py", line 7, in <module>
+    from numpy.core._multiarray_umath import (
+ModuleNotFoundError: No module named 'numpy.core._multiarray_umath'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "spectralnorm.pyston-3.pyston", line 15, in <module>
+    import numpy
+  File "/usr/lib/pyston3.8/site-packages/numpy/__init__.py", line 140, in <module>
+    from . import core
+  File "/usr/lib/pyston3.8/site-packages/numpy/core/__init__.py", line 48, in <module>
+    raise ImportError(msg)
+ImportError: 
+
+IMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!
+
+Importing the numpy C-extensions failed. This error can happen for
+many reasons, often due to issues with your setup or how NumPy was
+installed.
+
+We have compiled some common reasons and troubleshooting tips at:
+
+    https://numpy.org/devdocs/user/troubleshooting-importerror.html
+
+Please note and check the following:
+
+  * The Python version is: Python3.8 from "/usr/bin/pyston"
+  * The NumPy version is: "1.19.3"
+
+and make sure that they are the versions you expect.
+Please carefully study the documentation linked above for further help.
+
+Original error was: No module named 'numpy.core._multiarray_umath'
+

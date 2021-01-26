@@ -1,12 +1,21 @@
 
- Fri, 30 Oct 2020 20:27:14 GMT
+ Mon, 25 Jan 2021 21:36:44 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/richards/tmp“
 nuitka3 --remove-output richards.nuitka
+Nuitka:INFO: Starting Python compilation.
+Nuitka:INFO: Completed Python level compilation and optimization.
+Nuitka:INFO: Generating source code for C backend compiler.
+Nuitka:INFO: Running data composer tool for optimal constant value handling.
+Nuitka:INFO: Running C level backend compilation via Scons.
+Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
+Nuitka-Scons:WARNING: You are not using ccache.
+Nuitka:INFO: Removing build directory 'richards.nuitka.build'.
+Nuitka:INFO: Successfully created 'richards.nuitka.bin'.
 cp richards.nuitka.bin richards.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/richards/tmp“
-6.24s to complete and log all make actions
+7.96s to complete and log all make actions
 
 COMMAND LINE:
  ./richards.nuitka_run 10

@@ -1,13 +1,22 @@
 
- Fri, 30 Oct 2020 20:46:24 GMT
+ Mon, 25 Jan 2021 21:37:20 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp“
 nuitka3 --remove-output spectralnorm.nuitka-2.nuitka
-Nuitka:WARNING:Not recursing to 'numpy' (/usr/lib/python3.8/site-packages/numpy), please specify --nofollow-imports (do not warn), --follow-imports (recurse to all), --nofollow-import-to=numpy (ignore it), --follow-import-to=numpy (recurse to it) to change.
+Nuitka:INFO: Starting Python compilation.
+Nuitka-Inclusion:WARNING: Not recursing to 'numpy' (/usr/lib/python3.9/site-packages/numpy), please specify --nofollow-imports (do not warn), --follow-imports (recurse to all), --nofollow-import-to=numpy (ignore it), --follow-import-to=numpy (recurse to it) to change.
+Nuitka:INFO: Completed Python level compilation and optimization.
+Nuitka:INFO: Generating source code for C backend compiler.
+Nuitka:INFO: Running data composer tool for optimal constant value handling.
+Nuitka:INFO: Running C level backend compilation via Scons.
+Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
+Nuitka-Scons:WARNING: You are not using ccache.
+Nuitka:INFO: Removing build directory 'spectralnorm.nuitka-2.nuitka.build'.
+Nuitka:INFO: Successfully created 'spectralnorm.nuitka-2.nuitka.bin'.
 cp spectralnorm.nuitka-2.nuitka.bin spectralnorm.nuitka-2.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp“
-6.06s to complete and log all make actions
+6.73s to complete and log all make actions
 
 COMMAND LINE:
  ./spectralnorm.nuitka-2.nuitka_run 550

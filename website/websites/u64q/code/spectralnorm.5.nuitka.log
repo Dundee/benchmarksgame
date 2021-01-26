@@ -1,12 +1,21 @@
 
- Fri, 30 Oct 2020 20:28:36 GMT
+ Mon, 25 Jan 2021 21:38:14 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp“
 nuitka3 --remove-output spectralnorm.nuitka-5.nuitka
+Nuitka:INFO: Starting Python compilation.
+Nuitka:INFO: Completed Python level compilation and optimization.
+Nuitka:INFO: Generating source code for C backend compiler.
+Nuitka:INFO: Running data composer tool for optimal constant value handling.
+Nuitka:INFO: Running C level backend compilation via Scons.
+Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
+Nuitka-Scons:WARNING: You are not using ccache.
+Nuitka:INFO: Removing build directory 'spectralnorm.nuitka-5.nuitka.build'.
+Nuitka:INFO: Successfully created 'spectralnorm.nuitka-5.nuitka.bin'.
 cp spectralnorm.nuitka-5.nuitka.bin spectralnorm.nuitka-5.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp“
-5.76s to complete and log all make actions
+7.05s to complete and log all make actions
 
 COMMAND LINE:
  ./spectralnorm.nuitka-5.nuitka_run 550
@@ -14,10 +23,10 @@ COMMAND LINE:
 PROGRAM OUTPUT:
 1.274224125
 
-Exception ignored in: <function Pool.__del__ at 0x7fbc4b9e5040>
+Exception ignored in: <function Pool.__del__ at 0x7fe9724758b0>
 Traceback (most recent call last):
-  File "/usr/lib/python3.8/multiprocessing/pool.py", line 268, in __del__
-  File "/usr/lib/python3.8/multiprocessing/queues.py", line 368, in put
-  File "/usr/lib/python3.8/multiprocessing/connection.py", line 200, in send_bytes
-  File "/usr/lib/python3.8/multiprocessing/connection.py", line 400, in _send_bytes
+  File "/usr/lib/python3.9/multiprocessing/pool.py", line 268, in __del__
+  File "/usr/lib/python3.9/multiprocessing/queues.py", line 378, in put
+  File "/usr/lib/python3.9/multiprocessing/connection.py", line 205, in send_bytes
+  File "/usr/lib/python3.9/multiprocessing/connection.py", line 405, in _send_bytes
 AttributeError: 'NoneType' object has no attribute 'pack'

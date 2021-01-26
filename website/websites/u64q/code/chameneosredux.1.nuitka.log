@@ -1,12 +1,21 @@
 
- Fri, 30 Oct 2020 18:21:51 GMT
+ Mon, 25 Jan 2021 21:08:02 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp“
 nuitka3 --remove-output chameneosredux.nuitka
+Nuitka:INFO: Starting Python compilation.
+Nuitka:INFO: Completed Python level compilation and optimization.
+Nuitka:INFO: Generating source code for C backend compiler.
+Nuitka:INFO: Running data composer tool for optimal constant value handling.
+Nuitka:INFO: Running C level backend compilation via Scons.
+Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
+Nuitka-Scons:WARNING: You are not using ccache.
+Nuitka:INFO: Removing build directory 'chameneosredux.nuitka.build'.
+Nuitka:INFO: Successfully created 'chameneosredux.nuitka.bin'.
 cp chameneosredux.nuitka.bin chameneosredux.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp“
-6.23s to complete and log all make actions
+7.06s to complete and log all make actions
 
 COMMAND LINE:
  ./chameneosredux.nuitka_run 6000000
@@ -23,21 +32,21 @@ yellow + red -> blue
 yellow + yellow -> yellow
 
  blue red yellow
-4004341 zero
-4099042 zero
-3896617 zero
+4001022 zero
+3971712 zero
+4027266 zero
  one two zero zero zero zero zero zero
 
  blue red yellow red yellow blue red yellow red blue
-1147752 zero
-1338632 zero
-1103456 zero
-1298048 zero
-1003982 zero
-1318987 zero
-1092341 zero
-1098448 zero
-1311546 zero
-1286808 zero
+1193492 zero
+1151108 zero
+1286236 zero
+1166696 zero
+1152872 zero
+1140466 zero
+1250216 zero
+1274088 zero
+1188368 zero
+1196458 zero
  one two zero zero zero zero zero zero
 

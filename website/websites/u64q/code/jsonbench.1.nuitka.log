@@ -1,12 +1,21 @@
 
- Fri, 30 Oct 2020 19:26:12 GMT
+ Mon, 25 Jan 2021 21:27:37 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/jsonbench/tmp“
 nuitka3 --remove-output jsonbench.nuitka
+Nuitka:INFO: Starting Python compilation.
+Nuitka:INFO: Completed Python level compilation and optimization.
+Nuitka:INFO: Generating source code for C backend compiler.
+Nuitka:INFO: Running data composer tool for optimal constant value handling.
+Nuitka:INFO: Running C level backend compilation via Scons.
+Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
+Nuitka-Scons:WARNING: You are not using ccache.
+Nuitka:INFO: Removing build directory 'jsonbench.nuitka.build'.
+Nuitka:INFO: Successfully created 'jsonbench.nuitka.bin'.
 cp jsonbench.nuitka.bin jsonbench.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/jsonbench/tmp“
-6.74s to complete and log all make actions
+7.11s to complete and log all make actions
 
 COMMAND LINE:
  ./jsonbench.nuitka_run 1

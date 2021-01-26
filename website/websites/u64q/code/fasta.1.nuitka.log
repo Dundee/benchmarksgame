@@ -1,12 +1,21 @@
 
- Fri, 30 Oct 2020 19:00:49 GMT
+ Mon, 25 Jan 2021 21:20:53 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp“
 nuitka3 --remove-output fasta.nuitka
+Nuitka:INFO: Starting Python compilation.
+Nuitka:INFO: Completed Python level compilation and optimization.
+Nuitka:INFO: Generating source code for C backend compiler.
+Nuitka:INFO: Running data composer tool for optimal constant value handling.
+Nuitka:INFO: Running C level backend compilation via Scons.
+Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
+Nuitka-Scons:WARNING: You are not using ccache.
+Nuitka:INFO: Removing build directory 'fasta.nuitka.build'.
+Nuitka:INFO: Successfully created 'fasta.nuitka.bin'.
 cp fasta.nuitka.bin fasta.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/fasta/tmp“
-6.24s to complete and log all make actions
+7.13s to complete and log all make actions
 
 COMMAND LINE:
  ./fasta.nuitka_run 2500000

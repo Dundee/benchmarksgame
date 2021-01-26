@@ -1,5 +1,5 @@
 
- Fri, 30 Oct 2020 21:36:58 GMT
+ Mon, 25 Jan 2021 21:35:59 GMT
 
 COMMAND LINE:
  /usr/lib/jvm/java-8-graalvm/bin/graalpython regexdna.graal 0 < regexdna-input10000.txt
@@ -24,7 +24,7 @@ Traceback (most recent call last):
     w.start()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/process.py", line 121, in start
     self._popen = self._Popen(self)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 283, in _Popen
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 284, in _Popen
     return Popen(process_obj)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 32, in __init__
     super().__init__(process_obj)
@@ -32,10 +32,4 @@ Traceback (most recent call last):
     self._launch(process_obj)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 39, in _launch
     from . import resource_tracker
-  File "/importlib/_bootstrap.py", line 1042, in _handle_fromlist
-  File "/importlib/_bootstrap.py", line 991, in _find_and_load
-  File "/importlib/_bootstrap.py", line 671, in _load_unlocked
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/resource_tracker.py", line 38, in <module 'resource_tracker.py'>
-    import _posixshmem
-  File "/importlib/_bootstrap.py", line 991, in _find_and_load
 ModuleNotFoundError: No module named '_posixshmem'
