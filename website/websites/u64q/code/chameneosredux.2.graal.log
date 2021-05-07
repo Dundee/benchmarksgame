@@ -1,11 +1,8 @@
 
- Mon, 25 Jan 2021 21:07:54 GMT
+ Thu, 06 May 2021 21:21:19 GMT
 
 COMMAND LINE:
  /usr/lib/jvm/java-8-graalvm/bin/graalpython chameneosredux.graal-2.graal 6000000
-
-PROGRAM FAILED 
-
 
 PROGRAM OUTPUT NOT CHECKED:
 blue + blue -> blue
@@ -18,24 +15,22 @@ yellow + blue -> red
 yellow + red -> blue
 yellow + yellow -> yellow
 
+ blue red yellow
+4055163 zero
+3993061 zero
+3951776 zero
+ one two zero zero zero zero zero zero
 
-Traceback (most recent call last):
-  File "/home/dundee/work/pybenchmarks/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 62, in creature
-    out_lock_release()  # signal "registration ok"
-RuntimeError
-Traceback (most recent call last):
-  File "/home/dundee/work/pybenchmarks/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 62, in creature
-    out_lock_release()  # signal "registration ok"
-RuntimeError
-Traceback (most recent call last):
-  File "/home/dundee/work/pybenchmarks/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 62, in creature
-    out_lock_release()  # signal "registration ok"
-RuntimeError
-Traceback (most recent call last):
-  File "/home/dundee/work/pybenchmarks/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 123, in <module 'chameneosredux.python3-2.python3'>
-    chameneosiate(int(sys.argv[1]))
-  File "/home/dundee/work/pybenchmarks/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 117, in chameneosiate
-    let_them_meet(n, ['blue', 'red', 'yellow'])
-  File "/home/dundee/work/pybenchmarks/bencher/programs/chameneosredux/chameneosredux.python3-2.python3", line 94, in let_them_meet
-    in_lock_release()
-RuntimeError
+ blue red yellow red yellow blue red yellow red blue
+1130188 zero
+1126710 zero
+1218575 zero
+1220334 zero
+1203358 zero
+1294188 zero
+1167202 zero
+1113815 zero
+1321994 zero
+1203636 zero
+ one two zero zero zero zero zero zero
+

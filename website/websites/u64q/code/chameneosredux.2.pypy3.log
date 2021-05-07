@@ -1,5 +1,36 @@
 
- Thu, 29 Oct 2020 22:14:39 GMT
+ Thu, 06 May 2021 21:34:18 GMT
 
 COMMAND LINE:
  /usr/bin/pypy3 chameneosredux.pypy3-2.pypy3 6000000
+
+PROGRAM OUTPUT NOT CHECKED:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
+
+ blue red yellow
+4106761 zero
+3789997 zero
+4103242 zero
+ one two zero zero zero zero zero zero
+
+ blue red yellow red yellow blue red yellow red blue
+1193737 zero
+1170062 zero
+1209816 zero
+1168964 zero
+1178808 zero
+1212888 zero
+1200958 zero
+1183832 zero
+1260784 zero
+1220151 zero
+ one two zero zero zero zero zero zero
+

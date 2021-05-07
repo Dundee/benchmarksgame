@@ -1,11 +1,12 @@
 
- Mon, 25 Jan 2021 21:34:48 GMT
+ Thu, 06 May 2021 22:43:40 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp“
 nuitka3 --remove-output pidigits.nuitka-2.nuitka
+Nuitka-Options:INFO: Used command line options: --remove-output pidigits.nuitka-2.nuitka
 Nuitka:INFO: Starting Python compilation.
-Nuitka-Inclusion:WARNING: Not recursing to 'gmpy2' (/usr/lib/python3.9/site-packages/gmpy2), please specify --nofollow-imports (do not warn), --follow-imports (recurse to all), --nofollow-import-to=gmpy2 (ignore it), --follow-import-to=gmpy2 (recurse to it) to change.
+Nuitka-Inclusion:WARNING: Not following import to 'gmpy2' (/usr/lib/python3.9/site-packages/gmpy2), please specify --nofollow-imports (do not warn), --follow-imports (recurse to all), --nofollow-import-to=gmpy2 (ignore it), --follow-import-to=gmpy2 (recurse to it) to change.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
@@ -16,7 +17,7 @@ Nuitka:INFO: Removing build directory 'pidigits.nuitka-2.nuitka.build'.
 Nuitka:INFO: Successfully created 'pidigits.nuitka-2.nuitka.bin'.
 cp pidigits.nuitka-2.nuitka.bin pidigits.nuitka-2.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp“
-6.85s to complete and log all make actions
+7.99s to complete and log all make actions
 
 COMMAND LINE:
  ./pidigits.nuitka-2.nuitka_run 10000

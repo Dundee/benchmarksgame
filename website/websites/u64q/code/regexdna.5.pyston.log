@@ -1,5 +1,5 @@
 
- Mon, 25 Jan 2021 21:36:04 GMT
+ Thu, 06 May 2021 22:50:45 GMT
 
 COMMAND LINE:
  /usr/bin/pyston regexdna.pyston-5.pyston 0 < regexdna-input10000.txt
@@ -14,6 +14,6 @@ Traceback (most recent call last):
     main()
   File "regexdna.pyston-5.pyston", line 15, in main
     seq = sub(b'>.*\n|\n', b'', seq)
-  File "/usr/lib/pyston3.8/re.py", line 208, in sub
+  File "/usr/lib/pyston3.8/re.py", line 210, in sub
     return _compile(pattern, flags).sub(repl, string, count)
 TypeError: cannot use a bytes pattern on a string-like object
