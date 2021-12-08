@@ -1,23 +1,23 @@
 
- Thu, 06 May 2021 22:44:48 GMT
+ Tue, 07 Dec 2021 18:22:40 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp“
 nuitka3 --remove-output pidigits.nuitka-5.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output pidigits.nuitka-5.nuitka
-Nuitka:INFO: Starting Python compilation.
-Nuitka-Inclusion:WARNING: Not following import to 'gmpy2' (/usr/lib/python3.9/site-packages/gmpy2), please specify --nofollow-imports (do not warn), --follow-imports (recurse to all), --nofollow-import-to=gmpy2 (ignore it), --follow-import-to=gmpy2 (recurse to it) to change.
+Nuitka:INFO: Starting Python compilation with Nuitka '0.6.18.1' on Python '3.9' commercial None.
+Nuitka-Inclusion:WARNING: Not following import to 'gmpy2' (/usr/lib/python3.9/site-packages/gmpy2), please specify --nofollow-imports (do not follow any imports), --follow-imports (follow all generally), --nofollow-import-to=gmpy2 (do not follow it), --follow-import-to=gmpy2 (follow import it) to change.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
-Nuitka:INFO: Running C level backend compilation via Scons.
+Nuitka:INFO: Running C compilation via Scons.
 Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
 Nuitka-Scons:WARNING: You are not using ccache.
 Nuitka:INFO: Removing build directory 'pidigits.nuitka-5.nuitka.build'.
 Nuitka:INFO: Successfully created 'pidigits.nuitka-5.nuitka.bin'.
 cp pidigits.nuitka-5.nuitka.bin pidigits.nuitka-5.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp“
-7.94s to complete and log all make actions
+12.81s to complete and log all make actions
 
 COMMAND LINE:
  ./pidigits.nuitka-5.nuitka_run 10000

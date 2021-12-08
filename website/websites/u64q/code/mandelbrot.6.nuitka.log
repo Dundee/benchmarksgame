@@ -1,30 +1,31 @@
 
- Thu, 06 May 2021 22:39:13 GMT
+ Tue, 07 Dec 2021 18:16:44 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/mandelbrot/tmp“
 nuitka3 --remove-output mandelbrot.nuitka-6.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output mandelbrot.nuitka-6.nuitka
-Nuitka:INFO: Starting Python compilation.
-Nuitka-Inclusion:WARNING: Not following import to 'numpy' (/usr/lib/python3.9/site-packages/numpy), please specify --nofollow-imports (do not warn), --follow-imports (recurse to all), --nofollow-import-to=numpy (ignore it), --follow-import-to=numpy (recurse to it) to change.
+Nuitka:INFO: Starting Python compilation with Nuitka '0.6.18.1' on Python '3.9' commercial None.
+Nuitka-Plugins:WARNING: Use '--enable-plugin=multiprocessing' for: Multiprocessing workarounds for compiled code.
+Nuitka-Inclusion:WARNING: Not following import to 'numpy' (/usr/lib/python3.9/site-packages/numpy), please specify --nofollow-imports (do not follow any imports), --follow-imports (follow all generally), --nofollow-import-to=numpy (do not follow it), --follow-import-to=numpy (follow import it) to change.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
-Nuitka:INFO: Running C level backend compilation via Scons.
+Nuitka:INFO: Running C compilation via Scons.
 Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
 Nuitka-Scons:WARNING: You are not using ccache.
 Nuitka:INFO: Removing build directory 'mandelbrot.nuitka-6.nuitka.build'.
 Nuitka:INFO: Successfully created 'mandelbrot.nuitka-6.nuitka.bin'.
 cp mandelbrot.nuitka-6.nuitka.bin mandelbrot.nuitka-6.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/mandelbrot/tmp“
-9.44s to complete and log all make actions
+13.00s to complete and log all make actions
 
 COMMAND LINE:
  ./mandelbrot.nuitka-6.nuitka_run 16000
 
 PROGRAM OUTPUT:
 UDQKMTYwMDAgMTYwMDAK
-Exception ignored in: <function Pool.__del__ at 0x7f8574e489d0>
+Exception ignored in: <function Pool.__del__ at 0x7fb5fc2e6310>
 Traceback (most recent call last):
   File "/usr/lib/python3.9/multiprocessing/pool.py", line 268, in __del__
   File "/usr/lib/python3.9/multiprocessing/queues.py", line 372, in put

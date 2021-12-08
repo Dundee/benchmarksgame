@@ -1,5 +1,5 @@
 
- Thu, 06 May 2021 21:08:21 GMT
+ Mon, 20 Sep 2021 11:26:12 GMT
 
 COMMAND LINE:
  /usr/lib/jvm/java-8-graalvm/bin/graalpython binarytrees.graal 14
@@ -742,34 +742,24 @@ Traceback (most recent call last):
   File "<string>", line 1, in <module>
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
     exitcode = _main(fd, parent_sentinel)
-Traceback (most recent call last):
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 125, in _main
     prepare(preparation_data)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 236, in prepare
     _fixup_main_from_path(data['init_main_from_path'])
-  File "<string>", line 1, in <module>
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
     main_content = runpy.run_path(main_path,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 265, in run_path
     return _run_module_code(code, init_globals, run_name,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 97, in _run_module_code
     _run_code(code, mod_globals, init_globals,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
-    exitcode = _main(fd, parent_sentinel)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 87, in _run_code
     exec(code, run_globals)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 125, in _main
-    prepare(preparation_data)
   File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 75, in <module 'binarytrees.python3'>
     main(int(sys.argv[1]))
   File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 53, in main
     pool = mp.Pool()
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 236, in prepare
-    _fixup_main_from_path(data['init_main_from_path'])
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 119, in Pool
     return Pool(processes, initializer, initargs, maxtasksperchild,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
-    main_content = runpy.run_path(main_path,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 212, in __init__
     self._repopulate_pool()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 303, in _repopulate_pool
@@ -804,6 +794,16 @@ RuntimeError:
 
         The "freeze_support()" line can be omitted if the program
         is not going to be frozen to produce an executable.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 125, in _main
+    prepare(preparation_data)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 236, in prepare
+    _fixup_main_from_path(data['init_main_from_path'])
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
+    main_content = runpy.run_path(main_path,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 265, in run_path
     return _run_module_code(code, init_globals, run_name,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 97, in _run_module_code
@@ -1578,22 +1578,6 @@ RuntimeError:
 
         The "freeze_support()" line can be omitted if the program
         is not going to be frozen to produce an executable.
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
-    exitcode = _main(fd, parent_sentinel)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 125, in _main
-    prepare(preparation_data)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 236, in prepare
-    _fixup_main_from_path(data['init_main_from_path'])
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
-    main_content = runpy.run_path(main_path,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 265, in run_path
-    return _run_module_code(code, init_globals, run_name,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 97, in _run_module_code
-    _run_code(code, mod_globals, init_globals,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 87, in _run_code
-    exec(code, run_globals)
 Traceback (most recent call last):
   File "<string>", line 1, in <module>
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
@@ -1602,24 +1586,6 @@ Traceback (most recent call last):
     prepare(preparation_data)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 236, in prepare
     _fixup_main_from_path(data['init_main_from_path'])
-  File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 75, in <module 'binarytrees.python3'>
-    main(int(sys.argv[1]))
-  File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 53, in main
-    pool = mp.Pool()
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 119, in Pool
-    return Pool(processes, initializer, initargs, maxtasksperchild,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 212, in __init__
-    self._repopulate_pool()
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 303, in _repopulate_pool
-    return self._repopulate_pool_static(self._ctx, self.Process,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 326, in _repopulate_pool_static
-    w.start()
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/process.py", line 121, in start
-    self._popen = self._Popen(self)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 284, in _Popen
-    return Popen(process_obj)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 32, in __init__
-    super().__init__(process_obj)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
     main_content = runpy.run_path(main_path,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 265, in run_path
@@ -1646,28 +1612,6 @@ Traceback (most recent call last):
     return Popen(process_obj)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 32, in __init__
     super().__init__(process_obj)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_fork.py", line 19, in __init__
-    self._launch(process_obj)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 42, in _launch
-    prep_data = spawn.get_preparation_data(process_obj._name)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 154, in get_preparation_data
-    _check_not_importing_main()
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 134, in _check_not_importing_main
-    raise RuntimeError('''
-RuntimeError: 
-        An attempt has been made to start a new process before the
-        current process has finished its bootstrapping phase.
-
-        This probably means that you are not using fork to start your
-        child processes and you have forgotten to use the proper idiom
-        in the main module:
-
-            if __name__ == '__main__':
-                freeze_support()
-                ...
-
-        The "freeze_support()" line can be omitted if the program
-        is not going to be frozen to produce an executable.
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_fork.py", line 19, in __init__
     self._launch(process_obj)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 42, in _launch
@@ -1858,46 +1802,88 @@ RuntimeError:
 
         The "freeze_support()" line can be omitted if the program
         is not going to be frozen to produce an executable.
+Traceback (most recent call last):
 Traceback (most recent call last):
   File "<string>", line 1, in <module>
+  File "<string>", line 1, in <module>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
     exitcode = _main(fd, parent_sentinel)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 125, in _main
     prepare(preparation_data)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 125, in _main
+    prepare(preparation_data)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 236, in prepare
+    _fixup_main_from_path(data['init_main_from_path'])
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 236, in prepare
     _fixup_main_from_path(data['init_main_from_path'])
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
+    main_content = runpy.run_path(main_path,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
     main_content = runpy.run_path(main_path,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 265, in run_path
     return _run_module_code(code, init_globals, run_name,
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 265, in run_path
+    return _run_module_code(code, init_globals, run_name,
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 97, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 97, in _run_module_code
     _run_code(code, mod_globals, init_globals,
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 87, in _run_code
     exec(code, run_globals)
   File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 75, in <module 'binarytrees.python3'>
     main(int(sys.argv[1]))
+  File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 75, in <module 'binarytrees.python3'>
+    main(int(sys.argv[1]))
+  File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 53, in main
+    pool = mp.Pool()
   File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 53, in main
     pool = mp.Pool()
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 119, in Pool
+    return Pool(processes, initializer, initargs, maxtasksperchild,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 119, in Pool
     return Pool(processes, initializer, initargs, maxtasksperchild,
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 212, in __init__
+    self._repopulate_pool()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 212, in __init__
     self._repopulate_pool()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 303, in _repopulate_pool
     return self._repopulate_pool_static(self._ctx, self.Process,
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 303, in _repopulate_pool
+    return self._repopulate_pool_static(self._ctx, self.Process,
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 326, in _repopulate_pool_static
+    w.start()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 326, in _repopulate_pool_static
     w.start()
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/process.py", line 121, in start
+    self._popen = self._Popen(self)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/process.py", line 121, in start
     self._popen = self._Popen(self)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 284, in _Popen
     return Popen(process_obj)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 32, in __init__
     super().__init__(process_obj)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_fork.py", line 19, in __init__
+    self._launch(process_obj)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_fork.py", line 19, in __init__
     self._launch(process_obj)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 42, in _launch
     prep_data = spawn.get_preparation_data(process_obj._name)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 42, in _launch
+    prep_data = spawn.get_preparation_data(process_obj._name)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 154, in get_preparation_data
+    _check_not_importing_main()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 154, in get_preparation_data
     _check_not_importing_main()
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 134, in _check_not_importing_main
+    raise RuntimeError('''
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 134, in _check_not_importing_main
     raise RuntimeError('''
 RuntimeError: 
@@ -1914,6 +1900,20 @@ RuntimeError:
 
         The "freeze_support()" line can be omitted if the program
         is not going to be frozen to produce an executable.
+RuntimeError: 
+        An attempt has been made to start a new process before the
+        current process has finished its bootstrapping phase.
+
+        This probably means that you are not using fork to start your
+        child processes and you have forgotten to use the proper idiom
+        in the main module:
+
+            if __name__ == '__main__':
+                freeze_support()
+                ...
+
+        The "freeze_support()" line can be omitted if the program
+        is not going to be frozen to produce an executable.
 Traceback (most recent call last):
   File "<string>", line 1, in <module>
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
@@ -3274,7 +3274,6 @@ Traceback (most recent call last):
     _run_code(code, mod_globals, init_globals,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 87, in _run_code
     exec(code, run_globals)
-Traceback (most recent call last):
   File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 75, in <module 'binarytrees.python3'>
     main(int(sys.argv[1]))
   File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 53, in main
@@ -3301,11 +3300,6 @@ Traceback (most recent call last):
     _check_not_importing_main()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 134, in _check_not_importing_main
     raise RuntimeError('''
-  File "<string>", line 1, in <module>
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
-    exitcode = _main(fd, parent_sentinel)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 125, in _main
-    prepare(preparation_data)
 RuntimeError: 
         An attempt has been made to start a new process before the
         current process has finished its bootstrapping phase.
@@ -3320,6 +3314,12 @@ RuntimeError:
 
         The "freeze_support()" line can be omitted if the program
         is not going to be frozen to produce an executable.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 125, in _main
+    prepare(preparation_data)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 236, in prepare
     _fixup_main_from_path(data['init_main_from_path'])
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
@@ -4642,22 +4642,6 @@ Traceback (most recent call last):
     prep_data = spawn.get_preparation_data(process_obj._name)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 154, in get_preparation_data
     _check_not_importing_main()
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 134, in _check_not_importing_main
-    raise RuntimeError('''
-RuntimeError: 
-        An attempt has been made to start a new process before the
-        current process has finished its bootstrapping phase.
-
-        This probably means that you are not using fork to start your
-        child processes and you have forgotten to use the proper idiom
-        in the main module:
-
-            if __name__ == '__main__':
-                freeze_support()
-                ...
-
-        The "freeze_support()" line can be omitted if the program
-        is not going to be frozen to produce an executable.
 Traceback (most recent call last):
   File "<string>", line 1, in <module>
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
@@ -4692,7 +4676,6 @@ Traceback (most recent call last):
     return Popen(process_obj)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 32, in __init__
     super().__init__(process_obj)
-Traceback (most recent call last):
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_fork.py", line 19, in __init__
     self._launch(process_obj)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 42, in _launch
@@ -4701,7 +4684,6 @@ Traceback (most recent call last):
     _check_not_importing_main()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 134, in _check_not_importing_main
     raise RuntimeError('''
-  File "<string>", line 1, in <module>
 RuntimeError: 
         An attempt has been made to start a new process before the
         current process has finished its bootstrapping phase.
@@ -4716,44 +4698,6 @@ RuntimeError:
 
         The "freeze_support()" line can be omitted if the program
         is not going to be frozen to produce an executable.
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
-    exitcode = _main(fd, parent_sentinel)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 125, in _main
-    prepare(preparation_data)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 236, in prepare
-    _fixup_main_from_path(data['init_main_from_path'])
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
-    main_content = runpy.run_path(main_path,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 265, in run_path
-    return _run_module_code(code, init_globals, run_name,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 97, in _run_module_code
-    _run_code(code, mod_globals, init_globals,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 87, in _run_code
-    exec(code, run_globals)
-  File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 75, in <module 'binarytrees.python3'>
-    main(int(sys.argv[1]))
-  File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 53, in main
-    pool = mp.Pool()
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 119, in Pool
-    return Pool(processes, initializer, initargs, maxtasksperchild,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 212, in __init__
-    self._repopulate_pool()
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 303, in _repopulate_pool
-    return self._repopulate_pool_static(self._ctx, self.Process,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 326, in _repopulate_pool_static
-    w.start()
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/process.py", line 121, in start
-    self._popen = self._Popen(self)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 284, in _Popen
-    return Popen(process_obj)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 32, in __init__
-    super().__init__(process_obj)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_fork.py", line 19, in __init__
-    self._launch(process_obj)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 42, in _launch
-    prep_data = spawn.get_preparation_data(process_obj._name)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 154, in get_preparation_data
-    _check_not_importing_main()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 134, in _check_not_importing_main
     raise RuntimeError('''
 RuntimeError: 
@@ -5680,7 +5624,6 @@ Traceback (most recent call last):
     return _run_module_code(code, init_globals, run_name,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 97, in _run_module_code
     _run_code(code, mod_globals, init_globals,
-Traceback (most recent call last):
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 87, in _run_code
     exec(code, run_globals)
   File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 75, in <module 'binarytrees.python3'>
@@ -5723,6 +5666,7 @@ RuntimeError:
 
         The "freeze_support()" line can be omitted if the program
         is not going to be frozen to produce an executable.
+Traceback (most recent call last):
   File "<string>", line 1, in <module>
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
     exitcode = _main(fd, parent_sentinel)
@@ -6954,16 +6898,6 @@ RuntimeError:
 
         The "freeze_support()" line can be omitted if the program
         is not going to be frozen to produce an executable.
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
-    exitcode = _main(fd, parent_sentinel)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 125, in _main
-    prepare(preparation_data)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 236, in prepare
-    _fixup_main_from_path(data['init_main_from_path'])
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
-    main_content = runpy.run_path(main_path,
 Traceback (most recent call last):
   File "<string>", line 1, in <module>
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
@@ -6974,20 +6908,6 @@ Traceback (most recent call last):
     _fixup_main_from_path(data['init_main_from_path'])
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
     main_content = runpy.run_path(main_path,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 265, in run_path
-    return _run_module_code(code, init_globals, run_name,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 97, in _run_module_code
-    _run_code(code, mod_globals, init_globals,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 87, in _run_code
-    exec(code, run_globals)
-  File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 75, in <module 'binarytrees.python3'>
-    main(int(sys.argv[1]))
-  File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 53, in main
-    pool = mp.Pool()
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 119, in Pool
-    return Pool(processes, initializer, initargs, maxtasksperchild,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 212, in __init__
-    self._repopulate_pool()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 265, in run_path
     return _run_module_code(code, init_globals, run_name,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 97, in _run_module_code
@@ -6996,8 +6916,6 @@ Traceback (most recent call last):
     exec(code, run_globals)
   File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 75, in <module 'binarytrees.python3'>
     main(int(sys.argv[1]))
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 303, in _repopulate_pool
-    return self._repopulate_pool_static(self._ctx, self.Process,
   File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 53, in main
     pool = mp.Pool()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 119, in Pool
@@ -7006,38 +6924,8 @@ Traceback (most recent call last):
     self._repopulate_pool()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 303, in _repopulate_pool
     return self._repopulate_pool_static(self._ctx, self.Process,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 326, in _repopulate_pool_static
-    w.start()
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/process.py", line 121, in start
-    self._popen = self._Popen(self)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 284, in _Popen
-    return Popen(process_obj)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 32, in __init__
-    super().__init__(process_obj)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_fork.py", line 19, in __init__
-    self._launch(process_obj)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 42, in _launch
-    prep_data = spawn.get_preparation_data(process_obj._name)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 154, in get_preparation_data
-    _check_not_importing_main()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 326, in _repopulate_pool_static
     w.start()
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 134, in _check_not_importing_main
-    raise RuntimeError('''
-RuntimeError: 
-        An attempt has been made to start a new process before the
-        current process has finished its bootstrapping phase.
-
-        This probably means that you are not using fork to start your
-        child processes and you have forgotten to use the proper idiom
-        in the main module:
-
-            if __name__ == '__main__':
-                freeze_support()
-                ...
-
-        The "freeze_support()" line can be omitted if the program
-        is not going to be frozen to produce an executable.
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/process.py", line 121, in start
     self._popen = self._Popen(self)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 284, in _Popen
@@ -7496,8 +7384,6 @@ Traceback (most recent call last):
     self._launch(process_obj)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 42, in _launch
     prep_data = spawn.get_preparation_data(process_obj._name)
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 154, in get_preparation_data
     _check_not_importing_main()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 134, in _check_not_importing_main
@@ -7516,6 +7402,8 @@ RuntimeError:
 
         The "freeze_support()" line can be omitted if the program
         is not going to be frozen to produce an executable.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
     exitcode = _main(fd, parent_sentinel)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 125, in _main
@@ -7606,12 +7494,14 @@ Traceback (most recent call last):
     super().__init__(process_obj)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_fork.py", line 19, in __init__
     self._launch(process_obj)
+Traceback (most recent call last):
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 42, in _launch
     prep_data = spawn.get_preparation_data(process_obj._name)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 154, in get_preparation_data
     _check_not_importing_main()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 134, in _check_not_importing_main
     raise RuntimeError('''
+  File "<string>", line 1, in <module>
 RuntimeError: 
         An attempt has been made to start a new process before the
         current process has finished its bootstrapping phase.
@@ -7626,8 +7516,6 @@ RuntimeError:
 
         The "freeze_support()" line can be omitted if the program
         is not going to be frozen to produce an executable.
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
     exitcode = _main(fd, parent_sentinel)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 125, in _main
@@ -9698,6 +9586,7 @@ RuntimeError:
 
         The "freeze_support()" line can be omitted if the program
         is not going to be frozen to produce an executable.
+Traceback (most recent call last):
 Traceback (most recent call last):
   File "<string>", line 1, in <module>
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
@@ -9754,7 +9643,6 @@ RuntimeError:
 
         The "freeze_support()" line can be omitted if the program
         is not going to be frozen to produce an executable.
-Traceback (most recent call last):
   File "<string>", line 1, in <module>
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
     exitcode = _main(fd, parent_sentinel)
@@ -10090,29 +9978,7 @@ RuntimeError:
 
         The "freeze_support()" line can be omitted if the program
         is not going to be frozen to produce an executable.
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
-    exitcode = _main(fd, parent_sentinel)
 Traceback (most recent call last):
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 125, in _main
-    prepare(preparation_data)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 236, in prepare
-    _fixup_main_from_path(data['init_main_from_path'])
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
-    main_content = runpy.run_path(main_path,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 265, in run_path
-    return _run_module_code(code, init_globals, run_name,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 97, in _run_module_code
-    _run_code(code, mod_globals, init_globals,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 87, in _run_code
-    exec(code, run_globals)
-  File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 75, in <module 'binarytrees.python3'>
-    main(int(sys.argv[1]))
-  File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 53, in main
-    pool = mp.Pool()
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 119, in Pool
-    return Pool(processes, initializer, initargs, maxtasksperchild,
   File "<string>", line 1, in <module>
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
     exitcode = _main(fd, parent_sentinel)
@@ -10134,44 +10000,10 @@ Traceback (most recent call last):
     pool = mp.Pool()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 119, in Pool
     return Pool(processes, initializer, initargs, maxtasksperchild,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 212, in __init__
-    self._repopulate_pool()
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 303, in _repopulate_pool
-    return self._repopulate_pool_static(self._ctx, self.Process,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 326, in _repopulate_pool_static
-    w.start()
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/process.py", line 121, in start
-    self._popen = self._Popen(self)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 284, in _Popen
-    return Popen(process_obj)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 32, in __init__
-    super().__init__(process_obj)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_fork.py", line 19, in __init__
-    self._launch(process_obj)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 212, in __init__
     self._repopulate_pool()
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 42, in _launch
-    prep_data = spawn.get_preparation_data(process_obj._name)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 154, in get_preparation_data
-    _check_not_importing_main()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 303, in _repopulate_pool
     return self._repopulate_pool_static(self._ctx, self.Process,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 134, in _check_not_importing_main
-    raise RuntimeError('''
-RuntimeError: 
-        An attempt has been made to start a new process before the
-        current process has finished its bootstrapping phase.
-
-        This probably means that you are not using fork to start your
-        child processes and you have forgotten to use the proper idiom
-        in the main module:
-
-            if __name__ == '__main__':
-                freeze_support()
-                ...
-
-        The "freeze_support()" line can be omitted if the program
-        is not going to be frozen to produce an executable.
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 326, in _repopulate_pool_static
     w.start()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/process.py", line 121, in start
@@ -10763,47 +10595,103 @@ RuntimeError:
         The "freeze_support()" line can be omitted if the program
         is not going to be frozen to produce an executable.
 Traceback (most recent call last):
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
   File "<string>", line 1, in <module>
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
     exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 125, in _main
+    prepare(preparation_data)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 125, in _main
     prepare(preparation_data)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 236, in prepare
+    _fixup_main_from_path(data['init_main_from_path'])
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 236, in prepare
     _fixup_main_from_path(data['init_main_from_path'])
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
     main_content = runpy.run_path(main_path,
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
+    main_content = runpy.run_path(main_path,
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 265, in run_path
+    return _run_module_code(code, init_globals, run_name,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 265, in run_path
     return _run_module_code(code, init_globals, run_name,
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 97, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 97, in _run_module_code
     _run_code(code, mod_globals, init_globals,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 87, in _run_code
     exec(code, run_globals)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 75, in <module 'binarytrees.python3'>
+    main(int(sys.argv[1]))
   File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 75, in <module 'binarytrees.python3'>
     main(int(sys.argv[1]))
+  File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 53, in main
+    pool = mp.Pool()
   File "/home/dundee/work/pybenchmarks/bencher/programs/binarytrees/binarytrees.python3", line 53, in main
     pool = mp.Pool()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 119, in Pool
     return Pool(processes, initializer, initargs, maxtasksperchild,
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 119, in Pool
+    return Pool(processes, initializer, initargs, maxtasksperchild,
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 212, in __init__
+    self._repopulate_pool()
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 212, in __init__
     self._repopulate_pool()
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 303, in _repopulate_pool
+    return self._repopulate_pool_static(self._ctx, self.Process,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 303, in _repopulate_pool
     return self._repopulate_pool_static(self._ctx, self.Process,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 326, in _repopulate_pool_static
     w.start()
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/pool.py", line 326, in _repopulate_pool_static
+    w.start()
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/process.py", line 121, in start
+    self._popen = self._Popen(self)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/process.py", line 121, in start
     self._popen = self._Popen(self)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/context.py", line 284, in _Popen
     return Popen(process_obj)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 32, in __init__
     super().__init__(process_obj)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_fork.py", line 19, in __init__
+    self._launch(process_obj)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_fork.py", line 19, in __init__
     self._launch(process_obj)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 42, in _launch
+    prep_data = spawn.get_preparation_data(process_obj._name)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/popen_spawn_posix.py", line 42, in _launch
     prep_data = spawn.get_preparation_data(process_obj._name)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 154, in get_preparation_data
     _check_not_importing_main()
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 154, in get_preparation_data
+    _check_not_importing_main()
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 134, in _check_not_importing_main
+    raise RuntimeError('''
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 134, in _check_not_importing_main
     raise RuntimeError('''
+RuntimeError: 
+        An attempt has been made to start a new process before the
+        current process has finished its bootstrapping phase.
+
+        This probably means that you are not using fork to start your
+        child processes and you have forgotten to use the proper idiom
+        in the main module:
+
+            if __name__ == '__main__':
+                freeze_support()
+                ...
+
+        The "freeze_support()" line can be omitted if the program
+        is not going to be frozen to produce an executable.
 RuntimeError: 
         An attempt has been made to start a new process before the
         current process has finished its bootstrapping phase.

@@ -1,22 +1,22 @@
 
- Thu, 06 May 2021 22:51:11 GMT
+ Tue, 07 Dec 2021 18:35:31 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp“
 nuitka3 --remove-output revcomp.nuitka-4.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output revcomp.nuitka-4.nuitka
-Nuitka:INFO: Starting Python compilation.
+Nuitka:INFO: Starting Python compilation with Nuitka '0.6.18.1' on Python '3.9' commercial None.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
-Nuitka:INFO: Running C level backend compilation via Scons.
+Nuitka:INFO: Running C compilation via Scons.
 Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
 Nuitka-Scons:WARNING: You are not using ccache.
 Nuitka:INFO: Removing build directory 'revcomp.nuitka-4.nuitka.build'.
 Nuitka:INFO: Successfully created 'revcomp.nuitka-4.nuitka.bin'.
 cp revcomp.nuitka-4.nuitka.bin revcomp.nuitka-4.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/revcomp/tmp“
-7.79s to complete and log all make actions
+12.75s to complete and log all make actions
 
 COMMAND LINE:
  ./revcomp.nuitka-4.nuitka_run 0 < revcomp-input1000.txt

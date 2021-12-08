@@ -1,22 +1,23 @@
 
- Thu, 06 May 2021 22:58:08 GMT
+ Tue, 07 Dec 2021 18:36:16 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp“
 nuitka3 --remove-output spectralnorm.nuitka-5.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output spectralnorm.nuitka-5.nuitka
-Nuitka:INFO: Starting Python compilation.
+Nuitka:INFO: Starting Python compilation with Nuitka '0.6.18.1' on Python '3.9' commercial None.
+Nuitka-Plugins:WARNING: Use '--enable-plugin=multiprocessing' for: Multiprocessing workarounds for compiled code.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
-Nuitka:INFO: Running C level backend compilation via Scons.
+Nuitka:INFO: Running C compilation via Scons.
 Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
 Nuitka-Scons:WARNING: You are not using ccache.
 Nuitka:INFO: Removing build directory 'spectralnorm.nuitka-5.nuitka.build'.
 Nuitka:INFO: Successfully created 'spectralnorm.nuitka-5.nuitka.bin'.
 cp spectralnorm.nuitka-5.nuitka.bin spectralnorm.nuitka-5.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp“
-8.17s to complete and log all make actions
+12.86s to complete and log all make actions
 
 COMMAND LINE:
  ./spectralnorm.nuitka-5.nuitka_run 550
@@ -24,7 +25,7 @@ COMMAND LINE:
 PROGRAM OUTPUT:
 1.274224125
 
-Exception ignored in: <function Pool.__del__ at 0x7f7bce78f3a0>
+Exception ignored in: <function Pool.__del__ at 0x7f2d07b85700>
 Traceback (most recent call last):
   File "/usr/lib/python3.9/multiprocessing/pool.py", line 268, in __del__
   File "/usr/lib/python3.9/multiprocessing/queues.py", line 378, in put

@@ -1,23 +1,23 @@
 
- Thu, 06 May 2021 22:58:30 GMT
+ Tue, 07 Dec 2021 18:43:28 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp“
 nuitka3 --remove-output templates.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output templates.nuitka
-Nuitka:INFO: Starting Python compilation.
-Nuitka-Inclusion:WARNING: Not following import to 'jinja2' (/usr/lib/python3.9/site-packages/jinja2), please specify --nofollow-imports (do not warn), --follow-imports (recurse to all), --nofollow-import-to=jinja2 (ignore it), --follow-import-to=jinja2 (recurse to it) to change.
+Nuitka:INFO: Starting Python compilation with Nuitka '0.6.18.1' on Python '3.9' commercial None.
+Nuitka-Inclusion:WARNING: Not following import to 'jinja2' (/usr/lib/python3.9/site-packages/jinja2), please specify --nofollow-imports (do not follow any imports), --follow-imports (follow all generally), --nofollow-import-to=jinja2 (do not follow it), --follow-import-to=jinja2 (follow import it) to change.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
-Nuitka:INFO: Running C level backend compilation via Scons.
+Nuitka:INFO: Running C compilation via Scons.
 Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
 Nuitka-Scons:WARNING: You are not using ccache.
 Nuitka:INFO: Removing build directory 'templates.nuitka.build'.
 Nuitka:INFO: Successfully created 'templates.nuitka.bin'.
 cp templates.nuitka.bin templates.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp“
-8.00s to complete and log all make actions
+12.86s to complete and log all make actions
 
 COMMAND LINE:
  ./templates.nuitka_run 1000

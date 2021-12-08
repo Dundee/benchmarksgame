@@ -1,22 +1,23 @@
 
- Thu, 06 May 2021 22:50:33 GMT
+ Tue, 07 Dec 2021 18:34:30 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp“
 nuitka3 --remove-output regexdna.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output regexdna.nuitka
-Nuitka:INFO: Starting Python compilation.
+Nuitka:INFO: Starting Python compilation with Nuitka '0.6.18.1' on Python '3.9' commercial None.
+Nuitka-Plugins:WARNING: Use '--enable-plugin=multiprocessing' for: Multiprocessing workarounds for compiled code.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
-Nuitka:INFO: Running C level backend compilation via Scons.
+Nuitka:INFO: Running C compilation via Scons.
 Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
 Nuitka-Scons:WARNING: You are not using ccache.
 Nuitka:INFO: Removing build directory 'regexdna.nuitka.build'.
 Nuitka:INFO: Successfully created 'regexdna.nuitka.bin'.
 cp regexdna.nuitka.bin regexdna.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp“
-7.86s to complete and log all make actions
+12.77s to complete and log all make actions
 
 COMMAND LINE:
  ./regexdna.nuitka_run 0 < regexdna-input10000.txt

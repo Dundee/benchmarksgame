@@ -1,5 +1,5 @@
 
- Fri, 30 Oct 2020 20:19:09 GMT
+ Tue, 07 Dec 2021 18:23:40 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp“
@@ -9,25 +9,25 @@ Compiling /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/pystone.pyx bec
 [1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/pystone.pyx
 running build_ext
 building 'pystone' extension
-creating /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmplfe5bwoe/home
-creating /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmplfe5bwoe/home/dundee
-creating /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmplfe5bwoe/home/dundee/work
-creating /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmplfe5bwoe/home/dundee/work/pybenchmarks
-creating /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmplfe5bwoe/home/dundee/work/pybenchmarks/bencher
-creating /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmplfe5bwoe/home/dundee/work/pybenchmarks/bencher/tmp
-creating /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmplfe5bwoe/home/dundee/work/pybenchmarks/bencher/tmp/pystone
-creating /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmplfe5bwoe/home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.8 -c /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/pystone.c -o /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmplfe5bwoe/home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/pystone.o
+creating /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmpwkzo2n53/home
+creating /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmpwkzo2n53/home/dundee
+creating /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmpwkzo2n53/home/dundee/work
+creating /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmpwkzo2n53/home/dundee/work/pybenchmarks
+creating /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmpwkzo2n53/home/dundee/work/pybenchmarks/bencher
+creating /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmpwkzo2n53/home/dundee/work/pybenchmarks/bencher/tmp
+creating /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmpwkzo2n53/home/dundee/work/pybenchmarks/bencher/tmp/pystone
+creating /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmpwkzo2n53/home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp
+gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.9 -c /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/pystone.c -o /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmpwkzo2n53/home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/pystone.o
 /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/pystone.c: In function ‘__pyx_f_7pystone_Proc0’:
-/home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/pystone.c:2919:8: warning: ‘__pyx_v_EnumLoc’ may be used uninitialized in this function [-Wmaybe-uninitialized]
- 2919 |     if (__pyx_t_2) {
+/home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/pystone.c:2997:8: warning: ‘__pyx_v_EnumLoc’ may be used uninitialized [-Wmaybe-uninitialized]
+ 2997 |     if (__pyx_t_2) {
       |        ^
-/home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/pystone.c:2822:7: note: ‘__pyx_v_EnumLoc’ was declared here
- 2822 |   int __pyx_v_EnumLoc;
+/home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/pystone.c:2900:7: note: ‘__pyx_v_EnumLoc’ was declared here
+ 2900 |   int __pyx_v_EnumLoc;
       |       ^~~~~~~~~~~~~~~
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmplfe5bwoe/home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/pystone.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/pystone.cpython-38-x86_64-linux-gnu.so
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/tmpwkzo2n53/home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/pystone.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp/pystone.cpython-39-x86_64-linux-gnu.so
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp“
-1.81s to complete and log all make actions
+1.73s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import pystone" 50000

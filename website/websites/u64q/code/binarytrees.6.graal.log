@@ -1,5 +1,5 @@
 
- Thu, 06 May 2021 21:03:19 GMT
+ Mon, 20 Sep 2021 11:20:53 GMT
 
 COMMAND LINE:
  /usr/lib/jvm/java-8-graalvm/bin/graalpython binarytrees.graal-6.graal 14
@@ -1709,21 +1709,6 @@ Traceback (most recent call last):
   File "<string>", line 1, in <module>
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
     exitcode = _main(fd, parent_sentinel)
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
-    exitcode = _main(fd, parent_sentinel)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 126, in _main
-    self = reduction.pickle.load(from_parent)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1749, in _load
-    return _Unpickler(file, fix_imports=fix_imports, buffers=buffers,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1210, in load
-    dispatch[key[0]](self)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1703, in load_build
-    setstate(state)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/synchronize.py", line 110, in __setstate__
-    self._semlock = _multiprocessing.SemLock._rebuild(*state)
-AttributeError: 'SemLock' object has no attribute '_rebuild'
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 126, in _main
     self = reduction.pickle.load(from_parent)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1749, in _load
@@ -1852,24 +1837,9 @@ Traceback (most recent call last):
     dispatch[key[0]](self)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1703, in load_build
     setstate(state)
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
-    exitcode = _main(fd, parent_sentinel)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 126, in _main
-    self = reduction.pickle.load(from_parent)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1749, in _load
-    return _Unpickler(file, fix_imports=fix_imports, buffers=buffers,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1210, in load
-    dispatch[key[0]](self)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1703, in load_build
-    setstate(state)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/synchronize.py", line 110, in __setstate__
     self._semlock = _multiprocessing.SemLock._rebuild(*state)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/synchronize.py", line 110, in __setstate__
-    self._semlock = _multiprocessing.SemLock._rebuild(*state)
 AttributeError: 'SemLock' object has no attribute '_rebuild'
-AttributeError: 'SemLock' object has no attribute '_rebuild'
 Traceback (most recent call last):
   File "<string>", line 1, in <module>
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
@@ -3070,27 +3040,12 @@ Traceback (most recent call last):
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/synchronize.py", line 110, in __setstate__
     self._semlock = _multiprocessing.SemLock._rebuild(*state)
 AttributeError: 'SemLock' object has no attribute '_rebuild'
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
 Traceback (most recent call last):
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
-    exitcode = _main(fd, parent_sentinel)
   File "<string>", line 1, in <module>
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 126, in _main
-    self = reduction.pickle.load(from_parent)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1749, in _load
-    return _Unpickler(file, fix_imports=fix_imports, buffers=buffers,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
     exitcode = _main(fd, parent_sentinel)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1210, in load
-    dispatch[key[0]](self)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1703, in load_build
-    setstate(state)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/synchronize.py", line 110, in __setstate__
-    self._semlock = _multiprocessing.SemLock._rebuild(*state)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 126, in _main
     self = reduction.pickle.load(from_parent)
-AttributeError: 'SemLock' object has no attribute '_rebuild'
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1749, in _load
     return _Unpickler(file, fix_imports=fix_imports, buffers=buffers,
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1210, in load
@@ -3672,29 +3627,29 @@ Traceback (most recent call last):
 AttributeError: 'SemLock' object has no attribute '_rebuild'
 Traceback (most recent call last):
   File "<string>", line 1, in <module>
+Traceback (most recent call last):
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
     exitcode = _main(fd, parent_sentinel)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 126, in _main
     self = reduction.pickle.load(from_parent)
+  File "<string>", line 1, in <module>
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1749, in _load
     return _Unpickler(file, fix_imports=fix_imports, buffers=buffers,
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1210, in load
-    dispatch[key[0]](self)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1703, in load_build
-    setstate(state)
-  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/synchronize.py", line 110, in __setstate__
-    self._semlock = _multiprocessing.SemLock._rebuild(*state)
-AttributeError: 'SemLock' object has no attribute '_rebuild'
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 116, in spawn_main
     exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1210, in load
+    dispatch[key[0]](self)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/spawn.py", line 126, in _main
     self = reduction.pickle.load(from_parent)
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1703, in load_build
+    setstate(state)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1749, in _load
     return _Unpickler(file, fix_imports=fix_imports, buffers=buffers,
+  File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/synchronize.py", line 110, in __setstate__
+    self._semlock = _multiprocessing.SemLock._rebuild(*state)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1210, in load
     dispatch[key[0]](self)
+AttributeError: 'SemLock' object has no attribute '_rebuild'
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/pickle.py", line 1703, in load_build
     setstate(state)
   File "/usr/lib/jvm/java-8-graalvm/jre/languages/python/lib-python/3/multiprocessing/synchronize.py", line 110, in __setstate__

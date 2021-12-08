@@ -1,22 +1,22 @@
 
- Thu, 06 May 2021 22:28:16 GMT
+ Tue, 07 Dec 2021 18:05:32 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp“
 nuitka3 --remove-output knucleotide.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output knucleotide.nuitka
-Nuitka:INFO: Starting Python compilation.
+Nuitka:INFO: Starting Python compilation with Nuitka '0.6.18.1' on Python '3.9' commercial None.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
-Nuitka:INFO: Running C level backend compilation via Scons.
+Nuitka:INFO: Running C compilation via Scons.
 Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
 Nuitka-Scons:WARNING: You are not using ccache.
 Nuitka:INFO: Removing build directory 'knucleotide.nuitka.build'.
 Nuitka:INFO: Successfully created 'knucleotide.nuitka.bin'.
 cp knucleotide.nuitka.bin knucleotide.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp“
-9.36s to complete and log all make actions
+12.89s to complete and log all make actions
 
 COMMAND LINE:
  ./knucleotide.nuitka_run 0 < knucleotide-input10000.txt

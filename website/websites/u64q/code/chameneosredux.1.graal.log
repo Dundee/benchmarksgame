@@ -1,8 +1,11 @@
 
- Thu, 06 May 2021 21:23:55 GMT
+ Mon, 20 Sep 2021 11:47:30 GMT
 
 COMMAND LINE:
  /usr/lib/jvm/java-8-graalvm/bin/graalpython chameneosredux.graal 6000000
+
+PROGRAM FAILED 
+
 
 PROGRAM OUTPUT NOT CHECKED:
 blue + blue -> blue
@@ -16,21 +19,48 @@ yellow + red -> blue
 yellow + yellow -> yellow
 
  blue red yellow
-4258283 zero
-3481814 zero
-4259903 zero
+4027405 zero
+3325451 zero
+4647144 zero
  one two zero zero zero zero zero zero
 
  blue red yellow red yellow blue red yellow red blue
-1150190 zero
-1225906 zero
-1119000 zero
-1187020 zero
-1137154 zero
-1227368 zero
-1246664 zero
-1283218 zero
-1157416 zero
-1266064 zero
+1448271 zero
+1056042 zero
+1209972 zero
+1163064 zero
+1186880 zero
+1235008 zero
+1140382 zero
+1236604 zero
+1202242 zero
+1121535 zero
  one two zero zero zero zero zero zero
 
+
+ERROR: com.oracle.svm.core.jdk.UnsupportedFeatureError: The deprecated method Thread.resume is not supported
+org.graalvm.polyglot.PolyglotException: com.oracle.svm.core.jdk.UnsupportedFeatureError: The deprecated method Thread.resume is not supported
+	at com.oracle.svm.core.util.VMError.unsupportedFeature(VMError.java:88)
+	at java.lang.Thread.resume0(Thread.java:467)
+	at java.lang.Thread.resume(Thread.java:1058)
+	at java.lang.Thread.stop(Thread.java:849)
+	at com.oracle.graal.python.runtime.PythonContext.joinThreads(PythonContext.java:1223)
+	at com.oracle.graal.python.runtime.PythonContext.finalizeContext(PythonContext.java:1060)
+	at com.oracle.graal.python.PythonLanguage.finalizeContext(PythonLanguage.java:248)
+	at com.oracle.graal.python.PythonLanguage.finalizeContext(PythonLanguage.java:107)
+	at com.oracle.truffle.api.LanguageAccessor$LanguageImpl.finalizeContext(LanguageAccessor.java:346)
+	at com.oracle.truffle.polyglot.PolyglotLanguageContext.finalizeContext(PolyglotLanguageContext.java:376)
+	at com.oracle.truffle.polyglot.PolyglotContextImpl.finalizeContext(PolyglotContextImpl.java:2309)
+	at com.oracle.truffle.polyglot.PolyglotContextImpl.finishClose(PolyglotContextImpl.java:2037)
+	at com.oracle.truffle.polyglot.PolyglotContextImpl.closeImpl(PolyglotContextImpl.java:1987)
+	at com.oracle.truffle.polyglot.PolyglotContextImpl.closeAndMaybeWait(PolyglotContextImpl.java:1424)
+	at com.oracle.truffle.polyglot.PolyglotContextImpl.close(PolyglotContextImpl.java:1406)
+	at com.oracle.truffle.polyglot.PolyglotContextDispatch.close(PolyglotContextDispatch.java:72)
+	at org.graalvm.polyglot.Context.close(Context.java:801)
+	at org.graalvm.polyglot.Context.close(Context.java:822)
+	at com.oracle.graal.python.shell.GraalPythonMain.launch(GraalPythonMain.java:618)
+	at org.graalvm.launcher.AbstractLanguageLauncher.launch(AbstractLanguageLauncher.java:124)
+	at org.graalvm.launcher.AbstractLanguageLauncher.launch(AbstractLanguageLauncher.java:71)
+	at com.oracle.graal.python.shell.GraalPythonMain.main(GraalPythonMain.java:66)
+Caused by: Attached Guest Language Frames (0)
+Internal GraalVM error, please report at https://github.com/oracle/graal/issues/.
