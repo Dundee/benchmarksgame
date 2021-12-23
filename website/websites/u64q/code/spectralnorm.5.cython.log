@@ -1,5 +1,5 @@
 
- Tue, 07 Dec 2021 18:42:11 GMT
+ Thu, 23 Dec 2021 11:11:16 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp“
@@ -37,19 +37,19 @@ Compiling /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/spectralno
 [1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx
 Traceback (most recent call last):
   File "/usr/bin/cythonize", line 33, in <module>
-    sys.exit(load_entry_point('Cython==0.29.25', 'console_scripts', 'cythonize')())
-  File "/usr/lib/python3.9/site-packages/Cython/Build/Cythonize.py", line 223, in main
+    sys.exit(load_entry_point('Cython==0.29.26', 'console_scripts', 'cythonize')())
+  File "/usr/lib/python3.10/site-packages/Cython/Build/Cythonize.py", line 223, in main
     cython_compile(path, options)
-  File "/usr/lib/python3.9/site-packages/Cython/Build/Cythonize.py", line 97, in cython_compile
+  File "/usr/lib/python3.10/site-packages/Cython/Build/Cythonize.py", line 97, in cython_compile
     ext_modules = cythonize(
-  File "/usr/lib/python3.9/site-packages/Cython/Build/Dependencies.py", line 1103, in cythonize
+  File "/usr/lib/python3.10/site-packages/Cython/Build/Dependencies.py", line 1103, in cythonize
     cythonize_one(*args)
-  File "/usr/lib/python3.9/site-packages/Cython/Build/Dependencies.py", line 1226, in cythonize_one
+  File "/usr/lib/python3.10/site-packages/Cython/Build/Dependencies.py", line 1226, in cythonize_one
     raise CompileError(None, pyx_file)
 Cython.Compiler.Errors.CompileError: /home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp/spectralnorm.pyx
 make[1]: *** [/home/dundee/work/pybenchmarks/bencher/makefiles/my.linux.Makefile:21: spectralnorm.cython-5.cython_run] Chyba 1
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/spectralnorm/tmp“
-0.26s to complete and log all make actions
+0.27s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import spectralnorm" 550

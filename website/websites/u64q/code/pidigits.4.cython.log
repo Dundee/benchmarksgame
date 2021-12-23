@@ -1,5 +1,5 @@
 
- Tue, 07 Dec 2021 18:22:42 GMT
+ Thu, 23 Dec 2021 11:05:58 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp“
@@ -9,15 +9,15 @@ Compiling /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/pidigits.pyx b
 [1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/pidigits.pyx
 running build_ext
 building 'pidigits' extension
-creating /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpy9bs8wf7/home
-creating /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpy9bs8wf7/home/dundee
-creating /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpy9bs8wf7/home/dundee/work
-creating /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpy9bs8wf7/home/dundee/work/pybenchmarks
-creating /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpy9bs8wf7/home/dundee/work/pybenchmarks/bencher
-creating /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpy9bs8wf7/home/dundee/work/pybenchmarks/bencher/tmp
-creating /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpy9bs8wf7/home/dundee/work/pybenchmarks/bencher/tmp/pidigits
-creating /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpy9bs8wf7/home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.9 -c /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/pidigits.c -o /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpy9bs8wf7/home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/pidigits.o
+creating /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpyypaur84/home
+creating /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpyypaur84/home/dundee
+creating /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpyypaur84/home/dundee/work
+creating /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpyypaur84/home/dundee/work/pybenchmarks
+creating /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpyypaur84/home/dundee/work/pybenchmarks/bencher
+creating /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpyypaur84/home/dundee/work/pybenchmarks/bencher/tmp
+creating /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpyypaur84/home/dundee/work/pybenchmarks/bencher/tmp/pidigits
+creating /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpyypaur84/home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp
+gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.10 -c /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/pidigits.c -o /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpyypaur84/home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/pidigits.o
 /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/pidigits.c: In function ‘__pyx_pf_8pidigits_get_pistring’:
 /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/pidigits.c:1441:55: warning: passing argument 3 of ‘__Pyx_PyUnicode_Substring’ makes integer from pointer without a cast [-Wint-conversion]
  1441 |   __pyx_t_2 = __Pyx_PyUnicode_Substring(__pyx_t_1, 0, __pyx_v_n); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
@@ -27,7 +27,7 @@ gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -ma
 /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/pidigits.c:1043:58: note: expected ‘Py_ssize_t’ {aka ‘long int’} but argument is of type ‘PyObject *’ {aka ‘struct _object *’}
  1043 |             PyObject* text, Py_ssize_t start, Py_ssize_t stop);
       |                                               ~~~~~~~~~~~^~~~
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpy9bs8wf7/home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/pidigits.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/pidigits.cpython-39-x86_64-linux-gnu.so
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/tmpyypaur84/home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/pidigits.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp/pidigits.cpython-310-x86_64-linux-gnu.so
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/pidigits/tmp“
 0.91s to complete and log all make actions
 

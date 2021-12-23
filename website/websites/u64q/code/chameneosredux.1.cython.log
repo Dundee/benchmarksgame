@@ -1,5 +1,5 @@
 
- Tue, 07 Dec 2021 17:41:06 GMT
+ Thu, 23 Dec 2021 10:41:17 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp“
@@ -9,18 +9,18 @@ Compiling /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/chameneo
 [1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/chameneosredux.pyx
 running build_ext
 building 'chameneosredux' extension
-creating /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmp9ek05ae6/home
-creating /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmp9ek05ae6/home/dundee
-creating /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmp9ek05ae6/home/dundee/work
-creating /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmp9ek05ae6/home/dundee/work/pybenchmarks
-creating /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmp9ek05ae6/home/dundee/work/pybenchmarks/bencher
-creating /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmp9ek05ae6/home/dundee/work/pybenchmarks/bencher/tmp
-creating /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmp9ek05ae6/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux
-creating /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmp9ek05ae6/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fno-semantic-interposition -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.9 -c /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/chameneosredux.c -o /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmp9ek05ae6/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/chameneosredux.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -fno-semantic-interposition -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmp9ek05ae6/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/chameneosredux.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/chameneosredux.cpython-39-x86_64-linux-gnu.so
+creating /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmpo9swm2pf/home
+creating /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmpo9swm2pf/home/dundee
+creating /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmpo9swm2pf/home/dundee/work
+creating /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmpo9swm2pf/home/dundee/work/pybenchmarks
+creating /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmpo9swm2pf/home/dundee/work/pybenchmarks/bencher
+creating /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmpo9swm2pf/home/dundee/work/pybenchmarks/bencher/tmp
+creating /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmpo9swm2pf/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux
+creating /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmpo9swm2pf/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp
+gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.10 -c /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/chameneosredux.c -o /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmpo9swm2pf/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/chameneosredux.o
+gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/tmpo9swm2pf/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/chameneosredux.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp/chameneosredux.cpython-310-x86_64-linux-gnu.so
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp“
-2.61s to complete and log all make actions
+2.63s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import chameneosredux" 6000000
@@ -37,21 +37,21 @@ yellow + red -> blue
 yellow + yellow -> yellow
 
  blue red yellow
-4444205 zero
-3109471 zero
-4446324 zero
+4014448 zero
+3757800 zero
+4227752 zero
  one two zero zero zero zero zero zero
 
  blue red yellow red yellow blue red yellow red blue
-969832 zero
-1459000 zero
-1397552 zero
-1422890 zero
-1045886 zero
-954408 zero
-1182131 zero
-943842 zero
-1576985 zero
-1047474 zero
+1371362 zero
+1247112 zero
+1093171 zero
+1253602 zero
+983052 zero
+1074732 zero
+1066729 zero
+1408280 zero
+1397670 zero
+1104290 zero
  one two zero zero zero zero zero zero
 
