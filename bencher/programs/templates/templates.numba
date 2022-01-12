@@ -21,7 +21,7 @@ class User(object):
         self.username = username
 
 
-@jit
+@jit(forceobj=True)
 def render_template(user_id):
     users = [
         User(user_id, 'SomeUsername')

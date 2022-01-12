@@ -70,8 +70,7 @@ prepare-shedskin:
 	sudo pacman -S shedskin
 
 prepare-numba:
-	yaourt -S anaconda
-	sudo /opt/anaconda/bin/conda install jinja2 gmpy2 numpy
+	yaourt -S python-numba
 
 prepare-pyston:
 	yaourt -S pyston

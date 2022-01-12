@@ -9,7 +9,7 @@ import sys
 import os
 import multiprocessing
 import ctypes
-from numba.decorators import autojit
+from numba import jit
 
 # set HALF=True to get twice the speed
 HALF = False
@@ -136,7 +136,7 @@ for i in range(missing_lines):
 # modifies z! call by reference!
 # iterate z according to formula, set all elements
 # in the set to 0
-@autojit
+@jit(forceobj=True)
 def mandeliterations(z):
     # calculate subsequently shorter lists and keep track of indices
     indexlist = []
@@ -168,7 +168,7 @@ def mandeliterations(z):
     z[mandelbrot] = 0
 
 # generate/allocate block of complex numbers for subsequent iteration
-@autojit
+@jit(forceobj=True)
 def mandelblock(line_offset, lines):
     # maybe numpy.mgrid or another method would be faster, but not tried yet...
     (re, im) = np.meshgrid(reline, imline[line_offset:line_offset+lines])
@@ -177,7 +177,7 @@ def mandelblock(line_offset, lines):
     return im
 
 # convert data array into "compressed" bitmap to be written to binary pbm file
-@autojit
+@jit(forceobj=True)
 def pbmline(points, lines):
     # each point is in [0, 1] now, 8 bit unsigned int
     bitmap = np.zeros((lines, linesize*bits), dtype=calctype)

@@ -11,7 +11,7 @@ import sys
 from numba import jit
 
 
-@jit
+@jit(forceobj=True)
 def combinations(l):
     result = []
     for x in range(len(l) - 1):
@@ -64,7 +64,7 @@ SYSTEM = list(BODIES.values())
 PAIRS = combinations(SYSTEM)
 
 
-@jit
+@jit(forceobj=True)
 def advance(dt, n, bodies=SYSTEM, pairs=PAIRS):
 
     for i in range(n):
@@ -88,7 +88,7 @@ def advance(dt, n, bodies=SYSTEM, pairs=PAIRS):
             r[2] += dt * vz
 
 
-@jit
+@jit(forceobj=True)
 def report_energy(bodies=SYSTEM, pairs=PAIRS, e=0.0):
 
     for (((x1, y1, z1), v1, m1),
@@ -101,7 +101,7 @@ def report_energy(bodies=SYSTEM, pairs=PAIRS, e=0.0):
         e += m * (vx * vx + vy * vy + vz * vz) / 2.
     print("%.9f" % e)
 
-@jit
+@jit(forceobj=True)
 def offset_momentum(ref, bodies=SYSTEM, px=0.0, py=0.0, pz=0.0):
 
     for (r, [vx, vy, vz], m) in bodies:

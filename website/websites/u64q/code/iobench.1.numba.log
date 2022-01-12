@@ -1,16 +1,19 @@
 
- Fri, 30 Oct 2020 21:27:58 GMT
+ Wed, 12 Jan 2022 11:57:39 GMT
 
 COMMAND LINE:
- /usr/bin/numba iobench.numba 1
-
-PROGRAM FAILED 
-
+ /usr/bin/python3 iobench.numba 1
 
 PROGRAM OUTPUT NOT CHECKED:
-
-usage: numba [-h] [--annotate] [--dump-llvm] [--dump-optimized]
-             [--dump-assembly] [--dump-cfg] [--dump-ast]
-             [--annotate-html ANNOTATE_HTML] [-s] [--sys-json SYS_JSON]
-             [filename]
-numba: error: unrecognized arguments: 1
+CPUDispatcher(<function fread at 0x7faa88a352d0>) 100 bytes, 0.75us per write
+CPUDispatcher(<function fwrite at 0x7faa889d1120>) 100 bytes, 0.58us per write
+CPUDispatcher(<function fread at 0x7faa88a352d0>) 1000 bytes, 0.52us per write
+CPUDispatcher(<function fwrite at 0x7faa889d1120>) 1000 bytes, 0.44us per write
+CPUDispatcher(<function fread at 0x7faa88a352d0>) 10000 bytes, 0.89us per write
+CPUDispatcher(<function fwrite at 0x7faa889d1120>) 10000 bytes, 0.50us per write
+CPUDispatcher(<function file_read at 0x7faa88a35fc0>) 100 bytes, 0.35us per write
+CPUDispatcher(<function file_write at 0x7faa88a35e10>) 100 bytes, 0.37us per write
+CPUDispatcher(<function file_read at 0x7faa88a35fc0>) 1000 bytes, 0.49us per write
+CPUDispatcher(<function file_write at 0x7faa88a35e10>) 1000 bytes, 0.30us per write
+CPUDispatcher(<function file_read at 0x7faa88a35fc0>) 10000 bytes, 2.79us per write
+CPUDispatcher(<function file_write at 0x7faa88a35e10>) 10000 bytes, 0.92us per write

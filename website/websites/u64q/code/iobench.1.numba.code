@@ -14,26 +14,26 @@ def measure(func, repetitions, size):
         )
     )
 
-@jit
+@jit(forceobj=True)
 def fwrite(repetitions, size):
     fd = os.open("/dev/null", os.O_WRONLY)
     for i in range(repetitions):
         os.write(fd, b" " * size)
 
-@jit
+@jit(forceobj=True)
 def fread(repetitions, size):
     fd = os.open("/dev/full", os.O_RDONLY)
     for i in range(repetitions):
         os.read(fd, size)
 
-@jit
+@jit(forceobj=True)
 def file_write(repetitions, size):
     f = open("/dev/null", "w")
     for i in range(repetitions):
         f.write(" " * size)
     f.flush()
 
-@jit
+@jit(forceobj=True)
 def file_read(repetitions, size):
     f = open("/dev/full")
     for i in range(repetitions):

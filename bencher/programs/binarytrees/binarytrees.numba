@@ -7,7 +7,10 @@
 import sys
 import multiprocessing as mp
 
+from numba import jit
 
+
+@jit(forceobj=True)
 def make_tree(i, d):
 
     if d > 0:
@@ -17,6 +20,7 @@ def make_tree(i, d):
     return (i, None, None)
 
 
+@jit(forceobj=True)
 def check_tree(node):
 
     (i, l, r) = node
@@ -26,12 +30,14 @@ def check_tree(node):
         return i + check_tree(l) - check_tree(r)
 
 
+@jit(forceobj=True)
 def make_check(itde, make=make_tree, check=check_tree):
 
     i, d = itde
     return check(make(i, d))
 
 
+@jit(forceobj=True)
 def get_argchunks(i, d, chunksize=5000):
 
     assert chunksize % 2 == 0
@@ -45,6 +51,7 @@ def get_argchunks(i, d, chunksize=5000):
         yield chunk
 
 
+@jit(forceobj=True)
 def main(n, min_depth=4):
 
     max_depth = max(min_depth + 2, n)

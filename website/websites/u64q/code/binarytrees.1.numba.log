@@ -1,16 +1,15 @@
 
- Fri, 30 Oct 2020 21:23:46 GMT
+ Wed, 12 Jan 2022 11:56:25 GMT
 
 COMMAND LINE:
- /usr/bin/numba binarytrees.numba 14
-
-PROGRAM FAILED 
-
+ /usr/bin/python3 binarytrees.numba 14
 
 PROGRAM OUTPUT:
-
-usage: numba [-h] [--annotate] [--dump-llvm] [--dump-optimized]
-             [--dump-assembly] [--dump-cfg] [--dump-ast]
-             [--annotate-html ANNOTATE_HTML] [-s] [--sys-json SYS_JSON]
-             [filename]
-numba: error: unrecognized arguments: 14
+stretch tree of depth 15	 check: -1
+32768	 trees of depth 4	 check: -32768
+8192	 trees of depth 6	 check: -8192
+2048	 trees of depth 8	 check: -2048
+512	 trees of depth 10	 check: -512
+128	 trees of depth 12	 check: -128
+32	 trees of depth 14	 check: -32
+long lived tree of depth 14	 check: -1
