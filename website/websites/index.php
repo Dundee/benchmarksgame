@@ -56,7 +56,7 @@ $langs = array(
    array('cython','Cython 0.29.26 (with NumPy and gmpy)','cython',$allsites),
    array('nuitka','Nuitka 0.6.18','nuitka',$allsites),
    array('shedskin','Shedskin 0.9.4','shedskin',$allsites),
-   array('numba','Numba 0.35.0 (with NumPy and Anaconda 5.0.1)','numba',$allsites),
+   array('numba','Numba 0.55.0rc1 (with NumPy)','numba',$allsites),
    array('pyston','Pyston 2.3','pyston',$allsites),
    array('micropython','MicroPython 1.11','micropython',$allsites),
    array('grumpy','Grumpy r123.08f9c2e','grumpy',$allsites),
