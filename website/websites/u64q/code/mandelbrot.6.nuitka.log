@@ -1,13 +1,13 @@
 
- Tue, 07 Dec 2021 18:16:44 GMT
+ Wed, 19 Jan 2022 22:36:52 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/mandelbrot/tmp“
 nuitka3 --remove-output mandelbrot.nuitka-6.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output mandelbrot.nuitka-6.nuitka
-Nuitka:INFO: Starting Python compilation with Nuitka '0.6.18.1' on Python '3.9' commercial None.
+Nuitka-Options:WARNING: You did not specify to follow or include anything but main program. Check options and make sure that is intended.
+Nuitka:INFO: Starting Python compilation with Nuitka '0.6.19.3' on Python '3.10' commercial None.
 Nuitka-Plugins:WARNING: Use '--enable-plugin=multiprocessing' for: Multiprocessing workarounds for compiled code.
-Nuitka-Inclusion:WARNING: Not following import to 'numpy' (/usr/lib/python3.9/site-packages/numpy), please specify --nofollow-imports (do not follow any imports), --follow-imports (follow all generally), --nofollow-import-to=numpy (do not follow it), --follow-import-to=numpy (follow import it) to change.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
@@ -18,15 +18,15 @@ Nuitka:INFO: Removing build directory 'mandelbrot.nuitka-6.nuitka.build'.
 Nuitka:INFO: Successfully created 'mandelbrot.nuitka-6.nuitka.bin'.
 cp mandelbrot.nuitka-6.nuitka.bin mandelbrot.nuitka-6.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/mandelbrot/tmp“
-13.00s to complete and log all make actions
+14.41s to complete and log all make actions
 
 COMMAND LINE:
  ./mandelbrot.nuitka-6.nuitka_run 16000
 
 PROGRAM OUTPUT:
 UDQKMTYwMDAgMTYwMDAK
-Exception ignored in: <function Pool.__del__ at 0x7fb5fc2e6310>
+Exception ignored in: <function Pool.__del__ at 0x7f9c96bb51b0>
 Traceback (most recent call last):
-  File "/usr/lib/python3.9/multiprocessing/pool.py", line 268, in __del__
-  File "/usr/lib/python3.9/multiprocessing/queues.py", line 372, in put
+  File "/usr/lib/python3.10/multiprocessing/pool.py", line 268, in __del__
+  File "/usr/lib/python3.10/multiprocessing/queues.py", line 372, in put
 AttributeError: 'NoneType' object has no attribute 'dumps'

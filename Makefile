@@ -40,7 +40,7 @@ prepare-python3:
 
 prepare-python-dev:
 	yaourt -S python-git
-	sudo python3.7 -m pip install jinja2 gmpy2 numpy
+	sudo python3.11 -m pip install jinja2 gmpy2 numpy
 
 prepare-pypy:
 	sudo pacman -S pypy

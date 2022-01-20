@@ -1,8 +1,8 @@
 
- Fri, 30 Oct 2020 21:01:38 GMT
+ Thu, 20 Jan 2022 11:24:23 GMT
 
 COMMAND LINE:
- /usr/bin/python3.10 threadring.python-dev-3.python-dev 5000000
+ /usr/bin/python3.11 threadring.python-dev-3.python-dev 5000000
 
 PROGRAM FAILED 
 
@@ -13,6 +13,7 @@ PROGRAM OUTPUT:
 Traceback (most recent call last):
   File "/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.python-dev-3.python-dev", line 22, in worker
     raise StopIteration
+    ^^^^^^^^^^^^^^^^^^^
 StopIteration
 
 The above exception was the direct cause of the following exception:
@@ -20,6 +21,8 @@ The above exception was the direct cause of the following exception:
 Traceback (most recent call last):
   File "/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.python-dev-3.python-dev", line 34, in <module>
     main()
+    ^^^^^^
   File "/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.python-dev-3.python-dev", line 30, in main
     n = send(n)
+        ^^^^^^^
 RuntimeError: generator raised StopIteration

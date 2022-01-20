@@ -1,11 +1,12 @@
 
- Tue, 07 Dec 2021 18:19:56 GMT
+ Thu, 20 Jan 2022 08:53:40 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/nbody/tmp“
 nuitka3 --remove-output nbody.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output nbody.nuitka
-Nuitka:INFO: Starting Python compilation with Nuitka '0.6.18.1' on Python '3.9' commercial None.
+Nuitka-Options:WARNING: You did not specify to follow or include anything but main program. Check options and make sure that is intended.
+Nuitka:INFO: Starting Python compilation with Nuitka '0.6.19.3' on Python '3.10' commercial None.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
@@ -16,11 +17,30 @@ Nuitka:INFO: Removing build directory 'nbody.nuitka.build'.
 Nuitka:INFO: Successfully created 'nbody.nuitka.bin'.
 cp nbody.nuitka.bin nbody.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/nbody/tmp“
-13.21s to complete and log all make actions
+15.60s to complete and log all make actions
 
 COMMAND LINE:
  ./nbody.nuitka_run 5000000
 
-PROGRAM OUTPUT:
--0.169075164
--0.169083134
+ Thu, 20 Jan 2022 08:53:40 GMT
+
+MAKE:
+make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/nbody/tmp“
+nuitka3 --remove-output nbody.nuitka
+Nuitka-Options:INFO: Used command line options: --remove-output nbody.nuitka
+Nuitka-Options:WARNING: You did not specify to follow or include anything but main program. Check options and make sure that is intended.
+Nuitka:INFO: Starting Python compilation with Nuitka '0.6.19.3' on Python '3.10' commercial None.
+Nuitka:INFO: Completed Python level compilation and optimization.
+Nuitka:INFO: Generating source code for C backend compiler.
+Nuitka:INFO: Running data composer tool for optimal constant value handling.
+Nuitka:INFO: Running C compilation via Scons.
+Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
+Nuitka-Scons:WARNING: You are not using ccache.
+Nuitka:INFO: Removing build directory 'nbody.nuitka.build'.
+Nuitka:INFO: Successfully created 'nbody.nuitka.bin'.
+cp nbody.nuitka.bin nbody.nuitka_run
+make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/nbody/tmp“
+15.60s to complete and log all make actions
+
+COMMAND LINE:
+ ./nbody.nuitka_run 5000000

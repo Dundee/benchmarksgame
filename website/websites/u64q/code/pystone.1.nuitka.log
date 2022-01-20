@@ -1,26 +1,20 @@
 
- Tue, 07 Dec 2021 18:23:56 GMT
+ Thu, 20 Jan 2022 08:55:34 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp“
 nuitka3 --remove-output pystone.nuitka
-Nuitka-Options:INFO: Used command line options: --remove-output pystone.nuitka
-Nuitka:INFO: Starting Python compilation with Nuitka '0.6.18.1' on Python '3.9' commercial None.
-Nuitka:INFO: Completed Python level compilation and optimization.
-Nuitka:INFO: Generating source code for C backend compiler.
-Nuitka:INFO: Running data composer tool for optimal constant value handling.
-Nuitka:INFO: Running C compilation via Scons.
-Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
-Nuitka-Scons:WARNING: You are not using ccache.
-Nuitka:INFO: Removing build directory 'pystone.nuitka.build'.
-Nuitka:INFO: Successfully created 'pystone.nuitka.bin'.
-cp pystone.nuitka.bin pystone.nuitka_run
+Traceback (most recent call last):
+  File "/usr/bin/nuitka3", line 5, in <module>
+    import nuitka.__main__
+    ^^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'nuitka'
+make[1]: *** [/home/dundee/work/pybenchmarks/bencher/makefiles/my.linux.Makefile:38: pystone.nuitka_run] Chyba 1
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/pystone/tmp“
-13.05s to complete and log all make actions
+0.02s to complete and log all make actions
 
 COMMAND LINE:
  ./pystone.nuitka_run 50000
 
-PROGRAM OUTPUT:
-50000
-OK
+MAKE ERROR 
+

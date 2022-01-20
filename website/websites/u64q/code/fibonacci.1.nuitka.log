@@ -1,12 +1,12 @@
 
- Tue, 07 Dec 2021 18:04:06 GMT
+ Wed, 19 Jan 2022 22:33:19 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/fibonacci/tmp“
 nuitka3 --remove-output fibonacci.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output fibonacci.nuitka
-Nuitka:INFO: Starting Python compilation with Nuitka '0.6.18.1' on Python '3.9' commercial None.
-Nuitka-Inclusion:WARNING: Not following import to 'numpy' (/usr/lib/python3.9/site-packages/numpy), please specify --nofollow-imports (do not follow any imports), --follow-imports (follow all generally), --nofollow-import-to=numpy (do not follow it), --follow-import-to=numpy (follow import it) to change.
+Nuitka-Options:WARNING: You did not specify to follow or include anything but main program. Check options and make sure that is intended.
+Nuitka:INFO: Starting Python compilation with Nuitka '0.6.19.3' on Python '3.10' commercial None.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
@@ -17,7 +17,7 @@ Nuitka:INFO: Removing build directory 'fibonacci.nuitka.build'.
 Nuitka:INFO: Successfully created 'fibonacci.nuitka.bin'.
 cp fibonacci.nuitka.bin fibonacci.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/fibonacci/tmp“
-12.76s to complete and log all make actions
+14.17s to complete and log all make actions
 
 COMMAND LINE:
  ./fibonacci.nuitka_run 1000000
