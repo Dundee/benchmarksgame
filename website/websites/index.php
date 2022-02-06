@@ -57,7 +57,7 @@ $langs = array(
    array('nuitka','Nuitka 0.6.19.3','nuitka',$allsites),
    array('shedskin','Shedskin 0.9.4','shedskin',$allsites),
    array('numba','Numba 0.55.0rc1 (with NumPy)','numba',$allsites),
-   array('pyston','Pyston 2.3','pyston',$allsites),
+   array('pyston','Pyston 2.3.2','pyston',$allsites),
    array('micropython','MicroPython 1.11','micropython',$allsites),
    array('grumpy','Grumpy r123.08f9c2e','grumpy',$allsites),
    array('graal','Graal python 21.2.0','graal',$allsites),
