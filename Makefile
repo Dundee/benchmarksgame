@@ -39,8 +39,8 @@ prepare-python3:
 	sudo pacman -S python-gmpy2 python-numpy python-jinja
 
 prepare-python-dev:
-	yaourt -S python-git
-	sudo python3.11 -m pip install jinja2 gmpy2 numpy
+	yay -S python-git
+	sudo python3.12 -m pip install jinja2 gmpy2 numpy
 
 prepare-pypy:
 	sudo pacman -S pypy

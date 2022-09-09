@@ -48,9 +48,9 @@ $allsites = array('u64q');
 $langs = array(
    array('python3','Python 3.9.0 (with NumPy and gmpy2)','python3',$allsites),
    array('python','Python 2.7.15 (with NumPy and gmpy)','python',$allsites),
-   array('python-dev','Python 3.11.0a4','python-dev',$allsites),
-   array('pypy3','PyPy3 7.3.7 (with gmpy_cffi)','pypy3',$allsites),
-   array('pypy','PyPy 7.3.6 (with gmpy_cffi)','pypy',$allsites),
+   array('python-dev','Python 3.12.0a0-2022-09-02','python-dev',$allsites),
+   array('pypy3','PyPy3 7.3.8 (with gmpy_cffi)','pypy3',$allsites),
+   array('pypy','PyPy 7.3.8 (with gmpy_cffi)','pypy',$allsites),
    array('ipy','IronPython 2.7.8a1 (with Mono 5.0.0.100)','ipy',$allsites),
    array('jython','Jython 2.7.1 (with JDK 8.u131)','jython',$allsites),
    array('cython','Cython 0.29.26 (with NumPy and gmpy)','cython',$allsites),

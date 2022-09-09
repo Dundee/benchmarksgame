@@ -1,13 +1,15 @@
 
- Tue, 07 Dec 2021 18:43:04 GMT
+ Fri, 09 Sep 2022 06:06:19 GMT
 
 COMMAND LINE:
  /usr/bin/pypy3 templates.pypy3 1000
 
+PROGRAM FAILED 
+
+
 PROGRAM OUTPUT:
 
-<ul>
-
-  <li><a href="/user/999">SomeUsername</a></li>
-
-</ul>
+Traceback (most recent call last):
+  File "templates.pypy3", line 3, in <module>
+    from jinja2 import Template
+ModuleNotFoundError: No module named 'jinja2'
