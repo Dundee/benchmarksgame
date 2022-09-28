@@ -1,23 +1,24 @@
 
- Wed, 19 Jan 2022 22:18:30 GMT
+ Wed, 28 Sep 2022 08:41:23 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp“
 nuitka3 --remove-output chameneosredux.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output chameneosredux.nuitka
 Nuitka-Options:WARNING: You did not specify to follow or include anything but main program. Check options and make sure that is intended.
-Nuitka:INFO: Starting Python compilation with Nuitka '0.6.19.3' on Python '3.10' commercial None.
+Nuitka:INFO: Starting Python compilation with Nuitka '1.0.8' on Python '3.10' commercial grade 'not installed'.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
 Nuitka:INFO: Running C compilation via Scons.
 Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
+Nuitka-Scons:INFO: Backend linking program with 10 files (no progress information available).
 Nuitka-Scons:WARNING: You are not using ccache.
 Nuitka:INFO: Removing build directory 'chameneosredux.nuitka.build'.
 Nuitka:INFO: Successfully created 'chameneosredux.nuitka.bin'.
 cp chameneosredux.nuitka.bin chameneosredux.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp“
-14.34s to complete and log all make actions
+12.64s to complete and log all make actions
 
 COMMAND LINE:
  ./chameneosredux.nuitka_run 6000000
@@ -34,21 +35,21 @@ yellow + red -> blue
 yellow + yellow -> yellow
 
  blue red yellow
-3995539 zero
-3855918 zero
-4148543 zero
+4031714 zero
+4185921 zero
+3782365 zero
  one two zero zero zero zero zero zero
 
  blue red yellow red yellow blue red yellow red blue
-879584 zero
-1451720 zero
-1334408 zero
-1267900 zero
-1055717 zero
-1363548 zero
-1089987 zero
-1181804 zero
-1088736 zero
-1286596 zero
+1170092 zero
+1150705 zero
+1151890 zero
+1073900 zero
+1153826 zero
+1227230 zero
+1026856 zero
+1236180 zero
+1392768 zero
+1416553 zero
  one two zero zero zero zero zero zero
 

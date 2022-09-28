@@ -1,5 +1,5 @@
 
- Fri, 30 Oct 2020 19:24:45 GMT
+ Wed, 28 Sep 2022 09:10:02 GMT
 
 COMMAND LINE:
  /usr/bin/rustpython iobench.rustpython 1
@@ -9,6 +9,12 @@ PROGRAM FAILED
 
 PROGRAM OUTPUT NOT CHECKED:
 
+encodings initialization failed. Only utf-8 encoding will be supported.
+ModuleNotFoundError: No module named 'encodings'
+
+The above exception was the direct cause of the following exception:
+
+RuntimeError: Could not import encodings. Is your RUSTPYTHONPATH set? If you don't have access to a consistent external environment (e.g. if you're embedding rustpython in another application), try enabling the freeze-stdlib feature
 Traceback (most recent call last):
   File "iobench.rustpython", line 1, in <module>
     import os, time

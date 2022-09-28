@@ -1,5 +1,5 @@
 
- Fri, 30 Oct 2020 19:31:47 GMT
+ Wed, 28 Sep 2022 09:11:53 GMT
 
 COMMAND LINE:
  /usr/bin/rustpython knucleotide.rustpython-8.rustpython 0 < knucleotide-input10000.txt
@@ -9,6 +9,12 @@ PROGRAM FAILED
 
 PROGRAM OUTPUT:
 
+encodings initialization failed. Only utf-8 encoding will be supported.
+ModuleNotFoundError: No module named 'encodings'
+
+The above exception was the direct cause of the following exception:
+
+RuntimeError: Could not import encodings. Is your RUSTPYTHONPATH set? If you don't have access to a consistent external environment (e.g. if you're embedding rustpython in another application), try enabling the freeze-stdlib feature
 Traceback (most recent call last):
   File "knucleotide.rustpython-8.rustpython", line 11, in <module>
     from collections import defaultdict

@@ -1,5 +1,5 @@
 
- Fri, 30 Oct 2020 19:44:42 GMT
+ Wed, 28 Sep 2022 09:14:35 GMT
 
 COMMAND LINE:
  /usr/bin/rustpython meteor.rustpython 2098
@@ -29,3 +29,10 @@ PROGRAM OUTPUT:
 1 4 0 0 3 
  1 1 3 3 3 
 
+
+encodings initialization failed. Only utf-8 encoding will be supported.
+ModuleNotFoundError: No module named 'encodings'
+
+The above exception was the direct cause of the following exception:
+
+RuntimeError: Could not import encodings. Is your RUSTPYTHONPATH set? If you don't have access to a consistent external environment (e.g. if you're embedding rustpython in another application), try enabling the freeze-stdlib feature

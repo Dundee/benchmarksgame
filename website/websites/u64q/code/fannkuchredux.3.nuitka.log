@@ -1,24 +1,28 @@
 
- Wed, 19 Jan 2022 22:28:19 GMT
+ Wed, 28 Sep 2022 08:57:50 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp“
 nuitka3 --remove-output fannkuchredux.nuitka-3.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output fannkuchredux.nuitka-3.nuitka
 Nuitka-Options:WARNING: You did not specify to follow or include anything but main program. Check options and make sure that is intended.
-Nuitka:INFO: Starting Python compilation with Nuitka '0.6.19.3' on Python '3.10' commercial None.
-Nuitka-Plugins:WARNING: Use '--enable-plugin=multiprocessing' for: Multiprocessing workarounds for compiled code.
+Nuitka:INFO: Starting Python compilation with Nuitka '1.0.8' on Python '3.10' commercial grade 'not installed'.
+Nuitka-Plugins:INFO: multiprocessing: Injecting pre-module load code for module 'multiprocessing':
+Nuitka-Plugins:INFO: multiprocessing:     Monkey patching "multiprocessing" load environment.
+Nuitka-Plugins:INFO: multiprocessing: Injecting post-module load code for module 'multiprocessing':
+Nuitka-Plugins:INFO: multiprocessing:     Monkey patching "multiprocessing" for compiled methods.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
 Nuitka:INFO: Running C compilation via Scons.
 Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
+Nuitka-Scons:INFO: Backend linking program with 13 files (no progress information available).
 Nuitka-Scons:WARNING: You are not using ccache.
 Nuitka:INFO: Removing build directory 'fannkuchredux.nuitka-3.nuitka.build'.
 Nuitka:INFO: Successfully created 'fannkuchredux.nuitka-3.nuitka.bin'.
 cp fannkuchredux.nuitka-3.nuitka.bin fannkuchredux.nuitka-3.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp“
-14.46s to complete and log all make actions
+14.29s to complete and log all make actions
 
 COMMAND LINE:
  ./fannkuchredux.nuitka-3.nuitka_run 10

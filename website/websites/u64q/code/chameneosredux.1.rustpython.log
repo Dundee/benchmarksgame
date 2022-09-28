@@ -1,8 +1,43 @@
 
- Thu, 29 Oct 2020 22:11:16 GMT
+ Wed, 28 Sep 2022 08:45:33 GMT
 
 COMMAND LINE:
  /usr/bin/rustpython chameneosredux.rustpython 6000000
 
-TIMED OUT after 300s
+PROGRAM OUTPUT NOT CHECKED:
+blue + blue -> blue
+blue + red -> yellow
+blue + yellow -> red
+red + blue -> yellow
+red + red -> red
+red + yellow -> blue
+yellow + blue -> red
+yellow + red -> blue
+yellow + yellow -> yellow
 
+ blue red yellow
+4001841 zero
+3988667 zero
+4009492 zero
+ one two zero zero zero zero zero zero
+
+ blue red yellow red yellow blue red yellow red blue
+1181699 zero
+1158942 zero
+1210444 zero
+1244862 zero
+1248784 zero
+1216488 zero
+1129244 zero
+1223336 zero
+1125936 zero
+1260265 zero
+ one two zero zero zero zero zero zero
+
+
+encodings initialization failed. Only utf-8 encoding will be supported.
+ModuleNotFoundError: No module named 'encodings'
+
+The above exception was the direct cause of the following exception:
+
+RuntimeError: Could not import encodings. Is your RUSTPYTHONPATH set? If you don't have access to a consistent external environment (e.g. if you're embedding rustpython in another application), try enabling the freeze-stdlib feature

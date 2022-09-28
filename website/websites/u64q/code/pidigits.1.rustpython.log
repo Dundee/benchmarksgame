@@ -1,5 +1,5 @@
 
- Fri, 30 Oct 2020 20:16:15 GMT
+ Wed, 28 Sep 2022 09:30:06 GMT
 
 COMMAND LINE:
  /usr/bin/rustpython pidigits.rustpython 10000
@@ -614,3 +614,9 @@ COMMAND LINE:
 0432875262	:6070
 8889639958	:6080
 7947572917	:
+encodings initialization failed. Only utf-8 encoding will be supported.
+ModuleNotFoundError: No module named 'encodings'
+
+The above exception was the direct cause of the following exception:
+
+RuntimeError: Could not import encodings. Is your RUSTPYTHONPATH set? If you don't have access to a consistent external environment (e.g. if you're embedding rustpython in another application), try enabling the freeze-stdlib feature

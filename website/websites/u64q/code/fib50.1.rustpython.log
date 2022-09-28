@@ -1,5 +1,5 @@
 
- Thu, 06 May 2021 22:13:40 GMT
+ Wed, 28 Sep 2022 09:01:47 GMT
 
 COMMAND LINE:
  /usr/bin/rustpython fib50.rustpython 1000000
@@ -859,3 +859,9 @@ COMMAND LINE:
 12586269025
 12586269025
 1258
+encodings initialization failed. Only utf-8 encoding will be supported.
+ModuleNotFoundError: No module named 'encodings'
+
+The above exception was the direct cause of the following exception:
+
+RuntimeError: Could not import encodings. Is your RUSTPYTHONPATH set? If you don't have access to a consistent external environment (e.g. if you're embedding rustpython in another application), try enabling the freeze-stdlib feature

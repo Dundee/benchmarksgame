@@ -1,23 +1,24 @@
 
- Wed, 19 Jan 2022 22:14:08 GMT
+ Wed, 28 Sep 2022 08:26:02 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp“
 nuitka3 --remove-output chameneosredux.nuitka-2.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output chameneosredux.nuitka-2.nuitka
 Nuitka-Options:WARNING: You did not specify to follow or include anything but main program. Check options and make sure that is intended.
-Nuitka:INFO: Starting Python compilation with Nuitka '0.6.19.3' on Python '3.10' commercial None.
+Nuitka:INFO: Starting Python compilation with Nuitka '1.0.8' on Python '3.10' commercial grade 'not installed'.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
 Nuitka:INFO: Running C compilation via Scons.
 Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
+Nuitka-Scons:INFO: Backend linking program with 10 files (no progress information available).
 Nuitka-Scons:WARNING: You are not using ccache.
 Nuitka:INFO: Removing build directory 'chameneosredux.nuitka-2.nuitka.build'.
 Nuitka:INFO: Successfully created 'chameneosredux.nuitka-2.nuitka.bin'.
 cp chameneosredux.nuitka-2.nuitka.bin chameneosredux.nuitka-2.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp“
-14.30s to complete and log all make actions
+12.57s to complete and log all make actions
 
 COMMAND LINE:
  ./chameneosredux.nuitka-2.nuitka_run 6000000
@@ -34,21 +35,21 @@ yellow + red -> blue
 yellow + yellow -> yellow
 
  blue red yellow
-4129515 zero
-3966746 zero
-3903739 zero
+3978716 zero
+4034602 zero
+3986682 zero
  one two zero zero zero zero zero zero
 
  blue red yellow red yellow blue red yellow red blue
-1280533 zero
-1251186 zero
-1192820 zero
-1128287 zero
-1275102 zero
-1178116 zero
-1223012 zero
-1236922 zero
-1076580 zero
-1157442 zero
+1008824 zero
+1181307 zero
+1212686 zero
+1190050 zero
+1157199 zero
+1174350 zero
+1266798 zero
+1291670 zero
+1215976 zero
+1301140 zero
  one two zero zero zero zero zero zero
 
