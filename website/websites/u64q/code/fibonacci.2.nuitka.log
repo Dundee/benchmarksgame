@@ -1,12 +1,12 @@
 
- Wed, 28 Sep 2022 09:04:37 GMT
+ Sun, 20 Nov 2022 12:33:08 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/fibonacci/tmp“
 nuitka3 --remove-output fibonacci.nuitka-2.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output fibonacci.nuitka-2.nuitka
 Nuitka-Options:WARNING: You did not specify to follow or include anything but main program. Check options and make sure that is intended.
-Nuitka:INFO: Starting Python compilation with Nuitka '1.0.8' on Python '3.10' commercial grade 'not installed'.
+Nuitka:INFO: Starting Python compilation with Nuitka '1.2' on Python '3.10' commercial grade 'not installed'.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
@@ -18,7 +18,7 @@ Nuitka:INFO: Removing build directory 'fibonacci.nuitka-2.nuitka.build'.
 Nuitka:INFO: Successfully created 'fibonacci.nuitka-2.nuitka.bin'.
 cp fibonacci.nuitka-2.nuitka.bin fibonacci.nuitka-2.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/fibonacci/tmp“
-12.46s to complete and log all make actions
+12.67s to complete and log all make actions
 
 COMMAND LINE:
  ./fibonacci.nuitka-2.nuitka_run 1000000
@@ -31,4 +31,4 @@ PROGRAM OUTPUT:
 Traceback (most recent call last):
   File "/home/dundee/work/pybenchmarks/bencher/tmp/fibonacci/tmp/fibonacci.nuitka-2.nuitka", line 10, in <module>
     print(fib(int(sys.argv[1])))
-ValueError: Exceeds the limit (4300) for integer string conversion
+ValueError: Exceeds the limit (4300) for integer string conversion; use sys.set_int_max_str_digits() to increase the limit

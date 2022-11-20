@@ -1,12 +1,12 @@
 
- Wed, 28 Sep 2022 09:27:00 GMT
+ Sun, 20 Nov 2022 12:37:38 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/nbody/tmp“
 nuitka3 --remove-output nbody.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output nbody.nuitka
 Nuitka-Options:WARNING: You did not specify to follow or include anything but main program. Check options and make sure that is intended.
-Nuitka:INFO: Starting Python compilation with Nuitka '1.0.8' on Python '3.10' commercial grade 'not installed'.
+Nuitka:INFO: Starting Python compilation with Nuitka '1.2' on Python '3.10' commercial grade 'not installed'.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
@@ -18,7 +18,7 @@ Nuitka:INFO: Removing build directory 'nbody.nuitka.build'.
 Nuitka:INFO: Successfully created 'nbody.nuitka.bin'.
 cp nbody.nuitka.bin nbody.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/nbody/tmp“
-12.80s to complete and log all make actions
+13.07s to complete and log all make actions
 
 COMMAND LINE:
  ./nbody.nuitka_run 5000000

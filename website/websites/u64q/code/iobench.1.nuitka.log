@@ -1,12 +1,12 @@
 
- Wed, 28 Sep 2022 09:10:14 GMT
+ Sun, 20 Nov 2022 12:33:49 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/iobench/tmp“
 nuitka3 --remove-output iobench.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output iobench.nuitka
 Nuitka-Options:WARNING: You did not specify to follow or include anything but main program. Check options and make sure that is intended.
-Nuitka:INFO: Starting Python compilation with Nuitka '1.0.8' on Python '3.10' commercial grade 'not installed'.
+Nuitka:INFO: Starting Python compilation with Nuitka '1.2' on Python '3.10' commercial grade 'not installed'.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
@@ -18,21 +18,21 @@ Nuitka:INFO: Removing build directory 'iobench.nuitka.build'.
 Nuitka:INFO: Successfully created 'iobench.nuitka.bin'.
 cp iobench.nuitka.bin iobench.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/iobench/tmp“
-12.49s to complete and log all make actions
+12.71s to complete and log all make actions
 
 COMMAND LINE:
  ./iobench.nuitka_run 1
 
 PROGRAM OUTPUT NOT CHECKED:
-<compiled_function fread at 0x7f89e71a7970> 100 bytes, 0.40us per write
-<compiled_function fwrite at 0x7f89e71a76a0> 100 bytes, 0.35us per write
-<compiled_function fread at 0x7f89e71a7970> 1000 bytes, 0.49us per write
-<compiled_function fwrite at 0x7f89e71a76a0> 1000 bytes, 0.43us per write
-<compiled_function fread at 0x7f89e71a7970> 10000 bytes, 0.84us per write
-<compiled_function fwrite at 0x7f89e71a76a0> 10000 bytes, 0.47us per write
-<compiled_function file_read at 0x7f89e71a7b50> 100 bytes, 0.14us per write
-<compiled_function file_write at 0x7f89e71a7a60> 100 bytes, 0.11us per write
-<compiled_function file_read at 0x7f89e71a7b50> 1000 bytes, 0.47us per write
-<compiled_function file_write at 0x7f89e71a7a60> 1000 bytes, 0.25us per write
-<compiled_function file_read at 0x7f89e71a7b50> 10000 bytes, 2.68us per write
-<compiled_function file_write at 0x7f89e71a7a60> 10000 bytes, 0.93us per write
+<compiled_function fread at 0x7fb3cc8aba60> 100 bytes, 0.38us per write
+<compiled_function fwrite at 0x7fb3cc8ab790> 100 bytes, 0.34us per write
+<compiled_function fread at 0x7fb3cc8aba60> 1000 bytes, 0.47us per write
+<compiled_function fwrite at 0x7fb3cc8ab790> 1000 bytes, 0.39us per write
+<compiled_function fread at 0x7fb3cc8aba60> 10000 bytes, 0.80us per write
+<compiled_function fwrite at 0x7fb3cc8ab790> 10000 bytes, 0.44us per write
+<compiled_function file_read at 0x7fb3cc8abc40> 100 bytes, 0.13us per write
+<compiled_function file_write at 0x7fb3cc8abb50> 100 bytes, 0.10us per write
+<compiled_function file_read at 0x7fb3cc8abc40> 1000 bytes, 0.45us per write
+<compiled_function file_write at 0x7fb3cc8abb50> 1000 bytes, 0.24us per write
+<compiled_function file_read at 0x7fb3cc8abc40> 10000 bytes, 2.64us per write
+<compiled_function file_write at 0x7fb3cc8abb50> 10000 bytes, 0.81us per write

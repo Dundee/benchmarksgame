@@ -1,12 +1,12 @@
 
- Wed, 28 Sep 2022 09:11:24 GMT
+ Sun, 20 Nov 2022 12:34:38 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp“
 nuitka3 --remove-output knucleotide.nuitka-8.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output knucleotide.nuitka-8.nuitka
 Nuitka-Options:WARNING: You did not specify to follow or include anything but main program. Check options and make sure that is intended.
-Nuitka:INFO: Starting Python compilation with Nuitka '1.0.8' on Python '3.10' commercial grade 'not installed'.
+Nuitka:INFO: Starting Python compilation with Nuitka '1.2' on Python '3.10' commercial grade 'not installed'.
 Nuitka-Plugins:INFO: multiprocessing: Injecting pre-module load code for module 'multiprocessing':
 Nuitka-Plugins:INFO: multiprocessing:     Monkey patching "multiprocessing" load environment.
 Nuitka-Plugins:INFO: multiprocessing: Injecting post-module load code for module 'multiprocessing':
@@ -22,7 +22,7 @@ Nuitka:INFO: Removing build directory 'knucleotide.nuitka-8.nuitka.build'.
 Nuitka:INFO: Successfully created 'knucleotide.nuitka-8.nuitka.bin'.
 cp knucleotide.nuitka-8.nuitka.bin knucleotide.nuitka-8.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp“
-13.93s to complete and log all make actions
+14.32s to complete and log all make actions
 
 COMMAND LINE:
  ./knucleotide.nuitka-8.nuitka_run 0 < knucleotide-input10000.txt
