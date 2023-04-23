@@ -1,5 +1,5 @@
 
- Thu, 23 Dec 2021 11:11:38 GMT
+ Sun, 23 Apr 2023 09:43:49 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp“
@@ -7,20 +7,8 @@ cp threadring.cython `echo threadring.cython | sed 's/cython-..//' | sed 's/.cyt
 cythonize -3 -bi `echo threadring.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 Compiling /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.pyx because it changed.
 [1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.pyx
-running build_ext
-building 'threadring' extension
-creating /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpt__7i_v2/home
-creating /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpt__7i_v2/home/dundee
-creating /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpt__7i_v2/home/dundee/work
-creating /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpt__7i_v2/home/dundee/work/pybenchmarks
-creating /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpt__7i_v2/home/dundee/work/pybenchmarks/bencher
-creating /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpt__7i_v2/home/dundee/work/pybenchmarks/bencher/tmp
-creating /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpt__7i_v2/home/dundee/work/pybenchmarks/bencher/tmp/threadring
-creating /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpt__7i_v2/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.10 -c /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.c -o /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpt__7i_v2/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/tmpt__7i_v2/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.cpython-310-x86_64-linux-gnu.so
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp“
-1.60s to complete and log all make actions
+2.87s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import threadring" 5000000

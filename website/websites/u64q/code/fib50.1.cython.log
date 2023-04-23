@@ -1,5 +1,5 @@
 
- Thu, 23 Dec 2021 10:52:47 GMT
+ Sun, 23 Apr 2023 09:12:25 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp“
@@ -7,20 +7,8 @@ cp fib50.cython `echo fib50.cython | sed 's/cython-..//' | sed 's/.cython//'`.py
 cythonize -3 -bi `echo fib50.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 Compiling /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/fib50.pyx because it changed.
 [1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/fib50.pyx
-running build_ext
-building 'fib50' extension
-creating /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmpq1_2on65/home
-creating /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmpq1_2on65/home/dundee
-creating /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmpq1_2on65/home/dundee/work
-creating /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmpq1_2on65/home/dundee/work/pybenchmarks
-creating /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmpq1_2on65/home/dundee/work/pybenchmarks/bencher
-creating /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmpq1_2on65/home/dundee/work/pybenchmarks/bencher/tmp
-creating /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmpq1_2on65/home/dundee/work/pybenchmarks/bencher/tmp/fib50
-creating /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmpq1_2on65/home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.10 -c /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/fib50.c -o /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmpq1_2on65/home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/fib50.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/tmpq1_2on65/home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/fib50.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp/fib50.cpython-310-x86_64-linux-gnu.so
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp“
-0.56s to complete and log all make actions
+0.92s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import fib50" 1000000

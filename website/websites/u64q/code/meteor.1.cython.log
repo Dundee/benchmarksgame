@@ -1,5 +1,5 @@
 
- Thu, 23 Dec 2021 11:04:28 GMT
+ Sun, 23 Apr 2023 09:26:59 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp“
@@ -7,20 +7,8 @@ cp meteor.cython `echo meteor.cython | sed 's/cython-..//' | sed 's/.cython//'`.
 cythonize -3 -bi `echo meteor.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 Compiling /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/meteor.pyx because it changed.
 [1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/meteor.pyx
-running build_ext
-building 'meteor' extension
-creating /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmp9wl6b3ib/home
-creating /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmp9wl6b3ib/home/dundee
-creating /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmp9wl6b3ib/home/dundee/work
-creating /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmp9wl6b3ib/home/dundee/work/pybenchmarks
-creating /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmp9wl6b3ib/home/dundee/work/pybenchmarks/bencher
-creating /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmp9wl6b3ib/home/dundee/work/pybenchmarks/bencher/tmp
-creating /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmp9wl6b3ib/home/dundee/work/pybenchmarks/bencher/tmp/meteor
-creating /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmp9wl6b3ib/home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.10 -c /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/meteor.c -o /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmp9wl6b3ib/home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/meteor.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/tmp9wl6b3ib/home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/meteor.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp/meteor.cpython-310-x86_64-linux-gnu.so
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/meteor/tmp“
-3.81s to complete and log all make actions
+5.34s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import meteor" 2098

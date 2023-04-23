@@ -1,24 +1,24 @@
 
- Sun, 20 Nov 2022 12:22:00 GMT
+ Sun, 23 Apr 2023 08:57:05 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp“
 nuitka3 --remove-output chameneosredux.nuitka-2.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output chameneosredux.nuitka-2.nuitka
 Nuitka-Options:WARNING: You did not specify to follow or include anything but main program. Check options and make sure that is intended.
-Nuitka:INFO: Starting Python compilation with Nuitka '1.2' on Python '3.10' commercial grade 'not installed'.
+Nuitka:INFO: Starting Python compilation with Nuitka '1.5' on Python '3.10' commercial grade 'not installed'.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
 Nuitka:INFO: Running C compilation via Scons.
 Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
-Nuitka-Scons:INFO: Backend linking program with 10 files (no progress information available).
+Nuitka-Scons:INFO: Backend linking program with 7 files (no progress information available).
 Nuitka-Scons:WARNING: You are not using ccache.
 Nuitka:INFO: Removing build directory 'chameneosredux.nuitka-2.nuitka.build'.
 Nuitka:INFO: Successfully created 'chameneosredux.nuitka-2.nuitka.bin'.
 cp chameneosredux.nuitka-2.nuitka.bin chameneosredux.nuitka-2.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp“
-12.84s to complete and log all make actions
+14.79s to complete and log all make actions
 
 COMMAND LINE:
  ./chameneosredux.nuitka-2.nuitka_run 6000000
@@ -35,21 +35,21 @@ yellow + red -> blue
 yellow + yellow -> yellow
 
  blue red yellow
-3974954 zero
-4017248 zero
-4007798 zero
+3982925 zero
+4277101 zero
+3739974 zero
  one two zero zero zero zero zero zero
 
  blue red yellow red yellow blue red yellow red blue
-892731 zero
-761897 zero
-1526640 zero
-1548118 zero
-1006644 zero
-1551484 zero
-720174 zero
-1416604 zero
-1396590 zero
-1179118 zero
+1053942 zero
+1176948 zero
+1215395 zero
+968284 zero
+1048654 zero
+1343078 zero
+1334862 zero
+1177669 zero
+1342742 zero
+1338426 zero
  one two zero zero zero zero zero zero
 

@@ -1,5 +1,5 @@
 
- Thu, 23 Dec 2021 11:11:05 GMT
+ Sun, 23 Apr 2023 09:37:05 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp“
@@ -7,20 +7,8 @@ cp regexdna.cython-5.cython `echo regexdna.cython-5.cython | sed 's/cython-..//'
 cythonize -3 -bi `echo regexdna.cython-5.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 Compiling /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/regexdna.pyx because it changed.
 [1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/regexdna.pyx
-running build_ext
-building 'regexdna' extension
-creating /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmpv97q_13n/home
-creating /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmpv97q_13n/home/dundee
-creating /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmpv97q_13n/home/dundee/work
-creating /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmpv97q_13n/home/dundee/work/pybenchmarks
-creating /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmpv97q_13n/home/dundee/work/pybenchmarks/bencher
-creating /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmpv97q_13n/home/dundee/work/pybenchmarks/bencher/tmp
-creating /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmpv97q_13n/home/dundee/work/pybenchmarks/bencher/tmp/regexdna
-creating /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmpv97q_13n/home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.10 -c /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/regexdna.c -o /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmpv97q_13n/home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/regexdna.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/tmpv97q_13n/home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/regexdna.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp/regexdna.cpython-310-x86_64-linux-gnu.so
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/regexdna/tmp“
-0.98s to complete and log all make actions
+1.53s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import regexdna" 0 < regexdna-input10000.txt

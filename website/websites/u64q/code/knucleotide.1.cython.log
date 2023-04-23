@@ -1,5 +1,5 @@
 
- Thu, 23 Dec 2021 10:59:18 GMT
+ Sun, 23 Apr 2023 09:14:40 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp“
@@ -7,20 +7,8 @@ cp knucleotide.cython `echo knucleotide.cython | sed 's/cython-..//' | sed 's/.c
 cythonize -3 -bi `echo knucleotide.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 Compiling /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/knucleotide.pyx because it changed.
 [1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/knucleotide.pyx
-running build_ext
-building 'knucleotide' extension
-creating /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp4e8gpgbh/home
-creating /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp4e8gpgbh/home/dundee
-creating /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp4e8gpgbh/home/dundee/work
-creating /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp4e8gpgbh/home/dundee/work/pybenchmarks
-creating /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp4e8gpgbh/home/dundee/work/pybenchmarks/bencher
-creating /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp4e8gpgbh/home/dundee/work/pybenchmarks/bencher/tmp
-creating /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp4e8gpgbh/home/dundee/work/pybenchmarks/bencher/tmp/knucleotide
-creating /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp4e8gpgbh/home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.10 -c /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/knucleotide.c -o /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp4e8gpgbh/home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/knucleotide.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/tmp4e8gpgbh/home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/knucleotide.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp/knucleotide.cpython-310-x86_64-linux-gnu.so
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/knucleotide/tmp“
-2.34s to complete and log all make actions
+3.56s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import knucleotide" 0 < knucleotide-input10000.txt

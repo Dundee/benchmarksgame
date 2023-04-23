@@ -1,5 +1,5 @@
 
- Thu, 23 Dec 2021 11:11:34 GMT
+ Sun, 23 Apr 2023 09:40:55 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp“
@@ -7,20 +7,8 @@ cp templates.cython `echo templates.cython | sed 's/cython-..//' | sed 's/.cytho
 cythonize -3 -bi `echo templates.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 Compiling /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/templates.pyx because it changed.
 [1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/templates.pyx
-running build_ext
-building 'templates' extension
-creating /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmp3dmilm12/home
-creating /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmp3dmilm12/home/dundee
-creating /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmp3dmilm12/home/dundee/work
-creating /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmp3dmilm12/home/dundee/work/pybenchmarks
-creating /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmp3dmilm12/home/dundee/work/pybenchmarks/bencher
-creating /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmp3dmilm12/home/dundee/work/pybenchmarks/bencher/tmp
-creating /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmp3dmilm12/home/dundee/work/pybenchmarks/bencher/tmp/templates
-creating /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmp3dmilm12/home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.10 -c /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/templates.c -o /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmp3dmilm12/home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/templates.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/tmp3dmilm12/home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/templates.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp/templates.cpython-310-x86_64-linux-gnu.so
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/templates/tmp“
-1.01s to complete and log all make actions
+1.75s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import templates" 1000

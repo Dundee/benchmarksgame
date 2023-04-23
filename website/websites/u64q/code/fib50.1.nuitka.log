@@ -1,24 +1,24 @@
 
- Sun, 20 Nov 2022 12:32:24 GMT
+ Sun, 23 Apr 2023 09:12:16 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp“
 nuitka3 --remove-output fib50.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output fib50.nuitka
 Nuitka-Options:WARNING: You did not specify to follow or include anything but main program. Check options and make sure that is intended.
-Nuitka:INFO: Starting Python compilation with Nuitka '1.2' on Python '3.10' commercial grade 'not installed'.
+Nuitka:INFO: Starting Python compilation with Nuitka '1.5' on Python '3.10' commercial grade 'not installed'.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
 Nuitka:INFO: Running C compilation via Scons.
 Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
-Nuitka-Scons:INFO: Backend linking program with 10 files (no progress information available).
+Nuitka-Scons:INFO: Backend linking program with 7 files (no progress information available).
 Nuitka-Scons:WARNING: You are not using ccache.
 Nuitka:INFO: Removing build directory 'fib50.nuitka.build'.
 Nuitka:INFO: Successfully created 'fib50.nuitka.bin'.
 cp fib50.nuitka.bin fib50.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/fib50/tmp“
-12.70s to complete and log all make actions
+14.38s to complete and log all make actions
 
 COMMAND LINE:
  ./fib50.nuitka_run 1000000

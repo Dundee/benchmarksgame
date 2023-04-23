@@ -1,5 +1,5 @@
 
- Thu, 23 Dec 2021 10:47:26 GMT
+ Sun, 23 Apr 2023 09:02:59 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp“
@@ -7,20 +7,8 @@ cp fannkuchredux.cython `echo fannkuchredux.cython | sed 's/cython-..//' | sed '
 cythonize -3 -bi `echo fannkuchredux.cython | sed 's/cython-..//' | sed 's/.cython//'`.pyx
 Compiling /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/fannkuchredux.pyx because it changed.
 [1/1] Cythonizing /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/fannkuchredux.pyx
-running build_ext
-building 'fannkuchredux' extension
-creating /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpb4jnna33/home
-creating /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpb4jnna33/home/dundee
-creating /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpb4jnna33/home/dundee/work
-creating /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpb4jnna33/home/dundee/work/pybenchmarks
-creating /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpb4jnna33/home/dundee/work/pybenchmarks/bencher
-creating /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpb4jnna33/home/dundee/work/pybenchmarks/bencher/tmp
-creating /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpb4jnna33/home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux
-creating /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpb4jnna33/home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp
-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fPIC -I/usr/include/python3.10 -c /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/fannkuchredux.c -o /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpb4jnna33/home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/fannkuchredux.o
-gcc -pthread -shared -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/tmpb4jnna33/home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/fannkuchredux.o -L/usr/lib -o /home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp/fannkuchredux.cpython-310-x86_64-linux-gnu.so
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp“
-2.53s to complete and log all make actions
+4.31s to complete and log all make actions
 
 COMMAND LINE:
  /usr/bin/python3 -c "import fannkuchredux" 10

@@ -1,12 +1,12 @@
 
- Sun, 20 Nov 2022 12:27:50 GMT
+ Sun, 23 Apr 2023 09:02:48 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp“
 nuitka3 --remove-output fannkuchredux.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output fannkuchredux.nuitka
 Nuitka-Options:WARNING: You did not specify to follow or include anything but main program. Check options and make sure that is intended.
-Nuitka:INFO: Starting Python compilation with Nuitka '1.2' on Python '3.10' commercial grade 'not installed'.
+Nuitka:INFO: Starting Python compilation with Nuitka '1.5' on Python '3.10' commercial grade 'not installed'.
 Nuitka-Plugins:INFO: multiprocessing: Injecting pre-module load code for module 'multiprocessing':
 Nuitka-Plugins:INFO: multiprocessing:     Monkey patching "multiprocessing" load environment.
 Nuitka-Plugins:INFO: multiprocessing: Injecting post-module load code for module 'multiprocessing':
@@ -16,13 +16,13 @@ Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
 Nuitka:INFO: Running C compilation via Scons.
 Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
-Nuitka-Scons:INFO: Backend linking program with 13 files (no progress information available).
+Nuitka-Scons:INFO: Backend linking program with 10 files (no progress information available).
 Nuitka-Scons:WARNING: You are not using ccache.
 Nuitka:INFO: Removing build directory 'fannkuchredux.nuitka.build'.
 Nuitka:INFO: Successfully created 'fannkuchredux.nuitka.bin'.
 cp fannkuchredux.nuitka.bin fannkuchredux.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/fannkuchredux/tmp“
-14.47s to complete and log all make actions
+20.45s to complete and log all make actions
 
 COMMAND LINE:
  ./fannkuchredux.nuitka_run 10

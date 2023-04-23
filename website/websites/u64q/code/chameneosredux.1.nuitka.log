@@ -1,24 +1,24 @@
 
- Sun, 20 Nov 2022 12:08:34 GMT
+ Sun, 23 Apr 2023 08:47:32 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp“
 nuitka3 --remove-output chameneosredux.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output chameneosredux.nuitka
 Nuitka-Options:WARNING: You did not specify to follow or include anything but main program. Check options and make sure that is intended.
-Nuitka:INFO: Starting Python compilation with Nuitka '1.2' on Python '3.10' commercial grade 'not installed'.
+Nuitka:INFO: Starting Python compilation with Nuitka '1.5' on Python '3.10' commercial grade 'not installed'.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
 Nuitka:INFO: Running C compilation via Scons.
 Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
-Nuitka-Scons:INFO: Backend linking program with 10 files (no progress information available).
+Nuitka-Scons:INFO: Backend linking program with 7 files (no progress information available).
 Nuitka-Scons:WARNING: You are not using ccache.
 Nuitka:INFO: Removing build directory 'chameneosredux.nuitka.build'.
 Nuitka:INFO: Successfully created 'chameneosredux.nuitka.bin'.
 cp chameneosredux.nuitka.bin chameneosredux.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/chameneosredux/tmp“
-12.85s to complete and log all make actions
+14.42s to complete and log all make actions
 
 COMMAND LINE:
  ./chameneosredux.nuitka_run 6000000
@@ -35,21 +35,21 @@ yellow + red -> blue
 yellow + yellow -> yellow
 
  blue red yellow
-3620538 zero
-4197838 zero
-4181624 zero
+3899223 zero
+4051979 zero
+4048798 zero
  one two zero zero zero zero zero zero
 
  blue red yellow red yellow blue red yellow red blue
-1345807 zero
-1066896 zero
-840291 zero
-1396964 zero
-1029600 zero
-1486334 zero
-1263418 zero
-1473322 zero
-1320804 zero
-776564 zero
+1037226 zero
+1257127 zero
+1047874 zero
+1254174 zero
+1253920 zero
+1259018 zero
+1174522 zero
+1204664 zero
+1256671 zero
+1254804 zero
  one two zero zero zero zero zero zero
 
