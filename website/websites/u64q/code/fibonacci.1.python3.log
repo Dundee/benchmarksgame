@@ -1,5 +1,5 @@
 
- Sun, 20 Nov 2022 12:32:55 GMT
+ Sun, 30 Jul 2023 10:51:03 GMT
 
 COMMAND LINE:
  /usr/bin/python3 fibonacci.python3 1000000
@@ -12,4 +12,4 @@ PROGRAM OUTPUT:
 Traceback (most recent call last):
   File "/home/dundee/work/pybenchmarks/bencher/tmp/fibonacci/tmp/fibonacci.python3", line 8, in <module>
     print(fib(int(sys.argv[1])))
-ValueError: Exceeds the limit (4300) for integer string conversion; use sys.set_int_max_str_digits() to increase the limit
+ValueError: Exceeds the limit (4300 digits) for integer string conversion; use sys.set_int_max_str_digits() to increase the limit

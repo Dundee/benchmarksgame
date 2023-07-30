@@ -46,7 +46,7 @@ $sites = array('u64q');
 $allsites = array('u64q');
 
 $langs = array(
-   array('python3','Python 3.10.8 (with NumPy and gmpy2)','python3',$allsites),
+   array('python3','Python 3.11.3 (with NumPy and gmpy2)','python3',$allsites),
    array('python','Python 2.7.18 (with NumPy and gmpy)','python',$allsites),
    array('python-dev','Python 3.12.0a0-2022-09-02','python-dev',$allsites),
    array('pypy3','PyPy3 7.3.8 (with gmpy_cffi)','pypy3',$allsites),
