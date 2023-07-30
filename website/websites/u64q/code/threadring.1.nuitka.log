@@ -1,41 +1,27 @@
 
- Sun, 23 Apr 2023 09:41:28 GMT
+ Sun, 30 Jul 2023 11:18:23 GMT
 
 MAKE:
 make[1]: Vstupuje se do adresáře „/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp“
 nuitka3 --remove-output threadring.nuitka
 Nuitka-Options:INFO: Used command line options: --remove-output threadring.nuitka
 Nuitka-Options:WARNING: You did not specify to follow or include anything but main program. Check options and make sure that is intended.
-Nuitka:INFO: Starting Python compilation with Nuitka '1.5' on Python '3.10' commercial grade 'not installed'.
+Nuitka:INFO: Starting Python compilation with Nuitka '1.6' on Python '3.11' commercial grade 'not installed'.
 Nuitka:INFO: Completed Python level compilation and optimization.
 Nuitka:INFO: Generating source code for C backend compiler.
 Nuitka:INFO: Running data composer tool for optimal constant value handling.
 Nuitka:INFO: Running C compilation via Scons.
 Nuitka-Scons:INFO: Backend C compiler: gcc (gcc).
-Nuitka-Scons:INFO: Backend linking program with 7 files (no progress information available).
-Nuitka-Scons:WARNING: You are not using ccache.
+Nuitka-Scons:INFO: Backend linking program with 7 files (no progress information available for this stage).
+Nuitka-Scons:WARNING: You are not using ccache, re-compilation of identical code will be slower than necessary. Use your OS package manager to install it.
 Nuitka:INFO: Removing build directory 'threadring.nuitka.build'.
 Nuitka:INFO: Successfully created 'threadring.nuitka.bin'.
 cp threadring.nuitka.bin threadring.nuitka_run
 make[1]: Opouští se adresář „/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp“
-14.33s to complete and log all make actions
+15.68s to complete and log all make actions
 
 COMMAND LINE:
  ./threadring.nuitka_run 5000000
 
-PROGRAM FAILED 
-
-
 PROGRAM OUTPUT:
 181
-
-StopIteration
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.nuitka", line 34, in <module>
-    main()
-  File "/home/dundee/work/pybenchmarks/bencher/tmp/threadring/tmp/threadring.nuitka", line 30, in main
-    n = send(n)
-RuntimeError: generator raised StopIteration

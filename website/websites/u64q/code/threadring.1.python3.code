@@ -8,18 +8,18 @@
 
 import sys
 import itertools
-      
+
 def main(n = int(sys.argv[1]), n_threads=503, cycle=itertools.cycle):
 
     def worker(worker_id):
-        
+
         n = 1
         while True:
             if n > 0:
                 n = (yield (n - 1))
             else:
                 print(worker_id)
-                raise StopIteration
+                return
 
 
     threadRing = [worker(w) for w in range(1, n_threads + 1)]

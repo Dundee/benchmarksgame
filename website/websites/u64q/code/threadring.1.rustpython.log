@@ -1,11 +1,8 @@
 
- Wed, 28 Sep 2022 09:40:50 GMT
+ Sun, 30 Jul 2023 11:18:24 GMT
 
 COMMAND LINE:
  /usr/bin/rustpython threadring.rustpython 5000000
-
-PROGRAM FAILED 
-
 
 PROGRAM OUTPUT:
 181
@@ -16,18 +13,3 @@ ModuleNotFoundError: No module named 'encodings'
 The above exception was the direct cause of the following exception:
 
 RuntimeError: Could not import encodings. Is your RUSTPYTHONPATH set? If you don't have access to a consistent external environment (e.g. if you're embedding rustpython in another application), try enabling the freeze-stdlib feature
-Traceback (most recent call last):
-  File "threadring.rustpython", line 22, in worker
-    raise StopIteration
-StopIteration
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "threadring.rustpython", line 34, in <module>
-    main()
-  File "threadring.rustpython", line 32, in main
-    break
-  File "threadring.rustpython", line 30, in main
-    n = send(n)
-RuntimeError: generator raised StopIteration
