@@ -46,14 +46,14 @@ $sites = array('u64q');
 $allsites = array('u64q');
 
 $langs = array(
-   array('python3','Python 3.11.3 (with NumPy and gmpy2)','python3',$allsites),
+   array('python3','Python 3.11.6 (with NumPy and gmpy2)','python3',$allsites),
    array('python','Python 2.7.18 (with NumPy and gmpy)','python',$allsites),
    array('python-dev','Python 3.12.0a0-2022-09-02','python-dev',$allsites),
    array('pypy3','PyPy3 7.3.8 (with gmpy_cffi)','pypy3',$allsites),
    array('pypy','PyPy 7.3.8 (with gmpy_cffi)','pypy',$allsites),
    array('ipy','IronPython 2.7.8a1 (with Mono 5.0.0.100)','ipy',$allsites),
    array('jython','Jython 2.7.1 (with JDK 8.u131)','jython',$allsites),
-   array('cython','Cython 0.29.34 (with NumPy and gmpy)','cython',$allsites),
+   array('cython','Cython 3.0.6 (with NumPy and gmpy)','cython',$allsites),
    array('nuitka','Nuitka 1.5','nuitka',$allsites),
    array('shedskin','Shedskin 0.9.4','shedskin',$allsites),
    array('numba','Numba 0.55.0rc1 (with NumPy)','numba',$allsites),
@@ -62,6 +62,7 @@ $langs = array(
    array('grumpy','Grumpy r123.08f9c2e','grumpy',$allsites),
    array('graal','Graal python 21.2.0','graal',$allsites),
    array('rustpython','RustPython 0.1.1','rustpython',$allsites),
+   array('mypyc','Mypyc 1.7.1','mypyc',$allsites),
    );
 
 

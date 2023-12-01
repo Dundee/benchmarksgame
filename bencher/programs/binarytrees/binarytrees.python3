@@ -7,9 +7,11 @@
 
 import sys
 import multiprocessing as mp
+from typing import Any, Tuple, Optional
 
+Node = Tuple[int, Optional[Node], Optional[Node]]
 
-def make_tree(i, d):
+def make_tree(i: int, d: int) -> Node:
 
     if d > 0:
         d -= 1
@@ -17,22 +19,21 @@ def make_tree(i, d):
     return (i, None, None)
 
 
-def check_tree(node):
+def check_tree(node: Node) -> int:
 
     (i, l, r) = node
-    if l is None:
+    if l is None or r is None:
         return i
     else:
         return i + check_tree(l) - check_tree(r)
 
 
-def make_check(itde, make=make_tree, check=check_tree):
-
+def make_check(itde: Tuple[int, int], make=make_tree, check=check_tree) -> int:
     i, d = itde
     return check(make(i, d))
 
 
-def get_argchunks(i, d, chunksize=5000):
+def get_argchunks(i: int, d: int, chunksize=5000):
 
     assert chunksize % 2 == 0
     chunk = []
@@ -45,15 +46,11 @@ def get_argchunks(i, d, chunksize=5000):
         yield chunk
 
 
-def main(n, min_depth=4):
-
+def main(n: int, min_depth: int = 4) -> None:
     max_depth = max(min_depth + 2, n)
     stretch_depth = max_depth + 1
-    if mp.cpu_count() > 1:
-        pool = mp.Pool()
-        chunkmap = pool.map
-    else:
-        chunkmap = map
+    pool = mp.Pool()
+    chunkmap = pool.map
 
     print('stretch tree of depth {0}\t check: {1}'.format(
           stretch_depth, make_check((0, stretch_depth))))

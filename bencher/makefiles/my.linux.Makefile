@@ -46,3 +46,11 @@
 %.grumpy_run: %.grumpy
 	grumpc $< > $<.go
 	go build -o $<_run $<.go
+
+########################################
+# Mypyc
+########################################
+
+%.mypyc_run: %.mypyc
+	cp $< mypyc.py
+	mypyc --html-report html mypyc.py

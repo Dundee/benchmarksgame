@@ -1,6 +1,7 @@
 import os, time
+from typing import Callable
 
-def measure(func, repetitions, size):
+def measure(func: Callable[[int, int], None], repetitions: int, size: int) -> None:
     t0 = time.time()
     func(repetitions, size)
     print(
@@ -11,37 +12,36 @@ def measure(func, repetitions, size):
         )
     )
 
-def fwrite(repetitions, size):
+def fwrite(repetitions: int, size: int) -> None:
     fd = os.open("/dev/null", os.O_WRONLY)
     for i in range(repetitions):
         os.write(fd, b" " * size)
 
-def fread(repetitions, size):
+def fread(repetitions: int, size: int) -> None:
     fd = os.open("/dev/full", os.O_RDONLY)
     for i in range(repetitions):
         os.read(fd, size)
 
-def file_write(repetitions, size):
+def file_write(repetitions: int, size: int) -> None:
     f = open("/dev/null", "w")
     for i in range(repetitions):
         f.write(" " * size)
     f.flush()
 
-def file_read(repetitions, size):
+def file_read(repetitions: int, size: int) -> None:
     f = open("/dev/full")
     for i in range(repetitions):
         f.read(size)
 
-if __name__ == '__main__':
-    measure(fread, 1000000, 100)
-    measure(fwrite, 1000000, 100)
-    measure(fread, 1000000, 1000)
-    measure(fwrite, 1000000, 1000)
-    measure(fread, 100000, 10000)
-    measure(fwrite, 100000, 10000)
-    measure(file_read, 1000000, 100)
-    measure(file_write, 1000000, 100)
-    measure(file_read, 1000000, 1000)
-    measure(file_write, 1000000, 1000)
-    measure(file_read, 100000, 10000)
-    measure(file_write, 100000, 10000)
+measure(fread, 1000000, 100)
+measure(fwrite, 1000000, 100)
+measure(fread, 1000000, 1000)
+measure(fwrite, 1000000, 1000)
+measure(fread, 100000, 10000)
+measure(fwrite, 100000, 10000)
+measure(file_read, 1000000, 100)
+measure(file_write, 1000000, 100)
+measure(file_read, 1000000, 1000)
+measure(file_write, 1000000, 1000)
+measure(file_read, 100000, 10000)
+measure(file_write, 100000, 10000)

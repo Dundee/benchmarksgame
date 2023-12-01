@@ -28,9 +28,14 @@ update-results:
 	cp $< $(NAME).pyx
 	cythonize -3 -bia $(NAME).pyx
 
+%.mypyc_run: %.python3
+	cp $< mypyc.py
+	mypyc --html-report html mypyc.py
+
 prepare: prepare-python prepare-python3 prepare-python-dev prepare-pypy \
 	prepare-pypy3 prepare-ipy prepare-jython prepare-cython prepare-nuitka \
-	prepare-shedskin prepare-numba prepare-pyston prepare-micropython prepare-grumpy
+	prepare-shedskin prepare-numba prepare-pyston prepare-micropython prepare-grumpy \
+	prepare-mypyc
 
 prepare-python:
 	sudo pacman -S python2-gmpy2 python2-numpy python2-jinja
@@ -81,4 +86,7 @@ prepare-micropython:
 
 prepare-grumpy:
 	yaourt -S grumpy-git
+
+prepare-mypyc:
+	sudo pacman -S mypy
 

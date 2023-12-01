@@ -1,7 +1,8 @@
 import sys
 
+sys.set_int_max_str_digits(1000000)
 
-def fib(n):
+def fib(n: int) -> int:
     a, b = 0, 1
     for i in range(n):
         a, b = b, a + b
